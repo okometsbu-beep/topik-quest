@@ -18,45 +18,52 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Rebuild verified TOPIK QUEST app
+        id: rebuild
+        continue-on-error: true
         shell: bash
         run: |
-          set -euo pipefail
-          curl -fsSL "https://topik-v8-b1.vercel.app/bundle.js" -o /tmp/b1.js
-          curl -fsSL "https://topik-v8-b2.vercel.app/bundle.js" -o /tmp/b2.js
-          curl -fsSL "https://topik-v8-b3.vercel.app/bundle.js" -o /tmp/b3.js
+          set +e
+          : > .github/last-import-debug.txt
+          exec > >(tee -a .github/last-import-debug.txt) 2>&1
+          echo "RUN $(date -u +%FT%TZ)"
+          curl -fsSL "https://topik-v8-b1.vercel.app/bundle.js" -o /tmp/b1.js || exit 11
+          curl -fsSL "https://topik-v8-b2.vercel.app/bundle.js" -o /tmp/b2.js || exit 12
+          curl -fsSL "https://topik-v8-b3.vercel.app/bundle.js" -o /tmp/b3.js || exit 13
+          wc -c /tmp/b1.js /tmp/b2.js /tmp/b3.js
 
           node <<'NODE'
-          const fs = require('fs');
-          const vm = require('vm');
-          const ctx = { window: {} };
-          vm.createContext(ctx);
-          for (const f of ['/tmp/b1.js','/tmp/b2.js','/tmp/b3.js']) {
-            vm.runInContext(fs.readFileSync(f,'utf8'), ctx, { filename:f });
+          const fs=require('fs'), vm=require('vm');
+          const ctx={window:{}}; vm.createContext(ctx);
+          for(const f of ['/tmp/b1.js','/tmp/b2.js','/tmp/b3.js']){
+            const src=fs.readFileSync(f,'utf8');
+            console.log(f,'chars',src.length,'head',JSON.stringify(src.slice(0,55)),'tail',JSON.stringify(src.slice(-25)));
+            vm.runInContext(src,ctx,{filename:f});
+            console.log('payload after',f,(ctx.window.__TOPIK_V8||'').length);
           }
-          const payload = ctx.window.__TOPIK_V8 || '';
-          console.log('combined bundle:', payload.length);
-          if (payload.length !== 294852) throw new Error(`Bundle length mismatch: ${payload.length}/294852`);
-          fs.writeFileSync('/tmp/topik.b64', payload);
+          const payload=ctx.window.__TOPIK_V8||'';
+          fs.writeFileSync('/tmp/topik.b64',payload);
+          console.log('combined bundle',payload.length);
           NODE
+          if [ $? -ne 0 ]; then echo 'NODE_EVAL_FAILED'; exit 21; fi
 
           python3 <<'PY'
-          import base64, gzip, hashlib, pathlib
-          encoded=pathlib.Path('/tmp/topik.b64').read_text(encoding='utf-8')
-          raw=gzip.decompress(base64.b64decode(encoded, validate=True))
+          import base64,gzip,hashlib,pathlib
+          encoded=pathlib.Path('/tmp/topik.b64').read_text()
+          print('b64 length',len(encoded))
+          try: raw=gzip.decompress(base64.b64decode(encoded,validate=True))
+          except Exception as e:
+              print('DECODE_ERROR',repr(e)); raise
+          actual=hashlib.sha256(raw).hexdigest(); print('raw bytes',len(raw),'sha256',actual)
           expected='322a285241c0930bc42db38841e2a5cc84c250f477330813c06c89a0bd5f396f'
-          actual=hashlib.sha256(raw).hexdigest()
-          if actual != expected:
-              raise SystemExit(f'Source SHA-256 mismatch: {actual}')
-          html=raw.decode('utf-8')
-          html=html.replace('TOPIK QUEST II','TOPIK QUEST')
+          if actual!=expected: raise SystemExit('SHA_MISMATCH')
+          html=raw.decode('utf-8').replace('TOPIK QUEST II','TOPIK QUEST')
           html=html.replace('<div class="brand">Q2</div>','<div class="brand">TQ</div>')
           html=html.replace('FULL MOCK · GAME · INFINITY · 4 LANG','TOPIK II PACK · GAME · INFINITY · 4 LANG')
           html=html.replace('TOPIK QUEST · FULL MOCK','TOPIK QUEST · TOPIK II PACK')
-          for marker in ('TOPIK QUEST','INFINITY','resultCurtain'):
-              if marker not in html: raise SystemExit(f'Missing marker: {marker}')
           pathlib.Path('index.html').write_text(html,encoding='utf-8')
-          print('index.html bytes:', pathlib.Path('index.html').stat().st_size)
+          print('SUCCESS index.html bytes',pathlib.Path('index.html').stat().st_size)
           PY
+          if [ $? -ne 0 ]; then exit 22; fi
 
           mkdir -p data/topik1 data/topik2 assets audio/topik1 audio/topik2
           printf '%s\n' '# TOPIK I content pack' 'Reserved for TOPIK I listening and reading data.' > data/topik1/README.md
@@ -66,12 +73,18 @@ jobs:
           printf '%s\n' '# TOPIK II listening audio' 'Reserved for TOPIK II listening audio.' > audio/topik2/README.md
           touch .nojekyll
 
-      - name: Commit standalone GitHub version
+      - name: Commit result and diagnostics
+        if: always()
         shell: bash
         run: |
-          set -euo pipefail
+          set -e
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html .nojekyll data assets audio
-          git commit -m "Import standalone TOPIK QUEST app" || exit 0
+          git add .github/last-import-debug.txt
+          [ -f index.html ] && git add index.html .nojekyll data assets audio || true
+          git commit -m "Record TOPIK import result" || exit 0
           git push
+
+      - name: Fail if rebuild failed
+        if: steps.rebuild.outcome != 'success'
+        run: exit 1
