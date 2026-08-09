@@ -1,12 +1,14 @@
 // TOPIK QUEST hot-patch layer.
-// Developer Listening Studio: record -> stop -> upload directly to GitHub.
+// Developer Listening Studio: record -> preview -> upload/replace directly on GitHub.
 (function(){
   'use strict';
   const GH_OWNER='okometsbu-beep';
   const GH_REPO='topik-quest';
   const GH_BRANCH='main';
   const TOKEN_KEY='topikQuestDevGithubToken';
+  const AUDIO_EXTS=['mp3','m4a','aac','webm','ogg'];
   window.devUploadStatus=window.devUploadStatus||{};
+  let devPreviewAudio=null;
 
   function ghToken(){return (localStorage.getItem(TOKEN_KEY)||'').trim()}
   window.saveDevGithubToken=function(){
@@ -30,7 +32,7 @@
   function ghHeaders(token){return {
     'Accept':'application/vnd.github+json',
     'Authorization':'Bearer '+token,
-    'X-GitHub-Api-Version':'2026-03-10'
+    'X-GitHub-Api-Version':'2022-11-28'
   }}
   function blobBase64(blob){
     return new Promise((resolve,reject)=>{
@@ -47,27 +49,81 @@
     if(!r.ok){let msg='';try{msg=(await r.json()).message||''}catch(e){};throw new Error(msg||`GitHub GET ${r.status}`)}
     return await r.json();
   }
+  async function deleteGithubFile(path,sha,token,q){
+    const r=await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${path}`,{
+      method:'DELETE',
+      headers:{...ghHeaders(token),'Content-Type':'application/json'},
+      body:JSON.stringify({message:`Remove superseded TOPIK II listening Q${q} audio`,sha,branch:GH_BRANCH})
+    });
+    if(!r.ok){let data={};try{data=await r.json()}catch(e){};throw new Error(data.message||`GitHub DELETE ${r.status}`)}
+  }
+  function stopDevPreview(){
+    if(devPreviewAudio){try{devPreviewAudio.pause();devPreviewAudio.currentTime=0}catch(e){};devPreviewAudio=null}
+  }
+  window.playDevRecordingPreview=function(id){
+    const x=devBlobs[id];
+    if(!x){toast('먼저 이 문항을 녹음해 주세요.');return}
+    stopDevPreview();
+    try{
+      const a=new Audio(x.url);devPreviewAudio=a;
+      a.onended=()=>{devPreviewAudio=null};
+      a.onerror=()=>{devPreviewAudio=null;toast('녹음 미리듣기에 실패했습니다.')};
+      a.play();
+    }catch(e){toast('녹음 미리듣기에 실패했습니다.')}
+  };
+  window.playUploadedDevAudio=async function(id){
+    stopDevPreview();stopListeningAudio();
+    const q=String(id).padStart(3,'0');
+    for(const ext of AUDIO_EXTS){
+      const url=`audio/topik2/q${q}.${ext}?v=${Date.now()}`;
+      try{
+        const r=await fetch(url,{method:'HEAD',cache:'no-store'});
+        if(!r.ok)continue;
+        const a=new Audio(url);devPreviewAudio=a;
+        a.onended=()=>{devPreviewAudio=null};
+        a.onerror=()=>{devPreviewAudio=null;toast('업로드된 음성을 재생하지 못했습니다.')};
+        await a.play();return;
+      }catch(e){}
+    }
+    toast('아직 업로드된 음원이 없습니다.');
+  };
+
   window.uploadDevRecording=async function(id){
     const x=devBlobs[id];
     if(!x){toast('먼저 이 문항을 녹음해 주세요.');return}
     const token=ghToken();
     if(!token){toast('먼저 위에서 GitHub 업로드 권한을 연결해 주세요.');document.getElementById('devGhToken')?.focus();return}
+    stopDevPreview();
     const q=String(id).padStart(3,'0');
-    const path=`audio/topik2/q${q}.${x.ext}`;
-    devUploadStatus[id]={state:'uploading',text:'업로드 중…'};
+    const targetPath=`audio/topik2/q${q}.${x.ext}`;
+    devUploadStatus[id]={state:'uploading',text:'기존 음원 확인 중…'};
     render();
     try{
-      const old=await currentGithubFile(path,token);
+      const existing=[];
+      for(const ext of AUDIO_EXTS){
+        const path=`audio/topik2/q${q}.${ext}`;
+        const file=await currentGithubFile(path,token);
+        if(file?.sha)existing.push({path,sha:file.sha});
+      }
+      const targetOld=existing.find(f=>f.path===targetPath);
       const content=await blobBase64(x.blob);
-      const body={message:`Upload TOPIK II listening Q${q} recording`,content,branch:GH_BRANCH};
-      if(old?.sha)body.sha=old.sha;
-      const r=await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${path}`,{
+      devUploadStatus[id]={state:'uploading',text:targetOld?'기존 음원 교체 중…':'새 음원 업로드 중…'};
+      render();
+      const body={message:`Replace TOPIK II listening Q${q} recording`,content,branch:GH_BRANCH};
+      if(targetOld?.sha)body.sha=targetOld.sha;
+      const r=await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${targetPath}`,{
         method:'PUT',headers:{...ghHeaders(token),'Content-Type':'application/json'},body:JSON.stringify(body)
       });
       let data={};try{data=await r.json()}catch(e){}
       if(!r.ok)throw new Error(data.message||`GitHub PUT ${r.status}`);
-      devUploadStatus[id]={state:'done',text:'업로드 완료',path,commit:data?.commit?.sha||''};
-      toast(`Q${q} 업로드 완료`);
+
+      // If the recording format changed, remove older Qxxx files with other extensions
+      // only after the new file has uploaded successfully.
+      for(const old of existing){
+        if(old.path!==targetPath)await deleteGithubFile(old.path,old.sha,token,q);
+      }
+      devUploadStatus[id]={state:'done',text:existing.length?'교체 완료':'업로드 완료',path:targetPath,commit:data?.commit?.sha||''};
+      toast(`Q${q} ${existing.length?'음원 교체':'업로드'} 완료`);
       render();
     }catch(e){
       console.error(e);
@@ -93,28 +149,30 @@
       if(devRecordingId===q.id&&devRecorder?.state==='recording'){
         action=`<button id="devRec_${q.id}" onclick="toggleDevRecord(${q.id})" style="background:#6d2431;color:#fff">■ 종료</button>`;
       }else{
-        action=`<button id="devRec_${q.id}" onclick="toggleDevRecord(${q.id})">🎙 녹음</button>`;
-        if(x) action+=`<button onclick="uploadDevRecording(${q.id})" ${st?.state==='uploading'?'disabled':''} style="${st?.state==='done'?'background:#143d31;border-color:#2c8a69;color:#d9fff1':''}">${st?.state==='uploading'?'⏳ 업로드 중':st?.state==='done'?'✓ 업로드됨':'⬆ 업로드'}</button>`;
+        action=`<button id="devRec_${q.id}" onclick="toggleDevRecord(${q.id})">🎙 ${x?'다시 녹음':'녹음'}</button>`;
+        if(x){
+          action+=`<button onclick="playDevRecordingPreview(${q.id})">▶ 내 녹음</button>`;
+          action+=`<button onclick="uploadDevRecording(${q.id})" ${st?.state==='uploading'?'disabled':''} style="${st?.state==='done'?'background:#143d31;border-color:#2c8a69;color:#d9fff1':''}">${st?.state==='uploading'?'⏳ 처리 중':st?.state==='done'?'↻ 다시 교체':'⬆ 업로드/교체'}</button>`;
+        }
       }
       const status=st?`<div style="font-size:9px;margin-top:5px;color:${st.state==='error'?'#ff8a9d':st.state==='done'?'#65d6ac':'#9eb3cf'}">${st.text}${st.path?` · ${st.path}`:''}</div>`:'';
-      return `<div class="devRow" style="grid-template-columns:48px 1fr;align-items:start"><div><b>Q${String(q.id).padStart(3,'0')}</b></div><div><b>${q.id<=20?'1 PLAY':'SCRIPT'}</b><p style="white-space:pre-wrap">${esc(q.script||'')}</p><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px"><button onclick="playListening(${q.id},false)">▶ 듣기</button>${action}</div>${status}</div></div>`;
+      return `<div class="devRow" style="grid-template-columns:48px 1fr;align-items:start"><div><b>Q${String(q.id).padStart(3,'0')}</b></div><div><b>${q.id<=20?'1 PLAY':'SCRIPT'}</b><p style="white-space:pre-wrap">${esc(q.script||'')}</p><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px"><button onclick="playUploadedDevAudio(${q.id})">▶ 현재 음성</button>${action}</div>${status}</div></div>`;
     }).join('');
     sc.innerHTML=`
       <div class="sectionTitle"><h2>🔒 Developer Listening Studio</h2><span>DEV ONLY</span></div>
-      <div class="devBanner">${ml('이 화면은 개발용입니다. 녹음 후 다운로드 과정 없이 각 문항에서 바로 GitHub로 업로드합니다.','開発用画面です。録音後、ダウンロードせず各問題から直接GitHubへアップロードします。','Developer-only studio. Record and upload each item directly to GitHub without downloading files.','开发者页面。录音后无需下载，直接逐题上传到 GitHub。')}</div>
+      <div class="devBanner">${ml('녹음 직후 내 녹음을 확인한 뒤 바로 업로드할 수 있습니다. 같은 문항을 다시 올리면 기존 음원은 교체됩니다.','録音直後に確認してから直接アップロードできます。同じ問題を再アップロードすると既存音声を置き換えます。','Preview immediately after recording, then upload directly. Re-uploading the same question replaces its previous audio.','录音后可立即试听再上传。同一题重新上传会替换旧音频。')}</div>
       <div class="infoCard"><h3>🔑 GitHub 자동 업로드 연결</h3>
         ${linked?
           `<p>✓ 이 기기에 업로드 권한이 연결되어 있습니다.</p><button class="primary alt" onclick="clearDevGithubToken()">연결 해제</button>`:
-          `<p>처음 한 번만 fine-grained GitHub token을 입력하면 이후에는 각 문항의 <b>⬆ 업로드</b> 버튼만 누르면 됩니다. 토큰은 이 기기의 브라우저에만 저장됩니다.</p><input id="devGhToken" type="password" autocomplete="off" placeholder="github_pat_..." style="width:100%;padding:13px;border-radius:13px;border:1px solid #314663;background:#0c192b;color:#fff;margin:8px 0"><div style="display:grid;grid-template-columns:1fr 1fr;gap:7px"><button class="primary alt" onclick="openGithubTokenSetup()">GitHub 권한 만들기</button><button class="primary" onclick="saveDevGithubToken()">이 기기에 연결</button></div><p style="margin-top:8px;font-size:9px">권한 범위: 이 저장소(topik-quest)만 선택 · Repository permissions → Contents: Read and write.</p>`}
+          `<p>처음 한 번만 fine-grained GitHub token을 입력하면 이후에는 각 문항에서 바로 업로드/교체할 수 있습니다. 토큰은 이 기기의 브라우저에만 저장됩니다.</p><input id="devGhToken" type="password" autocomplete="off" placeholder="github_pat_..." style="width:100%;padding:13px;border-radius:13px;border:1px solid #314663;background:#0c192b;color:#fff;margin:8px 0"><div style="display:grid;grid-template-columns:1fr 1fr;gap:7px"><button class="primary alt" onclick="openGithubTokenSetup()">GitHub 권한 만들기</button><button class="primary" onclick="saveDevGithubToken()">이 기기에 연결</button></div><p style="margin-top:8px;font-size:9px">권한 범위: topik-quest만 선택 · Repository permissions → Contents: Read and write.</p>`}
       </div>
-      <div class="infoCard"><h3>🎙 새 작업 방식</h3><p><b>1.</b> 🎙 녹음 → <b>2.</b> ■ 종료 → <b>3.</b> ⬆ 업로드. 파일 이름과 경로는 앱이 자동으로 정합니다. 별도 다운로드나 GitHub 파일 선택 과정은 없습니다.</p></div>
+      <div class="infoCard"><h3>🎙 작업 순서</h3><p><b>1.</b> 🎙 녹음 → <b>2.</b> ■ 종료 → <b>3.</b> ▶ 내 녹음으로 확인 → <b>4.</b> ⬆ 업로드/교체. 이미 같은 Q번호의 음원이 있으면 새 녹음으로 교체합니다. 녹음 포맷이 바뀌면 이전 확장자 파일도 자동 정리합니다.</p></div>
       <div>${rows}</div>`;
   };
 
-  // Keep the existing recorder, but change the completion message and refresh the new UI.
-  const originalToggle=window.toggleDevRecord;
   window.toggleDevRecord=async function(id){
     if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){toast('MediaRecorder unavailable');return}
+    stopDevPreview();
     if(devRecorder&&devRecorder.state==='recording'){
       if(devRecordingId!==id){toast(ml('먼저 현재 녹음을 종료하세요.','先に現在の録音を終了してください。','Stop the current recording first.','请先结束当前录音。'));return}
       devRecorder.stop();return;
@@ -134,10 +192,10 @@
         const url=URL.createObjectURL(blob);
         if(devBlobs[id]?.url)try{URL.revokeObjectURL(devBlobs[id].url)}catch(e){}
         devBlobs[id]={blob,url,ext};
-        devUploadStatus[id]={state:'ready',text:'녹음 완료 · 업로드 대기'};
+        devUploadStatus[id]={state:'ready',text:'녹음 완료 · 미리듣기 후 업로드 가능'};
         try{devStream?.getTracks().forEach(t=>t.stop())}catch(e){}
         devStream=null;devRecorder=null;devRecordingId=null;
-        toast(ml('녹음 완료. 바로 업로드할 수 있습니다.','録音完了。すぐアップロードできます。','Recording complete. Ready to upload.','录音完成，可以直接上传。'));
+        toast(ml('녹음 완료. 내 녹음을 들어본 뒤 업로드하세요.','録音完了。確認してからアップロードしてください。','Recording complete. Preview it before uploading.','录音完成，请试听后再上传。'));
         render();
       };
       devRecorder.start();
@@ -145,5 +203,6 @@
     }catch(e){console.error(e);toast(ml('마이크 권한을 확인해 주세요.','マイク権限を確認してください。','Check microphone permission.','请检查麦克风权限。'))}
   };
 
+  window.addEventListener('beforeunload',stopDevPreview);
   if(window.S?.view==='devStudio')setTimeout(()=>render(),0);
 })();
