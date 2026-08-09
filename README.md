@@ -17,3 +17,5 @@ TOPIK I & II learning game and practice app.
 - Expandable monster, stage and UI assets
 
 The public site is intended to run from GitHub Pages without a Vercel runtime dependency.
+
+Migration trigger: parser fix 2026-08-09.
