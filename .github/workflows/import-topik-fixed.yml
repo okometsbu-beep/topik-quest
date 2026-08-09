@@ -2,6 +2,10 @@ name: Import TOPIK QUEST Fixed
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/topik-import-trigger.txt'
 
 permissions:
   contents: write
@@ -80,5 +84,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html .nojekyll data assets audio
-          git commit -m "Import standalone TOPIK QUEST app"
+          git commit -m "Import standalone TOPIK QUEST app" || exit 0
           git push
