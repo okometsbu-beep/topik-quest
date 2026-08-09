@@ -2,6 +2,10 @@ name: Import TOPIK QUEST
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'README.md'
 
 permissions:
   contents: write
