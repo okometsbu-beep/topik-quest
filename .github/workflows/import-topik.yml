@@ -1,0 +1,87 @@
+name: Import TOPIK QUEST
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Rebuild verified TOPIK QUEST app
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSL "https://topik-v8-b1.vercel.app/bundle.js" -o /tmp/b1.js
+          curl -fsSL "https://topik-v8-b2.vercel.app/bundle.js" -o /tmp/b2.js
+          curl -fsSL "https://topik-v8-b3.vercel.app/bundle.js" -o /tmp/b3.js
+
+          python3 - <<'PY'
+          import base64, gzip, hashlib, pathlib, re
+
+          parts=[]
+          for name in ('/tmp/b1.js','/tmp/b2.js','/tmp/b3.js'):
+              text=pathlib.Path(name).read_text(encoding='utf-8')
+              m=re.search(r"\+['\"]([A-Za-z0-9+/=]+)['\"]\s*;?", text)
+              if not m:
+                  raise SystemExit(f'Could not extract bundle from {name}')
+              parts.append(m.group(1))
+
+          encoded=''.join(parts)
+          if len(encoded) != 294852:
+              raise SystemExit(f'Bundle length mismatch: {len(encoded)} / 294852')
+
+          raw=gzip.decompress(base64.b64decode(encoded))
+          expected='322a285241c0930bc42db38841e2a5cc84c250f477330813c06c89a0bd5f396f'
+          if hashlib.sha256(raw).hexdigest() != expected:
+              raise SystemExit('Source SHA-256 mismatch')
+
+          html=raw.decode('utf-8')
+          html=html.replace('<title>TOPIK QUEST II</title>','<title>TOPIK QUEST</title>')
+          html=html.replace('<div class="brand">Q2</div><div class="title"><b>TOPIK QUEST II</b><small>FULL MOCK · GAME · INFINITY · 4 LANG</small></div>', '<div class="brand">TQ</div><div class="title"><b>TOPIK QUEST</b><small>TOPIK II PACK · GAME · INFINITY · 4 LANG</small></div>')
+          html=html.replace('<span class="eyebrow">TOPIK QUEST II · FULL MOCK</span>', '<span class="eyebrow">TOPIK QUEST · TOPIK II PACK</span>')
+          if 'TOPIK QUEST II' in html:
+              raise SystemExit('Legacy app branding remains')
+          for marker in ('TOPIK QUEST','INFINITY','resultCurtain'):
+              if marker not in html:
+                  raise SystemExit(f'Missing marker: {marker}')
+          pathlib.Path('index.html').write_text(html,encoding='utf-8')
+          PY
+
+          mkdir -p data/topik1 data/topik2 assets audio/topik1 audio/topik2
+          cat > data/topik1/README.md <<'EOF'
+          # TOPIK I content pack
+          Reserved for TOPIK I listening and reading data.
+          EOF
+          cat > data/topik2/README.md <<'EOF'
+          # TOPIK II content pack
+          Current TOPIK II mock, game, infinity and explanation content is embedded in the initial web build. It can be progressively extracted here.
+          EOF
+          cat > assets/README.md <<'EOF'
+          # Visual assets
+          Monster, stage, UI and icon assets for TOPIK QUEST.
+          EOF
+          cat > audio/topik1/README.md <<'EOF'
+          # TOPIK I listening audio
+          Reserved for generated/recorded listening sources.
+          EOF
+          cat > audio/topik2/README.md <<'EOF'
+          # TOPIK II listening audio
+          Reserved for generated/recorded listening sources.
+          EOF
+          touch .nojekyll
+
+      - name: Commit standalone GitHub version
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html .nojekyll data assets audio
+          git commit -m "Import standalone TOPIK QUEST app" || exit 0
+          git push
