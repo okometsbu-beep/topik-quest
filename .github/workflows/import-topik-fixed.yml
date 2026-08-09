@@ -25,48 +25,37 @@ jobs:
           curl -fsSL "https://topik-v8-b2.vercel.app/bundle.js" -o /tmp/b2.js
           curl -fsSL "https://topik-v8-b3.vercel.app/bundle.js" -o /tmp/b3.js
 
-          python3 - <<'PY'
-          import base64, gzip, hashlib, pathlib, re
+          node <<'NODE'
+          const fs = require('fs');
+          const vm = require('vm');
+          const ctx = { window: {} };
+          vm.createContext(ctx);
+          for (const f of ['/tmp/b1.js','/tmp/b2.js','/tmp/b3.js']) {
+            vm.runInContext(fs.readFileSync(f,'utf8'), ctx, { filename:f });
+          }
+          const payload = ctx.window.__TOPIK_V8 || '';
+          console.log('combined bundle:', payload.length);
+          if (payload.length !== 294852) throw new Error(`Bundle length mismatch: ${payload.length}/294852`);
+          fs.writeFileSync('/tmp/topik.b64', payload);
+          NODE
 
-          parts=[]
-          for name in ('/tmp/b1.js','/tmp/b2.js','/tmp/b3.js'):
-              text=pathlib.Path(name).read_text(encoding='utf-8').strip()
-              if not text.startswith("window.__TOPIK_V8="):
-                  raise SystemExit(f'Unexpected bundle response from {name}: {text[:120]!r}')
-              start=text.find("+'")
-              end=text.rfind("';")
-              if start < 0 or end <= start + 2:
-                  raise SystemExit(f'Could not locate payload in {name}: {text[:160]!r}')
-              payload=text[start+2:end]
-              if not re.fullmatch(r'[A-Za-z0-9+/=]+', payload):
-                  raise SystemExit(f'Invalid Base64 payload in {name}')
-              print(f'{name}: {len(payload)} chars')
-              parts.append(payload)
-
-          encoded=''.join(parts)
-          print(f'combined bundle: {len(encoded)} chars')
-          if len(encoded) != 294852:
-              raise SystemExit(f'Bundle length mismatch: {len(encoded)} / 294852')
-
-          raw=gzip.decompress(base64.b64decode(encoded))
+          python3 <<'PY'
+          import base64, gzip, hashlib, pathlib
+          encoded=pathlib.Path('/tmp/topik.b64').read_text(encoding='utf-8')
+          raw=gzip.decompress(base64.b64decode(encoded, validate=True))
           expected='322a285241c0930bc42db38841e2a5cc84c250f477330813c06c89a0bd5f396f'
           actual=hashlib.sha256(raw).hexdigest()
-          print(f'source bytes: {len(raw)}, sha256: {actual}')
           if actual != expected:
               raise SystemExit(f'Source SHA-256 mismatch: {actual}')
-
           html=raw.decode('utf-8')
-          html=html.replace('TOPIK QUEST II', 'TOPIK QUEST')
-          html=html.replace('<div class="brand">Q2</div>', '<div class="brand">TQ</div>')
-          html=html.replace('FULL MOCK · GAME · INFINITY · 4 LANG', 'TOPIK II PACK · GAME · INFINITY · 4 LANG')
-          html=html.replace('TOPIK QUEST · FULL MOCK', 'TOPIK QUEST · TOPIK II PACK')
-
+          html=html.replace('TOPIK QUEST II','TOPIK QUEST')
+          html=html.replace('<div class="brand">Q2</div>','<div class="brand">TQ</div>')
+          html=html.replace('FULL MOCK · GAME · INFINITY · 4 LANG','TOPIK II PACK · GAME · INFINITY · 4 LANG')
+          html=html.replace('TOPIK QUEST · FULL MOCK','TOPIK QUEST · TOPIK II PACK')
           for marker in ('TOPIK QUEST','INFINITY','resultCurtain'):
-              if marker not in html:
-                  raise SystemExit(f'Missing integrity marker: {marker}')
-
-          pathlib.Path('index.html').write_text(html, encoding='utf-8')
-          print(f'index.html written: {pathlib.Path("index.html").stat().st_size} bytes')
+              if marker not in html: raise SystemExit(f'Missing marker: {marker}')
+          pathlib.Path('index.html').write_text(html,encoding='utf-8')
+          print('index.html bytes:', pathlib.Path('index.html').stat().st_size)
           PY
 
           mkdir -p data/topik1 data/topik2 assets audio/topik1 audio/topik2
