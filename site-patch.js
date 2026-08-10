@@ -1,7 +1,7 @@
-// MALBIT bootstrap v16
+// MALBIT bootstrap v17
 // Load the shared core, reviewed data, TOPIK I engine, then learning interactions.
 (function(){
-  const v='16';
+  const v='17';
   const load=src=>new Promise((resolve,reject)=>{
     const s=document.createElement('script');
     s.src=src+(src.includes('?')?'&':'?')+'v='+v;
@@ -12,6 +12,7 @@
   load('site-patch-core.js')
     .then(()=>load('data/topik1-listening.js'))
     .then(()=>load('data/topik1-reading.js'))
+    .then(()=>load('data/shorts-levels.js'))
     .then(()=>load('data/explanations-i18n.js'))
     .then(()=>load('topik1.js'))
     .then(()=>load('learning-features.js'))
