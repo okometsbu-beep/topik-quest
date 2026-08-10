@@ -1,4 +1,4 @@
-// TOPIK QUEST live patch v11
+// MALBIT live patch v11
 // Unified app, persistent listening-studio upload, louder recorded audio, redesigned home.
 (function(){
   const GH_OWNER='okometsbu-beep';
@@ -338,8 +338,8 @@
     const hero=ASSETS['exam_student.png'];
     sc.innerHTML=`
       <section class="tqHero">
-        <img src="${hero}" alt="TOPIK QUEST">
-        <div class="tqHeroBrand"><b>TOPIK QUEST</b><small>KOREAN MASTERY</small></div>
+        <img src="${hero}" alt="MALBIT Korean learning">
+        <div class="tqHeroBrand"><b>MALBIT · 말빛</b><small>TOPIK I·II PREP · UNOFFICIAL</small></div>
         <div class="tqBubble">${ml('오늘도 한 문제씩, 한국어를 더 가깝게.','今日も一問ずつ、韓国語をもっと身近に。','One question at a time, closer to Korean.','每天一道题，更接近韩语。')}</div>
         <div class="tqHeroFoot"><b>${ml('원하는 방식으로 바로 시작하세요','好きな方法ですぐ始めよう','Choose your way to practice','选择你的练习方式')}</b><small>TOPIK I · II · SHORTS · RANDOM PRACTICE</small></div>
       </section>
@@ -359,7 +359,7 @@
   morePage=function(sc){
     navActive('more');
     sc.innerHTML=`
-      <div class="sectionTitle"><h2>${tr('more')}</h2><span>TOPIK QUEST</span></div>
+      <div class="sectionTitle"><h2>${tr('more')}</h2><span>MALBIT · 말빛</span></div>
       <div class="modeGrid">
         <button class="modeCard wideCard" onclick="setView('devStudio')"><div class="modeIcon">🎙</div><div><b>${ml('듣기 제작실','リスニング制作室','Listening Studio','听力制作室')} <span class="tqStudioBadge">UPLOAD</span></b><p>${ml('문항별 녹음·미리듣기·GitHub 업로드/교체. 업로드 권한은 연결된 개발자 토큰이 있을 때만 활성화됩니다.','問題ごとの録音・試聴・GitHubアップロード。書き込み権限は開発者トークン接続時のみ有効です。','Record, preview, and replace question audio. Write access requires a connected developer token.','逐题录音、试听并上传替换，写入需要开发者令牌。')}</p></div></button>
         <button class="modeCard wideCard" onclick="resetAll()"><div class="modeIcon">↺</div><div><b>${ml('진행 초기화','進行状況を初期化','Reset progress','重置进度')}</b><p>${ml('기기에 저장된 스테이지·오답·단어장 기록을 삭제합니다.','端末に保存された記録を削除します。','Delete saved progress on this device.','删除本机保存的进度。')}</p></div></button>

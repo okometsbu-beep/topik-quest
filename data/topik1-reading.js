@@ -1,4 +1,4 @@
-// TOPIK QUEST · TOPIK I reading practice set (original content)
+// MALBIT · TOPIK I reading practice set (original content)
 window.TOPIK1_READING_DATA=[
 {"id":31,"section":"reading","group":"어휘·문법","instruction":"※ [31~34] 빈칸에 들어갈 가장 알맞은 것을 고르십시오.","stem":"저는 아침마다 우유를 (      ).","choices":["마십니다","입습니다","만납니다","잡니다"],"answerIndex":0,"explanation":"우유는 '마시다'와 함께 사용합니다."},
 {"id":32,"section":"reading","group":"어휘·문법","instruction":"※ [31~34] 빈칸에 들어갈 가장 알맞은 것을 고르십시오.","stem":"비가 많이 와서 우산을 (      ).","choices":["썼습니다","탔습니다","열었습니다","배웠습니다"],"answerIndex":0,"explanation":"비가 올 때 우산을 '쓰다'라고 합니다."},

@@ -1,4 +1,4 @@
-# TOPIK QUEST audio pipeline
+# MALBIT audio pipeline
 
 ## Listening source priority
 
