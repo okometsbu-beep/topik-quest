@@ -5,13 +5,13 @@ An independent Korean-learning game and unofficial TOPIK I & II practice app.
 ## Current build
 - TOPIK I listening and reading practice (70 questions)
 - TOPIK II reading, writing and listening practice
-- Shorts mode with rapid Korean vocabulary, expressions, and grammar choices in the selected UI language
+- Separate TOPIK I and TOPIK II Shorts decks, progress, and same-category distractors, using concise equivalents in the selected UI language
 - Level-locked Random Practice: TOPIK I uses only its listening/reading pool; TOPIK II uses its listening/reading/writing pool
 - Full timed mock-exam mode
-- Original Wordlight Expedition game loop with an animated six-sided die, irregular 15-space trails, route events, learning gear, focus, shards, timed questions, animated combat feedback, saved progress, 7 varied TOPIK I monster stages, and 104 TOPIK II stages
+- Original Wordlight Expedition game loop with an animated six-sided die, irregular 15-space trails, route events, learning gear, focus, shards, level-specific timed questions, animated combat feedback, saved progress, 7 beginner TOPIK I monster stages, and 104 intermediate/advanced TOPIK II stages
 - One-tap selection and second-tap submission for multiple-choice questions
-- Reviewed inline answer explanations in Korean / Japanese / English / Chinese
-- Long-press vocabulary capture with a custom in-app menu, Korean particle cleanup, and review tools
+- Reviewed question-specific inline explanations in Korean / Japanese / English / Chinese, including TOPIK II writing guidance
+- Context-aware long-press vocabulary capture with particle/conjugation cleanup, incomplete-fragment rejection, and review tools
 
 ## Roadmap
 - Separate content packs under `data/topik1` and `data/topik2`

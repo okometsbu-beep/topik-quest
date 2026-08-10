@@ -13,7 +13,7 @@ const T1_LISTENING={
 8:{ja:'髪を切る場所は美容院です。',en:'A hair salon is the place where people get their hair cut.',zh:'剪头发的地方是理发店。'},
 9:{ja:'会話の最後に、二人は4時に会うことに決めました。',en:'At the end of the conversation, they agree to meet at four o’clock.',zh:'对话最后，两人约定四点见面。'},
 10:{ja:'女性は朝、道が混むので地下鉄に乗ると言っています。',en:'The woman says she takes the subway in the morning because the roads are congested.',zh:'女方说早上堵车，所以乘地铁。'},
-11:{ja:'今日はパンと牛乳を食べたと言っています。',en:'She says that today she had bread and milk for breakfast.',zh:'她说今天早上吃了面包并喝了牛奶。'},
+11:{ja:'今日は朝食にパンを食べ、牛乳を飲んだと言っています。',en:'She says that today she had bread and milk for breakfast.',zh:'她说今天早上吃了面包并喝了牛奶。'},
 12:{ja:'男性は先週、新しい家に引っ越したと言っています。',en:'The man says he moved to a new home last week.',zh:'男方说自己上周搬到了新家。'},
 13:{ja:'運動靴が小さいので、明日大きいサイズに交換する予定です。',en:'The sneakers are too small, so she plans to exchange them for a larger pair tomorrow.',zh:'运动鞋太小，所以她打算明天换成大一号的。'},
 14:{ja:'男性は昨日から喉が痛いと言っています。',en:'The man says his throat has hurt since yesterday.',zh:'男方说从昨天开始嗓子疼。'},
@@ -21,7 +21,7 @@ const T1_LISTENING={
 16:{ja:'道路工事のため21番バスが遅れているという案内です。',en:'The announcement says bus 21 is delayed because of road construction.',zh:'通知说由于道路施工，21路公交车晚点。'},
 17:{ja:'土曜日の誕生日パーティーに来るよう招待しています。',en:'The speaker is inviting the listener to a birthday party on Saturday.',zh:'说话人邀请对方参加周六的生日聚会。'},
 18:{ja:'置いておいた黒い傘がなくなったので探しています。',en:'The speaker is looking for a black umbrella that was left by the chair and is now missing.',zh:'说话人放在椅子旁的黑色雨伞不见了，正在寻找。'},
-19:{ja:'釜山旅行でしたいことと、列車の切符を予約する予定について話しています。',en:'She talks about what she wants to do in Busan and her plan to book a train ticket.',zh:'她谈到去釜山旅行想做的事，以及预订火车票的计划。'},
+19:{ja:'釜山旅行でやりたいことと、列車の切符を予約する予定について話しています。',en:'She talks about what she wants to do in Busan and her plan to book a train ticket.',zh:'她谈到去釜山旅行想做的事，以及预订火车票的计划。'},
 20:{ja:'規則的に歩くようになって、体調と睡眠がよくなったという内容です。',en:'The man says regular walking has made his body feel better and improved his sleep.',zh:'内容说明规律步行后，身体状态和睡眠都变好了。'},
 21:{ja:'サンドイッチ1つと温かいアメリカーノ1杯を注文しました。',en:'She orders one sandwich and one hot Americano.',zh:'她点了一个三明治和一杯热美式咖啡。'},
 22:{ja:'一人では学びにくいため、ほかの人と一緒に学びたいと言っています。',en:'He wants to learn with other people because learning alone is difficult.',zh:'因为一个人很难学好，所以他想和其他人一起学习。'},
@@ -65,7 +65,7 @@ const T1_READING={
 57:{ja:'映画を見る約束 → 時間を確認 → チケットとポップコーンを買う、という順序です。',en:'The order is: plan to see a movie → check the time → buy tickets and popcorn.',zh:'顺序是：约好看电影→确认场次→购买电影票和爆米花。'},
 58:{ja:'腹痛 → 病院へ行く → 薬をもらって帰宅、という順序です。',en:'The order is: have a stomachache → go to a clinic → receive medicine and return home.',zh:'顺序是：肚子疼→去医院→拿药回家。'},
 59:{ja:'自転車通勤は時間を節約でき、運動にもなることが中心内容です。',en:'The main point is that cycling to work saves time and also provides exercise.',zh:'中心内容是骑自行车上班既节省时间，也能锻炼身体。'},
-60:{ja:'手作りのパンと親切な店主が理由でよく通う、好きなパン屋についての文章です。',en:'The passage is about a favorite bakery visited often for its freshly made bread and kind owner.',zh:'文章介绍作者喜欢的一家面包店，因为面包现做、店主亲切，所以经常光顾。'},
+60:{ja:'手作りのパンがおいしく、店主も親切なのでよく通っている、お気に入りのパン屋についての文章です。',en:'The passage is about a favorite bakery visited often for its freshly made bread and kind owner.',zh:'文章介绍作者喜欢的一家面包店，因为面包现做、店主亲切，所以经常光顾。'},
 61:{ja:'寝る前のスマートフォン使用を減らした後、睡眠が改善したという内容です。',en:'The passage says sleep improved after the writer reduced phone use before bed.',zh:'内容说明减少睡前使用手机后，睡眠变好了。'},
 62:{ja:'暑い日に水を飲み、日差しを避ける健康管理法についての文章です。',en:'The passage explains staying healthy on hot days by drinking water and avoiding direct sun.',zh:'文章介绍炎热天气里多喝水、避开阳光的健康管理方法。'},
 63:{ja:'待つ必要がなく、好きな物を食べられるので弁当が便利だという内容です。',en:'The lunchbox is convenient because there is no need to wait and the writer can eat preferred food.',zh:'中心内容是带饭无需等待，也能吃自己想吃的东西，所以很方便。'},
@@ -73,7 +73,7 @@ const T1_READING={
 65:{ja:'ジヨンさんは毎朝、自分で育てている野菜に水をやります。',en:'Jiyoung waters the vegetables she grows every morning.',zh:'智英每天早上给自己种的蔬菜浇水。'},
 66:{ja:'自分で野菜を育てて料理する楽しさが中心内容です。',en:'The main idea is the enjoyment of growing vegetables and cooking with them.',zh:'中心内容是亲自种菜并用其做饭的乐趣。'},
 67:{ja:'新しい会社の始業が今より30分早いため、早起きの練習をしています。',en:'Because the new job starts 30 minutes earlier, Junho is practicing waking up early.',zh:'新公司的上班时间比现在早30分钟，所以俊浩提前练习早起。'},
-68:{ja:'地下鉄を1回乗るだけで新しい会社へ行けると書かれています。',en:'The passage says the new office can be reached with a single subway ride.',zh:'文章说乘一次地铁就能到新公司。'},
+68:{ja:'地下鉄一本で新しい会社まで行けると書かれています。',en:'The passage says the new office can be reached with a single subway ride.',zh:'文章说乘一次地铁就能到新公司。'},
 69:{ja:'イベント時間中、大通りでは自動車を運転できません。',en:'Cars cannot be driven on the main street during the event.',zh:'活动期间，大路上不能行驶汽车。'},
 70:{ja:'毎月開かれる「車のない通り」イベントの時間と活動を紹介しています。',en:'The passage introduces the schedule and activities of the monthly car-free street event.',zh:'文章介绍每月举行的“无车街道”活动时间和内容。'}
 };
@@ -84,26 +84,26 @@ const TOPIK2_READING={
 3:{ko:'‘덕분에’는 보통 좋은 결과, ‘김에’는 ‘하는 기회에’, ‘뿐 아니라’는 ‘~만이 아니라’라는 뜻입니다.',en:'“덕분에” usually introduces a positive result, “김에” means “while at it,” and “뿐 아니라” means “not only.”',zh:'“덕분에”通常表示好的结果，“김에”表示“趁机、顺便”，“뿐 아니라”表示“不仅”。'},
 4:{ko:'①은 비교, ③은 정도, ④는 대체를 나타내며 ‘~에 따라’와 의미가 다릅니다.',en:'Option 1 expresses comparison, 3 degree, and 4 substitution, so they do not match “depending on.”',zh:'①表示比较，③表示程度，④表示替代，都不等于“根据……而定”。'},
 5:{ko:'‘책을 골라 함께 읽는다’는 내용이므로 독서 모임이 가장 알맞습니다.',en:'Because participants choose a book and read it together, a book club is the best answer.',zh:'内容是“挑选书籍并一起阅读”，因此最符合“读书会”。'},
-6:{ko:'옷을 맡겨 세탁하는 서비스이므로 세탁소 광고입니다.',en:'It advertises a service that takes in and cleans clothes, so it is a dry cleaner.',zh:'这是收取衣物并清洗的服务，因此是洗衣店广告。'},
+6:{ko:'옷을 맡겨 세탁하는 서비스이므로 세탁소 광고입니다.',ja:'衣類を預かって洗濯するサービスなので、クリーニング店の広告です。',en:'It advertises a service that takes in and cleans clothes, so it is a dry cleaner.',zh:'这是收取衣物并清洗的服务，因此是洗衣店广告。'},
 7:{ko:'채소를 정기적으로 배송하는 서비스를 설명하고 있습니다.',en:'The notice describes a recurring vegetable delivery service.',zh:'这则内容说明的是定期配送蔬菜的服务。'},
 8:{ko:'고장 난 우산을 무료로 수리해 주는 행사 안내입니다.',en:'It is a notice for an event that repairs broken umbrellas for free.',zh:'这是免费修理坏雨伞的活动通知。'},
 9:{ko:'본문에 ‘열람실은 정상 운영합니다’라고 분명히 적혀 있습니다.',en:'The passage explicitly states that the reading room operates normally.',zh:'原文明示“阅览室正常开放”。'},
 10:{ko:'④가 본문과 일치합니다. ②는 2시간 안에 반납하면 추가 요금이 없다는 뜻이지, 2시간만 빌릴 수 있다는 뜻이 아닙니다.',en:'Option 4 matches the passage. The two-hour rule means no extra fee if returned within two hours, not that rental is limited to two hours.',zh:'④与原文一致。两小时内归还“不收额外费用”，并不表示只能借两小时。'},
 11:{ko:'‘4명 이하의 팀’이라고 했으므로 네 명으로 된 팀도 참가할 수 있습니다.',en:'“A team of four or fewer” includes a four-person team.',zh:'原文说“四人以下的团队”，因此四人团队可以参加。'},
 12:{ko:'나이, 시간, 사전 예약이라는 세 조건을 모두 만족하는 ③이 정답입니다.',en:'Option 3 is the only choice that satisfies all three conditions: age, time, and advance booking.',zh:'③同时满足年龄、时间和提前预约三个条件。'},
-13:{ko:'‘최근…주목’이 화제를 제시하고, ‘이 때문에’가 결과를, ‘때문이다’가 이유를, ‘이에 따라’가 사회적 대응을 잇습니다.',en:'The introduction presents the trend; “because of this” gives its result, “because” explains the reason, and “accordingly” leads to the public response.',zh:'先用“最近……受到关注”引入话题，再用“因此”说明结果、“因为”补充理由，最后用“随之”连接社会应对。'},
-14:{ko:'‘그러나 → 특히 → 따라서’의 연결 관계가 장점, 한계, 결론의 순서를 만듭니다.',en:'The connectors “however → especially → therefore” form the logical order: advantage, limitation, conclusion.',zh:'“但是→尤其→因此”构成“优点—局限—结论”的逻辑顺序。'},
-15:{ko:'‘조사 결과’ 앞에는 조사가 먼저 나와야 하고, ‘그래야’는 앞의 복원 방법 전체를 받아 결론을 냅니다.',en:'“The survey results” must follow the survey, and “only then” draws a conclusion from the restoration method described before it.',zh:'“调查结果”前必须先出现调查过程，而“只有这样”承接前面的修复方法并得出结论。'},
+13:{ko:'‘최근…주목’이 화제를 제시하고, ‘이 때문에’가 결과를, ‘때문이다’가 이유를, ‘이에 따라’가 사회적 대응을 잇습니다.',ja:'「最近…注目されている」で話題を提示し、「このため」で結果へ、「～からだ」でその理由へ、「これに伴い」で自治体の対応へつながります。',en:'The introduction presents the trend; “because of this” gives its result, “because” explains the reason, and “accordingly” leads to the public response.',zh:'先用“最近……受到关注”引入话题，再用“因此”说明结果、“因为”补充理由，最后用“随之”连接社会应对。'},
+14:{ko:'‘그러나 → 특히 → 따라서’의 연결 관계가 장점, 한계, 결론의 순서를 만듭니다.',ja:'まずリモート勤務の長所を述べ、「しかし」で限界へ転じ、「特に」で具体例を示した後、「したがって」で結論を導く②が自然です。',en:'The connectors “however → especially → therefore” form the logical order: advantage, limitation, conclusion.',zh:'“但是→尤其→因此”构成“优点—局限—结论”的逻辑顺序。'},
+15:{ko:'‘조사 결과’ 앞에는 조사가 먼저 나와야 하고, ‘그래야’는 앞의 복원 방법 전체를 받아 결론을 냅니다.',ja:'「調査結果」と述べる前に調査の説明が必要です。また「そうしてこそ」は、それまでの復元方法全体を受けて結論を導きます。',en:'“The survey results” must follow the survey, and “only then” draws a conclusion from the restoration method described before it.',zh:'“调查结果”前必须先出现调查过程，而“只有这样”承接前面的修复方法并得出结论。'},
 16:{ko:'㉡에 넣으면 ‘소비자 변화 → 선택 기준의 변화 → 기업의 대응’이 자연스럽게 이어집니다.',en:'At ㉡, the flow becomes natural: changing consumers → changing selection criteria → companies’ response.',zh:'放在㉡后形成“消费者变化→选择标准变化→企业应对”的自然衔接。'},
-17:{ko:'‘하지만’이 앞의 긍정적 내용을 뒤집고 다음 문제점으로 연결하므로 ㉡이 알맞습니다.',en:'“However” reverses the preceding positive point and introduces the following problem, so ㉡ is correct.',zh:'“但是”转折前面的积极内容，并引出后续问题，因此应放在㉡。'},
-18:{ko:'온도 상승을 막는 원리 뒤에 요약 문장을 놓고, 이어지는 ‘또한’이 다른 효과를 추가하므로 ㉢이 알맞습니다.',en:'The summary follows the explanation of preventing heat buildup, and “also” then adds another benefit, so ㉢ is correct.',zh:'先说明抑制升温的原理，再用该句总结，之后“另外”补充另一效果，因此放在㉢。'},
+17:{ko:'‘하지만’이 앞의 긍정적 내용을 뒤집고 다음 문제점으로 연결하므로 ㉡이 알맞습니다.',ja:'「しかし」が直前の肯定的な内容から次の問題点へ転換するため、㉡に入れるのが適切です。',en:'“However” reverses the preceding positive point and introduces the following problem, so ㉡ is correct.',zh:'“但是”转折前面的积极内容，并引出后续问题，因此应放在㉡。'},
+18:{ko:'온도 상승을 막는 원리 뒤에 요약 문장을 놓고, 이어지는 ‘또한’이 다른 효과를 추가하므로 ㉢이 알맞습니다.',ja:'温度上昇を抑える仕組みの説明後に要約文を置き、続く「また」が別の効果を加えるため、㉢が適切です。',en:'The summary follows the explanation of preventing heat buildup, and “also” then adds another benefit, so ㉢ is correct.',zh:'先说明抑制升温的原理，再用该句总结，之后“另外”补充另一效果，因此放在㉢。'},
 19:{ko:'①이 앞 문장의 결과를 가장 정확하게 한 문장으로 요약합니다.',en:'Option 1 most accurately summarizes the result stated in the preceding sentence.',zh:'①最准确地概括了前一句的结果。'},
 20:{ko:'③만 본문의 주장과 일치합니다. ①과 ④의 ‘반드시’, ‘모든’은 본문보다 지나치게 일반화한 표현입니다.',en:'Only option 3 matches the passage; “must” in 1 and “all” in 4 overgeneralize the claim.',zh:'只有③符合原文；①的“必须”和④的“所有”都属于过度概括。'},
 21:{ko:'본문은 복잡해서 사용하기 어려운 제품을 부정적으로 평가하므로 ①이 알맞습니다.',en:'The writer evaluates products that are too complex to use negatively, which matches option 1.',zh:'原文对复杂难用的产品作负面评价，因此选①。'},
 22:{ko:'②가 글쓴이의 평가를 가장 정확하고 빠짐없이 요약합니다.',en:'Option 2 gives the most precise and complete summary of the writer’s evaluation.',zh:'②最准确、完整地概括了作者的评价。'},
 23:{ko:'처음의 반복 확인은 긴장을, 마지막의 성공과 자신감은 뿌듯함과 만족을 나타냅니다.',en:'Repeated checking at first shows nervousness, while success and confidence at the end show pride and satisfaction.',zh:'开头反复确认表现紧张，结尾的成功和自信表现出自豪与满足。'},
 24:{ko:'③의 내용이 본문에 제시된 사실과 그대로 일치합니다.',en:'Option 3 directly matches the facts stated in the passage.',zh:'③与原文所述事实一致。'},
-25:{ko:'‘반납 장소 확대 → 편리함’이라는 제목의 인과 관계를 그대로 풀어 쓴 ②가 알맞습니다.',en:'Option 2 restates the headline’s causal link: more return locations lead to greater convenience.',zh:'②完整改述了标题的因果关系：“扩大归还地点→更加便利”。'},
+25:{ko:'‘반납 장소 확대 → 편리함’이라는 제목의 인과 관계를 그대로 풀어 쓴 ②가 알맞습니다.',ja:'②は、見出しの「返却場所の拡大によって利便性が高まる」という因果関係をそのまま言い換えています。',en:'Option 2 restates the headline’s causal link: more return locations lead to greater convenience.',zh:'②完整改述了标题的因果关系：“扩大归还地点→更加便利”。'},
 26:{ko:'①이 본문의 원인과 결과를 올바른 방향으로 바꾸어 표현했습니다.',en:'Option 1 correctly paraphrases the passage’s cause-and-effect relationship.',zh:'①正确改述了原文的因果关系。'},
 27:{ko:'①이 비교 방향을 정확히 나타냅니다. ④의 ‘전혀 평가하지 않는다’는 지나치게 극단적입니다.',en:'Option 1 has the correct direction of comparison; “not evaluated at all” in option 4 is too extreme.',zh:'①准确表达比较方向；④“完全不评价”过于绝对。'},
 28:{ko:'앞에서 제시한 문제를 해결하는 구체적인 방법은 ①입니다.',en:'Option 1 is the concrete measure that solves the problem presented immediately before it.',zh:'①是解决前文问题的具体方法。'},
@@ -117,14 +117,14 @@ const TOPIK2_READING={
 36:{ko:'글쓴이는 하나의 지표가 아니라 지역에 미치는 여러 효과를 함께 평가해야 한다고 주장합니다.',en:'The writer argues that multiple local effects should be assessed, not just one indicator.',zh:'作者主张不能只看单一指标，而应综合评价对地区的多种影响。'},
 37:{ko:'③이 본문에서 제시한 장점과 약점을 모두 반영한 결론입니다.',en:'Option 3 is the conclusion that incorporates both the advantage and the weakness discussed.',zh:'③是同时整合原文优点与弱点的结论。'},
 38:{ko:'마지막 문장이 글의 주제를 직접 제시하고 있으므로 ②가 알맞습니다.',en:'The final sentence states the main point directly, which matches option 2.',zh:'最后一句直接提出主题，因此选②。'},
-39:{ko:'‘그다음’ 앞에는 첫 공정이 와야 하고, ‘이렇게’는 바로 앞의 분리 과정을 가리킵니다.',en:'The first process must come before “next,” and “in this way” refers to the separation step immediately before it.',zh:'“接下来”前应先出现第一道工序，而“这样”指代紧接其前的分离过程。'},
-40:{ko:'(나)가 개념을 제시하고, (가)가 효과를 설명한 뒤, (다)가 사회적 결과를 말합니다.',en:'(나) introduces the concept, (가) explains its effect, and (다) gives the social result.',zh:'(나)提出概念，(가)说明效果，(다)说明社会结果。'},
+39:{ko:'‘그다음’ 앞에는 첫 공정이 와야 하고, ‘이렇게’는 바로 앞의 분리 과정을 가리킵니다.',ja:'「その次」の前には最初の工程が必要で、「このように」は直前の分離工程を指します。',en:'The first process must come before “next,” and “in this way” refers to the separation step immediately before it.',zh:'“接下来”前应先出现第一道工序，而“这样”指代紧接其前的分离过程。'},
+40:{ko:'(나)가 개념을 제시하고, (가)가 효과를 설명한 뒤, (다)가 사회적 결과를 말합니다.',ja:'（ナ）が概念を提示し、（カ）がその効果を説明した後、（タ）が社会的な結果を述べる順序です。',en:'(나) introduces the concept, (가) explains its effect, and (다) gives the social result.',zh:'(나)提出概念，(가)说明效果，(다)说明社会结果。'},
 41:{ko:'사건이 일어난 시간 순서가 분명하므로 ①이 알맞습니다.',en:'The chronological sequence of events is clear, so option 1 is correct.',zh:'事件的时间顺序明确，因此选①。'},
 42:{ko:'가치를 바라보는 인식이 달라진 내용이므로 ①이 알맞습니다.',en:'The passage describes a change in how value is perceived, which matches option 1.',zh:'内容是对价值的认识发生变化，因此选①。'},
 43:{ko:'③이 본문에 나온 가족의 역사와 일치합니다.',en:'Option 3 matches the family history described in the passage.',zh:'③与原文中的家族历史一致。'},
 44:{ko:'②가 뒤 문장의 ‘오프라인 지원도 마련한다’는 내용과 자연스럽게 이어집니다.',en:'Option 2 naturally leads into the following sentence about also providing offline support.',zh:'②与后文“也准备线下支持”自然衔接。'},
 45:{ko:'③이 글의 주장을 구체적이면서도 지나치거나 부족하지 않게 요약합니다.',en:'Option 3 summarizes the claim specifically without adding or omitting anything important.',zh:'③具体且不过度、不遗漏地概括了文章主张。'},
-46:{ko:'(나)가 내용을 소개하고, (가)가 조건과 주의점을 덧붙인 뒤, (다)가 용도를 설명합니다.',en:'(나) introduces the subject, (가) adds conditions and cautions, and (다) explains its use.',zh:'(나)作介绍，(가)补充条件和注意事项，(다)说明用途。'},
+46:{ko:'(나)가 내용을 소개하고, (가)가 조건과 주의점을 덧붙인 뒤, (다)가 용도를 설명합니다.',ja:'（ナ）が内容を紹介し、（カ）が条件と注意点を加えた後、（タ）が用途を説明する順序です。',en:'(나) introduces the subject, (가) adds conditions and cautions, and (다) explains its use.',zh:'(나)作介绍，(가)补充条件和注意事项，(다)说明用途。'},
 47:{ko:'주장 → 이유 → 장기적 효과의 순서로 이어지는 ②가 알맞습니다.',en:'Option 2 follows the logical order of claim → reason → long-term effect.',zh:'②符合“主张→理由→长期效果”的逻辑顺序。'},
 48:{ko:'‘선택의 폭을 넓히는 기술이 오히려 선택을 좁힌다’는 역설을 나타내므로 ①이 알맞습니다.',en:'It presents the paradox that technology intended to broaden choice can instead narrow it, so option 1 is correct.',zh:'这里表达“本应扩大选择的技术反而缩小选择”的悖论，因此选①。'},
 49:{ko:'전면 부정도 전면 긍정도 아닌 균형 잡힌 주장인 ①이 알맞습니다.',en:'Option 1 is the balanced position that neither rejects nor accepts the idea completely.',zh:'①既非全盘否定，也非全盘肯定，是平衡的观点。'},
@@ -137,7 +137,7 @@ const TOPIK2_LISTENING={
 3:{ko:'통근·통학 40%, 운동 30%, 여가 20%, 장보기 10%의 순서이므로 이 비율을 나타낸 2번 그림이 맞습니다.',ja:'通勤・通学40％、運動30％、余暇20％、買い物10％の順なので、この割合を示す2番の図が正解です。',en:'The order is commuting 40%, exercise 30%, leisure 20%, and shopping 10%, so chart 2 is correct.',zh:'比例依次为通勤上学40%、运动30%、休闲20%、购物10%，因此第2幅图正确。'},
 4:{en:'Then I’ll make the table.',zh:'那表格就由我来做吧。'},5:{en:'I hear weekday evenings are less crowded.',zh:'听说工作日晚上比较空。'},
 6:{en:'I should tell the delivery driver the exact location.',zh:'我得把具体位置告诉快递员。'},7:{en:'That’s a relief. We should be able to get in right away.',zh:'那太好了，我们应该可以马上进去。'},
-8:{en:'I’ll read it again and remove the duplicated section.',zh:'我会再读一遍，删掉重复的部分。'},9:{en:'Ask to replace the milk with soy milk.',zh:'请店员把牛奶换成豆浆。'},
+8:{en:'I’ll read it again and remove the duplicated section.',zh:'我会再读一遍，删掉重复的部分。'},9:{en:'Ask to have the drink made with soy milk instead of milk.',zh:'请店员把饮品中的牛奶换成豆浆。'},
 10:{en:'Check whether the paper tray is properly closed.',zh:'检查纸盒是否关好。'},11:{en:'Go to the ticket-change counter.',zh:'去车票变更窗口。'},
 12:{en:'Escort the speaker to the waiting room.',zh:'把演讲者带到休息室。'},13:{en:'The market is also open on Wednesdays.',zh:'市场周三也营业。'},
 14:{en:'The first-floor reading room is available during the inspection.',zh:'检查期间可以使用一楼阅览室。'},15:{en:'The district office plans to restore the collapsed walking trail.',zh:'区政府计划修复坍塌的散步道。'},
@@ -161,7 +161,34 @@ const TOPIK2_LISTENING={
 50:{en:'It warns against judging fairness by a simplistic standard.',zh:'内容警示不要用简单标准判断公平性。'}
 };
 
+const TOPIK2_WRITING={
+51:{
+  ko:'㉠에는 토요일 수업을 오후 2시에 진행할 계획을 쓰고, ㉡에는 그 시간에 참석하기 어려운 사람이 금요일까지 연락해 달라는 요청을 써야 합니다. 안내문이므로 ‘진행할 예정입니다’, ‘연락해 주시기 바랍니다’처럼 높임말과 문장 종결을 완전하게 쓰세요.',
+  ja:'㉠には土曜の授業を午後2時に行う予定を、㉡にはその時間に参加できない人へ金曜までの連絡を求める文を書きます。案内文なので「진행할 예정입니다」「연락해 주시기 바랍니다」のような丁寧体で文を完成させます。',
+  en:'Blank ㉠ must state the plan to hold Saturday’s class at 2 p.m.; ㉡ must politely ask anyone unable to attend then to contact the organizer by Friday. Complete both as full, formal notice sentences, such as “진행할 예정입니다” and “연락해 주시기 바랍니다.”',
+  zh:'㉠应写明本周六课程改在下午2点进行的计划；㉡应礼貌地要求届时无法参加的人在周五前联系。通知文要使用完整敬语句式，如“진행할 예정입니다”“연락해 주시기 바랍니다”。'
+},
+52:{
+  ko:'앞부분은 잦은 알림이 집중을 끊는 문제를 제시합니다. 따라서 ㉠에는 ‘알림을 꺼 두는 것이 좋다’라는 해결책을, ㉡에는 확인 시간을 따로 정하면 집중력을 유지하거나 일에 더 집중할 수 있다는 효과를 써야 합니다.',
+  ja:'前半は、頻繁な通知が集中を途切れさせる問題を示しています。したがって㉠には「通知を切っておく」という対策を、㉡には確認時間を別に決めれば集中を保てるという効果を書きます。',
+  en:'The first part identifies frequent notifications as the cause of broken concentration. Therefore, ㉠ should propose turning notifications off, and ㉡ should state that checking them only at set times helps maintain concentration or focus better on work.',
+  zh:'前文指出频繁通知会打断专注，因此㉠应提出“关闭通知”的办法；㉡应写明另定查看时间有助于保持专注或更集中地工作。'
+},
+53:{
+  ko:'200~300자 안에서 2023년 120만 건과 2025년 185만 건을 비교하고, 출퇴근 비율은 38%에서 52%로 증가한 반면 여가는 45%에서 31%로 감소했다는 변화를 써야 합니다. 이어 대여소 확대와 앱의 실시간 정보 제공을 원인으로 연결하고, 제목은 쓰지 마세요.',
+  ja:'200～300字で、利用件数が2023年の120万件から2025年の185万件へ増えたことを比較します。通勤・通学は38％から52％へ増え、余暇は45％から31％へ減った変化を書き、貸出所の増設とアプリのリアルタイム情報を原因として結びます。題名は書きません。',
+  en:'In 200–300 Korean characters, compare 1.2 million uses in 2023 with 1.85 million in 2025. State that commuting rose from 38% to 52% while leisure fell from 45% to 31%, then link the change to more rental stations and live availability in the app. Do not add a title.',
+  zh:'请在200～300个韩文字内比较2023年的120万次与2025年的185万次；说明通勤用途从38%升至52%，休闲用途从45%降至31%，再把变化与租赁点增加及应用提供实时车辆信息联系起来。不要写标题。'
+},
+54:{
+  ko:'600~700자 안에서 세 과제를 모두 다뤄야 합니다. 짧은 정보가 늘어난 이유를 먼저 밝히고, 빠른 정보 소비의 시간 절약·접근성이라는 장점과 맥락 누락·오정보 위험이라는 문제를 균형 있게 비교하세요. 마지막에는 원문 확인, 여러 출처 비교, 다른 관점 읽기처럼 깊이 이해하기 위한 구체적 태도를 제시하세요.',
+  ja:'600～700字で三つの課題をすべて扱います。短い情報が増えた理由を示し、時間節約・アクセスのしやすさという長所と、文脈の欠落・誤情報という問題をバランスよく論じます。最後に、原文の確認、複数資料の比較、異なる観点を読むことなど、深く理解するための具体策を示します。',
+  en:'Cover all three prompts in 600–700 Korean characters. Explain why short-form information has grown; balance the benefits of speed and access against lost context and misinformation; then propose concrete habits for deeper understanding, such as checking the original source, comparing reliable sources, and reading opposing views.',
+  zh:'请在600～700个韩文字内完整回答三项要求：先说明短内容增多的原因，再平衡论述节省时间、获取方便等优点与语境缺失、误信息等风险，最后提出核对原文、比较多个可靠来源、阅读不同观点等深化理解的具体做法。'
+}
+};
+
 for(const q of window.TOPIK1_LISTENING_DATA||[])q.explanationI18n={ko:q.explanation,...T1_LISTENING[q.id]};
 for(const q of window.TOPIK1_READING_DATA||[])q.explanationI18n={ko:q.explanation,...T1_READING[q.id]};
-window.MALBIT_EXPLANATIONS={topik1Listening:T1_LISTENING,topik1Reading:T1_READING,topik2Reading:TOPIK2_READING,topik2Listening:TOPIK2_LISTENING};
+window.MALBIT_EXPLANATIONS={reviewVersion:2,topik1Listening:T1_LISTENING,topik1Reading:T1_READING,topik2Reading:TOPIK2_READING,topik2Listening:TOPIK2_LISTENING,topik2Writing:TOPIK2_WRITING};
 })();
