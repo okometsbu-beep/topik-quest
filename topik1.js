@@ -126,8 +126,8 @@ function instructionText(q){
   return T('', '次の文を読んで、最も適切な答えを選んでください。','Read the passage and choose the best answer.','阅读下面的内容，选择最恰当的答案。');
 }
 function explainText(q){
-  if((S?.lang||'ko')==='ko')return q.explanation||'';
-  return T('',`正解は${q.answerIndex+1}番です。設問と選択肢をもう一度確認してください。`,`The correct answer is option ${q.answerIndex+1}. Review the question and choices.`,`正确答案是第${q.answerIndex+1}项。请再次确认题目和选项。`);
+  const lang=S?.lang||'ko';
+  return q.explanationI18n?.[lang]||q.explanation||'';
 }
 async function fileAudio(id){const n=String(id).padStart(3,'0');for(const x of EXT){const u=`audio/topik1/q${n}.${x}`;try{const r=await fetch(u,{method:'HEAD',cache:'no-store'});if(r.ok)return u}catch(e){}}return null}
 function tts(txt){stopAudio();const lines=String(txt||'').replace(/^(여자|남자|안내|방송|여자\(안내\)|남자\(안내\)|여자\(설명\)|남자\(설명\)):\s*/gm,'').split(/\n+/).map(x=>x.trim()).filter(Boolean);let i=0,token=Date.now();window.__t1tts=token;const next=()=>{if(window.__t1tts!==token||i>=lines.length)return;const u=new SpeechSynthesisUtterance(lines[i++]);u.lang='ko-KR';u.rate=.91;u.pitch=1;try{const vs=speechSynthesis.getVoices().filter(v=>/^ko/i.test(v.lang));if(vs.length)u.voice=vs[(i-1)%vs.length]}catch(e){}u.onend=()=>setTimeout(next,230);u.onerror=()=>setTimeout(next,80);speechSynthesis.speak(u)};next()}
@@ -140,14 +140,15 @@ function seconds(){return Q?.duration?Q.duration-Math.floor((Date.now()-Q.starte
 window.tqStartMode=mode=>{
   markHomeActivity();
   if(mode==='shorts'||mode==='infinity')return startShorts();
-  if(level()===2){
+  const requestedLevel=level();
+  if(requestedLevel===2){
     if(mode==='real')return setView('realSetup');
     if(mode==='game')return setView('game');
-    return startRandomPractice();
+    return startRandomPractice(2);
   }
   if(mode==='real')return open('t1setup');
   if(mode==='game')return open('t1game');
-  return startPractice('random');
+  return startPractice('random',1);
 };
 window.tqHomeContinue=()=>{
   markHomeActivity();
@@ -404,11 +405,11 @@ home=function(sc){
 };
 function renderSetup(sc){navActive('home');sc.innerHTML=`<div class="sectionTitle"><h2>TOPIK I · ${T('실전모드','実戦モード','Exam Mode','实战模式')}</h2><span>70 QUESTIONS</span></div><div class="infoCard"><h3>${T('TOPIK I 모의연습 세트','TOPIK I 模擬練習セット','TOPIK I Mock Practice Set','TOPIK I 模拟练习套题')}</h3><p>${T('독자 제작 문제로 듣기 30문항과 읽기 40문항을 연습합니다.','オリジナル問題で聞き取り30問・読解40問を練習します。','Practice 30 listening and 40 reading questions with original content.','使用原创题目练习30道听力题和40道阅读题。')}</p></div><div class="t1setup"><button onclick="t1Begin('full')"><small>100 MIN</small><b>🎓 ${T('전체 실전','フル模擬試験','Full Mock Exam','完整模拟考试')}</b><p>${T('듣기 30 → 읽기 40, 총 70문항','聞き取り30 → 読解40、全70問','Listening 30 → Reading 40, 70 questions total','听力30 → 阅读40，共70题')}</p></button><button onclick="t1Begin('listening')"><small>40 MIN</small><b>🎧 ${T('듣기만','聞き取りのみ','Listening Only','仅听力')}</b><p>${T('30문항 · 실전에서는 각 문항 1회 재생','30問 · 実戦では各問題1回のみ再生','30 questions · one playback per question in Exam Mode','30题 · 实战模式每题仅播放一次')}</p></button><button onclick="t1Begin('reading')"><small>60 MIN</small><b>📖 ${T('읽기만','読解のみ','Reading Only','仅阅读')}</b><p>${T('40문항','40問','40 questions','40题')}</p></button></div><button class="primary alt" style="margin-top:12px" onclick="setView('home')">${T('홈으로','ホームへ','Back Home','返回首页')}</button>`}
 window.t1Begin=k=>{clearQ();const m=k==='listening'?40:k==='reading'?60:100;Q={mode:'real',kind:k,ids:pool(k).map(x=>x.id),i:0,answers:{},played:{},started:Date.now(),duration:m*60};saveQ();open('t1quiz')};
-function startPractice(){clearQ();const first=[A[Math.floor(Math.random()*A.length)]];Q={mode:'random',kind:'all',ids:first.map(x=>x.id),i:0,answers:{},played:{},score:0,total:0,streak:0,locked:false};saveQ();open('t1quiz')}
+function startPractice(kind='random',examLevel=1){clearQ();const first=[A[Math.floor(Math.random()*A.length)]];Q={mode:'random',examLevel:1,kind:'all',ids:first.map(x=>x.id),i:0,answers:{},played:{},score:0,total:0,streak:0,locked:false};saveQ();open('t1quiz')}
 function cur(){restore();return Q?find(Q.ids[Q.i]):null}
 function choices(q,sel,locked){return q.choices.map((c,i)=>{let z='choice',hidden=Q?.mode==='game'&&Array.isArray(Q.hiddenChoices)&&Q.hiddenChoices.includes(i);if(sel===i)z+=' selected';if(locked&&i===q.answerIndex)z+=' correct';if(locked&&sel===i&&i!==q.answerIndex)z+=' wrong';if(hidden)z+=' tqChoiceHidden';return `<button class="${z}" ${locked||hidden?'disabled':''} onclick="t1Pick(${i})"><span class="n">${i+1}</span><span>${E(c)}</span></button>`}).join('')}
 window.t1Pick=i=>{restore();if(!Q||Q.locked)return;if(Q.mode==='game'&&Q.questionDeadline&&Date.now()>=Q.questionDeadline)return game1GradeAnswer(true);const q=cur(),next=Number(i),before=Q.answers[q.id];if(before===next)return t1Next();Q.answers[q.id]=next;saveQ();render()};
-function body(q,locked){const sel=Q.answers[q.id],aud=q.section==='listening'?`<button class="t1audio" onclick="t1Play(${q.id})" ${Q.mode==='real'&&Q.played[q.id]?'disabled':''}>${Q.mode==='real'&&Q.played[q.id]?T('✓ 재생 완료','✓ 再生済み','✓ Played','✓ 已播放'):T('▶ 듣기','▶ 聞く','▶ Play Audio','▶ 播放听力')}</button>`:'',assist=Q.mode==='game'&&!locked&&Number(Q.hints)>0?`<div class="t1GameAssist"><span>✦ ${T('문맥 힌트','文脈ヒント','Context hint','语境提示')} ${Q.hints}</span><button onclick="t1UseTrailHint()" ${Q.hiddenChoices?.length?'disabled':''}>${Q.hiddenChoices?.length?T('사용 완료','使用済み','Used','已使用'):T('오답 하나 지우기','誤答を1つ消す','Remove one wrong answer','排除一个错误选项')}</button></div>`:'';return `<div class="instruction">${E(instructionText(q))}</div>${aud}${q.stem?`<div class="stem">${E(q.stem)}</div>`:''}${q.prompt?`<div class="stem" style="font-size:14px">${E(q.prompt)}</div>`:''}${assist}<div class="choices">${choices(q,sel,locked)}</div>${locked?`<div class="resultStrip ${sel===q.answerIndex?'good':'bad'}">${sel===q.answerIndex?T('정답입니다.','正解です。','Correct.','回答正确。'):T(`정답: ${q.answerIndex+1}번`,`正解: ${q.answerIndex+1}番`,`Answer: option ${q.answerIndex+1}`,`正确答案：第${q.answerIndex+1}项`)} · ${E(explainText(q))}</div>`:`<div class="doubleTapHint">${T('한 번 탭해 선택 · 같은 답을 다시 탭하면 즉시 제출','1回タップで選択・同じ答えをもう一度タップすると提出','Tap once to select · tap the same answer again to submit','点一次选择 · 再点同一答案立即提交')}</div>`}`}
+function body(q,locked){const sel=Q.answers[q.id],aud=q.section==='listening'?`<button class="t1audio" onclick="t1Play(${q.id})" ${Q.mode==='real'&&Q.played[q.id]?'disabled':''}>${Q.mode==='real'&&Q.played[q.id]?T('✓ 재생 완료','✓ 再生済み','✓ Played','✓ 已播放'):T('▶ 듣기','▶ 聞く','▶ Play Audio','▶ 播放听力')}</button>`:'',assist=Q.mode==='game'&&!locked&&Number(Q.hints)>0?`<div class="t1GameAssist"><span>✦ ${T('문맥 힌트','文脈ヒント','Context hint','语境提示')} ${Q.hints}</span><button onclick="t1UseTrailHint()" ${Q.hiddenChoices?.length?'disabled':''}>${Q.hiddenChoices?.length?T('사용 완료','使用済み','Used','已使用'):T('오답 하나 지우기','誤答を1つ消す','Remove one wrong answer','排除一个错误选项')}</button></div>`:'';return `<div class="instruction">${E(instructionText(q))}</div>${aud}${q.stem?`<div class="stem">${E(q.stem)}</div>`:''}${q.prompt?`<div class="stem" style="font-size:14px">${E(q.prompt)}</div>`:''}${assist}<div class="choices">${choices(q,sel,locked)}</div>${locked?`<div class="resultStrip ${sel===q.answerIndex?'good':'bad'}"><b>✓ ${T('바로 해설','すぐに解説','Instant explanation','即时解析')}</b><br>${sel===q.answerIndex?T('정답입니다.','正解です。','Correct.','回答正确。'):T(`정답: ${q.answerIndex+1}번`,`正解: ${q.answerIndex+1}番`,`Answer: option ${q.answerIndex+1}`,`正确答案：第${q.answerIndex+1}项`)}<br><span>${E(explainText(q))}</span></div>`:`<div class="doubleTapHint">${T('한 번 탭해 선택 · 같은 답을 다시 탭하면 즉시 제출','1回タップで選択・同じ答えをもう一度タップすると提出','Tap once to select · tap the same answer again to submit','点一次选择 · 再点同一答案立即提交')}</div>`}`}
 function game1GradeAnswer(timedOut=false){
   const q=cur(),sel=q&&Q.answers[q.id];if(!q||Q.locked||(!timedOut&&sel==null))return;if(!timedOut&&Q.questionDeadline&&Date.now()>=Q.questionDeadline)return game1GradeAnswer(true);const ok=!timedOut&&sel===q.answerIndex,node=Q.node||'battle';let damage=0,gain=0,blocked=false,recovered=false;
   stopTimer();Q.questionDeadline=null;if(timedOut){Q.answers[q.id]=-1;Q.timeouts=(Number(Q.timeouts)||0)+1}
@@ -429,7 +430,7 @@ function game1AdvanceAnswer(){
   if(node==='boss'){Q.phase='battle';Q.node='boss';game1SetQuestionDeadline()}else{Q.phase='map';Q.node=null;Q.roll=null;Q.event=''}
   saveQ();render()
 }
-window.t1Next=()=>{restore();if(!Q)return;stopAudio();if(Q.mode==='real'){Q.i++;if(Q.i>=Q.ids.length)return finish();saveQ();return render()}if(Q.mode==='game')return game1AdvanceAnswer();if(!Q.locked){const q=cur(),sel=Q.answers[q.id];if(sel==null)return;const ok=sel===q.answerIndex;Q.locked=true;Q.total++;if(ok){Q.score++;Q.streak++}else Q.streak=0;saveQ();return render()}const nq=A[Math.floor(Math.random()*A.length)];Q.ids=[nq.id];Q.i=0;Q.answers={};Q.played={};Q.locked=false;saveQ();render()};
+window.t1Next=()=>{restore();if(!Q)return;stopAudio();if(Q.mode==='real'){Q.i++;if(Q.i>=Q.ids.length)return finish();saveQ();return render()}if(Q.mode==='game')return game1AdvanceAnswer();if(!Q.locked){const q=cur(),sel=Q.answers[q.id];if(sel==null)return;const ok=sel===q.answerIndex;Q.locked=true;Q.total++;if(ok){Q.score++;Q.streak++}else Q.streak=0;saveQ();return render()}const nq=A[Math.floor(Math.random()*A.length)];Q.examLevel=1;Q.ids=[nq.id];Q.i=0;Q.answers={};Q.played={};Q.locked=false;saveQ();render()};
 window.t1Prev=()=>{restore();if(Q?.mode==='real'&&Q.i>0){stopAudio();Q.i--;saveQ();render()}};
 function result(){let lc=0,lt=0,rc=0,rt=0,w=[];for(const id of Q.ids){const q=find(id),ok=Q.answers[id]===q.answerIndex;if(q.section==='listening'){lt++;if(ok)lc++}else{rt++;if(ok)rc++}if(!ok)w.push(id)}const ls=lt?Math.round(lc/lt*100):0,rs=rt?Math.round(rc/rt*100):0;return {lc,lt,rc,rt,ls,rs,total:(lt?ls:0)+(rt?rs:0),wrong:w}}
 function finish(){
@@ -468,7 +469,7 @@ function game1CombatNotice(){
 function renderQuiz(sc){
   restore();if(!Q)return open('t1setup');if(Q.mode==='game'&&Q.phase==='map')return renderGameTrail(sc);const q=cur();if(!q)return Q.mode==='game'?finish():open('home');if(Q.mode==='real'&&seconds()<=0)return finish();
   const locked=Q.mode!=='real'&&Q.locked;
-  const top=Q.mode==='real'?`<div class="t1head"><div><span><b>TOPIK I · ${secName(q.section)}</b><small style="display:block;color:#91a5c2">${Q.i+1}/${Q.ids.length}</small></span><strong id="t1clock">--:--</strong></div><div class="t1bar"><i style="width:${(Q.i+1)/Q.ids.length*100}%"></i></div></div>`:Q.mode==='game'?`<div class="t1hud"><span>⚔️ ${game1NodeMeta(Q.node).name}</span><span>♥ ${game1Focus()}</span><span>✦ ${Number(Q.shards)||0}</span><span>${Q.pos}/${GAME1_TRAIL_GOAL}</span></div>`:`<div class="t1hud"><span>${T('🎲 랜덤 실전','🎲 ランダム実戦','🎲 RANDOM PRACTICE','🎲 随机实战')}</span><span>${T('정답','正解','Correct','答对')} ${Q.score}/${Q.total}</span><span>🔥 ${Q.streak}</span></div>`;
+  const top=Q.mode==='real'?`<div class="t1head"><div><span><b>TOPIK I · ${secName(q.section)}</b><small style="display:block;color:#91a5c2">${Q.i+1}/${Q.ids.length}</small></span><strong id="t1clock">--:--</strong></div><div class="t1bar"><i style="width:${(Q.i+1)/Q.ids.length*100}%"></i></div></div>`:Q.mode==='game'?`<div class="t1hud"><span>⚔️ ${game1NodeMeta(Q.node).name}</span><span>♥ ${game1Focus()}</span><span>✦ ${Number(Q.shards)||0}</span><span>${Q.pos}/${GAME1_TRAIL_GOAL}</span></div>`:`<div class="t1hud"><span>TOPIK I</span><span>${T('🎲 랜덤 실전','🎲 ランダム実戦','🎲 RANDOM PRACTICE','🎲 随机实战')}</span><span>${T('정답','正解','Correct','答对')} ${Q.score}/${Q.total}</span><span>🔥 ${Q.streak}</span></div>`;
   let gameBattle='',gameTimer='';
   if(Q.mode==='game'){
     const boss=Q.node==='boss',combat=game1CombatState(),state=boss?combat.state:(locked&&Q.last?.ok?'hurt':'fresh'),hp=boss?combat.pct:(locked&&Q.last?.ok?28:100),meta=game1NodeMeta(Q.node),monster=game1Monster(Q.gameStage),monsterName=game1MonsterName(Q.gameStage);
