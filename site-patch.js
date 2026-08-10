@@ -1,7 +1,7 @@
-// TOPIK QUEST bootstrap v13
+// TOPIK QUEST bootstrap v14
 // Load the stable v11 core first, then the TOPIK I data and engine.
 (function(){
-  const v='13';
+  const v='14';
   const load=src=>new Promise((resolve,reject)=>{
     const s=document.createElement('script');
     s.src=src+(src.includes('?')?'&':'?')+'v='+v;
