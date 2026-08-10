@@ -15,8 +15,8 @@ const labels=()=>({
 
 function listeningExplanation(q){
   const lang=S.lang||'ko',pack=I18N.topik2Listening?.[q.id]||{},n=answerNumber(q);
-  if(q.id<=3)return pack[lang]||pack.ko||'';
-  const localizedChoice=lang==='ko'?answerChoice(q):lang==='ja'?cleanChoice((q.choicesJa||q.choices||[])[q.answerIndex]):pack[lang];
+  if(pack[lang]||pack.ko)return pack[lang]||pack.ko;
+  const localizedChoice=lang==='ko'?answerChoice(q):lang==='ja'?cleanChoice((q.choicesJa||q.choices||[])[q.answerIndex]):answerChoice(q);
   if(lang==='ja')return `音声の要点は「${localizedChoice}」です。したがって${n}番が正解です。`;
   if(lang==='en')return `The key point in the audio is “${localizedChoice},” so option ${n} is correct.`;
   if(lang==='zh')return `录音的关键信息是“${localizedChoice}”，所以第${n}项正确。`;
@@ -31,7 +31,7 @@ function readingExplanation(q){
 function localizedAnswerChoice(type,q){
   const lang=S.lang||'ko';if(type!=='listen'||lang==='ko')return answerChoice(q);
   if(lang==='ja')return cleanChoice((q.choicesJa||q.choices||[])[q.answerIndex]||answerChoice(q));
-  const translated=I18N.topik2Listening?.[q.id]?.[lang];return q.id>3&&translated?translated:answerChoice(q);
+  return answerChoice(q);
 }
 
 function explanationBlock(type,q,compact=false){
@@ -43,6 +43,140 @@ function writingExplanationBlock(q){
   const guide=I18N.topik2Writing?.[q?.id]?.[S.lang]||text('문제의 모든 조건과 핵심 정보가 답안에 들어갔는지 확인하세요.','設問の全条件と重要情報が答案に入っているか確認してください。','Check that the answer covers every condition and key detail.','请确认答案包含全部条件和关键信息。');
   return `<section class="tqInlineExplanation"><div class="tqInlineTitle"><span>✓</span><b>${text('바로 해설','すぐに解説','Instant explanation','即时解析')}</b></div><h4>${text('비교 포인트','比較ポイント','What to compare','对照要点')}</h4><p>${esc(guide)}</p></section>`;
 }
+
+// ----- Persistent wrong-answer review -----
+const REVIEW_KEY='malbitWrongReviewV3';
+let REVIEW={schema:3,items:{},mastered:0};
+let reviewAttempt=null;
+try{
+  const saved=JSON.parse(localStorage.getItem(REVIEW_KEY)||'null');
+  if(saved?.schema===3&&saved.items)REVIEW={...REVIEW,...saved,items:{...saved.items}};
+}catch(e){}
+
+function saveReview(){try{localStorage.setItem(REVIEW_KEY,JSON.stringify(REVIEW))}catch(e){}}
+function reviewKey(level,type,id){return `${Number(level)===1?1:2}:${type==='listen'?'listen':'read'}:${Number(id)}`}
+function reviewQuestion(level,type,id){
+  const n=Number(id),lv=Number(level)===1?1:2;
+  if(lv===1){
+    const deck=type==='listen'?(window.TOPIK1_LISTENING_DATA||[]):(window.TOPIK1_READING_DATA||[]);
+    return deck.find(x=>Number(x.id)===n)||null;
+  }
+  return type==='listen'?LS[n-1]:RW[n-1];
+}
+function recordReviewWrong(level,type,id,selected=-1,source='practice'){
+  const q=reviewQuestion(level,type,id);if(!q)return;
+  const key=reviewKey(level,type,id),old=REVIEW.items[key]||{};
+  REVIEW.items[key]={key,level:Number(level)===1?1:2,type:type==='listen'?'listen':'read',id:Number(id),selected:Number(selected),answerIndex:Number(q.answerIndex),source,lastWrongAt:Date.now(),wrongCount:(Number(old.wrongCount)||0)+1,retryCount:Number(old.retryCount)||0,active:true};
+  saveReview();
+}
+function resolveReview(key,ok,selected){
+  const item=REVIEW.items[key];if(!item)return;
+  item.retryCount=(Number(item.retryCount)||0)+1;item.lastRetriedAt=Date.now();item.selected=Number(selected);
+  if(ok){item.active=false;item.masteredAt=Date.now();REVIEW.mastered=(Number(REVIEW.mastered)||0)+1}
+  else{item.active=true;item.lastWrongAt=Date.now();item.wrongCount=(Number(item.wrongCount)||0)+1}
+  saveReview();
+}
+function scanLatestExamWrongAnswers(){
+  try{
+    const raw=JSON.stringify([S.lastResult||null,S.realAnswers||null]);let hash=2166136261;
+    for(let i=0;i<raw.length;i++){hash^=raw.charCodeAt(i);hash=Math.imul(hash,16777619)}
+    const signature=String(hash>>>0);if(REVIEW.latestExamSignature===signature)return;
+    const mode=S.lastResult?.mode||'',includeListen=mode==='full'||mode==='listen',includeRead=mode==='full'||mode==='read';
+    for(let i=1;i<=50;i++){
+      const l=S.realAnswers?.listen?.[i],r=S.realAnswers?.read?.[i];
+      if(includeListen&&(!l||Number(l.selected)!==Number(LS[i-1]?.answerIndex)))recordReviewWrong(2,'listen',i,l?.selected??-1,'exam');
+      if(includeRead&&(!r||Number(r.selected)!==Number(RW[i-1]?.answerIndex)))recordReviewWrong(2,'read',i,r?.selected??-1,'exam');
+    }
+    REVIEW.latestExamSignature=signature;saveReview();
+  }catch(e){}
+}
+function localizedReviewType(type){return type==='listen'?text('듣기','聴解','Listening','听力'):text('읽기','読解','Reading','阅读')}
+function reviewSourceLabel(source){
+  const map={exam:text('실전 시험','模擬試験','Mock exam','模拟考试'),random:text('랜덤 실전','ランダム実戦','Random practice','随机实战'),game:text('게임 전투','ゲームバトル','Game battle','游戏战斗'),retry:text('복습 재도전','復習再挑戦','Review retry','复习重做')};
+  return map[source]||map.random;
+}
+function originalQuestionParts(q,type){
+  return {
+    instruction:q.instruction||'',
+    body:q.stem||q.prompt||'',
+    script:type==='listen'?(q.script||''):'',
+    choices:(q.choices||[]).map(cleanChoice)
+  };
+}
+async function translatedReviewParts(item,q){
+  const lang=S.lang||'ko',original=originalQuestionParts(q,item.type);
+  if(lang==='ko')return original;
+  const target=lang,base=`review_v3_${item.key}_${target}`;
+  let instruction='';
+  if(item.type==='listen')instruction=text('', '音声と質問を読み、最も適切な答えを選んでください。','Read the audio transcript and question, then choose the best answer.','阅读听力原文和问题，选择最恰当的答案。');
+  else instruction=text('', '次の文を読んで、最も適切な答えを選んでください。','Read the passage and choose the best answer.','阅读下面的内容，选择最恰当的答案。');
+  let body='',script='',choices=[];
+  if(item.level===2&&target==='ja'){
+    const reviewed=String(q.translation||''),fullEnough=reviewed.length>=String(original.body||'').length*.45;
+    body=item.type==='listen'?(q.promptJa||await translateCached(base+'_body',original.body,'ko','ja')):(fullEnough?reviewed:await translateCached(base+'_body_full',original.body,'ko','ja'));
+    script=item.type==='listen'?(q.scriptJa||await translateCached(base+'_script',original.script,'ko','ja')):'';
+    choices=item.type==='listen'&&Array.isArray(q.choicesJa)?q.choicesJa.map(cleanChoice):await Promise.all(original.choices.map((x,i)=>translateCached(base+'_choice_'+i,x,'ko','ja')));
+  }else{
+    [body,script]=await Promise.all([
+      translateCached(base+'_body',original.body,'ko',target),
+      original.script?translateCached(base+'_script',original.script,'ko',target):Promise.resolve('')
+    ]);
+    choices=await Promise.all(original.choices.map((x,i)=>translateCached(base+'_choice_'+i,x,'ko',target)));
+  }
+  return{instruction,body,script,choices};
+}
+function reviewQuestionMarkup(parts,translated=false){
+  return `<div class="tqReviewQuestion ${translated?'translated':''}">${parts.instruction?`<small>${esc(parts.instruction)}</small>`:''}${parts.script?`<div class="tqReviewScript">${esc(parts.script)}</div>`:''}${parts.body?`<p>${esc(parts.body)}</p>`:''}<ol>${parts.choices.map(x=>`<li>${esc(x)}</li>`).join('')}</ol></div>`;
+}
+async function localizedField(value,key,source='ja'){
+  if(!value)return'';const lang=S.lang||'ko';if(lang===source)return value;
+  return translateCached(`review_detail_${key}_${lang}`,value,source,lang);
+}
+async function detailedReviewExplanation(item,q){
+  const type=item.type,lang=S.lang||'ko',n=answerNumber(q),answer=cleanChoice(q.choices?.[q.answerIndex]||q.answer||'');
+  let reason='',grammar='',vocab='',elimination='';
+  if(item.level===2){
+    reason=type==='listen'?listeningExplanation(q):readingExplanation(q);
+    if(type==='read'){
+      [grammar,vocab]=await Promise.all([localizedField(q.grammar,`${item.key}_grammar`),localizedField(q.vocab,`${item.key}_vocab`)]);
+      elimination=lang==='ja'?(q.why||reason):(I18N.topik2Reading?.[q.id]?.[lang]||reason);
+    }
+  }else{
+    reason=q.explanationI18n?.[lang]||q.explanationI18n?.ko||q.explanation||'';
+    if(lang!=='ko'&&!q.explanationI18n?.[lang])reason=await translateCached(`review_t1_reason_${item.key}_${lang}`,reason,'ko',lang);
+  }
+  const evidence=type==='listen'?(q.script||q.prompt||''):(q.stem||'');
+  const whyWrong=elimination||text('나머지 선택지는 본문·대화의 핵심 정보와 직접 일치하지 않거나 요구된 문법 기능을 충족하지 않습니다.','ほかの選択肢は本文・会話の核心情報と直接一致しないか、求められた文法機能を満たしません。','The other choices either conflict with the key evidence or do not satisfy the required grammar function.','其他选项与原文关键依据不直接一致，或不符合题目要求的语法功能。');
+  return `<section class="tqReviewDeep"><div class="tqInlineTitle"><span>✓</span><b>${text('상세 해설','詳しい解説','Detailed explanation','详细解析')}</b></div><div class="tqInlineAnswer"><small>${text('정답','正解','Answer','正确答案')}</small><strong>${n}. ${esc(answer)}</strong></div><h4>${text('판단 근거','判断の根拠','Key evidence','判断依据')}</h4><p>${esc(reason)}</p>${evidence?`<blockquote>${esc(evidence)}</blockquote>`:''}${grammar?`<h4>${text('문법 포인트','文法ポイント','Grammar point','语法要点')}</h4><p>${esc(grammar)}</p>`:''}${vocab?`<h4>${text('핵심 어휘','重要語彙','Key vocabulary','核心词汇')}</h4><p>${esc(vocab)}</p>`:''}<h4>${text('오답 소거','誤答の消去','Eliminating distractors','排除干扰项')}</h4><p>${esc(whyWrong)}</p><ol class="tqReviewChoiceAnalysis">${(q.choices||[]).map((c,i)=>`<li class="${i===q.answerIndex?'right':''}"><b>${i+1}. ${esc(cleanChoice(c))}</b><span>${i===q.answerIndex?esc(reason):esc(whyWrong)}</span></li>`).join('')}</ol></section>`;
+}
+function activeReviewItems(){return Object.values(REVIEW.items).filter(x=>x?.active&&reviewQuestion(x.level,x.type,x.id)).sort((a,b)=>(Number(b.lastWrongAt)||0)-(Number(a.lastWrongAt)||0))}
+function openReviewRetry(key){
+  const item=REVIEW.items[key],q=item&&reviewQuestion(item.level,item.type,item.id);if(!item||!q)return;
+  reviewAttempt={key,selected:null,locked:false,showTranslation:false,translation:null};renderReviewRetry();
+}
+function renderReviewRetry(){
+  const a=reviewAttempt,item=a&&REVIEW.items[a.key],q=item&&reviewQuestion(item.level,item.type,item.id),body=document.getElementById('sheetBody');if(!a||!q||!body)return;
+  const original=originalQuestionParts(q,item.type),selected=a.selected,locked=a.locked;
+  body.innerHTML=`<div class="reward"><b>TOPIK ${item.level} · ${localizedReviewType(item.type)} ${item.id}</b><small>${text(`누적 오답 ${item.wrongCount}회`,`累計誤答 ${item.wrongCount}回`,`${item.wrongCount} misses`,`${item.wrongCount}次错题`)}</small></div>${reviewQuestionMarkup(original)}<button class="tqTranslationToggle" onclick="toggleReviewTranslation()">🌐 ${a.showTranslation?text('전체 번역 숨기기','全文翻訳を隠す','Hide full translation','隐藏全文翻译'):text('문제 전체를 내 언어로 보기','問題全体を自分の言語で見る','View the full question in my language','用我的语言查看整道题')}</button><div id="tqReviewTranslation" class="tqReviewTranslation ${a.showTranslation?'open':''}">${a.showTranslation?(a.translation?reviewQuestionMarkup(a.translation,true):`<div class="translationLoading">${text('전체 번역을 불러오는 중…','全文翻訳を読み込み中…','Loading the full translation…','正在加载全文翻译…')}</div>`):''}</div><div class="choices tqReviewChoices">${(q.choices||[]).map((c,i)=>{let cls='choice';if(selected===i)cls+=' selected';if(locked&&i===q.answerIndex)cls+=' correct';if(locked&&selected===i&&i!==q.answerIndex)cls+=' wrong';return `<button class="${cls}" ${locked?'disabled':''} onclick="reviewSelect(${i})"><span class="n">${i+1}</span><span>${esc(cleanChoice(c))}</span></button>`}).join('')}</div>${locked?`<div class="resultStrip ${selected===q.answerIndex?'good':'bad'}">${selected===q.answerIndex?text('정답입니다. 오답 스택에서 해결 처리했어요.','正解です。誤答スタックを解決済みにしました。','Correct — removed from your active wrong-answer stack.','答对了，已从待复习错题中移除。'):text(`정답은 ${q.answerIndex+1}번입니다. 다시 오답 스택에 남겨 두었어요.`,`正解は${q.answerIndex+1}番です。復習スタックに残しました。`,`The answer is option ${q.answerIndex+1}. It remains in your review stack.`,`正确答案是第${q.answerIndex+1}项，仍保留在复习错题中。`)}</div><div id="tqReviewDeep" class="translationLoading">${text('상세 해설을 준비하는 중…','詳しい解説を準備中…','Preparing the detailed explanation…','正在准备详细解析…')}</div>`:`<div class="doubleTapHint">${text('한 번 탭해 선택 · 같은 답을 한 번 더 탭하면 제출','1回タップで選択・同じ答えをもう一度タップして提出','Tap once to select · tap the same answer again to submit','点一次选择，再点同一答案提交')}</div>`}<button class="closeBtn" onclick="closeSheet();reviewAttempt=null;render()">${text('복습 목록으로','復習一覧へ','Back to review list','返回复习列表')}</button>`;
+  document.getElementById('overlay')?.classList.add('open');
+  if(a.showTranslation&&!a.translation)loadReviewTranslation();
+  if(locked)detailedReviewExplanation(item,q).then(html=>{const el=document.getElementById('tqReviewDeep');if(el){el.className='';el.innerHTML=html;enhance(el)}});
+  enhance(body);
+}
+async function loadReviewTranslation(){
+  const a=reviewAttempt,item=a&&REVIEW.items[a.key],q=item&&reviewQuestion(item.level,item.type,item.id);if(!a||!q)return;
+  a.translation=await translatedReviewParts(item,q);if(reviewAttempt===a&&a.showTranslation)renderReviewRetry();
+}
+function toggleReviewTranslation(){if(!reviewAttempt)return;reviewAttempt.showTranslation=!reviewAttempt.showTranslation;renderReviewRetry()}
+function reviewSelect(i){
+  const a=reviewAttempt,item=a&&REVIEW.items[a.key],q=item&&reviewQuestion(item.level,item.type,item.id);if(!a||!q||a.locked)return;
+  i=Number(i);if(a.selected!==i){a.selected=i;return renderReviewRetry()}
+  a.locked=true;resolveReview(a.key,i===Number(q.answerIndex),i);renderReviewRetry();
+}
+function clearMasteredReview(){for(const [key,item] of Object.entries(REVIEW.items))if(!item.active)delete REVIEW.items[key];saveReview();render()}
+
+window.MALBIT_REVIEW={record:recordReviewWrong,resolve:resolveReview,items:()=>REVIEW.items};
+window.openReviewRetry=openReviewRetry;window.reviewSelect=reviewSelect;window.toggleReviewTranslation=toggleReviewTranslation;window.clearMasteredReview=clearMasteredReview;
 
 if(typeof renderInfMCQ==='function'){
   const baseRenderInfMCQ=renderInfMCQ;
@@ -69,6 +203,48 @@ if(typeof buildExplanation==='function'){
     if(type==='listen'||type==='read')return explanationBlock(type,q,true);
     const model=q?.model||'';
     return `<h3>${text('모범답안','模範解答','Model answer','参考答案')}</h3><div class="answerBox"><p>${esc(model)}</p></div>${writingExplanationBlock(q)}`;
+  };
+}
+
+if(typeof finishReal==='function'){
+  const baseFinishReal=finishReal;
+  finishReal=function(){const out=baseFinishReal();scanLatestExamWrongAnswers();return out};
+}
+
+if(typeof submitInfinity==='function'){
+  const baseSubmitInfinity=submitInfinity;
+  submitInfinity=function(){
+    const x=S.infinity?.current,q=x&&(x.type==='listen'?LS[x.id-1]:x.type==='read'?RW[x.id-1]:null),picked=typeof selected==='number'?selected:null;
+    const out=baseSubmitInfinity();
+    if(q&&picked!=null&&picked!==Number(q.answerIndex))recordReviewWrong(2,x.type,x.id,picked,'random');
+    return out;
+  };
+}
+
+if(typeof infTimeout==='function'){
+  const baseInfTimeout=infTimeout;
+  infTimeout=function(){const x=S.infinity?.current,out=baseInfTimeout();if(x&&(x.type==='listen'||x.type==='read'))recordReviewWrong(2,x.type,x.id,-1,'random');return out};
+}
+
+if(typeof reviewPage==='function'){
+  reviewPage=function(sc){
+    navActive('review');scanLatestExamWrongAnswers();const items=activeReviewItems(),mastered=Object.values(REVIEW.items).filter(x=>x&&!x.active).length;
+    sc.className='screen tqReviewScreen';
+    sc.innerHTML=`<section class="tqReviewHero"><div><small>${text('누적 오답 복습','累積誤答レビュー','WRONG-ANSWER REVIEW','累计错题复习')}</small><h1>${text('틀린 문제를 끝까지 이해해요','間違えた問題を最後まで理解しよう','Understand every missed question','彻底理解每一道错题')}</h1><p>${text('오답은 자동으로 쌓이고, 다시 맞히면 해결 처리됩니다.','誤答は自動で蓄積され、解き直して正解すると解決済みになります。','Missed questions stack automatically and are resolved when you answer them correctly on retry.','错题会自动累积，重做答对后标记为已掌握。')}</p></div><strong>${items.length}<small>${text('복습 대기','復習待ち','to review','待复习')}</small></strong></section><div class="tqReviewStats"><div><b>${items.reduce((n,x)=>n+(Number(x.wrongCount)||0),0)}</b><small>${text('누적 오답','累積誤答','Total misses','累计错题')}</small></div><div><b>${mastered}</b><small>${text('해결한 문제','解決済み','Mastered','已掌握')}</small></div><div><b>${new Set(items.map(x=>x.level)).size}</b><small>${text('학습 급수','学習級','TOPIK levels','学习级别')}</small></div></div><div class="sectionTitle"><h2>${text('다시 풀 문제','解き直す問題','Retry queue','待重做题目')}</h2><span>${items.length}</span></div><div class="tqReviewQueue">${items.length?items.map(item=>{const q=reviewQuestion(item.level,item.type,item.id),preview=String(q?.stem||q?.prompt||q?.script||'').replace(/\s+/g,' ').slice(0,68);return `<article class="tqReviewItem"><div class="tqReviewBadge">${item.type==='listen'?'🎧':'📖'}<small>TOPIK ${item.level}</small></div><div><b>${localizedReviewType(item.type)} ${item.id}</b><p>${esc(preview)}${preview.length>=68?'…':''}</p><small>${reviewSourceLabel(item.source)} · ${text(`${item.wrongCount}회 틀림`,`${item.wrongCount}回誤答`,`${item.wrongCount} misses`,`${item.wrongCount}次答错`)}</small></div><button onclick="openReviewRetry('${item.key}')">${text('다시 풀기','解き直す','Retry','重做')} ›</button></article>`}).join(''):`<div class="tqReviewEmpty"><span>✓</span><h3>${text('지금은 복습할 오답이 없어요','今は復習する誤答がありません','No missed questions to review','目前没有待复习错题')}</h3><p>${text('실전·랜덤·게임에서 틀린 문제가 자동으로 이곳에 쌓입니다.','模擬試験・ランダム・ゲームの誤答が自動でここに蓄積されます。','Misses from exams, random practice, and game battles appear here automatically.','实战、随机练习和游戏中的错题会自动出现在这里。')}</p></div>`}</div>${mastered?`<button class="tqClearMastered" onclick="clearMasteredReview()">${text(`해결 기록 ${mastered}개 정리`,`解決記録${mastered}件を整理`,`Clear ${mastered} mastered records`,`清理${mastered}条已掌握记录`)}</button>`:''}`;
+  };
+}
+
+// TOPIK II game timers: 20% more time, then a length-aware reading/listening allowance.
+if(typeof gameLimit==='function'){
+  const baseGameLimit=gameLimit;
+  gameLimit=function(stage){
+    const base=Math.max(1,Number(baseGameLimit(stage))||1),meta=stageMeta(stage);let q=null,chars=0;
+    if(meta.type==='read'){q=RW[meta.id-1];chars=String(q?.stem||'').length+(q?.choices||[]).join('').length}
+    else if(meta.type==='listen'){q=LS[meta.id-1];chars=String(q?.script||'').length+String(q?.prompt||'').length+(q?.choices||[]).join('').length}
+    else q=RW[meta.id-1];
+    const threshold=meta.type==='listen'?150:meta.type==='read'?115:0;
+    const lengthAllowance=threshold?Math.max(0,Math.min(36,Math.round((chars-threshold)*.09))):0;
+    return Math.max(15,Math.round(base*1.2+lengthAllowance));
   };
 }
 
@@ -131,7 +307,7 @@ let pendingVocab=null,holdTimer=null,holdStart=null,suppressClickUntil=0;
 function isSavableTerm(term){return !!term&&/[가-힣]/.test(term)&&!BLOCKED_FRAGMENTS.has(term)}
 function sourceForVocab(){
   if(S.view==='t1quiz'){
-    try{const q=JSON.parse(localStorage.getItem('topikQuestTopik1Session')||'null'),id=q?.ids?.[q.i],item=(window.TOPIK1_QUESTIONS||[]).find(x=>x.id===id);if(item)return`TOPIK I · ${item.section==='listening'?'L':'R'}${id}`}catch(e){}
+    try{const q=JSON.parse(localStorage.getItem('topikQuestTopik1Session')||'null'),id=q?.ids?.[q.i];if(Number(q?.examLevel)===2&&/^[LR]\d+$/.test(String(id)))return`TOPIK II · ${id}`;const item=(window.TOPIK1_QUESTIONS||[]).find(x=>x.id===id);if(item)return`TOPIK I · ${item.section==='listening'?'L':'R'}${id}`}catch(e){}
   }
   if(S.view==='shorts')return text('숏츠','ショーツ','Shorts','短题');
   try{const x=currentSource();if(x)return`TOPIK II · ${x}`}catch(e){}
@@ -244,7 +420,8 @@ if(typeof explainCurrent==='function'){
 if(typeof openGameResult==='function'){
   const baseOpenGameResult=openGameResult;
   openGameResult=function(ok,timeout){
-    const out=baseOpenGameResult(ok,timeout);setTimeout(()=>{const root=document.getElementById('sheetBody');if(!root)return;try{const m=stageMeta(S.gameStage),q=m.type==='listen'?LS[m.id-1]:RW[m.id-1],next=root.querySelector('button.primary');if(next&&!root.querySelector('.tqInlineExplanation'))next.insertAdjacentHTML('beforebegin',m.type==='write'?writingExplanationBlock(q):explanationBlock(m.type,q))}catch(e){console.warn('[MALBIT explanation]',e)}enhance(root)},0);return out
+    let missed=null;try{const m=stageMeta(S.gameStage);if(!ok&&(m.type==='listen'||m.type==='read'))missed={type:m.type,id:m.id,selected:typeof selected==='number'?selected:-1}}catch(e){}
+    const out=baseOpenGameResult(ok,timeout);if(missed)recordReviewWrong(2,missed.type,missed.id,missed.selected,'game');setTimeout(()=>{const root=document.getElementById('sheetBody');if(!root)return;try{const m=stageMeta(S.gameStage),q=m.type==='listen'?LS[m.id-1]:RW[m.id-1],next=root.querySelector('button.primary');if(next&&!root.querySelector('.tqInlineExplanation'))next.insertAdjacentHTML('beforebegin',m.type==='write'?writingExplanationBlock(q):explanationBlock(m.type,q))}catch(e){console.warn('[MALBIT explanation]',e)}enhance(root)},0);return out
   };
 }
 
@@ -253,6 +430,7 @@ const style=document.createElement('style');style.textContent=`
   .selectable,.vocab-zone{-webkit-user-select:none!important;user-select:none!important;-webkit-touch-callout:none!important}.vocab-token{display:inline;border-radius:4px;touch-action:pan-y;-webkit-touch-callout:none;transition:background .12s,box-shadow .12s}.vocab-token:active,.vocab-token.holding{background:#dceaff;box-shadow:0 0 0 3px rgba(63,126,235,.12)}.selectionBar{display:none!important}
   .tqVocabPopup{position:fixed;inset:0;z-index:180;display:none;align-items:flex-end}.tqVocabPopup.open{display:flex}.tqVocabBackdrop{position:absolute;inset:0;border:0;background:rgba(2,8,18,.68)}.tqVocabPopup section{position:relative;width:100%;background:#f8fbff;color:#15223a;border-radius:27px 27px 0 0;padding:10px 18px calc(20px + env(safe-area-inset-bottom));box-shadow:0 -20px 60px rgba(0,0,0,.35);animation:sheetUp .22s ease}.tqVocabHandle{width:40px;height:5px;background:#d3dbe8;border-radius:99px;margin:0 auto 16px}.tqVocabPopup small{display:block;color:#78879d;font-size:9px;font-weight:900}.tqVocabTerm{display:block;font-size:27px;margin:5px 0 8px;letter-spacing:-.04em}.tqVocabNormalize{background:#edf3fb;border-radius:13px;padding:10px;color:#55657b;font-size:11px;line-height:1.55}.tqVocabAdd,.tqVocabCancel{width:100%;border:0;border-radius:15px;padding:13px;font-weight:950}.tqVocabAdd{background:#286cff;color:#fff;margin-top:10px}.tqVocabCancel{background:#e9eef6;color:#536176;margin-top:7px}
   .tqLongPressDiscovery{width:100%;display:flex;align-items:center;gap:10px;border:1px solid #2b4163;background:linear-gradient(145deg,#101e33,#142740);color:#fff;border-radius:17px;padding:11px 12px;margin:9px 0 0;text-align:left}.tqLongPressDiscovery i{font-style:normal;font-size:22px}.tqLongPressDiscovery span{flex:1}.tqLongPressDiscovery b{display:block;font-size:11px}.tqLongPressDiscovery small{display:block;color:#91a8c8;font-size:8.5px;margin-top:3px}.tqLongPressDiscovery strong{color:#80a8ff}.tqVocabCoach{width:100%;border:1px dashed #9eb5d5;background:#edf4ff;color:#49617e;border-radius:13px;padding:9px 10px;margin-top:11px;font-size:9px;font-weight:850;line-height:1.45}.tqGuideSteps{display:grid;gap:9px;margin-top:12px}.tqGuideSteps>div{display:flex;gap:10px;align-items:flex-start;background:#eef3fa;border-radius:15px;padding:11px}.tqGuideSteps i{font-style:normal;width:25px;height:25px;border-radius:9px;background:#286cff;color:#fff;display:grid;place-items:center;font-weight:950;font-size:11px}.tqGuideSteps p{margin:0!important;flex:1}.tqGuideSteps b{display:block;color:#23344d;font-size:11px}.tqGuideSteps small{display:block;color:#66768d;font-size:9px;line-height:1.5;margin-top:3px}.tqVocabInfo button{border:0;background:#1c3353;color:#dceaff;border-radius:11px;padding:9px 11px;font-size:9px;font-weight:900}
+  .tqReviewScreen{background:#f4f6fb!important;color:#18243b!important}.tqReviewHero{display:grid;grid-template-columns:1fr 76px;gap:13px;align-items:center;border-radius:24px;padding:18px;background:linear-gradient(145deg,#315fd7,#7755e8);color:#fff;box-shadow:0 17px 36px rgba(71,75,184,.2)}.tqReviewHero small{font-size:8px;font-weight:950;letter-spacing:.11em;color:#dce4ff}.tqReviewHero h1{font-size:20px;line-height:1.2;letter-spacing:-.045em;margin:6px 0}.tqReviewHero p{font-size:9px;line-height:1.5;color:#e5e9ff;margin:0}.tqReviewHero>strong{display:grid;place-items:center;width:72px;height:72px;border-radius:23px;background:rgba(255,255,255,.15);font-size:28px}.tqReviewHero>strong small{display:block;font-size:7px;letter-spacing:0}.tqReviewStats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:11px 0 17px}.tqReviewStats>div{border-radius:17px;padding:12px;background:#fff;box-shadow:0 8px 22px rgba(44,50,85,.07)}.tqReviewStats b{display:block;font-size:19px}.tqReviewStats small{font-size:8px;color:#8992a4}.tqReviewQueue{display:grid;gap:9px}.tqReviewItem{display:grid;grid-template-columns:51px 1fr auto;gap:10px;align-items:center;border:1px solid #e0e5ee;border-radius:19px;padding:11px;background:#fff;box-shadow:0 7px 21px rgba(42,52,87,.06)}.tqReviewBadge{display:grid;place-items:center;width:51px;height:51px;border-radius:16px;background:#edf2ff;font-size:19px}.tqReviewBadge small{display:block;color:#536fd4;font-size:6.5px;font-weight:950}.tqReviewItem b{font-size:12px}.tqReviewItem p{max-width:220px;margin:3px 0;color:#647187;font-size:8.5px;line-height:1.35}.tqReviewItem>div>small{font-size:7.5px;color:#a06a7b}.tqReviewItem>button{border:0;border-radius:12px;padding:9px;background:#315fd7;color:#fff;font-size:8px;font-weight:950;white-space:nowrap}.tqReviewEmpty{text-align:center;border:1px dashed #ccd4e1;border-radius:22px;padding:25px 17px;background:#fff}.tqReviewEmpty span{display:grid;place-items:center;width:46px;height:46px;margin:auto;border-radius:15px;background:#e8f8f0;color:#199267;font-size:21px;font-weight:950}.tqReviewEmpty h3{font-size:14px}.tqReviewEmpty p{color:#778398;font-size:9px;line-height:1.5}.tqClearMastered{display:block;margin:13px auto 0;border:0;background:transparent;color:#8a94a6;font-size:8.5px;text-decoration:underline}.tqReviewQuestion{margin:11px 0;border:1px solid #dce4ef;border-radius:17px;padding:13px;background:#f7f9fc;color:#1e2d44}.tqReviewQuestion.translated{background:#eef5ff;border-color:#c9dcfa}.tqReviewQuestion>small{display:block;color:#728199;font-size:9px;line-height:1.45}.tqReviewQuestion>p{white-space:pre-wrap;font-size:13px;font-weight:850;line-height:1.65}.tqReviewScript{white-space:pre-wrap;margin-top:9px;border-left:3px solid #7a9ee8;padding:8px 10px;background:#fff;border-radius:0 10px 10px 0;font-size:10px;line-height:1.55}.tqReviewQuestion ol{margin:9px 0 0;padding-left:24px}.tqReviewQuestion li{padding:3px 0;font-size:10px;line-height:1.45}.tqTranslationToggle{width:100%;border:1px solid #c9d9ef;border-radius:13px;padding:11px;background:#edf4ff;color:#315f9f;font-size:10px;font-weight:950}.tqReviewTranslation{display:none}.tqReviewTranslation.open{display:block}.tqReviewChoices{margin-top:11px}.tqReviewDeep{margin-top:12px;border:1px solid #cfe4ff;background:linear-gradient(145deg,#f1f7ff,#fff);border-radius:18px;padding:13px;color:#17243a}.tqReviewDeep h4{margin:12px 0 5px;font-size:10px;color:#62748d}.tqReviewDeep p{font-size:11px;line-height:1.65;color:#263850}.tqReviewDeep blockquote{margin:8px 0;border-left:3px solid #83a8ed;padding:8px 10px;background:#edf4ff;color:#40536e;font-size:9.5px;line-height:1.55;white-space:pre-wrap}.tqReviewChoiceAnalysis{display:grid;gap:7px;margin:8px 0 0;padding:0;list-style:none}.tqReviewChoiceAnalysis li{border:1px solid #e0e5ed;border-radius:12px;padding:9px;background:#f8f9fc}.tqReviewChoiceAnalysis li.right{border-color:#8bd3b7;background:#eaf9f2}.tqReviewChoiceAnalysis b,.tqReviewChoiceAnalysis span{display:block}.tqReviewChoiceAnalysis b{font-size:9.5px}.tqReviewChoiceAnalysis span{margin-top:3px;color:#68768a;font-size:8.5px;line-height:1.45}
 `;
 document.head.appendChild(style);
 window.MALBIT_LEARNING={normalizeKoreanTerm,stripParticle,termFromToken,isSavableTerm,addVocabTerm,listeningExplanation,readingExplanation,writingExplanationBlock,enhance};
