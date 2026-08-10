@@ -1,4 +1,4 @@
-// TOPIK QUEST · TOPIK I listening practice set (original content)
+// MALBIT · TOPIK I listening practice set (original content)
 window.TOPIK1_LISTENING_DATA=[
 {"id":1,"section":"listening","group":"응답","instruction":"※ [1~4] 다음을 듣고 이어질 말로 가장 알맞은 것을 고르십시오.","script":"여자: 안녕하세요?","choices":["안녕하세요.","괜찮아요.","여기 있어요.","학생이에요."],"answerIndex":0,"explanation":"인사 '안녕하세요?'에는 같은 인사로 답하는 것이 가장 자연스럽습니다."},
 {"id":2,"section":"listening","group":"응답","instruction":"※ [1~4] 다음을 듣고 이어질 말로 가장 알맞은 것을 고르십시오.","script":"남자: 도와주셔서 감사합니다.","choices":["아니에요.","다녀오세요.","처음 뵙겠습니다.","잘 먹겠습니다."],"answerIndex":0,"explanation":"감사 인사에는 '아니에요'처럼 괜찮다는 응답이 자연스럽습니다."},

@@ -1,7 +1,7 @@
-// TOPIK QUEST bootstrap v14
+// MALBIT bootstrap v15
 // Load the stable v11 core first, then the TOPIK I data and engine.
 (function(){
-  const v='14';
+  const v='15';
   const load=src=>new Promise((resolve,reject)=>{
     const s=document.createElement('script');
     s.src=src+(src.includes('?')?'&':'?')+'v='+v;
@@ -19,8 +19,8 @@
       (window.requestAnimationFrame||window.setTimeout)(reveal,0);
     })
     .catch(e=>{
-      console.error('[TOPIK QUEST bootstrap]',e);
-      try{if(typeof render==='function')render()}catch(renderError){console.error('[TOPIK QUEST fallback]',renderError)}
+      console.error('[MALBIT bootstrap]',e);
+      try{if(typeof render==='function')render()}catch(renderError){console.error('[MALBIT fallback]',renderError)}
       document.documentElement.classList.remove('tq-booting');
     });
 })();

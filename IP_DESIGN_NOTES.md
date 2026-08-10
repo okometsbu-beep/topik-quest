@@ -8,7 +8,7 @@ This is a product-design risk memo, not a legal opinion. A Korean IP attorney sh
 
 The abstract idea of combining a board-style journey, random movement, multiple-choice questions, and combat feedback can be reused. The original game's title, characters, lore, audiovisual assets, board layouts, text, music, UI composition, and distinctive combination and sequence of rules must not be copied.
 
-A cosmetic reskin is not the target. TOPIK QUEST uses a separately designed Korean-learning loop called **Wordlight Expedition**.
+A cosmetic reskin is not the target. MALBIT uses a separately designed Korean-learning loop called **Wordlight Expedition**.
 
 ## Legal boundary used for this implementation
 
@@ -35,15 +35,15 @@ The likely first practical threats for a small app are App Store rejection, a pl
 
 ## Independent implementation adopted
 
-| Reference-level concept | TOPIK QUEST expression |
+| Reference-level concept | MALBIT expression |
 |---|---|
-| Six-sided board movement | Original 1–3 **syllable cube** on a nine-space Wordlight trail |
+| Six-sided board movement | An animated standard six-sided die on an original irregular 15-space Wordlight trail |
 | Four fantasy character classes | Three Korean-learning artifacts: Batchim Shield, Context Compass, Word Magnet |
 | Character abilities matching classic RPG roles | Focus protection, learning-streak recovery, and shard economy |
-| Inn / elf / hidden chest reward structure | Breathing Space and Sentence Workshop events with a different economy and wording |
+| Inn / elf / hidden chest reward structure | Breathing Space and Sentence Workshop events with a different economy, layout, and wording |
 | General-knowledge trivia | Independently authored TOPIK listening and reading questions |
-| Original fantasy lore and villains | Wordlight shards and the original Cloud Warden setting |
-| Fixed quiz damage cadence | Three-answer combo damage, focus resource, hints, route events, and a ten-question expedition cap |
+| Original fantasy lore and villains | Wordlight shards plus seven original stage-monster concepts with placeholder art pending |
+| Fixed quiz damage cadence | Difficulty-scaled timers, three-answer combo damage, focus, hints, route events, and a ten-question expedition cap |
 | Original map/UI/audio | New dark mobile UI, original inline SVG hero, existing project monster art, and original copy |
 
 ## Clean-room rules
@@ -67,4 +67,4 @@ This is a separate and more immediate naming/copycat-review risk than the 1992 C
 4. display an independent/unofficial-study-app disclaimer; and
 5. have counsel review the final name, icon, store screenshots, and metadata.
 
-The current build adds an unofficial-app disclaimer but intentionally does not rename the whole product without an explicit product-name decision.
+The current build uses **MALBIT · 말빛** as the primary product brand, keeps `TOPIK` in secondary descriptive prep copy, and includes an unofficial-app disclaimer. The repository slug remains unchanged for compatibility.
