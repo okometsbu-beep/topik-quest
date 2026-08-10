@@ -341,12 +341,12 @@
         <img src="${hero}" alt="TOPIK QUEST">
         <div class="tqHeroBrand"><b>TOPIK QUEST</b><small>KOREAN MASTERY</small></div>
         <div class="tqBubble">${ml('오늘도 한 문제씩, 한국어를 더 가깝게.','今日も一問ずつ、韓国語をもっと身近に。','One question at a time, closer to Korean.','每天一道题，更接近韩语。')}</div>
-        <div class="tqHeroFoot"><b>${ml('원하는 방식으로 바로 시작하세요','好きな方法ですぐ始めよう','Choose your way to practice','选择你的练习方式')}</b><small>TOPIK I · II · EXAM · GAME · INFINITY</small></div>
+        <div class="tqHeroFoot"><b>${ml('원하는 방식으로 바로 시작하세요','好きな方法ですぐ始めよう','Choose your way to practice','选择你的练习方式')}</b><small>TOPIK I · II · SHORTS · RANDOM PRACTICE</small></div>
       </section>
       <div class="tqModeGrid">
         <button class="tqMode exam" onclick="setView('realSetup')"><div class="fakeArt"><span>🎧📝</span></div><div class="copy"><b>${tr('real')}</b><small>${ml('실제 시험 형식으로 집중 연습','本番形式で集中練習','Real exam practice','真实考试练习')}</small></div></button>
         <button class="tqMode game" onclick="setView('game')"><div class="fakeArt"><span>⚔️👾</span></div><div class="copy"><b>${ml('게임모드','ゲームモード','Game Mode','游戏模式')}</b><small>${ml('몬스터를 물리치며 재미있게 학습','モンスターを倒して楽しく学習','Defeat monsters and learn','击败怪物趣味学习')}</small></div></button>
-        <button class="tqMode inf" onclick="startInfinity()"><div class="fakeArt"><span>🐱∞</span></div><div class="copy"><b>${tr('infinity')}</b><small>${ml('무한 문제 풀이로 기록 갱신','無限問題で記録更新','Endless practice and records','无限练习刷新记录')}</small></div></button>
+        <button class="tqMode inf" onclick="window.startShorts?startShorts():setView('home')"><div class="fakeArt"><span>🐱⚡</span></div><div class="copy"><b>${ml('숏츠 모드','ショーツモード','Shorts Mode','短题模式')}</b><small>${ml('단어·어휘·문법 초스피드 퀴즈','単語・語彙・文法の超高速クイズ','Rapid vocab and grammar quiz','单词词汇语法极速测验')}</small></div></button>
       </div>
       <div class="tqSectionHead"><b>${ml('빠른 연습','クイック練習','Quick Practice','快速练习')}</b><span>TRAINING</span></div>
       <div class="tqQuick">

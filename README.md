@@ -4,9 +4,11 @@ TOPIK I & II learning game and practice app.
 
 ## Current build
 - TOPIK II reading, writing and listening practice
-- Real exam mode
+- Shorts mode with rapid Korean vocabulary, expressions, and grammar choices in the selected UI language
+- Random Practice mode mixing listening, reading, and writing questions
+- Full timed mock-exam mode
 - Game mode with stage progression
-- Infinity mode
+- One-tap selection and second-tap submission for multiple-choice questions
 - Korean / Japanese / English / Chinese UI and explanations
 - Vocabulary notebook and review tools
 
