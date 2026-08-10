@@ -3,7 +3,24 @@
 'use strict';
 const L=window.TOPIK1_LISTENING_DATA||[],R=window.TOPIK1_READING_DATA||[],A=[...L,...R];
 if(!A.length){console.error('TOPIK I data missing');return}
-const LEVEL='topikQuestExamLevel',SESSION='topikQuestTopik1Session',EXT=['mp3','m4a','aac','webm','ogg'];
+const LEVEL='topikQuestExamLevel',SESSION='topikQuestTopik1Session',SHORTS_KEY='topikQuestShortsV1',EXT=['mp3','m4a','aac','webm','ogg'];
+const SHORTS=[
+  {type:'word',term:'미루다',meaning:{ko:'해야 할 일을 나중으로 넘기다',ja:'先延ばしにする',en:'to put off until later',zh:'推迟；拖延'},example:'할 일을 내일로 미루지 마세요.'},
+  {type:'idiom',term:'마음에 들다',meaning:{ko:'좋게 생각하거나 만족스럽게 느끼다',ja:'気に入る',en:'to like or be pleased with',zh:'中意；喜欢'},example:'이 가방이 아주 마음에 들어요.'},
+  {type:'idiom',term:'눈에 띄다',meaning:{ko:'두드러져 쉽게 보이다',ja:'目立つ',en:'to stand out or catch the eye',zh:'显眼；引人注目'},example:'빨간 우산이 멀리서도 눈에 띄어요.'},
+  {type:'grammar',term:'-는 바람에',meaning:{ko:'예상하지 못한 원인으로 나쁜 결과가 생김',ja:'～したせいで',en:'because of an unexpected negative cause',zh:'因为意外原因而导致不好的结果'},example:'버스를 놓치는 바람에 지각했어요.'},
+  {type:'grammar',term:'-더라도',meaning:{ko:'어떤 상황을 가정해도 뒤의 내용이 달라지지 않음',ja:'～しても／～であっても',en:'even if or even though',zh:'即使；哪怕'},example:'비가 오더라도 약속은 지킬게요.'},
+  {type:'word',term:'꼼꼼하다',meaning:{ko:'작은 부분까지 주의 깊고 빈틈이 없다',ja:'几帳面だ／念入りだ',en:'meticulous and thorough',zh:'仔细；一丝不苟'},example:'그분은 일을 아주 꼼꼼하게 해요.'},
+  {type:'word',term:'익숙하다',meaning:{ko:'자주 경험해서 낯설지 않다',ja:'慣れている',en:'to be familiar or accustomed',zh:'熟悉；习惯'},example:'이제 한국 생활에 익숙해졌어요.'},
+  {type:'grammar',term:'-(으)ㄹ 뿐만 아니라',meaning:{ko:'앞의 내용에 뒤의 내용을 더함',ja:'～だけでなく',en:'not only ... but also',zh:'不仅……而且……'},example:'이 식당은 맛있을 뿐만 아니라 가격도 싸요.'},
+  {type:'idiom',term:'손이 크다',meaning:{ko:'음식이나 물건을 넉넉하게 많이 준비하다',ja:'気前がよく、たくさん用意する',en:'to prepare things very generously',zh:'出手大方；准备得很多'},example:'우리 할머니는 손이 커서 음식을 많이 만드세요.'},
+  {type:'grammar',term:'-(으)ㄴ/는 척하다',meaning:{ko:'실제로는 아니지만 그런 것처럼 행동하다',ja:'～ふりをする',en:'to pretend to be or do',zh:'假装……'},example:'알면서도 모르는 척했어요.'},
+  {type:'word',term:'아쉽다',meaning:{ko:'원하거나 기대한 만큼 되지 않아 안타깝다',ja:'心残りだ／残念だ',en:'to feel regretful or disappointed',zh:'遗憾；可惜'},example:'시간이 없어서 더 이야기하지 못해 아쉬워요.'},
+  {type:'word',term:'챙기다',meaning:{ko:'필요한 것을 빠뜨리지 않고 준비하거나 돌보다',ja:'忘れずに用意する／面倒を見る',en:'to make sure to prepare or take care of',zh:'备齐；照顾'},example:'여권을 꼭 챙기세요.'},
+  {type:'idiom',term:'기분이 풀리다',meaning:{ko:'화나거나 불편했던 마음이 좋아지다',ja:'機嫌が直る／気が晴れる',en:'to feel better after being upset',zh:'心情好转；消气'},example:'친구의 사과를 듣고 기분이 풀렸어요.'},
+  {type:'grammar',term:'-기 마련이다',meaning:{ko:'일반적으로 당연히 그렇게 되는 경향이 있음',ja:'当然～するものだ',en:'to be bound or naturally expected to',zh:'总会……；理所当然会……'},example:'처음에는 누구나 실수하기 마련이에요.'},
+  {type:'word',term:'부담스럽다',meaning:{ko:'책임이나 기대가 무겁게 느껴져 편하지 않다',ja:'負担に感じる',en:'to feel burdensome or pressured',zh:'感到有负担；有压力'},example:'너무 비싼 선물은 조금 부담스러워요.'}
+];
 let Q=null,timer=null,audio=null,ctx=null;
 const E=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const T=(ko,ja,en,zh)=>typeof ml==='function'?ml(ko,ja,en,zh):ko;
@@ -54,18 +71,80 @@ window.tqStartMode=mode=>{if(level()===2){if(mode==='real')return setView('realS
 const css=document.createElement('style');
 css.textContent=`.t1level{display:grid;grid-template-columns:1fr 1fr;gap:5px;background:#0d192b;border:1px solid #273b5a;border-radius:17px;padding:5px;margin:0 0 10px}.t1level button{border:0;border-radius:13px;padding:10px 5px;background:transparent;color:#8296b4;font-size:11px;font-weight:900}.t1level button.on{background:linear-gradient(135deg,#4e86ff,#8065ff);color:#fff}.t1setup{display:grid;gap:9px}.t1setup button{border:1px solid #2c4264;background:linear-gradient(145deg,#102039,#172b49);color:#fff;border-radius:21px;padding:16px;text-align:left}.t1setup b{font-size:16px}.t1setup small{float:right;color:#87b4ff}.t1setup p{font-size:10px;color:#9db1ce;line-height:1.5;margin:6px 0 0}.t1head{background:#0d1b30;border:1px solid #2b4164;border-radius:19px;padding:12px;margin-bottom:10px}.t1head>div{display:flex;justify-content:space-between;align-items:center}.t1head strong{font-size:21px}.t1bar{height:6px;background:#182941;border-radius:99px;overflow:hidden;margin-top:8px}.t1bar i{display:block;height:100%;background:linear-gradient(90deg,#4d9cff,#8c70ff)}.t1audio{width:100%;border:0;border-radius:15px;padding:13px;background:#152d50;color:#fff;font-weight:900;margin-bottom:11px}.t1nav{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.t1nav button{border:0;border-radius:14px;padding:13px;font-weight:900}.t1nav .p{background:#e9eef6;color:#34445d}.t1nav .n{background:#286cff;color:#fff}.t1hud{display:flex;gap:6px;overflow:auto;margin-bottom:9px}.t1hud span{white-space:nowrap;background:#10213a;border:1px solid #2d4669;border-radius:99px;padding:7px 10px;font-size:10px;color:#c7d7ed}.t1result{background:linear-gradient(150deg,#11233e,#1b3154);border:1px solid #34517d;border-radius:24px;padding:18px}.t1score{font-size:44px;font-weight:950;margin:13px 0}.t1score small{font-size:14px;color:#9fb4d1}.t1split{display:grid;grid-template-columns:1fr 1fr;gap:8px}.t1split div{background:#0d1b30;border-radius:15px;padding:12px}.t1split b{display:block;font-size:20px}.t1wrong{display:flex;flex-wrap:wrap;gap:5px;margin-top:11px}.t1wrong span{padding:5px 7px;border-radius:9px;background:#48212c;color:#ffcad2;font-size:9px}`;
 document.head.appendChild(css);
+const homeCss=document.createElement('style');
+homeCss.textContent=`
+body.tq-home-active,body.tq-stats-active,body.tq-shorts-active{background:#f4f6fb;color:#19233a}
+body.tq-home-active .app,body.tq-stats-active .app,body.tq-shorts-active .app{max-width:480px;background:#f4f6fb}
+body.tq-home-active .top,body.tq-stats-active .top,body.tq-shorts-active .top{display:none}
+body.tq-home-active .screen,body.tq-stats-active .screen{max-width:480px;margin:auto;padding:calc(15px + env(safe-area-inset-top)) 15px 26px}
+body.tq-home-active .bottom,body.tq-stats-active .bottom{background:rgba(255,255,255,.97);border-top:1px solid #e8eaf2;box-shadow:0 -10px 28px rgba(55,64,99,.07)}
+body.tq-home-active .nav,body.tq-stats-active .nav{max-width:480px}
+body.tq-home-active .nav button,body.tq-stats-active .nav button{color:#9298a8}
+body.tq-home-active .nav button.active,body.tq-stats-active .nav button.active{background:#eef0ff;color:#514cff}
+body.tq-shorts-active{padding-bottom:0}
+body.tq-shorts-active .bottom{display:none}
+body.tq-shorts-active .screen{max-width:480px;min-height:100vh;margin:auto;padding:calc(14px + env(safe-area-inset-top)) 15px calc(18px + env(safe-area-inset-bottom))}
+.tqHomeHeader{display:flex;align-items:center;justify-content:space-between;margin:3px 1px 14px}.tqHomeLogo{font-size:23px;font-weight:1000;letter-spacing:-.055em;color:#3434a9}.tqHomeMeta{display:flex;align-items:center;gap:7px}.tqStreak{display:flex;align-items:center;gap:4px;background:#fff;border:1px solid #fff;color:#ff643f;border-radius:999px;padding:8px 11px;font-size:11px;font-weight:950;box-shadow:0 7px 20px rgba(44,50,85,.08)}.tqLang{width:38px;height:38px;border:0;border-radius:50%;background:#fff;font-size:20px;box-shadow:0 7px 20px rgba(44,50,85,.1)}
+.tqHomeScreen .t1level{background:#fff;border:0;border-radius:18px;padding:4px;margin-bottom:12px;box-shadow:0 7px 20px rgba(44,50,85,.08)}.tqHomeScreen .t1level button{color:#888e9f;border-radius:14px;padding:10px 5px}.tqHomeScreen .t1level button.on{background:linear-gradient(135deg,#514cff,#7659f8);color:#fff;box-shadow:0 8px 18px rgba(86,76,246,.24)}
+.tqDailyHero{position:relative;overflow:hidden;min-height:172px;border-radius:25px;background:linear-gradient(135deg,#4d50ee,#8a5ff5);padding:19px;color:#fff;box-shadow:0 17px 34px rgba(80,73,221,.25)}.tqDailyHero:before{content:'';position:absolute;width:185px;height:185px;border-radius:50%;right:-63px;top:-64px;background:rgba(255,255,255,.1)}.tqHeroMascot{position:absolute;right:13px;bottom:9px;width:91px;height:91px;border-radius:31px;background:rgba(255,255,255,.95);display:grid;place-items:center;font-size:57px;transform:rotate(3deg);box-shadow:0 13px 24px rgba(32,22,110,.23)}.tqDailyCopy{position:relative;z-index:2;width:69%}.tqDailyCopy small{font-size:9px;font-weight:900;letter-spacing:.08em;color:#dcdcff}.tqDailyCopy h1{font-size:23px;line-height:1.12;letter-spacing:-.05em;margin:8px 0 4px}.tqDailyCopy p{font-size:10px;color:#e9e9ff;margin:0}.tqWeek{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:15px}.tqWeek i{height:7px;border-radius:99px;background:rgba(255,255,255,.22)}.tqWeek i.on{background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.13)}
+.tqShortsLaunch{width:100%;min-height:126px;border:0;border-radius:24px;margin:12px 0;background:linear-gradient(135deg,#ff625b,#ff923b);color:#fff;padding:17px;text-align:left;display:grid;grid-template-columns:60px 1fr auto;gap:13px;align-items:center;box-shadow:0 16px 31px rgba(255,102,74,.24)}.tqShortsPlay{width:58px;height:58px;border-radius:50%;background:#fff;color:#ff6357;display:grid;place-items:center;font-size:24px;box-shadow:0 8px 20px rgba(167,45,36,.22)}.tqShortsLaunch b{display:block;font-size:22px;letter-spacing:-.04em}.tqShortsLaunch small{display:block;font-size:10px;line-height:1.5;margin-top:5px;color:#fff1ed}.tqShortsGo{background:#fff;color:#ff633e;padding:10px 12px;border-radius:14px;font-size:10px;font-weight:950;white-space:nowrap}
+.tqCoreGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tqCoreMode{min-height:128px;border:0;border-radius:22px;padding:15px;color:#fff;text-align:left;position:relative;overflow:hidden;box-shadow:0 12px 24px rgba(48,57,100,.14)}.tqCoreMode:after{content:'';position:absolute;width:76px;height:76px;border-radius:26px;right:-17px;bottom:-18px;background:rgba(255,255,255,.14);transform:rotate(22deg)}.tqCoreMode .mi{font-size:29px;display:block;margin-bottom:13px;filter:drop-shadow(0 5px 8px rgba(0,0,0,.14))}.tqCoreMode b{display:block;font-size:16px;letter-spacing:-.035em}.tqCoreMode small{display:block;font-size:9px;line-height:1.45;margin-top:5px;color:rgba(255,255,255,.88)}.tqCoreMode.exam{background:linear-gradient(145deg,#347eff,#419df6)}.tqCoreMode.game{background:linear-gradient(145deg,#f1b934,#ffd76b);color:#6d4800}.tqCoreMode.game small{color:#875c00}.tqCoreMode.inf{background:linear-gradient(145deg,#7653ea,#9b67f5)}.tqCoreMode.speak{background:linear-gradient(145deg,#35b993,#74d7b6);color:#075940}.tqCoreMode.speak small{color:#0f7357}
+.tqContinue{width:100%;border:0;text-align:left;cursor:pointer;font:inherit;display:grid;grid-template-columns:48px 1fr auto;gap:11px;align-items:center;background:#fff;border-radius:21px;padding:13px;margin-top:12px;color:#202943;box-shadow:0 9px 25px rgba(47,57,91,.08)}.tqContinueIcon{width:48px;height:48px;border-radius:16px;background:#efedff;display:grid;place-items:center;font-size:25px}.tqContinue b{font-size:13px;display:block}.tqContinue small{font-size:9px;color:#8990a1;display:block;margin-top:4px}.tqContinue strong{color:#5a50ee;font-size:18px}
+.shortsTop{display:grid;grid-template-columns:42px 1fr auto;align-items:center;gap:9px;margin-bottom:13px}.shortsTop button{width:42px;height:42px;border:0;border-radius:14px;background:#fff;color:#2d3650;font-size:22px;box-shadow:0 7px 20px rgba(44,50,85,.08)}.shortsTop b{font-size:18px}.shortsTop span{font-size:10px;font-weight:950;color:#ff6748;background:#fff;border-radius:999px;padding:8px 10px}.shortsProgress{height:6px;border-radius:99px;background:#e5e7f0;overflow:hidden;margin-bottom:14px}.shortsProgress i{display:block;height:100%;background:linear-gradient(90deg,#ff6557,#ff963d);border-radius:99px}
+.shortsCard{background:#fff;border-radius:28px;padding:20px 17px;box-shadow:0 18px 45px rgba(…1935 tokens truncated…yKey(d)]?.total)break;dayStreak++;d.setDate(d.getDate()-1)}
+  const total=Number(SH.total)||0,score=Number(SH.score)||0;
+  return {week,weekCount:week.filter(x=>x.on).length,dayStreak,total,score,accuracy:total?Math.round(score/total*100):0};
+}
+function shortsOptions(index){
+  const offsets=[2,5,9],items=offsets.map(x=>SHORTS[(index+x)%SHORTS.length]),correct=(index*3)%4;
+  items.splice(correct,0,SHORTS[index]);return {items,correct};
+}
+function shortType(type){return type==='grammar'?T('문법','文法','Grammar','语法'):type==='idiom'?T('숙어','慣用表現','Expression','惯用语'):T('단어','単語','Word','单词')}
+function syncStatsNav(){
+  const b=document.getElementById('nav_stats')||document.getElementById('nav_speaking');if(!b)return;
+  b.id='nav_stats';b.onclick=()=>setView('stats');b.innerHTML=`<b>▥</b><span>${T('통계','統計','Stats','统计')}</span>`;
+}
+syncStatsNav();
+window.startShorts=()=>open('shorts');
+window.pickShorts=i=>{if(SH.locked)return;SH.selected=Number(i);saveShorts();render()};
+window.checkShorts=()=>{
+  if(SH.locked||SH.selected==null)return;
+  const {correct}=shortsOptions(SH.index),ok=SH.selected===correct,today=dayKey();
+  SH.locked=true;SH.total=(Number(SH.total)||0)+1;SH.score=(Number(SH.score)||0)+(ok?1:0);SH.streak=ok?(Number(SH.streak)||0)+1:0;
+  SH.daily=SH.daily||{};SH.daily[today]=SH.daily[today]||{total:0,score:0};SH.daily[today].total++;if(ok)SH.daily[today].score++;
+  saveShorts();render();
+};
+window.nextShorts=()=>{
+  let next=SH.index;while(SHORTS.length>1&&next===SH.index)next=Math.floor(Math.random()*SHORTS.length);
+  SH.index=next;SH.selected=null;SH.locked=false;saveShorts();render();
+};
+function bindShortsSwipe(){
+  const card=document.querySelector('.shortsCard');if(!card)return;let startY=0;
+  card.addEventListener('touchstart',e=>{startY=e.changedTouches[0]?.clientY||0},{passive:true});
+  card.addEventListener('touchend',e=>{const end=e.changedTouches[0]?.clientY||0;if(SH.locked&&startY-end>65)window.nextShorts()},{passive:true});
+}
+function renderShorts(sc){
+  navActive('home');const item=SHORTS[SH.index],set=shortsOptions(SH.index),stats=shortsStats(),answer=item.meaning[S.lang]||item.meaning.ko;
+  sc.className='screen tqShortsScreen';
+  const choices=set.items.map((x,i)=>{
+    let cls='shortsChoice';if(SH.selected===i)cls+=' selected';if(SH.locked&&i===set.correct)cls+=' correct';if(SH.locked&&SH.selected===i&&i!==set.correct)cls+=' wrong';
+    return `<button class="${cls}" onclick="pickShorts(${i})" ${SH.locked?'disabled':''}><i>${i+1}</i><span>${E(x.meaning[S.lang]||x.meaning.ko)}</span></button>`;
+  }).join('');
+  const ok=SH.locked&&SH.selected===set.correct;
+  const feedback=SH.locked?`<div class="shortsFeedback ${ok?'good':'bad'}"><b>${ok?T('정답이에요!','正解です！','Correct!','回答正确！'):T('한 번 더 기억해요','もう一度覚えましょう','Remember this one','再记一次')}</b><p>${E(item.term)} = ${E(answer)}</p><small>${T('예문','例文','Example','例句')}: ${E(item.example)}</small></div>`:'';
+  sc.innerHTML=`<div class="shortsTop"><button onclick="setView('home')">‹</button><b>${T('쇼츠','ショーツ','Shorts','短题')}</b><span>🔥 ${Number(SH.streak)||0}</span></div><div class="shortsProgress"><i style="width:${Math.max(8,(stats.total%10+1)*10)}%"></i></div><article class="shortsCard"><span class="shortsType">${shortType(item.type)}</span><div class="shortsWord">${E(item.term)}</div><div class="shortsInstruction">${T('내 언어로 가장 알맞은 뜻을 고르세요.','自分の言語で最も適切な意味を選んでください。','Choose the best meaning in your language.','请选择你语言中最恰当的意思。')}</div><div class="shortsChoices">${choices}</div>${feedback}<div class="shortsAction">${SH.locked?`<button onclick="nextShorts()">${T('다음 카드','次のカード','Next card','下一张')} ↑</button>`:`<button onclick="checkShorts()" ${SH.selected==null?'disabled':''}>${T('정답 확인','答えを確認','Check answer','确认答案')}</button>`}<div class="shortsSwipe">${T('정답 확인 후 위로 넘겨 다음 문제','答えを確認したら上にスワイプ','After checking, swipe up for the next card','确认答案后向上滑动')}</div></div></article>`;
+  setTimeout(bindShortsSwipe,0);
+}
+function statsPage(sc){
+  navActive('stats');const stats=shortsStats(),vocab=Array.isArray(S.vocab)?S.vocab.length:0;
+  let reviews=0;try{reviews=Object.keys(S.realAnswers?.listen||{}).length+Object.keys(S.realAnswers?.read||{}).length}catch(e){}
+  sc.className='screen tqStatsScreen';
+  sc.innerHTML=`<div class="tqStatsHeader"><h1>${T('학습 통계','学習統計','Learning stats','学习统计')}</h1><button onclick="event.stopPropagation();flagMenu()">${LANGS[S.lang].flag}</button></div><section class="tqStatsHero"><small>${T('쇼츠 정답률','ショーツ正答率','SHORTS ACCURACY','短题正确率')}</small><strong>${stats.accuracy}%</strong><p>${T('짧게 공부한 기록도 꾸준히 쌓여요.','短い学習も続ければ力になります。','Every short session adds up.','每次短学习都会积累。')}</p></section><div class="tqStatsGrid"><div><b>${stats.total}</b><small>${T('푼 문제','解いた問題','Answered','已答题')}</small></div><div><b>${stats.weekCount}/7</b><small>${T('이번 주','今週','This week','本周')}</small></div><div><b>${stats.dayStreak}</b><small>${T('연속 학습일','連続学習日','Day streak','连续天数')}</small></div></div><div class="tqStatsMode"><i>⚡</i><div><b>${T('쇼츠 학습','ショーツ学習','Shorts practice','短题学习')}</b><small>${T(`정답 ${stats.score}개`,`正解 ${stats.score}問`,`${stats.score} correct`,`${stats.score}题正确`)}</small></div></div><div class="tqStatsMode"><i>▣</i><div><b>${T('단어장','単語帳','Vocabulary','单词本')}</b><small>${T(`${vocab}개 저장`,`${vocab}語を保存`,`${vocab} saved`,`${vocab}个已保存`)}</small></div></div><div class="tqStatsMode"><i>↻</i><div><b>${T('실전 답안','実戦答案','Exam answers','实战答题')}</b><small>${T(`${reviews}문항 기록`,`${reviews}問を記録`,`${reviews} recorded`,`${reviews}题记录`)}</small></div></div>`;
+}
 home=function(sc){
-  navActive('home');setProgress(0);sc.classList.add('tqHome');
-  const lv=level(),hero=ASSETS['exam_student.png'];
-  sc.innerHTML=`<section class="tqHero"><img src="${hero}" alt="TOPIK QUEST"><div class="tqHeroBrand"><b>TOPIK QUEST</b><small>KOREAN MASTERY</small></div><div class="tqBubble">${T('오늘도 한 문제씩, 한국어를 더 가깝게.','今日も一問ずつ、韓国語をもっと身近に。','One question at a time, closer to Korean.','每天一道题，更接近韩语。')}</div><div class="tqHeroFoot"><b>${T('시험 레벨과 연습 방식을 선택하세요','試験レベルと練習方法を選んでください','Choose your exam level and practice mode','请选择考试等级和练习方式')}</b><small>TOPIK I · TOPIK II</small></div></section>
-  <div class="t1level"><button class="${lv===1?'on':''}" onclick="tqSetLevel(1)">${T('TOPIK I · 1~2급','TOPIK I · 1～2級','TOPIK I · Levels 1–2','TOPIK I · 1~2级')}</button><button class="${lv===2?'on':''}" onclick="tqSetLevel(2)">${T('TOPIK II · 3~6급','TOPIK II · 3～6級','TOPIK II · Levels 3–6','TOPIK II · 3~6级')}</button></div>
-  <div class="tqModeGrid">
-    <button class="tqMode exam" onclick="tqStartMode('real')"><div class="fakeArt"><span>🎧📝</span></div><div class="copy"><b>${T('실전모드','実戦モード','Exam Mode','实战模式')}</b><small>${lv===1?T('듣기 30 · 읽기 40','聞き取り30 · 読解40','Listening 30 · Reading 40','听力30 · 阅读40'):T('실제 시험 형식으로 집중 연습','本番形式で集中練習','Focused practice in real exam format','按真实考试形式集中练习')}</small></div></button>
-    <button class="tqMode game" onclick="tqStartMode('game')"><div class="fakeArt"><span>⚔️👾</span></div><div class="copy"><b>${T('게임모드','ゲームモード','Game Mode','游戏模式')}</b><small>${lv===1?T('TOPIK I 랜덤 10문항 배틀','TOPIK I ランダム10問バトル','TOPIK I random 10-question battle','TOPIK I 随机10题挑战'):T('몬스터를 물리치며 학습','モンスターを倒しながら学習','Learn while defeating monsters','击败怪物进行学习')}</small></div></button>
-    <button class="tqMode inf" onclick="tqStartMode('infinity')"><div class="fakeArt"><span>🐱∞</span></div><div class="copy"><b>${T('인피니티','インフィニティ','Infinity','无限模式')}</b><small>${lv===1?T('TOPIK I 70문항 무한 연습','TOPIK I 70問 無限練習','Endless practice from 70 TOPIK I questions','TOPIK I 70题无限练习'):T('무한 문제 풀이','無限問題練習','Endless question practice','无限题目练习')}</small></div></button>
-  </div>
-  <div class="tqSectionHead"><b>${T('빠른 연습','クイック練習','Quick Practice','快速练习')}</b><span>${lv===1?'TOPIK I':'TOPIK II'}</span></div>
-  <div class="tqQuick"><button onclick="setView('speaking')"><i>🎙</i><b>${T('말하기 연습','スピーキング練習','Speaking Practice','口语练习')}</b><small>${T('읽기·따라하기·발음 점수','音読・リピート・発音スコア','Read · Repeat · Pronunciation score','朗读·跟读·发音评分')}</small></button><button onclick="setView('review')"><i>↻</i><b>${T('복습','復習','Review','复习')}</b><small>${T('틀린 문제 다시 확인','間違えた問題をもう一度確認','Review missed questions','重新查看错题')}</small></button></div>`;
+  navActive('home');setProgress(0);syncStatsNav();sc.className='screen tqHomeScreen';
+  const lv=level(),stats=shortsStats(),levelNo=Math.max(1,Math.floor(stats.total/10)+1);
+  sc.innerHTML=`<div class="tqHomeHeader"><div class="tqHomeLogo">TOPIK QUEST</div><div class="tqHomeMeta"><span class="tqStreak">🔥 ${stats.dayStreak}${T('일','日','d','天')}</span><button class="tqLang" onclick="event.stopPropagation();flagMenu()">${LANGS[S.lang].flag}</button></div></div><div class="t1level"><button class="${lv===1?'on':''}" onclick="tqSetLevel(1)">TOPIK I</button><button class="${lv===2?'on':''}" onclick="tqSetLevel(2)">TOPIK II</button></div><section class="tqDailyHero"><div class="tqDailyCopy"><small>Lv. ${levelNo} · TOPIK QUEST</small><h1>${T('오늘도 한 걸음!','今日も一歩！','One step today!','今天也前进一步！')}</h1><p>${T(`이번 주 목표 ${stats.weekCount}/7일`,`今週の目標 ${stats.weekCount}/7日`,`Weekly goal ${stats.weekCount}/7 days`,`本周目标 ${stats.weekCount}/7天`)}</p><div class="tqWeek">${stats.week.map(x=>`<i class="${x.on?'on':''}"></i>`).join('')}</div></div><div class="tqHeroMascot">🐯</div></section><button class="tqShortsLaunch" onclick="startShorts()"><span class="tqShortsPlay">▶</span><span><b>${T('쇼츠','ショーツ','Shorts','短题')}</b><small>${T('1분 어휘 퀴즈','1分語彙クイズ','1-minute vocab quiz','1分钟词汇测验')}<br>${T('내 언어로 뜻 고르기 · 4지선다','自分の言語で意味を選ぶ・4択','Choose the meaning · 4 choices','用自己的语言选词义 · 四选一')}</small></span><span class="tqShortsGo">${T('바로 시작','今すぐ開始','Start','立即开始')}</span></button><div class="tqCoreGrid"><button class="tqCoreMode exam" onclick="tqStartMode('real')"><span class="mi">📝</span><b>${T('실전 모드','実戦モード','Exam Mode','实战模式')}</b><small>${lv===1?T('듣기 30 · 읽기 40','聞き取り30 · 読解40','Listening 30 · Reading 40','听力30 · 阅读40'):T('TOPIK 모의고사','TOPIK模擬試験','TOPIK mock exam','TOPIK模拟考试')}</small></button><button class="tqCoreMode game" onclick="tqStartMode('game')"><span class="mi">🏆</span><b>${T('게임 모드','ゲームモード','Game Mode','游戏模式')}</b><small>${T('퀘스트로 실력 UP','クエストで実力UP','Level up with quests','通过任务提升实力')}</small></button><button class="tqCoreMode inf" onclick="tqStartMode('infinity')"><span class="mi">♾️</span><b>${T('인피니티 모드','インフィニティ','Infinity Mode','无限模式')}</b><small>${T('끝없이 도전','無限に挑戦','Endless challenge','无限挑战')}</small></button><button class="tqCoreMode speak" onclick="setView('speaking')"><span class="mi">🎙</span><b>${T('말하기 모드','スピーキング','Speaking Mode','口语模式')}</b><small>${T('실시간 인식 · 자동 채점','リアルタイム認識・自動採点','Live recognition · auto score','实时识别 · 自动评分')}</small></button></div><button type="button" class="tqContinue" onclick="setView('stats')"><span class="tqContinueIcon">📚</span><span><b>${T('오늘의 학습 기록','今日の学習記録','Today’s learning','今日学习记录')}</b><small>${T(`쇼츠 ${stats.total}문제 · 정답 ${stats.score}`,`ショーツ ${stats.total}問・正解 ${stats.score}`,`Shorts ${stats.total} · ${stats.score} correct`,`短题 ${stats.total} · 答对 ${stats.score}`)}</small></span><strong>${stats.accuracy}%</strong></button>`;
 };
 function renderSetup(sc){navActive('home');sc.innerHTML=`<div class="sectionTitle"><h2>TOPIK I · ${T('실전모드','実戦モード','Exam Mode','实战模式')}</h2><span>70 QUESTIONS</span></div><div class="infoCard"><h3>${T('TOPIK I 모의연습 세트','TOPIK I 模擬練習セット','TOPIK I Mock Practice Set','TOPIK I 模拟练习套题')}</h3><p>${T('독자 제작 문제로 듣기 30문항과 읽기 40문항을 연습합니다.','オリジナル問題で聞き取り30問・読解40問を練習します。','Practice 30 listening and 40 reading questions with original content.','使用原创题目练习30道听力题和40道阅读题。')}</p></div><div class="t1setup"><button onclick="t1Begin('full')"><small>100 MIN</small><b>🎓 ${T('전체 실전','フル模擬試験','Full Mock Exam','完整模拟考试')}</b><p>${T('듣기 30 → 읽기 40, 총 70문항','聞き取り30 → 読解40、全70問','Listening 30 → Reading 40, 70 questions total','听力30 → 阅读40，共70题')}</p></button><button onclick="t1Begin('listening')"><small>40 MIN</small><b>🎧 ${T('듣기만','聞き取りのみ','Listening Only','仅听力')}</b><p>${T('30문항 · 실전에서는 각 문항 1회 재생','30問 · 実戦では各問題1回のみ再生','30 questions · one playback per question in Exam Mode','30题 · 实战模式每题仅播放一次')}</p></button><button onclick="t1Begin('reading')"><small>60 MIN</small><b>📖 ${T('읽기만','読解のみ','Reading Only','仅阅读')}</b><p>${T('40문항','40問','40 questions','40题')}</p></button></div><button class="primary alt" style="margin-top:12px" onclick="setView('home')">${T('홈으로','ホームへ','Back Home','返回首页')}</button>`}
 window.t1Begin=k=>{clearQ();const m=k==='listening'?40:k==='reading'?60:100;Q={mode:'real',kind:k,ids:pool(k).map(x=>x.id),i:0,answers:{},played:{},started:Date.now(),duration:m*60};saveQ();open('t1quiz')};
@@ -83,9 +162,29 @@ function renderQuiz(sc){restore();if(!Q)return open('t1setup');const q=cur();if(
 function gradeText(total){if(total>=140)return T('2급','2級','Level 2','2级');if(total>=80)return T('1급','1級','Level 1','1级');return T('등급 전','級なし','Below Level 1','未达等级')}
 function renderResult(sc){restore();if(!Q?.result)return open('home');if(Q.mode!=='real'){const r=Q.result;sc.innerHTML=`<div class="t1result"><h2>${Q.mode==='game'?T('⚔️ 배틀 완료','⚔️ バトル完了','⚔️ Battle Complete','⚔️ 挑战完成'):T('♾ 연습 종료','♾ 練習終了','♾ Practice Complete','♾ 练习结束')}</h2><div class="t1score">${r.score}<small> / ${r.total}</small></div><p>${T('정확도','正答率','Accuracy','正确率')} ${r.total?Math.round(r.score/r.total*100):0}%</p></div><button class="primary" style="margin-top:10px" onclick="setView('home')">${T('홈','ホーム','Home','首页')}</button>`;return}const r=Q.result,full=r.lt&&r.rt,score=full?r.total:(r.lt?r.ls:r.rs),den=full?200:100,grade=full?gradeText(r.total):'';sc.innerHTML=`<div class="t1result"><small>TOPIK I · ${T('연습 결과','練習結果','PRACTICE RESULT','练习结果')}</small><h2>✅ ${T('풀이 완료','解答完了','Completed','答题完成')}</h2><div class="t1score">${score}<small> / ${den}</small></div>${full?`<b style="font-size:18px">${T('연습 판정','練習判定','Practice Level','练习等级')}: ${grade}</b>`:''}<div class="t1split" style="margin-top:12px">${r.lt?`<div><small>${T('듣기','聞き取り','Listening','听力')}</small><b>${r.ls}</b><small>${r.lc}/${r.lt}</small></div>`:''}${r.rt?`<div><small>${T('읽기','読解','Reading','阅读')}</small><b>${r.rs}</b><small>${r.rc}/${r.rt}</small></div>`:''}</div>${r.wrong.length?`<div style="margin-top:12px;font-size:10px;color:#9fb4d1">${T('틀린 문제','間違えた問題','Missed Questions','错题')}</div><div class="t1wrong">${r.wrong.map(x=>`<span>Q${x}</span>`).join('')}</div>`:''}</div><button class="primary" style="margin-top:10px" onclick="setView('home')">${T('홈','ホーム','Home','首页')}</button>`}
 const baseRender=render;
-render=function(){if(['t1setup','t1quiz','t1result'].includes(S.view)){try{hideSelection()}catch(e){};try{renderShell()}catch(e){};const sc=$('screen');sc.className='screen';sc.innerHTML='';if(S.view==='t1setup')return renderSetup(sc);if(S.view==='t1quiz')return renderQuiz(sc);return renderResult(sc)}return baseRender()};
+render=function(){
+  const homeOn=S.view==='home',shortsOn=S.view==='shorts',statsOn=S.view==='stats',light=homeOn||shortsOn||statsOn;
+  document.body.classList.toggle('tq-home-active',homeOn);
+  document.body.classList.toggle('tq-shorts-active',shortsOn);
+  document.body.classList.toggle('tq-stats-active',statsOn);
+  document.documentElement.style.colorScheme=light?'light':'dark';
+  const theme=document.querySelector('meta[name="theme-color"]'),scheme=document.querySelector('meta[name="color-scheme"]');
+  if(theme)theme.content=light?'#f4f6fb':'#07101d';if(scheme)scheme.content=light?'light':'dark';
+  syncStatsNav();
+  if(['t1setup','t1quiz','t1result','shorts','stats'].includes(S.view)){
+    try{hideSelection()}catch(e){};try{renderShell()}catch(e){}
+    const sc=$('screen');sc.className='screen';sc.innerHTML='';
+    if(S.view==='shorts')return renderShorts(sc);
+    if(S.view==='stats')return statsPage(sc);
+    if(S.view==='t1setup')return renderSetup(sc);
+    if(S.view==='t1quiz')return renderQuiz(sc);
+    return renderResult(sc);
+  }
+  return baseRender();
+};
 const baseSetView=setView;
 setView=function(v){if(/^t1/.test(S.view||'')&&!/^t1/.test(v||'')){stopAudio();stopTimer()}return baseSetView(v)};
 window.TOPIK1_QUESTIONS=A;
-if(S.view==='home')setTimeout(()=>render(),0)
+setTimeout(()=>render(),0)
 })();
+
