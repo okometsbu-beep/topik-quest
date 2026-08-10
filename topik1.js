@@ -200,7 +200,7 @@ home=function(sc){
     <div class="t1level"><button class="${lv===1?'on':''}" onclick="tqSetLevel(1)">TOPIK I</button><button class="${lv===2?'on':''}" onclick="tqSetLevel(2)">TOPIK II</button></div>
     <div class="tqV9Greeting"><small>DAILY KOREAN MISSION</small><h1>${T('오늘도 한국어 ','今日も韓国語を','One more Korean ','今天也向韩语')}<em>${T('한 걸음!','一歩ずつ！','step!','前进一步！')}</em></h1></div>
     <section class="tqV9Hero">
-      <img class="tqV9HeroImage" src="assets/topik-home-hero-v9.png" alt="TOPIK QUEST Korean study">
+      <img class="tqV9HeroImage" src="assets/topik-home-hero-v9.jpg" alt="TOPIK QUEST Korean study">
       <div class="tqV9HeroShade"></div>
       <div class="tqV9HeroContent"><div class="tqV9HeroTop"><span class="tqV9Label">▣ ${T('오늘의 학습','今日の学習','Today’s lesson','今日学习')}</span><div class="tqV9Ring" style="--p:${degree}deg"><b>${daily}<small>/5</small></b></div></div><div class="tqV9HeroBottom"><h2>${lessonTitle}</h2><p>${lessonMeta}</p><button class="tqV9Continue" onclick="tqHomeContinue()">${T('이어서 학습','続きから学習','Continue learning','继续学习')} ›</button></div></div>
     </section>
