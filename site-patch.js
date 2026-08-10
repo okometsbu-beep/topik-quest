@@ -1,7 +1,7 @@
-// MALBIT bootstrap v18
+// MALBIT bootstrap v19
 // Load the shared core, reviewed data, TOPIK I engine, then learning interactions.
 (function(){
-  const v='18';
+  const v='19';
   const load=src=>new Promise((resolve,reject)=>{
     const s=document.createElement('script');
     s.src=src+(src.includes('?')?'&':'?')+'v='+v;
