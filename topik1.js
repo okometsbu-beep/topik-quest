@@ -458,7 +458,7 @@ function shortType(type){return type==='grammar'?T('문법','文法','Grammar','
 function syncStatsNav(){
   const b=document.getElementById('nav_stats')||document.getElementById('nav_speaking');if(!b)return;
   b.id='nav_stats';b.onclick=()=>setView('stats');b.innerHTML=`<b>▥</b><span>${T('통계','統計','Stats','统计')}</span>`;
-  const subtitle=document.querySelector('.top .title small');if(subtitle)subtitle.textContent='TOPIK I · II · SHORTS · RANDOM PRACTICE';
+  const subtitle=document.querySelector('.top .title small');if(subtitle)subtitle.textContent=`TOPIK ${level()===1?'I':'II'} · MALBIT`;
 }
 syncStatsNav();
 window.startShorts=()=>{SH.activeLevel=level();const p=shortState();p.selected=null;p.locked=false;saveShorts();open('shorts')};

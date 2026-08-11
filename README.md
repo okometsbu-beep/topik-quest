@@ -21,6 +21,11 @@ An independent Korean-learning game and unofficial TOPIK I & II practice app.
 - Mobile route reset and a viewport-sized expedition map with automatic current-position focus, keeping dice and branch actions within reach
 - First-run language/level onboarding, settings/help/privacy disclosures, full progress export/import/reset, and installable PWA metadata
 - Context-reviewed translation for the TOPIK I “세 시 / 네 시” listening item, plus whole-question translation to avoid fragment mistranslation
+- A three-question first-run diagnostic with instant evidence, a recommended starting level, and a settings retake path
+- Explicit enter/select/submit/complete learning events, with external product analytics disabled until the learner opts in
+- Fixed bottom dice/route controls, automatic battle-card focus, and current-space map centering for one-handed game play
+- Honest account, backup, notification, support, terms, privacy, and Free/Plus surfaces with integration boundaries for future cloud sync and verified store billing
+- A first-Shorts vocabulary save prompt with next-day review scheduling and option-specific review reasons grounded in each passage or transcript
 
 ## Roadmap
 - Separate content packs under `data/topik1` and `data/topik2`

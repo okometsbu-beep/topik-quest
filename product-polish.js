@@ -1,4 +1,4 @@
-// MALBIT product polish v20 · trustworthy learning loop, navigation and settings.
+// MALBIT product polish v21 · trustworthy learning loop, navigation and settings.
 (function(){
 'use strict';
 
@@ -201,16 +201,16 @@ window.malbitVocabGrade=(index,grade)=>{migrateVocab();const v=S.vocab?.[Number(
 window.malbitAddSampleVocab=()=>{S.vocab=Array.isArray(S.vocab)?S.vocab:[];if(!S.vocab.some(v=>v.text==='꾸준하다'))S.vocab.unshift({text:'꾸준하다',source:L('단어장 안내','単語帳ガイド','Vocabulary guide','单词本引导'),ja:'こつこつ続ける',meanings:{ja:'こつこつ続ける',en:'to be consistent',zh:'坚持不懈'},show:false,dueAt:Date.now(),interval:1,repetitions:0});save();render()};
 if(typeof window.deleteVocab==='function')window.deleteVocab=index=>{if(!confirm(L('이 표현을 단어장에서 삭제할까요?','この表現を単語帳から削除しますか？','Remove this expression from Vocabulary?','从单词本中删除此表达吗？')))return;S.vocab.splice(Number(index),1);save();render()};
 
-const PORTABLE_KEYS=['topikQuestV8','topikQuestExamLevel',T1_SESSION,SHORTS_KEY,GAME_KEY,REVIEW_KEY,EVENTS_KEY,PREFS_KEY,ONBOARD_KEY];
+const PORTABLE_KEYS=['topikQuestV8','topikQuestExamLevel',T1_SESSION,SHORTS_KEY,GAME_KEY,REVIEW_KEY,EVENTS_KEY,PREFS_KEY,ONBOARD_KEY,'malbitDiagnosticV1','malbitJourneyEventsV1','malbitGrowthPrefsV1','malbitInstallIdV1','malbitShortProposalHandled'];
 function progressPayload(){const data={schema:1,app:'MALBIT',exportedAt:new Date().toISOString(),storage:{}};for(const key of PORTABLE_KEYS){const value=localStorage.getItem(key);if(value!=null)data.storage[key]=value}return data}
 window.malbitExportProgress=()=>{const blob=new Blob([JSON.stringify(progressPayload(),null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`malbit-progress-${dayKey()}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
 window.malbitImportProgress=input=>{const file=input?.files?.[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const data=JSON.parse(String(reader.result||''));if(data?.app!=='MALBIT'||!data.storage||typeof data.storage!=='object')throw new Error('format');if(!confirm(L('현재 진행 기록을 가져온 파일로 교체할까요?','現在の記録を読み込んだファイルで置き換えますか？','Replace current progress with the imported file?','用导入文件替换当前进度吗？')))return;for(const key of PORTABLE_KEYS)localStorage.removeItem(key);for(const key of PORTABLE_KEYS)if(Object.prototype.hasOwnProperty.call(data.storage,key))localStorage.setItem(key,String(data.storage[key]));location.reload()}catch(e){toast(L('올바른 MALBIT 진행 파일이 아니에요.','正しいMALBIT進行ファイルではありません。','That is not a valid MALBIT progress file.','这不是有效的MALBIT进度文件。'))}};reader.readAsText(file)};
-window.malbitResetProgress=()=>{if(!confirm(L('학습·게임·오답·단어장 기록을 모두 삭제할까요? 이 작업은 되돌릴 수 없습니다.','学習・ゲーム・誤答・単語帳の記録をすべて削除しますか？元に戻せません。','Delete all learning, game, review, and vocabulary progress? This cannot be undone.','删除全部学习、游戏、错题和单词本记录吗？此操作无法撤销。')))return;for(const key of ['topikQuestV8',T1_SESSION,SHORTS_KEY,GAME_KEY,REVIEW_KEY,EVENTS_KEY,'malbitVocabLongPressUsed'])localStorage.removeItem(key);location.reload()};
+window.malbitResetProgress=()=>{if(!confirm(L('학습·게임·오답·단어장 기록을 모두 삭제할까요? 이 작업은 되돌릴 수 없습니다.','学習・ゲーム・誤答・単語帳の記録をすべて削除しますか？元に戻せません。','Delete all learning, game, review, and vocabulary progress? This cannot be undone.','删除全部学习、游戏、错题和单词本记录吗？此操作无法撤销。')))return;for(const key of PORTABLE_KEYS.concat(['malbitVocabLongPressUsed']))localStorage.removeItem(key);location.reload()};
 window.resetAll=window.malbitResetProgress;
 
 window.malbitSetPref=(name,value)=>{if(name==='dailyGoal')value=Math.max(3,Math.min(20,Number(value)||5));if(name==='randomMix'&&!['balanced','lr','writing'].includes(value))value='balanced';prefs[name]=value;writeJSON(PREFS_KEY,prefs);render()};
 window.malbitSetLanguage=lang=>{if(!['ko','ja','en','zh'].includes(lang))return;setLang(lang);document.documentElement.lang=lang==='zh'?'zh-CN':lang};
-window.malbitCopyReport=async()=>{const payload=`MALBIT v20\nview=${S.view}\nlang=${S.lang}\nlevel=${level()}\nua=${navigator.userAgent}`;try{await navigator.clipboard.writeText(payload);toast(L('문제 신고 정보가 복사됐어요.','不具合報告情報をコピーしました。','Diagnostic details copied.','问题诊断信息已复制。'))}catch(e){prompt(L('아래 내용을 복사해 주세요.','以下をコピーしてください。','Copy the details below.','请复制以下内容。'),payload)}};
+window.malbitCopyReport=async()=>{const payload=`MALBIT v21\nview=${S.view}\nlang=${S.lang}\nlevel=${level()}\nua=${navigator.userAgent}`;try{await navigator.clipboard.writeText(payload);toast(L('문제 신고 정보가 복사됐어요.','不具合報告情報をコピーしました。','Diagnostic details copied.','问题诊断信息已复制。'))}catch(e){prompt(L('아래 내용을 복사해 주세요.','以下をコピーしてください。','Copy the details below.','请复制以下内容。'),payload)}};
 
 window.morePage=function(sc){
   navActive('more');sc.className='screen malbitMoreScreen';const langButtons=[['ko','🇰🇷','한국어'],['ja','🇯🇵','日本語'],['en','🇺🇸','English'],['zh','🇨🇳','中文']].map(([id,flag,name])=>`<button class="${S.lang===id?'on':''}" onclick="malbitSetLanguage('${id}')"><i>${flag}</i><span>${name}</span></button>`).join('');

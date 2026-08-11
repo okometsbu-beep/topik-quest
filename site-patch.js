@@ -1,7 +1,7 @@
-// MALBIT bootstrap v20
+// MALBIT bootstrap v21
 // Load the shared core, reviewed data, TOPIK I engine, then learning interactions.
 (function(){
-  const v='20';
+  const v='21';
   const load=src=>new Promise((resolve,reject)=>{
     const s=document.createElement('script');
     s.src=src+(src.includes('?')?'&':'?')+'v='+v;
@@ -17,6 +17,7 @@
     .then(()=>load('topik1.js'))
     .then(()=>load('learning-features.js'))
     .then(()=>load('product-polish.js'))
+    .then(()=>load('product-growth.js'))
     .then(()=>{
       if(typeof render==='function')render();
       const reveal=()=>document.documentElement.classList.remove('tq-booting');

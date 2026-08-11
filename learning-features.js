@@ -133,6 +133,28 @@ async function localizedField(value,key,source='ja'){
   if(!value)return'';const lang=S.lang||'ko';if(lang===source)return value;
   return translateCached(`review_detail_${key}_${lang}`,value,source,lang);
 }
+const REVIEW_STOP_WORDS=new Set('것 수 이 그 저 은 는 이 가 을 를 에 에서 로 으로 와 과 도 만 의 한 하다 있다 없다 되다 아니다 그리고 그러나 그래서 때문에 대한 대해 가장 다음 내용 글 사람 경우 선택지 정답'.split(' '));
+function reviewTokens(value){return [...new Set(String(value||'').replace(/[①②③④㉠㉡]/g,' ').match(/[가-힣A-Za-z0-9%]+/g)||[])].map(x=>x.toLowerCase()).filter(x=>x.length>1&&!REVIEW_STOP_WORDS.has(x))}
+function bestEvidenceSentence(evidence,correct){
+  const wanted=new Set(reviewTokens(correct)),parts=String(evidence||'').split(/(?<=[.!?。！？]|다\.)\s+|\n+/).map(x=>x.trim()).filter(Boolean);let best='',score=-1;
+  for(const part of parts){const tokens=reviewTokens(part),hit=tokens.reduce((n,x)=>n+(wanted.has(x)?1:0),0),next=hit*100-Math.min(80,part.length);if(next>score){score=next;best=part}}
+  return(best||String(evidence||'')).replace(/\s+/g,' ').slice(0,150)
+}
+function specificWrongChoiceReason(type,evidence,correct,wrong){
+  const lang=S.lang||'ko',proof=bestEvidenceSentence(evidence,correct),evidenceSet=new Set(reviewTokens(evidence)),correctSet=new Set(reviewTokens(correct)),wrongOnly=reviewTokens(wrong).filter(x=>!evidenceSet.has(x)&&!correctSet.has(x)).slice(0,3),changed=wrongOnly.length?wrongOnly.join(' · '):cleanChoice(wrong).replace(/\s+/g,' ').slice(0,42);
+  if(type==='listen')return [
+    `실제 발화의 근거는 “${proof}”입니다. 정답 내용은 “${cleanChoice(correct)}”이고, 이 선택지는 “${changed}”로 시간·대상·행동의 관계를 바꾸거나 근거 없는 정보를 더했으므로 제외합니다.`,
+    `実際の発話の根拠は「${proof}」です。正解は「${cleanChoice(correct)}」ですが、この選択肢は「${changed}」の部分で時刻・対象・行動の関係を変えるか、根拠のない情報を加えているため除外します。`,
+    `The transcript evidence is “${proof}.” The supported answer is “${cleanChoice(correct)}”; this option changes or adds “${changed},” so its time, subject, or action does not match the audio.`,
+    `原话依据是“${proof}”。正确内容是“${cleanChoice(correct)}”；此项把“${changed}”相关的时间、对象或行为关系改掉，或加入了无依据的信息，因此排除。`
+  ][{ko:0,ja:1,en:2,zh:3}[lang]??0];
+  return [
+    `본문에서 직접 확인할 근거는 “${proof}”입니다. 이를 바꾸어 말한 정답은 “${cleanChoice(correct)}”이며, 이 선택지는 “${changed}”라는 주장이나 관계를 추가·반전해 본문과 일치하지 않습니다.`,
+    `本文で直接確認できる根拠は「${proof}」です。その言い換えが「${cleanChoice(correct)}」であり、この選択肢は「${changed}」という主張や関係を追加・反転しているため本文と一致しません。`,
+    `The direct evidence is “${proof}.” It supports “${cleanChoice(correct)}”; this option adds or reverses the claim or relationship around “${changed},” so it is not supported by the passage.`,
+    `原文中的直接依据是“${proof}”，它支持“${cleanChoice(correct)}”；此项围绕“${changed}”增加或反转了原文关系，因此不成立。`
+  ][{ko:0,ja:1,en:2,zh:3}[lang]??0];
+}
 async function detailedReviewExplanation(item,q){
   const type=item.type,lang=S.lang||'ko',n=answerNumber(q),answer=cleanChoice(q.choices?.[q.answerIndex]||q.answer||'');
   let reason='',grammar='',vocab='',elimination='';
@@ -147,13 +169,12 @@ async function detailedReviewExplanation(item,q){
     if(lang!=='ko'&&!q.explanationI18n?.[lang])reason=await translateCached(`review_t1_reason_${item.key}_${lang}`,reason,'ko',lang);
   }
   const evidence=type==='listen'?(q.script||q.prompt||''):(q.stem||'');
+  const correctChoice=cleanChoice(q.choices?.[q.answerIndex]||q.answer||'');
   const choiceReason=(c,i)=>{
     if(i===Number(q.answerIndex))return reason;
     const supplied=q.choiceExplanationsI18n?.[lang]?.[i]||q.choiceExplanations?.[i];
     if(supplied)return supplied;
-    const key=cleanChoice(c).replace(/\s+/g,' ').slice(0,34);
-    if(type==='listen')return text(`“${key}”은(는) 대화에서 확인되는 시간·인물·행동 중 하나를 바꾸거나, 직접 언급되지 않은 내용을 더한 선택지입니다. 음성의 실제 발화와 한 항목씩 대조하면 제외할 수 있습니다.`,`「${key}」は、会話で確認できる時刻・人物・行動のいずれかを入れ替えたか、直接述べられていない内容を加えています。実際の発話と一項目ずつ照合すると除外できます。`,`“${key}” changes a time, person, or action stated in the dialogue, or adds information that was not said. Compare each detail with the transcript to eliminate it.`,`“${key}”改动了对话中的时间、人物或行为，或添加了原文未提及的信息。逐项对照原话即可排除。`);
-    return text(`“${key}”의 핵심 주장이나 연결 관계가 본문의 근거와 일치하지 않습니다. 정답 선택지는 본문에서 직접 바꾸어 말할 수 있지만, 이 선택지는 일부 정보가 반대이거나 근거가 없습니다.`,`「${key}」の中心的な主張または関係が本文の根拠と一致しません。正解は本文から言い換えられますが、この選択肢には反対の情報または根拠のない情報が含まれます。`,`The main claim or relationship in “${key}” is not supported by the passage. The correct option can be paraphrased from the text; this one reverses or adds unsupported information.`,`“${key}”的核心判断或关系与原文依据不一致。正确选项可由原文改述得出，而此项包含相反或无依据的信息。`);
+    return specificWrongChoiceReason(type,evidence,correctChoice,cleanChoice(c));
   };
   const wrongIntro=elimination||text('각 선택지의 시간·대상·행동을 근거 문장과 따로 대조해 보세요.','各選択肢の時刻・対象・行動を根拠文と個別に照合しましょう。','Compare the time, subject, and action in each option with the evidence.','请把每个选项的时间、对象和行为分别与依据句对照。');
   return `<section class="tqReviewDeep"><div class="tqInlineTitle"><span>✓</span><b>${text('상세 해설','詳しい解説','Detailed explanation','详细解析')}</b></div><div class="tqInlineAnswer"><small>${text('정답','正解','Answer','正确答案')}</small><strong>${n}. ${esc(answer)}</strong></div><h4>${text('판단 근거','判断の根拠','Key evidence','判断依据')}</h4><p>${esc(reason)}</p>${evidence?`<blockquote>${esc(evidence)}</blockquote>`:''}${grammar?`<h4>${text('문법 포인트','文法ポイント','Grammar point','语法要点')}</h4><p>${esc(grammar)}</p>`:''}${vocab?`<h4>${text('핵심 어휘','重要語彙','Key vocabulary','核心词汇')}</h4><p>${esc(vocab)}</p>`:''}<h4>${text('선택지별 오답 소거','選択肢ごとの消去','Option-by-option elimination','逐项排除')}</h4><p>${esc(wrongIntro)}</p><ol class="tqReviewChoiceAnalysis">${(q.choices||[]).map((c,i)=>`<li class="${i===q.answerIndex?'right':''}"><b>${i+1}. ${esc(cleanChoice(c))}</b><span>${esc(choiceReason(c,i))}</span></li>`).join('')}</ol></section>`;
