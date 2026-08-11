@@ -71,35 +71,35 @@ const GAME1_RARITIES={
   legendary:{weight:2,color:'#ffbe4e',names:['전설','レジェンド','Legendary','传说']}
 };
 const GAME1_ITEMS=[
-  {id:'practice_blade',icon:'검',slot:'weapon',rarity:'common',weight:24,price:30,names:['연습용 낱말검','練習用ことば剣','Practice Wordblade','练习词语剑'],descs:['보스 공격력 +1','ボスへの攻撃力 +1','Boss damage +1','首领伤害 +1'],effect:{damage:1}},
-  {id:'padded_vest',icon:'갑',slot:'armor',rarity:'common',weight:22,price:32,names:['누빔 학습복','キルト学習服','Quilted Study Vest','夹棉学习服'],descs:['최대 집중력 +1','最大集中力 +1','Max focus +1','最大专注力 +1'],effect:{maxFocus:1}},
-  {id:'old_lantern',icon:'등',slot:'charm',rarity:'common',weight:20,price:28,names:['낡은 한글등','古いハングル灯','Old Hangul Lantern','旧韩文灯'],descs:['시야가 1칸 넓어집니다.','視界が1マス広がります。','Reveal one extra row.','视野扩大1格'],effect:{reveal:1}},
-  {id:'sand_timer',icon:'시',slot:'charm',rarity:'common',weight:20,price:30,names:['느린 모래시계','ゆっくり砂時計','Slow Sandglass','慢速沙漏'],descs:['문제 제한시간 +8초','問題時間 +8秒','Question time +8 sec','答题时间 +8秒'],effect:{timeBonus:8}},
-  {id:'coin_pouch',icon:'금',slot:'charm',rarity:'common',weight:18,price:34,names:['작은 금화 주머니','小さな金貨袋','Small Coin Pouch','小金币袋'],descs:['전투 골드 +20%','戦闘ゴールド +20%','Battle gold +20%','战斗金币 +20%'],effect:{goldBonus:.2}},
-  {id:'trap_boots',icon:'화',slot:'armor',rarity:'uncommon',weight:17,price:55,names:['함정막이 장화','罠よけブーツ','Trapguard Boots','防陷阱靴'],descs:['함정 피해를 한 번 막습니다.','罠の被害を1回防ぎます。','Block one trap per stage.','每关抵挡一次陷阱'],effect:{trapGuard:1}},
-  {id:'context_lens',icon:'맥',slot:'charm',rarity:'uncommon',weight:16,price:58,names:['문맥 렌즈','文脈レンズ','Context Lens','语境镜片'],descs:['스테이지 시작 시 힌트 +1','ステージ開始時ヒント +1','Start each stage with 1 hint.','每关开始获得1个提示'],effect:{hints:1}},
-  {id:'echo_guard',icon:'음',slot:'armor',rarity:'uncommon',weight:15,price:62,names:['메아리 보호대','こだまの守り','Echo Guard','回声护具'],descs:['첫 오답 피해를 막습니다.','最初の誤答ダメージを防ぎます。','Block the first wrong-answer hit.','抵挡第一次答错伤害'],effect:{block:1}},
-  {id:'merchant_pin',icon:'상',slot:'charm',rarity:'uncommon',weight:14,price:60,names:['상인의 표식','商人の印','Merchant Pin','商人徽记'],descs:['상점 가격 15% 할인','ショップ価格15%割引','Shop prices -15%','商店价格 -15%'],effect:{discount:.15}},
-  {id:'syntax_saber',icon:'문',slot:'weapon',rarity:'rare',weight:12,price:95,names:['문장 베기검','文章斬りの剣','Syntax Saber','句法斩剑'],descs:['보스 공격력 +2','ボスへの攻撃力 +2','Boss damage +2','首领伤害 +2'],effect:{damage:2}},
-  {id:'scholar_coat',icon:'학',slot:'armor',rarity:'rare',weight:11,price:100,names:['학자의 외투','学者の外套','Scholar Coat','学者外套'],descs:['최대 집중력 +2','最大集中力 +2','Max focus +2','最大专注力 +2'],effect:{maxFocus:2}},
-  {id:'wordlight_magnet',icon:'어',slot:'charm',rarity:'rare',weight:11,price:96,names:['말빛 자석','言葉の光マグネット','Wordlight Magnet','语光磁石'],descs:['전투 말빛 +1','戦闘の言葉の光 +1','Battle Wordlight +1','战斗语光 +1'],effect:{essenceBonus:1}},
-  {id:'pathfinder_map',icon:'도',slot:'charm',rarity:'rare',weight:10,price:104,names:['길잡이 지도','道しるべの地図','Pathfinder Map','寻路地图'],descs:['시야 +2, 함정 위치를 미리 봅니다.','視界+2、罠を先に確認。','Reveal 2 extra rows and traps.','视野+2并提前显示陷阱'],effect:{reveal:2,showTraps:1}},
-  {id:'comeback_ring',icon:'환',slot:'charm',rarity:'epic',weight:7,price:165,names:['재기의 반지','再起の指輪','Comeback Ring','再起戒指'],descs:['집중력 1에서 정답 시 1 회복','集中力1で正解すると1回復','At 1 focus, a correct answer heals 1.','专注力为1时答对恢复1点'],effect:{comeback:1}},
-  {id:'guardian_plate',icon:'성',slot:'armor',rarity:'epic',weight:6,price:175,names:['수호자의 판갑','守護者の板金鎧','Guardian Plate','守护板甲'],descs:['최대 집중력 +2, 첫 피해 방어','最大集中力+2、最初の被害を防御','Max focus +2 and block first hit.','最大专注力+2并抵挡首次伤害'],effect:{maxFocus:2,block:1}},
-  {id:'grammar_crown',icon:'관',slot:'weapon',rarity:'epic',weight:6,price:180,names:['문법왕의 관검','文法王の冠剣','Grammar Crownblade','语法王冠剑'],descs:['보스 공격력 +3, 제한시간 +6초','ボス攻撃+3、時間+6秒','Boss damage +3, time +6 sec','首领伤害+3，时间+6秒'],effect:{damage:3,timeBonus:6}},
-  {id:'phoenix_quill',icon:'불',slot:'charm',rarity:'legendary',weight:3,price:290,names:['불사조 깃펜','不死鳥の羽根ペン','Phoenix Quill','凤凰羽笔'],descs:['치명 피해를 한 번 버티고 집중력 2 회복','致命傷を1回耐え集中力2回復','Survive one fatal hit and restore 2 focus.','抵挡一次致命伤并恢复2点专注力'],effect:{revive:1}},
-  {id:'master_codex',icon:'빛',slot:'weapon',rarity:'legendary',weight:2,price:320,names:['말빛 대전서','言葉の光大典','Grand Wordlight Codex','语光大典'],descs:['보스 공격력 +4, 골드 +30%','ボス攻撃+4、ゴールド+30%','Boss damage +4, gold +30%','首领伤害+4，金币+30%'],effect:{damage:4,goldBonus:.3}}
+  {id:'practice_blade',icon:'🗡️',slot:'weapon',rarity:'common',weight:24,price:30,names:['연습용 낱말검','練習用ことば剣','Practice Wordblade','练习词语剑'],descs:['보스 공격력 +1','ボスへの攻撃力 +1','Boss damage +1','首领伤害 +1'],effect:{damage:1}},
+  {id:'padded_vest',icon:'🥋',slot:'armor',rarity:'common',weight:22,price:32,names:['누빔 학습복','キルト学習服','Quilted Study Vest','夹棉学习服'],descs:['최대 집중력 +1','最大集中力 +1','Max focus +1','最大专注力 +1'],effect:{maxFocus:1}},
+  {id:'old_lantern',icon:'🏮',slot:'charm',rarity:'common',weight:20,price:28,names:['낡은 한글등','古いハングル灯','Old Hangul Lantern','旧韩文灯'],descs:['시야가 1칸 넓어집니다.','視界が1マス広がります。','Reveal one extra row.','视野扩大1格'],effect:{reveal:1}},
+  {id:'sand_timer',icon:'⏳',slot:'charm',rarity:'common',weight:20,price:30,names:['느린 모래시계','ゆっくり砂時計','Slow Sandglass','慢速沙漏'],descs:['문제 제한시간 +8초','問題時間 +8秒','Question time +8 sec','答题时间 +8秒'],effect:{timeBonus:8}},
+  {id:'coin_pouch',icon:'🪙',slot:'charm',rarity:'common',weight:18,price:34,names:['작은 금화 주머니','小さな金貨袋','Small Coin Pouch','小金币袋'],descs:['전투 골드 +20%','戦闘ゴールド +20%','Battle gold +20%','战斗金币 +20%'],effect:{goldBonus:.2}},
+  {id:'trap_boots',icon:'🥾',slot:'armor',rarity:'uncommon',weight:17,price:55,names:['함정막이 장화','罠よけブーツ','Trapguard Boots','防陷阱靴'],descs:['함정 피해를 한 번 막습니다.','罠の被害を1回防ぎます。','Block one trap per stage.','每关抵挡一次陷阱'],effect:{trapGuard:1}},
+  {id:'context_lens',icon:'🔎',slot:'charm',rarity:'uncommon',weight:16,price:58,names:['문맥 렌즈','文脈レンズ','Context Lens','语境镜片'],descs:['스테이지 시작 시 힌트 +1','ステージ開始時ヒント +1','Start each stage with 1 hint.','每关开始获得1个提示'],effect:{hints:1}},
+  {id:'echo_guard',icon:'🛡️',slot:'armor',rarity:'uncommon',weight:15,price:62,names:['메아리 보호대','こだまの守り','Echo Guard','回声护具'],descs:['첫 오답 피해를 막습니다.','最初の誤答ダメージを防ぎます。','Block the first wrong-answer hit.','抵挡第一次答错伤害'],effect:{block:1}},
+  {id:'merchant_pin',icon:'🏷️',slot:'charm',rarity:'uncommon',weight:14,price:60,names:['상인의 표식','商人の印','Merchant Pin','商人徽记'],descs:['상점 가격 15% 할인','ショップ価格15%割引','Shop prices -15%','商店价格 -15%'],effect:{discount:.15}},
+  {id:'syntax_saber',icon:'⚔️',slot:'weapon',rarity:'rare',weight:12,price:95,names:['문장 베기검','文章斬りの剣','Syntax Saber','句法斩剑'],descs:['보스 공격력 +2','ボスへの攻撃力 +2','Boss damage +2','首领伤害 +2'],effect:{damage:2}},
+  {id:'scholar_coat',icon:'🧥',slot:'armor',rarity:'rare',weight:11,price:100,names:['학자의 외투','学者の外套','Scholar Coat','学者外套'],descs:['최대 집중력 +2','最大集中力 +2','Max focus +2','最大专注力 +2'],effect:{maxFocus:2}},
+  {id:'wordlight_magnet',icon:'🧲',slot:'charm',rarity:'rare',weight:11,price:96,names:['말빛 자석','言葉の光マグネット','Wordlight Magnet','语光磁石'],descs:['전투 말빛 +1','戦闘の言葉の光 +1','Battle Wordlight +1','战斗语光 +1'],effect:{essenceBonus:1}},
+  {id:'pathfinder_map',icon:'🗺️',slot:'charm',rarity:'rare',weight:10,price:104,names:['길잡이 지도','道しるべの地図','Pathfinder Map','寻路地图'],descs:['시야 +2, 함정 위치를 미리 봅니다.','視界+2、罠を先に確認。','Reveal 2 extra rows and traps.','视野+2并提前显示陷阱'],effect:{reveal:2,showTraps:1}},
+  {id:'comeback_ring',icon:'💍',slot:'charm',rarity:'epic',weight:7,price:165,names:['재기의 반지','再起の指輪','Comeback Ring','再起戒指'],descs:['집중력 1에서 정답 시 1 회복','集中力1で正解すると1回復','At 1 focus, a correct answer heals 1.','专注力为1时答对恢复1点'],effect:{comeback:1}},
+  {id:'guardian_plate',icon:'🛡️',slot:'armor',rarity:'epic',weight:6,price:175,names:['수호자의 판갑','守護者の板金鎧','Guardian Plate','守护板甲'],descs:['최대 집중력 +2, 첫 피해 방어','最大集中力+2、最初の被害を防御','Max focus +2 and block first hit.','最大专注力+2并抵挡首次伤害'],effect:{maxFocus:2,block:1}},
+  {id:'grammar_crown',icon:'👑',slot:'weapon',rarity:'epic',weight:6,price:180,names:['문법왕의 관검','文法王の冠剣','Grammar Crownblade','语法王冠剑'],descs:['보스 공격력 +3, 제한시간 +6초','ボス攻撃+3、時間+6秒','Boss damage +3, time +6 sec','首领伤害+3，时间+6秒'],effect:{damage:3,timeBonus:6}},
+  {id:'phoenix_quill',icon:'🪶',slot:'charm',rarity:'legendary',weight:3,price:290,names:['불사조 깃펜','不死鳥の羽根ペン','Phoenix Quill','凤凰羽笔'],descs:['치명 피해를 한 번 버티고 집중력 2 회복','致命傷を1回耐え集中力2回復','Survive one fatal hit and restore 2 focus.','抵挡一次致命伤并恢复2点专注力'],effect:{revive:1}},
+  {id:'master_codex',icon:'📘',slot:'weapon',rarity:'legendary',weight:2,price:320,names:['말빛 대전서','言葉の光大典','Grand Wordlight Codex','语光大典'],descs:['보스 공격력 +4, 골드 +30%','ボス攻撃+4、ゴールド+30%','Boss damage +4, gold +30%','首领伤害+4，金币+30%'],effect:{damage:4,goldBonus:.3}}
 ];
 const GAME1_MONSTERS=[
-  {id:'leaf-muncher',sigil:'芽',names:['풀잎 먹보','若葉の食いしん坊','Leaf Muncher','叶芽贪吃怪'],accent:'#63dda0',hue:88,hp:3,time:52,art:null},
-  {id:'sign-trickster',sigil:'標',names:['표지 장난꾼','標識いたずら鬼','Sign Trickster','路标捣蛋鬼'],accent:'#ffb65c',hue:36,hp:3,time:50,art:null},
-  {id:'story-mimic',sigil:'本',names:['이야기 미믹','物語ミミック','Story Mimic','故事拟态怪'],accent:'#d48cff',hue:292,hp:4,time:48,art:null},
-  {id:'sentence-shell',sigil:'城',names:['문장 갑옷게','文の甲羅ガニ','Sentence Shell','句甲蟹'],accent:'#72c8ff',hue:174,hp:4,time:46,art:null},
-  {id:'echo-droplet',sigil:'音',names:['메아리 방울','こだまのしずく','Echo Droplet','回声水滴'],accent:'#68a7ff',hue:214,hp:4,time:58,art:null},
-  {id:'dialogue-golem',sigil:'話',names:['대화 골렘','会話ゴーレム','Dialogue Golem','对话魔像'],accent:'#ff956a',hue:18,hp:5,time:55,art:null},
-  {id:'cloud-warden',sigil:'雲',names:['먹구름 수호자','暗雲の守護者','Cloud Warden','乌云守卫'],accent:'#ff72b5',hue:318,hp:5,time:52,art:null}
+  {id:'leaf-muncher',sigil:'🌿',sprite:[0,0],names:['풀잎 먹보','若葉の食いしん坊','Leaf Muncher','叶芽贪吃怪'],accent:'#63dda0',hue:88,hp:3,time:52},
+  {id:'sign-trickster',sigil:'🪧',sprite:[1,0],names:['표지 장난꾼','標識いたずら鬼','Sign Trickster','路标捣蛋鬼'],accent:'#ffb65c',hue:36,hp:3,time:50},
+  {id:'story-mimic',sigil:'📖',sprite:[2,0],names:['이야기 미믹','物語ミミック','Story Mimic','故事拟态怪'],accent:'#d48cff',hue:292,hp:4,time:48},
+  {id:'sentence-shell',sigil:'🦀',sprite:[3,0],names:['문장 갑옷게','文の甲羅ガニ','Sentence Shell','句甲蟹'],accent:'#72c8ff',hue:174,hp:4,time:46},
+  {id:'echo-droplet',sigil:'💧',sprite:[0,1],names:['메아리 방울','こだまのしずく','Echo Droplet','回声水滴'],accent:'#68a7ff',hue:214,hp:4,time:58},
+  {id:'dialogue-golem',sigil:'🗿',sprite:[1,1],names:['대화 골렘','会話ゴーレム','Dialogue Golem','对话魔像'],accent:'#ff956a',hue:18,hp:5,time:55},
+  {id:'cloud-warden',sigil:'⛈️',sprite:[2,1],names:['먹구름 수호자','暗雲の守護者','Cloud Warden','乌云守卫'],accent:'#ff72b5',hue:318,hp:5,time:52}
 ];
-const GAME1_TRAIL_GOAL=36;
+const GAME1_TRAIL_GOAL=48;
 const blankGameProfile=()=>({unlock:1,selected:1,cleared:{},run:null});
 let G1={schema:4,profiles:{1:blankGameProfile(),2:blankGameProfile()},runs:0};
 try{
@@ -285,13 +285,13 @@ document.head.appendChild(trailCss);
 function gameHeroSvg(){return `<svg class="tqGameHeroSvg" viewBox="0 0 180 195" aria-hidden="true"><defs><linearGradient id="tqCape" x1="0" x2="1"><stop stop-color="#ff485f"/><stop offset="1" stop-color="#d92750"/></linearGradient><linearGradient id="tqArmor" x1="0" x2="1"><stop stop-color="#2377db"/><stop offset="1" stop-color="#123f91"/></linearGradient></defs><path d="M52 102c-27 17-37 47-40 70 23-7 47-7 66 4l8-61z" fill="url(#tqCape)"/><path d="M67 151l-8 31h19l11-29zm41 0 8 31h19l-7-34z" fill="#263754"/><path d="M55 102c9-22 62-25 75 0l-5 61H67z" fill="url(#tqArmor)" stroke="#72b7ff" stroke-width="3"/><path d="M75 119h45v13H75z" fill="#ffc44e"/><circle cx="94" cy="67" r="43" fill="#ffd5ba" stroke="#17304d" stroke-width="4"/><path d="M54 66c-3-35 20-53 46-50 26 2 43 22 37 53-7-13-13-22-23-29-8 13-31 21-60 26z" fill="#4b281f"/><path d="M61 63c-5-19 4-38 22-48-28 3-45 26-34 58z" fill="#6a3525"/><ellipse cx="78" cy="73" rx="6" ry="8" fill="#18213b"/><ellipse cx="111" cy="73" rx="6" ry="8" fill="#18213b"/><circle cx="80" cy="70" r="2" fill="#fff"/><circle cx="113" cy="70" r="2" fill="#fff"/><path d="M86 89c6 5 13 5 19 0" fill="none" stroke="#c55d63" stroke-width="3" stroke-linecap="round"/><path d="M133 104l25-65 8 3-21 68z" fill="#dff6ff" stroke="#27405c" stroke-width="3"/><path d="M145 108l17 6 5-9-18-6z" fill="#ffc34d" stroke="#27405c" stroke-width="3"/><path d="M130 103l19 7-7 18-18-8z" fill="#ffd5ba" stroke="#17304d" stroke-width="3"/></svg>`}
 function game1NodeMeta(type){
   const m={
-    start:{icon:'旗',name:T('원정 입구','遠征の入口','Expedition entrance','远征入口'),desc:T('장비 없이 출발합니다. 길에서 얻은 것만 사용할 수 있어요.','装備なしで出発。道中で得た物だけ使えます。','You start with no gear and use only what you find.','无装备出发，只能使用途中获得的物品。')},
-    battle:{icon:'문',name:T('몬스터 전투','モンスターバトル','Monster battle','怪物战斗'),desc:T('정답으로 몬스터를 잡으면 골드와 말빛을 얻습니다.','正解してモンスターを倒すとゴールドと言葉の光を獲得。','Defeat the monster with a correct answer for gold and Wordlight.','答对击败怪物，获得金币与语光。')},
-    elite:{icon:'★',name:T('정예 몬스터','エリートモンスター','Elite monster','精英怪物'),desc:T('더 어려운 문제와 더 높은 전리품이 기다립니다.','難しい問題と豪華な戦利品が待っています。','A tougher question with better loot.','更难的题目与更丰厚的战利品。')},
-    camp:{icon:'♥',name:T('야영지','野営地','Camp','营地'),desc:T('집중력을 1 회복합니다.','集中力を1回復します。','Restore 1 focus.','恢复1点专注力。')},
-    treasure:{icon:'▣',name:T('보물상자','宝箱','Treasure chest','宝箱'),desc:T('골드·말빛 재화·장비 중 하나를 발견합니다.','ゴールド・言葉の光・装備のいずれかを発見。','Find gold, Wordlight currency, or gear.','发现金币、语光货币或装备。')},
-    shop:{icon:'상',name:T('떠돌이 상점','旅商人の店','Wandering shop','流浪商店'),desc:T('이 칸에서만 3개의 판매 목록을 열 수 있습니다.','このマスでのみ3つの商品を購入できます。','Only this space opens a three-item shop.','仅在此格开启三件商品的商店。')},
-    trap:{icon:'!',name:T('숨은 함정','隠し罠','Hidden trap','隐藏陷阱'),desc:T('집중력이나 골드를 잃을 수 있습니다.','集中力やゴールドを失うことがあります。','You may lose focus or gold.','可能失去专注力或金币。')},
+    start:{icon:'🚩',name:T('원정 입구','遠征の入口','Expedition entrance','远征入口'),desc:T('장비 없이 출발합니다. 길에서 얻은 것만 사용할 수 있어요.','装備なしで出発。道中で得た物だけ使えます。','You start with no gear and use only what you find.','无装备出发，只能使用途中获得的物品。')},
+    battle:{icon:'⚔️',name:T('몬스터 전투','モンスターバトル','Monster battle','怪物战斗'),desc:T('정답으로 몬스터를 잡으면 골드와 말빛을 얻습니다.','正解してモンスターを倒すとゴールドと言葉の光を獲得。','Defeat the monster with a correct answer for gold and Wordlight.','答对击败怪物，获得金币与语光。')},
+    elite:{icon:'💥',name:T('정예 몬스터','エリートモンスター','Elite monster','精英怪物'),desc:T('더 어려운 문제와 더 높은 전리품이 기다립니다.','難しい問題と豪華な戦利品が待っています。','A tougher question with better loot.','更难的题目与更丰厚的战利品。')},
+    camp:{icon:'⛺',name:T('야영지','野営地','Camp','营地'),desc:T('집중력을 1 회복합니다.','集中力を1回復します。','Restore 1 focus.','恢复1点专注力。')},
+    treasure:{icon:'🎁',name:T('보물상자','宝箱','Treasure chest','宝箱'),desc:T('골드·말빛 재화·장비 중 하나를 발견합니다.','ゴールド・言葉の光・装備のいずれかを発見。','Find gold, Wordlight currency, or gear.','发现金币、语光货币或装备。')},
+    shop:{icon:'🛒',name:T('떠돌이 상점','旅商人の店','Wandering shop','流浪商店'),desc:T('이 칸에서만 3개의 판매 목록을 열 수 있습니다.','このマスでのみ3つの商品を購入できます。','Only this space opens a three-item shop.','仅在此格开启三件商品的商店。')},
+    trap:{icon:'⚠️',name:T('숨은 함정','隠し罠','Hidden trap','隐藏陷阱'),desc:T('집중력이나 골드를 잃을 수 있습니다.','集中力やゴールドを失うことがあります。','You may lose focus or gold.','可能失去专注力或金币。')},
     boss:{icon:game1Monster().sigil,name:game1MonsterName(),desc:T('연속 정답으로 마지막 몬스터의 HP를 깎으세요.','連続正解で最後のモンスターのHPを削ろう。','Use correct-answer combos to drain the final monster’s HP.','用连续答对削减最终怪物的HP。')}
   };return m[type]||m.battle
 }
@@ -307,7 +307,7 @@ function game1BuildTrail(stage){
     const id='m'+depth,jitter=(game1Hash(`${stage}:x:${depth}`)%13)-6,x=Math.max(18,Math.min(82,50+Math.sin((depth+stage)*1.37)*21+jitter)),y=4+depth/GAME1_TRAIL_GOAL*92,node={id,depth,x:Number(x.toFixed(1)),y:Number(y.toFixed(1)),type:game1NodeType(depth,id,stage),next:[]};nodes.push(node);byId[id]=node;main.push(node)
   }
   for(let depth=0;depth<GAME1_TRAIL_GOAL;depth++)main[depth].next=['m'+(depth+1)];
-  const forks=[{start:3,end:8,side:-1},{start:10,end:15,side:1},{start:17,end:23,side:-1},{start:25,end:31,side:1}];
+  const forks=[{start:4,end:10,side:-1},{start:13,end:20,side:1},{start:24,end:31,side:-1},{start:35,end:42,side:1}];
   forks.forEach((fork,index)=>{
     let prev=main[fork.start],first=null;
     for(let depth=fork.start+1;depth<fork.end;depth++){
@@ -330,8 +330,8 @@ function game1TrailMap(){
 function game1Focus(){return Array.from({length:Number(Q.maxFocus)||3},(_,i)=>i<(Number(Q.focus)||0)?'♥':'♡').join('')}
 function game1CombatState(){const hp=Math.max(0,Number(Q.bossHp)||0),max=Math.max(1,Number(Q.bossMax)||4),pct=Math.round(hp/max*100);return{hp,max,pct,state:hp===0?'dead':pct<=35?'critical':pct<=70?'hurt':'fresh'}}
 function game1MonsterMarkup(state='fresh',scope='',stage=Q?.gameStage||game1Profile().selected){
-  const m=game1Monster(stage),asset=m.art&&typeof m.art==='object'?(m.art[state]||m.art.base):m.art,src=asset||mascot(state);
-  return `<div class="t1MonsterAvatar ${scope}" style="--monster-accent:${m.accent};--monster-hue:${m.hue}deg"><span class="t1MonsterSigil">${m.sigil}</span><img class="tqGameMonster" src="${E(src)}" alt="${E(game1MonsterName(stage))}"></div>`
+  const m=game1Monster(stage),sprite=Array.isArray(m.sprite)?m.sprite:[0,0],x=[0,33.333,66.667,100][sprite[0]]||0,y=sprite[1]?100:0;
+  return `<div class="t1MonsterAvatar ${scope} is-${state}" style="--monster-accent:${m.accent};--monster-hue:${m.hue}deg"><span class="t1MonsterSigil" aria-hidden="true">${m.sigil}</span><span class="tqGameMonsterArt" role="img" aria-label="${E(game1MonsterName(stage))}" style="--sprite-x:${x}%;--sprite-y:${y}%"></span></div>`
 }
 function game1DiceMarkup(value,rolling=false){const faces=['','⚀','⚁','⚂','⚃','⚄','⚅'],shown=rolling?'🎲':faces[value]||'🎲',label=rolling?T('주사위 굴리는 중','サイコロを振っています','Rolling dice','正在掷骰子'):value?T(`${value}이 나옴`,`${value}が出ました`,`Rolled ${value}`,`掷出${value}`):T('주사위','サイコロ','Dice','骰子');return `<span class="t1TrailDice ${rolling?'rolling':''}" aria-label="${label}"><i>${shown}</i></span>`}
 function game1Weighted(entries){let total=entries.reduce((n,x)=>n+Math.max(0,Number(x.weight)||0),0),roll=Math.random()*total;for(const x of entries){roll-=Math.max(0,Number(x.weight)||0);if(roll<=0)return x}return entries[entries.length-1]}
@@ -515,9 +515,9 @@ home=function(sc){
     <div class="t1level"><button class="${lv===1?'on':''}" onclick="tqSetLevel(1)">TOPIK I</button><button class="${lv===2?'on':''}" onclick="tqSetLevel(2)">TOPIK II</button></div>
     <div class="tqV9Greeting"><small>DAILY KOREAN MISSION</small><h1>${T('오늘도 한국어 ','今日も韓国語を','One more Korean ','今天也向韩语')}<em>${T('한 걸음!','一歩ずつ！','step!','前进一步！')}</em></h1></div>
     <section class="tqV9Hero">
-      <img class="tqV9HeroImage" src="${HOME_HERO}" alt="MALBIT Korean study">
+      <img class="tqV9HeroImage" src="assets/art/malbit-home-hero.webp" alt="${T('서울의 밤, 한국어를 공부하는 말빛 학습자','ソウルの夜に韓国語を学ぶMALBIT学習者','A MALBIT learner studying Korean at night in Seoul','首尔夜晚学习韩语的MALBIT学习者')}" width="1280" height="720" fetchpriority="high">
       <div class="tqV9HeroShade"></div>
-      <div class="tqV9HeroContent"><div class="tqV9HeroTop"><span class="tqV9Label">▣ ${T('오늘의 학습','今日の学習','Today’s lesson','今日学习')}</span><div class="tqV9Ring" style="--p:${degree}deg"><b>${daily}<small>/5</small></b></div></div><div class="tqV9HeroBottom"><h2>${lessonTitle}</h2><p>${lessonMeta}</p><button class="tqV9Continue" onclick="tqHomeContinue()">${T('이어서 학습','続きから学習','Continue learning','继续学习')} ›</button></div></div>
+      <div class="tqV9HeroContent"><div class="tqV9HeroTop"><span class="tqV9Label">✦ ${T('오늘의 학습','今日の学習','Today’s lesson','今日学习')}</span><div class="tqV9Ring" style="--p:${degree}deg"><b>${daily}<small>/5</small></b></div></div><div class="tqV9HeroBottom"><h2>${lessonTitle}</h2><p>${lessonMeta}</p><button class="tqV9Continue" onclick="tqHomeContinue()">${session&&!session.result?T('이어서 학습','続きから学習','Continue learning','继续学习'):T('오늘 학습 시작','今日の学習を始める','Start today’s lesson','开始今日学习')} ›</button></div></div>
     </section>
     <div class="tqV9SectionHead"><b>⚡ ${T('빠른 연습','クイック練習','Quick practice','快速练习')}</b><span>${lv===1?'TOPIK I':'TOPIK II'}</span></div>
     <div class="tqV9Modes">
@@ -525,7 +525,7 @@ home=function(sc){
       <button class="tqV9Mode game" onclick="tqStartMode('game')"><i>🎮</i><b>${T('게임모드','ゲームモード','Game Mode','游戏模式')}</b><small>${T('6면 주사위·몬스터 원정','6面サイコロ・モンスター遠征','Six-sided dice monster expedition','六面骰·怪物远征')}</small></button>
       <button class="tqV9Mode inf" onclick="tqStartMode('shorts')"><i>⚡</i><b>${T('숏츠모드','ショーツモード','Shorts Mode','短题模式')}</b><small>${T('단어·어휘·문법 초스피드','単語・語彙・文法を超高速で','Rapid vocab & grammar','单词词汇语法极速练习')}</small></button>
     </div>
-    <div class="tqV9Utility"><button onclick="tqStartMode('real')"><i>📝</i><span><b>${T('전체 모의고사','フル模擬試験','Full Mock Exam','完整模拟考试')}</b><small>${T('시험 시간·영역별 연습','試験時間・分野別練習','Timed full or section exam','计时全套或分项练习')}</small></span></button><button onclick="setView('speaking')"><i>🎙</i><span><b>${T('말하기 연습','スピーキング','Speaking','口语练习')}</b><small>${T('실시간 인식·자동 채점','リアルタイム認識','Live recognition','实时识别')}</small></span></button></div>
+    <div class="tqV9Utility"><button onclick="tqStartMode('real')"><i>📝</i><span><b>${T('전체 모의고사','フル模擬試験','Full Mock Exam','完整模拟考试')}</b><small>${T('시험 시간·영역별 연습','試験時間・分野別練習','Timed full or section exam','计时全套或分项练习')}</small></span></button><button onclick="setView('speaking')"><i>🎙</i><span><b>${T('말하기 연습','スピーキング','Speaking','口语练习')}</b><small>${T('기기 음성인식·연습 점수','端末音声認識・練習スコア','Device recognition · practice score','设备语音识别·练习评分')}</small></span></button></div>
     <section class="tqV9Week"><div class="tqV9WeekTop"><div><h2>${T('주간 목표','週間目標','Weekly goal','每周目标')} <span>${weekGoal}/5${S.lang==='ko'?'일':''}</span></h2><p>${T('매일 꾸준히 학습하고 목표를 달성해요!','毎日続けて目標を達成しよう！','Keep learning and reach your goal!','每天坚持学习并完成目标！')}</p></div><button class="tqV9Stats" onclick="setView('stats')">${T('통계 ›','統計 ›','Stats ›','统计 ›')}</button></div><div class="tqV9Days">${stats.week.map((x,i)=>`<div class="tqV9Day ${x.on?'on':''}"><i>${x.on?'✓':'·'}</i><small>${labels[i]}</small></div>`).join('')}</div></section>`;
 };
 function renderSetup(sc){navActive('home');sc.innerHTML=`<div class="sectionTitle"><h2>TOPIK I · ${T('실전모드','実戦モード','Exam Mode','实战模式')}</h2><span>70 QUESTIONS</span></div><div class="infoCard"><h3>${T('TOPIK I 모의연습 세트','TOPIK I 模擬練習セット','TOPIK I Mock Practice Set','TOPIK I 模拟练习套题')}</h3><p>${T('독자 제작 문제로 듣기 30문항과 읽기 40문항을 연습합니다.','オリジナル問題で聞き取り30問・読解40問を練習します。','Practice 30 listening and 40 reading questions with original content.','使用原创题目练习30道听力题和40道阅读题。')}</p></div><div class="t1setup"><button onclick="t1Begin('full')"><small>100 MIN</small><b>🎓 ${T('전체 실전','フル模擬試験','Full Mock Exam','完整模拟考试')}</b><p>${T('듣기 30 → 읽기 40, 총 70문항','聞き取り30 → 読解40、全70問','Listening 30 → Reading 40, 70 questions total','听力30 → 阅读40，共70题')}</p></button><button onclick="t1Begin('listening')"><small>40 MIN</small><b>🎧 ${T('듣기만','聞き取りのみ','Listening Only','仅听力')}</b><p>${T('30문항 · 실전에서는 각 문항 1회 재생','30問 · 実戦では各問題1回のみ再生','30 questions · one playback per question in Exam Mode','30题 · 实战模式每题仅播放一次')}</p></button><button onclick="t1Begin('reading')"><small>60 MIN</small><b>📖 ${T('읽기만','読解のみ','Reading Only','仅阅读')}</b><p>${T('40문항','40問','40 questions','40题')}</p></button></div><button class="primary alt" style="margin-top:12px" onclick="setView('home')">${T('홈으로','ホームへ','Back Home','返回首页')}</button>`}
