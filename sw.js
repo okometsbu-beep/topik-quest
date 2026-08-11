@@ -1,5 +1,5 @@
-const CACHE='malbit-v22';
-const CORE=['./','./index.html','./site-patch.js','./site-patch-core.js','./topik1.js','./learning-features.js','./product-polish.js','./product-growth.js','./app-polish-v22.js','./assets/art/malbit-home-hero.webp','./assets/art/malbit-monsters-atlas.webp','./manifest.webmanifest','./icon.svg','./data/topik1-listening.js','./data/topik1-reading.js','./data/shorts-levels.js','./data/explanations-i18n.js'];
+const CACHE='malbit-v23';
+const CORE=['./','./index.html','./site-patch.js','./site-patch-core.js','./topik1.js','./learning-features.js','./product-polish.js','./product-growth.js','./app-polish-v22.js','./assets/art/malbit-home-hero.webp','./assets/art/malbit-monsters-atlas.webp','./assets/art/malbit-adventurer.webp','./manifest.webmanifest','./icon.svg','./data/topik1-listening.js','./data/topik1-reading.js','./data/shorts-levels.js','./data/explanations-i18n.js'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',event=>{
