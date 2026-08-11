@@ -1,4 +1,4 @@
-// MALBIT v22 · final interaction, accessibility and visual-quality pass.
+// MALBIT v23 · final interaction, accessibility and visual-quality pass.
 (function(){
 'use strict';
 
@@ -78,7 +78,7 @@ function patchStats(){
 
 function patchMore(){
   if(S?.view!=='more')return;
-  const badge=document.querySelector('.malbitPageTitle>span');if(badge)badge.textContent='v22';
+  const badge=document.querySelector('.malbitPageTitle>span');if(badge)badge.textContent='v23';
   const reminderTime=document.querySelector('.malbitToggleRow input[type="time"]');if(reminderTime)reminderTime.setAttribute('aria-label',L('복습 알림 시간','復習通知の時刻','Review reminder time','复习提醒时间'));
   if(typeof window.MALBIT_ACCOUNT_ADAPTER?.signIn!=='function')document.querySelector('.malbitAccountCard')?.remove();
   if(typeof window.MALBIT_BILLING_ADAPTER?.startCheckout!=='function')document.querySelector('.malbitPlusCard')?.remove();
@@ -145,6 +145,7 @@ if(typeof render==='function'){
 const style=document.createElement('style');
 style.textContent=`
   .tqGameMonsterArt{display:block;width:100%;height:100%;background-image:url('assets/art/malbit-monsters-atlas.webp');background-repeat:no-repeat;background-size:400% 200%;background-position:var(--sprite-x) var(--sprite-y);filter:drop-shadow(0 12px 15px rgba(0,0,0,.34));transform-origin:50% 80%}
+  .tqGameHeroSvg{display:block;overflow:visible}.tqGameHeroSvg>img{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 10px 12px rgba(0,0,0,.28));pointer-events:none}
   .t1MonsterAvatar.is-hurt .tqGameMonsterArt{filter:brightness(1.12) saturate(.9) drop-shadow(0 0 15px var(--monster-accent))}.t1MonsterAvatar.is-critical .tqGameMonsterArt{filter:saturate(.65) brightness(.82) drop-shadow(0 8px 12px rgba(0,0,0,.4))}.t1MonsterAvatar.is-dead .tqGameMonsterArt{filter:grayscale(.85) brightness(.58);transform:rotate(8deg) translateY(8px)}
   .tqV9HeroImage{object-position:center center}.tqV9HeroShade{background:linear-gradient(90deg,rgba(4,12,27,.78) 0%,rgba(4,12,27,.26) 55%,rgba(4,12,27,.08) 100%),linear-gradient(0deg,rgba(4,12,27,.9),transparent 64%)!important}.tqV9HeroBottom{width:70%}
   .malbitFocusMode{padding-bottom:0}.malbitFocusMode .bottom{display:none}.malbitFocusMode .malbitGameDock{bottom:calc(10px + env(safe-area-inset-bottom))}.malbitModalOpen{overflow:hidden}
