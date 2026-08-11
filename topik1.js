@@ -186,7 +186,6 @@ function clearQ(){Q=null;try{localStorage.removeItem(SESSION)}catch(e){}}
 function restore(){if(Q)return Q;try{Q=JSON.parse(localStorage.getItem(SESSION)||'null')}catch(e){};return Q}
 function seconds(){return Q?.duration?Q.duration-Math.floor((Date.now()-Q.started)/1000):999999}
 window.tqStartMode=mode=>{
-  markHomeActivity();
   if(mode==='shorts'||mode==='infinity')return startShorts();
   const requestedLevel=level();
   if(requestedLevel===2){
@@ -199,7 +198,6 @@ window.tqStartMode=mode=>{
   return startPractice('random',1);
 };
 window.tqHomeContinue=()=>{
-  markHomeActivity();
   const lv=level(),session=restore(),profile=game1Profile(lv);
   if(session&&!session.result&&Number(session.examLevel||1)===lv)return open('t1quiz');
   if(lv===1){profile.selected=Math.min(profile.unlock,GAME1_STAGES.length);saveGame1();return open('t1game')}

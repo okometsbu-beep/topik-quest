@@ -107,6 +107,8 @@ async function translatedReviewParts(item,q){
   const lang=S.lang||'ko',original=originalQuestionParts(q,item.type);
   if(lang==='ko')return original;
   const target=lang,base=`review_v3_${item.key}_${target}`;
+  const reviewed=window.MALBIT_REVIEWED_TRANSLATIONS?.[item.level]?.[item.type]?.[item.id]?.[target];
+  if(reviewed)return{fullText:reviewed,reviewed:true};
   let instruction='';
   if(item.type==='listen')instruction=text('', '音声と質問を読み、最も適切な答えを選んでください。','Read the audio transcript and question, then choose the best answer.','阅读听力原文和问题，选择最恰当的答案。');
   else instruction=text('', '次の文を読んで、最も適切な答えを選んでください。','Read the passage and choose the best answer.','阅读下面的内容，选择最恰当的答案。');
@@ -117,15 +119,14 @@ async function translatedReviewParts(item,q){
     script=item.type==='listen'?(q.scriptJa||await translateCached(base+'_script',original.script,'ko','ja')):'';
     choices=item.type==='listen'&&Array.isArray(q.choicesJa)?q.choicesJa.map(cleanChoice):await Promise.all(original.choices.map((x,i)=>translateCached(base+'_choice_'+i,x,'ko','ja')));
   }else{
-    [body,script]=await Promise.all([
-      translateCached(base+'_body',original.body,'ko',target),
-      original.script?translateCached(base+'_script',original.script,'ko',target):Promise.resolve('')
-    ]);
-    choices=await Promise.all(original.choices.map((x,i)=>translateCached(base+'_choice_'+i,x,'ko',target)));
+    const source=[original.instruction,original.script,original.body,...original.choices.map((x,i)=>`${i+1}. ${x}`)].filter(Boolean).join('\n\n');
+    const fullText=await translateCached(`review_v4_whole_${item.key}_${target}`,source,'ko',target);
+    return{fullText,reviewed:false};
   }
   return{instruction,body,script,choices};
 }
 function reviewQuestionMarkup(parts,translated=false){
+  if(parts.fullText)return `<div class="tqReviewQuestion ${translated?'translated':''}">${parts.reviewed?`<small class="tqReviewedBadge">✓ ${text('문맥 검수 번역','文脈確認済み翻訳','Context-reviewed translation','语境校对翻译')}</small>`:''}<p>${esc(parts.fullText)}</p></div>`;
   return `<div class="tqReviewQuestion ${translated?'translated':''}">${parts.instruction?`<small>${esc(parts.instruction)}</small>`:''}${parts.script?`<div class="tqReviewScript">${esc(parts.script)}</div>`:''}${parts.body?`<p>${esc(parts.body)}</p>`:''}<ol>${parts.choices.map(x=>`<li>${esc(x)}</li>`).join('')}</ol></div>`;
 }
 async function localizedField(value,key,source='ja'){
@@ -146,8 +147,16 @@ async function detailedReviewExplanation(item,q){
     if(lang!=='ko'&&!q.explanationI18n?.[lang])reason=await translateCached(`review_t1_reason_${item.key}_${lang}`,reason,'ko',lang);
   }
   const evidence=type==='listen'?(q.script||q.prompt||''):(q.stem||'');
-  const whyWrong=elimination||text('나머지 선택지는 본문·대화의 핵심 정보와 직접 일치하지 않거나 요구된 문법 기능을 충족하지 않습니다.','ほかの選択肢は本文・会話の核心情報と直接一致しないか、求められた文法機能を満たしません。','The other choices either conflict with the key evidence or do not satisfy the required grammar function.','其他选项与原文关键依据不直接一致，或不符合题目要求的语法功能。');
-  return `<section class="tqReviewDeep"><div class="tqInlineTitle"><span>✓</span><b>${text('상세 해설','詳しい解説','Detailed explanation','详细解析')}</b></div><div class="tqInlineAnswer"><small>${text('정답','正解','Answer','正确答案')}</small><strong>${n}. ${esc(answer)}</strong></div><h4>${text('판단 근거','判断の根拠','Key evidence','判断依据')}</h4><p>${esc(reason)}</p>${evidence?`<blockquote>${esc(evidence)}</blockquote>`:''}${grammar?`<h4>${text('문법 포인트','文法ポイント','Grammar point','语法要点')}</h4><p>${esc(grammar)}</p>`:''}${vocab?`<h4>${text('핵심 어휘','重要語彙','Key vocabulary','核心词汇')}</h4><p>${esc(vocab)}</p>`:''}<h4>${text('오답 소거','誤答の消去','Eliminating distractors','排除干扰项')}</h4><p>${esc(whyWrong)}</p><ol class="tqReviewChoiceAnalysis">${(q.choices||[]).map((c,i)=>`<li class="${i===q.answerIndex?'right':''}"><b>${i+1}. ${esc(cleanChoice(c))}</b><span>${i===q.answerIndex?esc(reason):esc(whyWrong)}</span></li>`).join('')}</ol></section>`;
+  const choiceReason=(c,i)=>{
+    if(i===Number(q.answerIndex))return reason;
+    const supplied=q.choiceExplanationsI18n?.[lang]?.[i]||q.choiceExplanations?.[i];
+    if(supplied)return supplied;
+    const key=cleanChoice(c).replace(/\s+/g,' ').slice(0,34);
+    if(type==='listen')return text(`“${key}”은(는) 대화에서 확인되는 시간·인물·행동 중 하나를 바꾸거나, 직접 언급되지 않은 내용을 더한 선택지입니다. 음성의 실제 발화와 한 항목씩 대조하면 제외할 수 있습니다.`,`「${key}」は、会話で確認できる時刻・人物・行動のいずれかを入れ替えたか、直接述べられていない内容を加えています。実際の発話と一項目ずつ照合すると除外できます。`,`“${key}” changes a time, person, or action stated in the dialogue, or adds information that was not said. Compare each detail with the transcript to eliminate it.`,`“${key}”改动了对话中的时间、人物或行为，或添加了原文未提及的信息。逐项对照原话即可排除。`);
+    return text(`“${key}”의 핵심 주장이나 연결 관계가 본문의 근거와 일치하지 않습니다. 정답 선택지는 본문에서 직접 바꾸어 말할 수 있지만, 이 선택지는 일부 정보가 반대이거나 근거가 없습니다.`,`「${key}」の中心的な主張または関係が本文の根拠と一致しません。正解は本文から言い換えられますが、この選択肢には反対の情報または根拠のない情報が含まれます。`,`The main claim or relationship in “${key}” is not supported by the passage. The correct option can be paraphrased from the text; this one reverses or adds unsupported information.`,`“${key}”的核心判断或关系与原文依据不一致。正确选项可由原文改述得出，而此项包含相反或无依据的信息。`);
+  };
+  const wrongIntro=elimination||text('각 선택지의 시간·대상·행동을 근거 문장과 따로 대조해 보세요.','各選択肢の時刻・対象・行動を根拠文と個別に照合しましょう。','Compare the time, subject, and action in each option with the evidence.','请把每个选项的时间、对象和行为分别与依据句对照。');
+  return `<section class="tqReviewDeep"><div class="tqInlineTitle"><span>✓</span><b>${text('상세 해설','詳しい解説','Detailed explanation','详细解析')}</b></div><div class="tqInlineAnswer"><small>${text('정답','正解','Answer','正确答案')}</small><strong>${n}. ${esc(answer)}</strong></div><h4>${text('판단 근거','判断の根拠','Key evidence','判断依据')}</h4><p>${esc(reason)}</p>${evidence?`<blockquote>${esc(evidence)}</blockquote>`:''}${grammar?`<h4>${text('문법 포인트','文法ポイント','Grammar point','语法要点')}</h4><p>${esc(grammar)}</p>`:''}${vocab?`<h4>${text('핵심 어휘','重要語彙','Key vocabulary','核心词汇')}</h4><p>${esc(vocab)}</p>`:''}<h4>${text('선택지별 오답 소거','選択肢ごとの消去','Option-by-option elimination','逐项排除')}</h4><p>${esc(wrongIntro)}</p><ol class="tqReviewChoiceAnalysis">${(q.choices||[]).map((c,i)=>`<li class="${i===q.answerIndex?'right':''}"><b>${i+1}. ${esc(cleanChoice(c))}</b><span>${esc(choiceReason(c,i))}</span></li>`).join('')}</ol></section>`;
 }
 function activeReviewItems(){return Object.values(REVIEW.items).filter(x=>x?.active&&reviewQuestion(x.level,x.type,x.id)).sort((a,b)=>(Number(b.lastWrongAt)||0)-(Number(a.lastWrongAt)||0))}
 function openReviewRetry(key){
@@ -320,13 +329,15 @@ function showVocabPopup(term,raw){
   if(!isSavableTerm(term))return toast(text('완전한 단어나 표현을 눌러 주세요.','完全な単語・表現を長押ししてください。','Long-press a complete word or expression.','请长按完整的单词或表达。'));
   pendingVocab={term,raw};const p=popup();if(!p)return;
   p.querySelector('.tqVocabTerm').textContent=term;
+  const input=p.querySelector('.tqVocabInput');if(input){input.value=term;input.setAttribute('aria-label',text('저장할 단어 또는 표현','保存する単語・表現','Word or expression to save','要保存的单词或表达'))}
   const note=p.querySelector('.tqVocabNormalize');
   note.textContent=raw!==term?text(`“${raw}”에서 조사를 정리해 “${term}”로 저장합니다.`,`「${raw}」の助詞を除き、「${term}」として保存します。`,`The particle is removed from “${raw}”; “${term}” will be saved.`,`已从“${raw}”中去除助词，将保存为“${term}”。`):text('이 표현 그대로 저장합니다.','この表現をそのまま保存します。','This expression will be saved as shown.','将按当前表达保存。');
   p.classList.add('open');
 }
 
 function addVocabTerm(term=pendingVocab?.term){
-  const word=normalizeKoreanTerm(term)||String(term||'').trim();if(!isSavableTerm(word))return toast(text('불완전한 어절은 저장하지 않아요.','不完全な語形は保存しません。','Incomplete word fragments are not saved.','不会保存不完整的词形。'));
+  const edited=popup()?.querySelector('.tqVocabInput')?.value;
+  const word=normalizeKoreanTerm(edited||term)||String(edited||term||'').trim();if(!isSavableTerm(word))return toast(text('완전한 단어나 표현으로 고쳐 주세요.','完全な単語・表現に直してください。','Edit this into a complete word or expression.','请修改为完整的单词或表达。'));
   S.vocab=Array.isArray(S.vocab)?S.vocab:[];
   if(S.vocab.some(v=>normalizeKoreanTerm(v.text)===word)){
     closeVocabPopup();return toast(text('이미 단어장에 있어요.','すでに単語帳にあります。','Already in your vocabulary.','已经在单词本中。'));
@@ -338,7 +349,7 @@ function addVocabTerm(term=pendingVocab?.term){
 
 function installPopup(){
   if(popup())return;
-  const el=document.createElement('div');el.id='tqVocabPopup';el.className='tqVocabPopup';el.innerHTML=`<button class="tqVocabBackdrop" aria-label="${text('닫기','閉じる','Close','关闭')}"></button><section role="dialog" aria-modal="true" aria-labelledby="tqVocabPopupTitle"><div class="tqVocabHandle"></div><small>${text('길게 누른 표현','長押しした表現','Long-pressed expression','长按的表达')}</small><strong id="tqVocabPopupTitle" class="tqVocabTerm"></strong><p class="tqVocabNormalize"></p><button class="tqVocabAdd">＋ ${text('단어장에 추가하기','単語帳に追加','Add to Vocabulary','加入单词本')}</button><button class="tqVocabCancel">${text('취소','キャンセル','Cancel','取消')}</button></section>`;
+  const el=document.createElement('div');el.id='tqVocabPopup';el.className='tqVocabPopup';el.innerHTML=`<button class="tqVocabBackdrop" aria-label="${text('닫기','閉じる','Close','关闭')}"></button><section role="dialog" aria-modal="true" aria-labelledby="tqVocabPopupTitle"><div class="tqVocabHandle"></div><small>${text('길게 누른 표현','長押しした表現','Long-pressed expression','长按的表达')}</small><strong id="tqVocabPopupTitle" class="tqVocabTerm"></strong><label class="tqVocabEditLabel">${text('저장 형태 확인·수정','保存形を確認・修正','Review or edit the saved form','确认或修改保存形式')}<input class="tqVocabInput" lang="ko" autocomplete="off" spellcheck="false"></label><p class="tqVocabNormalize"></p><button class="tqVocabAdd">＋ ${text('단어장에 추가하기','単語帳に追加','Add to Vocabulary','加入单词本')}</button><button class="tqVocabCancel">${text('취소','キャンセル','Cancel','取消')}</button></section>`;
   document.body.appendChild(el);el.querySelector('.tqVocabBackdrop').onclick=closeVocabPopup;el.querySelector('.tqVocabCancel').onclick=closeVocabPopup;el.querySelector('.tqVocabAdd').onclick=()=>addVocabTerm();
 }
 

@@ -15,6 +15,12 @@ An independent Korean-learning game and unofficial TOPIK I & II practice app.
 - Persistent wrong-answer review queue with double-tap retries, full-question translation, and detailed evidence, grammar, vocabulary, and distractor explanations
 - Reviewed question-specific inline explanations in Korean / Japanese / English / Chinese, including TOPIK II writing guidance
 - Context-aware long-press vocabulary capture with particle/conjugation cleanup, incomplete-fragment rejection, and review tools
+- Completion-only learning metrics (opening a mode does not count), daily goals, pace statistics, skill accuracy, and a recommended next action
+- Adaptive TOPIK II Random Practice that introduces writing gradually, supports listening/reading-only and writing-focus mixes, and validates writing before submission
+- Spaced-repetition Vocabulary with due dates, Hard/Good/Easy scheduling, pronunciation, editable save forms, and a guided first card
+- Mobile route reset and a viewport-sized expedition map with automatic current-position focus, keeping dice and branch actions within reach
+- First-run language/level onboarding, settings/help/privacy disclosures, full progress export/import/reset, and installable PWA metadata
+- Context-reviewed translation for the TOPIK I “세 시 / 네 시” listening item, plus whole-question translation to avoid fragment mistranslation
 
 ## Roadmap
 - Separate content packs under `data/topik1` and `data/topik2`

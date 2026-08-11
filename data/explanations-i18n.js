@@ -135,30 +135,53 @@ const TOPIK2_LISTENING={
 1:{ko:'상자 안에 유리컵이 있어 깨지지 않게 조심해서 옮겨야 한다고 했으므로 1번 그림이 맞습니다.',ja:'箱の中にガラスのコップがあり、割れないよう注意して運ぶと言っているため、1番の絵が正解です。',en:'They say the box contains glass cups and must be carried carefully so they do not break, so picture 1 is correct.',zh:'对话说箱内有玻璃杯，搬运时要小心避免打碎，因此第1幅图正确。'},
 2:{ko:'창가의 햇빛 때문에 화면이 잘 보이지 않아 커튼을 닫고 책상 조명만 켠다고 했으므로 3번 그림이 맞습니다.',ja:'窓際の日差しで画面が見えないため、カーテンを閉めて机の照明をつけると言っているので、3番の絵が正解です。',en:'The sunlight by the window makes the screen hard to see, so they will close the curtain and use the desk light; picture 3 is correct.',zh:'窗边阳光太强导致看不清屏幕，因此要拉上窗帘并只开桌灯，第3幅图正确。'},
 3:{ko:'통근·통학 40%, 운동 30%, 여가 20%, 장보기 10%의 순서이므로 이 비율을 나타낸 2번 그림이 맞습니다.',ja:'通勤・通学40％、運動30％、余暇20％、買い物10％の順なので、この割合を示す2番の図が正解です。',en:'The order is commuting 40%, exercise 30%, leisure 20%, and shopping 10%, so chart 2 is correct.',zh:'比例依次为通勤上学40%、运动30%、休闲20%、购物10%，因此第2幅图正确。'},
-4:{en:'Then I’ll make the table.',zh:'那表格就由我来做吧。'},5:{en:'I hear weekday evenings are less crowded.',zh:'听说工作日晚上比较空。'},
-6:{en:'I should tell the delivery driver the exact location.',zh:'我得把具体位置告诉快递员。'},7:{en:'That’s a relief. We should be able to get in right away.',zh:'那太好了，我们应该可以马上进去。'},
-8:{en:'I’ll read it again and remove the duplicated section.',zh:'我会再读一遍，删掉重复的部分。'},9:{en:'Ask to have the drink made with soy milk instead of milk.',zh:'请店员把饮品中的牛奶换成豆浆。'},
-10:{en:'Check whether the paper tray is properly closed.',zh:'检查纸盒是否关好。'},11:{en:'Go to the ticket-change counter.',zh:'去车票变更窗口。'},
-12:{en:'Escort the speaker to the waiting room.',zh:'把演讲者带到休息室。'},13:{en:'The market is also open on Wednesdays.',zh:'市场周三也营业。'},
-14:{en:'The first-floor reading room is available during the inspection.',zh:'检查期间可以使用一楼阅览室。'},15:{en:'The district office plans to restore the collapsed walking trail.',zh:'区政府计划修复坍塌的散步道。'},
-16:{en:'The woman observes the animal’s behavior at the owner’s home.',zh:'女方在宠物主人的家中观察动物行为。'},17:{en:'It is best to prepare only as much food as will be eaten.',zh:'饭菜最好只准备够吃的量。'},
-18:{en:'Team members should be given a chance to express their ideas.',zh:'应该给团队成员表达自己想法的机会。'},19:{en:'It is best to plan a relaxed travel itinerary.',zh:'旅行日程最好安排得宽松一些。'},
-20:{en:'Product reviews should be checked for both content and posting date.',zh:'查看商品评价时，应同时确认内容和发布时间。'},21:{en:'Printed materials should mainly be provided to people who need them.',zh:'印刷资料最好重点提供给有需要的人。'},
-22:{en:'The content of the presentation materials may change.',zh:'演示资料的内容可能会改变。'},23:{en:'The speaker is checking whether a product meets the desired conditions.',zh:'说话人正在查看是否有符合所需条件的产品。'},
-24:{en:'The product’s display light can be turned off.',zh:'产品的屏幕灯可以关闭。'},25:{en:'It is important to create experiences available only in the local area.',zh:'创造只有当地才能体验的项目很重要。'},
-26:{en:'Residents participated directly in the festival program.',zh:'居民直接参与了庆典节目。'},27:{en:'To explain why the packaging was changed and what resulted from the change.',zh:'为了说明更换包装的原因及其结果。'},
-28:{en:'After people learned that it was easy to recycle, more people sought out the product.',zh:'人们得知该产品易于回收后，购买者增加了。'},29:{en:'A person who works at a subway lost-and-found center.',zh:'在地铁失物招领中心工作的人。'},
-30:{en:'Items without contact information are photographed and posted on the website.',zh:'没有联系方式的物品会拍照并上传到网站。'},31:{en:'The effect should be thoroughly verified before the facility is adopted in full.',zh:'全面引进该设施前，应充分验证其效果。'},
-32:{en:'The speaker is requesting objective data needed for a policy decision.',zh:'说话人要求提供政策决策所需的客观资料。'},33:{en:'The effect of short naps on learning and memory.',zh:'短暂午睡对学习和记忆的影响。'},
-34:{en:'The group that took a nap remembered more content.',zh:'午睡组记住了更多内容。'},35:{en:'It explains the value and significance of a newly discovered map.',zh:'内容说明了新发现地图的价值和意义。'},
-36:{en:'The map will be exhibited at the museum starting next month.',zh:'该地图将从下个月起在博物馆展出。'},37:{en:'Urban greening should be designed with both location and maintenance in mind.',zh:'城市绿化设计应同时考虑位置和维护。'},
-38:{en:'Creating shade around walkways can lower the perceived temperature.',zh:'在步行道周围营造阴凉可以降低体感温度。'},39:{en:'The development of AI technology that restores damaged video.',zh:'开发修复受损影像的人工智能技术。'},
-40:{en:'AI-generated results must be checked and corrected by experts.',zh:'人工智能生成的结果必须由专家确认并修正。'},41:{en:'Manufacturing can create new growth by combining products and services.',zh:'制造业可以通过结合产品与服务创造新的增长。'},
-42:{en:'The elevator company provides a service that replaces parts before a breakdown.',zh:'电梯公司提供在故障前更换零件的服务。'},43:{en:'The structural principle that lets Jeju stone walls withstand strong winds.',zh:'济州石墙抵御强风的结构原理。'},
-44:{en:'Wind divides and passes through the gaps between the stones.',zh:'风从石头之间的缝隙分流穿过。'},45:{en:'Nutrients can move to nearby trees through the fungal network.',zh:'营养物质可以通过菌丝网络转移到周围的树木。'},
-46:{en:'It explains the role of fungal networks based on research findings.',zh:'内容根据研究结果说明菌丝网络的作用。'},47:{en:'Hub libraries should be selected for a pilot, after which expansion can be decided.',zh:'应先选定中心图书馆试点运行，再决定是否扩大。'},
-48:{en:'It proposes a phased implementation plan after reviewing the conditions.',zh:'内容提出在审查条件后分阶段实施的方案。'},49:{en:'Even without personal information, past choices may reflect social differences.',zh:'即使去除个人信息，过去的选择记录也可能反映社会差异。'},
-50:{en:'It warns against judging fairness by a simplistic standard.',zh:'内容警示不要用简单标准判断公平性。'}
+4:{ko:'남자가 표를 만들겠다고 했으므로 “그럼 표는 제가 만들게요”가 알맞습니다.',ja:'男性が表を作ると言っているため、「では、表は私が作ります」が正解です。',en:'Then I’ll make the table.',zh:'那表格就由我来做吧。'},
+5:{ko:'평일 저녁에는 사람이 비교적 적다고 들었다는 내용이므로 해당 선택지가 정답입니다.',ja:'平日の夕方は比較的空いていると聞いた、という内容の選択肢が正解です。',en:'I hear weekday evenings are less crowded.',zh:'听说工作日晚上比较空。'},
+6:{ko:'배달 기사가 찾을 수 있도록 정확한 위치를 알려 주겠다고 했으므로 해당 선택지가 정답입니다.',ja:'配達員が見つけられるよう、正確な場所を伝えると言っているため、この選択肢が正解です。',en:'I should tell the delivery driver the exact location.',zh:'我得把具体位置告诉快递员。'},
+7:{ko:'바로 들어갈 수 있다는 말을 듣고 안도하는 반응이므로 “다행이네요. 바로 들어갈 수 있겠어요”가 알맞습니다.',ja:'すぐ入れると聞いて安心する応答なので、「よかったです。すぐ入れそうですね」が正解です。',en:'That’s a relief. We should be able to get in right away.',zh:'那太好了，我们应该可以马上进去。'},
+8:{ko:'자료를 다시 읽고 중복된 부분을 삭제하겠다고 했으므로 해당 선택지가 정답입니다.',ja:'資料をもう一度読み、重複した部分を削除すると言っているため、この選択肢が正解です。',en:'I’ll read it again and remove the duplicated section.',zh:'我会再读一遍，删掉重复的部分。'},
+9:{ko:'우유 대신 두유로 음료를 만들어 달라고 요청하는 행동이므로 해당 선택지가 정답입니다.',ja:'牛乳の代わりに豆乳で飲み物を作ってもらうよう頼む行動なので、この選択肢が正解です。',en:'Ask to have the drink made with soy milk instead of milk.',zh:'请店员把饮品中的牛奶换成豆浆。'},
+10:{ko:'인쇄 문제를 해결하기 위해 용지함이 제대로 닫혔는지 확인해야 한다고 했으므로 해당 선택지가 정답입니다.',ja:'印刷の問題を解決するため、用紙トレイがきちんと閉まっているか確認すると言っているので、この選択肢が正解です。',en:'Check whether the paper tray is properly closed.',zh:'检查纸盒是否关好。'},
+11:{ko:'표를 바꾸려면 승차권 변경 창구로 가야 한다고 했으므로 해당 선택지가 정답입니다.',ja:'切符を変更するには変更窓口へ行く必要があるため、この選択肢が正解です。',en:'Go to the ticket-change counter.',zh:'去车票变更窗口。'},
+12:{ko:'발표자를 대기실로 안내하는 행동이 이어져야 하므로 해당 선택지가 정답입니다.',ja:'講演者を控室へ案内する行動が続くため、この選択肢が正解です。',en:'Escort the speaker to the waiting room.',zh:'把演讲者带到休息室。'},
+13:{ko:'시장이 수요일에도 문을 연다고 분명히 말했으므로 해당 내용이 정답입니다.',ja:'市場は水曜日も開いていると明確に述べているため、この内容が正解です。',en:'The market is also open on Wednesdays.',zh:'市场周三也营业。'},
+14:{ko:'점검 기간에도 1층 열람실은 이용할 수 있다고 했으므로 해당 내용이 정답입니다.',ja:'点検期間中も1階の閲覧室は利用できると言っているため、この内容が正解です。',en:'The first-floor reading room is available during the inspection.',zh:'检查期间可以使用一楼阅览室。'},
+15:{ko:'구청이 무너진 산책로를 복구할 계획이라고 했으므로 해당 내용이 정답입니다.',ja:'区役所が崩れた遊歩道を復旧する予定だと述べているため、この内容が正解です。',en:'The district office plans to restore the collapsed walking trail.',zh:'区政府计划修复坍塌的散步道。'},
+16:{ko:'여자는 반려동물 주인의 집에서 동물의 행동을 관찰한다고 했으므로 해당 내용이 정답입니다.',ja:'女性は飼い主の家で動物の行動を観察すると述べているため、この内容が正解です。',en:'The woman observes the animal’s behavior at the owner’s home.',zh:'女方在宠物主人的家中观察动物行为。'},
+17:{ko:'먹을 만큼만 음식을 준비하는 것이 좋다는 주장이므로 해당 선택지가 정답입니다.',ja:'食べ切れる分だけ料理を用意するのがよい、という主張なので、この選択肢が正解です。',en:'It is best to prepare only as much food as will be eaten.',zh:'饭菜最好只准备够吃的量。'},
+18:{ko:'팀원들이 자신의 생각을 말할 기회를 가져야 한다는 주장이므로 해당 선택지가 정답입니다.',ja:'チームのメンバーに自分の意見を述べる機会を与えるべきだ、という主張なので、この選択肢が正解です。',en:'Team members should be given a chance to express their ideas.',zh:'应该给团队成员表达自己想法的机会。'},
+19:{ko:'여행 일정은 여유 있게 계획하는 것이 좋다는 내용이므로 해당 선택지가 정답입니다.',ja:'旅行日程は余裕をもって組むのがよい、という内容なので、この選択肢が正解です。',en:'It is best to plan a relaxed travel itinerary.',zh:'旅行日程最好安排得宽松一些。'},
+20:{ko:'상품 후기는 내용뿐 아니라 작성 날짜도 함께 확인해야 한다고 했으므로 해당 선택지가 정답입니다.',ja:'商品レビューは内容だけでなく投稿日も確認すべきだと述べているため、この選択肢が正解です。',en:'Product reviews should be checked for both content and posting date.',zh:'查看商品评价时，应同时确认内容和发布时间。'},
+21:{ko:'인쇄물은 필요한 사람을 중심으로 제공하는 것이 좋다고 했으므로 해당 선택지가 정답입니다.',ja:'印刷物は必要とする人を中心に提供するのがよいと述べているため、この選択肢が正解です。',en:'Printed materials should mainly be provided to people who need them.',zh:'印刷资料最好重点提供给有需要的人。'},
+22:{ko:'발표 자료의 내용이 바뀔 수 있다고 했으므로 해당 내용이 정답입니다.',ja:'発表資料の内容が変わる可能性があると述べているため、この内容が正解です。',en:'The content of the presentation materials may change.',zh:'演示资料的内容可能会改变。'},
+23:{ko:'말하는 사람은 원하는 조건을 충족하는 상품이 있는지 확인하고 있으므로 해당 선택지가 정답입니다.',ja:'話し手は希望する条件を満たす商品があるか確認しているため、この選択肢が正解です。',en:'The speaker is checking whether a product meets the desired conditions.',zh:'说话人正在查看是否有符合所需条件的产品。'},
+24:{ko:'제품의 화면 불빛을 끌 수 있다고 설명했으므로 해당 내용이 정답입니다.',ja:'製品の画面のライトは消せると説明しているため、この内容が正解です。',en:'The product’s display light can be turned off.',zh:'产品的屏幕灯可以关闭。'},
+25:{ko:'그 지역에서만 할 수 있는 체험을 만드는 것이 중요하다는 주장이므로 해당 선택지가 정답입니다.',ja:'その地域でしかできない体験を作ることが重要だ、という主張なので、この選択肢が正解です。',en:'It is important to create experiences available only in the local area.',zh:'创造只有当地才能体验的项目很重要。'},
+26:{ko:'주민들이 축제 프로그램에 직접 참여했다고 했으므로 해당 내용이 정답입니다.',ja:'住民が祭りのプログラムに直接参加したと述べているため、この内容が正解です。',en:'Residents participated directly in the festival program.',zh:'居民直接参与了庆典节目。'},
+27:{ko:'포장을 바꾼 이유와 그 결과를 설명하려는 말이므로 해당 선택지가 정답입니다.',ja:'包装を変更した理由と、その変更による結果を説明する話なので、この選択肢が正解です。',en:'To explain why the packaging was changed and what resulted from the change.',zh:'为了说明更换包装的原因及其结果。'},
+28:{ko:'재활용하기 쉽다는 사실이 알려진 뒤 제품을 찾는 사람이 늘었다고 했으므로 해당 내용이 정답입니다.',ja:'リサイクルしやすいことが知られた後、その商品を求める人が増えたと述べているため、この内容が正解です。',en:'After people learned that it was easy to recycle, more people sought out the product.',zh:'人们得知该产品易于回收后，购买者增加了。'},
+29:{ko:'지하철 유실물 센터에서 일하는 사람의 이야기이므로 해당 선택지가 정답입니다.',ja:'地下鉄の遺失物センターで働く人の話なので、この選択肢が正解です。',en:'A person who works at a subway lost-and-found center.',zh:'在地铁失物招领中心工作的人。'},
+30:{ko:'연락처가 없는 물건은 사진을 찍어 홈페이지에 올린다고 했으므로 해당 내용이 정답입니다.',ja:'連絡先のない品物は写真を撮ってウェブサイトに掲載すると述べているため、この内容が正解です。',en:'Items without contact information are photographed and posted on the website.',zh:'没有联系方式的物品会拍照并上传到网站。'},
+31:{ko:'시설을 전면 도입하기 전에 효과를 충분히 검증해야 한다는 주장이므로 해당 선택지가 정답입니다.',ja:'施設を全面導入する前に効果を十分検証すべきだ、という主張なので、この選択肢が正解です。',en:'The effect should be thoroughly verified before the facility is adopted in full.',zh:'全面引进该设施前，应充分验证其效果。'},
+32:{ko:'말하는 사람은 정책 판단에 필요한 객관적인 자료를 요구하고 있으므로 해당 선택지가 정답입니다.',ja:'話し手は政策判断に必要な客観的資料を求めているため、この選択肢が正解です。',en:'The speaker is requesting objective data needed for a policy decision.',zh:'说话人要求提供政策决策所需的客观资料。'},
+33:{ko:'짧은 낮잠이 학습과 기억에 미치는 영향을 다룬 내용이므로 해당 선택지가 정답입니다.',ja:'短い昼寝が学習と記憶に与える影響を扱った内容なので、この選択肢が正解です。',en:'The effect of short naps on learning and memory.',zh:'短暂午睡对学习和记忆的影响。'},
+34:{ko:'낮잠을 잔 집단이 더 많은 내용을 기억했다고 했으므로 해당 내용이 정답입니다.',ja:'昼寝をしたグループのほうが多くの内容を覚えていたと述べているため、この内容が正解です。',en:'The group that took a nap remembered more content.',zh:'午睡组记住了更多内容。'},
+35:{ko:'새로 발견된 지도의 가치와 의미를 설명하는 내용이므로 해당 선택지가 정답입니다.',ja:'新たに発見された地図の価値と意義を説明する内容なので、この選択肢が正解です。',en:'It explains the value and significance of a newly discovered map.',zh:'内容说明了新发现地图的价值和意义。'},
+36:{ko:'그 지도는 다음 달부터 박물관에서 전시된다고 했으므로 해당 내용이 정답입니다.',ja:'その地図は来月から博物館で展示されると述べているため、この内容が正解です。',en:'The map will be exhibited at the museum starting next month.',zh:'该地图将从下个月起在博物馆展出。'},
+37:{ko:'도시 녹화는 위치와 관리 조건을 함께 고려해 설계해야 한다는 주장이므로 해당 선택지가 정답입니다.',ja:'都市緑化は場所と維持管理の両方を考えて設計すべきだ、という主張なので、この選択肢が正解です。',en:'Urban greening should be designed with both location and maintenance in mind.',zh:'城市绿化设计应同时考虑位置和维护。'},
+38:{ko:'보행로 주변에 그늘을 만들면 체감 온도를 낮출 수 있다고 했으므로 해당 내용이 정답입니다.',ja:'歩道の周辺に日陰を作ると体感温度を下げられると述べているため、この内容が正解です。',en:'Creating shade around walkways can lower the perceived temperature.',zh:'在步行道周围营造阴凉可以降低体感温度。'},
+39:{ko:'손상된 영상을 복원하는 인공지능 기술의 개발을 다룬 내용이므로 해당 선택지가 정답입니다.',ja:'損傷した映像を復元するAI技術の開発を扱った内容なので、この選択肢が正解です。',en:'The development of AI technology that restores damaged video.',zh:'开发修复受损影像的人工智能技术。'},
+40:{ko:'인공지능이 만든 결과는 전문가가 확인하고 수정해야 한다고 했으므로 해당 내용이 정답입니다.',ja:'AIが生成した結果は専門家が確認し、修正する必要があると述べているため、この内容が正解です。',en:'AI-generated results must be checked and corrected by experts.',zh:'人工智能生成的结果必须由专家确认并修正。'},
+41:{ko:'제조업은 제품과 서비스를 결합해 새로운 성장을 만들 수 있다는 주장이므로 해당 선택지가 정답입니다.',ja:'製造業は製品とサービスを組み合わせることで新たな成長を生み出せる、という主張なので、この選択肢が正解です。',en:'Manufacturing can create new growth by combining products and services.',zh:'制造业可以通过结合产品与服务创造新的增长。'},
+42:{ko:'엘리베이터 회사가 고장 전에 부품을 교체하는 서비스를 제공한다고 했으므로 해당 내용이 정답입니다.',ja:'エレベーター会社は故障する前に部品を交換するサービスを提供していると述べているため、この内容が正解です。',en:'The elevator company provides a service that replaces parts before a breakdown.',zh:'电梯公司提供在故障前更换零件的服务。'},
+43:{ko:'제주 돌담이 강한 바람을 견디는 구조적 원리를 설명한 내용이므로 해당 선택지가 정답입니다.',ja:'済州の石垣が強風に耐える構造上の原理を説明した内容なので、この選択肢が正解です。',en:'The structural principle that lets Jeju stone walls withstand strong winds.',zh:'济州石墙抵御强风的结构原理。'},
+44:{ko:'바람이 돌 사이의 틈으로 나뉘어 지나간다고 했으므로 해당 내용이 정답입니다.',ja:'風が石の間の隙間を分かれて通り抜けると述べているため、この内容が正解です。',en:'Wind divides and passes through the gaps between the stones.',zh:'风从石头之间的缝隙分流穿过。'},
+45:{ko:'균사망을 통해 영양분이 주변 나무로 이동할 수 있다고 했으므로 해당 내용이 정답입니다.',ja:'菌糸ネットワークを通じて栄養分が周囲の木へ移動することがあると述べているため、この内容が正解です。',en:'Nutrients can move to nearby trees through the fungal network.',zh:'营养物质可以通过菌丝网络转移到周围的树木。'},
+46:{ko:'연구 결과를 근거로 균사망의 역할을 설명하고 있으므로 해당 선택지가 정답입니다.',ja:'研究結果に基づいて菌糸ネットワークの役割を説明しているため、この選択肢が正解です。',en:'It explains the role of fungal networks based on research findings.',zh:'内容根据研究结果说明菌丝网络的作用。'},
+47:{ko:'거점 도서관을 먼저 시범 운영한 뒤 확대 여부를 결정해야 한다고 했으므로 해당 내용이 정답입니다.',ja:'拠点図書館を先に試験運用し、その後で拡大するか決めるべきだと述べているため、この内容が正解です。',en:'Hub libraries should be selected for a pilot, after which expansion can be decided.',zh:'应先选定中心图书馆试点运行，再决定是否扩大。'},
+48:{ko:'조건을 검토한 뒤 단계적으로 시행하자는 방안을 제안하고 있으므로 해당 선택지가 정답입니다.',ja:'条件を検討した上で段階的に実施する案を提案しているため、この選択肢が正解です。',en:'It proposes a phased implementation plan after reviewing the conditions.',zh:'内容提出在审查条件后分阶段实施的方案。'},
+49:{ko:'개인정보를 제외해도 과거 선택 기록에는 사회적 차이가 반영될 수 있다고 했으므로 해당 내용이 정답입니다.',ja:'個人情報を除いても、過去の選択記録に社会的な差が反映される場合があると述べているため、この内容が正解です。',en:'Even without personal information, past choices may reflect social differences.',zh:'即使去除个人信息，过去的选择记录也可能反映社会差异。'},
+50:{ko:'공정성을 단순한 기준 하나로 판단하는 태도를 경계하고 있으므로 해당 선택지가 정답입니다.',ja:'公平性を単純な基準だけで判断することに警鐘を鳴らしているため、この選択肢が正解です。',en:'It warns against judging fairness by a simplistic standard.',zh:'内容警示不要用简单标准判断公平性。'}
 };
 
 const TOPIK2_WRITING={
@@ -188,7 +211,10 @@ const TOPIK2_WRITING={
 }
 };
 
-for(const q of window.TOPIK1_LISTENING_DATA||[])q.explanationI18n={ko:q.explanation,...T1_LISTENING[q.id]};
-for(const q of window.TOPIK1_READING_DATA||[])q.explanationI18n={ko:q.explanation,...T1_READING[q.id]};
+for(const q of window.TOPIK1_LISTENING_DATA||[]){T1_LISTENING[q.id]={ko:q.explanation,...T1_LISTENING[q.id]};q.explanationI18n=T1_LISTENING[q.id]}
+for(const q of window.TOPIK1_READING_DATA||[]){T1_READING[q.id]={ko:q.explanation,...T1_READING[q.id]};q.explanationI18n=T1_READING[q.id]}
+// TOPIK II reading data already contains individually authored Japanese rationale in `why`.
+// Copy it into the shared pack so every explanation route uses the same reviewed source.
+if(typeof RW!=='undefined')for(const q of RW){if(Number(q.id)<=50&&TOPIK2_READING[q.id]&&!TOPIK2_READING[q.id].ja)TOPIK2_READING[q.id].ja=q.why||''}
 window.MALBIT_EXPLANATIONS={reviewVersion:2,topik1Listening:T1_LISTENING,topik1Reading:T1_READING,topik2Reading:TOPIK2_READING,topik2Listening:TOPIK2_LISTENING,topik2Writing:TOPIK2_WRITING};
 })();
