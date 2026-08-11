@@ -186,7 +186,6 @@ function clearQ(){Q=null;try{localStorage.removeItem(SESSION)}catch(e){}}
 function restore(){if(Q)return Q;try{Q=JSON.parse(localStorage.getItem(SESSION)||'null')}catch(e){};return Q}
 function seconds(){return Q?.duration?Q.duration-Math.floor((Date.now()-Q.started)/1000):999999}
 window.tqStartMode=mode=>{
-  markHomeActivity();
   if(mode==='shorts'||mode==='infinity')return startShorts();
   const requestedLevel=level();
   if(requestedLevel===2){
@@ -199,7 +198,6 @@ window.tqStartMode=mode=>{
   return startPractice('random',1);
 };
 window.tqHomeContinue=()=>{
-  markHomeActivity();
   const lv=level(),session=restore(),profile=game1Profile(lv);
   if(session&&!session.result&&Number(session.examLevel||1)===lv)return open('t1quiz');
   if(lv===1){profile.selected=Math.min(profile.unlock,GAME1_STAGES.length);saveGame1();return open('t1game')}
@@ -460,7 +458,7 @@ function shortType(type){return type==='grammar'?T('문법','文法','Grammar','
 function syncStatsNav(){
   const b=document.getElementById('nav_stats')||document.getElementById('nav_speaking');if(!b)return;
   b.id='nav_stats';b.onclick=()=>setView('stats');b.innerHTML=`<b>▥</b><span>${T('통계','統計','Stats','统计')}</span>`;
-  const subtitle=document.querySelector('.top .title small');if(subtitle)subtitle.textContent='TOPIK I · II · SHORTS · RANDOM PRACTICE';
+  const subtitle=document.querySelector('.top .title small');if(subtitle)subtitle.textContent=`TOPIK ${level()===1?'I':'II'} · MALBIT`;
 }
 syncStatsNav();
 window.startShorts=()=>{SH.activeLevel=level();const p=shortState();p.selected=null;p.locked=false;saveShorts();open('shorts')};

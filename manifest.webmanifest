@@ -1,0 +1,14 @@
+{
+  "name": "MALBIT · Korean Learning",
+  "short_name": "MALBIT",
+  "description": "Independent Korean learning with TOPIK practice, Shorts review, and a dice expedition.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#071528",
+  "theme_color": "#07101d",
+  "lang": "ko",
+  "icons": [
+    {"src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}
+  ]
+}
