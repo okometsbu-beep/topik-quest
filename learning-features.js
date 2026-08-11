@@ -381,7 +381,7 @@ function tokenizeElement(el){
     if(node.parentElement?.closest('.vocab-token'))continue;
     const value=node.nodeValue||'',re=/[가-힣]+/g;if(!re.test(value))continue;re.lastIndex=0;
     const frag=document.createDocumentFragment();let at=0,m;
-    while((m=re.exec(value))){if(m.index>at)frag.append(value.slice(at,m.index));const span=document.createElement('span');span.className='vocab-token';span.textContent=m[0];span.setAttribute('role','button');span.setAttribute('aria-label',text(`${m[0]} 길게 눌러 단어장에 추가`,`「${m[0]}」を長押しして単語帳に追加`,`Long-press ${m[0]} to add it to Vocabulary`,`长按${m[0]}加入单词本`));frag.append(span);at=m.index+m[0].length}if(at<value.length)frag.append(value.slice(at));node.replaceWith(frag);
+    while((m=re.exec(value))){if(m.index>at)frag.append(value.slice(at,m.index));const span=document.createElement('span');span.className='vocab-token';span.textContent=m[0];span.dataset.vocabTerm=m[0];frag.append(span);at=m.index+m[0].length}if(at<value.length)frag.append(value.slice(at));node.replaceWith(frag);
   }
 }
 
@@ -432,7 +432,7 @@ function addDiscovery(root=document){
   }
   let allow=S.view==='infinity'||S.view==='gameQ'||S.view==='shorts'||S.view==='t1quiz';
   if(S.view==='t1quiz'){try{const q=JSON.parse(localStorage.getItem('topikQuestTopik1Session')||'null');if(q?.mode==='real')allow=false}catch(e){}}
-  if(allow){const card=root.querySelector('.card,.shortsCard');if(card&&!card.querySelector('.tqVocabCoach'))card.insertAdjacentHTML('beforeend',`<button type="button" class="tqVocabCoach" onclick="showVocabGuide()">☝ ${text('모르는 단어·숙어를 길게 눌러 단어장에 저장','知らない単語・表現を長押しして単語帳に保存','Long-press an unfamiliar word or expression to save it','长按不熟悉的单词或短语即可收藏')}</button>`)}
+  if(allow&&S.view!=='shorts'){const card=root.querySelector('.card');if(card&&!card.querySelector('.tqVocabCoach'))card.insertAdjacentHTML('beforeend',`<button type="button" class="tqVocabCoach" onclick="showVocabGuide()">☝ ${text('모르는 단어·숙어를 길게 눌러 단어장에 저장','知らない単語・表現を長押しして単語帳に保存','Long-press an unfamiliar word or expression to save it','长按不熟悉的单词或短语即可收藏')}</button>`)}
 }
 
 function enhance(root=document){
