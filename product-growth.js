@@ -90,7 +90,7 @@ window.malbitAcceptShortProposal=term=>{window.MALBIT_LEARNING?.addVocabTerm?.(t
 window.malbitDismissShortProposal=()=>{localStorage.setItem('malbitShortProposalHandled','dismissed');track('vocab_save_suggestion',{mode:'shorts',accepted:false});document.querySelector('.malbitShortProposal')?.remove()};
 
 function patchGameDock(){
-  const screen=document.querySelector('.t1TrailScreen'),action=screen?.querySelector('.t1TrailAction');if(!screen||!action)return;let dock=screen.querySelector('.malbitGameDock');if(!dock){dock=document.createElement('div');dock.className='malbitGameDock';screen.appendChild(dock)}const controls=action.querySelector(':scope > .t1TrailButton,:scope > .t1BranchChoices');if(controls&&controls.parentElement!==dock)dock.appendChild(controls);requestAnimationFrame(()=>window.malbitCenterMap?.())
+  const screen=document.querySelector('.t1TrailScreen'),action=screen?.querySelector('.t1TrailAction');if(!screen||!action)return;let dock=screen.querySelector('.malbitGameDock');if(!dock){dock=document.createElement('div');dock.className='malbitGameDock';screen.appendChild(dock)}const controls=action.querySelector(':scope > .t1TrailButton,:scope > .t1BranchChoices');if(controls&&controls.parentElement!==dock)dock.appendChild(controls)
 }
 function focusBattleCard(){const q=currentT1();if(S.view!=='t1quiz'||q?.mode!=='game'||q?.phase!=='battle')return;document.getElementById('screen')?.classList.add('malbitBattleScreen');const card=document.querySelector('#screen>.card');if(card)setTimeout(()=>card.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'}),30)}
 
