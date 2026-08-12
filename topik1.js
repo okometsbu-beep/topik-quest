@@ -183,7 +183,16 @@ async function play(id){const q=find(id);if(!q)return;if(Q?.mode==='real'&&Q.pla
 window.t1Play=play;
 function saveQ(){try{localStorage.setItem(SESSION,JSON.stringify(Q))}catch(e){}}
 function clearQ(){Q=null;try{localStorage.removeItem(SESSION)}catch(e){}}
-function restore(){if(Q)return Q;try{Q=JSON.parse(localStorage.getItem(SESSION)||'null')}catch(e){};return Q}
+function restore(){
+  if(Q&&typeof Q==='object'&&!Array.isArray(Q))return Q;
+  Q=null;
+  try{
+    const saved=JSON.parse(localStorage.getItem(SESSION)||'null');
+    if(saved&&typeof saved==='object'&&!Array.isArray(saved))Q=saved;
+    else if(saved!==null)localStorage.removeItem(SESSION);
+  }catch(e){try{localStorage.removeItem(SESSION)}catch(ignore){}}
+  return Q
+}
 function seconds(){return Q?.duration?Q.duration-Math.floor((Date.now()-Q.started)/1000):999999}
 window.tqStartMode=mode=>{
   if(mode==='shorts'||mode==='infinity')return startShorts();
@@ -587,6 +596,8 @@ window.t1Next=()=>{
 window.t1Prev=()=>{restore();if(Q?.mode==='real'&&Q.i>0){stopAudio();Q.i--;saveQ();render()}};
 function result(){let lc=0,lt=0,rc=0,rt=0,w=[];for(const id of Q.ids){const q=find(id),ok=Q.answers[id]===q.answerIndex;if(q.section==='listening'){lt++;if(ok)lc++}else{rt++;if(ok)rc++}if(!ok)w.push(id)}const ls=lt?Math.round(lc/lt*100):0,rs=rt?Math.round(rc/rt*100):0;return {lc,lt,rc,rt,ls,rs,total:(lt?ls:0)+(rt?rs:0),wrong:w}}
 function finish(){
+  if(!Q||typeof Q!=='object'){clearQ();return open('home')}
+  if(Q.result)return open('t1result');
   stopAudio();stopTimer();
   if(Q.mode==='game'){
     const p=game1Profile(Q.examLevel),stage=Number(Q.gameStage)||p.selected,score=Number(Q.score)||0,total=Number(Q.total)||0,clear=Number(Q.bossHp)<=0&&Number(Q.focus)>0,dead=Number(Q.focus)<=0,old=p.cleared[stage]||{},gold=Number(Q.gold)||0,essence=Number(Q.essence)||0,items=(Q.inventory||[]).length;

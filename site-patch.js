@@ -1,12 +1,28 @@
-// MALBIT bootstrap v25
+// MALBIT bootstrap v26
 // Load the shared core, reviewed data, TOPIK I engine, then learning interactions.
 (function(){
-  const v='25';
+  const v='26';
+  const finishBoot=reason=>{
+    if(window.__malbitBoot?.finish)return window.__malbitBoot.finish(reason);
+    document.documentElement.classList.remove('tq-booting');
+  };
   const load=src=>new Promise((resolve,reject)=>{
     const s=document.createElement('script');
+    let settled=false;
+    const settle=(ok,error)=>{
+      if(settled)return;
+      settled=true;
+      clearTimeout(timeout);
+      ok?resolve():reject(error);
+    };
     s.src=src+(src.includes('?')?'&':'?')+'v='+v;
-    s.onload=resolve;
-    s.onerror=()=>reject(new Error('Failed to load '+src));
+    s.async=false;
+    s.onload=()=>settle(true);
+    s.onerror=()=>settle(false,new Error('Failed to load '+src));
+    const timeout=setTimeout(()=>{
+      s.remove();
+      settle(false,new Error('Timed out loading '+src));
+    },6000);
     document.body.appendChild(s);
   });
   load('site-patch-core.js')
@@ -22,12 +38,12 @@
     .then(()=>load('app-polish-v24.js'))
     .then(()=>{
       if(typeof render==='function')render();
-      const reveal=()=>document.documentElement.classList.remove('tq-booting');
+      const reveal=()=>finishBoot('ready');
       (window.requestAnimationFrame||window.setTimeout)(reveal,0);
     })
     .catch(e=>{
       console.error('[MALBIT bootstrap]',e);
       try{if(typeof render==='function')render()}catch(renderError){console.error('[MALBIT fallback]',renderError)}
-      document.documentElement.classList.remove('tq-booting');
+      finishBoot('dependency-error');
     });
 })();
