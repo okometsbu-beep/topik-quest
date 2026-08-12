@@ -1,7 +1,7 @@
-// MALBIT bootstrap v23
+// MALBIT bootstrap v24
 // Load the shared core, reviewed data, TOPIK I engine, then learning interactions.
 (function(){
-  const v='23';
+  const v='24';
   const load=src=>new Promise((resolve,reject)=>{
     const s=document.createElement('script');
     s.src=src+(src.includes('?')?'&':'?')+'v='+v;
@@ -19,6 +19,7 @@
     .then(()=>load('product-polish.js'))
     .then(()=>load('product-growth.js'))
     .then(()=>load('app-polish-v22.js'))
+    .then(()=>load('app-polish-v24.js'))
     .then(()=>{
       if(typeof render==='function')render();
       const reveal=()=>document.documentElement.classList.remove('tq-booting');
