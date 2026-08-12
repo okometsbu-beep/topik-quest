@@ -110,7 +110,7 @@ function syncModal(){
   const modal=visibleModal(),app=document.querySelector('.app'),bottom=document.querySelector('.bottom'),flag=document.getElementById('flagMenu');
   if(modal!==activeModal){
     if(modal){lastFocused=document.activeElement instanceof HTMLElement?document.activeElement:null;requestAnimationFrame(()=>{const target=focusables(modal)[0]||modal;target.setAttribute?.('tabindex',target.getAttribute?.('tabindex')||'-1');target.focus?.({preventScroll:true})})}
-    else if(lastFocused?.isConnected){requestAnimationFrame(()=>lastFocused.focus?.({preventScroll:true}));lastFocused=null}
+    else if(lastFocused?.isConnected){const restoreTarget=lastFocused;lastFocused=null;requestAnimationFrame(()=>restoreTarget.isConnected&&restoreTarget.focus?.({preventScroll:true}))}
     activeModal=modal;
   }
   const blocked=!!modal;
