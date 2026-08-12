@@ -1,4 +1,4 @@
-const CACHE='malbit-v28';
+const CACHE='malbit-v29';
 const CORE=['./','./index.html','./site-patch.js','./site-patch-core.js','./topik1.js','./learning-features.js','./product-polish.js','./product-growth.js','./app-polish-v22.js','./app-polish-v24.js','./assets/art/malbit-home-hero.webp','./assets/art/malbit-monsters-atlas.webp','./assets/art/malbit-monster-1.webp','./assets/art/malbit-monster-2.webp','./assets/art/malbit-monster-3.webp','./assets/art/malbit-monster-4.webp','./assets/art/malbit-monster-5.webp','./assets/art/malbit-monster-6.webp','./assets/art/malbit-monster-7.webp','./assets/art/malbit-monster-8.webp','./assets/art/malbit-adventurer.webp','./assets/art/malbit-stage-map.webp','./manifest.webmanifest','./icon.svg','./data/topik1-listening.js','./data/topik1-reading.js','./data/shorts-levels.js','./data/explanations-i18n.js'];
 self.addEventListener('message',event=>{if(event.data==='SKIP_WAITING')self.skipWaiting()});
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting())));
