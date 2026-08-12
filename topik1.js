@@ -576,7 +576,7 @@ home=function(sc){
     <div class="tqV9SectionHead"><b>⚡ ${T('빠른 연습','クイック練習','Quick practice','快速练习')}</b><span>${lv===1?'TOPIK I':'TOPIK II'}</span></div>
     <div class="tqV9Modes">
       <button class="tqV9Mode exam" onclick="tqStartMode('random')"><i>🎲</i><b>${T('랜덤 실전','ランダム実戦','Random Practice','随机实战')}</b><small>${lv===1?T('듣기·읽기 랜덤 출제','聴解・読解をランダム出題','Random listening & reading','随机听力与阅读'):T('듣기·읽기·쓰기 랜덤 출제','聴解・読解・作文をランダム出題','Random listening, reading & writing','随机听力、阅读与写作')}</small></button>
-      <button class="tqV9Mode game" onclick="tqStartMode('game')"><i>🎮</i><b>${T('게임모드','ゲームモード','Game Mode','游戏模式')}</b><small>${T('6면 주사위·몬스터 원정','6面サイコロ・モンスター遠征','Six-sided dice monster expedition','六面骰·怪物远征')}</small></button>
+      <button class="tqV9Mode game" onclick="tqStartMode('game')"><i>🎮</i><b>${T('게임모드','ゲームモード','Game Mode','游戏模式')}</b><small>${T('1~3 주사위·몬스터 원정','1〜3サイコロ・モンスター遠征','1–3 die monster expedition','1～3点骰·怪物远征')}</small></button>
       <button class="tqV9Mode inf" onclick="tqStartMode('shorts')"><i>⚡</i><b>${T('숏츠모드','ショーツモード','Shorts Mode','短题模式')}</b><small>${T('단어·어휘·문법 초스피드','単語・語彙・文法を超高速で','Rapid vocab & grammar','单词词汇语法极速练习')}</small></button>
     </div>
     <div class="tqV9Utility"><button onclick="tqStartMode('real')"><i>📝</i><span><b>${T('전체 모의고사','フル模擬試験','Full Mock Exam','完整模拟考试')}</b><small>${T('시험 시간·영역별 연습','試験時間・分野別練習','Timed full or section exam','计时全套或分项练习')}</small></span></button><button onclick="setView('speaking')"><i>🎙</i><span><b>${T('말하기 연습','スピーキング','Speaking','口语练习')}</b><small>${T('기기 음성인식·연습 점수','端末音声認識・練習スコア','Device recognition · practice score','设备语音识别·练习评分')}</small></span></button></div>
