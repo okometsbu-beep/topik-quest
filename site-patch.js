@@ -1,7 +1,7 @@
-// MALBIT bootstrap v24
+// MALBIT bootstrap v25
 // Load the shared core, reviewed data, TOPIK I engine, then learning interactions.
 (function(){
-  const v='24';
+  const v='25';
   const load=src=>new Promise((resolve,reject)=>{
     const s=document.createElement('script');
     s.src=src+(src.includes('?')?'&':'?')+'v='+v;
