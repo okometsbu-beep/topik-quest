@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "generated_at": "2026-08-13T08:34:34.052Z",
+  "source_sha256": "e891cc64b6e00e4d955517346559db9adfb3347481cb206704186c2ab23a24f9",
+  "outputs": [
+    {
+      "file": "data/question-bank-v1-part1.js",
+      "bytes": 562676,
+      "sha256": "50dd2bd36b44890652058ee1e23d52cbceef9d166bc76a572a6f16686f727f97"
+    },
+    {
+      "file": "data/question-bank-v1-part2.js",
+      "bytes": 562684,
+      "sha256": "e5eacaf646da6a9d40536faa8b8abddffb1de95b7637622643e5052339742e67"
+    },
+    {
+      "file": "data/question-bank-v1-part3.js",
+      "bytes": 561924,
+      "sha256": "39470d69efa2df9887315ab8ff39f64cf830e45d2f7b8fb8900b0af312a8d9c5"
+    },
+    {
+      "file": "data/question-bank-v1-part4.js",
+      "bytes": 561724,
+      "sha256": "dc63ec12e16010d0d650071434db87179116c1222ac3c90d240054eff797e499"
+    }
+  ],
+  "total_items": 2088,
+  "multiple_choice_items": 2040,
+  "writing_items": 48,
+  "visual_description_items": 24,
+  "by_level_section": {
+    "TOPIK I::listening": 360,
+    "TOPIK I::reading": 480,
+    "TOPIK II::listening": 600,
+    "TOPIK II::writing": 48,
+    "TOPIK II::reading": 600
+  },
+  "by_difficulty": {
+    "TOPIK I::listening::easy": 120,
+    "TOPIK I::listening::medium": 168,
+    "TOPIK I::listening::hard": 72,
+    "TOPIK I::reading::easy": 180,
+    "TOPIK I::reading::medium": 180,
+    "TOPIK I::reading::hard": 120,
+    "TOPIK II::listening::medium": 240,
+    "TOPIK II::listening::hard": 192,
+    "TOPIK II::listening::very_hard": 168,
+    "TOPIK II::writing::hard": 24,
+    "TOPIK II::writing::very_hard": 24,
+    "TOPIK II::reading::medium": 216,
+    "TOPIK II::reading::hard": 192,
+    "TOPIK II::reading::very_hard": 192
+  },
+  "mode_policy": {
+    "mock_exam": "One complete original set, fixed order; 12 sets rotate without changing official-style section volume.",
+    "random_practice": "Level-specific adaptive pool; recent IDs are excluded and choices are shuffled.",
+    "game_regular": "Lower band for the selected stage and TOPIK level; no repeated ID during an expedition.",
+    "game_elite": "Middle-to-upper band for the selected stage and TOPIK level; no repeated ID during an expedition.",
+    "game_boss": "Upper band for the selected stage and TOPIK level; no repeated ID during an expedition.",
+    "shorts": "Only short vocabulary, grammar, and same-meaning MCQs are mixed into the curated multilingual deck.",
+    "review": "The exact bank ID and displayed choice order are retained for retry."
+  }
+}

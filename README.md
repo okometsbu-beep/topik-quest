@@ -3,6 +3,9 @@
 An independent Korean-learning game and unofficial TOPIK I & II practice app.
 
 ## Current build
+- Original question bank with 2,088 items across 12 complete mock sets: TOPIK I listening 360 / reading 480, TOPIK II listening 600 / writing 48 / reading 600
+- Difficulty-aware delivery in Shorts, Random Practice, full mock exams, review, and Expedition battles; regular monsters draw from lower tiers while elites and bosses draw progressively harder items
+- Persistent Expedition no-repeat history and per-encounter answer shuffling, including a guaranteed change to the correct option's displayed position on a repeat encounter
 - TOPIK I listening and reading practice (70 questions)
 - TOPIK II reading, writing and listening practice
 - Separate TOPIK I and TOPIK II Shorts decks, progress, and same-category distractors, using concise equivalents in the selected UI language
