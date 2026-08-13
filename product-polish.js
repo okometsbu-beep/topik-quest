@@ -37,7 +37,11 @@ function recordEvent(event){
   list.push({ts:Date.now(),level:Number(event.level)===2?2:1,mode:event.mode||'practice',skill:event.skill||'mixed',id:event.id??'',correct:event.correct===true,duration:Math.max(1,Number(event.duration)||1),key:event.key});
   writeJSON(EVENTS_KEY,list.slice(-1500));
 }
-function questionForT1(id){return [...(window.TOPIK1_LISTENING_DATA||[]),...(window.TOPIK1_READING_DATA||[])].find(x=>String(x.id)===String(id))}
+function questionForT1(id){
+  const session=currentT1();
+  if(window.MALBIT_BANK?.byId(id))return window.MALBIT_BANK.present(String(id),session?.choiceOrders?.[String(id)]);
+  return [...(window.TOPIK1_LISTENING_DATA||[]),...(window.TOPIK1_READING_DATA||[])].find(x=>String(x.id)===String(id));
+}
 function observeCompletedT1(){
   if(S?.view!=='t1quiz')return;const q=currentT1();if(!q?.locked||q.mode==='real')return;
   const key=visibleQuestionKey();if(!key||!questionStarted.has(key))return;const id=q.ids?.[q.i],item=questionForT1(id);if(!item)return;
@@ -65,8 +69,8 @@ if(reviewedQ9)reviewedQ9.explanationI18n={
 if(typeof window.checkShorts==='function'){
   const base=window.checkShorts;
   window.checkShorts=function(){
-    const sh=readJSON(SHORTS_KEY,{}),lv=Number(sh.activeLevel)||level(),p=sh.levels?.[lv]||sh.levels?.[String(lv)]||{},key=`shorts:${lv}:${p.index||0}:${p.total||0}`,selected=Number(p.selected),correct=((Number(p.index)||0)*3+lv)%4,item=window.MALBIT_SHORTS_DECKS?.[lv]?.[Number(p.index)||0];
-    const out=base.apply(this,arguments);recordEvent({key,level:lv,mode:'shorts',skill:item?.type||'vocab',id:item?.term||p.index,correct:selected===correct,duration:durationFor(key)});return out;
+    const sh=readJSON(SHORTS_KEY,{}),lv=Number(sh.activeLevel)||level(),p=sh.levels?.[lv]||sh.levels?.[String(lv)]||{},key=`shorts:${lv}:${p.index||0}:${p.total||0}`,selected=Number(p.selected),bank=p.orderId&&window.MALBIT_BANK?.present(p.orderId,p.choiceOrder),correct=bank?Number(bank.answerIndex):((Number(p.index)||0)*3+lv)%4,item=bank||window.MALBIT_SHORTS_DECKS?.[lv]?.[Number(p.index)||0];
+    const out=base.apply(this,arguments);recordEvent({key,level:lv,mode:'shorts',skill:item?.section||item?.type||'vocab',id:item?.bankId||item?.term||p.index,correct:selected===correct,duration:durationFor(key)});return out;
   };
 }
 
@@ -83,8 +87,8 @@ if(typeof window.t1Next==='function'){
 if(typeof window.submitInfinity==='function'){
   const base=window.submitInfinity;
   window.submitInfinity=function(){
-    const inf=S.infinity,x=inf?.current,q=x&&(x.type==='listen'?LS[x.id-1]:RW[x.id-1]),picked=typeof selected==='number'?selected:null,key=visibleQuestionKey();
-    const out=base.apply(this,arguments);if(q&&picked!=null)recordEvent({key,level:2,mode:'random',skill:x.type==='listen'?'listening':'reading',id:x.id,correct:picked===Number(q.answerIndex),duration:durationFor(key)});return out;
+    const inf=S.infinity,x=inf?.current,q=x&&(typeof infinityCurrentQuestion==='function'?infinityCurrentQuestion():(x.type==='listen'?LS[x.id-1]:RW[x.id-1])),picked=typeof selected==='number'?selected:null,key=visibleQuestionKey();
+    const out=base.apply(this,arguments);if(q&&picked!=null)recordEvent({key,level:2,mode:'random',skill:x.type==='listen'?'listening':'reading',id:q.bankId||x.id,correct:picked===Number(q.answerIndex),duration:durationFor(key)});return out;
   };
 }
 
@@ -103,18 +107,15 @@ if(typeof window.realMove==='function'){
 
 // TOPIK II random practice: listening/reading first, then gradually introduce writing.
 if(typeof window.nextInfinity==='function'){
+  const baseNextInfinity=window.nextInfinity;
   window.nextInfinity=function(){
     const inf=S.infinity;if(!inf||Number(inf.examLevel)!==2)return typeof startRandomPractice==='function'?startRandomPractice(2):undefined;
     const count=Number(inf.count)||0,mix=prefs.randomMix||'balanced';let type;
     if(mix==='lr'||count<3)type=Math.random()<.5?'listen':'read';
     else if(mix==='writing')type=Math.random()<.52?'write':(Math.random()<.5?'listen':'read');
     else type=Math.random()<.18?'write':(Math.random()<.5?'listen':'read');
-    let id;
-    if(type==='write'){
-      const pool=count>=20?[51,52,53,54]:count>=10?[51,52,53]:[51,52];id=pool[Math.floor(Math.random()*pool.length)];
-    }else id=1+Math.floor(Math.random()*50);
-    if(inf.last?.type===type&&Number(inf.last?.id)===id){id=type==='write'?(id===51?52:51):(id%50)+1}
-    inf.current={type,id};inf.last={type,id};inf.feedback=null;save();render();
+    inf.nextType=type;
+    return baseNextInfinity.apply(this,arguments);
   };
 }
 
@@ -178,14 +179,19 @@ function renderPolishedStats(sc){
 
 window.malbitStartRecommendation=skill=>{if(['word','vocab','grammar','idiom','expression'].includes(skill))return window.startShorts?.();prefs.randomMix=skill==='writing'?'writing':'lr';writeJSON(PREFS_KEY,prefs);if(skill==='writing'){localStorage.setItem('topikQuestExamLevel','2');return startRandomPractice(2)}return window.tqStartMode?.('random')};
 
-function currentShort(){const sh=readJSON(SHORTS_KEY,{}),lv=Number(sh.activeLevel)||level(),p=sh.levels?.[lv]||sh.levels?.[String(lv)]||{},deck=window.MALBIT_SHORTS_DECKS?.[lv]||[];return{lv,p,item:deck[(Number(p.index)||0)%Math.max(1,deck.length)]}}
+function currentShort(){
+  const sh=readJSON(SHORTS_KEY,{}),lv=Number(sh.activeLevel)||level(),p=sh.levels?.[lv]||sh.levels?.[String(lv)]||{},deck=window.MALBIT_SHORTS_DECKS?.[lv]||[];
+  const bankItem=p.orderId?window.MALBIT_BANK?.shorts(lv).find(item=>item.bankId===p.orderId):null;
+  return{lv,p,item:bankItem||deck[(Number(p.index)||0)%Math.max(1,deck.length)]};
+}
 window.malbitSpeak=text=>{try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(text||''));u.lang='ko-KR';u.rate=.88;const voices=speechSynthesis.getVoices().filter(v=>/^ko/i.test(v.lang||''));u.voice=voices[0]||null;speechSynthesis.speak(u)}catch(e){toast(L('이 기기에서는 음성을 재생할 수 없어요.','この端末では音声を再生できません。','Voice playback is unavailable.','此设备无法播放语音。'))}};
 window.malbitSaveShort=term=>window.MALBIT_LEARNING?.addVocabTerm?.(term);
 async function translateShortExample(item,node){if(!item||!node||S.lang==='ko')return;node.textContent=L('예문 번역 중…','例文を翻訳中…','Translating example…','正在翻译例句…');const value=await translateCached(`short_example_${S.lang}_${item.term}`,item.example,'ko',S.lang);if(node.isConnected)node.textContent=value}
 function patchShorts(){
-  const card=document.querySelector('.shortsCard');if(!card||card.querySelector('.malbitShortTools'))return;const {p,item}=currentShort();if(!item)return;const word=card.querySelector('.shortsWord');word?.insertAdjacentHTML('afterend',`<div class="malbitShortTools"><button onclick='malbitSpeak(${JSON.stringify(item.term)})'>🔊 ${L('듣기','聞く','Listen','听发音')}</button><button onclick='malbitSaveShort(${JSON.stringify(item.term)})'>＋ ${L('단어장','単語帳','Save','收藏')}</button></div>`);
+  const card=document.querySelector('.shortsCard');if(!card||card.dataset.productPolish==='1')return;card.dataset.productPolish='1';const {p,item}=currentShort();if(!item)return;
+  if(!item.bankId){const word=card.querySelector('.shortsWord');word?.insertAdjacentHTML('afterend',`<div class="malbitShortTools"><button onclick='malbitSpeak(${JSON.stringify(item.term)})'>🔊 ${L('듣기','聞く','Listen','听发音')}</button><button onclick='malbitSaveShort(${JSON.stringify(item.term)})'>＋ ${L('단어장','単語帳','Save','收藏')}</button></div>`)}
   const goal=Math.max(1,Number(prefs.dailyGoal)||5),done=activitySnapshot().todayCount;card.insertAdjacentHTML('beforeend',`<div class="malbitShortDaily">${L('오늘 목표','今日の目標','Daily goal','今日目标')} <b>${Math.min(done,goal)}/${goal}</b></div>`);
-  const feedback=card.querySelector('.shortsFeedback');if(feedback&&S.lang!=='ko'){const row=document.createElement('div');row.className='malbitExampleTranslation';row.textContent='…';feedback.appendChild(row);translateShortExample(item,row)}
+  const feedback=card.querySelector('.shortsFeedback');if(feedback&&S.lang!=='ko'&&!item.bankId&&item.example){const row=document.createElement('div');row.className='malbitExampleTranslation';row.textContent='…';feedback.appendChild(row);translateShortExample(item,row)}
 }
 
 function vocabTarget(){return S.lang==='ko'?'ja':S.lang}

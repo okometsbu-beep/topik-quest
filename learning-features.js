@@ -54,8 +54,9 @@ try{
 }catch(e){}
 
 function saveReview(){try{localStorage.setItem(REVIEW_KEY,JSON.stringify(REVIEW))}catch(e){}}
-function reviewKey(level,type,id){return `${Number(level)===1?1:2}:${type==='listen'?'listen':'read'}:${Number(id)}`}
-function reviewQuestion(level,type,id){
+function reviewKey(level,type,id){return `${Number(level)===1?1:2}:${type==='listen'?'listen':'read'}:${String(id)}`}
+function reviewQuestion(level,type,id,choiceOrder){
+  if(window.MALBIT_BANK?.byId(id))return window.MALBIT_BANK.present(String(id),choiceOrder);
   const n=Number(id),lv=Number(level)===1?1:2;
   if(lv===1){
     const deck=type==='listen'?(window.TOPIK1_LISTENING_DATA||[]):(window.TOPIK1_READING_DATA||[]);
@@ -63,10 +64,10 @@ function reviewQuestion(level,type,id){
   }
   return type==='listen'?LS[n-1]:RW[n-1];
 }
-function recordReviewWrong(level,type,id,selected=-1,source='practice'){
-  const q=reviewQuestion(level,type,id);if(!q)return;
+function recordReviewWrong(level,type,id,selected=-1,source='practice',meta={}){
+  const choiceOrder=meta?.choiceOrder||null,q=reviewQuestion(level,type,id,choiceOrder);if(!q)return;
   const key=reviewKey(level,type,id),old=REVIEW.items[key]||{};
-  REVIEW.items[key]={key,level:Number(level)===1?1:2,type:type==='listen'?'listen':'read',id:Number(id),selected:Number(selected),answerIndex:Number(q.answerIndex),source,lastWrongAt:Date.now(),wrongCount:(Number(old.wrongCount)||0)+1,retryCount:Number(old.retryCount)||0,active:true};
+  REVIEW.items[key]={key,level:Number(level)===1?1:2,type:type==='listen'?'listen':'read',id:window.MALBIT_BANK?.byId(id)?String(id):Number(id),selected:Number(selected),answerIndex:Number(q.answerIndex),choiceOrder:q.choiceOrder||choiceOrder||null,source,lastWrongAt:Date.now(),wrongCount:(Number(old.wrongCount)||0)+1,retryCount:Number(old.retryCount)||0,active:true};
   saveReview();
 }
 function resolveReview(key,ok,selected){
@@ -78,14 +79,16 @@ function resolveReview(key,ok,selected){
 }
 function scanLatestExamWrongAnswers(){
   try{
+    if(S.lastResult?.mockSet&&typeof activateTopik2BankSet==='function')activateTopik2BankSet(S.lastResult.mockSet);
     const raw=JSON.stringify([S.lastResult||null,S.realAnswers||null]);let hash=2166136261;
     for(let i=0;i<raw.length;i++){hash^=raw.charCodeAt(i);hash=Math.imul(hash,16777619)}
     const signature=String(hash>>>0);if(REVIEW.latestExamSignature===signature)return;
     const mode=S.lastResult?.mode||'',includeListen=mode==='full'||mode==='listen',includeRead=mode==='full'||mode==='read';
     for(let i=1;i<=50;i++){
       const l=S.realAnswers?.listen?.[i],r=S.realAnswers?.read?.[i];
-      if(includeListen&&(!l||Number(l.selected)!==Number(LS[i-1]?.answerIndex)))recordReviewWrong(2,'listen',i,l?.selected??-1,'exam');
-      if(includeRead&&(!r||Number(r.selected)!==Number(RW[i-1]?.answerIndex)))recordReviewWrong(2,'read',i,r?.selected??-1,'exam');
+      const lq=LS[i-1],rq=RW[i-1];
+      if(includeListen&&(!l||Number(l.selected)!==Number(lq?.answerIndex)))recordReviewWrong(2,'listen',lq?.bankId||i,l?.selected??-1,'exam',{choiceOrder:lq?.choiceOrder});
+      if(includeRead&&(!r||Number(r.selected)!==Number(rq?.answerIndex)))recordReviewWrong(2,'read',rq?.bankId||i,r?.selected??-1,'exam',{choiceOrder:rq?.choiceOrder});
     }
     REVIEW.latestExamSignature=signature;saveReview();
   }catch(e){}
@@ -98,7 +101,7 @@ function reviewSourceLabel(source){
 function originalQuestionParts(q,type){
   return {
     instruction:q.instruction||'',
-    body:q.stem||q.prompt||'',
+    body:[q.stem,q.prompt&&q.prompt!==q.stem?q.prompt:''].filter(Boolean).join('\n\n'),
     script:type==='listen'?(q.script||''):'',
     choices:(q.choices||[]).map(cleanChoice)
   };
@@ -158,7 +161,9 @@ function specificWrongChoiceReason(type,evidence,correct,wrong){
 async function detailedReviewExplanation(item,q){
   const type=item.type,lang=S.lang||'ko',n=answerNumber(q),answer=cleanChoice(q.choices?.[q.answerIndex]||q.answer||'');
   let reason='',grammar='',vocab='',elimination='';
-  if(item.level===2){
+  if(q.bankId){
+    const base=lang==='ja'?(q.explanationJa||q.explanationKo):(q.explanationKo||q.explanation||'');reason=(lang==='ko'||lang==='ja')?base:await translateCached(`review_bank_${q.bankId}_${lang}`,base,'ko',lang);grammar=(q.targetSkills||[]).join(' · ');elimination=reason;
+  }else if(item.level===2){
     reason=type==='listen'?listeningExplanation(q):readingExplanation(q);
     if(type==='read'){
       [grammar,vocab]=await Promise.all([localizedField(q.grammar,`${item.key}_grammar`),localizedField(q.vocab,`${item.key}_vocab`)]);
@@ -179,13 +184,13 @@ async function detailedReviewExplanation(item,q){
   const wrongIntro=elimination||text('각 선택지의 시간·대상·행동을 근거 문장과 따로 대조해 보세요.','各選択肢の時刻・対象・行動を根拠文と個別に照合しましょう。','Compare the time, subject, and action in each option with the evidence.','请把每个选项的时间、对象和行为分别与依据句对照。');
   return `<section class="tqReviewDeep"><div class="tqInlineTitle"><span>✓</span><b>${text('상세 해설','詳しい解説','Detailed explanation','详细解析')}</b></div><div class="tqInlineAnswer"><small>${text('정답','正解','Answer','正确答案')}</small><strong>${n}. ${esc(answer)}</strong></div><h4>${text('판단 근거','判断の根拠','Key evidence','判断依据')}</h4><p>${esc(reason)}</p>${evidence?`<blockquote>${esc(evidence)}</blockquote>`:''}${grammar?`<h4>${text('문법 포인트','文法ポイント','Grammar point','语法要点')}</h4><p>${esc(grammar)}</p>`:''}${vocab?`<h4>${text('핵심 어휘','重要語彙','Key vocabulary','核心词汇')}</h4><p>${esc(vocab)}</p>`:''}<h4>${text('선택지별 오답 소거','選択肢ごとの消去','Option-by-option elimination','逐项排除')}</h4><p>${esc(wrongIntro)}</p><ol class="tqReviewChoiceAnalysis">${(q.choices||[]).map((c,i)=>`<li class="${i===q.answerIndex?'right':''}"><b>${i+1}. ${esc(cleanChoice(c))}</b><span>${esc(choiceReason(c,i))}</span></li>`).join('')}</ol></section>`;
 }
-function activeReviewItems(){return Object.values(REVIEW.items).filter(x=>x?.active&&reviewQuestion(x.level,x.type,x.id)).sort((a,b)=>(Number(b.lastWrongAt)||0)-(Number(a.lastWrongAt)||0))}
+function activeReviewItems(){return Object.values(REVIEW.items).filter(x=>x?.active&&reviewQuestion(x.level,x.type,x.id,x.choiceOrder)).sort((a,b)=>(Number(b.lastWrongAt)||0)-(Number(a.lastWrongAt)||0))}
 function openReviewRetry(key){
-  const item=REVIEW.items[key],q=item&&reviewQuestion(item.level,item.type,item.id);if(!item||!q)return;
+  const item=REVIEW.items[key],q=item&&reviewQuestion(item.level,item.type,item.id,item.choiceOrder);if(!item||!q)return;
   reviewAttempt={key,selected:null,locked:false,showTranslation:false,translation:null};renderReviewRetry();
 }
 function renderReviewRetry(){
-  const a=reviewAttempt,item=a&&REVIEW.items[a.key],q=item&&reviewQuestion(item.level,item.type,item.id),body=document.getElementById('sheetBody');if(!a||!q||!body)return;
+  const a=reviewAttempt,item=a&&REVIEW.items[a.key],q=item&&reviewQuestion(item.level,item.type,item.id,item.choiceOrder),body=document.getElementById('sheetBody');if(!a||!q||!body)return;
   const original=originalQuestionParts(q,item.type),selected=a.selected,locked=a.locked;
   body.innerHTML=`<div class="reward"><b>TOPIK ${item.level} · ${localizedReviewType(item.type)} ${item.id}</b><small>${text(`누적 오답 ${item.wrongCount}회`,`累計誤答 ${item.wrongCount}回`,`${item.wrongCount} misses`,`${item.wrongCount}次错题`)}</small></div>${reviewQuestionMarkup(original)}<button class="tqTranslationToggle" onclick="toggleReviewTranslation()">🌐 ${a.showTranslation?text('전체 번역 숨기기','全文翻訳を隠す','Hide full translation','隐藏全文翻译'):text('문제 전체를 내 언어로 보기','問題全体を自分の言語で見る','View the full question in my language','用我的语言查看整道题')}</button><div id="tqReviewTranslation" class="tqReviewTranslation ${a.showTranslation?'open':''}">${a.showTranslation?(a.translation?reviewQuestionMarkup(a.translation,true):`<div class="translationLoading">${text('전체 번역을 불러오는 중…','全文翻訳を読み込み中…','Loading the full translation…','正在加载全文翻译…')}</div>`):''}</div><div class="choices tqReviewChoices">${(q.choices||[]).map((c,i)=>{let cls='choice';if(selected===i)cls+=' selected';if(locked&&i===q.answerIndex)cls+=' correct';if(locked&&selected===i&&i!==q.answerIndex)cls+=' wrong';return `<button class="${cls}" ${locked?'disabled':''} onclick="reviewSelect(${i})"><span class="n">${i+1}</span><span>${esc(cleanChoice(c))}</span></button>`}).join('')}</div>${locked?`<div class="resultStrip ${selected===q.answerIndex?'good':'bad'}">${selected===q.answerIndex?text('정답입니다. 오답 스택에서 해결 처리했어요.','正解です。誤答スタックを解決済みにしました。','Correct — removed from your active wrong-answer stack.','答对了，已从待复习错题中移除。'):text(`정답은 ${q.answerIndex+1}번입니다. 다시 오답 스택에 남겨 두었어요.`,`正解は${q.answerIndex+1}番です。復習スタックに残しました。`,`The answer is option ${q.answerIndex+1}. It remains in your review stack.`,`正确答案是第${q.answerIndex+1}项，仍保留在复习错题中。`)}</div><div id="tqReviewDeep" class="translationLoading">${text('상세 해설을 준비하는 중…','詳しい解説を準備中…','Preparing the detailed explanation…','正在准备详细解析…')}</div>`:`<div class="doubleTapHint">${text('한 번 탭해 선택 · 같은 답을 한 번 더 탭하면 제출','1回タップで選択・同じ答えをもう一度タップして提出','Tap once to select · tap the same answer again to submit','点一次选择，再点同一答案提交')}</div>`}<button class="closeBtn" onclick="closeSheet();reviewAttempt=null;render()">${text('복습 목록으로','復習一覧へ','Back to review list','返回复习列表')}</button>`;
   document.getElementById('overlay')?.classList.add('open');
@@ -194,12 +199,12 @@ function renderReviewRetry(){
   enhance(body);
 }
 async function loadReviewTranslation(){
-  const a=reviewAttempt,item=a&&REVIEW.items[a.key],q=item&&reviewQuestion(item.level,item.type,item.id);if(!a||!q)return;
+  const a=reviewAttempt,item=a&&REVIEW.items[a.key],q=item&&reviewQuestion(item.level,item.type,item.id,item.choiceOrder);if(!a||!q)return;
   a.translation=await translatedReviewParts(item,q);if(reviewAttempt===a&&a.showTranslation)renderReviewRetry();
 }
 function toggleReviewTranslation(){if(!reviewAttempt)return;reviewAttempt.showTranslation=!reviewAttempt.showTranslation;renderReviewRetry()}
 function reviewSelect(i){
-  const a=reviewAttempt,item=a&&REVIEW.items[a.key],q=item&&reviewQuestion(item.level,item.type,item.id);if(!a||!q||a.locked)return;
+  const a=reviewAttempt,item=a&&REVIEW.items[a.key],q=item&&reviewQuestion(item.level,item.type,item.id,item.choiceOrder);if(!a||!q||a.locked)return;
   i=Number(i);if(a.selected!==i){a.selected=i;return renderReviewRetry()}
   a.locked=true;resolveReview(a.key,i===Number(q.answerIndex),i);renderReviewRetry();
 }
@@ -211,10 +216,7 @@ window.openReviewRetry=openReviewRetry;window.reviewSelect=reviewSelect;window.t
 if(typeof renderInfMCQ==='function'){
   const baseRenderInfMCQ=renderInfMCQ;
   renderInfMCQ=function(q,type){
-    let html=baseRenderInfMCQ(q,type);
-    if(!S.infinity?.feedback)return html;
-    const marker='<button class="primary" style="margin-top:10px"';
-    return html.replace(marker,explanationBlock(type,q)+marker);
+    return baseRenderInfMCQ(q,type);
   };
 }
 
@@ -241,26 +243,15 @@ if(typeof finishReal==='function'){
   finishReal=function(){const out=baseFinishReal();scanLatestExamWrongAnswers();return out};
 }
 
-if(typeof submitInfinity==='function'){
-  const baseSubmitInfinity=submitInfinity;
-  submitInfinity=function(){
-    const x=S.infinity?.current,q=x&&(x.type==='listen'?LS[x.id-1]:x.type==='read'?RW[x.id-1]:null),picked=typeof selected==='number'?selected:null;
-    const out=baseSubmitInfinity();
-    if(q&&picked!=null&&picked!==Number(q.answerIndex))recordReviewWrong(2,x.type,x.id,picked,'random');
-    return out;
-  };
-}
-
-if(typeof infTimeout==='function'){
-  const baseInfTimeout=infTimeout;
-  infTimeout=function(){const x=S.infinity?.current,out=baseInfTimeout();if(x&&(x.type==='listen'||x.type==='read'))recordReviewWrong(2,x.type,x.id,-1,'random');return out};
-}
+// Random Practice records misses in the core submit/timeout handlers with the
+// exact bank ID and displayed choice order. Do not wrap those handlers here:
+// doing so would duplicate a miss under the legacy numeric question number.
 
 if(typeof reviewPage==='function'){
   reviewPage=function(sc){
     navActive('review');scanLatestExamWrongAnswers();const items=activeReviewItems(),mastered=Object.values(REVIEW.items).filter(x=>x&&!x.active).length;
     sc.className='screen tqReviewScreen';
-    sc.innerHTML=`<section class="tqReviewHero"><div><small>${text('누적 오답 복습','累積誤答レビュー','WRONG-ANSWER REVIEW','累计错题复习')}</small><h1>${text('틀린 문제를 끝까지 이해해요','間違えた問題を最後まで理解しよう','Understand every missed question','彻底理解每一道错题')}</h1><p>${text('오답은 자동으로 쌓이고, 다시 맞히면 해결 처리됩니다.','誤答は自動で蓄積され、解き直して正解すると解決済みになります。','Missed questions stack automatically and are resolved when you answer them correctly on retry.','错题会自动累积，重做答对后标记为已掌握。')}</p></div><strong>${items.length}<small>${text('복습 대기','復習待ち','to review','待复习')}</small></strong></section><div class="tqReviewStats"><div><b>${items.reduce((n,x)=>n+(Number(x.wrongCount)||0),0)}</b><small>${text('누적 오답','累積誤答','Total misses','累计错题')}</small></div><div><b>${mastered}</b><small>${text('해결한 문제','解決済み','Mastered','已掌握')}</small></div><div><b>${new Set(items.map(x=>x.level)).size}</b><small>${text('학습 급수','学習級','TOPIK levels','学习级别')}</small></div></div><div class="sectionTitle"><h2>${text('다시 풀 문제','解き直す問題','Retry queue','待重做题目')}</h2><span>${items.length}</span></div><div class="tqReviewQueue">${items.length?items.map(item=>{const q=reviewQuestion(item.level,item.type,item.id),preview=String(q?.stem||q?.prompt||q?.script||'').replace(/\s+/g,' ').slice(0,68);return `<article class="tqReviewItem"><div class="tqReviewBadge">${item.type==='listen'?'🎧':'📖'}<small>TOPIK ${item.level}</small></div><div><b>${localizedReviewType(item.type)} ${item.id}</b><p>${esc(preview)}${preview.length>=68?'…':''}</p><small>${reviewSourceLabel(item.source)} · ${text(`${item.wrongCount}회 틀림`,`${item.wrongCount}回誤答`,`${item.wrongCount} misses`,`${item.wrongCount}次答错`)}</small></div><button onclick="openReviewRetry('${item.key}')">${text('다시 풀기','解き直す','Retry','重做')} ›</button></article>`}).join(''):`<div class="tqReviewEmpty"><span>✓</span><h3>${text('지금은 복습할 오답이 없어요','今は復習する誤答がありません','No missed questions to review','目前没有待复习错题')}</h3><p>${text('실전·랜덤·게임에서 틀린 문제가 자동으로 이곳에 쌓입니다.','模擬試験・ランダム・ゲームの誤答が自動でここに蓄積されます。','Misses from exams, random practice, and game battles appear here automatically.','实战、随机练习和游戏中的错题会自动出现在这里。')}</p></div>`}</div>${mastered?`<button class="tqClearMastered" onclick="clearMasteredReview()">${text(`해결 기록 ${mastered}개 정리`,`解決記録${mastered}件を整理`,`Clear ${mastered} mastered records`,`清理${mastered}条已掌握记录`)}</button>`:''}`;
+    sc.innerHTML=`<section class="tqReviewHero"><div><small>${text('누적 오답 복습','累積誤答レビュー','WRONG-ANSWER REVIEW','累计错题复习')}</small><h1>${text('틀린 문제를 끝까지 이해해요','間違えた問題を最後まで理解しよう','Understand every missed question','彻底理解每一道错题')}</h1><p>${text('오답은 자동으로 쌓이고, 다시 맞히면 해결 처리됩니다.','誤答は自動で蓄積され、解き直して正解すると解決済みになります。','Missed questions stack automatically and are resolved when you answer them correctly on retry.','错题会自动累积，重做答对后标记为已掌握。')}</p></div><strong>${items.length}<small>${text('복습 대기','復習待ち','to review','待复习')}</small></strong></section><div class="tqReviewStats"><div><b>${items.reduce((n,x)=>n+(Number(x.wrongCount)||0),0)}</b><small>${text('누적 오답','累積誤答','Total misses','累计错题')}</small></div><div><b>${mastered}</b><small>${text('해결한 문제','解決済み','Mastered','已掌握')}</small></div><div><b>${new Set(items.map(x=>x.level)).size}</b><small>${text('학습 급수','学習級','TOPIK levels','学习级别')}</small></div></div><div class="sectionTitle"><h2>${text('다시 풀 문제','解き直す問題','Retry queue','待重做题目')}</h2><span>${items.length}</span></div><div class="tqReviewQueue">${items.length?items.map(item=>{const q=reviewQuestion(item.level,item.type,item.id,item.choiceOrder),preview=String(q?.stem||q?.prompt||q?.script||'').replace(/\s+/g,' ').slice(0,68);return `<article class="tqReviewItem"><div class="tqReviewBadge">${item.type==='listen'?'🎧':'📖'}<small>TOPIK ${item.level}</small></div><div><b>${localizedReviewType(item.type)} ${item.id}</b><p>${esc(preview)}${preview.length>=68?'…':''}</p><small>${reviewSourceLabel(item.source)} · ${text(`${item.wrongCount}회 틀림`,`${item.wrongCount}回誤答`,`${item.wrongCount} misses`,`${item.wrongCount}次答错`)}</small></div><button onclick="openReviewRetry('${item.key}')">${text('다시 풀기','解き直す','Retry','重做')} ›</button></article>`}).join(''):`<div class="tqReviewEmpty"><span>✓</span><h3>${text('지금은 복습할 오답이 없어요','今は復習する誤答がありません','No missed questions to review','目前没有待复习错题')}</h3><p>${text('실전·랜덤·게임에서 틀린 문제가 자동으로 이곳에 쌓입니다.','模擬試験・ランダム・ゲームの誤答が自動でここに蓄積されます。','Misses from exams, random practice, and game battles appear here automatically.','实战、随机练习和游戏中的错题会自动出现在这里。')}</p></div>`}</div>${mastered?`<button class="tqClearMastered" onclick="clearMasteredReview()">${text(`해결 기록 ${mastered}개 정리`,`解決記録${mastered}件を整理`,`Clear ${mastered} mastered records`,`清理${mastered}条已掌握记录`)}</button>`:''}`;
   };
 }
 
