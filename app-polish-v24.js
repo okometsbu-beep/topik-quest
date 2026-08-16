@@ -1,4 +1,4 @@
-// MALBIT v27 · compact expedition trail, 1–3 die, regular encounters, and ratio-safe combat art.
+// MALBIT v31 · compact expedition trail, 1–3 die, regular encounters, and ratio-safe combat art.
 (function(){
 'use strict';
 
@@ -39,7 +39,7 @@ function patchHome(){
 
 function patchMore(){
   if(appState()?.view!=='more')return;
-  const badge=document.querySelector('.malbitPageTitle>span');if(badge)badge.textContent='v27';
+  const badge=document.querySelector('.malbitPageTitle>span');if(badge)badge.textContent='v31';
   if(document.querySelector('.malbitThemeSetting'))return;
   const settings=[...document.querySelectorAll('.malbitSetting')],language=settings.find(node=>/\uC571 \uC5B8\uC5B4|\u30A2\u30D7\u30EAの言語|App language|\u5E94\u7528\u8BED\u8A00/.test(node.textContent)),mode=themeMode();
   const html=`<section class="malbitSetting malbitThemeSetting"><h2>${L('화면 테마','画面テーマ','Appearance','显示主题')}</h2><p>${L('기기 설정을 따르거나 어두운·밝은 테마를 고정할 수 있어요.','端末設定に合わせるか、ダーク・ライトを固定できます。','Follow your device or lock MALBIT to dark or light mode.','跟随设备，或固定使用深色、浅色主题。')}</p><div class="malbitThemeGrid"><button class="${mode==='system'?'on':''}" onclick="malbitSetTheme('system')"><i>◐</i><span>${L('기기 설정','システム','System','跟随系统')}</span></button><button class="${mode==='dark'?'on':''}" onclick="malbitSetTheme('dark')"><i>☾</i><span>${L('어두운 테마','ダーク','Dark','深色')}</span></button><button class="${mode==='light'?'on':''}" onclick="malbitSetTheme('light')"><i>☀</i><span>${L('밝은 테마','ライト','Light','浅色')}</span></button></div></section>`;

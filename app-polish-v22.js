@@ -1,4 +1,4 @@
-// MALBIT v23 · final interaction, accessibility and visual-quality pass.
+// MALBIT v31 · final interaction, accessibility and visual-quality pass.
 (function(){
 'use strict';
 
@@ -56,10 +56,11 @@ function patchGameHub(){
 function patchReview(){
   if(S?.view!=='review')return;
   const intro=document.querySelector('.tqReviewHero p');
-  if(intro)intro.textContent=L('문제의 핵심 근거와 각 선택지를 확인하고, 다시 맞히면 해결 처리됩니다.','問題の根拠と各選択肢を確認し、解き直して正解すると解決済みになります。','Check the key evidence and every option; a correct retry marks the question resolved.','查看关键依据与每个选项，重做答对后即标记为已掌握。');
+  const introText=L('문제의 핵심 근거와 각 선택지를 확인하고, 다시 맞히면 해결 처리됩니다.','問題の根拠と各選択肢を確認し、解き直して正解すると解決済みになります。','Check the key evidence and every option; a correct retry marks the question resolved.','查看关键依据与每个选项，重做答对后即标记为已掌握。');
+  if(intro&&intro.textContent!==introText)intro.textContent=introText;
   const stats=document.querySelectorAll('.tqReviewStats>div');
-  if(stats.length>=3){const active=Number(document.querySelector('.tqReviewHero strong')?.childNodes?.[0]?.textContent)||0,mastered=Number(stats[1].querySelector('b')?.textContent)||0,total=active+mastered,rate=total?Math.round(mastered/total*100):100;stats[2].querySelector('b').textContent=`${rate}%`;stats[2].querySelector('small').textContent=L('해결률','解決率','Resolution rate','掌握率')}
-  if(S.lang==='ko')document.querySelectorAll('.tqTranslationToggle').forEach(x=>x.hidden=true);
+  if(stats.length>=3){const active=Number(document.querySelector('.tqReviewHero strong')?.childNodes?.[0]?.textContent)||0,mastered=Number(stats[1].querySelector('b')?.textContent)||0,total=active+mastered,rate=total?Math.round(mastered/total*100):100,rateNode=stats[2].querySelector('b'),labelNode=stats[2].querySelector('small'),label=L('해결률','解決率','Resolution rate','掌握率');if(rateNode&&rateNode.textContent!==`${rate}%`)rateNode.textContent=`${rate}%`;if(labelNode&&labelNode.textContent!==label)labelNode.textContent=label}
+  if(S.lang==='ko')document.querySelectorAll('.tqTranslationToggle').forEach(x=>{if(!x.hidden)x.hidden=true});
 }
 
 function patchStats(){
@@ -78,7 +79,7 @@ function patchStats(){
 
 function patchMore(){
   if(S?.view!=='more')return;
-  const badge=document.querySelector('.malbitPageTitle>span');if(badge)badge.textContent='v23';
+  const badge=document.querySelector('.malbitPageTitle>span');if(badge)badge.textContent='v31';
   const reminderTime=document.querySelector('.malbitToggleRow input[type="time"]');if(reminderTime)reminderTime.setAttribute('aria-label',L('복습 알림 시간','復習通知の時刻','Review reminder time','复习提醒时间'));
   if(typeof window.MALBIT_ACCOUNT_ADAPTER?.signIn!=='function')document.querySelector('.malbitAccountCard')?.remove();
   if(typeof window.MALBIT_BILLING_ADAPTER?.startCheckout!=='function')document.querySelector('.malbitPlusCard')?.remove();
@@ -101,7 +102,7 @@ function patchCommon(){
 }
 
 function visibleModal(){
-  return document.querySelector('#malbitOnboarding,#malbitDiagnostic,#tqVocabPopup.open,#overlay.open,.resultCurtain.open,.resultCurtain.show');
+  return document.querySelector('#tqVocabPopup.open,#overlay.open,.resultCurtain.open,.resultCurtain.show');
 }
 
 function focusables(root){return [...root.querySelectorAll('button:not([disabled]),a[href],input:not([disabled]),textarea:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])')].filter(x=>!x.hidden&&x.getClientRects().length)}
@@ -140,6 +141,17 @@ observer.observe(document.body,{subtree:true,childList:true,attributes:true,attr
 if(typeof render==='function'){
   const baseRender=render;
   render=function(){const out=baseRender.apply(this,arguments);postRender();requestAnimationFrame(postRender);return out};
+}
+
+if(typeof setView==='function'){
+  const baseSetView=setView;
+  setView=function(view){
+    try{return baseSetView.apply(this,arguments)}catch(error){
+      console.error('[MALBIT navigation]',view,error);S.view='home';try{save()}catch(ignore){}
+      const app=document.querySelector('.app'),bottom=document.querySelector('.bottom');if(app){app.inert=false;app.removeAttribute('inert');app.setAttribute('aria-hidden','false')}if(bottom){bottom.inert=false;bottom.removeAttribute('inert');bottom.setAttribute('aria-hidden','false')}
+      try{return render()}catch(fallbackError){console.error('[MALBIT navigation fallback]',fallbackError);const screen=document.getElementById('screen');if(screen)screen.innerHTML=`<div class="infoCard"><h3>${L('화면을 복구했어요','画面を復旧しました','Screen recovered','页面已恢复')}</h3><p>${L('홈 버튼을 다시 눌러 주세요. 학습 기록은 그대로입니다.','ホームをもう一度押してください。学習記録は保持されています。','Tap Home again. Your progress is safe.','请再次点击首页，学习记录不会丢失。')}</p></div>`}
+    }
+  };
 }
 
 const style=document.createElement('style');

@@ -1,4 +1,4 @@
-// MALBIT product polish v21 · trustworthy learning loop, navigation and settings.
+// MALBIT product polish v31 · trustworthy learning loop, navigation and settings.
 (function(){
 'use strict';
 
@@ -216,7 +216,7 @@ window.resetAll=window.malbitResetProgress;
 
 window.malbitSetPref=(name,value)=>{if(name==='dailyGoal')value=Math.max(3,Math.min(20,Number(value)||5));if(name==='randomMix'&&!['balanced','lr','writing'].includes(value))value='balanced';prefs[name]=value;writeJSON(PREFS_KEY,prefs);render()};
 window.malbitSetLanguage=lang=>{if(!['ko','ja','en','zh'].includes(lang))return;setLang(lang);document.documentElement.lang=lang==='zh'?'zh-CN':lang};
-window.malbitCopyReport=async()=>{const payload=`MALBIT v21\nview=${S.view}\nlang=${S.lang}\nlevel=${level()}\nua=${navigator.userAgent}`;try{await navigator.clipboard.writeText(payload);toast(L('문제 신고 정보가 복사됐어요.','不具合報告情報をコピーしました。','Diagnostic details copied.','问题诊断信息已复制。'))}catch(e){prompt(L('아래 내용을 복사해 주세요.','以下をコピーしてください。','Copy the details below.','请复制以下内容。'),payload)}};
+window.malbitCopyReport=async()=>{const payload=`MALBIT v31\nview=${S.view}\nlang=${S.lang}\nlevel=${level()}\nua=${navigator.userAgent}`;try{await navigator.clipboard.writeText(payload);toast(L('문제 신고 정보가 복사됐어요.','不具合報告情報をコピーしました。','Diagnostic details copied.','问题诊断信息已复制。'))}catch(e){prompt(L('아래 내용을 복사해 주세요.','以下をコピーしてください。','Copy the details below.','请复制以下内容。'),payload)}};
 
 window.morePage=function(sc){
   navActive('more');sc.className='screen malbitMoreScreen';const langButtons=[['ko','🇰🇷','한국어'],['ja','🇯🇵','日本語'],['en','🇺🇸','English'],['zh','🇨🇳','中文']].map(([id,flag,name])=>`<button class="${S.lang===id?'on':''}" onclick="malbitSetLanguage('${id}')"><i>${flag}</i><span>${name}</span></button>`).join('');
@@ -243,17 +243,9 @@ window.malbitCenterMap=()=>{const route=document.querySelector('.t1TrailRoute'),
 function patchGameMap(){
   const screen=document.querySelector('.t1TrailScreen'),route=screen?.querySelector('.t1TrailRoute'),action=screen?.querySelector('.t1TrailAction'),board=route?.parentElement;if(!screen||!route||!action||!board)return;if(action.nextElementSibling!==route)board.insertBefore(action,route);if(!route.querySelector('.malbitMapTools'))route.insertAdjacentHTML('afterbegin',`<div class="malbitMapTools"><span>${L('전체 경로','全ルート','Full trail','完整路线')}</span><button onclick="malbitCenterMap()">⌖ ${L('현재 위치','現在地','Current','当前位置')}</button></div>`);const q=currentT1(),mapKey=`${q?.examLevel||1}:${q?.gameStage||1}`;if(window.__malbitMapKey!==mapKey){window.__malbitMapKey=mapKey;window.__malbitMapScroll=0}const saved=Number(window.__malbitMapScroll);if(Number.isFinite(saved))route.scrollTop=Math.max(0,saved);route.addEventListener('scroll',()=>{window.__malbitMapScroll=route.scrollTop},{passive:true})
 }
-function showOnboarding(){
-  if(document.getElementById('malbitOnboarding'))return;const saved=readJSON(ONBOARD_KEY,null),sh=readJSON(SHORTS_KEY,{}),hasProgress=events().length||S.vocab?.length||Object.values(sh.levels||{}).some(x=>Number(x?.total)>0)||Object.keys(readJSON(REVIEW_KEY,{}).items||{}).length;if(saved?.complete)return;if(hasProgress){writeJSON(ONBOARD_KEY,{complete:true,lang:S.lang,level:level(),migrated:true});return}
-  window.__malbitOnboard={lang:S.lang||'ja',level:level()};const el=document.createElement('div');el.id='malbitOnboarding';el.className='malbitOnboarding';el.innerHTML=`<section role="dialog" aria-modal="true"><div class="malbitOnboardLogo">MB</div><small>WELCOME TO MALBIT</small><h1>${L('내 언어로 시작해요','自分の言語で始めよう','Learn in your language','用你的语言开始学习')}</h1><p>${L('해설과 번역에 사용할 언어, 지금 준비하는 시험을 선택하세요. 언제든 설정에서 바꿀 수 있어요.','解説・翻訳に使う言語と、準備中の試験を選んでください。設定でいつでも変更できます。','Choose your explanation language and current exam target. You can change both later.','选择解析语言和当前备考级别，之后可在设置中修改。')}</p><h2>${L('설명 언어','説明言語','Explanation language','解析语言')}</h2><div class="malbitOnboardLang">${[['ko','🇰🇷 한국어'],['ja','🇯🇵 日本語'],['en','🇺🇸 English'],['zh','🇨🇳 中文']].map(([id,name])=>`<button data-lang="${id}" class="${window.__malbitOnboard.lang===id?'on':''}" onclick="malbitOnboardLang('${id}')">${name}</button>`).join('')}</div><h2>${L('학습 목표','学習目標','Study target','学习目标')}</h2><div class="malbitOnboardLevel"><button data-level="1" class="${level()===1?'on':''}" onclick="malbitOnboardLevel(1)"><b>TOPIK I</b><small>${L('1~2급 · 기초','1～2級・基礎','Levels 1–2 · foundation','1～2级 · 基础')}</small></button><button data-level="2" class="${level()===2?'on':''}" onclick="malbitOnboardLevel(2)"><b>TOPIK II</b><small>${L('3~6급 · 중고급','3～6級・中上級','Levels 3–6 · intermediate+','3～6级 · 中高级')}</small></button></div><button class="malbitOnboardStart" onclick="malbitFinishOnboarding()">${L('학습 시작','学習を始める','Start learning','开始学习')} ›</button></section>`;document.body.appendChild(el);setTimeout(()=>el.querySelector('button')?.focus(),20)
-}
-window.malbitOnboardLang=lang=>{window.__malbitOnboard.lang=lang;document.querySelectorAll('.malbitOnboardLang button').forEach(b=>b.classList.toggle('on',b.dataset.lang===lang))};
-window.malbitOnboardLevel=value=>{window.__malbitOnboard.level=Number(value);document.querySelectorAll('.malbitOnboardLevel button').forEach(b=>b.classList.toggle('on',Number(b.dataset.level)===Number(value)))};
-window.malbitFinishOnboarding=()=>{const x=window.__malbitOnboard||{lang:S.lang,level:level()};writeJSON(ONBOARD_KEY,{complete:true,lang:x.lang,level:x.level,at:Date.now()});localStorage.setItem('topikQuestExamLevel',String(x.level));S.lang=x.lang;save();document.getElementById('malbitOnboarding')?.remove();render()};
-
 function postRender(){
   patchShell();if(S.view==='home')patchHome();if(S.view==='stats')renderPolishedStats(document.getElementById('screen'));if(S.view==='vocab')renderPolishedVocab(document.getElementById('screen'));if(S.view==='shorts')patchShorts();if(S.view==='speaking')patchSpeaking();if(S.view==='t1quiz'&&currentT1()?.mode==='game'&&currentT1()?.phase==='map')patchGameMap();
-  const nextRoute=routeKey();if(nextRoute!==lastRoute){lastRoute=nextRoute;requestAnimationFrame(()=>window.scrollTo({top:0,behavior:'auto'}))}observeCompletedT1();beginVisibleTimer();setTimeout(showOnboarding,30);
+  const nextRoute=routeKey();if(nextRoute!==lastRoute){lastRoute=nextRoute;requestAnimationFrame(()=>window.scrollTo({top:0,behavior:'auto'}))}observeCompletedT1();beginVisibleTimer();
 }
 
 if(typeof render==='function'){
