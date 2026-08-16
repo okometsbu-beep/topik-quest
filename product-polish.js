@@ -10,7 +10,7 @@ const SHORTS_KEY='topikQuestShortsV1';
 const GAME_KEY='topikQuestTopik1GameV1';
 const REVIEW_KEY='malbitWrongReviewV3';
 const LANG_INDEX={ko:0,ja:1,en:2,zh:3};
-const PREF_DEFAULT={dailyGoal:5,randomMix:'balanced'};
+const PREF_DEFAULT={dailyGoal:5,randomMix:'balanced',listeningMode:'ask'};
 let prefs=readJSON(PREFS_KEY,PREF_DEFAULT);prefs={...PREF_DEFAULT,...prefs};
 let questionStarted=new Map(),lastRoute='';
 
@@ -241,7 +241,7 @@ function patchHome(){
 }
 window.malbitCenterMap=()=>{const route=document.querySelector('.t1TrailRoute'),current=route?.querySelector('.t1TrailNode.current');if(route&&current)route.scrollTo({top:Math.max(0,current.offsetTop-route.clientHeight/2),behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})};
 function patchGameMap(){
-  const screen=document.querySelector('.t1TrailScreen'),route=screen?.querySelector('.t1TrailRoute'),action=screen?.querySelector('.t1TrailAction'),board=route?.parentElement;if(!screen||!route||!action||!board)return;if(action.nextElementSibling!==route)board.insertBefore(action,route);if(!route.querySelector('.malbitMapTools'))route.insertAdjacentHTML('afterbegin',`<div class="malbitMapTools"><span>${L('전체 경로','全ルート','Full trail','完整路线')}</span><button onclick="malbitCenterMap()">⌖ ${L('현재 위치','現在地','Current','当前位置')}</button></div>`);const q=currentT1(),mapKey=`${q?.examLevel||1}:${q?.gameStage||1}`;if(window.__malbitMapKey!==mapKey){window.__malbitMapKey=mapKey;window.__malbitMapScroll=0}const saved=Number(window.__malbitMapScroll);if(Number.isFinite(saved))route.scrollTop=Math.max(0,saved);route.addEventListener('scroll',()=>{window.__malbitMapScroll=route.scrollTop},{passive:true})
+  const screen=document.querySelector('.t1TrailScreen'),route=screen?.querySelector('.t1TrailRoute'),action=screen?.querySelector('.t1TrailAction'),board=route?.parentElement;if(!screen||!route||!action||!board)return;if(action.nextElementSibling!==route)board.insertBefore(action,route);if(!route.querySelector('.malbitMapTools'))route.insertAdjacentHTML('afterbegin',`<div class="malbitMapTools"><span>${L('전체 경로','全ルート','Full trail','完整路线')}</span><button onclick="malbitCenterMap()">⌖ ${L('현재 위치','現在地','Current','当前位置')}</button></div>`)
 }
 function postRender(){
   patchShell();if(S.view==='home')patchHome();if(S.view==='stats')renderPolishedStats(document.getElementById('screen'));if(S.view==='vocab')renderPolishedVocab(document.getElementById('screen'));if(S.view==='shorts')patchShorts();if(S.view==='speaking')patchSpeaking();if(S.view==='t1quiz'&&currentT1()?.mode==='game'&&currentT1()?.phase==='map')patchGameMap();

@@ -14,7 +14,7 @@
   const RANK = { easy: 1, medium: 2, hard: 3, very_hard: 4 };
   const SYMBOLS = ['①', '②', '③', '④'];
   const SHORT_TYPES = new Set(['vocabulary_blank', 'grammar_blank', 'same_meaning']);
-  const NOISY_PROBLEM_HEADER = /^\s*[<〈《][^>〉》\n]{1,100}(?:문장|대화|글)[>〉》]\s*(?:\r?\n|$)/gmu;
+  const NOISY_PROBLEM_HEADER = /^\s*[<〈《][^>〉》\n]{2,120}[>〉》]\s*(?:\r?\n|$)/gmu;
   const cleanProblemText = (value) => String(value || '').replace(NOISY_PROBLEM_HEADER, '').trim();
   const ITEM_GROUPS = {
     response: '응답', follow_up: '응답', follow_up_response: '응답', place_identification: '장소',
@@ -151,8 +151,9 @@
     ][n - 1];
   }
   function gamePool(level, stage, exclude = []) {
-    let pool = filter({ level, sections: ['listening', 'reading'], difficulties: stageDifficulties(level, stage), mcqOnly: true, noVisual: true, exclude });
-    if (pool.length < 20) pool = filter({ level, sections: ['listening', 'reading'], mcqOnly: true, noVisual: true, exclude });
+    const sections = window.MALBIT_LISTENING_ENABLED?.() === false ? ['reading'] : ['listening', 'reading'];
+    let pool = filter({ level, sections, difficulties: stageDifficulties(level, stage), mcqOnly: true, noVisual: true, exclude });
+    if (pool.length < 20) pool = filter({ level, sections, mcqOnly: true, noVisual: true, exclude });
     return pool;
   }
   function shorts(level) {

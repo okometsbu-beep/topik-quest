@@ -57,6 +57,14 @@ for (const level of [1, 2]) {
   assert.equal(new Set(used).size, used.length, `TOPIK ${level} expedition IDs should not repeat`);
 }
 
+context.window.MALBIT_LISTENING_ENABLED = () => false;
+for (const level of [1, 2]) {
+  const silentPool = bank.gamePool(level, 3, []);
+  assert.ok(silentPool.length >= 20, `silent game pool should be populated for TOPIK ${level}`);
+  assert.ok(silentPool.every((item) => item.section === 'reading'), 'listening-off game pool must contain reading only');
+}
+delete context.window.MALBIT_LISTENING_ENABLED;
+
 assert.equal(bank.shorts(1).length, 108);
 assert.equal(bank.shorts(2).length, 48);
 
@@ -68,7 +76,7 @@ assert.equal(listening[0].bankId, 'M07-II-L-01');
 assert.equal(readingWriting[50].bankId, 'M07-II-W-51');
 
 assert.ok(bank.items.every((item) => item.explanationKo && item.explanationJa));
-const noisyProblemHeader = /[<〈《][^>〉》\n]{1,100}(?:문장|대화|글)[>〉》]/u;
+const noisyProblemHeader = /^\s*[<〈《][^>〉》\n]{2,120}[>〉》]\s*(?:\r?\n|$)/u;
 assert.ok(bank.items.every((item) => [item.instruction, item.passage, item.script, item.prompt]
   .every((value) => !noisyProblemHeader.test(String(value || '')))), 'generated problem headers should be removed');
 console.log('question-bank.test: 2,088 items, clean prompts, 12 mock sets, shuffle, difficulty pools, and no-repeat policies passed');

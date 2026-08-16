@@ -644,9 +644,9 @@ function renderSetup(sc){navActive('home');sc.innerHTML=`<div class="sectionTitl
 window.t1Begin=k=>{clearQ();const m=k==='listening'?40:k==='reading'?60:100,mockSet=BANK?.nextMockSet(1)||1;Q={mode:'real',examLevel:1,mockSet,kind:k,ids:[],i:0,answers:{},played:{},choiceOrders:{},started:Date.now(),duration:m*60};Q.ids=pool(k).map(x=>x.id);saveQ();open('t1quiz')};
 function practiceDifficulty(){const answered=Number(Q?.total)||0,acc=answered?Number(Q.score||0)/answered:0;if(answered<4)return['easy'];if(acc>=.82)return['medium','hard'];if(acc<.5)return['easy'];return['easy','medium']}
 function nextPracticeQuestion(){
-  if(!BANK){const item=A[Math.floor(Math.random()*A.length)];return item?.id}
-  const seen=Array.isArray(Q?.seenIds)?Q.seenIds:[],item=BANK.draw({level:1,sections:['listening','reading'],difficulties:practiceDifficulty(),mcqOnly:true,noVisual:true,exclude:seen,recentKey:'random:1',recentLimit:360});
-  return item?.id||BANK.draw({level:1,sections:['listening','reading'],mcqOnly:true,noVisual:true,exclude:seen})?.id
+  if(!BANK){const deck=window.MALBIT_LISTENING_ENABLED?.()===false?A.filter(item=>item.section!=='listening'):A,item=deck[Math.floor(Math.random()*deck.length)];return item?.id}
+  const sections=window.MALBIT_LISTENING_ENABLED?.()===false?['reading']:['listening','reading'],seen=Array.isArray(Q?.seenIds)?Q.seenIds:[],item=BANK.draw({level:1,sections,difficulties:practiceDifficulty(),mcqOnly:true,noVisual:true,exclude:seen,recentKey:'random:1',recentLimit:360});
+  return item?.id||BANK.draw({level:1,sections,mcqOnly:true,noVisual:true,exclude:seen})?.id
 }
 function startPractice(kind='random',examLevel=1){clearQ();Q={mode:'random',examLevel:1,kind:'all',ids:[],seenIds:[],i:0,answers:{},played:{},choiceOrders:{},score:0,total:0,streak:0,locked:false};const id=nextPracticeQuestion();if(id){Q.ids=[id];Q.seenIds.push(id)}saveQ();open('t1quiz')}
 window.t1ExitRandom=()=>{stopAudio();stopTimer();clearQ();setView('home')};
