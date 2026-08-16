@@ -27,8 +27,8 @@ test('bottom navigation routes are rendered and guarded against a frozen screen'
   assert.doesNotMatch(polish, /#malbitOnboarding,#malbitDiagnostic/);
 });
 
-test('v31 cache bust reaches returning mobile users', () => {
-  assert.match(read('sw.js'), /VERSION='31'/);
-  assert.match(read('site-patch.js'), /const v='31'/);
-  assert.match(read('index.html'), /site-patch\.js\?v=31/);
+test('v32 cache bust reaches returning mobile users', () => {
+  assert.match(read('sw.js'), /VERSION='32'/);
+  assert.match(read('site-patch.js'), /const v='32'/);
+  assert.match(read('index.html'), /site-patch\.js\?v=32/);
 });

@@ -1,4 +1,4 @@
-// MALBIT product growth v31 · journey analytics, game ergonomics, and commerce-ready settings.
+// MALBIT product growth v32 · journey analytics, game ergonomics, and commerce-ready settings.
 (function(){
 'use strict';
 

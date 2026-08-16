@@ -1,4 +1,4 @@
-// MALBIT v31 · final interaction, accessibility and visual-quality pass.
+// MALBIT v32 · final interaction, accessibility and visual-quality pass.
 (function(){
 'use strict';
 
@@ -79,7 +79,7 @@ function patchStats(){
 
 function patchMore(){
   if(S?.view!=='more')return;
-  const badge=document.querySelector('.malbitPageTitle>span');if(badge)badge.textContent='v31';
+  const badge=document.querySelector('.malbitPageTitle>span');if(badge)badge.textContent='v32';
   const reminderTime=document.querySelector('.malbitToggleRow input[type="time"]');if(reminderTime)reminderTime.setAttribute('aria-label',L('복습 알림 시간','復習通知の時刻','Review reminder time','复习提醒时间'));
   if(typeof window.MALBIT_ACCOUNT_ADAPTER?.signIn!=='function')document.querySelector('.malbitAccountCard')?.remove();
   if(typeof window.MALBIT_BILLING_ADAPTER?.startCheckout!=='function')document.querySelector('.malbitPlusCard')?.remove();

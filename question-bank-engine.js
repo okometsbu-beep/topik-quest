@@ -14,6 +14,8 @@
   const RANK = { easy: 1, medium: 2, hard: 3, very_hard: 4 };
   const SYMBOLS = ['①', '②', '③', '④'];
   const SHORT_TYPES = new Set(['vocabulary_blank', 'grammar_blank', 'same_meaning']);
+  const NOISY_PROBLEM_HEADER = /^\s*[<〈《][^>〉》\n]{1,100}(?:문장|대화|글)[>〉》]\s*(?:\r?\n|$)/gmu;
+  const cleanProblemText = (value) => String(value || '').replace(NOISY_PROBLEM_HEADER, '').trim();
   const ITEM_GROUPS = {
     response: '응답', follow_up: '응답', follow_up_response: '응답', place_identification: '장소',
     topic_identification: '중심', picture_selection: '그림 선택', content_match: '내용', detail_match: '세부',
@@ -35,7 +37,7 @@
   const items = rows.map((row) => ({
     id: row[0], set: Number(row[1]), level: Number(row[2]), section: SECTION[row[3]], no: Number(row[4]),
     itemType: row[5], difficulty: DIFFICULTY[row[6]], difficultyRank: RANK[DIFFICULTY[row[6]]] || 1,
-    instruction: row[7], passage: row[8], script: row[9], prompt: row[10], options: row[11],
+    instruction: cleanProblemText(row[7]), passage: cleanProblemText(row[8]), script: cleanProblemText(row[9]), prompt: cleanProblemText(row[10]), options: row[11],
     answerIndex: row[3] === 'w' ? null : Number(row[12]), acceptedAnswer: row[3] === 'w' ? row[12] : null,
     explanationKo: row[13], explanationJa: row[14], targetSkills: row[15] || [], visual: row[16],
     model: row[17], rubric: row[18], stimulusGroup: row[19] || null
