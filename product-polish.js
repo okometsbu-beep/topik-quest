@@ -1,4 +1,4 @@
-// MALBIT product polish v31 · trustworthy learning loop, navigation and settings.
+// MALBIT product polish v32 · trustworthy learning loop, navigation and settings.
 (function(){
 'use strict';
 
@@ -216,7 +216,7 @@ window.resetAll=window.malbitResetProgress;
 
 window.malbitSetPref=(name,value)=>{if(name==='dailyGoal')value=Math.max(3,Math.min(20,Number(value)||5));if(name==='randomMix'&&!['balanced','lr','writing'].includes(value))value='balanced';prefs[name]=value;writeJSON(PREFS_KEY,prefs);render()};
 window.malbitSetLanguage=lang=>{if(!['ko','ja','en','zh'].includes(lang))return;setLang(lang);document.documentElement.lang=lang==='zh'?'zh-CN':lang};
-window.malbitCopyReport=async()=>{const payload=`MALBIT v31\nview=${S.view}\nlang=${S.lang}\nlevel=${level()}\nua=${navigator.userAgent}`;try{await navigator.clipboard.writeText(payload);toast(L('문제 신고 정보가 복사됐어요.','不具合報告情報をコピーしました。','Diagnostic details copied.','问题诊断信息已复制。'))}catch(e){prompt(L('아래 내용을 복사해 주세요.','以下をコピーしてください。','Copy the details below.','请复制以下内容。'),payload)}};
+window.malbitCopyReport=async()=>{const payload=`MALBIT v32\nview=${S.view}\nlang=${S.lang}\nlevel=${level()}\nua=${navigator.userAgent}`;try{await navigator.clipboard.writeText(payload);toast(L('문제 신고 정보가 복사됐어요.','不具合報告情報をコピーしました。','Diagnostic details copied.','问题诊断信息已复制。'))}catch(e){prompt(L('아래 내용을 복사해 주세요.','以下をコピーしてください。','Copy the details below.','请复制以下内容。'),payload)}};
 
 window.morePage=function(sc){
   navActive('more');sc.className='screen malbitMoreScreen';const langButtons=[['ko','🇰🇷','한국어'],['ja','🇯🇵','日本語'],['en','🇺🇸','English'],['zh','🇨🇳','中文']].map(([id,flag,name])=>`<button class="${S.lang===id?'on':''}" onclick="malbitSetLanguage('${id}')"><i>${flag}</i><span>${name}</span></button>`).join('');

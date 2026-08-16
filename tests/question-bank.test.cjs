@@ -68,4 +68,7 @@ assert.equal(listening[0].bankId, 'M07-II-L-01');
 assert.equal(readingWriting[50].bankId, 'M07-II-W-51');
 
 assert.ok(bank.items.every((item) => item.explanationKo && item.explanationJa));
-console.log('question-bank.test: 2,088 items, 12 mock sets, shuffle, difficulty pools, and no-repeat policies passed');
+const noisyProblemHeader = /[<〈《][^>〉》\n]{1,100}(?:문장|대화|글)[>〉》]/u;
+assert.ok(bank.items.every((item) => [item.instruction, item.passage, item.script, item.prompt]
+  .every((value) => !noisyProblemHeader.test(String(value || '')))), 'generated problem headers should be removed');
+console.log('question-bank.test: 2,088 items, clean prompts, 12 mock sets, shuffle, difficulty pools, and no-repeat policies passed');

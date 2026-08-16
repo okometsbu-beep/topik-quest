@@ -15,6 +15,8 @@ if (items.length !== 2088) throw new Error(`Expected 2,088 items, received ${ite
 
 const sectionCode = { listening: 'l', reading: 'r', writing: 'w' };
 const difficultyCode = { easy: 'e', medium: 'm', hard: 'h', very_hard: 'v' };
+const noisyProblemHeader = /^\s*[<〈《][^>〉》\n]{1,100}(?:문장|대화|글)[>〉》]\s*(?:\r?\n|$)/gmu;
+const cleanProblemText = (value) => String(value || '').replace(noisyProblemHeader, '').trim();
 const seen = new Set();
 const rows = items.map((item) => {
   if (!item.id || seen.has(item.id)) throw new Error(`Missing or duplicate id: ${item.id}`);
@@ -32,10 +34,10 @@ const rows = items.map((item) => {
     item.question_no,
     item.item_type,
     difficultyCode[item.difficulty],
-    item.instruction || '',
-    item.passage || '',
-    item.audio_script || '',
-    item.prompt || '',
+    cleanProblemText(item.instruction),
+    cleanProblemText(item.passage),
+    cleanProblemText(item.audio_script),
+    cleanProblemText(item.prompt),
     item.options || [],
     writing ? item.answer : item.answer - 1,
     item.explanation_ko || '',
