@@ -1,7 +1,7 @@
-// MALBIT bootstrap v35
+// MALBIT bootstrap v36
 // Load the shared core, reviewed data, TOPIK I engine, then learning interactions.
 (function(){
-  const v='35';
+  const v='36';
   const finishBoot=reason=>{
     if(window.__malbitBoot?.finish)return window.__malbitBoot.finish(reason);
     document.documentElement.classList.remove('tq-booting');

@@ -15,6 +15,7 @@ const labels=()=>({
 
 function listeningExplanation(q){
   const lang=S.lang||'ko',pack=I18N.topik2Listening?.[q.id]||{},n=answerNumber(q);
+  if(q?.bankId&&q.explanationI18n?.[lang])return q.explanationI18n[lang];
   if(pack[lang]||pack.ko)return pack[lang]||pack.ko;
   const localizedChoice=lang==='ko'?answerChoice(q):lang==='ja'?cleanChoice((q.choicesJa||q.choices||[])[q.answerIndex]):answerChoice(q);
   if(lang==='ja')return `音声の要点は「${localizedChoice}」です。したがって${n}番が正解です。`;
@@ -24,6 +25,7 @@ function listeningExplanation(q){
 }
 
 function readingExplanation(q){
+  if(q?.bankId&&q.explanationI18n?.[S.lang||'ko'])return q.explanationI18n[S.lang||'ko'];
   const pack=I18N.topik2Reading?.[q.id]||{};
   return pack[S.lang]||(S.lang==='ja'?q.why:'')||pack.ko||'';
 }
@@ -162,7 +164,7 @@ async function detailedReviewExplanation(item,q){
   const type=item.type,lang=S.lang||'ko',n=answerNumber(q),answer=cleanChoice(q.choices?.[q.answerIndex]||q.answer||'');
   let reason='',grammar='',vocab='',elimination='';
   if(q.bankId){
-    const base=lang==='ja'?(q.explanationJa||q.explanationKo):(q.explanationKo||q.explanation||'');reason=(lang==='ko'||lang==='ja')?base:await translateCached(`review_bank_${q.bankId}_${lang}`,base,'ko',lang);grammar=(q.targetSkills||[]).join(' · ');elimination=reason;
+    reason=q.explanationI18n?.[lang]||q.explanationI18n?.ko||q.explanation||'';grammar=(q.targetSkills||[]).join(' · ');elimination=reason;
   }else if(item.level===2){
     reason=type==='listen'?listeningExplanation(q):readingExplanation(q);
     if(type==='read'){

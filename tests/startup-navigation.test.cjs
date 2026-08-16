@@ -27,12 +27,23 @@ test('bottom navigation routes are rendered and guarded against a frozen screen'
   assert.doesNotMatch(polish, /#malbitOnboarding,#malbitDiagnostic/);
 });
 
-test('v35 cache bust reaches returning mobile users', () => {
-  assert.match(read('sw.js'), /VERSION='35'/);
+test('v36 cache bust reaches returning mobile users', () => {
+  assert.match(read('sw.js'), /VERSION='36'/);
   assert.match(read('sw.js'), /app-polish-v35\.js/);
-  assert.match(read('site-patch.js'), /const v='35'/);
+  assert.match(read('site-patch.js'), /const v='36'/);
   assert.match(read('site-patch.js'), /load\('app-polish-v35\.js'\)/);
-  assert.match(read('index.html'), /site-patch\.js\?v=35/);
+  assert.match(read('index.html'), /site-patch\.js\?v=36/);
+});
+
+test('multilingual explanations follow the displayed choice order in every mode', () => {
+  const engine = read('question-bank-engine.js');
+  const topik1 = read('topik1.js');
+  const learning = read('learning-features.js');
+  assert.match(engine, /explain:\s*explanationPack/);
+  assert.match(engine, /choiceExplanationsI18n/);
+  assert.match(topik1, /BANK\.explain\(item\.bankId,set\.correct,set\.items\.map/);
+  assert.match(learning, /q\?\.bankId&&q\.explanationI18n\?\.\[lang\]/);
+  assert.match(learning, /reason=q\.explanationI18n\?\.\[lang\]/);
 });
 
 test('v34 makes listening choices interactive and adds handwriting practice', () => {
