@@ -27,12 +27,12 @@ test('bottom navigation routes are rendered and guarded against a frozen screen'
   assert.doesNotMatch(polish, /#malbitOnboarding,#malbitDiagnostic/);
 });
 
-test('v34 cache bust reaches returning mobile users', () => {
-  assert.match(read('sw.js'), /VERSION='34'/);
-  assert.match(read('sw.js'), /app-polish-v34\.js/);
-  assert.match(read('site-patch.js'), /const v='34'/);
-  assert.match(read('site-patch.js'), /load\('app-polish-v34\.js'\)/);
-  assert.match(read('index.html'), /site-patch\.js\?v=34/);
+test('v35 cache bust reaches returning mobile users', () => {
+  assert.match(read('sw.js'), /VERSION='35'/);
+  assert.match(read('sw.js'), /app-polish-v35\.js/);
+  assert.match(read('site-patch.js'), /const v='35'/);
+  assert.match(read('site-patch.js'), /load\('app-polish-v35\.js'\)/);
+  assert.match(read('index.html'), /site-patch\.js\?v=35/);
 });
 
 test('v34 makes listening choices interactive and adds handwriting practice', () => {
@@ -44,6 +44,19 @@ test('v34 makes listening choices interactive and adds handwriting practice', ()
   assert.match(v34, /pointerdown/);
   assert.match(v34, /malbitBeginnerWritingDone/);
   assert.match(v34, /grid-template-columns:repeat\(4,1fr\)/);
+});
+
+test('v35 unifies beginner level and expands recognized handwriting practice', () => {
+  const v35 = read('app-polish-v35.js');
+  assert.match(v35, /v35ThreeLevels/);
+  assert.match(v35, /v33BeginnerLaunch\{display:none/);
+  assert.match(v35, /v35SingleLanguage/);
+  assert.match(v35, /words:\[/);
+  assert.match(v35, /vocab:\[/);
+  assert.match(v35, /sentences:\[/);
+  assert.match(v35, /scoreCurrentPad/);
+  assert.match(v35, /playDing/);
+  assert.match(v35, /setTimeout\(advanceWriting,720\)/);
 });
 
 test('v33 supplies theme, listening, stable trail, language and beginner affordances', () => {
