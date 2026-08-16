@@ -76,7 +76,55 @@ assert.equal(listening[0].bankId, 'M07-II-L-01');
 assert.equal(readingWriting[50].bankId, 'M07-II-W-51');
 
 assert.ok(bank.items.every((item) => item.explanationKo && item.explanationJa));
+const mcqItems = bank.items.filter((item) => item.section !== 'writing');
+assert.equal(mcqItems.length, 2040);
+const explanationNumbers = {
+  ko: (n) => `현재 보기 순서에서는 ${n}번이 정답입니다.`,
+  ja: (n) => `現在の選択肢では${n}番が正解です。`,
+  en: (n) => `option ${n} is correct.`,
+  zh: (n) => `第${n}项是正确答案。`
+};
+const reverseOrder = [3, 2, 1, 0];
+const uniqueExplanations = new Set();
+for (const item of mcqItems) {
+  assert.equal(item.options.length, 4, `${item.id} should have four options`);
+  assert.equal(new Set(item.options).size, 4, `${item.id} options should be unique`);
+  assert.ok(Number.isInteger(item.answerIndex) && item.answerIndex >= 0 && item.answerIndex < 4, `${item.id} answer should be in range`);
+  for (const order of [[0, 1, 2, 3], reverseOrder]) {
+    const question = bank.present(item, order);
+    const currentNumber = question.answerIndex + 1;
+    const correctChoice = question.choices[question.answerIndex];
+    assert.equal(correctChoice, item.options[item.answerIndex], `${item.id} shuffled answer should retain the correct choice`);
+    for (const lang of ['ko', 'ja', 'en', 'zh']) {
+      const explanation = question.explanationI18n[lang];
+      assert.ok(explanation, `${item.id} should have a ${lang} explanation`);
+      assert.ok(explanation.includes(correctChoice), `${item.id} ${lang} explanation should name the actual answer`);
+      assert.ok(explanation.includes(explanationNumbers[lang](currentNumber)), `${item.id} ${lang} explanation should use displayed option ${currentNumber}`);
+      assert.doesNotMatch(explanation, /(?:undefined|null|\[object Object\])/u, `${item.id} ${lang} explanation should be clean`);
+      uniqueExplanations.add(`${lang}:${explanation}`);
+    }
+    for (const lang of ['ko', 'ja', 'en', 'zh']) {
+      assert.equal(question.choiceExplanationsI18n[lang].length, 4, `${item.id} should explain all choices in ${lang}`);
+      assert.ok(question.choiceExplanationsI18n[lang].every(Boolean), `${item.id} should not have blank choice explanations in ${lang}`);
+    }
+  }
+}
+assert.ok(uniqueExplanations.size > 5000, 'explanations should include question-specific answers and evidence instead of four repeated templates');
+
+const screenshotItem = bank.byId('M04-I-R-44');
+const screenshotOrder = [0, 2, 1, 3];
+const screenshotQuestion = bank.present(screenshotItem, screenshotOrder);
+assert.equal(screenshotQuestion.answerIndex, 2);
+assert.match(screenshotQuestion.explanationI18n.ja, /現在の選択肢では3番が正解です/u);
+assert.doesNotMatch(screenshotQuestion.explanationI18n.ja, /正解は2番です/u);
+assert.match(screenshotQuestion.explanationI18n.ja, /저는 토요일이나 일요일에 동생과 테니스를 합니다/u);
+assert.match(bank.explain(screenshotItem.id, 2, screenshotQuestion.choices).ja, /3番が正解/u);
+
+for (const item of bank.items.filter((entry) => entry.section === 'writing')) {
+  const question = bank.present(item);
+  for (const lang of ['ko', 'ja', 'en', 'zh']) assert.ok(question.explanationI18n[lang], `${item.id} should have a ${lang} writing guide`);
+}
 const noisyProblemHeader = /^\s*[<〈《][^>〉》\n]{2,120}[>〉》]\s*(?:\r?\n|$)/u;
 assert.ok(bank.items.every((item) => [item.instruction, item.passage, item.script, item.prompt]
   .every((value) => !noisyProblemHeader.test(String(value || '')))), 'generated problem headers should be removed');
-console.log('question-bank.test: 2,088 items, clean prompts, 12 mock sets, shuffle, difficulty pools, and no-repeat policies passed');
+console.log('question-bank.test: 2,088 items, 16,320 shuffled multilingual explanation fields, clean prompts, 12 mock sets, and no-repeat policies passed');
