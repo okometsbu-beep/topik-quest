@@ -15,7 +15,7 @@ if (items.length !== 2088) throw new Error(`Expected 2,088 items, received ${ite
 
 const sectionCode = { listening: 'l', reading: 'r', writing: 'w' };
 const difficultyCode = { easy: 'e', medium: 'm', hard: 'h', very_hard: 'v' };
-const noisyProblemHeader = /^\s*[<〈《][^>〉》\n]{1,100}(?:문장|대화|글)[>〉》]\s*(?:\r?\n|$)/gmu;
+const noisyProblemHeader = /^\s*[<〈《][^>〉》\n]{2,120}[>〉》]\s*(?:\r?\n|$)/gmu;
 const cleanProblemText = (value) => String(value || '').replace(noisyProblemHeader, '').trim();
 const seen = new Set();
 const rows = items.map((item) => {

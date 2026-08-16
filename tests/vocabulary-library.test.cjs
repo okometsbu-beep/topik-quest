@@ -28,5 +28,11 @@ test('vocabulary screen exposes manual entry, search, filters, and save actions'
   }
   assert.match(source, /TOPIK STUDY LIBRARY/);
   assert.match(source, /tqManualVocabTerm/);
+  assert.match(source, /manual_vocab_v33/);
+  assert.match(source, /translateCached\(`manual_vocab_v33_/);
+  assert.match(source, /VOCAB_GROWTH_THRESHOLDS=\[0,1,3,6,10,16,24,35,50,75\]/);
+  assert.match(source, /vocabGrowthSvg/);
+  assert.match(source, /window\.malbitLearningVocabPage/);
+  assert.match(source, /window\.malbitPracticeVocabLibrary/);
   assert.doesNotMatch(source, /class="tqLongPressDiscovery"/);
 });
