@@ -1,0 +1,20 @@
+{
+  "name": "malbit-korean-learning",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Static MALBIT Korean-learning PWA and unofficial TOPIK practice app",
+  "scripts": {
+    "test": "node --test tests/*.test.cjs",
+    "test:quick": "node --test tests/runtime-contract.test.cjs tests/startup-navigation.test.cjs tests/v33-runtime.test.cjs tests/v34-runtime.test.cjs tests/v35-runtime.test.cjs tests/vocabulary-library.test.cjs",
+    "test:content": "node --test tests/question-bank.test.cjs tests/vocabulary-library.test.cjs",
+    "check:runtime": "node scripts/check-runtime.mjs",
+    "check:syntax": "node scripts/check-syntax.mjs",
+    "check": "npm run check:runtime && npm run check:syntax && npm test",
+    "serve": "node scripts/serve.mjs",
+    "smoke": "node scripts/smoke-http.mjs",
+    "version:bump": "node scripts/bump-version.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

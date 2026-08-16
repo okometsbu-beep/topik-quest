@@ -252,8 +252,6 @@ if(typeof render==='function'){
   const baseRender=render;render=function(){const out=baseRender.apply(this,arguments);postRender();return out};
 }
 
-if('serviceWorker'in navigator&&location.protocol!=='file:'){const register=()=>navigator.serviceWorker.register('./sw.js').catch(()=>{});document.readyState==='complete'?register():window.addEventListener('load',register,{once:true})}
-
 const polishStyle=document.createElement('style');polishStyle.textContent=`
   :where(button,a,input,textarea,summary):focus-visible{outline:3px solid #78a7ff!important;outline-offset:3px!important}
   .tqVocabEditLabel{display:block;margin:9px 0 5px;color:#5d6c82;font-size:9px;font-weight:900}.tqVocabInput{display:block;width:100%;margin-top:5px;border:2px solid #d9e3f1;border-radius:13px;padding:11px 12px;background:#fff;color:#17243a;font-size:16px;font-weight:850}.tqReviewedBadge{display:block;margin-bottom:8px;color:#287756!important}.malbitWritingRule{margin:9px 0 5px;border-radius:12px;background:#edf4ff;padding:9px 10px;color:#405d85;font-size:10px;font-weight:850;line-height:1.45}.malbitWritingGate{margin:5px 0 8px;color:#b34858;font-size:10px;font-weight:850}.malbitWritingGate.ready{color:#16805d}.randomWriteAction:disabled{box-shadow:none;filter:grayscale(.4)}

@@ -1,0 +1,64 @@
+# MALBIT architecture
+
+## Runtime flow
+
+MALBIT is a dependency-free static PWA. `index.html` is a small app shell. It loads the base visual
+system from `styles.css`, the original TOPIK II payload from `legacy-data.js`, and its runtime from
+`legacy-core.js`. The page bootstrap installs or updates `sw.js`, then loads `site-patch.js` with
+the shared release version.
+
+The extracted base files retain their original execution order but are independently cacheable.
+This keeps repeat edits and navigations from reparsing a 600 KB HTML document when only one layer
+changed.
+
+`site-patch.js` owns the canonical runtime order:
+
+1. shared DOM/runtime patch
+2. TOPIK I, Shorts, explanation, and question-bank data
+3. question-bank engine
+4. TOPIK I and learning features
+5. product UI/growth layers
+6. compatibility layers v22, v24, v33, v34, and v35
+
+All runtime files are preloaded in parallel, then executed serially. This preserves override order
+without paying a network round trip between every script.
+
+## Why the compatibility layers remain
+
+The versioned `app-polish-*` files are historical compatibility layers and contain working features
+that are covered by runtime tests. Moving all of them in one release would create a large regression
+surface. New work must not create another numbered layer. Modify the owning layer when the behavior
+clearly belongs there, or create a purpose-named module and document its dependency.
+
+Consolidation can proceed feature by feature after browser parity tests exist. The safe order is:
+
+1. extract shared utilities and storage adapters
+2. extract beginner/handwriting
+3. extract expedition
+4. extract review/vocabulary
+5. migrate feature-owned code out of `legacy-core.js` behind focused parity tests
+
+## Content pipeline
+
+`scripts/build-question-bank.mjs` converts the canonical 2,088-item JSON source into four generated
+browser payloads plus `data/question-bank-manifest.json`. The generated payloads are not source files
+for manual editing.
+
+`question-bank-engine.js` normalizes those rows and supplies all modes with stable IDs, difficulty
+pools, shuffled display order, multilingual explanations, and no-repeat behavior.
+
+## Persistence contract
+
+Progress, wrong answers, vocabulary, listening preferences, and game state live in browser storage.
+Changing a key without migration silently destroys a user's continuity, so storage keys are treated
+as public API. Any migration must accept old values, write the new representation, and have a test.
+
+## Cache contract
+
+`index.html`, `site-patch.js`, and `sw.js` share one integer release version. Literal asset URLs in
+`index.html` carry that version too. The service worker precaches the base shell; the larger feature
+runtime and generated question-bank parts are cached as a successful boot loads them. This makes
+updates activate quickly while retaining offline use after a completed first load.
+
+Run `npm run check:runtime` to validate versions, loader targets, generated bank hashes, and the rule
+against adding new numbered patch files.
