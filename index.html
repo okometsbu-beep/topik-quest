@@ -200,7 +200,8 @@ renderShell();
 </script><script>{
 (function(){
   const root=document.documentElement;
-  const swReloadKey='malbitSwReloadV35';
+  const appVersion='37';
+  const swReloadKey=`malbitSwReloadV${appVersion}`;
   let swUpdatePending=false,queuedReady=false,swReleaseTimer=null;
   const showRecovery=()=>{
     if(document.getElementById('malbitBootRecovery'))return;
@@ -231,11 +232,11 @@ renderShell();
   if('serviceWorker'in navigator&&navigator.serviceWorker.controller&&sessionStorage.getItem(swReloadKey)!=='1'){
     swUpdatePending=true;swReleaseTimer=setTimeout(releaseSwUpdate,15000);
     navigator.serviceWorker.addEventListener('controllerchange',()=>{sessionStorage.setItem(swReloadKey,'1');location.reload()},{once:true});
-    navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).then(reg=>reg.update().then(()=>reg)).then(reg=>{
+    navigator.serviceWorker.register(`./sw.js?v=${appVersion}`,{updateViaCache:'none'}).then(reg=>reg.update().then(()=>reg)).then(reg=>{
       if(reg.waiting)reg.waiting.postMessage('SKIP_WAITING');
       if(!reg.installing&&!reg.waiting){sessionStorage.setItem(swReloadKey,'1');releaseSwUpdate()}
     }).catch(releaseSwUpdate);
   }
-  const x=document.createElement('script');x.src='site-patch.js?v=36';x.async=false;x.onerror=()=>reveal('bootstrap-error');document.body.appendChild(x);
+  const x=document.createElement('script');x.src=`site-patch.js?v=${appVersion}`;x.async=false;x.onerror=()=>reveal('bootstrap-error');document.body.appendChild(x);
 })();
 }</script></body></html>

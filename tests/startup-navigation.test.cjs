@@ -27,12 +27,15 @@ test('bottom navigation routes are rendered and guarded against a frozen screen'
   assert.doesNotMatch(polish, /#malbitOnboarding,#malbitDiagnostic/);
 });
 
-test('v36 cache bust reaches returning mobile users', () => {
-  assert.match(read('sw.js'), /VERSION='36'/);
+test('v37 cache bust reaches returning mobile users', () => {
+  assert.match(read('sw.js'), /VERSION='37'/);
   assert.match(read('sw.js'), /app-polish-v35\.js/);
-  assert.match(read('site-patch.js'), /const v='36'/);
+  assert.match(read('site-patch.js'), /const v='37'/);
   assert.match(read('site-patch.js'), /load\('app-polish-v35\.js'\)/);
-  assert.match(read('index.html'), /site-patch\.js\?v=36/);
+  assert.match(read('index.html'), /const appVersion='37'/);
+  assert.match(read('index.html'), /swReloadKey=`malbitSwReloadV\$\{appVersion\}`/);
+  assert.match(read('index.html'), /register\(`\.\/sw\.js\?v=\$\{appVersion\}`/);
+  assert.match(read('index.html'), /site-patch\.js\?v=\$\{appVersion\}/);
 });
 
 test('multilingual explanations follow the displayed choice order in every mode', () => {
