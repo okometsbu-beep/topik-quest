@@ -27,14 +27,18 @@ test('bottom navigation routes are rendered and guarded against a frozen screen'
   assert.doesNotMatch(polish, /#malbitOnboarding,#malbitDiagnostic/);
 });
 
-test('v37 cache bust reaches returning mobile users', () => {
-  assert.match(read('sw.js'), /VERSION='37'/);
-  assert.match(read('sw.js'), /app-polish-v35\.js/);
-  assert.match(read('site-patch.js'), /const v='37'/);
-  assert.match(read('site-patch.js'), /load\('app-polish-v35\.js'\)/);
-  assert.match(read('index.html'), /const appVersion='37'/);
+test('one release version reaches returning mobile users', () => {
+  const index = read('index.html');
+  const bootstrap = read('site-patch.js');
+  const worker = read('sw.js');
+  const versions = [index.match(/const appVersion='(\d+)'/)?.[1], bootstrap.match(/const VERSION='(\d+)'/)?.[1], worker.match(/const VERSION='(\d+)'/)?.[1]];
+  assert.ok(versions.every(Boolean));
+  assert.equal(new Set(versions).size, 1);
+  assert.match(bootstrap, /'app-polish-v35\.js'/);
   assert.match(read('index.html'), /swReloadKey=`malbitSwReloadV\$\{appVersion\}`/);
   assert.match(read('index.html'), /register\(`\.\/sw\.js\?v=\$\{appVersion\}`/);
+  assert.match(read('index.html'), /if\(!navigator\.serviceWorker\.controller\)/);
+  assert.doesNotMatch(read('product-polish.js'), /serviceWorker\.register/);
   assert.match(read('index.html'), /site-patch\.js\?v=\$\{appVersion\}/);
 });
 

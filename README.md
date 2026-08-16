@@ -22,9 +22,9 @@ An independent Korean-learning game and unofficial TOPIK I & II practice app.
 - Adaptive TOPIK II Random Practice that introduces writing gradually, supports listening/reading-only and writing-focus mixes, and validates writing before submission
 - Spaced-repetition Vocabulary with due dates, Hard/Good/Easy scheduling, pronunciation, editable save forms, and a guided first card
 - Mobile route reset and a viewport-sized expedition map with automatic current-position focus, keeping dice and branch actions within reach
-- First-run language/level onboarding, settings/help/privacy disclosures, full progress export/import/reset, and installable PWA metadata
+- Direct startup without a blocking onboarding gate, plus settings/help/privacy disclosures, full progress export/import/reset, and installable PWA metadata
 - Context-reviewed translation for the TOPIK I “세 시 / 네 시” listening item, plus whole-question translation to avoid fragment mistranslation
-- A three-question first-run diagnostic with instant evidence, a recommended starting level, and a settings retake path
+- A lightweight browser-local profile that preserves the learner's existing language, level, and progress
 - Explicit enter/select/submit/complete learning events, with external product analytics disabled until the learner opts in
 - Fixed bottom dice/route controls, automatic battle-card focus, and current-space map centering for one-handed game play
 - Honest account, backup, notification, support, terms, privacy, and Free/Plus surfaces with integration boundaries for future cloud sync and verified store billing
@@ -40,5 +40,19 @@ The public site is intended to run from GitHub Pages without a Vercel runtime de
 `MALBIT` is the product brand; `TOPIK` appears only to describe exam preparation. This is an independent, unofficial study project using original practice questions and assets, and it is not affiliated with the official exam administrator. See [IP_DESIGN_NOTES.md](IP_DESIGN_NOTES.md) for the clean-room game-design boundary and [BRAND_CLEARANCE.md](BRAND_CLEARANCE.md) for the preliminary naming review.
 
 The repository and GitHub Pages URL retain the legacy `topik-quest` slug so existing links and local progress continue to work.
+
+## Development
+
+```bash
+npm run check
+npm run serve
+```
+
+Start with [`AGENTS.md`](AGENTS.md) for the change-routing contract, then use
+[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) and [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md) for
+the runtime map, fast/content/release lanes, cache rules, and browser regression checklist.
+
+Release versions are synchronized across the page bootstrap and service worker with
+`npm run version:bump`; do not edit those values independently.
 
 Migration trigger: parser fix 2026-08-09.
