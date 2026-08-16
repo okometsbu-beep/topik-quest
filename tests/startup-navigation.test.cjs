@@ -27,12 +27,23 @@ test('bottom navigation routes are rendered and guarded against a frozen screen'
   assert.doesNotMatch(polish, /#malbitOnboarding,#malbitDiagnostic/);
 });
 
-test('v33 cache bust reaches returning mobile users', () => {
-  assert.match(read('sw.js'), /VERSION='33'/);
-  assert.match(read('sw.js'), /app-polish-v33\.js/);
-  assert.match(read('site-patch.js'), /const v='33'/);
-  assert.match(read('site-patch.js'), /load\('app-polish-v33\.js'\)/);
-  assert.match(read('index.html'), /site-patch\.js\?v=33/);
+test('v34 cache bust reaches returning mobile users', () => {
+  assert.match(read('sw.js'), /VERSION='34'/);
+  assert.match(read('sw.js'), /app-polish-v34\.js/);
+  assert.match(read('site-patch.js'), /const v='34'/);
+  assert.match(read('site-patch.js'), /load\('app-polish-v34\.js'\)/);
+  assert.match(read('index.html'), /site-patch\.js\?v=34/);
+});
+
+test('v34 makes listening choices interactive and adds handwriting practice', () => {
+  const v34 = read('app-polish-v34.js');
+  assert.match(v34, /button\.onclick=event=>/);
+  assert.match(v34, /aria-pressed/);
+  assert.match(v34, /malbitSetListeningMode=mode/);
+  assert.match(v34, /malbitHangulCanvas/);
+  assert.match(v34, /pointerdown/);
+  assert.match(v34, /malbitBeginnerWritingDone/);
+  assert.match(v34, /grid-template-columns:repeat\(4,1fr\)/);
 });
 
 test('v33 supplies theme, listening, stable trail, language and beginner affordances', () => {
