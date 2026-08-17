@@ -11,6 +11,7 @@ An independent Korean-learning game and unofficial TOPIK I & II practice app.
 - Separate TOPIK I and TOPIK II Shorts decks, progress, and same-category distractors, using concise equivalents in the selected UI language
 - Level-locked Random Practice: TOPIK I uses only its listening/reading pool; TOPIK II uses its listening/reading/writing pool
 - Full timed mock-exam mode
+- Standalone Story Mode, separate from the full mock exam, with a six-question first case, clue collection, save/resume, replay, best-score retention, and wrong-answer review integration
 - Shared TOPIK I & II Wordlight Expedition loop with an animated six-sided die, roughly 55 irregular spaces per stage, four route forks, fog of war, traps, treasure, space-only shops, and animated combat feedback
 - Roguelite run economy: monsters award gold and Wordlight, treasure can drop currency or gear, shops offer three weighted-rarity items, gear starts empty, and death wipes all run currency and equipment
 - Difficulty- and passage-length-aware game timers with a 20% overall time increase
@@ -32,6 +33,7 @@ An independent Korean-learning game and unofficial TOPIK I & II practice app.
 
 ## Roadmap
 - Separate content packs under `data/topik1` and `data/topik2`
+- More authored Story Mode case packs using the reusable `story-mode.js` scene engine
 - Listening audio under `audio/topik1` and `audio/topik2`
 - Expandable monster, stage and UI assets
 

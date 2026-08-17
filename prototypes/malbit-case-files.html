@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>MALBIT · 말빛 사건부 프로토타입</title>
+  <style>
+    :root{
+      color-scheme:dark;
+      --bg:#07101f;
+      --panel:#101d31;
+      --panel-2:#162640;
+      --line:#2b4166;
+      --text:#f5f8ff;
+      --muted:#8fa3c2;
+      --blue:#4a91ff;
+      --violet:#8d68ff;
+      --pink:#ff5e8a;
+      --mint:#63dfc2;
+      --gold:#ffd66b;
+      --danger:#ff816f;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;background:
+      radial-gradient(circle at 12% 12%,#1d3563 0,transparent 30%),
+      radial-gradient(circle at 88% 78%,#3a1f5f 0,transparent 34%),var(--bg);color:var(--text)}
+    button{font:inherit}
+    body{display:grid;place-items:center;padding:20px}
+    .stage{display:flex;align-items:center;gap:40px;max-width:920px;width:100%;justify-content:center}
+    .intro{width:310px}
+    .intro .eyebrow{color:#89b9ff;font-size:11px;font-weight:900;letter-spacing:.2em}
+    .intro h1{font-size:34px;line-height:1.08;letter-spacing:-.055em;margin:10px 0 14px}
+    .intro p{color:#aebed6;line-height:1.72;font-size:14px;margin:0 0 18px}
+    .intro .flow{display:grid;gap:8px}
+    .intro .flow span{display:flex;gap:9px;align-items:center;color:#d5e2f6;font-size:12px}
+    .intro .flow i{display:grid;place-items:center;width:24px;height:24px;border-radius:9px;background:#172b49;color:#79aaff;font-style:normal;font-weight:900}
+    .prototype-note{margin-top:18px;padding:12px;border-radius:15px;border:1px solid #30486d;background:rgba(15,28,49,.75);font-size:11px;color:#9fb2cf;line-height:1.55}
+    .phone{width:390px;height:min(844px,calc(100vh - 32px));min-height:690px;background:#091425;border:1px solid #3a4c6b;border-radius:34px;box-shadow:0 35px 100px rgba(0,0,0,.54);overflow:hidden;position:relative;display:flex;flex-direction:column}
+    .status{height:28px;padding:10px 18px 0;display:flex;justify-content:space-between;font-size:9px;font-weight:800;color:#b6c7df;flex:none}
+    .appbar{height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;flex:none}
+    .brand b{display:block;font-size:16px;letter-spacing:-.04em}.brand small{display:block;font-size:7px;letter-spacing:.18em;color:#7d95b8;margin-top:2px}
+    .app-actions{display:flex;gap:7px}.chip{border:1px solid #314766;background:#13243c;color:#d8e5f7;border-radius:999px;padding:7px 9px;font-size:9px;font-weight:900}.fire{color:#ffd2a5}
+    #screen{flex:1;overflow:auto;padding:0 14px 94px;scrollbar-width:none}#screen::-webkit-scrollbar{display:none}
+    .fade{animation:fade .24s ease-out}@keyframes fade{from{opacity:.25;transform:translateY(7px)}to{opacity:1;transform:none}}
+    .hero{height:244px;border-radius:27px;overflow:hidden;position:relative;border:1px solid #416291;box-shadow:0 18px 40px rgba(0,0,0,.3);background:#1a2c4b}
+    .hero img{width:100%;height:100%;object-fit:cover;object-position:60% center;filter:saturate(1.08)}
+    .hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,12,28,.04) 28%,rgba(5,12,28,.94) 100%)}
+    .hero-copy{position:absolute;z-index:2;inset:auto 16px 16px}.hero-copy .case-tag{display:inline-flex;padding:5px 8px;border-radius:999px;background:rgba(77,132,229,.9);font-size:8px;font-weight:900;letter-spacing:.08em}.hero-copy h2{font-size:24px;letter-spacing:-.055em;margin:9px 0 5px}.hero-copy p{font-size:10px;color:#c8d7ed;margin:0;line-height:1.5}
+    .day-row{display:flex;gap:5px;margin-top:11px}.day-row i{height:4px;flex:1;background:#344762;border-radius:99px}.day-row i.on{background:linear-gradient(90deg,#69a8ff,#b276ff)}
+    .message{margin:12px 0;border:1px solid #2c4265;background:linear-gradient(145deg,#111f35,#132741);border-radius:22px;padding:14px;display:grid;grid-template-columns:40px 1fr;gap:11px;align-items:start}
+    .avatar{width:40px;height:40px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(145deg,#7759d5,#3f78d4);font-size:20px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)}
+    .message b{font-size:11px}.message small{display:block;color:#88a2c6;font-size:8px;margin:2px 0 6px}.message p{font-size:11px;line-height:1.55;color:#e5edf9;margin:0}
+    .mini-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:11px 0}.mini{border:1px solid #263b5b;border-radius:16px;background:#101e32;padding:10px}.mini b{display:block;font-size:12px}.mini small{font-size:7px;color:#8097ba}.mini.accent b{color:#80b2ff}
+    .primary,.secondary{width:100%;border:0;border-radius:18px;min-height:50px;font-weight:900;font-size:12px;color:white;cursor:pointer}.primary{background:linear-gradient(135deg,var(--pink),#9f56ee);box-shadow:0 10px 24px rgba(225,76,145,.25)}.secondary{background:#162944;border:1px solid #324b70;color:#cfe0f7}.primary:active,.secondary:active,.route:active,.answer:active{transform:scale(.985)}
+    .section-head{display:flex;justify-content:space-between;align-items:flex-end;margin:6px 2px 13px}.section-head h2{font-size:22px;letter-spacing:-.05em;margin:0}.section-head p{font-size:9px;color:#8298b8;margin:5px 0 0}.section-head span{font-size:9px;color:#9db3d0}
+    .case-progress{height:8px;background:#17243a;border-radius:99px;overflow:hidden;margin:0 2px 15px}.case-progress i{display:block;height:100%;background:linear-gradient(90deg,#55a7ff,#9d70ff);border-radius:inherit;transition:width .35s ease}
+    .route-list{display:grid;gap:10px}.route{width:100%;border:1px solid #2b4265;border-radius:22px;background:linear-gradient(145deg,#111f34,#142842);color:#fff;padding:14px;display:grid;grid-template-columns:48px 1fr auto;gap:12px;align-items:center;text-align:left;cursor:pointer;transition:.15s}.route:hover{border-color:#5685c4}.route .icon{width:48px;height:48px;display:grid;place-items:center;border-radius:17px;font-size:22px;background:#20395d}.route b{display:block;font-size:13px}.route p{font-size:9px;color:#91a8c8;margin:4px 0 7px;line-height:1.45}.labels{display:flex;gap:5px}.labels span{font-size:7px;font-weight:900;padding:4px 6px;border-radius:999px;background:#203b60;color:#9fc4ff}.labels .reward{background:#4b3c22;color:#ffdc7f}.arrow{color:#7d96b9;font-size:18px}
+    .story-card{border-radius:26px;overflow:hidden;border:1px solid #314a70;background:#102038;box-shadow:0 18px 38px rgba(0,0,0,.25)}
+    .story-visual{height:180px;position:relative;background:
+      radial-gradient(circle at 23% 34%,rgba(87,145,255,.3),transparent 22%),
+      linear-gradient(145deg,#1c3560,#0a1529 62%)}
+    .story-visual .scene-icon{position:absolute;inset:0;display:grid;place-items:center;font-size:72px;filter:drop-shadow(0 14px 20px rgba(0,0,0,.35))}
+    .story-visual .stamp{position:absolute;top:13px;right:13px;font-size:8px;font-weight:900;padding:6px 8px;border-radius:999px;background:rgba(7,16,31,.72);border:1px solid #5173a1;color:#bcd4f3}
+    .story-copy{padding:16px}.story-copy small{font-size:8px;color:#70a9ff;font-weight:900}.story-copy h3{font-size:18px;letter-spacing:-.04em;margin:6px 0 9px}.story-copy p{font-size:11px;line-height:1.65;color:#d6e2f2;margin:0}
+    .tip{margin:11px 0 13px;border:1px dashed #38547c;border-radius:16px;padding:11px;font-size:9px;color:#92a9c9;line-height:1.5}
+    .question-top{display:flex;align-items:center;justify-content:space-between;margin:2px 1px 10px}.question-top span{font-size:9px;color:#88a0c1}.timer{display:flex;align-items:center;gap:6px;color:#ffd178!important;font-weight:900}.timer i{display:block;width:42px;height:5px;background:#2c3a50;border-radius:99px;overflow:hidden}.timer i:after{content:"";display:block;width:72%;height:100%;background:#ffd178}
+    .question{background:#f8fbff;color:#14233b;border-radius:25px;padding:18px 16px;box-shadow:0 15px 38px rgba(0,0,0,.25)}
+    .question .type{font-size:8px;color:#53749d;font-weight:900;letter-spacing:.1em}.question h3{font-size:16px;line-height:1.5;letter-spacing:-.03em;margin:9px 0 6px}.question .context{font-size:11px;line-height:1.65;color:#3b4c64;background:#edf3fb;border-radius:14px;padding:11px;margin:11px 0}
+    .audio-button{display:flex;align-items:center;gap:8px;width:100%;border:0;background:#e7f1ff;color:#245a9b;border-radius:14px;padding:10px 12px;font-size:10px;font-weight:900;cursor:pointer}.audio-button i{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#438df3;color:#fff;font-style:normal}
+    .answers{display:grid;gap:8px;margin-top:12px}.answer{border:1px solid #d7e1ee;background:white;color:#263950;border-radius:15px;padding:12px;text-align:left;font-size:11px;font-weight:800;cursor:pointer;display:flex;gap:10px;align-items:center}.answer span{width:22px;height:22px;border-radius:8px;background:#edf3fa;display:grid;place-items:center;font-size:9px;color:#65809e}.answer.selected{border-color:#4d8cf1;background:#eff6ff;box-shadow:0 0 0 2px rgba(77,140,241,.16)}.answer.selected span{background:#4d8cf1;color:white}
+    .submit{margin-top:12px}.submit[disabled]{opacity:.36;cursor:not-allowed}
+    .result{margin-top:12px;border-radius:18px;padding:13px;border:1px solid}.result.good{background:#12352e;border-color:#257562}.result.bad{background:#3a2528;border-color:#8b4a50}.result b{display:block;font-size:12px}.result p{font-size:9px;line-height:1.55;color:#cfe5df;margin:5px 0 0}.result.bad p{color:#f1d5d4}
+    .clue-card{border-radius:27px;border:1px solid #665a2e;background:
+      radial-gradient(circle at 85% 15%,rgba(255,218,103,.18),transparent 26%),
+      linear-gradient(150deg,#2a2a28,#141d2c);padding:18px;position:relative;overflow:hidden;box-shadow:0 20px 45px rgba(0,0,0,.3)}
+    .clue-card:after{content:"확보";position:absolute;right:14px;top:18px;border:2px solid #e56a73;color:#ef7d84;padding:7px 8px;border-radius:50%;font-size:12px;font-weight:1000;transform:rotate(10deg);opacity:.9}
+    .clue-icon{width:62px;height:62px;border-radius:20px;display:grid;place-items:center;background:#283b58;font-size:30px;margin-bottom:18px}.clue-card small{font-size:8px;color:#ffd66b;font-weight:900}.clue-card h2{font-size:21px;letter-spacing:-.045em;margin:6px 0 9px}.clue-card p{font-size:11px;line-height:1.65;color:#d6deea;margin:0;max-width:270px}.clue-meta{display:flex;gap:7px;margin-top:15px}.clue-meta span{font-size:8px;padding:6px 8px;background:#17253b;border:1px solid #30435f;border-radius:99px;color:#aebfda}
+    .theory{margin:13px 0;border-radius:20px;background:#111f34;border:1px solid #2a4264;padding:14px}.theory-top{display:flex;justify-content:space-between;font-size:9px;color:#94aaca}.theory-top b{color:#e4eefc}.theory-bar{height:7px;background:#26334a;border-radius:99px;overflow:hidden;margin-top:9px}.theory-bar i{display:block;width:33%;height:100%;background:linear-gradient(90deg,#60d4c0,#62a7ff);border-radius:inherit;animation:grow .6s ease-out}@keyframes grow{from{width:0}}
+    .office{height:215px;border-radius:27px;position:relative;overflow:hidden;border:1px solid #405a84}.office img{width:100%;height:100%;object-fit:cover;object-position:70% center}.office:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,10,24,.04),rgba(5,12,27,.88))}.office-copy{position:absolute;z-index:2;left:15px;right:15px;bottom:14px}.office-copy small{font-size:8px;color:#9dc2ff}.office-copy h2{font-size:20px;margin:5px 0}.office-copy p{font-size:9px;color:#c5d6ec;margin:0}
+    .evidence-title{display:flex;justify-content:space-between;align-items:center;margin:15px 2px 9px}.evidence-title b{font-size:13px}.evidence-title span{font-size:8px;color:#8ea3c2}.evidence-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.evidence{aspect-ratio:1;border-radius:17px;border:1px dashed #3a5072;background:#101d30;display:grid;place-items:center;text-align:center;color:#7288a9;font-size:8px;padding:7px}.evidence.found{border-style:solid;border-color:#7c6d34;background:linear-gradient(145deg,#27261e,#172238);color:#f1dda0}.evidence i{display:block;font-style:normal;font-size:25px;margin-bottom:5px}
+    .tomorrow{margin:12px 0;border-radius:19px;padding:13px;background:linear-gradient(145deg,#251f40,#162540);border:1px solid #4b4273;display:flex;gap:11px;align-items:center}.tomorrow i{font-style:normal;font-size:23px}.tomorrow b{font-size:11px}.tomorrow p{font-size:8px;color:#9fadd0;margin:3px 0 0}
+    .bottom{position:absolute;bottom:0;left:0;right:0;height:78px;padding:8px 13px calc(8px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(9,20,37,.65),#091425 27%);display:grid;grid-template-columns:repeat(4,1fr);gap:5px;z-index:20}.nav{border:0;background:transparent;color:#7187a7;font-size:7px;font-weight:900;border-radius:14px;cursor:pointer}.nav i{display:block;font-style:normal;font-size:18px;margin-bottom:4px}.nav.on{background:#172841;color:#dfeaff}.nav.case.on{color:#ff94b1}
+    .toast{position:absolute;left:50%;bottom:88px;transform:translate(-50%,12px);background:#f7fbff;color:#17263d;border-radius:999px;padding:9px 13px;font-size:9px;font-weight:900;opacity:0;pointer-events:none;transition:.22s;z-index:40;white-space:nowrap;box-shadow:0 10px 30px rgba(0,0,0,.35)}.toast.show{opacity:1;transform:translate(-50%,0)}
+    @media(max-width:760px){body{padding:0;background:#091425}.stage{display:block}.intro{display:none}.phone{width:100vw;height:100dvh;min-height:620px;border:0;border-radius:0;box-shadow:none}}
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <aside class="intro">
+      <div class="eyebrow">CLICKABLE CONCEPT</div>
+      <h1>퀴즈가 아니라<br>다음 장면을 푼다.</h1>
+      <p>실제 MALBIT의 색과 모바일 구조를 유지한 독립형 프로토타입입니다. 오른쪽 화면에서 직접 눌러 흐름을 확인하세요.</p>
+      <div class="flow">
+        <span><i>1</i>오늘의 사건을 확인한다</span>
+        <span><i>2</i>조사 경로를 스스로 고른다</span>
+        <span><i>3</i>문제를 풀어 단서를 얻는다</span>
+        <span><i>4</i>수첩과 사무실에 변화가 남는다</span>
+      </div>
+      <div class="prototype-note">생산 앱과 연결되지 않은 시각 검증용입니다. 저장·결제·실제 문제은행은 작동하지 않습니다.</div>
+    </aside>
+
+    <section class="phone" aria-label="MALBIT 말빛 사건부 프로토타입">
+      <div class="status"><span>9:41</span><span>●●●  Wi-Fi  ▰</span></div>
+      <header class="appbar">
+        <div class="brand"><b>MALBIT · 말빛</b><small>DAILY CASE FILES</small></div>
+        <div class="app-actions"><button class="chip fire" data-action="streak">🔥 7</button><button class="chip" data-action="language">🇯🇵 日本語</button></div>
+      </header>
+      <main id="screen"></main>
+      <nav class="bottom">
+        <button class="nav" data-nav="home"><i>⌂</i>홈</button>
+        <button class="nav case" data-nav="case"><i>⌕</i>오늘의 사건</button>
+        <button class="nav" data-nav="notebook"><i>▣</i>사건 수첩</button>
+        <button class="nav" data-nav="office"><i>✦</i>사무실</button>
+      </nav>
+      <div class="toast" id="toast"></div>
+    </section>
+  </div>
+
+  <script>
+    const state={screen:'home',route:null,selected:null,answered:false,correct:false,evidence:0};
+    const screen=document.getElementById('screen');
+    const routes={
+      sign:{icon:'🚇',title:'지하철 안내문 확인',kind:'읽기 · 안전',reward:'단서 +1',scene:'역 안내판',copy:'수험표를 마지막으로 본 시각이 적힌 역무실 안내문을 발견했습니다.'},
+      witness:{icon:'🎧',title:'역무원 증언 듣기',kind:'듣기 · 도전',reward:'단서 +2',scene:'목격자 인터뷰',copy:'역무원이 수험표를 들고 있던 사람에 관해 짧은 증언을 합니다.'},
+      office:{icon:'🗂️',title:'분실물 센터 조사',kind:'어휘 · 복습',reward:'보상 2배',scene:'분실물 기록',copy:'분실물 접수표에 낯익은 이름과 접수 시각이 남아 있습니다.'}
+    };
+    function routeData(){return routes[state.route]||routes.sign}
+    function setScreen(next){state.screen=next;render();screen.scrollTop=0}
+    function home(){return `
+      <div class="fade">
+        <section class="hero">
+          <img src="../assets/art/malbit-home-hero.webp" alt="밤의 서울에서 공부하는 말빛 학습자">
+          <div class="hero-copy"><span class="case-tag">EP.01 · DAY 1/5</span><h2>사라진 수험표</h2><p>시험 전날, 수험표가 흔적도 없이 사라졌다.</p><div class="day-row"><i class="on"></i><i></i><i></i><i></i><i></i></div></div>
+        </section>
+        <section class="message"><div class="avatar">👩🏻</div><div><b>유나</b><small>방금 전 · 긴급 메시지</small><p>내일 TOPIK 시험인데 수험표가 없어졌어요. 마지막으로 지하철역에서 본 것 같아요.</p></div></section>
+        <div class="mini-grid"><div class="mini accent"><b>5분</b><small>오늘 예상 시간</small></div><div class="mini"><b>${state.evidence}/3</b><small>확보한 단서</small></div><div class="mini"><b>3급</b><small>추천 난이도</small></div></div>
+        <button class="primary" data-action="start">오늘의 수사 시작 →</button>
+      </div>`}
+    function routeSelect(){return `
+      <div class="fade">
+        <div class="section-head"><div><h2>어디부터 조사할까?</h2><p>경로에 따라 문제 유형과 보상이 달라집니다.</p></div><span>DAY 1 · 0/3 단서</span></div>
+        <div class="case-progress"><i style="width:12%"></i></div>
+        <div class="route-list">
+          ${Object.entries(routes).map(([key,r])=>`<button class="route" data-route="${key}"><span class="icon">${r.icon}</span><span><b>${r.title}</b><p>${r.copy}</p><span class="labels"><span>${r.kind}</span><span class="reward">${r.reward}</span></span></span><span class="arrow">›</span></button>`).join('')}
+        </div>
+        <div class="tip">💡 정답률이 낮았던 영역은 더 좋은 보상을 주는 경로로 등장합니다. 공부할 약점을 게임이 유혹하는 구조입니다.</div>
+      </div>`}
+    function story(){const r=routeData();return `
+      <div class="fade">
+        <div class="question-top"><span>첫 번째 조사 지점</span><span>단서 0/3</span></div>
+        <section class="story-card"><div class="story-visual"><div class="scene-icon">${r.icon}</div><span class="stamp">서울역 · 20:18</span></div><div class="story-copy"><small>SCENE 01</small><h3>${r.scene}</h3><p>${r.copy}<br><br>기록에 적힌 시각을 정확히 이해하면 첫 번째 단서를 확보할 수 있습니다.</p></div></section>
+        <div class="tip">이야기 장면이 먼저 나오고, 바로 이어지는 문제의 정답이 실제 사건 정보가 됩니다.</div>
+        <button class="primary" data-action="question">기록 확인하기 →</button>
+      </div>`}
+    function question(){const r=routeData();return `
+      <div class="fade">
+        <div class="question-top"><span>${r.icon} ${r.scene} · 문제 1/5</span><span class="timer"><i></i> 00:32</span></div>
+        <section class="question">
+          <span class="type">TOPIK I · ${state.route==='witness'?'LISTENING':'READING'}</span>
+          <h3>수험표가 분실물 센터에 접수된 시각은 언제입니까?</h3>
+          ${state.route==='witness'?'<button class="audio-button" data-action="audio"><i>▶</i> 역무원 증언 듣기</button>':'<div class="context">분실물 센터 이용 시간: 오전 8시 40분부터<br>접수 기록: 수험표 1장</div>'}
+          <div class="answers">
+            ${['오전 8시 20분','오전 8시 40분','오후 8시 20분','오후 8시 40분'].map((x,i)=>`<button class="answer ${state.selected===i?'selected':''}" data-answer="${i}" ${state.answered?'disabled':''}><span>${i+1}</span>${x}</button>`).join('')}
+          </div>
+        </section>
+        ${state.answered?`<div class="result ${state.correct?'good':'bad'}"><b>${state.correct?'✓ 첫 번째 단서를 찾았습니다!':'! 잘못 해석한 기록입니다.'}</b><p>${state.correct?'‘오전 8시 40분’이 실제 접수 시각입니다. 이 정보가 사건 수첩에 저장됩니다.':'‘오전’과 ‘오후’를 다시 확인하세요. 이 문제는 오답 재조사 목록에 저장됩니다.'}</p></div>`:''}
+        <button class="primary submit" data-action="${state.answered?'clue':'submit'}" ${state.selected===null?'disabled':''}>${state.answered?'단서 확인하기 →':'정답 확인'}</button>
+      </div>`}
+    function clue(){return `
+      <div class="fade">
+        <div class="section-head"><div><h2>새로운 단서</h2><p>정답이 사건을 실제로 전진시킵니다.</p></div><span>CASE EVIDENCE</span></div>
+        <section class="clue-card"><div class="clue-icon">🧾</div><small>CLUE 01 · 접수 기록</small><h2>오전 8시 40분</h2><p>수험표는 유나가 역을 떠난 뒤 분실물 센터에 접수되었습니다. 누군가가 발견해서 가져다준 것으로 보입니다.</p><div class="clue-meta"><span>읽기 +12</span><span>말빛 +3</span><span>사건 진행 +33%</span></div></section>
+        <section class="theory"><div class="theory-top"><b>사건 해결도</b><span>1 / 3 단서</span></div><div class="theory-bar"><i></i></div></section>
+        <button class="primary" data-action="notebook">사건 수첩에 정리하기 →</button>
+      </div>`}
+    function notebook(){return `
+      <div class="fade">
+        <section class="office"><img src="../assets/art/malbit-home-hero.webp" alt="말빛 탐정 사무실"><div class="office-copy"><small>MALBIT DETECTIVE OFFICE · LV.1</small><h2>첫 단서가 도착했습니다</h2><p>사건을 해결할수록 이 공간과 캐릭터가 성장합니다.</p></div></section>
+        <div class="evidence-title"><b>사라진 수험표 · 사건 수첩</b><span>${state.evidence}/3 수집</span></div>
+        <div class="evidence-grid"><div class="evidence found"><div><i>🧾</i>08:40 접수 기록</div></div><div class="evidence"><div><i>?</i>목격자 진술</div></div><div class="evidence"><div><i>?</i>CCTV 단서</div></div></div>
+        <section class="tomorrow"><i>🔒</i><div><b>DAY 2 · 이상한 목격자</b><p>“수험표를 주운 사람은 유나를 알고 있었어요.”</p></div></section>
+        <button class="secondary" data-action="reset">프로토타입 처음부터 보기</button>
+      </div>`}
+    function placeholder(kind){return `<div class="fade"><div class="section-head"><div><h2>${kind==='office'?'탐정 사무실':'MALBIT 홈'}</h2><p>프로토타입에서는 오늘의 사건 흐름만 구현했습니다.</p></div></div><section class="office"><img src="../assets/art/malbit-home-hero.webp" alt="MALBIT 공간"><div class="office-copy"><small>VISUAL PROTOTYPE</small><h2>${kind==='office'?'수집한 단서가 공간을 바꿉니다':'학습과 사건이 하나로 이어집니다'}</h2><p>아래 ‘오늘의 사건’을 눌러 직접 체험하세요.</p></div></section><button class="primary" style="margin-top:13px" data-action="start">오늘의 사건 열기 →</button></div>`}
+    function render(){
+      const map={home:home,route:routeSelect,story,question,clue,notebook};
+      screen.innerHTML=(map[state.screen]||(()=>placeholder(state.screen)))();
+      document.querySelectorAll('.nav').forEach(n=>n.classList.toggle('on',(state.screen==='notebook'&&n.dataset.nav==='notebook')||(['route','story','question','clue'].includes(state.screen)&&n.dataset.nav==='case')||(state.screen===n.dataset.nav)));
+    }
+    function toast(message){const el=document.getElementById('toast');el.textContent=message;el.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('show'),1400)}
+    document.addEventListener('click',event=>{
+      const route=event.target.closest('[data-route]');if(route){state.route=route.dataset.route;setScreen('story');return}
+      const answer=event.target.closest('[data-answer]');if(answer&&!state.answered){state.selected=Number(answer.dataset.answer);render();return}
+      const nav=event.target.closest('[data-nav]');if(nav){const target=nav.dataset.nav;if(target==='case')setScreen(state.evidence?'notebook':'route');else if(target==='notebook')setScreen('notebook');else setScreen(target);return}
+      const action=event.target.closest('[data-action]')?.dataset.action;if(!action)return;
+      if(action==='start')setScreen('route');
+      if(action==='question')setScreen('question');
+      if(action==='audio')toast('🎧 실제 버전에서는 자연스러운 한국어 음성이 재생됩니다.');
+      if(action==='submit'&&state.selected!==null){state.answered=true;state.correct=state.selected===1;render();}
+      if(action==='clue'){state.evidence=1;setScreen('clue')}
+      if(action==='notebook')setScreen('notebook');
+      if(action==='reset'){Object.assign(state,{screen:'home',route:null,selected:null,answered:false,correct:false,evidence:0});render()}
+      if(action==='streak')toast('🔥 한 문제만 완료해도 오늘의 불씨가 이어집니다.');
+      if(action==='language')toast('일본어 UI 전환을 가정한 버튼입니다.');
+    });
+    render();
+  </script>
+</body>
+</html>

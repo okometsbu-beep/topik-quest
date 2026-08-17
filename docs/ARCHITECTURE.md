@@ -14,11 +14,12 @@ changed.
 `site-patch.js` owns the canonical runtime order:
 
 1. shared DOM/runtime patch
-2. TOPIK I, Shorts, explanation, and question-bank data
+2. TOPIK I, Shorts, explanation, Story Mode, and question-bank data
 3. question-bank engine
 4. TOPIK I and learning features
-5. product UI/growth layers
-6. compatibility layers v22, v24, v33, v34, and v35
+5. Story Mode engine
+6. product UI/growth layers
+7. compatibility layers v22, v24, v33, v34, and v35
 
 All runtime files are preloaded in parallel, then executed serially. This preserves override order
 without paying a network round trip between every script.
@@ -46,6 +47,17 @@ for manual editing.
 
 `question-bank-engine.js` normalizes those rows and supplies all modes with stable IDs, difficulty
 pools, shuffled display order, multilingual explanations, and no-repeat behavior.
+
+## Story Mode
+
+`story-mode.js` owns the reusable scene renderer, episode progress, clue notebook, result grading,
+question-bank delivery, and wrong-answer handoff. Authored episode content stays in purpose-named
+`data/story-pack-*.js` files. A new episode should normally require a data pack and focused tests,
+not another runtime engine or numbered compatibility layer.
+
+Story progress uses the independent `malbitStoryV1` browser-storage root, with one state record per
+episode. It does not share navigation or answer state with the full mock exam, so resuming or
+replaying a case cannot overwrite an in-progress timed exam.
 
 ## Persistence contract
 
