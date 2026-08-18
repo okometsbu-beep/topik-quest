@@ -62,6 +62,7 @@ before(runtime, 'question-bank-engine.js', 'story-mode.js');
 before(runtime, 'learning-features.js', 'story-mode.js');
 before(runtime, 'story-mode.js', 'product-polish.js');
 for (const [first, second] of [['app-polish-v22.js', 'app-polish-v24.js'], ['app-polish-v24.js', 'app-polish-v33.js'], ['app-polish-v33.js', 'app-polish-v34.js'], ['app-polish-v34.js', 'app-polish-v35.js']]) before(runtime, first, second);
+before(runtime, 'app-polish-v35.js', 'vocab-editor.js');
 
 const allowedPatches = new Set(['app-polish-v22.js', 'app-polish-v24.js', 'app-polish-v33.js', 'app-polish-v34.js', 'app-polish-v35.js']);
 const numberedPatches = fs.readdirSync(root).filter((file) => /^app-polish-v\d+\.js$/.test(file));
