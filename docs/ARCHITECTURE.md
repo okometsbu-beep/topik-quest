@@ -62,6 +62,7 @@ replaying a case cannot overwrite an in-progress timed exam.
 ## Persistence contract
 
 Progress, wrong answers, vocabulary, listening preferences, and game state live in browser storage.
+Vocabulary enrichment stays inside each existing `topikQuestV8.vocab` entry, so old entries and exported progress files remain compatible. `vocab-editor.js` owns the detail editor and exposes a narrow `MALBIT_AI_ADAPTER` boundary for optional server-side translation and enrichment; the static client contains no provider secret.
 Changing a key without migration silently destroys a user's continuity, so storage keys are treated
 as public API. Any migration must accept old values, write the new representation, and have a test.
 
