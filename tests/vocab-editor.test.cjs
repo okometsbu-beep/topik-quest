@@ -14,9 +14,10 @@ function runtime(){
 }
 
 test('vocabulary detail editor is last in the ordered runtime and reachable from every saved card',()=>{
-  const bootstrap=fs.readFileSync(path.join(root,'site-patch.js'),'utf8'),polish=fs.readFileSync(path.join(root,'product-polish.js'),'utf8');
+  const bootstrap=fs.readFileSync(path.join(root,'site-patch.js'),'utf8'),polish=fs.readFileSync(path.join(root,'product-polish.js'),'utf8'),features=fs.readFileSync(path.join(root,'learning-features.js'),'utf8');
   assert.ok(bootstrap.indexOf("'app-polish-v35.js'")<bootstrap.indexOf("'vocab-editor.js'"));
   assert.match(polish,/malbitOpenVocabEditor\(\$\{index\}\)/);
+  assert.match(features,/malbitOpenVocabEditor\(\$\{i\}\)/);
   for(const handler of['malbitOpenVocabEditor','malbitSaveVocabEditor','malbitVocabAutoTranslate','malbitVocabAutoDraft','malbitVocabExampleAdd'])assert.match(source,new RegExp(`window\\.${handler}`));
 });
 
