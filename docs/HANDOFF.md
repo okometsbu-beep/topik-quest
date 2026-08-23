@@ -25,7 +25,9 @@ these facts from conversation history or the large TOPIK source bundle.
 - TTS defaults to an optional zero-fee local neural pack: ten Supertonic 3 voices, learner-friendly
   `0.82` speed, an explicit one-time ~230 MB download, and no text upload or client API key. The
   pack is lazy, separately cached, removable, and falls back to ranked device voices if absent or
-  unsupported. All voice and speed controls stay in the single detailed More-screen setting.
+  unsupported. Mobile and low-memory browsers never initialize the large ONNX sessions because the
+  fp16 CPU path can exceed mobile tab memory; they use device TTS and can remove an existing pack.
+  All voice and speed controls stay in the single detailed More-screen setting.
 - A returning GitHub Pages tab can briefly show the previous release while its service worker swaps;
   closing and reopening the tab completes the update without deleting progress.
 
