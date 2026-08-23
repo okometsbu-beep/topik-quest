@@ -1,10 +1,11 @@
-// MALBIT bootstrap v43
+// MALBIT bootstrap v44
 // Load the shared core, reviewed data, TOPIK I engine, then learning interactions.
 (function(){
   'use strict';
-  const VERSION='43';
+  const VERSION='44';
   const RUNTIME_FILES=Object.freeze([
     'site-patch-core.js',
+    'neural-tts.js',
     'tts-quality.js',
     'data/topik1-listening.js',
     'data/topik1-reading.js',

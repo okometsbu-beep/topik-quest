@@ -185,7 +185,7 @@ function currentShort(){
   const bankItem=p.orderId?window.MALBIT_BANK?.shorts(lv).find(item=>item.bankId===p.orderId):null;
   return{lv,p,item:bankItem||deck[(Number(p.index)||0)%Math.max(1,deck.length)]};
 }
-window.malbitSpeak=text=>{try{if(window.MALBIT_TTS)return window.MALBIT_TTS.speak(text);speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(text||''));u.lang='ko-KR';u.rate=.82;speechSynthesis.speak(u)}catch(e){toast(L('이 기기에서는 음성을 재생할 수 없어요.','この端末では音声を再生できません。','Voice playback is unavailable.','此设备无法播放语音。'))}};
+window.malbitSpeak=text=>{try{if(window.MALBIT_TTS){window.MALBIT_TTS.play(text);return}speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(text||''));u.lang='ko-KR';u.rate=.82;speechSynthesis.speak(u)}catch(e){toast(L('이 기기에서는 음성을 재생할 수 없어요.','この端末では音声を再生できません。','Voice playback is unavailable.','此设备无法播放语音。'))}};
 window.malbitSaveShort=term=>window.MALBIT_LEARNING?.addVocabTerm?.(term);
 async function translateShortExample(item,node){if(!item||!node||S.lang==='ko')return;node.textContent=L('예문 번역 중…','例文を翻訳中…','Translating example…','正在翻译例句…');const value=await translateCached(`short_example_${S.lang}_${item.term}`,item.example,'ko',S.lang);if(node.isConnected)node.textContent=value}
 function patchShorts(){

@@ -22,9 +22,10 @@ these facts from conversation history or the large TOPIK source bundle.
 - No account or cloud sync: clearing browser storage or changing devices does not carry progress.
 - Real AI-generated examples and etymology require a server-side endpoint. The current fallback uses
   reviewed local data and automatic translation where available.
-- TTS depends on voices installed by the device/browser. The app ranks enhanced/natural Korean
-  voices first and defaults to a learner-friendly `0.82` rate. One detailed More-screen setting
-  provides per-voice sample playback, a fine speed slider, and saved global voice/rate choices.
+- TTS defaults to an optional zero-fee local neural pack: ten Supertonic 3 voices, learner-friendly
+  `0.82` speed, an explicit one-time ~230 MB download, and no text upload or client API key. The
+  pack is lazy, separately cached, removable, and falls back to ranked device voices if absent or
+  unsupported. All voice and speed controls stay in the single detailed More-screen setting.
 - A returning GitHub Pages tab can briefly show the previous release while its service worker swaps;
   closing and reopening the tab completes the update without deleting progress.
 

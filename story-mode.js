@@ -170,7 +170,7 @@
     if(!confirm(message))return;
     window.malbitStoryStart(packId,true);
   };
-  window.malbitStoryBack=()=>{try{speechSynthesis.cancel()}catch(error){};setView('story')};
+  window.malbitStoryBack=()=>{try{if(window.MALBIT_TTS)window.MALBIT_TTS.cancel();else speechSynthesis.cancel()}catch(error){};setView('story')};
   window.malbitStoryNext=()=>{
     const {pack,state,scene}=current();
     if(scene.type==='question'&&!state.answers[scene.id])return notify(l({ko:'먼저 문제를 풀어 주세요.',ja:'先に問題を解いてください。',en:'Answer the question first.',zh:'请先答题。'}));
@@ -209,11 +209,10 @@
   window.malbitStoryToggleTranscript=()=>{const {scene}=current();TRANSCRIPTS[scene.id]=!TRANSCRIPTS[scene.id];render()};
   window.malbitStorySpeak=()=>{
     const {pack,state,scene}=current(),payload=ensureQuestion(pack,state,scene),script=cleanScript(payload?.display?.script);
-    if(!script||typeof speechSynthesis==='undefined'||typeof SpeechSynthesisUtterance==='undefined')return notify(l({ko:'이 기기에서는 음성 재생을 사용할 수 없습니다.',ja:'この端末では音声再生を利用できません。',en:'Audio playback is unavailable on this device.',zh:'此设备无法播放语音。'}));
+    if(!script||(!window.MALBIT_TTS&&(typeof speechSynthesis==='undefined'||typeof SpeechSynthesisUtterance==='undefined')))return notify(l({ko:'이 기기에서는 음성 재생을 사용할 수 없습니다.',ja:'この端末では音声再生を利用できません。',en:'Audio playback is unavailable on this device.',zh:'此设备无法播放语音。'}));
     try{
-      speechSynthesis.cancel();
-      const utterance=window.MALBIT_TTS?window.MALBIT_TTS.utterance(script):new SpeechSynthesisUtterance(script);if(!window.MALBIT_TTS){utterance.lang='ko-KR';utterance.rate=.82}
-      speechSynthesis.speak(utterance);
+      if(window.MALBIT_TTS){window.MALBIT_TTS.play(script);return}
+      speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(script);utterance.lang='ko-KR';utterance.rate=.82;speechSynthesis.speak(utterance);
     }catch(error){notify(l({ko:'음성 재생에 실패했습니다.',ja:'音声の再生に失敗しました。',en:'Could not play audio.',zh:'语音播放失败。'}))}
   };
 
