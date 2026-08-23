@@ -55,6 +55,17 @@ function setMarker(value){
 function emit(detail){
   try{window.dispatchEvent(new CustomEvent('malbit-neural-tts-status',{detail}))}catch(error){}
 }
+function compatibility(){
+  const nav=typeof navigator==='undefined'?{}:navigator,ua=String(nav.userAgent||''),memory=Number(nav.deviceMemory)||0;
+  const ipadDesktopUa=/Macintosh/i.test(ua)&&Number(nav.maxTouchPoints)>1,mobile=/Android|iPhone|iPad|iPod|Mobile/i.test(ua)||ipadDesktopUa,lowMemory=memory>0&&memory<=4;
+  const safe=!mobile&&!lowMemory,reason=mobile?'MOBILE_MEMORY_RISK':lowMemory?'LOW_MEMORY_RISK':'';
+  return{safe,reason,mobile,lowMemory,deviceMemory:memory};
+}
+function assertRuntimeSafe(){
+  const result=compatibility();if(result.safe)return result;
+  try{console.info('[MALBIT TTS] local neural disabled for memory safety',result)}catch(error){}
+  const error=new Error(result.reason);error.code=result.reason;throw error;
+}
 function assertPlatform(){
   if(typeof caches==='undefined'||typeof fetch!=='function')throw new Error('CACHE_UNAVAILABLE');
   if(typeof BigInt64Array==='undefined')throw new Error('BIGINT_UNAVAILABLE');
@@ -98,7 +109,7 @@ async function cacheResponse(store,resource,response,done,onProgress){
   await store.put(resource.url,new Response(stream,{status:200,statusText:'OK',headers}));
 }
 async function install(onProgress){
-  assertPlatform();
+  assertPlatform();assertRuntimeSafe();
   const estimate=await navigator.storage?.estimate?.().catch?.(()=>null);
   if(estimate?.quota&&estimate.quota-(estimate.usage||0)<PACK_BYTES+25000000)throw new Error('NOT_ENOUGH_STORAGE');
   const store=await cache();let done=0;
@@ -164,7 +175,14 @@ async function loadSessions(ort,provider,onProgress){
     return sessions;
   }catch(error){releaseSessions({sessions});throw error}
 }
+async function executionProvider(){
+  if(typeof navigator!=='undefined'&&navigator.gpu?.requestAdapter){
+    try{if(await navigator.gpu.requestAdapter({powerPreference:'high-performance'}))return'webgpu'}catch(error){}
+  }
+  return'wasm';
+}
 async function prepare(onProgress){
+  assertRuntimeSafe();
   if(engine)return engine;
   if(enginePromise)return enginePromise;
   enginePromise=(async()=>{
@@ -172,11 +190,7 @@ async function prepare(onProgress){
     emit({state:'preparing'});const ort=await loadOrt();
     const cfg=await (await cachedResponse(`${ONNX_ROOT}/tts.json`)).json();
     const indexer=await (await cachedResponse(`${ONNX_ROOT}/unicode_indexer.json`)).json();
-    let provider='wasm',sessions;
-    if(typeof navigator!=='undefined'&&navigator.gpu){
-      try{provider='webgpu';sessions=await loadSessions(ort,provider,onProgress)}
-      catch(error){provider='wasm';sessions=await loadSessions(ort,provider,onProgress)}
-    }else sessions=await loadSessions(ort,provider,onProgress);
+    const provider=await executionProvider(),sessions=await loadSessions(ort,provider,onProgress);
     engine={ort,cfg,indexer,sessions,provider,sampleRate:Number(cfg?.ae?.sample_rate)||44100};
     emit({state:'ready',provider});return engine;
   })().catch(error=>{enginePromise=null;emit({state:'error',message:error.message});throw error});
@@ -275,7 +289,7 @@ async function speak(text,options={}){
   const result=await synthesize(text,options);if(token!==playToken)return{cancelled:true};
   emit({state:'playing',provider:result.provider});const playback=await playSamples(result.wav,result.sampleRate,token);emit({state:playback.cancelled?'cancelled':'idle'});return{...playback,provider:result.provider};
 }
-function status(){return{installed:installedSync(),ready:!!engine,provider:engine?.provider||'',bytes:PACK_BYTES,revision:MODEL_REVISION}}
+function status(){return{installed:installedSync(),ready:!!engine,provider:engine?.provider||'',bytes:PACK_BYTES,revision:MODEL_REVISION,compatibility:compatibility()}}
 
-window.MALBIT_NEURAL_TTS=Object.freeze({cacheName:CACHE_NAME,markerKey:MARKER_KEY,modelRevision:MODEL_REVISION,packBytes:PACK_BYTES,voices:VOICES,resources:RESOURCES,installedSync,installed,install,remove,prepare,synthesize,speak,cancel,unlockAudio,status});
+window.MALBIT_NEURAL_TTS=Object.freeze({cacheName:CACHE_NAME,markerKey:MARKER_KEY,modelRevision:MODEL_REVISION,packBytes:PACK_BYTES,voices:VOICES,resources:RESOURCES,compatibility,installedSync,installed,install,remove,prepare,synthesize,speak,cancel,unlockAudio,status});
 })();

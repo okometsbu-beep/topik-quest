@@ -5,9 +5,9 @@ const vm=require('node:vm');
 
 const AI_VOICES=['F1','F2','F3','F4','F5','M1','M2','M3','M4','M5'].map(id=>({id,gender:id[0]==='F'?'female':'male'}));
 
-function runtime(voices,{neuralInstalled=false}={}){
+function runtime(voices,{neuralInstalled=false,neuralSafe=true}={}){
   const spoken=[],neuralSpoken=[],storage=new Map(),listeners={};
-  const neural={voices:AI_VOICES,installedSync:()=>neuralInstalled,status:()=>({ready:true}),unlockAudio(){},cancel(){},speak:async(text,options)=>{neuralSpoken.push({text,options});return{provider:'webgpu'}},install:async()=>true,prepare:async()=>true,remove:async()=>true};
+  const neural={voices:AI_VOICES,compatibility:()=>({safe:neuralSafe,reason:neuralSafe?'':'MOBILE_MEMORY_RISK'}),installedSync:()=>neuralInstalled,status:()=>({ready:true}),unlockAudio(){},cancel(){},speak:async(text,options)=>{neuralSpoken.push({text,options});return{provider:'webgpu'}},install:async()=>true,prepare:async()=>true,remove:async()=>true};
   const context={S:{lang:'ko'},console,localStorage:{getItem:key=>storage.get(key)||null,setItem:(key,value)=>storage.set(key,String(value)),removeItem:key=>storage.delete(key)},MALBIT_NEURAL_TTS:neural,addEventListener:(name,handler)=>{listeners[name]=handler},speechSynthesis:{getVoices:()=>voices,cancel(){},speak(item){spoken.push(item);item.onend?.()}},SpeechSynthesisUtterance:function(text){this.text=text}};
   context.window=context;vm.createContext(context);vm.runInContext(fs.readFileSync('tts-quality.js','utf8'),context);return{context,spoken,neuralSpoken,storage};
 }
@@ -35,6 +35,15 @@ test('installed neural pack uses the selected AI style and matches dialogue gend
   assert.equal(spoken.length,0);assert.equal(neuralSpoken.at(-1).options.voiceId,'M4');assert.equal(neuralSpoken.at(-1).options.steps,6);
 });
 
+test('mobile memory safety bypasses the large model and plays device speech',async()=>{
+  const device={name:'Yuna Natural',voiceURI:'voice:yuna',lang:'ko-KR',localService:true};
+  const {context,spoken,neuralSpoken,storage}=runtime([device],{neuralInstalled:true,neuralSafe:false});
+  const result=await context.MALBIT_TTS.play('앱이 튕기면 안 됩니다.');
+  assert.equal(result.engine,'device');assert.equal(spoken.length,1);assert.equal(neuralSpoken.length,0);
+  assert.equal(JSON.parse(storage.get('malbitTtsPrefsV1')).engine,'device');
+  const markup=context.MALBIT_TTS.settingsMarkup();assert.match(markup,/모바일 안전 모드/);assert.match(markup,/AI 음성팩 삭제/);assert.doesNotMatch(markup,/data-tts-neural-voice=/);
+});
+
 test('settings expose ten zero-fee neural choices without paid-sounding tier labels',()=>{
   const voice={name:'Yuna Premium Enhanced',voiceURI:'voice:yuna',lang:'ko-KR',localService:true};const {context}=runtime([voice]),markup=context.MALBIT_TTS.settingsMarkup();
   assert.equal(context.MALBIT_TTS.displayName(voice,0),'Yuna');assert.match(markup,/무료 AI 음성/);assert.match(markup,/약 230MB/);assert.match(markup,/10가지 음성/);assert.match(markup,/malbitTtsRange/);assert.doesNotMatch(markup,/Premium|프리미엄/i);
@@ -44,5 +53,13 @@ test('settings expose ten zero-fee neural choices without paid-sounding tier lab
 test('neural pack is pinned, local-only and never adds a client API secret',()=>{
   const source=fs.readFileSync('neural-tts.js','utf8'),worker=fs.readFileSync('sw.js','utf8'),bootstrap=fs.readFileSync('site-patch.js','utf8');
   assert.match(source,/1035a9450d054103f69c6815539ca069e81cce15/);assert.match(source,/onnxruntime-web@\$\{ORT_VERSION\}/);assert.match(source,/OpenRAIL-M/);assert.match(source,/CACHE_NAME='malbit-neural-tts-v1'/);
-  assert.doesNotMatch(source,/api[_-]?key|bearer\s+[a-z0-9]/i);assert.match(worker,/NEURAL_CACHE='malbit-neural-tts-v1'/);assert.ok(bootstrap.indexOf("'neural-tts.js'")<bootstrap.indexOf("'tts-quality.js'"));
+  assert.doesNotMatch(source,/api[_-]?key|bearer\s+[a-z0-9]/i);assert.doesNotMatch(source,/catch\(error\)\{provider='wasm';sessions=await loadSessions/);assert.match(worker,/NEURAL_CACHE='malbit-neural-tts-v1'/);assert.ok(bootstrap.indexOf("'neural-tts.js'")<bootstrap.indexOf("'tts-quality.js'"));
+});
+
+test('the neural runtime rejects iOS before opening the model cache',async()=>{
+  let cacheOpened=false;const storage=new Map();
+  const context={console,navigator:{userAgent:'Mozilla/5.0 (iPhone; CPU iPhone OS 26_6 like Mac OS X)',maxTouchPoints:5},localStorage:{getItem:key=>storage.get(key)||null,setItem:(key,value)=>storage.set(key,String(value)),removeItem:key=>storage.delete(key)},caches:{open(){cacheOpened=true;throw new Error('cache should not open')}},fetch(){throw new Error('fetch should not run')},BigInt64Array};
+  context.window=context;vm.createContext(context);vm.runInContext(fs.readFileSync('neural-tts.js','utf8'),context);
+  assert.deepEqual({...context.MALBIT_NEURAL_TTS.compatibility()},{safe:false,reason:'MOBILE_MEMORY_RISK',mobile:true,lowMemory:false,deviceMemory:0});
+  await assert.rejects(context.MALBIT_NEURAL_TTS.prepare(),/MOBILE_MEMORY_RISK/);assert.equal(cacheOpened,false);
 });
