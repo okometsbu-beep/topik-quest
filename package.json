@@ -4,6 +4,7 @@
   "private": true,
   "description": "Static MALBIT Korean-learning PWA and unofficial TOPIK practice app",
   "scripts": {
+    "context": "node scripts/project-context.mjs",
     "test": "node --test tests/*.test.cjs",
     "test:quick": "node --test tests/runtime-contract.test.cjs tests/startup-navigation.test.cjs tests/v33-runtime.test.cjs tests/v34-runtime.test.cjs tests/v35-runtime.test.cjs tests/vocabulary-library.test.cjs tests/vocab-editor.test.cjs",
     "test:content": "node --test tests/question-bank.test.cjs tests/vocabulary-library.test.cjs",

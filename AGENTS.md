@@ -35,6 +35,22 @@ Read this file before changing code. Prefer narrow edits and preserve user progr
 For a deeper map, read `docs/ARCHITECTURE.md`. For commands and release lanes, read
 `docs/DEVELOPMENT.md`.
 
+## Token-minimal startup
+
+1. Run `npm run context --silent` once. Do not rediscover the version, branch, bank size, hosting,
+   or current known gaps by opening many files.
+2. Treat this file plus `docs/HANDOFF.md` as sufficient default context. Read Architecture or
+   Development only when the task changes those systems.
+3. Classify the request before reading code: UI/behavior, content, release, or research. Search only
+   the owning file, later overrides of the same symbol, and the focused test.
+4. Never open the uploaded TOPIK source bundle or generated question-bank parts for UI, navigation,
+   styling, deployment, vocabulary-editor, or business-analysis work.
+5. Batch related searches and checks. Do not repeatedly print whole files, full test logs, or a diff
+   already inspected; prefer `rg -n`, bounded `sed`, `git diff --stat`, and failure-only follow-up.
+6. Run the lane-specific check during development and the full release check only once before a
+   requested deployment.
+7. Update `docs/HANDOFF.md` only when a stable capability, constraint, or known gap changes.
+
 ## Change routing
 
 1. Search with `rg` before opening large files.
