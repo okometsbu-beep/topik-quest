@@ -14,7 +14,7 @@ Use the same numbering through `q050`.
 
 ## Recommended production path
 
-For the most natural result, use a human recording or generate premium Korean neural/HD TTS outside the static GitHub Pages site, then upload the rendered audio files. Do not embed cloud API keys in client-side GitHub Pages code.
+For the most natural result, use a human recording or generate high-quality Korean neural/HD TTS outside the static GitHub Pages site, then upload the rendered audio files. Do not embed cloud API keys in client-side GitHub Pages code.
 
 A good future backend candidate is Azure Speech because it supports Korean HD/neural voices and Korean pronunciation assessment (`ko-KR`).
 
