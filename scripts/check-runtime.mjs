@@ -55,6 +55,9 @@ unique(shell, 'SHELL');
 for (const file of [...runtime, ...shell]) assert.ok(existing(file), `runtime target does not exist: ${file}`);
 
 for (let part = 1; part <= 4; part++) before(runtime, `data/question-bank-v1-part${part}.js`, 'question-bank-engine.js');
+before(runtime, 'site-patch-core.js', 'tts-quality.js');
+before(runtime, 'tts-quality.js', 'topik1.js');
+before(runtime, 'tts-quality.js', 'learning-features.js');
 before(runtime, 'question-bank-engine.js', 'topik1.js');
 before(runtime, 'topik1.js', 'learning-features.js');
 before(runtime, 'data/story-pack-001.js', 'story-mode.js');

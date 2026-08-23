@@ -212,8 +212,7 @@
     if(!script||typeof speechSynthesis==='undefined'||typeof SpeechSynthesisUtterance==='undefined')return notify(l({ko:'이 기기에서는 음성 재생을 사용할 수 없습니다.',ja:'この端末では音声再生を利用できません。',en:'Audio playback is unavailable on this device.',zh:'此设备无法播放语音。'}));
     try{
       speechSynthesis.cancel();
-      const utterance=new SpeechSynthesisUtterance(script);utterance.lang='ko-KR';utterance.rate=.92;
-      const voice=speechSynthesis.getVoices().find(item=>/^ko(?:-|_)/i.test(item.lang||''));if(voice)utterance.voice=voice;
+      const utterance=window.MALBIT_TTS?window.MALBIT_TTS.utterance(script):new SpeechSynthesisUtterance(script);if(!window.MALBIT_TTS){utterance.lang='ko-KR';utterance.rate=.82}
       speechSynthesis.speak(utterance);
     }catch(error){notify(l({ko:'음성 재생에 실패했습니다.',ja:'音声の再生に失敗しました。',en:'Could not play audio.',zh:'语音播放失败。'}))}
   };
