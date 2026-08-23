@@ -38,8 +38,15 @@ test('one release version reaches returning mobile users', () => {
   assert.match(read('index.html'), /swReloadKey=`malbitSwReloadV\$\{appVersion\}`/);
   assert.match(read('index.html'), /register\(`\.\/sw\.js\?v=\$\{appVersion\}`/);
   assert.match(read('index.html'), /if\(!navigator\.serviceWorker\.controller\)/);
-  assert.doesNotMatch(read('product-polish.js'), /serviceWorker\.register/);
+  const product = read('product-polish.js');
+  assert.doesNotMatch(product, /serviceWorker\.register/);
   assert.match(read('index.html'), /site-patch\.js\?v=\$\{appVersion\}/);
+  assert.match(product, /function appVersion\(\).*__MALBIT_RUNTIME__/);
+  assert.match(product, /<span>v\$\{html\(appVersion\(\)\)\}<\/span>/);
+  for (const file of ['app-polish-v22.js', 'app-polish-v24.js']) {
+    assert.match(read(file), /badge.*__MALBIT_RUNTIME__/);
+    assert.doesNotMatch(read(file), /badge\.textContent='v\d+'/);
+  }
 });
 
 test('multilingual explanations follow the displayed choice order in every mode', () => {
