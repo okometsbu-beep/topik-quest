@@ -66,7 +66,7 @@ try{
     assert.deepEqual(fit.bad,[],`${label}: touch target below 44px`);
   };
   const startFresh=async()=>{
-    await evaluate(`localStorage.removeItem('malbitStoryV1');S.lang='ja';S.view='game';save();render()`);
+    await evaluate(`localStorage.removeItem('malbitStoryV1');S.lang='ja';S.view='home';save();render()`);
     assert.ok(await evaluate(`!!document.querySelector('.tqV9Mode.travel img[src*="airport-map.webp"]')`),'Travel entry must use generated art instead of emoji');
     await tap('.tqV9Mode.travel');
     assert.equal(await evaluate(`document.querySelector('.travelHubHead h1')?.textContent`),'旅行モード');
@@ -136,7 +136,7 @@ try{
   await evaluate(`localStorage.clear();S.lang='ja';S.vocab=[{text:'여행',meanings:{ja:'旅行'},repetitions:3}];S.gameUnlock=17;S.gameAnswers={16:{clear:true}};save();localStorage.setItem('topikQuestTopik1GameV1',JSON.stringify({profiles:{1:{unlock:6}}}));localStorage.setItem('malbitWrongReviewV3',JSON.stringify({items:[{id:'M01-I-L-11'}]}));render()`);
   const durableBefore=await evaluate(`({vocab:JSON.parse(localStorage.getItem('topikQuestV8')).vocab,gameUnlock:JSON.parse(localStorage.getItem('topikQuestV8')).gameUnlock,game:localStorage.getItem('topikQuestTopik1GameV1'),review:localStorage.getItem('malbitWrongReviewV3')})`);
 
-  await evaluate(`S.view='game';save();render()`);await shot('01-game-entry.png');
+  await evaluate(`S.view='home';save();render()`);await shot('01-game-entry.png');
   await startFresh();
   await setViewport(375,667);
   const firstViewport=await evaluate(`(()=>{const first=document.querySelector('.travelAnswer').getBoundingClientRect();return{top:Math.round(first.top),bottom:Math.round(first.bottom),height:innerHeight,overflow:document.documentElement.scrollWidth-innerWidth}})()`);
