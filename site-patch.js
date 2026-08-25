@@ -1,8 +1,8 @@
-// MALBIT bootstrap v50
+// MALBIT bootstrap v51
 // Load the shared core, reviewed data, TOPIK I engine, then learning interactions.
 (function(){
   'use strict';
-  const VERSION='50';
+  const VERSION='51';
   const RUNTIME_FILES=Object.freeze([
     'site-patch-core.js',
     'storage-guard.js',
