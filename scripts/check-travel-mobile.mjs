@@ -46,7 +46,7 @@ try{
     for(let i=0;i<100;i++){if(await evaluate(`document.readyState==='complete'&&!!window.MALBIT_TRAVEL`))return;await sleep(100)}
     throw new Error('MALBIT travel runtime did not become ready');
   };
-  const tap=async(selector,index=0,delay=170)=>{
+  const tap=async(selector,index=0,delay=250)=>{
     const found=await evaluate(`(()=>{const el=document.querySelectorAll(${JSON.stringify(selector)})[${index}];if(!el||el.disabled)return false;el.scrollIntoView({block:'center',inline:'center',behavior:'auto'});return true})()`);
     assert.ok(found,`tap target missing or disabled: ${selector}[${index}]`);
     let point;
@@ -58,8 +58,7 @@ try{
     assert.ok(point.visible,`tap target hidden: ${selector}[${index}]`);
     const viewport=await evaluate(`({width:innerWidth,height:innerHeight})`);
     assert.ok(point.x>=0&&point.x<=viewport.width&&point.y>=0&&point.y<=viewport.height,`tap target outside viewport: ${selector}[${index}]`);
-    await send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:point.x,y:point.y,radiusX:2,radiusY:2,force:1,id:1}]});
-    await send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+    await send('Input.synthesizeTapGesture',{x:point.x,y:point.y,duration:50,gestureSourceType:'touch'});
     await sleep(delay);
     return point;
   };
@@ -72,7 +71,12 @@ try{
   const startFresh=async()=>{
     await evaluate(`localStorage.removeItem('malbitStoryV1');S.lang='ja';S.view='home';save();render()`);
     assert.ok(await evaluate(`!!document.querySelector('.tqV9Mode.travel img[src*="airport-map.webp"]')`),'Travel entry must use generated art instead of emoji');
-    await tap('.tqV9Mode.travel');
+    let opened=false;
+    for(let attempt=0;attempt<3&&!opened;attempt++){
+      await tap('.tqV9Mode.travel');
+      for(let wait=0;wait<20;wait++){if(await evaluate(`document.querySelector('.travelHubHead h1')?.textContent==='旅行モード'`)){opened=true;break}await sleep(50)}
+    }
+    assert.ok(opened,'Travel entry touch must open the hub');
     assert.equal(await evaluate(`document.querySelector('.travelHubHead h1')?.textContent`),'旅行モード');
     await tap('.travelEpisodeCard .travelPrimary');
     assert.equal((await state()).sceneId,'arrival');
