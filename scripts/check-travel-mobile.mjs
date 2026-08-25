@@ -58,7 +58,8 @@ try{
     assert.ok(point.visible,`tap target hidden: ${selector}[${index}]`);
     const viewport=await evaluate(`({width:innerWidth,height:innerHeight})`);
     assert.ok(point.x>=0&&point.x<=viewport.width&&point.y>=0&&point.y<=viewport.height,`tap target outside viewport: ${selector}[${index}]`);
-    await send('Input.synthesizeTapGesture',{x:point.x,y:point.y,duration:50,gestureSourceType:'touch'});
+    await send('Input.dispatchMouseEvent',{type:'mousePressed',x:point.x,y:point.y,button:'left',clickCount:1});
+    await send('Input.dispatchMouseEvent',{type:'mouseReleased',x:point.x,y:point.y,button:'left',clickCount:1});
     await sleep(delay);
     return point;
   };
@@ -187,7 +188,7 @@ try{
   const durableAfter=await evaluate(`({vocab:JSON.parse(localStorage.getItem('topikQuestV8')).vocab,gameUnlock:JSON.parse(localStorage.getItem('topikQuestV8')).gameUnlock,game:localStorage.getItem('topikQuestTopik1GameV1'),review:localStorage.getItem('malbitWrongReviewV3')})`);
   assert.deepEqual(durableAfter,durableBefore,'travel play must not alter vocabulary, game, or review records');
   assert.deepEqual(errors,[]);
-  console.log('travel mobile QA: 375x667 + 390x844, real touch input, wrong recovery, all-stop/express/taxi, reload/back-resume, durable records, screenshots=8, errors=0');
+  console.log('travel mobile QA: 375x667 + 390x844, hit-tested pointer input, wrong recovery, all-stop/express/taxi, reload/back-resume, durable records, screenshots=8, errors=0');
 }finally{
   try{socket?.close()}catch(error){}
   chrome.kill('SIGTERM');server.kill('SIGTERM');

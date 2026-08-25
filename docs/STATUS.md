@@ -51,7 +51,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## v51 검증
 
 - 전체 자동검사 45/45, 2,088개 원본 문제, runtime v51 무결성 통과
-- GitHub CI의 Chrome 375×667·390×844 일본어 화면에서 실제 터치로 오답 회복과
+- GitHub CI의 Chrome 375×667·390×844 일본어 화면에서 실제 버튼 입력으로 오답 회복과
   일반열차·직통열차·택시 세 경로를 각각 완주했다. 재접속과 뒤로가기·이어하기,
   터치 영역·가로 넘침·스크롤 초기화·TTS 중지·콘솔 오류 0건을 확인했다.
 - 기차는 서울역에서 교통카드로 환승하고, 택시는 서울역을 거치지 않고 기사에게 명동
