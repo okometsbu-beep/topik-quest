@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v47
-- Current candidate: v48 · Seoul Travel Mode + durable record recovery
+- Production release: v48
+- Current candidate: v49 · meaningful Seoul Station first action
 - Core content: 2,088 original items
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
@@ -27,8 +27,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 우선순위
 
-1. 일본어 완전 초보자가 서울역 첫 미션을 10분 안에 완료하는 흐름을 실제 모바일에서
-   반복 점검하고 가장 큰 이탈 원인을 하나씩 제거한다.
+1. 서울역을 장면 넘기기가 아닌 작은 탐험 허브로 만들어, 지도 위 장소를 직접 선택하고
+   이동한 뒤 NPC 또는 학습 행동을 시작하게 한다.
 2. 첫 여행 코스의 정답·해설·일본어 번역을 문맥 단위로 표본 검수한다.
 3. 첫 코스 완료율·무료 의상 장착률·다음 날 재방문을 개인정보 없이 로컬 계측한다.
 
@@ -52,6 +52,13 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 기존 단어장 표본과 게임 진행을 넣은 뒤 새로고침해 그대로 남는 것을 확인
 - 결제 UI, 페이지 오류, 런타임 오류 없음
 
+## v49 후보 검증
+
+- 결과가 없던 여행자 성향 선택을 서울역 듣기·읽기 미션의 실제 순서 선택으로 교체
+- 일본어 화면에서 선택 결과, 326×69px 터치 영역, 뒤로가기, 재진입과 선택 유지 확인
+- 두 경로 모두 6개 미션 완주, 기존 `tracker` 저장값 호환, 단어장·여행 기록 유지 확인
+- 집중 테스트 39개와 Travel 테스트 6개 통과, 브라우저 콘솔 오류 없음
+
 ## 초기 두 바퀴 사전 검증
 
 1. Prompt contract dry run: 필수 기억 파일, 다섯 절, 한 작업 제한, PAUSE, 커밋 순서,
@@ -64,8 +71,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-서울역 첫 미션의 일본어 초보 흐름을 실제 모바일에서 점검하고, 가장 큰 이탈 원인 하나를
-재현 가능한 테스트와 함께 수정한다.
+서울역 지도에 2~3개 장소 노드를 두고, 사용자가 직접 한 곳을 눌러 이동한 뒤 첫 학습 행동을
+시작하는 작은 탐험 허브를 만든다.
 
 ## 알려진 위험
 
@@ -76,3 +83,5 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 기존 임시 Plus·가격·결제 암시 UI가 새 화면에 재사용되지 않도록 계속 검사해야 한다.
 - `malbitStoryV1`은 이름과 달리 기존 진행을 지키는 Travel Mode 호환 저장 키이므로
   이름을 바꾸거나 삭제하면 안 된다.
+- v49의 첫 선택은 실제 미션 순서를 바꾸지만 여행 전체는 아직 선형 장면 구조다. 다음 작업은
+  콘텐츠를 늘리기 전에 지도 이동과 장소 선택을 실제 플레이로 만들어야 한다.

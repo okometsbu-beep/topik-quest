@@ -40,6 +40,11 @@ test('the first travel route is a complete, reachable six-question journey', () 
   assert.deepEqual(Array.from(pack.map.stops, stop => stop.id), ['seoul-station', 'city-hall', 'gwanghwamun']);
   assert.deepEqual(Array.from(pack.map.stops, stop => stop.unlockAt), [0, 2, 4]);
   assert.deepEqual(Array.from(pack.skins, skin => skin.unlock), ['default', 'clear', 'perfect']);
+  const approach = pack.scenes.find(scene => scene.id === 'approach');
+  const visibleChoices = approach.choices.filter(choice => !choice.legacy);
+  assert.deepEqual(Array.from(visibleChoices, choice => choice.id), ['listener', 'reader']);
+  assert.deepEqual(Array.from(visibleChoices, choice => choice.next), ['q-topic', 'q-checklist']);
+  assert.equal(approach.choices.find(choice => choice.id === 'tracker').legacy, true, 'old tracker saves stay readable');
 
   const ids = pack.scenes.map(scene => scene.id);
   assert.equal(new Set(ids).size, ids.length, 'scene IDs must be unique');
@@ -162,14 +167,27 @@ test('the travel runtime can complete, resume, replay, and record a wrong answer
   runtime.malbitTravelStart('case-001-missing-ticket', false);
   assert.match(screen.innerHTML, /서울에 도착했다/);
   runtime.malbitTravelNext();
-  assert.match(screen.innerHTML, /어떤 여행자가 될까/);
+  assert.match(screen.innerHTML, /먼저 무엇을 확인할까/);
+  assert.match(screen.innerHTML, /안내 방송 먼저 듣기/);
+  assert.match(screen.innerHTML, /여행 메모 먼저 읽기/);
+  assert.doesNotMatch(screen.innerHTML, /풍경을 기록하기/);
   runtime.malbitTravelChoose('reader');
   assert.match(screen.innerHTML, /MISSION 1 \/ 6/);
+  assert.match(screen.innerHTML, /출발 전 체크리스트/);
+
+  const pack = runtime.MALBIT_TRAVEL_PACKS[0];
+  let state = JSON.parse(runtimeStorage.get('malbitStoryV1')).episodes[pack.id];
+  let firstScene = pack.scenes.find(item => item.id === state.sceneId);
+  let firstQuestion = runtime.MALBIT_BANK.present(firstScene.bankId, state.orders[firstScene.id]);
+  runtime.malbitTravelSelect(firstQuestion.answerIndex);
+  runtime.malbitTravelSubmit();
+  runtime.malbitTravelNext();
+  assert.match(screen.innerHTML, /MISSION 2 \/ 6/);
+  assert.match(screen.innerHTML, /유나의 오늘 계획/);
   runtime.malbitTravelToggleTranscript();
   assert.match(screen.innerHTML, /시험이 다음 주죠/);
   assert.doesNotMatch(screen.innerHTML, /지훈\(한빛센터\):/);
 
-  const pack = runtime.MALBIT_TRAVEL_PACKS[0];
   let guard = 0;
   while (guard++ < 30) {
     const store = JSON.parse(runtimeStorage.get('malbitStoryV1'));
@@ -206,8 +224,10 @@ test('the travel runtime can complete, resume, replay, and record a wrong answer
   runtime.malbitTravelNext();
   runtime.malbitTravelChoose('listener');
   const replay = JSON.parse(runtimeStorage.get('malbitStoryV1')).episodes[pack.id];
-  const firstScene = pack.scenes.find(item => item.id === replay.sceneId);
-  const firstQuestion = runtime.MALBIT_BANK.present(firstScene.bankId, replay.orders[firstScene.id]);
+  firstScene = pack.scenes.find(item => item.id === replay.sceneId);
+  firstQuestion = runtime.MALBIT_BANK.present(firstScene.bankId, replay.orders[firstScene.id]);
+  assert.equal(firstScene.id, 'q-topic');
+  assert.match(screen.innerHTML, /MISSION 1 \/ 6/);
   runtime.malbitTravelSelect((firstQuestion.answerIndex + 1) % 4);
   runtime.malbitTravelSubmit();
   assert.equal(reviews.length, 1);

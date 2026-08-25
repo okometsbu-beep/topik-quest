@@ -98,7 +98,19 @@
     const choice=sceneById(pack,'approach')?.choices?.find(item=>item.id===state.route);
     return choice?l(choice.title):l({ko:'첫 서울 여행자',ja:'はじめてのソウル旅人',en:'First-time Seoul Traveler',zh:'首尔初游者'});
   }
-  function questionNumber(pack,scene){return questionScenes(pack).findIndex(item=>item.id===scene.id)+1}
+  function routeQuestions(pack,state){
+    const scenes=questionScenes(pack);
+    if(state.route!=='reader')return scenes;
+    const topic=scenes.findIndex(item=>item.id==='q-topic'),checklist=scenes.findIndex(item=>item.id==='q-checklist');
+    if(topic<0||checklist<0)return scenes;
+    const ordered=scenes.slice();[ordered[topic],ordered[checklist]]=[ordered[checklist],ordered[topic]];return ordered;
+  }
+  function questionNumber(pack,state,scene){return routeQuestions(pack,state).findIndex(item=>item.id===scene.id)+1}
+  function nextScene(pack,state,scene){
+    if(state.route==='reader'&&scene.id==='q-checklist')return'q-topic';
+    if(state.route==='reader'&&scene.id==='q-topic')return'hallway';
+    return scene.next;
+  }
   function cleanScript(value){
     return String(value||'').replace(/(^|\n)[^:\n]{1,45}:\s*/gu,'$1').replace(/\n{3,}/g,'\n\n').trim();
   }
@@ -155,7 +167,8 @@
     sc.innerHTML=`<div class="travelPlay">${commonTop(pack,state,scene)}<article class="travelSceneCard"><div class="travelChapter">AREA ${scene.chapter}</div><h1>${h(l(scene.title))}</h1>${koreanCopy(scene)}<div class="travelSceneArt"><span>${art}</span><i></i><i></i></div><button class="travelPrimary" onclick="malbitTravelNext()">${h(l({ko:'여행 계속',ja:'旅を続ける',en:'Continue journey',zh:'继续旅行'}))} <b>→</b></button></article>${notebook(pack,state)}</div>`;
   }
   function renderChoice(sc,pack,state,scene){
-    sc.innerHTML=`<div class="travelPlay">${commonTop(pack,state,scene)}<article class="travelSceneCard"><div class="travelChapter">TRAVEL STYLE</div><h1>${h(l(scene.title))}</h1>${koreanCopy(scene)}<div class="travelRoutes">${scene.choices.map(choice=>`<button onclick="malbitTravelChoose('${h(choice.id)}')"><span>${h(choice.icon)}</span><div><b>${h(l(choice.label))}</b><small>${h(l(choice.detail))}</small></div><em>›</em></button>`).join('')}</div></article></div>`;
+    const choices=scene.choices.filter(choice=>!choice.legacy);
+    sc.innerHTML=`<div class="travelPlay">${commonTop(pack,state,scene)}<article class="travelSceneCard"><div class="travelChapter">FIRST ACTION</div><h1>${h(l(scene.title))}</h1>${koreanCopy(scene)}<div class="travelRoutes">${choices.map(choice=>`<button onclick="malbitTravelChoose('${h(choice.id)}')"><span>${h(choice.icon)}</span><div><b>${h(l(choice.label))}</b><small>${h(l(choice.detail))}</small></div><em>›</em></button>`).join('')}</div></article></div>`;
   }
   function renderQuestion(sc,pack,state,scene){
     const payload=ensureQuestion(pack,state,scene);
@@ -168,7 +181,7 @@
     }).join('');
     const material=listening?`<div class="travelListen"><button onclick="malbitTravelSpeak()"><span>▶</span><b>${h(l({ko:'한국어 듣기',ja:'韓国語を聞く',en:'Play Korean audio',zh:'播放韩语'}))}</b></button><button class="transcript" onclick="malbitTravelToggleTranscript()">${showTranscript?h(l({ko:'대본 닫기',ja:'スクリプトを閉じる',en:'Hide transcript',zh:'隐藏文本'})):h(l({ko:'대본 보기',ja:'スクリプトを見る',en:'Show transcript',zh:'查看文本'}))}</button>${showTranscript?`<p lang="ko">${h(script)}</p>`:''}</div>`:`${q.passage?`<div class="travelPassage" lang="ko">${h(q.passage)}</div>`:''}`;
     const feedback=answer?`<div class="travelFeedback ${answer.correct?'good':'bad'}"><strong>${answer.correct?'✓':'!'}</strong><div><b>${h(answer.correct?l({ko:'정답! 여행 스탬프를 얻었습니다.',ja:'正解！旅スタンプを獲得。',en:'Correct! Stamp earned.',zh:'答对了！获得印章。'}):l({ko:'오답도 여행 기록에 남겼습니다.',ja:'不正解でも旅の記録に残しました。',en:'Wrong, but the journey continues.',zh:'答错了，但旅程仍会继续。'}))}</b><p>${h(explanation)}</p></div></div>${clueMarkup(scene,answer)}<button class="travelPrimary" onclick="malbitTravelNext()">${scene.next==='ending'?h(l({ko:'광화문 도착하기',ja:'光化門に到着',en:'Reach Gwanghwamun',zh:'抵达光化门'})):h(l({ko:'다음 미션',ja:'次のミッション',en:'Next mission',zh:'下一个任务'}))} <b>→</b></button>`:`<button class="travelPrimary ${Number.isInteger(picked)?'ready':''}" onclick="malbitTravelSubmit()">${h(l({ko:'답 확인',ja:'答えを確認',en:'Check answer',zh:'确认答案'}))}</button>`;
-    sc.innerHTML=`<div class="travelPlay">${commonTop(pack,state,scene)}<article class="travelQuestionCard"><div class="travelQuestionNo"><span>MISSION ${questionNumber(pack,scene)} / ${pack.questionCount}</span><em>${h(q.section==='listening'?l({ko:'듣기',ja:'聴解',en:'Listening',zh:'听力'}):l({ko:'읽기',ja:'読解',en:'Reading',zh:'阅读'}))}</em></div><h1>${h(l(scene.title))}</h1><p class="travelContext">${h(l(scene.context))}</p>${material}<div class="travelPrompt"><small>${h(q.instruction)}</small><b>${h(q.prompt)}</b></div><div class="travelAnswers">${choices}</div>${feedback}</article>${notebook(pack,state)}</div>`;
+    sc.innerHTML=`<div class="travelPlay">${commonTop(pack,state,scene)}<article class="travelQuestionCard"><div class="travelQuestionNo"><span>MISSION ${questionNumber(pack,state,scene)} / ${pack.questionCount}</span><em>${h(q.section==='listening'?l({ko:'듣기',ja:'聴解',en:'Listening',zh:'听力'}):l({ko:'읽기',ja:'読解',en:'Reading',zh:'阅读'}))}</em></div><h1>${h(l(scene.title))}</h1><p class="travelContext">${h(l(scene.context))}</p>${material}<div class="travelPrompt"><small>${h(q.instruction)}</small><b>${h(q.prompt)}</b></div><div class="travelAnswers">${choices}</div>${feedback}</article>${notebook(pack,state)}</div>`;
   }
   function endingType(pack,state){const score=correctCount(state);return score===pack.questionCount?'perfect':score>=Math.ceil(pack.questionCount*.67)?'clear':'close'}
   function renderEnding(sc,pack,state,scene){
@@ -213,13 +226,13 @@
     const {pack,state,scene}=current();
     if(scene.type==='question'&&!state.answers[scene.id])return notify(l({ko:'먼저 문제를 풀어 주세요.',ja:'先に問題を解いてください。',en:'Answer the question first.',zh:'请先答题。'}));
     if(scene.type==='ending')return setView('travel');
-    move(state,pack,scene.next);
+    move(state,pack,nextScene(pack,state,scene));
   };
   window.malbitTravelChoose=choiceId=>{
     const {pack,state,scene}=current(),choice=scene?.choices?.find(item=>item.id===choiceId);
     if(!choice)return;
     state.route=choice.id;
-    move(state,pack,scene.next);
+    move(state,pack,choice.next||scene.next);
   };
   window.malbitTravelSelect=index=>{
     const {state,scene}=current();

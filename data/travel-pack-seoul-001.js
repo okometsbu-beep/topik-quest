@@ -40,13 +40,13 @@
       Object.freeze({
         id:'approach',type:'choice',chapter:1,next:'q-topic',stop:'seoul-station',
         location:text('서울역 · 여행 안내판','ソウル駅・旅の案内板','Seoul Station · Travel board','首尔站 · 旅行指南'),
-        title:text('어떤 여행자가 될까?','どんな旅人になる？','Choose your travel style','选择旅行风格'),
-        korean:'먼저 여행 방법을 정하자.',
-        support:text('칭호만 달라지고 문제와 난이도는 같습니다. 좋아하는 방식으로 부담 없이 출발하세요.','称号だけが変わり、問題と難易度は同じです。好きなスタイルで気軽に出発しましょう。','Only your title changes; questions and difficulty stay the same. Pick the style you like.','只有称号不同，题目与难度相同。选择喜欢的方式出发吧。'),
+        title:text('먼저 무엇을 확인할까?','最初に何を確認する？','What will you check first?','先确认什么？'),
+        korean:'서울역에서 첫 행동을 고르자.',
+        support:text('선택한 순서대로 서울역의 듣기·읽기 미션을 진행합니다. 두 미션은 모두 완료합니다.','選んだ順番で、ソウル駅の聞く・読むミッションに挑戦します。2つとも完了します。','Choose the order of the Seoul Station listening and reading missions. You will complete both.','按选择的顺序完成首尔站的听力与阅读任务，两项都会完成。'),
         choices:Object.freeze([
-          Object.freeze({id:'listener',icon:'🎧',label:text('소리를 따라가기','音をたどる','Follow the sounds','跟随声音'),detail:text('한국어 안내를 들으며 이동한다.','韓国語の案内を聞きながら進む。','Move by listening to Korean guidance.','边听韩语指引边前进。'),title:text('소리 여행자','音の旅人','Sound Traveler','声音旅人')}),
-          Object.freeze({id:'reader',icon:'🗺️',label:text('지도를 읽기','地図を読む','Read the map','阅读地图'),detail:text('표지와 안내문을 차분히 확인한다.','標識や案内文を落ち着いて確認する。','Check signs and notices carefully.','仔细查看标志和告示。'),title:text('지도 여행자','地図の旅人','Map Traveler','地图旅人')}),
-          Object.freeze({id:'tracker',icon:'📷',label:text('풍경을 기록하기','景色を記録','Capture the sights','记录风景'),detail:text('도시의 작은 장면을 하나씩 모은다.','街の小さな場面を一つずつ集める。','Collect small moments around the city.','收集城市里的小场景。'),title:text('기록 여행자','記録の旅人','Memory Traveler','记录旅人')})
+          Object.freeze({id:'listener',next:'q-topic',icon:'🎧',label:text('안내 방송 먼저 듣기','案内放送を先に聞く','Listen to the announcement first','先听广播'),detail:text('듣기 미션부터 시작한 뒤 여행 메모를 읽습니다.','聞くミッションのあと、旅メモを読みます。','Start with listening, then read the travel note.','先完成听力任务，再阅读旅行便笺。'),title:text('소리 여행자','音の旅人','Sound Traveler','声音旅人')}),
+          Object.freeze({id:'reader',next:'q-checklist',icon:'🗺️',label:text('여행 메모 먼저 읽기','旅メモを先に読む','Read the travel note first','先读旅行便笺'),detail:text('읽기 미션부터 시작한 뒤 안내 방송을 듣습니다.','読むミッションのあと、案内放送を聞きます。','Start with reading, then listen to the announcement.','先完成阅读任务，再听广播。'),title:text('지도 여행자','地図の旅人','Map Traveler','地图旅人')}),
+          Object.freeze({id:'tracker',next:'q-topic',legacy:true,icon:'📷',label:text('풍경을 기록하기','景色を記録','Capture the sights','记录风景'),detail:text('이전 버전의 여행 방식입니다.','以前のバージョンの旅スタイルです。','Legacy travel style from an earlier version.','旧版本的旅行方式。'),title:text('기록 여행자','記録の旅人','Memory Traveler','记录旅人')})
         ])
       }),
       Object.freeze({
