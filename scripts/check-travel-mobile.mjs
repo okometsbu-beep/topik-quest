@@ -81,6 +81,10 @@ try{
     }
     assert.ok(opened,'Travel entry touch must open the hub');
     assert.equal(await evaluate(`document.querySelector('.travelHubHead h1')?.textContent`),'旅行モード');
+    if(!fs.existsSync(path.join(out,'01a-travel-hub.png'))){
+      await assertFits('Travel hub');
+      await shot('01a-travel-hub.png');
+    }
     await tap('.travelEpisodeCard .travelPrimary');
     assert.equal((await state()).sceneId,'arrival');
     await tap('.travelSceneCard .travelPrimary');
@@ -147,7 +151,7 @@ try{
   await evaluate(`localStorage.clear();S.lang='ja';S.vocab=[{text:'여행',meanings:{ja:'旅行'},repetitions:3}];S.gameUnlock=17;S.gameAnswers={16:{clear:true}};save();localStorage.setItem('topikQuestTopik1GameV1',JSON.stringify({profiles:{1:{unlock:6}}}));localStorage.setItem('malbitWrongReviewV3',JSON.stringify({items:[{id:'M01-I-L-11'}]}));render()`);
   const durableBefore=await evaluate(`({vocab:JSON.parse(localStorage.getItem('topikQuestV8')).vocab,gameUnlock:JSON.parse(localStorage.getItem('topikQuestV8')).gameUnlock,game:localStorage.getItem('topikQuestTopik1GameV1'),review:localStorage.getItem('malbitWrongReviewV3')})`);
 
-  await evaluate(`S.view='home';save();render()`);await shot('01-game-entry.png');
+  await evaluate(`S.view='home';save();render()`);await sleep(1000);await shot('01-game-entry.png');
   await startFresh();
   await setViewport(375,667);
   const firstViewport=await evaluate(`(()=>{const first=document.querySelector('.travelAnswer').getBoundingClientRect();return{top:Math.round(first.top),bottom:Math.round(first.bottom),height:innerHeight,overflow:document.documentElement.scrollWidth-innerWidth}})()`);
@@ -226,7 +230,7 @@ try{
   const durableAfter=await evaluate(`({vocab:JSON.parse(localStorage.getItem('topikQuestV8')).vocab,gameUnlock:JSON.parse(localStorage.getItem('topikQuestV8')).gameUnlock,game:localStorage.getItem('topikQuestTopik1GameV1'),review:localStorage.getItem('malbitWrongReviewV3')})`);
   assert.deepEqual(durableAfter,durableBefore,'travel play must not alter vocabulary, game, or review records');
   assert.deepEqual(errors,[]);
-  console.log('travel mobile QA: 320/375/390/430px containment, hit-tested route + Myeongdong NPC word order, day/evening events, travel-won exchange, reload/back-resume, durable records, screenshots=12, errors=0');
+  console.log('travel mobile QA: 320/375/390/430px containment, hit-tested route + Myeongdong NPC word order, day/evening events, travel-won exchange, reload/back-resume, durable records, screenshots=13, errors=0');
 }finally{
   try{socket?.close()}catch(error){}
   chrome.kill('SIGTERM');server.kill('SIGTERM');
