@@ -11,7 +11,9 @@ Read this file before changing code. Prefer narrow edits and preserve user progr
 - Keep the site public and usable without login.
 - Preserve existing browser storage keys and saved progress unless a migration is included and tested.
 - Preserve TOPIK I, TOPIK II, Shorts, Random Practice, full mock exams, Review, Vocabulary,
-  Statistics, Hangul beginner/handwriting, listening settings, and Wordlight Expedition.
+  Statistics, Hangul beginner/handwriting, listening settings, Travel Mode, and Wordlight Expedition.
+- Treat vocabulary, review, game, beginner, travel, and settings roots as durable learner records.
+  An app update must never clear them; keep the recovery snapshot and migration tests current.
 - The 2,088-item bank is original app content. Do not replace it with copied exam text.
 
 ## Fast orientation
@@ -27,6 +29,8 @@ Read this file before changing code. Prefer narrow edits and preserve user progr
 | TOPIK I and shared mode runtime | `topik1.js` |
 | Review, explanations, vocabulary | `learning-features.js` |
 | Product UI and settings | `product-polish.js`, `product-growth.js` |
+| Seoul Travel Mode and saved route/avatar state | `travel-mode.js`, `data/travel-pack-seoul-*.js` |
+| Durable local progress recovery | `storage-guard.js`, `tests/storage-preservation.test.cjs` |
 | Later compatibility layers | `app-polish-v22.js`, `app-polish-v24.js`, `app-polish-v33.js`, `app-polish-v34.js`, `app-polish-v35.js` |
 | Question-bank behavior | `question-bank-engine.js` |
 | Generated question-bank payload | `data/question-bank-v1-part*.js` |
@@ -81,6 +85,7 @@ The full automated suite is intentionally cheap; it should stay under a few seco
 
 - Relevant tests pass and `npm run check:runtime` reports one shared version.
 - No unintended localStorage key changes or destructive data migration.
+- Vocabulary, game, review, and travel fixtures survive the storage-preservation regression test.
 - No missing runtime file, duplicate loader entry, stale cache version, or console error.
 - The branch diff contains only the requested work.
 - Publish through a branch and PR, merge to `main`, then verify the live GitHub Pages build.

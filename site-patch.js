@@ -1,17 +1,18 @@
-// MALBIT bootstrap v47
+// MALBIT bootstrap v48
 // Load the shared core, reviewed data, TOPIK I engine, then learning interactions.
 (function(){
   'use strict';
-  const VERSION='47';
+  const VERSION='48';
   const RUNTIME_FILES=Object.freeze([
     'site-patch-core.js',
+    'storage-guard.js',
     'neural-tts.js',
     'tts-quality.js',
     'data/topik1-listening.js',
     'data/topik1-reading.js',
     'data/shorts-levels.js',
     'data/explanations-i18n.js',
-    'data/story-pack-001.js',
+    'data/travel-pack-seoul-001.js',
     'data/question-bank-v1-part1.js',
     'data/question-bank-v1-part2.js',
     'data/question-bank-v1-part3.js',
@@ -19,7 +20,7 @@
     'question-bank-engine.js',
     'topik1.js',
     'learning-features.js',
-    'story-mode.js',
+    'travel-mode.js',
     'product-polish.js',
     'product-growth.js',
     'app-polish-v22.js',

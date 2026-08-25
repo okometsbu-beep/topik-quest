@@ -57,15 +57,17 @@ for (const file of [...runtime, ...shell]) assert.ok(existing(file), `runtime ta
 for (let part = 1; part <= 4; part++) before(runtime, `data/question-bank-v1-part${part}.js`, 'question-bank-engine.js');
 before(runtime, 'site-patch-core.js', 'tts-quality.js');
 before(runtime, 'site-patch-core.js', 'neural-tts.js');
+before(runtime, 'site-patch-core.js', 'storage-guard.js');
+before(runtime, 'storage-guard.js', 'topik1.js');
 before(runtime, 'neural-tts.js', 'tts-quality.js');
 before(runtime, 'tts-quality.js', 'topik1.js');
 before(runtime, 'tts-quality.js', 'learning-features.js');
 before(runtime, 'question-bank-engine.js', 'topik1.js');
 before(runtime, 'topik1.js', 'learning-features.js');
-before(runtime, 'data/story-pack-001.js', 'story-mode.js');
-before(runtime, 'question-bank-engine.js', 'story-mode.js');
-before(runtime, 'learning-features.js', 'story-mode.js');
-before(runtime, 'story-mode.js', 'product-polish.js');
+before(runtime, 'data/travel-pack-seoul-001.js', 'travel-mode.js');
+before(runtime, 'question-bank-engine.js', 'travel-mode.js');
+before(runtime, 'learning-features.js', 'travel-mode.js');
+before(runtime, 'travel-mode.js', 'product-polish.js');
 for (const [first, second] of [['app-polish-v22.js', 'app-polish-v24.js'], ['app-polish-v24.js', 'app-polish-v33.js'], ['app-polish-v33.js', 'app-polish-v34.js'], ['app-polish-v34.js', 'app-polish-v35.js']]) before(runtime, first, second);
 before(runtime, 'app-polish-v35.js', 'vocab-editor.js');
 

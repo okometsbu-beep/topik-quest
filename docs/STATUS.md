@@ -5,17 +5,21 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Release: v46
+- Production release: v47
+- Current candidate: v48 · Seoul Travel Mode + durable record recovery
 - Core content: 2,088 original items
 - Primary user: Japanese-speaking complete Korean beginner
-- First-session goal: finish the first Game or Story step within ten minutes
+- First-session goal: finish the first Game or Travel step within ten minutes
 - Autonomous runtime: GitHub-connected ChatGPT Scheduled task, four fresh runs per day
 - Long-term game direction: Seoul exploration quests and learning-earned avatar rewards; all payment UI deferred
 
 ## 최근 안정 기능
 
 - TOPIK I·II, Shorts, Random Practice, full mock exams, Review, Vocabulary, Statistics
-- independent Story Mode and Wordlight Expedition
+- independent Seoul Travel Mode and Wordlight Expedition
+- Seoul Station → City Hall → Gwanghwamun route with six missions, three stamps, and three
+  learning-earned avatar looks
+- durable recovery snapshot for vocabulary, game, review, beginner, travel, and settings records
 - editable vocabulary details with safe AI integration boundary
 - one detailed global TTS setting with device fallback and optional local neural pack
 - token-minimal repository handoff, focused verification lanes, GitHub CI and Pages deployment
@@ -23,11 +27,10 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 우선순위
 
-1. 완전 초보자가 일본어 안내만으로 Story Mode 첫 단계를 10분 안에 완료하는 흐름을 계측하고
-   막히는 지점을 하나씩 제거한다.
-2. 기존 Story 첫 단계를 서울맵 vertical slice의 학습·퀘스트·무료 꾸미기 보상 루프와
-   연결할 수 있도록 작은 데이터 경계를 설계한다.
-3. 첫 단계의 정답·해설·일본어 번역을 문맥 단위로 표본 검수하고 회귀 테스트를 추가한다.
+1. 일본어 완전 초보자가 서울역 첫 미션을 10분 안에 완료하는 흐름을 실제 모바일에서
+   반복 점검하고 가장 큰 이탈 원인을 하나씩 제거한다.
+2. 첫 여행 코스의 정답·해설·일본어 번역을 문맥 단위로 표본 검수한다.
+3. 첫 코스 완료율·무료 의상 장착률·다음 날 재방문을 개인정보 없이 로컬 계측한다.
 
 ## 이번 운영 변경
 
@@ -41,6 +44,14 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 결제 버튼·가격·상품 카드·유료 잠금·Premium·Plus·구독·업셀·외부 결제 링크를 앱 어디에도
   만들지 않는다. 별도 수익화 논의와 사용자의 명시적 승인 뒤에만 재검토한다.
 
+## v48 후보 검증
+
+- 전체 자동검사 44/44 통과, 2,088개 원본 문제와 runtime v48 무결성 통과
+- 390×844 모바일 브라우저에서 여행 홈 → 서울역 도착 → 6개 미션 → 경로 완료를 직접 조작
+- 경로 완료 뒤 무료 아바타 3종 해금과 새로고침 뒤 여행 진행 복원을 확인
+- 기존 단어장 표본과 게임 진행을 넣은 뒤 새로고침해 그대로 남는 것을 확인
+- 결제 UI, 페이지 오류, 런타임 오류 없음
+
 ## 초기 두 바퀴 사전 검증
 
 1. Prompt contract dry run: 필수 기억 파일, 다섯 절, 한 작업 제한, PAUSE, 커밋 순서,
@@ -53,8 +64,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-Story Mode EP.01의 첫 10분 초보 흐름을 일본어 사용자 관점에서 모바일로 점검하고, 가장 큰
-이탈 원인 하나를 재현 가능한 테스트와 함께 수정한다.
+서울역 첫 미션의 일본어 초보 흐름을 실제 모바일에서 점검하고, 가장 큰 이탈 원인 하나를
+재현 가능한 테스트와 함께 수정한다.
 
 ## 알려진 위험
 
@@ -63,3 +74,5 @@ Story Mode EP.01의 첫 10분 초보 흐름을 일본어 사용자 관점에서 
 - UI 변경은 CI만으로 시각 품질을 보증할 수 없으므로 병합 전 모바일 확인이 필수다.
 - 서울 전체 지도와 다량의 스킨을 먼저 만들면 학습·재방문 검증 없이 제작비만 커질 수 있다.
 - 기존 임시 Plus·가격·결제 암시 UI가 새 화면에 재사용되지 않도록 계속 검사해야 한다.
+- `malbitStoryV1`은 이름과 달리 기존 진행을 지키는 Travel Mode 호환 저장 키이므로
+  이름을 바꾸거나 삭제하면 안 된다.

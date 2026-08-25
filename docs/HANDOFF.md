@@ -11,7 +11,13 @@ these facts from conversation history or the large TOPIK source bundle.
   intervals, game state, and settings are compatibility contracts.
 - The bank contains 2,088 original practice items. Generated bank parts are build output and must
   not be opened or edited for non-content work.
-- Story Mode is an independent mode below Game Mode and cannot overwrite a timed mock exam.
+- Travel Mode is an independent Seoul learning-adventure below Game Mode and cannot overwrite a
+  timed mock exam. Its first route is Seoul Station → City Hall → Gwanghwamun.
+- The old Story Mode is retired from product UI. Travel Mode deliberately keeps the legacy
+  `malbitStoryV1` root and scene IDs so saved answers, clears, and best scores migrate in place.
+- `storage-guard.js` keeps a last-known-good `malbitRecoverySnapshotV1` of durable learner roots.
+  Backup import is additive for keys missing from old files; only the explicit full-reset action
+  may clear the recovery snapshot.
 - Vocabulary cards open `vocab-editor.js` for multilingual meanings, simple Korean definitions,
   examples/translations, origins, notes, TTS, source, and review metadata.
 - Vocabulary automatic fill preserves manual edits. `MALBIT_AI_ADAPTER` is only a safe integration
