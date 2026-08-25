@@ -10,6 +10,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Story step within ten minutes
 - Autonomous runtime: GitHub-connected ChatGPT Scheduled task, four fresh runs per day
+- Long-term game direction: Seoul exploration quests, learning-earned avatar rewards, cosmetic IAP
 
 ## 최근 안정 기능
 
@@ -18,14 +19,15 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - editable vocabulary details with safe AI integration boundary
 - one detailed global TTS setting with device fallback and optional local neural pack
 - token-minimal repository handoff, focused verification lanes, GitHub CI and Pages deployment
+- Seoul learning-RPG and non-pay-to-win avatar monetization north star documented
 
 ## 다음 우선순위
 
 1. 완전 초보자가 일본어 안내만으로 Story Mode 첫 단계를 10분 안에 완료하는 흐름을 계측하고
    막히는 지점을 하나씩 제거한다.
-2. 첫 단계에 등장하는 정답·해설·일본어 번역을 문맥 단위로 표본 검수하고 회귀 테스트를
-   추가한다.
-3. 좁은 모바일 화면에서 Story·Expedition의 주요 터치 목표, 뒤로가기, 재진입을 점검한다.
+2. 기존 Story 첫 단계를 서울맵 vertical slice의 학습·퀘스트·무료 꾸미기 보상 루프와
+   연결할 수 있도록 작은 데이터 경계를 설계한다.
+3. 첫 단계의 정답·해설·일본어 번역을 문맥 단위로 표본 검수하고 회귀 테스트를 추가한다.
 
 ## 이번 운영 변경
 
@@ -34,6 +36,9 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 한 바퀴에 작업 하나와 PR 하나만 허용한다.
 - GitHub Pages는 품질 게이트 통과 후 자동 배포한다.
 - 양대 앱스토어 자동 배포는 아직 금지한다.
+- 서울맵·NPC 퀘스트·아바타 꾸미기를 장기 재방문 구조로 삼되 학습이 본체라는 경계를
+  유지한다.
+- 수익화는 직접 구매형 꾸미기부터 검증하고 pay-to-win과 첫 성취 전 결제 노출을 금지한다.
 
 ## 초기 두 바퀴 사전 검증
 
@@ -55,3 +60,4 @@ Story Mode EP.01의 첫 10분 초보 흐름을 일본어 사용자 관점에서 
 - 웹 예약 작업은 로컬 폴더를 유지하지 않으므로 GitHub의 문서와 Issue가 유일한 기억이다.
 - 공개 Issue에 비밀정보를 적으면 안 된다.
 - UI 변경은 CI만으로 시각 품질을 보증할 수 없으므로 병합 전 모바일 확인이 필수다.
+- 서울 전체 지도와 다량의 스킨을 먼저 만들면 학습·재방문 검증 없이 제작비만 커질 수 있다.
