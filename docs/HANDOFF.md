@@ -12,7 +12,13 @@ these facts from conversation history or the large TOPIK source bundle.
 - The bank contains 2,088 original practice items. Generated bank parts are build output and must
   not be opened or edited for non-content work.
 - Travel Mode is an independent Seoul learning-adventure below Game Mode and cannot overwrite a
-  timed mock exam. Its first route is Seoul Station → City Hall → Gwanghwamun.
+  timed mock exam. Its first route is Incheon Airport T1 → Seoul Station → Myeongdong.
+- Travel scenes compose generated pixel-art backgrounds, player skins, NPCs, props/rewards, and UI
+  tiles as separate layers. Do not bake characters into backgrounds or replace travel art with emoji;
+  keep localized and accessible text as HTML above the generated surfaces.
+- Beginner missions follow situation → action → visible world reaction → reward or recoverable time
+  cost. The first route varies the input as dialogue, sign hotspot, and ticket-machine action instead
+  of presenting six visually identical worksheets.
 - The old Story Mode is retired from product UI. Travel Mode deliberately keeps the legacy
   `malbitStoryV1` root and scene IDs so saved answers, clears, and best scores migrate in place.
 - `storage-guard.js` keeps a last-known-good `malbitRecoverySnapshotV1` of durable learner roots.
