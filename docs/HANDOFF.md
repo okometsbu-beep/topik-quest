@@ -19,6 +19,10 @@ these facts from conversation history or the large TOPIK source bundle.
 - Beginner missions follow situation → action → visible world reaction → reward or recoverable time
   cost. The first route varies the input as dialogue, sign hotspot, and ticket-machine action instead
   of presenting six visually identical worksheets.
+- Travel UI uses nine-slice generated frames with explicit safe-area content wrappers. Never stretch a
+  square frame over variable copy, absolutely position learning content, or truncate essential Japanese.
+  Every UI change must pass 320/375/390/430px containment, sibling-overlap, 44px touch-target, console,
+  and durable-storage checks before merge.
 - The old Story Mode is retired from product UI. Travel Mode deliberately keeps the legacy
   `malbitStoryV1` root and scene IDs so saved answers, clears, and best scores migrate in place.
 - `storage-guard.js` keeps a last-known-good `malbitRecoverySnapshotV1` of durable learner roots.

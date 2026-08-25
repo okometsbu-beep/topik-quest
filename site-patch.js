@@ -13,6 +13,7 @@
     'data/shorts-levels.js',
     'data/explanations-i18n.js',
     'data/travel-pack-seoul-001.js',
+    'data/travel-myeongdong-hub.js',
     'data/question-bank-v1-part1.js',
     'data/question-bank-v1-part2.js',
     'data/question-bank-v1-part3.js',

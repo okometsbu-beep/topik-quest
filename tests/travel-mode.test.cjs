@@ -22,9 +22,11 @@ vm.createContext(context);
 for (let part = 1; part <= 4; part++) vm.runInContext(read(`data/question-bank-v1-part${part}.js`), context);
 vm.runInContext(read('question-bank-engine.js'), context);
 vm.runInContext(read('data/travel-pack-seoul-001.js'), context);
+vm.runInContext(read('data/travel-myeongdong-hub.js'), context);
 
 const bank = context.window.MALBIT_BANK;
 const packs = context.window.MALBIT_TRAVEL_PACKS;
+const hubs = context.window.MALBIT_TRAVEL_HUBS;
 const languages = ['ko', 'ja', 'en', 'zh'];
 
 function assertI18n(value, label) {
@@ -83,6 +85,28 @@ test('travel graphics use generated background, avatar, NPC, prop, and UI layers
     }
   }
   assert.deepEqual(Array.from(pack.scenes.filter(scene=>scene.type==='question').slice(0,3),scene=>scene.interaction),['dialogue','hotspot','machine']);
+});
+
+test('Myeongdong hub is a layered, localized, time-aware learning game extension', () => {
+  assert.equal(hubs.length,1);
+  const hub=hubs[0];
+  assert.equal(hub.routeId,packs[0].id);
+  assert.deepEqual(Object.keys(hub.events),['daytime','evening']);
+  assert.deepEqual(Array.from(hub.events.daytime.answer),['명동','관광안내소가','어디예요?']);
+  assert.deepEqual(Array.from(hub.events.evening.answer),['호떡','한 개','주세요.']);
+  assert.notDeepEqual(Array.from(hub.events.daytime.tokens),Array.from(hub.events.daytime.answer),'word-order mission must start shuffled');
+  assert.notDeepEqual(Array.from(hub.events.evening.tokens),Array.from(hub.events.evening.answer),'evening word-order mission must start shuffled');
+  assert.deepEqual(Array.from(hub.exchange,item=>item.cost),[2000,3000,5000]);
+  assert.deepEqual(Array.from(hub.exchange,item=>item.unlock),['always','evening','quest']);
+  for(const field of ['title','subtitle','location'])assertI18n(hub[field],`hub.${field}`);
+  for(const event of Object.values(hub.events))for(const field of ['badge','title','speaker','dialogue','instruction','prompt','success','explanation'])assertI18n(event[field],`hub.${event.id}.${field}`);
+  for(const item of hub.exchange){assertI18n(item.name,`hub.${item.id}.name`);assertI18n(item.detail,`hub.${item.id}.detail`)}
+  for(const [group,assets] of Object.entries(hub.assets))for(const [key,file] of Object.entries(assets)){
+    assert.ok(fs.existsSync(path.join(root,file)),`hub ${group}.${key} is missing`);
+    assert.ok(fs.statSync(path.join(root,file)).size>1000,`hub ${group}.${key} must be generated art`);
+  }
+  assert.equal(hub.sources.length,3);
+  for(const source of hub.sources)assert.match(source.url,/^https:\/\//);
 });
 
 test('travel questions are complete original beginner items with one verified answer', () => {
@@ -197,6 +221,7 @@ test('the travel runtime can complete, resume, replay, and record a wrong answer
   for (let part = 1; part <= 4; part++) vm.runInContext(read(`data/question-bank-v1-part${part}.js`), runtime);
   vm.runInContext(read('question-bank-engine.js'), runtime);
   vm.runInContext(read('data/travel-pack-seoul-001.js'), runtime);
+  vm.runInContext(read('data/travel-myeongdong-hub.js'), runtime);
   runtime.MALBIT_REVIEW = { record: (...args) => reviews.push(args) };
   vm.runInContext(read('travel-mode.js'), runtime);
 
@@ -243,6 +268,34 @@ test('the travel runtime can complete, resume, replay, and record a wrong answer
   const completedStore = JSON.parse(runtimeStorage.get('malbitStoryV1'));
   assert.ok(completedStore.avatar.unlocked.includes('seoul-sunset'));
   assert.ok(completedStore.avatar.unlocked.includes('hanbok-night'));
+
+  completed.clockMinutes=600;
+  const storeAtMyeongdong=JSON.parse(runtimeStorage.get('malbitStoryV1'));
+  storeAtMyeongdong.episodes[pack.id]=completed;
+  runtimeStorage.set('malbitStoryV1',JSON.stringify(storeAtMyeongdong));
+  const beforeHubWallet=completed.wallet;
+  runtime.malbitTravelMyeongdongOpen();
+  assert.match(screen.innerHTML,/명동 여행 허브/);
+  assert.match(screen.innerHTML,/게임 재화 전용 · 결제 없음/);
+  assert.match(screen.innerHTML,/여행안내원에게 길을 묻자/);
+  runtime.malbitTravelTalk();
+  assert.match(screen.innerHTML,/NPC TALK/);
+  runtime.malbitTravelOrderStart();
+  assert.match(screen.innerHTML,/WORD ORDER · NPC TALK/);
+  for(const index of [1,2,0])runtime.malbitTravelOrderAdd(index);
+  runtime.malbitTravelOrderSubmit();
+  const afterHubQuest=JSON.parse(runtimeStorage.get('malbitStoryV1')).episodes[pack.id];
+  assert.equal(afterHubQuest.myeongdong.quests['guide-directions'].completed,true);
+  assert.equal(afterHubQuest.wallet,beforeHubWallet+2500);
+  assert.ok(afterHubQuest.inventory.includes('hangulStampPostcard'));
+  assert.match(screen.innerHTML,/NPC QUEST CLEAR/);
+  runtime.malbitTravelMyeongdongOpen();
+  runtime.malbitTravelBuy('namsanCharm');
+  const afterExchange=JSON.parse(runtimeStorage.get('malbitStoryV1')).episodes[pack.id];
+  assert.equal(afterExchange.wallet,beforeHubWallet-2500);
+  assert.ok(afterExchange.inventory.includes('namsanCharm'));
+  assert.equal(afterExchange.spent.at(-1).currency,'travel-won');
+  assert.match(screen.innerHTML,/여행 가방에 저장/);
 
   runtime.malbitTravelBack();
   runtime.malbitTravelStart(pack.id, false);
