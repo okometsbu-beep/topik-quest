@@ -6,8 +6,10 @@
   const STORAGE_KEY='malbitStoryV1';
   const DEFAULT_SKIN='traveler-blue';
   const PACKS=Array.isArray(window.MALBIT_TRAVEL_PACKS)?window.MALBIT_TRAVEL_PACKS:[];
+  const HUBS=Array.isArray(window.MALBIT_TRAVEL_HUBS)?window.MALBIT_TRAVEL_HUBS:[];
   const SELECTED=Object.create(null);
   const TRANSCRIPTS=Object.create(null);
+  const HUB_ORDER=Object.create(null);
 
   if(!PACKS.length){console.error('[MALBIT travel] travel pack missing');return}
 
@@ -16,6 +18,7 @@
   const l=value=>typeof value==='string'?value:(value?.[lang()]||value?.ko||'');
   const now=()=>new Date().toISOString();
   const packById=id=>PACKS.find(pack=>pack.id===id)||null;
+  const hubByRoute=id=>HUBS.find(hub=>hub.routeId===id)||null;
   const sceneById=(pack,id)=>pack?.scenes?.find(scene=>scene.id===id)||null;
   const routeScene=(scene,state)=>{
     const variant=scene?.routeVariants?.[state?.route];
@@ -74,15 +77,28 @@
       window.MALBIT_STORAGE_GUARD?.capture?.('travel');
     }catch(error){}
   }
+  function normalizeHubState(value){
+    const raw=value&&typeof value==='object'?value:{};
+    const quests=raw.quests&&typeof raw.quests==='object'?raw.quests:{};
+    return{
+      screen:['hub','dialogue','order','result'].includes(raw.screen)?raw.screen:'ending',
+      activeEvent:typeof raw.activeEvent==='string'?raw.activeEvent:null,
+      quests,
+      attempts:Math.max(0,Number(raw.attempts)||0),
+      lastAttemptCorrect:raw.lastAttemptCorrect===false?false:null,
+      lastPurchase:typeof raw.lastPurchase==='string'?raw.lastPurchase:null
+    };
+  }
   function normalizeState(pack,value){
     if(!value||value.packId!==pack.id||!sceneById(pack,value.sceneId))return null;
     value.answers=value.answers&&typeof value.answers==='object'?value.answers:{};
     value.orders=value.orders&&typeof value.orders==='object'?value.orders:{};
-    value.evidence=Array.isArray(value.evidence)?value.evidence.filter(id=>sceneById(pack,id)):[];
+    value.evidence=Array.isArray(value.evidence)?value.evidence.filter(id=>sceneById(pack,id)||String(id).startsWith('hub:')):[];
     value.visited=Array.isArray(value.visited)?value.visited.filter(id=>sceneById(pack,id)):[];
     value.wallet=Math.max(0,Number(value.wallet??pack.startWallet)||0);
     value.clockMinutes=Number.isFinite(Number(value.clockMinutes))?Number(value.clockMinutes):new Date().getHours()*60+new Date().getMinutes();
     value.inventory=Array.isArray(value.inventory)?value.inventory:[];
+    value.myeongdong=normalizeHubState(value.myeongdong);
     return value;
   }
   function readState(pack){return normalizeState(pack,readStore().episodes[pack.id])}
@@ -97,7 +113,7 @@
     return packById(store.activePackId)||PACKS[0];
   }
   function newState(pack,previous){
-    return{
+    const state={
       version:1,packId:pack.id,sceneId:pack.scenes[0].id,route:null,
       answers:{},orders:{},evidence:[],visited:[pack.scenes[0].id],
       wallet:Number(pack.startWallet)||0,clockMinutes:new Date().getHours()*60+new Date().getMinutes(),inventory:Array.from(new Set(Array.isArray(previous?.inventory)?previous.inventory:[])),spent:[],
@@ -105,6 +121,9 @@
       bestScore:Math.max(Number(previous?.bestScore)||0,previous?.completed?correctCount(previous):0),
       clears:Number(previous?.clears)||0,perfectBonusClaimed:!!previous?.perfectBonusClaimed
     };
+    state.myeongdong=normalizeHubState(previous?.myeongdong);
+    state.myeongdong.screen='ending';
+    return state;
   }
   function current(){
     const pack=activePack();
@@ -131,7 +150,10 @@
   function cleanScript(value){
     return String(value||'').replace(/(^|\n)[^:\n]{1,45}:\s*/gu,'$1').replace(/\n{3,}/g,'\n\n').trim();
   }
-  function assetPath(pack,group,key){return key&&pack.assets?.[group]?.[key]||''}
+  function assetPath(pack,group,key){
+    if(!key)return'';
+    return pack.assets?.[group]?.[key]||hubByRoute(pack.id)?.assets?.[group]?.[key]||'';
+  }
   function propImage(pack,key,className=''){
     const src=assetPath(pack,'props',key);
     return src?`<img class="${h(className)}" src="${h(src)}" alt="" loading="eager">`:'';
@@ -188,10 +210,13 @@
   function notebook(pack,state){
     const items=state.inventory.filter(key=>assetPath(pack,'props',key));
     if(!items.length)return'';
+    const hub=hubByRoute(pack.id);
     const labels={
       airportMap:{ko:'인천공항 안내 지도',ja:'仁川空港ガイドマップ',en:'Incheon Airport map',zh:'仁川机场指南地图'},
-      transitCard:{ko:'명동행 교통카드',ja:'明洞行き交通カード',en:'Myeongdong transit card',zh:'明洞方向交通卡'}
+      transitCard:{ko:'명동행 교통카드',ja:'明洞行き交通カード',en:'Myeongdong transit card',zh:'明洞方向交通卡'},
+      'myeongdong-first-stamp':{ko:'명동 첫 여행 스탬프',ja:'明洞はじめて旅スタンプ',en:'First Myeongdong stamp',zh:'明洞首次旅行印章'}
     };
+    for(const item of hub?.exchange||[])labels[item.id]=item.name;
     return`<details class="travelNotebook"><summary><b>${h(l({ko:'여행 가방',ja:'旅のバッグ',en:'Travel bag',zh:'旅行背包'}))}</b><em>${items.length} ITEM</em></summary><div>${items.map(key=>`<p>${propImage(pack,key,'')}<b>${h(l(labels[key]||{ko:key,ja:key,en:key,zh:key}))}</b><small>COLLECTED</small></p>`).join('')}</div></details>`;
   }
   function renderHub(sc){
@@ -223,6 +248,53 @@
     const feedback=answer?`<div class="travelFeedback ${answer.correct?'good':'bad'}" role="status"><div><b>${h(answer.correct?l({ko:`성공 · +${won(answer.earned)}`,ja:`成功・+${won(answer.earned)}`,en:`Success · +${won(answer.earned)}`,zh:`成功 · +${won(answer.earned)}`}):l({ko:`다시 길을 찾았어요 · ${answer.delayMinutes}분 경과`,ja:`ルート復帰・${answer.delayMinutes}分経過`,en:`Back on route · ${answer.delayMinutes} min passed`,zh:`已返回路线 · 经过${answer.delayMinutes}分钟`}))}</b><p>${h(explanation)}</p></div></div>${clueMarkup(scene,answer)}<button class="travelPrimary" onclick="malbitTravelNext()">${scene.next==='ending'?h(l({ko:'명동에 도착하기',ja:'明洞に到着',en:'Reach Myeongdong',zh:'抵达明洞'})):h(l({ko:'다음 행동',ja:'次の行動',en:'Next action',zh:'下一步行动'}))} <b>→</b></button>`:`<button class="travelPrimary ${Number.isInteger(picked)?'ready':''}" onclick="malbitTravelSubmit()">${h(l({ko:'이대로 행동하기',ja:'この行動に決める',en:'Do this',zh:'执行此操作'}))}</button>`;
     sc.innerHTML=`<div class="travelPlay travelQuestionPlay">${commonTop(pack,state,scene)}<article class="travelQuestionCard"><div class="travelQuestionNo"><span>MISSION ${questionNumber(pack,scene)} / ${pack.questionCount}</span><em>${h(interaction.toUpperCase())}</em></div><h1>${h(l(scene.title))}</h1>${worldMarkup(pack,state,scene,answer)}<p class="travelContext">${h(l(scene.context))}</p>${material}<div class="travelPrompt"><small>${h(l(scene.instruction||q.instruction))}</small><b>${h(l(q.prompt))}</b></div><div class="travelAnswers ${h(interaction)} ${answer?'answered':''}">${choices}</div>${feedback}</article>${notebook(pack,state)}</div>`;
   }
+  function activeHubEvent(hub,state){
+    const minute=((Number(state.clockMinutes)||0)%1440+1440)%1440;
+    return minute>=hub.events.daytime.from&&minute<hub.events.daytime.to?hub.events.daytime:hub.events.evening;
+  }
+  function hubQuestDone(state,eventId){return !!state.myeongdong?.quests?.[eventId]?.completed}
+  function anyHubQuestDone(state){return Object.values(state.myeongdong?.quests||{}).some(quest=>quest?.completed)}
+  function hubWorld(pack,state,hub,event,answer){
+    const scene={world:{...hub.world,npc:event.npc},success:event.success,recovery:event.explanation};
+    return `<div class="travelMyeongdongWorld">${worldMarkup(pack,state,scene,answer)}</div>`;
+  }
+  function exchangeAvailability(item,event,state){
+    if(state.inventory.includes(item.id))return{disabled:true,status:l({ko:'수집 완료',ja:'収集済み',en:'COLLECTED',zh:'已收藏'}),kind:'owned'};
+    if(item.unlock==='evening'&&event.id!=='vendor-order')return{disabled:true,status:l({ko:'저녁 이벤트',ja:'夜イベント',en:'EVENING EVENT',zh:'夜间活动'}),kind:'locked'};
+    if(item.unlock==='quest'&&!anyHubQuestDone(state))return{disabled:true,status:l({ko:'NPC 퀘스트 필요',ja:'NPCクエストが必要',en:'NPC QUEST REQUIRED',zh:'需完成NPC任务'}),kind:'locked'};
+    if(Number(item.cost)>state.wallet)return{disabled:true,status:l({ko:'여행 원 부족',ja:'旅ウォン不足',en:'NOT ENOUGH',zh:'旅行韩元不足'}),kind:'locked'};
+    return{disabled:false,status:l({ko:'교환하기',ja:'交換する',en:'EXCHANGE',zh:'兑换'}),kind:'open'};
+  }
+  function exchangeMarkup(pack,state,hub,event){
+    return `<section class="travelExchange" aria-labelledby="travel-exchange-title"><div class="travelSectionTitle"><div><small>${h(l({ko:'게임 재화 전용 · 결제 없음',ja:'ゲーム内通貨のみ・決済なし',en:'GAME CURRENCY ONLY · NO PAYMENT',zh:'仅限游戏货币 · 无支付'}))}</small><b id="travel-exchange-title">${h(l({ko:'명동 여행 원 교환소',ja:'明洞 旅ウォン交換所',en:'Myeongdong travel exchange',zh:'明洞旅行韩元兑换处'}))}</b></div><span>${hub.exchange.filter(item=>state.inventory.includes(item.id)).length}/${hub.exchange.length}</span></div><div class="travelExchangeGrid">${hub.exchange.map(item=>{const availability=exchangeAvailability(item,event,state);return `<button class="travelExchangeCard ${availability.kind}" onclick="malbitTravelBuy('${h(item.id)}')" ${availability.disabled?'disabled':''}><img src="${h(assetPath(pack,'props',item.asset))}" alt=""><span><small>${h(availability.status)}</small><b>${h(l(item.name))}</b><p>${h(l(item.detail))}</p><strong>${h(won(item.cost))}</strong></span></button>`}).join('')}</div></section>`;
+  }
+  function renderMyeongdongHub(sc,pack,state,hub){
+    const event=activeHubEvent(hub,state),done=hubQuestDone(state,event.id),last=state.myeongdong.lastPurchase;
+    const eventStatus=done?l({ko:'오늘의 대화 완료',ja:'今日の会話クリア',en:'TODAY’S TALK CLEARED',zh:'今日对话已完成'}):l(event.badge);
+    sc.innerHTML=`<div class="travelPlay travelMyeongdong">${commonTop(pack,state,{location:hub.location})}<article class="travelMyeongdongCard"><header class="travelMyeongdongHead"><button onclick="malbitTravelMyeongdongClose()" aria-label="Back">‹</button><div><small>AREA 01 · MYEONGDONG</small><h1>${h(l(hub.title))}</h1><p>${h(l(hub.subtitle))}</p></div></header>${hubWorld(pack,state,hub,event)}<section class="travelEventCard ${done?'complete':''}"><div><small>${h(eventStatus)}</small><h2>${h(l(event.title))}</h2><p>${h(l(event.dialogue))}</p></div><button class="travelPrimary" onclick="malbitTravelTalk()">${h(done?l({ko:'대화 다시 보기',ja:'会話をもう一度',en:'Replay dialogue',zh:'重看对话'}):l({ko:'NPC에게 말 걸기',ja:'NPCに話しかける',en:'Talk to NPC',zh:'与NPC交谈'}))} <b>→</b></button></section>${last?`<div class="travelPurchaseBurst" role="status">${propImage(pack,last,'')}<span><small>${h(l({ko:'여행 가방에 저장',ja:'旅バッグに保存',en:'SAVED TO TRAVEL BAG',zh:'已存入旅行包'}))}</small><b>${h(l(hub.exchange.find(item=>item.id===last)?.name||last))}</b></span></div>`:''}${exchangeMarkup(pack,state,hub,event)}${notebook(pack,state)}<details class="travelFacts"><summary>${h(l({ko:'명동 현지 정보 출처',ja:'明洞の現地情報ソース',en:'Myeongdong fact sources',zh:'明洞实地信息来源'}))}</summary>${hub.sources.map(source=>`<a href="${h(source.url)}" target="_blank" rel="noopener">${h(source.label)}</a>`).join('')}</details></article></div>`;
+  }
+  function renderHubDialogue(sc,pack,state,hub,event){
+    sc.innerHTML=`<div class="travelPlay travelMyeongdong">${commonTop(pack,state,{location:hub.location})}<article class="travelMyeongdongCard"><div class="travelQuestionNo"><span>NPC TALK</span><em>${h(clock(state.clockMinutes))}</em></div><h1>${h(l(event.title))}</h1>${hubWorld(pack,state,hub,event)}<div class="travelDialogueFlow"><div class="npc"><small>${h(l(event.speaker))}</small><p lang="ko">${h(String(event.dialogue.ko||'').split('!')[0]+'!')}</p><span>${h(lang()==='ko'?'':l(event.dialogue))}</span></div><div class="player"><small>${h(l({ko:'내 차례',ja:'あなたの番',en:'YOUR TURN',zh:'轮到你了'}))}</small><p>${h(l(event.prompt))}</p></div></div><button class="travelPrimary" onclick="malbitTravelOrderStart()">${h(l({ko:'문장 만들어 대답하기',ja:'文を作って答える',en:'Build a sentence to answer',zh:'排列句子回答'}))} <b>→</b></button><button class="travelTextButton" onclick="malbitTravelMyeongdongOpen()">${h(l({ko:'거리로 돌아가기',ja:'通りへ戻る',en:'Back to the street',zh:'返回街道'}))}</button></article></div>`;
+  }
+  function renderHubOrder(sc,pack,state,hub,event){
+    const selected=Array.isArray(HUB_ORDER[event.id])?HUB_ORDER[event.id]:[];
+    const built=selected.map(index=>event.tokens[index]);
+    const remaining=event.tokens.map((token,index)=>({token,index})).filter(item=>!selected.includes(item.index));
+    const wrong=state.myeongdong.lastAttemptCorrect===false;
+    sc.innerHTML=`<div class="travelPlay travelMyeongdong">${commonTop(pack,state,{location:hub.location})}<article class="travelMyeongdongCard travelOrderCard"><div class="travelQuestionNo"><span>WORD ORDER · NPC TALK</span><em>${h(l({ko:'순서 맞추기',ja:'並べ替え',en:'WORD ORDER',zh:'语序排列'}))}</em></div><h1>${h(l(event.title))}</h1>${hubWorld(pack,state,hub,event)}<div class="travelPrompt"><small>${h(l(event.instruction))}</small><b>${h(l(event.prompt))}</b></div><div class="travelSentence" aria-label="Built sentence">${built.length?selected.map((index,position)=>`<button onclick="malbitTravelOrderRemove(${position})" lang="ko">${h(event.tokens[index])}</button>`).join(''):`<p>${h(l({ko:'아래 단어를 순서대로 눌러 주세요.',ja:'下の単語を順番にタップ',en:'Tap the words in order',zh:'按顺序点击下方词语'}))}</p>`}</div><div class="travelWordBank">${remaining.map(item=>`<button onclick="malbitTravelOrderAdd(${item.index})" lang="ko">${h(item.token)}</button>`).join('')}</div>${wrong?`<div class="travelFeedback bad" role="status"><div><b>${h(l({ko:'순서가 조금 달라요 · 2분 경과',ja:'順番が少し違います・2分経過',en:'Not quite the order · 2 min passed',zh:'顺序不太对 · 经过2分钟'}))}</b><p>${h(l(event.explanation))}</p></div></div>`:''}<div class="travelOrderActions"><button class="travelTextButton" onclick="malbitTravelOrderReset()">${h(l({ko:'다시 놓기',ja:'やり直す',en:'Reset',zh:'重置'}))}</button><button class="travelPrimary ${selected.length===event.tokens.length?'ready':''}" onclick="malbitTravelOrderSubmit()">${h(l({ko:'이 문장으로 말하기',ja:'この文で話す',en:'Say this sentence',zh:'用这句话说'}))}</button></div></article></div>`;
+  }
+  function renderHubResult(sc,pack,state,hub,event){
+    const quest=state.myeongdong.quests[event.id];
+    const earned=Number.isFinite(Number(quest?.earned))?Number(quest.earned):Number(event.reward)||0;
+    sc.innerHTML=`<div class="travelPlay travelMyeongdong">${commonTop(pack,state,{location:hub.location})}<article class="travelMyeongdongCard travelHubResult"><div class="travelQuestionNo"><span>NPC QUEST CLEAR</span><em>+${h(won(earned))}</em></div><h1>${h(l({ko:'한국어가 실제 여행을 움직였다!',ja:'韓国語で旅が動いた！',en:'Your Korean moved the journey forward!',zh:'韩语推动了真实旅程！'}))}</h1>${hubWorld(pack,state,hub,event,{correct:true,earned,itemReward:event.itemReward})}<blockquote class="travelKorean" lang="ko">${h(event.answer.join(' '))}</blockquote><p class="travelSupport">${h(l(event.success))}</p><div class="travelReward travelHubReward">${propImage(pack,event.itemReward,'')}<div><small>${h(l({ko:'NPC 대화 보상',ja:'NPC会話報酬',en:'NPC TALK REWARD',zh:'NPC对话奖励'}))}</small><b>${h(l(hub.exchange.find(item=>item.id===event.itemReward)?.name||event.itemReward))}</b><p>+${h(won(earned))}</p></div></div><button class="travelPrimary" onclick="malbitTravelMyeongdongOpen()">${h(l({ko:'거리에서 다음 추억 찾기',ja:'通りで次の思い出を探す',en:'Find the next street memory',zh:'在街上寻找下一段回忆'}))} <b>→</b></button></article></div>`;
+  }
+  function renderMyeongdong(sc,pack,state,hub){
+    const event=Object.values(hub.events).find(item=>item.id===state.myeongdong.activeEvent)||activeHubEvent(hub,state);
+    if(state.myeongdong.screen==='dialogue')return renderHubDialogue(sc,pack,state,hub,event);
+    if(state.myeongdong.screen==='order')return renderHubOrder(sc,pack,state,hub,event);
+    if(state.myeongdong.screen==='result')return renderHubResult(sc,pack,state,hub,event);
+    return renderMyeongdongHub(sc,pack,state,hub);
+  }
   function endingType(pack,state){const score=correctCount(state);return score===pack.questionCount?'perfect':score>=Math.ceil(pack.questionCount*.67)?'clear':'close'}
   function renderEnding(sc,pack,state,scene){
     if(!state.completed){
@@ -234,11 +306,14 @@
     }
     const result=pack.endings[endingType(pack,state)],score=correctCount(state);
     const reward=skinById(pack,score===pack.questionCount?pack.perfectSkin:pack.rewardSkin);
-    sc.innerHTML=`<div class="travelPlay travelEnding">${commonTop(pack,state,scene)}<article class="travelEndingCard"><div class="travelEndingGlow"></div>${worldMarkup(pack,state,scene)}<span class="travelEndingIcon">${h(result.icon)}</span><small>ROUTE CLEAR · ${h(pack.badge)}</small><h1>${h(l(result.title))}</h1><p>${h(l(result.detail))}</p><div class="travelScore"><b>${score}</b><span>/ ${pack.questionCount}</span><small>${h(l({ko:'정답 미션',ja:'正解ミッション',en:'correct missions',zh:'答对任务'}))}</small></div><div class="travelReward" style="--reward:${h(reward.accent)}"><img src="${h(reward.image)}" alt=""><div><small>${h(l({ko:'무료 여행 보상',ja:'無料の旅報酬',en:'Free journey reward',zh:'免费旅行奖励'}))}</small><b>${h(l(reward.name))}</b><p>${h(won(state.wallet))} · ${h(clock(state.clockMinutes))}</p></div></div>${koreanCopy(scene)}${notebook(pack,state)}<button class="travelPrimary" onclick="malbitTravelBack()">${h(l({ko:'여행 지도로',ja:'旅マップへ',en:'Back to travel map',zh:'返回旅行地图'}))} <b>→</b></button><button class="travelTextButton" onclick="malbitTravelRestart('${h(pack.id)}')">${h(l({ko:'다른 이동 수단으로 다시',ja:'別の移動手段で再挑戦',en:'Replay with another route',zh:'换路线重玩'}))}</button></article></div>`;
+    const hub=hubByRoute(pack.id);
+    sc.innerHTML=`<div class="travelPlay travelEnding">${commonTop(pack,state,scene)}<article class="travelEndingCard"><div class="travelEndingGlow"></div>${worldMarkup(pack,state,scene)}<div class="travelEndingBody"><span class="travelEndingIcon">${h(result.icon)}</span><small>ROUTE CLEAR · ${h(pack.badge)}</small><h1>${h(l(result.title))}</h1><p>${h(l(result.detail))}</p><div class="travelScore"><b>${score}</b><span>/ ${pack.questionCount}</span><small>${h(l({ko:'정답 미션',ja:'正解ミッション',en:'correct missions',zh:'答对任务'}))}</small></div><div class="travelReward" style="--reward:${h(reward.accent)}"><img src="${h(reward.image)}" alt=""><div><small>${h(l({ko:'무료 여행 보상',ja:'無料の旅報酬',en:'Free journey reward',zh:'免费旅行奖励'}))}</small><b>${h(l(reward.name))}</b><p>${h(won(state.wallet))} · ${h(clock(state.clockMinutes))}</p></div></div>${koreanCopy(scene)}${notebook(pack,state)}${hub?`<button class="travelPrimary" onclick="malbitTravelMyeongdongOpen()">${h(l({ko:'명동 거리를 탐험하기',ja:'明洞の街を探索する',en:'Explore Myeongdong',zh:'探索明洞街道'}))} <b>→</b></button>`:''}<button class="travelSecondary" onclick="malbitTravelBack()">${h(l({ko:'여행 지도로',ja:'旅マップへ',en:'Back to travel map',zh:'返回旅行地图'}))}</button><button class="travelTextButton" onclick="malbitTravelRestart('${h(pack.id)}')">${h(l({ko:'다른 이동 수단으로 다시',ja:'別の移動手段で再挑戦',en:'Replay with another route',zh:'换路线重玩'}))}</button></div></article></div>`;
   }
   function renderPlay(sc){
     const {pack,state,scene}=current();
     if(!scene)return setView('travel');
+    const hub=hubByRoute(pack.id);
+    if(scene.type==='ending'&&state.completed&&hub&&state.myeongdong.screen!=='ending')return renderMyeongdong(sc,pack,state,hub);
     if(scene.type==='narrative')return renderNarrative(sc,pack,state,scene);
     if(scene.type==='choice')return renderChoice(sc,pack,state,scene);
     if(scene.type==='question')return renderQuestion(sc,pack,state,scene);
@@ -250,6 +325,7 @@
     const pack=packById(packId)||PACKS[0],store=readStore(),previous=normalizeState(pack,store.episodes[pack.id]);
     store.activePackId=pack.id;
     if(fresh||!previous){resetTransient(pack);store.episodes[pack.id]=newState(pack,previous)}
+    else if(previous.completed)previous.myeongdong.screen='ending';
     writeStore(store);
     setView('travelPlay');
     resetViewport();
@@ -266,6 +342,78 @@
     store.avatar.equipped=skinId;writeStore(store);
     notify(l({ko:'여행자 의상을 갈아입었어요.',ja:'旅人の衣装を着替えました。',en:'Traveler outfit changed.',zh:'旅行者服装已更换。'}));
     render();
+  };
+  window.malbitTravelMyeongdongOpen=()=>{
+    const {pack,state,scene}=current(),hub=hubByRoute(pack.id);
+    if(!hub||!state.completed||scene.type!=='ending')return;
+    const event=activeHubEvent(hub,state);
+    state.myeongdong.screen='hub';state.myeongdong.activeEvent=event.id;state.myeongdong.lastAttemptCorrect=null;
+    writeState(state);cancelAudio();render();resetViewport();
+  };
+  window.malbitTravelMyeongdongClose=()=>{
+    const {state}=current();
+    state.myeongdong.screen='ending';state.myeongdong.activeEvent=null;state.myeongdong.lastPurchase=null;
+    writeState(state);cancelAudio();render();resetViewport();
+  };
+  window.malbitTravelTalk=()=>{
+    const {pack,state}=current(),hub=hubByRoute(pack.id);
+    if(!hub||!state.completed)return;
+    const event=activeHubEvent(hub,state);
+    state.myeongdong.screen='dialogue';state.myeongdong.activeEvent=event.id;state.myeongdong.lastAttemptCorrect=null;state.myeongdong.lastPurchase=null;
+    writeState(state);render();resetViewport();
+  };
+  window.malbitTravelOrderStart=()=>{
+    const {pack,state}=current(),hub=hubByRoute(pack.id);
+    if(!hub)return;
+    const event=Object.values(hub.events).find(item=>item.id===state.myeongdong.activeEvent)||activeHubEvent(hub,state);
+    HUB_ORDER[event.id]=[];state.myeongdong.screen='order';state.myeongdong.lastAttemptCorrect=null;
+    writeState(state);render();resetViewport();
+  };
+  window.malbitTravelOrderAdd=index=>{
+    const {pack,state}=current(),hub=hubByRoute(pack.id);if(!hub||state.myeongdong.screen!=='order')return;
+    const event=Object.values(hub.events).find(item=>item.id===state.myeongdong.activeEvent)||activeHubEvent(hub,state);
+    const order=Array.isArray(HUB_ORDER[event.id])?HUB_ORDER[event.id]:[];
+    index=Number(index);if(!Number.isInteger(index)||index<0||index>=event.tokens.length||order.includes(index))return;
+    order.push(index);HUB_ORDER[event.id]=order;state.myeongdong.lastAttemptCorrect=null;render();
+  };
+  window.malbitTravelOrderRemove=position=>{
+    const {pack,state}=current(),hub=hubByRoute(pack.id);if(!hub||state.myeongdong.screen!=='order')return;
+    const event=Object.values(hub.events).find(item=>item.id===state.myeongdong.activeEvent)||activeHubEvent(hub,state);
+    const order=Array.isArray(HUB_ORDER[event.id])?HUB_ORDER[event.id]:[];
+    position=Number(position);if(!Number.isInteger(position)||position<0||position>=order.length)return;
+    order.splice(position,1);state.myeongdong.lastAttemptCorrect=null;render();
+  };
+  window.malbitTravelOrderReset=()=>{
+    const {pack,state}=current(),hub=hubByRoute(pack.id);if(!hub)return;
+    const event=Object.values(hub.events).find(item=>item.id===state.myeongdong.activeEvent)||activeHubEvent(hub,state);
+    HUB_ORDER[event.id]=[];state.myeongdong.lastAttemptCorrect=null;render();
+  };
+  window.malbitTravelOrderSubmit=()=>{
+    const {pack,state}=current(),hub=hubByRoute(pack.id);if(!hub||state.myeongdong.screen!=='order')return;
+    const event=Object.values(hub.events).find(item=>item.id===state.myeongdong.activeEvent)||activeHubEvent(hub,state);
+    const order=Array.isArray(HUB_ORDER[event.id])?HUB_ORDER[event.id]:[];
+    if(order.length!==event.tokens.length)return notify(l({ko:'모든 단어를 문장 칸에 놓아 주세요.',ja:'すべての単語を文の欄に置いてください。',en:'Place every word in the sentence.',zh:'请把所有词放入句子栏。'}));
+    const built=order.map(index=>event.tokens[index]);
+    const correct=built.every((token,index)=>token===event.answer[index]);
+    if(!correct){
+      state.myeongdong.attempts+=1;state.myeongdong.lastAttemptCorrect=false;state.clockMinutes+=2;state.updatedAt=now();HUB_ORDER[event.id]=[];
+      writeState(state);render();revealFeedback();return;
+    }
+    const already=hubQuestDone(state,event.id),earned=already?0:Number(event.reward)||0;
+    state.myeongdong.quests[event.id]={completed:true,earned,answer:Array.from(event.answer),completedAt:now()};
+    state.myeongdong.lastAttemptCorrect=null;state.myeongdong.screen='result';state.wallet+=earned;state.clockMinutes+=3;state.updatedAt=now();
+    if(event.itemReward&&!state.inventory.includes(event.itemReward))state.inventory.push(event.itemReward);
+    if(!state.evidence.includes(`hub:${event.id}`))state.evidence.push(`hub:${event.id}`);
+    HUB_ORDER[event.id]=[];writeState(state);render();resetViewport();
+  };
+  window.malbitTravelBuy=itemId=>{
+    const {pack,state,scene}=current(),hub=hubByRoute(pack.id);if(!hub||!state.completed||scene.type!=='ending')return;
+    const event=activeHubEvent(hub,state),item=hub.exchange.find(entry=>entry.id===itemId);if(!item)return;
+    const availability=exchangeAvailability(item,event,state);if(availability.disabled)return notify(availability.status);
+    const cost=Math.max(0,Number(item.cost)||0);
+    state.wallet-=cost;state.clockMinutes+=2;state.inventory.push(item.id);state.myeongdong.lastPurchase=item.id;state.myeongdong.screen='hub';state.updatedAt=now();
+    state.spent=Array.isArray(state.spent)?state.spent:[];state.spent.push({kind:'collectible',id:item.id,cost,currency:'travel-won',at:now()});
+    writeState(state);render();
   };
   window.malbitTravelNext=()=>{
     const {pack,state,scene}=current();
@@ -354,6 +502,6 @@
     return renderPlay(sc);
   };
 
-  window.MALBIT_TRAVEL=Object.freeze({storageKey:STORAGE_KEY,packs:PACKS,open:window.malbitTravelOpen});
+  window.MALBIT_TRAVEL=Object.freeze({storageKey:STORAGE_KEY,packs:PACKS,hubs:HUBS,open:window.malbitTravelOpen});
   window.MALBIT_STORY=window.MALBIT_TRAVEL;
 })();

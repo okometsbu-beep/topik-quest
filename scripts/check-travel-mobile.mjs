@@ -9,8 +9,8 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const out=path.join(root,'artifacts','travel-mobile');
 fs.mkdirSync(out,{recursive:true});
 for(const file of fs.readdirSync(out))if(file.endsWith('.png'))fs.unlinkSync(path.join(out,file));
-const chromePath=process.env.CHROME_PATH||'/usr/bin/google-chrome';
-assert.ok(fs.existsSync(chromePath),`Chrome not found at ${chromePath}`);
+const chromePath=[process.env.CHROME_PATH,'/usr/bin/google-chrome','/usr/bin/google-chrome-stable','/usr/bin/chromium','/usr/bin/chromium-browser'].find(candidate=>candidate&&fs.existsSync(candidate));
+assert.ok(chromePath,'Chrome/Chromium not found; set CHROME_PATH to the browser executable');
 const server=spawn(process.execPath,['scripts/serve.mjs'],{cwd:root,stdio:'ignore'});
 const chrome=spawn(chromePath,['--headless','--no-sandbox','--disable-gpu','--disable-dev-shm-usage','--hide-scrollbars','--remote-debugging-address=127.0.0.1','--remote-debugging-port=9222',`--user-data-dir=/tmp/malbit-chrome-profile-${process.pid}`,'about:blank'],{stdio:['ignore','ignore','inherit']});
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
@@ -65,9 +65,11 @@ try{
   };
   const state=()=>evaluate(`JSON.parse(localStorage.getItem('malbitStoryV1')).episodes['route-001-airport-myeongdong']`);
   const assertFits=async label=>{
-    const fit=await evaluate(`({innerWidth,root:document.documentElement.scrollWidth,body:document.body.scrollWidth,bad:[...document.querySelectorAll('.travelPrimary,.travelAnswer,.travelRoutes button,.travelBack,.travelLang,.travelListen button')].filter(el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return s.display!=='none'&&s.visibility!=='hidden'&&r.width>0&&r.height>0&&r.height<43}).map(el=>({class:el.className,h:el.getBoundingClientRect().height}))})`);
+    const fit=await evaluate(`(()=>{const visible=el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)!==0&&r.width>0&&r.height>0};const targets=[...document.querySelectorAll('.travelPrimary,.travelSecondary,.travelAnswer,.travelRoutes button,.travelBack,.travelLang,.travelListen button,.travelMyeongdongHead>button,.travelExchangeCard,.travelSentence button,.travelWordBank button')].filter(visible);const outside=targets.filter(el=>{const r=el.getBoundingClientRect();return r.left<-1||r.right>innerWidth+1}).map(el=>({class:el.className,left:Math.round(el.getBoundingClientRect().left),right:Math.round(el.getBoundingClientRect().right)}));const bad=targets.filter(el=>el.getBoundingClientRect().height<43).map(el=>({class:el.className,h:Math.round(el.getBoundingClientRect().height)}));const overlaps=[];for(const container of document.querySelectorAll('.travelEndingBody,.travelMyeongdongCard')){const children=[...container.children].filter(el=>visible(el)&&getComputedStyle(el).position!=='absolute').sort((a,b)=>a.getBoundingClientRect().top-b.getBoundingClientRect().top);for(let i=1;i<children.length;i++){const a=children[i-1].getBoundingClientRect(),b=children[i].getBoundingClientRect();if(a.bottom>b.top+1)overlaps.push({a:children[i-1].className||children[i-1].tagName,b:children[i].className||children[i].tagName,amount:Math.round(a.bottom-b.top)})}}return{innerWidth,root:document.documentElement.scrollWidth,body:document.body.scrollWidth,bad,outside,overlaps}})()`);
     assert.ok(fit.root<=fit.innerWidth+1&&fit.body<=fit.innerWidth+1,`${label}: horizontal overflow ${fit.root}/${fit.body}/${fit.innerWidth}`);
     assert.deepEqual(fit.bad,[],`${label}: touch target below 44px`);
+    assert.deepEqual(fit.outside,[],`${label}: interactive element leaves viewport`);
+    assert.deepEqual(fit.overlaps,[],`${label}: flow elements overlap`);
   };
   const startFresh=async()=>{
     await evaluate(`localStorage.removeItem('malbitStoryV1');S.lang='ja';S.view='home';save();render()`);
@@ -79,6 +81,10 @@ try{
     }
     assert.ok(opened,'Travel entry touch must open the hub');
     assert.equal(await evaluate(`document.querySelector('.travelHubHead h1')?.textContent`),'旅行モード');
+    if(!fs.existsSync(path.join(out,'01a-travel-hub.png'))){
+      await assertFits('Travel hub');
+      await shot('01a-travel-hub.png');
+    }
     await tap('.travelEpisodeCard .travelPrimary');
     assert.equal((await state()).sceneId,'arrival');
     await tap('.travelSceneCard .travelPrimary');
@@ -145,7 +151,7 @@ try{
   await evaluate(`localStorage.clear();S.lang='ja';S.vocab=[{text:'여행',meanings:{ja:'旅行'},repetitions:3}];S.gameUnlock=17;S.gameAnswers={16:{clear:true}};save();localStorage.setItem('topikQuestTopik1GameV1',JSON.stringify({profiles:{1:{unlock:6}}}));localStorage.setItem('malbitWrongReviewV3',JSON.stringify({items:[{id:'M01-I-L-11'}]}));render()`);
   const durableBefore=await evaluate(`({vocab:JSON.parse(localStorage.getItem('topikQuestV8')).vocab,gameUnlock:JSON.parse(localStorage.getItem('topikQuestV8')).gameUnlock,game:localStorage.getItem('topikQuestTopik1GameV1'),review:localStorage.getItem('malbitWrongReviewV3')})`);
 
-  await evaluate(`S.view='home';save();render()`);await shot('01-game-entry.png');
+  await evaluate(`S.view='home';save();render()`);await sleep(1000);await shot('01-game-entry.png');
   await startFresh();
   await setViewport(375,667);
   const firstViewport=await evaluate(`(()=>{const first=document.querySelector('.travelAnswer').getBoundingClientRect();return{top:Math.round(first.top),bottom:Math.round(first.bottom),height:innerHeight,overflow:document.documentElement.scrollWidth-innerWidth}})()`);
@@ -181,14 +187,50 @@ try{
   await runRoute(1,'express',{reloadAtTransfer:true});
   await runRoute(2,'taxi',{taxiBackResume:true});
   await shot('08-myeongdong-arrival.png');
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertFits(`ending ${width}px`)}
+  await setViewport(390,844);
+  await evaluate(`(()=>{const store=JSON.parse(localStorage.getItem('malbitStoryV1'));store.episodes['route-001-airport-myeongdong'].clockMinutes=600;localStorage.setItem('malbitStoryV1',JSON.stringify(store));render()})()`);
+  await tap('.travelEndingCard .travelPrimary');
+  assert.match(await evaluate(`document.querySelector('.travelMyeongdongHead h1')?.textContent`),/明洞トラベルハブ/);
+  assert.equal(await evaluate(`document.querySelectorAll('.travelMyeongdongWorld .travelWorldBg,.travelMyeongdongWorld .travelWorldPlayer,.travelMyeongdongWorld .travelWorldNpc,.travelMyeongdongWorld .prop-myeongdongexchange').length`),4,'Myeongdong world must compose background, player, NPC, and exchange prop layers');
+  assert.equal(await evaluate(`document.querySelectorAll('.travelExchangeCard').length`),3);
+  assert.equal(await evaluate(`document.querySelectorAll('.travelExchangeCard img[src*="item-"]').length`),3,'exchange must use generated collectible art');
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertFits(`Myeongdong hub ${width}px`)}
+  await setViewport(390,844);await shot('09-myeongdong-hub-day.png');
+  await tap('.travelEventCard .travelPrimary');
+  assert.match(await evaluate(`document.querySelector('.travelQuestionNo span')?.textContent`),/NPC TALK/);
+  await tap('.travelMyeongdongCard>.travelPrimary');
+  assert.match(await evaluate(`document.querySelector('.travelQuestionNo span')?.textContent`),/WORD ORDER/);
+  await tap('.travelWordBank button',1);
+  await tap('.travelWordBank button',1);
+  await tap('.travelWordBank button',0);
+  assert.deepEqual(await evaluate(`[...document.querySelectorAll('.travelSentence button')].map(button=>button.textContent.trim())`),['명동','관광안내소가','어디예요?']);
+  await tap('.travelOrderActions .travelPrimary');
+  assert.match(await evaluate(`document.querySelector('.travelQuestionNo span')?.textContent`),/NPC QUEST CLEAR/);
+  const hubQuest=await state();assert.equal(hubQuest.myeongdong.quests['guide-directions'].completed,true);assert.ok(hubQuest.inventory.includes('hangulStampPostcard'));
+  await shot('10-word-order-clear.png');
+  await tap('.travelHubResult .travelPrimary');
+  const beforeCharm=(await state()).wallet;
+  await tap('.travelExchangeCard',2);
+  const afterCharm=await state();assert.equal(beforeCharm-afterCharm.wallet,5000);assert.ok(afterCharm.inventory.includes('namsanCharm'));
+  assert.match(await evaluate(`document.querySelector('.travelPurchaseBurst')?.textContent`),/南山夜景チャーム/);
+  await shot('11-collectible-exchange.png');
+  await evaluate(`(()=>{const store=JSON.parse(localStorage.getItem('malbitStoryV1'));store.episodes['route-001-airport-myeongdong'].clockMinutes=1140;store.episodes['route-001-airport-myeongdong'].myeongdong.lastPurchase=null;localStorage.setItem('malbitStoryV1',JSON.stringify(store));render()})()`);
+  assert.match(await evaluate(`document.querySelector('.travelEventCard h2')?.textContent`),/屋台で注文しよう/);
+  assert.match(await evaluate(`document.querySelector('.travelWorldNpc')?.getAttribute('src')`),/npc-myeongdong-vendor\.webp/);
+  assert.equal(await evaluate(`document.querySelectorAll('.travelExchangeCard')[1].disabled`),false,'evening must unlock the hotteok memory exchange');
+  await tap('.travelExchangeCard',1);
+  assert.ok((await state()).inventory.includes('hotteokMemory'));
+  await shot('12-myeongdong-hub-evening.png');
   await send('Page.reload',{ignoreCache:true});await ready();await sleep(160);
   assert.equal((await state()).completed,true);assert.equal((await state()).route,'taxi');
-  assert.ok(await evaluate(`document.body.innerText.includes('ROUTE CLEAR')`),'completed route must survive reload');
+  assert.ok(await evaluate(`document.body.innerText.includes('明洞トラベルハブ')`),'Myeongdong hub state must survive reload');
+  assert.ok((await state()).inventory.includes('namsanCharm'),'hub collectibles must survive reload');
 
   const durableAfter=await evaluate(`({vocab:JSON.parse(localStorage.getItem('topikQuestV8')).vocab,gameUnlock:JSON.parse(localStorage.getItem('topikQuestV8')).gameUnlock,game:localStorage.getItem('topikQuestTopik1GameV1'),review:localStorage.getItem('malbitWrongReviewV3')})`);
   assert.deepEqual(durableAfter,durableBefore,'travel play must not alter vocabulary, game, or review records');
   assert.deepEqual(errors,[]);
-  console.log('travel mobile QA: 375x667 + 390x844, hit-tested pointer input, wrong recovery, all-stop/express/taxi, reload/back-resume, durable records, screenshots=8, errors=0');
+  console.log('travel mobile QA: 320/375/390/430px containment, hit-tested route + Myeongdong NPC word order, day/evening events, travel-won exchange, reload/back-resume, durable records, screenshots=13, errors=0');
 }finally{
   try{socket?.close()}catch(error){}
   chrome.kill('SIGTERM');server.kill('SIGTERM');
