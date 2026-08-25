@@ -82,7 +82,6 @@ function patchMore(){
   const badge=document.querySelector('.malbitPageTitle>span'),version=window.__MALBIT_RUNTIME__?.version;if(badge&&version)badge.textContent=`v${version}`;
   const reminderTime=document.querySelector('.malbitToggleRow input[type="time"]');if(reminderTime)reminderTime.setAttribute('aria-label',L('복습 알림 시간','復習通知の時刻','Review reminder time','复习提醒时间'));
   if(typeof window.MALBIT_ACCOUNT_ADAPTER?.signIn!=='function')document.querySelector('.malbitAccountCard')?.remove();
-  if(typeof window.MALBIT_BILLING_ADAPTER?.startCheckout!=='function')document.querySelector('.malbitPlusCard')?.remove();
   if(typeof window.MALBIT_ANALYTICS_ADAPTER?.track!=='function'){
     [...document.querySelectorAll('.malbitSetting')].find(x=>/제품 개선 분석|製品改善の分析|Product improvement analytics|产品改进分析/.test(x.textContent))?.remove();
   }
