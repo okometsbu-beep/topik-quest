@@ -55,7 +55,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## v52 검증 및 배포 후보
 
-- 전체 자동검사, 2,088개 원본 문제, runtime v52 무결성 통과 예정
+- 전체 자동검사 46/46, 51개 JavaScript 구문, 2,088개 원본 문제, runtime v52 무결성 통과
 - GitHub CI Chrome에서 실제 버튼 입력으로 공항부터 명동까지 세 교통 경로를 완주하고,
   명동 낮 안내원 NPC 순서 맞추기·저녁 노점 NPC 전환·수집품 교환·재접속을 검사한다.
 - 320·375·390·430px에서 가로 넘침, 화면 밖 터치 요소, 44px 미만 조작부, 흐름 요소 겹침을
@@ -65,7 +65,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - `malbitStoryV1` 스키마를 유지하고 명동 진행만 하위 필드로 확장했다. 기존 단어장·게임·복습
   기록을 플레이 전후 비교해 모두 보존하며 결제 UI·현금 가격·유료 잠금·API 키는 없다.
 - 결제 버튼·가격·유료 잠금·API 키를 추가하지 않음
-- 변경 PR: 병합 전에 기록
+- 변경 PR: https://github.com/okometsbu-beep/topik-quest/pull/49
 - 배포 주소: https://okometsbu-beep.github.io/topik-quest/
 - 되돌리기 기준: v51 main `6295df3fbf86e9b821b2bb11a4347ec1b6a44072`
 
