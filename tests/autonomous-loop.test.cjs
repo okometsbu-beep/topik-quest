@@ -29,6 +29,18 @@ test('autonomous loop keeps durable memory and a bounded prompt in the repositor
   assert.match(prompt, /PAUSE/);
 });
 
+test('autonomous loop quarantines every payment surface until an explicit decision', () => {
+  const prompt = read('loop/PROMPT.md');
+  const design = read('docs/DESIGN.md');
+  const status = read('docs/STATUS.md');
+
+  assert.match(prompt, /결제 기능과 결제 표면을 만들지 않는다/);
+  assert.match(prompt, /가격·구매\/구독 버튼·상품 카드·유료 잠금·Premium\/Plus·업셀/);
+  assert.match(design, /사용자의 명시적 승인 전에는 어떤 결제 관련 UI도 추가하지 않는다/);
+  assert.match(status, /결제 버튼·가격·상품 카드·유료 잠금·Premium·Plus·구독·업셀/);
+  assert.doesNotMatch(design, /2,900엔|구매 전환율은 핵심/);
+});
+
 test('autonomous deployment boundary stays static and secret-free', () => {
   const config = read('loop/CONFIG.md');
   assert.match(config, /00:00.*06:00.*12:00.*18:00/s);
