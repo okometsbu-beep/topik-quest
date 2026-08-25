@@ -1,117 +1,61 @@
-// MALBIT Travel Mode · Seoul Route 001
+// MALBIT Travel Adventure · Route 001: Incheon Airport T1 → Myeongdong
 (function(){
   'use strict';
+  const t=(ko,ja,en,zh)=>Object.freeze({ko,ja,en,zh});
+  const q=(id,section,script,prompt,choices,answerIndex,explanation)=>Object.freeze({
+    bankId:id,level:1,section,script,prompt,
+    instruction:t('가장 알맞은 뜻을 고르세요.','最も適切な意味を選んでください。','Choose the best meaning.','请选择最合适的意思。'),
+    choices:Object.freeze(choices),answerIndex,explanationI18n:explanation
+  });
+  const c=(ko,ja,en,zh)=>t(ko,ja,en,zh);
 
-  const text=(ko,ja,en,zh)=>Object.freeze({ko,ja,en,zh});
-
-  const episode=Object.freeze({
-    id:'case-001-missing-ticket',
-    version:2,
-    level:1,
-    badge:'SEOUL 001',
-    title:text('서울 첫 여행','ソウルはじめて旅','First Seoul Journey','首尔初次旅行'),
-    subtitle:text('서울역에서 광화문까지, 한국어로 길을 열어 보세요.','ソウル駅から光化門まで、韓国語で道をひらこう。','Open the route from Seoul Station to Gwanghwamun in Korean.','从首尔站到光化门，用韩语开启路线。'),
-    description:text('서울역·시청·광화문을 이동하며 6개의 여행 퀘스트와 무료 아바타 보상을 완료하세요.','ソウル駅・市庁・光化門を巡り、6つの旅クエストと無料アバター報酬を達成しよう。','Travel through Seoul Station, City Hall, and Gwanghwamun, clearing six quests and free avatar rewards.','游览首尔站、市厅和光化门，完成6个旅行任务并获得免费头像奖励。'),
-    duration:text('약 8분','約8分','About 8 min','约8分钟'),
-    questionCount:6,
-    cover:Object.freeze({emoji:'🗺️',accent:'#43c9a8'}),
-    map:Object.freeze({
-      stops:Object.freeze([
-        Object.freeze({id:'seoul-station',icon:'🚉',unlockAt:0,name:text('서울역','ソウル駅','Seoul Station','首尔站')}),
-        Object.freeze({id:'city-hall',icon:'🏛️',unlockAt:2,name:text('시청','市庁','City Hall','市厅')}),
-        Object.freeze({id:'gwanghwamun',icon:'🏯',unlockAt:4,name:text('광화문','光化門','Gwanghwamun','光化门')})
-      ])
-    }),
-    skins:Object.freeze([
-      Object.freeze({id:'traveler-blue',icon:'🧢',accent:'#4b8df8',unlock:'default',name:text('파란 여행자','青い旅人','Blue Traveler','蓝色旅人')}),
-      Object.freeze({id:'seoul-sunset',icon:'🌇',accent:'#f17c5a',unlock:'clear',name:text('서울 노을','ソウル夕焼け','Seoul Sunset','首尔晚霞')}),
-      Object.freeze({id:'hanbok-night',icon:'🌙',accent:'#8d70e8',unlock:'perfect',name:text('한복의 밤','韓服の夜','Hanbok Night','韩服之夜')})
+  const pack=Object.freeze({
+    id:'route-001-airport-myeongdong',version:3,level:1,badge:'KOREA 001',
+    title:t('공항에서 명동까지','空港から明洞まで','Airport to Myeongdong','从机场到明洞'),
+    subtitle:t('인천공항에서 여행을 시작해 명동에 도착하세요.','仁川空港から旅を始め、明洞を目指そう。','Begin at Incheon Airport and reach Myeongdong.','从仁川机场出发，抵达明洞。'),
+    description:t('쉬운 한국어 6문제로 여행 원을 모으고 실제 교통 정보를 비교해 이동하세요.','やさしい韓国語6問で旅ウォンを集め、実際の交通情報を比べて移動しよう。','Answer six beginner questions, earn travel won, and choose a real route.','完成6道入门韩语题，赚取旅行韩元并选择真实路线。'),
+    duration:t('약 10분','約10分','About 10 min','约10分钟'),questionCount:6,startWallet:13000,questionReward:2000,perfectBonus:5000,
+    cover:Object.freeze({image:'assets/art/travel-incheon-airport.webp',accent:'#43c9a8'}),
+    assets:Object.freeze({airport:'assets/art/travel-incheon-airport.webp',myeongdong:'assets/art/travel-myeongdong-arrival.webp'}),
+    sources:Object.freeze([
+      Object.freeze({label:'AREX passenger fares (2025-06-17 revision)',url:'https://www.arex.or.kr/content.do?menuNo=MN201503060000000002'}),
+      Object.freeze({label:'Seoul airport transport guide',url:'https://english.seoul.go.kr/service/entry/getting-to-seoul-from-incheon-airport/'}),
+      Object.freeze({label:'Incheon Airport taxi guide',url:'https://www.airport.kr/ap_en/1514/subview.do'}),
+      Object.freeze({label:'Seoul international taxi zone fares',url:'https://english.seoul.go.kr/policy/transportation/modes-of-transport/taxi/'})
     ]),
-    rewardSkin:'seoul-sunset',
-    perfectSkin:'hanbok-night',
+    map:Object.freeze({stops:Object.freeze([
+      Object.freeze({id:'airport-t1',icon:'T1',unlockAt:0,name:t('인천공항 T1','仁川空港 T1','Incheon Airport T1','仁川机场 T1')}),
+      Object.freeze({id:'seoul-station',icon:'A',unlockAt:3,name:t('서울역','ソウル駅','Seoul Station','首尔站')}),
+      Object.freeze({id:'myeongdong',icon:'4',unlockAt:6,name:t('명동역','明洞駅','Myeongdong Station','明洞站')})
+    ])}),
+    skins:Object.freeze([
+      Object.freeze({id:'traveler-blue',icon:'01',accent:'#4b8df8',unlock:'default',name:t('첫 여행자','はじめての旅人','First Traveler','初次旅人')}),
+      Object.freeze({id:'seoul-sunset',icon:'02',accent:'#f17c5a',unlock:'clear',name:t('명동 노을','明洞夕焼け','Myeongdong Sunset','明洞晚霞')}),
+      Object.freeze({id:'hanbok-night',icon:'03',accent:'#8d70e8',unlock:'perfect',name:t('서울의 밤','ソウルの夜','Seoul Night','首尔之夜')})
+    ]),rewardSkin:'seoul-sunset',perfectSkin:'hanbok-night',
     scenes:Object.freeze([
-      Object.freeze({
-        id:'briefing',type:'narrative',chapter:1,next:'approach',stop:'seoul-station',
-        location:text('오전 10:00 · 서울역','午前10:00・ソウル駅','10:00 AM · Seoul Station','上午10:00 · 首尔站'),
-        title:text('서울에 도착했다!','ソウルに着いた！','Welcome to Seoul!','到首尔了！'),
-        korean:'“어서 와! 광화문에서 만나자. 천천히 와도 돼.”',
-        support:text('친구 유나를 만나러 서울역에서 광화문까지 이동합니다. 한국어 미션을 풀면 다음 장소와 여행 스탬프가 열립니다.','友だちのユナに会うため、ソウル駅から光化門へ向かいます。韓国語ミッションを解くと次の場所と旅スタンプが開きます。','Travel from Seoul Station to Gwanghwamun to meet Yuna. Korean missions unlock the next place and a travel stamp.','从首尔站前往光化门见尤娜。完成韩语任务即可解锁下一地点和旅行印章。')
-      }),
-      Object.freeze({
-        id:'approach',type:'choice',chapter:1,next:'q-topic',stop:'seoul-station',
-        location:text('서울역 · 여행 안내판','ソウル駅・旅の案内板','Seoul Station · Travel board','首尔站 · 旅行指南'),
-        title:text('어떤 여행자가 될까?','どんな旅人になる？','Choose your travel style','选择旅行风格'),
-        korean:'먼저 여행 방법을 정하자.',
-        support:text('칭호만 달라지고 문제와 난이도는 같습니다. 좋아하는 방식으로 부담 없이 출발하세요.','称号だけが変わり、問題と難易度は同じです。好きなスタイルで気軽に出発しましょう。','Only your title changes; questions and difficulty stay the same. Pick the style you like.','只有称号不同，题目与难度相同。选择喜欢的方式出发吧。'),
-        choices:Object.freeze([
-          Object.freeze({id:'listener',icon:'🎧',label:text('소리를 따라가기','音をたどる','Follow the sounds','跟随声音'),detail:text('한국어 안내를 들으며 이동한다.','韓国語の案内を聞きながら進む。','Move by listening to Korean guidance.','边听韩语指引边前进。'),title:text('소리 여행자','音の旅人','Sound Traveler','声音旅人')}),
-          Object.freeze({id:'reader',icon:'🗺️',label:text('지도를 읽기','地図を読む','Read the map','阅读地图'),detail:text('표지와 안내문을 차분히 확인한다.','標識や案内文を落ち着いて確認する。','Check signs and notices carefully.','仔细查看标志和告示。'),title:text('지도 여행자','地図の旅人','Map Traveler','地图旅人')}),
-          Object.freeze({id:'tracker',icon:'📷',label:text('풍경을 기록하기','景色を記録','Capture the sights','记录风景'),detail:text('도시의 작은 장면을 하나씩 모은다.','街の小さな場面を一つずつ集める。','Collect small moments around the city.','收集城市里的小场景。'),title:text('기록 여행자','記録の旅人','Memory Traveler','记录旅人')})
-        ])
-      }),
-      Object.freeze({
-        id:'q-topic',type:'question',chapter:1,next:'q-checklist',bankId:'M01-I-L-11',stop:'seoul-station',
-        location:text('서울역 미션 1 · 음성 메시지','ソウル駅ミッション1・音声メッセージ','Seoul Station Mission 1 · Voice message','首尔站任务1 · 语音消息'),
-        title:text('유나의 오늘 계획','ユナの今日の予定','Yuna’s plan today','尤娜今天的计划'),
-        context:text('유나가 보낸 대화를 듣고 무엇을 하려는지 확인하세요.','ユナから届いた会話を聞き、何をする予定か確かめよう。','Listen to Yuna’s conversation and identify what she plans to do.','听尤娜发来的对话，确认她打算做什么。'),
-        clue:Object.freeze({icon:'📚',label:text('공부 약속','勉強の約束','Study plan','学习计划'),detail:text('유나는 시험 준비를 위해 도서관에 갈 계획입니다. 광화문에서 만나 함께 가기로 했습니다.','ユナは試験準備のため図書館へ行く予定。光化門で会って一緒に行きます。','Yuna plans to study at the library. You will meet at Gwanghwamun and go together.','尤娜打算去图书馆备考，你们约在光化门见面后一起去。')})
-      }),
-      Object.freeze({
-        id:'q-checklist',type:'question',chapter:1,next:'hallway',bankId:'M01-I-R-51',stop:'seoul-station',
-        location:text('서울역 미션 2 · 여행 메모','ソウル駅ミッション2・旅メモ','Seoul Station Mission 2 · Travel note','首尔站任务2 · 旅行便笺'),
-        title:text('출발 전 체크리스트','出発前チェックリスト','Before-you-go checklist','出发前清单'),
-        context:text('안내소에서 받은 여행 메모입니다. 중심 생각을 고르면 서울역 스탬프를 받을 수 있습니다.','案内所でもらった旅メモです。中心内容を選ぶとソウル駅スタンプを獲得できます。','Choose the main idea of this travel note to earn the Seoul Station stamp.','选择旅行便笺的中心思想，获得首尔站印章。'),
-        clue:Object.freeze({icon:'✅',label:text('서울역 스탬프','ソウル駅スタンプ','Seoul Station stamp','首尔站印章'),detail:text('할 일을 적으면 빠뜨리지 않고 순서를 정하기 쉽습니다. 첫 지역을 완료했습니다.','やることを書けば忘れにくく、順番も決めやすくなります。最初のエリア完了です。','Writing a list prevents omissions and makes ordering easier. First area complete.','写下待办事项可以避免遗漏并方便排序。第一个区域完成。')})
-      }),
-      Object.freeze({
-        id:'hallway',type:'narrative',chapter:2,next:'q-entrance',stop:'city-hall',
-        location:text('오전 10:18 · 서울시청','午前10:18・ソウル市庁','10:18 AM · Seoul City Hall','上午10:18 · 首尔市厅'),
-        title:text('시청에 도착했다','市庁に到着','Arriving at City Hall','抵达市厅'),
-        korean:'정문 앞에 공사 안내문이 붙어 있다.',
-        support:text('시청 광장을 지나려면 출입 안내를 정확히 읽어야 합니다. 이제 두 번째 지역이 열렸습니다.','市庁広場を通るには、入口案内を正しく読む必要があります。2つ目のエリアが開きました。','Read the entrance notice correctly to cross City Hall Plaza. The second area is now open.','要穿过市厅广场，需要准确读懂出入口告示。第二个区域已开启。')
-      }),
-      Object.freeze({
-        id:'q-entrance',type:'question',chapter:2,next:'q-bag',bankId:'M01-I-R-39',stop:'city-hall',
-        location:text('시청 미션 3 · 출입 안내','市庁ミッション3・入口案内','City Hall Mission 3 · Entrance notice','市厅任务3 · 出入口告示'),
-        title:text('어느 쪽으로 갈까?','どちらへ進む？','Which way should you go?','应该往哪边走？'),
-        context:text('광장 입구에 붙은 짧은 안내문입니다. 목적을 고르면 올바른 길이 열립니다.','広場入口の短い案内文です。目的を選ぶと正しい道が開きます。','Choose the purpose of the notice to open the correct route.','选择告示的目的，开启正确路线。'),
-        clue:Object.freeze({icon:'➡️',label:text('오른쪽 길 열림','右側ルート開放','Right route opened','右侧路线开启'),detail:text('정문은 공사 중이므로 오른쪽 출입구를 이용해야 합니다.','正面入口は工事中なので、右側の入口を利用します。','The main entrance is under construction, so use the right-side entrance.','正门施工中，需要使用右侧入口。')})
-      }),
-      Object.freeze({
-        id:'q-bag',type:'question',chapter:2,next:'q-desk',bankId:'M01-I-L-01',stop:'city-hall',
-        location:text('시청 미션 4 · 광장 벤치','市庁ミッション4・広場のベンチ','City Hall Mission 4 · Plaza bench','市厅任务4 · 广场长椅'),
-        title:text('이 가방은 누구 거예요?','このかばんは誰のですか？','Whose bag is this?','这个包是谁的？'),
-        context:text('벤치에 놓인 가방의 주인을 묻습니다. 자연스러운 대답을 골라 분실물을 돌려주세요.','ベンチのかばんの持ち主を尋ねます。自然な返事を選び、落とし物を返そう。','Ask who owns the bag. Choose the natural reply and return the lost item.','询问长椅上包的主人。选择自然回答并归还失物。'),
-        clue:Object.freeze({icon:'🏛️',label:text('시청 스탬프','市庁スタンプ','City Hall stamp','市厅印章'),detail:text('“제 동생 거예요”라고 대답해 가방을 주인에게 돌려주었습니다. 두 번째 지역 완료!','「弟／妹のです」と答えて持ち主に返しました。2つ目のエリア完了！','“It belongs to my younger sibling” returns the bag to its owner. Second area complete!','回答“是我弟弟/妹妹的”，把包还给了主人。第二个区域完成！')})
-      }),
-      Object.freeze({
-        id:'q-desk',type:'question',chapter:2,next:'q-sequence',bankId:'M01-I-L-20',stop:'gwanghwamun',
-        location:text('광화문 미션 5 · 안내 방송','光化門ミッション5・案内放送','Gwanghwamun Mission 5 · Announcement','光化门任务5 · 广播'),
-        title:text('분실물 안내를 듣자','落とし物案内を聞こう','Listen to lost-and-found','听失物招领广播'),
-        context:text('광화문 안내소에서 방송이 들립니다. 지갑을 찾으려면 무엇이 필요한지 확인하세요.','光化門の案内所で放送が流れます。財布を受け取るために必要な物を確認しよう。','An announcement plays at the Gwanghwamun desk. Identify what is needed to claim the wallet.','光化门服务台播放广播。确认领取钱包需要什么。'),
-        clue:Object.freeze({icon:'🪪',label:text('신분증이 필요해요','身分証が必要です','Bring your ID','需要身份证'),detail:text('분실물을 찾으려면 신분증을 가지고 1층 안내실로 가야 합니다.','落とし物を受け取るには、身分証を持って1階案内所へ行きます。','Bring ID to the first-floor desk to claim a lost item.','领取失物需要携带身份证前往一楼服务台。')})
-      }),
-      Object.freeze({
-        id:'q-sequence',type:'question',chapter:3,next:'ending',bankId:'M03-I-R-58',stop:'gwanghwamun',
-        location:text('광화문 미션 6 · 마지막 메시지','光化門ミッション6・最後のメッセージ','Gwanghwamun Mission 6 · Final message','光化门任务6 · 最后一条消息'),
-        title:text('메시지를 순서대로','メッセージを順番に','Put the message in order','按顺序排列消息'),
-        context:text('유나가 휴대폰을 찾은 과정을 보냈습니다. 문장을 자연스럽게 배열하면 약속 장소가 열립니다.','ユナがスマホを見つけた流れを送りました。文を自然に並べると待ち合わせ場所が開きます。','Order the sentences about Yuna finding her phone to unlock the meeting place.','排列尤娜找到手机的句子，解锁见面地点。'),
-        clue:Object.freeze({icon:'📱',label:text('광화문에서 만나요','光化門で会いましょう','Meet at Gwanghwamun','光化门见'),detail:text('휴대폰은 가방 안에 있었습니다. 이제 유나와 만날 수 있습니다.','スマホはかばんの中にありました。これでユナに会えます。','The phone was inside the bag. You can finally meet Yuna.','手机就在包里。现在终于可以见到尤娜了。')})
-      }),
-      Object.freeze({
-        id:'ending',type:'ending',chapter:3,stop:'gwanghwamun',
-        location:text('오전 10:42 · 광화문','午前10:42・光化門','10:42 AM · Gwanghwamun','上午10:42 · 光化门'),
-        title:text('서울 첫 여행 완료!','ソウルはじめて旅クリア！','First Seoul journey complete!','首尔初次旅行完成！'),
-        korean:'“찾았다! 여기야. 서울 여행 정말 잘했어!”',
-        support:text('서울역에서 출발해 시청을 지나 광화문에 도착했습니다. 세 지역 스탬프와 무료 아바타 의상 ‘서울 노을’을 받았습니다.','ソウル駅を出発し、市庁を通って光化門に到着。3エリアのスタンプと無料アバター衣装「ソウル夕焼け」を獲得しました。','You traveled from Seoul Station through City Hall to Gwanghwamun. You earned three stamps and the free Seoul Sunset avatar look.','你从首尔站出发，经过市厅抵达光化门。获得三个区域印章和免费“首尔晚霞”头像外观。')
-      })
+      Object.freeze({id:'arrival',type:'narrative',chapter:1,next:'q-hello',stop:'airport-t1',art:'airport',location:t('지금 · 인천공항 제1터미널','現在・仁川空港 第1ターミナル','Now · Incheon Airport Terminal 1','现在 · 仁川机场1号航站楼'),title:t('한국 여행이 시작됐다!','韓国旅行が始まった！','Your Korea trip begins!','韩国旅行开始了！'),korean:'“어서 오세요! 안녕하세요?”',support:t('13,000 여행 원으로 시작합니다. 정답마다 2,000 여행 원을 받습니다. 여행 원은 게임 재화이며 실제 돈이나 결제가 아닙니다.','13,000旅ウォンからスタート。正解ごとに2,000旅ウォンを獲得。旅ウォンはゲーム内通貨で、実際のお金や決済ではありません。','Start with 13,000 travel won and earn 2,000 per correct answer. Travel won is game currency, not real money or payment.','以13,000旅行韩元开始，每答对一题获得2,000。旅行韩元是游戏货币，不是现实货币或支付。')}),
+      Object.freeze({id:'q-hello',type:'question',chapter:1,next:'q-station',stop:'airport-t1',reward:2000,location:t('입국장 미션 1','入国ロビーミッション1','Arrival Hall Mission 1','入境大厅任务1'),title:t('첫 인사','最初のあいさつ','Your first greeting','第一次问候'),context:t('공항 직원이 “안녕하세요?”라고 인사합니다.','空港スタッフが「안녕하세요?」とあいさつします。','An airport worker says “안녕하세요?”','机场工作人员说“안녕하세요?”。'),question:q('TRAVEL-A1','listening','안녕하세요?','안녕하세요?',[c('안녕하세요','こんにちは','Hello','你好'),c('감사합니다','ありがとうございます','Thank you','谢谢'),c('안녕히 가세요','さようなら','Goodbye','再见'),c('죄송합니다','すみません','Sorry','对不起')],0,t('“안녕하세요”는 처음 만날 때 쓰는 공손한 인사입니다.','「안녕하세요」は人に会ったときの丁寧なあいさつです。','“안녕하세요” is a polite greeting.','“안녕하세요”是礼貌的问候。'))}),
+      Object.freeze({id:'q-station',type:'question',chapter:1,next:'q-myeongdong',stop:'airport-t1',reward:2000,location:t('교통센터 미션 2','交通センターミッション2','Transport Center Mission 2','交通中心任务2'),title:t('역을 찾자','駅を探そう','Find the station','寻找车站'),context:t('공항철도 표지를 찾으며 직원에게 묻습니다.','空港鉄道の表示を探しながら尋ねます。','Ask while looking for the airport railroad sign.','寻找机场铁路标志时询问。'),question:q('TRAVEL-A2','listening','지하철역이 어디예요?','지하철역이 어디예요?',[c('지하철역은 어디예요?','地下鉄の駅はどこですか？','Where is the subway station?','地铁站在哪里？'),c('택시는 얼마예요?','タクシーはいくらですか？','How much is the taxi?','出租车多少钱？'),c('몇 분 걸려요?','何分かかりますか？','How many minutes?','需要几分钟？'),c('표 한 장 주세요.','切符を一枚ください。','One ticket, please.','请给我一张票。')],0,t('“어디예요?”는 장소를 물을 때 씁니다.','「어디예요?」は場所を尋ねる表現です。','“어디예요?” asks where a place is.','“어디예요?”用于询问地点。'))}),
+      Object.freeze({id:'q-myeongdong',type:'question',chapter:1,next:'transport',stop:'airport-t1',reward:2000,location:t('매표기 미션 3','券売機ミッション3','Ticket Machine Mission 3','售票机任务3'),title:t('목적지 확인','行き先を確認','Check the destination','确认目的地'),context:t('이 열차가 명동 방향인지 확인합니다.','この列車が明洞方面か確認します。','Check whether this train heads toward Myeongdong.','确认列车是否前往明洞方向。'),question:q('TRAVEL-A3','reading','','명동에 가요?',[c('명동에 가요?','明洞に行きますか？','Does it go to Myeongdong?','去明洞吗？'),c('명동이 어디예요?','明洞はどこですか？','Where is Myeongdong?','明洞在哪里？'),c('명동에서 만나요.','明洞で会いましょう。','Meet in Myeongdong.','在明洞见。'),c('명동에서 왔어요.','明洞から来ました。','I came from Myeongdong.','我从明洞来。')],0,t('“명동에 가요?”는 명동으로 가는지 묻는 말입니다.','「명동에 가요?」は明洞へ行くかを尋ねます。','It asks whether it goes to Myeongdong.','这是在问是否去明洞。'))}),
+      Object.freeze({id:'transport',type:'choice',choiceKind:'transport',chapter:2,stop:'airport-t1',location:t('인천공항 T1 · 교통센터 B1','仁川空港T1・交通センターB1','Incheon Airport T1 · Transport Center B1','仁川机场T1 · 交通中心B1'),title:t('어떻게 명동까지 갈까?','どうやって明洞へ行く？','How will you reach Myeongdong?','怎么去明洞？'),korean:'가격, 시간, 남은 여행 원을 비교하자.',support:t('열차는 서울역에서 4호선으로 갈아탑니다. 금액은 게임에서 차감되는 여행 원이며 현실 운임은 출발 전 공식 안내를 다시 확인하세요.','列車はソウル駅で4号線に乗り換えます。表示額はゲーム内の旅ウォンです。実際の運賃は出発前に公式案内で再確認してください。','Rail options transfer to Line 4 at Seoul Station. Costs use game travel won; recheck official fares before real travel.','铁路方案在首尔站换乘4号线。费用使用游戏旅行韩元，实际出行前请再次确认官方票价。'),choices:Object.freeze([
+        Object.freeze({id:'all-stop',code:'AREX',cost:4750,durationMinutes:66,next:'ride-all-stop',label:t('일반열차 + 4호선','一般列車＋4号線','All-stop + Line 4','普通列车＋4号线'),detail:t('서울역까지 4,750원 · 약 59분 + 환승','ソウル駅まで4,750ウォン・約59分＋乗換','To Seoul Station ₩4,750 · about 59 min + transfer','到首尔站4,750韩元 · 约59分钟＋换乘')}),
+        Object.freeze({id:'express',code:'EXP',cost:18100,durationMinutes:50,next:'ride-express',label:t('직통열차 + 4호선','直通列車＋4号線','Express + Line 4','直达列车＋4号线'),detail:t('서울역까지 18,100원 · 약 43분 + 환승','ソウル駅まで18,100ウォン・約43分＋乗換','To Seoul Station ₩18,100 · about 43 min + transfer','到首尔站18,100韩元 · 约43分钟＋换乘')}),
+        Object.freeze({id:'taxi',code:'TAXI',cost:85000,durationMinutes:70,next:'ride-taxi',label:t('인터내셔널 택시','インターナショナルタクシー','International taxi','国际出租车'),detail:t('중구 구간 85,000원 · T1 4C · 통행료 별도','中区85,000ウォン・T1 4C・通行料別','Jung-gu ₩85,000 · T1 stand 4C · tolls extra','中区85,000韩元 · T1 4C · 另付通行费')})
+      ])}),
+      Object.freeze({id:'ride-all-stop',type:'narrative',chapter:2,next:'q-ticket',stop:'seoul-station',art:'airport',location:t('공항철도 일반열차 · 서울역 방향','空港鉄道一般列車・ソウル駅方面','AREX all-stop · Seoul Station','机场铁路普通列车 · 首尔站方向'),title:t('천천히, 알뜰하게','ゆっくり、お得に','Steady and budget-wise','慢慢走，更省钱'),korean:'“서울역에서 4호선으로 갈아타세요.”',support:t('시간은 더 들지만 다음 지역에서 쓸 여행 원을 많이 남겼습니다.','時間はかかりますが、次の地域で使える旅ウォンを多く残せました。','It takes longer, but leaves more travel won for the next area.','虽然更慢，但为下一区域留下更多旅行韩元。')}),
+      Object.freeze({id:'ride-express',type:'narrative',chapter:2,next:'q-ticket',stop:'seoul-station',art:'airport',location:t('공항철도 직통열차 · 서울역행','空港鉄道直通列車・ソウル駅行き','AREX express · Seoul Station','机场铁路直达列车 · 首尔站'),title:t('정답 보상으로 빠르게','正解報酬でスピーディーに','Spend rewards to go faster','用答题奖励快速出发'),korean:'“이 열차는 서울역까지 직통입니다.”',support:t('공항 미션 보상으로 시간을 샀습니다. 여행 원은 적게 남습니다.','空港ミッションの報酬で時間を買いました。旅ウォンは少なく残ります。','Airport rewards bought time, leaving less travel won.','用机场任务奖励换取时间，剩余旅行韩元较少。')}),
+      Object.freeze({id:'ride-taxi',type:'narrative',chapter:2,next:'q-ticket',stop:'seoul-station',art:'airport',location:t('인천공항 T1 4C · 택시','仁川空港T1 4C・タクシー','Incheon Airport T1 4C · Taxi','仁川机场T1 4C · 出租车'),title:t('짐이 많을 때','荷物が多いとき','When luggage is heavy','行李多时'),korean:'“명동까지 가 주세요.”',support:t('환승 없이 이동하지만 도로 상황에 따라 도착 시간이 달라집니다.','乗換なしですが、道路状況で到着時刻が変わります。','No transfer, but arrival time varies with traffic.','无需换乘，但到达时间随路况变化。')}),
+      Object.freeze({id:'q-ticket',type:'question',chapter:2,next:'q-transfer',stop:'seoul-station',reward:2000,location:t('서울역 미션 4','ソウル駅ミッション4','Seoul Station Mission 4','首尔站任务4'),title:t('표 한 장','切符を一枚','One ticket','一张票'),context:t('4호선 표를 부탁합니다.','4号線の切符をお願いします。','Ask for a Line 4 ticket.','购买4号线车票。'),question:q('TRAVEL-A4','listening','한 장 주세요.','한 장 주세요.',[c('한 장 주세요.','一枚ください。','One, please.','请给我一张。'),c('두 명이에요.','二人です。','There are two people.','有两个人。'),c('여기에서 내려요.','ここで降ります。','I get off here.','我在这里下车。'),c('얼마예요?','いくらですか？','How much is it?','多少钱？')],0,t('“한 장 주세요”는 표 한 장을 부탁하는 말입니다.','「한 장 주세요」は切符を一枚頼む表現です。','It asks for one ticket.','表示要一张票。'))}),
+      Object.freeze({id:'q-transfer',type:'question',chapter:3,next:'q-thanks',stop:'seoul-station',reward:2000,location:t('서울역 미션 5 · 4호선','ソウル駅ミッション5・4号線','Seoul Station Mission 5 · Line 4','首尔站任务5 · 4号线'),title:t('갈아타세요','乗り換えてください','Make the transfer','请换乘'),context:t('명동역은 서울역에서 4호선으로 두 정거장입니다.','明洞駅はソウル駅から4号線で2駅です。','Myeongdong is two Line 4 stops from Seoul Station.','明洞距离首尔站乘4号线两站。'),question:q('TRAVEL-A5','reading','','여기에서 갈아타세요.',[c('여기에서 갈아타세요.','ここで乗り換えてください。','Transfer here.','请在这里换乘。'),c('여기에서 기다리세요.','ここで待ってください。','Wait here.','请在这里等。'),c('여기에서 사진을 찍으세요.','ここで写真を撮ってください。','Take a photo here.','请在这里拍照。'),c('여기에서 표를 사세요.','ここで切符を買ってください。','Buy a ticket here.','请在这里买票。')],0,t('“갈아타다”는 다른 열차나 버스로 바꾸어 타는 것입니다.','「갈아타다」は別の電車やバスに乗り換えることです。','“갈아타다” means to transfer.','“갈아타다”表示换乘。'))}),
+      Object.freeze({id:'q-thanks',type:'question',chapter:3,next:'ending',stop:'myeongdong',reward:2000,location:t('명동역 미션 6','明洞駅ミッション6','Myeongdong Mission 6','明洞任务6'),title:t('도착 인사','到着のひと言','Arrival thanks','到达致谢'),context:t('길을 알려 준 직원에게 인사합니다.','道を教えてくれたスタッフにあいさつします。','Thank the worker who helped.','向帮助你的工作人员道谢。'),question:q('TRAVEL-A6','listening','감사합니다.','감사합니다.',[c('감사합니다.','ありがとうございます。','Thank you.','谢谢。'),c('안녕하세요.','こんにちは。','Hello.','你好。'),c('괜찮아요.','大丈夫です。','It is okay.','没关系。'),c('미안합니다.','ごめんなさい。','I am sorry.','对不起。')],0,t('“감사합니다”는 정중하게 고마움을 전하는 말입니다.','「감사합니다」は丁寧に感謝を伝える言葉です。','It is a polite thank-you.','这是礼貌的感谢语。'))}),
+      Object.freeze({id:'ending',type:'ending',chapter:3,stop:'myeongdong',art:'myeongdong',location:t('도착 · 명동역','到着・明洞駅','Arrived · Myeongdong','到达 · 明洞站'),title:t('명동에 도착했다!','明洞に到着！','You reached Myeongdong!','抵达明洞！'),korean:'“명동에 도착했어요. 감사합니다!”',support:t('첫 여행 스탬프와 무료 ‘명동 노을’ 의상을 얻었습니다. 남은 여행 원과 선택한 이동 수단은 다음 지역에도 이어집니다.','最初の旅スタンプと無料衣装「明洞夕焼け」を獲得。残った旅ウォンと移動手段は次の地域にも引き継がれます。','You earned a stamp and the free Myeongdong Sunset outfit. Your remaining travel won and route choice carry forward.','获得旅行印章和免费“明洞晚霞”服装。剩余旅行韩元和路线选择会延续。')})
     ]),
     endings:Object.freeze({
-      perfect:Object.freeze({icon:'🏆',title:text('완벽한 서울 여행자','完璧なソウル旅人','Perfect Seoul Traveler','完美首尔旅人'),detail:text('6개 미션을 모두 맞혀 ‘한복의 밤’ 아바타도 열었습니다.','6問すべて正解し、「韓服の夜」アバターも開放しました。','All six missions were correct, unlocking the Hanbok Night avatar too.','六个任务全部答对，同时解锁“韩服之夜”头像。')}),
-      clear:Object.freeze({icon:'🗺️',title:text('서울 코스 완주','ソウルコース完走','Seoul route complete','首尔路线完成'),detail:text('세 지역을 모두 여행하고 ‘서울 노을’ 아바타를 열었습니다.','3エリアを巡り、「ソウル夕焼け」アバターを開放しました。','You visited all three areas and unlocked the Seoul Sunset avatar.','你游览了三个区域并解锁“首尔晚霞”头像。')}),
-      close:Object.freeze({icon:'✨',title:text('첫 여행 성공','はじめて旅成功','First journey cleared','初次旅行成功'),detail:text('도착은 성공했습니다. 놓친 표현은 오답 복습에서 다시 만나세요.','到着成功です。間違えた表現は復習でもう一度確認しましょう。','You made it. Revisit missed expressions in Review.','成功抵达。可在错题复习中重温遗漏表达。')})
+      perfect:Object.freeze({icon:'PERFECT',title:t('완벽한 첫 입국','完璧な初入国','Perfect first arrival','完美初次入境'),detail:t('6문제를 모두 맞혀 5,000 여행 원 보너스와 ‘서울의 밤’ 의상을 열었습니다.','6問すべて正解し、5,000旅ウォンと「ソウルの夜」衣装を解放。','Six correct answers unlock 5,000 travel won and the Seoul Night outfit.','6题全对，解锁5,000旅行韩元和“首尔之夜”服装。')}),
+      clear:Object.freeze({icon:'CLEAR',title:t('명동 코스 완주','明洞コース完走','Myeongdong route complete','完成明洞路线'),detail:t('공항에서 이동 수단을 정하고 명동까지 도착했습니다.','空港で移動手段を決め、明洞まで到着しました。','You chose a route and reached Myeongdong.','你选择路线并抵达明洞。')}),
+      close:Object.freeze({icon:'ARRIVE',title:t('첫 여행 성공','はじめて旅成功','First journey cleared','首次旅行成功'),detail:t('도착했습니다. 놓친 표현은 오답 복습에서 확인하세요.','到着成功。間違えた表現は復習で確認しよう。','You arrived. Review missed phrases later.','成功抵达，请复习错题。')})
     })
   });
-
-  window.MALBIT_TRAVEL_PACKS=Object.freeze([episode]);
+  window.MALBIT_TRAVEL_PACKS=Object.freeze([pack]);
 })();

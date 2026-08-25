@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v47
-- Current candidate: v48 · Seoul Travel Mode + durable record recovery
+- Production release: v48
+- Current candidate: v49 · Incheon Airport T1 → Myeongdong travel adventure
 - Core content: 2,088 original items
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
@@ -17,8 +17,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 - TOPIK I·II, Shorts, Random Practice, full mock exams, Review, Vocabulary, Statistics
 - independent Seoul Travel Mode and Wordlight Expedition
-- Seoul Station → City Hall → Gwanghwamun route with six missions, three stamps, and three
-  learning-earned avatar looks
+- Incheon Airport T1 → Seoul Station → Myeongdong route with six beginner missions,
+  travel-won rewards, three factual transport choices, a persistent clock, and free avatar looks
 - durable recovery snapshot for vocabulary, game, review, beginner, travel, and settings records
 - editable vocabulary details with safe AI integration boundary
 - one detailed global TTS setting with device fallback and optional local neural pack
@@ -27,7 +27,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 우선순위
 
-1. 일본어 완전 초보자가 서울역 첫 미션을 10분 안에 완료하는 흐름을 실제 모바일에서
+1. 일본어 완전 초보자가 인천공항 첫 미션을 10분 안에 완료하는 흐름을 실제 모바일에서
    반복 점검하고 가장 큰 이탈 원인을 하나씩 제거한다.
 2. 첫 여행 코스의 정답·해설·일본어 번역을 문맥 단위로 표본 검수한다.
 3. 첫 코스 완료율·무료 의상 장착률·다음 날 재방문을 개인정보 없이 로컬 계측한다.
@@ -44,13 +44,19 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 결제 버튼·가격·상품 카드·유료 잠금·Premium·Plus·구독·업셀·외부 결제 링크를 앱 어디에도
   만들지 않는다. 별도 수익화 논의와 사용자의 명시적 승인 뒤에만 재검토한다.
 
-## v48 후보 검증
+## v49 후보 검증
 
-- 전체 자동검사 44/44 통과, 2,088개 원본 문제와 runtime v48 무결성 통과
-- 390×844 모바일 브라우저에서 여행 홈 → 서울역 도착 → 6개 미션 → 경로 완료를 직접 조작
-- 경로 완료 뒤 무료 아바타 3종 해금과 새로고침 뒤 여행 진행 복원을 확인
-- 기존 단어장 표본과 게임 진행을 넣은 뒤 새로고침해 그대로 남는 것을 확인
-- 결제 UI, 페이지 오류, 런타임 오류 없음
+- 전체 자동검사 44/44 통과, 2,088개 원본 문제와 runtime v49 무결성 통과
+- 인천공항·공항철도·서울시 공식 자료로 일반열차 4,750원/약 59분, 직통열차
+  18,100원/약 43분, 중구 인터내셔널 택시 85,000원 및 T1 4C 승차 위치를 교차 검증
+- 게임 재화임을 명시하고 실제 결제 UI는 추가하지 않음
+- 13,000원 시작 + 정답당 2,000원 + 올클리어 5,000원 구조로 일반열차는 항상 가능,
+  공항 3문제 전부 정답이면 직통열차 가능, 택시는 장기 목표로 유지
+- GitHub CI의 실제 Chrome 390×844 일본어 화면에서 공항 시작 → 교통수단 선택 → 명동 도착을
+  끝까지 조작했다. 일본어 글꼴·3개 교통 카드·잠금 상태·잔액 11,900원·6/6 완료·여행 도장이
+  정상이며 콘솔/런타임 오류는 0건이다.
+- 배포 주소: https://okometsbu-beep.github.io/topik-quest/
+- 되돌리기 기준: v48 main `e162e46ceb15af5c788580f6cd3a9f486d7ccc1b`
 
 ## 초기 두 바퀴 사전 검증
 
@@ -64,8 +70,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-서울역 첫 미션의 일본어 초보 흐름을 실제 모바일에서 점검하고, 가장 큰 이탈 원인 하나를
-재현 가능한 테스트와 함께 수정한다.
+명동 도착 뒤 남은 여행 원으로 처음 살 수 있는 작은 수집품·경험 하나를 만들고, 시간대에
+따라 선택지가 달라지도록 데이터 기반 이벤트 규칙을 첫 확장한다.
 
 ## 알려진 위험
 
