@@ -122,7 +122,7 @@
   function worldMarkup(pack,state,scene,answer){
     const world=scene.world;if(!world)return'';
     const store=readStore(),skin=skinById(pack,store.avatar.equipped),background=assetPath(pack,'backgrounds',world.background),npc=assetPath(pack,'npcs',world.npc);
-    const props=(world.props||[]).map((key,index)=>propImage(pack,key,`travelWorldProp prop-${String(key).replace(/[^a-z0-9-]/gi,'')} prop-${index}`)).join('');
+    const props=(world.props||[]).map((key,index)=>propImage(pack,key,`travelWorldProp prop-${String(key).replace(/[^a-z0-9-]/gi,'').toLowerCase()} prop-${index}`)).join('');
     const reaction=answer?l(answer.correct?scene.success:scene.recovery):'';
     const reward=answer?.correct&&answer.earned?`<div class="travelWorldReward">${propImage(pack,'travelWon','')}<b>+${h(won(answer.earned))}</b></div>`:'';
     const item=answer?.correct&&answer.itemReward?`<div class="travelWorldItem">${propImage(pack,answer.itemReward,'')}<small>${h(l({ko:'수집품 획득',ja:'コレクション獲得',en:'COLLECTED',zh:'获得收藏品'}))}</small></div>`:'';
