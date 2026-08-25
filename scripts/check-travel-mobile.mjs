@@ -11,10 +11,10 @@ fs.mkdirSync(out,{recursive:true});
 const chromePath=process.env.CHROME_PATH||'/usr/bin/google-chrome';
 assert.ok(fs.existsSync(chromePath),`Chrome not found at ${chromePath}`);
 const server=spawn(process.execPath,['scripts/serve.mjs'],{cwd:root,stdio:'ignore'});
-const chrome=spawn(chromePath,['--headless=new','--no-sandbox','--disable-gpu','--hide-scrollbars','--remote-debugging-port=9222','--user-data-dir=/tmp/malbit-chrome-profile','about:blank'],{stdio:'ignore'});
+const chrome=spawn(chromePath,['--headless','--no-sandbox','--disable-gpu','--disable-dev-shm-usage','--hide-scrollbars','--remote-debugging-address=127.0.0.1','--remote-debugging-port=9222',`--user-data-dir=/tmp/malbit-chrome-profile-${process.pid}`,'about:blank'],{stdio:['ignore','ignore','inherit']});
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const json=async(url,options)=>{const response=await fetch(url,options);assert.ok(response.ok,`${url}: ${response.status}`);return response.json()};
-async function waitFor(url){for(let i=0;i<50;i++){try{return await json(url)}catch(error){await sleep(100)}}throw new Error(`Timed out: ${url}`)}
+async function waitFor(url){for(let i=0;i<150;i++){try{return await json(url)}catch(error){await sleep(100)}}throw new Error(`Timed out: ${url}`)}
 
 let socket;
 try{
