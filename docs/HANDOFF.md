@@ -44,6 +44,9 @@ these facts from conversation history or the large TOPIK source bundle.
   `docs/DESIGN.md`, current state in `docs/STATUS.md`, and phone input in `[AI 지시]` GitHub Issues.
 - Each autonomous pass handles one bounded task and at most one PR. Passing changes may deploy to
   GitHub Pages; App Store and Google Play publishing stay disabled until signed release lanes exist.
+- Payment UX is quarantined. Until a separate monetization discussion and explicit user approval,
+  do not add prices, purchase/subscription buttons, paid locks, Premium/Plus labels, upsells, external
+  payment links, or placeholder stores anywhere in the app.
 - Ignore `TOPIK_public_sources_bundle*.zip` unless the requested change actually concerns question
   content, provenance, or rebuilding the bank.
 
