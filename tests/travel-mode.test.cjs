@@ -48,6 +48,16 @@ test('the first travel route is a complete, reachable six-question journey', () 
   assert.deepEqual(Array.from(transport.choices, choice=>choice.cost),[4750,18100,85000]);
   assert.equal(pack.startWallet+pack.questionReward*3,transport.choices[2].cost,'three successful airport missions should unlock the taxi branch exactly');
   for(const choice of transport.choices)assert.ok(pack.scenes.some(scene=>scene.id===choice.next),`${choice.id} branch must be reachable`);
+  const taxiRide=pack.scenes.find(scene=>scene.id==='ride-taxi');
+  const ticket=pack.scenes.find(scene=>scene.id==='q-ticket');
+  const transfer=pack.scenes.find(scene=>scene.id==='q-transfer');
+  const thanks=pack.scenes.find(scene=>scene.id==='q-thanks');
+  assert.equal(taxiRide.stop,'airport-t1','taxi must not pretend to arrive at Seoul Station');
+  assert.equal(ticket.routeVariants.taxi.stop,'airport-t1');
+  assert.equal(ticket.routeVariants.taxi.question.bankId,'TRAVEL-A4-TAXI');
+  assert.equal(transfer.routeVariants.taxi.stop,'myeongdong');
+  assert.equal(transfer.routeVariants.taxi.question.bankId,'TRAVEL-A5-TAXI');
+  assert.equal(thanks.routeVariants.taxi.title.ja,'運転手にお礼を伝えよう');
   assert.equal(pack.scenes.at(-1).type, 'ending');
 });
 
@@ -63,11 +73,14 @@ test('travel graphics use generated background, avatar, NPC, prop, and UI layers
     }
   }
   for(const scene of pack.scenes){
-    assert.ok(scene.world,`${scene.id} needs a composited world`);
-    assert.ok(pack.assets.backgrounds[scene.world.background],`${scene.id} background is not registered`);
-    if(scene.world.npc)assert.ok(pack.assets.npcs[scene.world.npc],`${scene.id} NPC is not registered`);
-    for(const prop of scene.world.props||[])assert.ok(pack.assets.props[prop],`${scene.id}.${prop} is not registered`);
-    for(const prop of scene.choiceAssets||[])assert.ok(pack.assets.props[prop],`${scene.id}.${prop} choice art is not registered`);
+    for(const [variantId,visual] of [['base',scene],...Object.entries(scene.routeVariants||{})]){
+      const world=visual.world||scene.world,choiceAssets=visual.choiceAssets===null?[]:(visual.choiceAssets||scene.choiceAssets||[]);
+      assert.ok(world,`${scene.id}.${variantId} needs a composited world`);
+      assert.ok(pack.assets.backgrounds[world.background],`${scene.id}.${variantId} background is not registered`);
+      if(world.npc)assert.ok(pack.assets.npcs[world.npc],`${scene.id}.${variantId} NPC is not registered`);
+      for(const prop of world.props||[])assert.ok(pack.assets.props[prop],`${scene.id}.${variantId}.${prop} is not registered`);
+      for(const prop of choiceAssets)assert.ok(pack.assets.props[prop],`${scene.id}.${variantId}.${prop} choice art is not registered`);
+    }
   }
   assert.deepEqual(Array.from(pack.scenes.filter(scene=>scene.type==='question').slice(0,3),scene=>scene.interaction),['dialogue','hotspot','machine']);
 });
@@ -75,17 +88,19 @@ test('travel graphics use generated background, avatar, NPC, prop, and UI layers
 test('travel questions are complete original beginner items with one verified answer', () => {
   const pack = packs[0];
   for (const scene of pack.scenes.filter(item => item.type === 'question')) {
-    const question = scene.question;
-    assert.ok(question, `${scene.id} must provide a beginner question`);
-    assert.equal(question.level, pack.level, `${scene.bankId} should match the episode level`);
-    assert.notEqual(question.section, 'writing');
-    assert.equal(question.choices.length, 4);
-    assert.ok(Number.isInteger(question.answerIndex)&&question.answerIndex>=0&&question.answerIndex<4);
-    for(const choice of question.choices)assertI18n(choice,`${scene.id}.choice`);
-    assertI18n(question.explanationI18n,`${scene.id}.explanation`);
-    assertI18n(scene.instruction,`${scene.id}.instruction`);
-    assertI18n(scene.success,`${scene.id}.success`);
-    assertI18n(scene.recovery,`${scene.id}.recovery`);
+    for(const [variantId,content] of [['base',scene],...Object.entries(scene.routeVariants||{})]){
+      const question=content.question||scene.question;
+      assert.ok(question,`${scene.id}.${variantId} must provide a beginner question`);
+      assert.equal(question.level,pack.level,`${question.bankId} should match the episode level`);
+      assert.notEqual(question.section,'writing');
+      assert.equal(question.choices.length,4);
+      assert.ok(Number.isInteger(question.answerIndex)&&question.answerIndex>=0&&question.answerIndex<4);
+      for(const choice of question.choices)assertI18n(choice,`${scene.id}.${variantId}.choice`);
+      assertI18n(question.explanationI18n,`${scene.id}.${variantId}.explanation`);
+      assertI18n(content.instruction||scene.instruction,`${scene.id}.${variantId}.instruction`);
+      assertI18n(content.success||scene.success,`${scene.id}.${variantId}.success`);
+      assertI18n(content.recovery||scene.recovery,`${scene.id}.${variantId}.recovery`);
+    }
   }
 });
 
@@ -105,6 +120,9 @@ test('travel UI copy is complete in Korean, Japanese, English, and Chinese', () 
     if (scene.clue) {
       assertI18n(scene.clue.label, `${scene.id}.clue.label`);
       assertI18n(scene.clue.detail, `${scene.id}.clue.detail`);
+    }
+    for(const [variantId,variant] of Object.entries(scene.routeVariants||{})){
+      for(const field of ['location','title','context','instruction','success','recovery'])if(variant[field])assertI18n(variant[field],`${scene.id}.${variantId}.${field}`);
     }
   }
   for (const [key, ending] of Object.entries(pack.endings)) {
@@ -130,6 +148,9 @@ test('Travel Mode is independent from Full Mock and wired into the ordered runti
   assert.match(runtime, /const STORAGE_KEY='malbitStoryV1'/);
   assert.match(runtime, /MALBIT_REVIEW\?\.record/);
   assert.match(runtime, /function cleanScript/);
+  assert.match(runtime, /function resetViewport/);
+  assert.match(runtime, /function resetTransient/);
+  assert.match(runtime, /travelAnswers \$\{h\(interaction\)\} \$\{answer\?'answered'/);
   assert.match(runtime, /replace\(\/\(\^\|\\n\)\[\^:\\n\]/);
   assert.match(runtime, /S\.view==='travel'\|\|S\.view==='travelPlay'/);
   assert.match(runtime, /S\.view==='story'\|\|S\.view==='storyPlay'/);

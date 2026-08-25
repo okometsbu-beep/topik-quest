@@ -5,7 +5,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v50 · layered Incheon Airport T1 → Myeongdong travel adventure
+- Production release: v51 · mobile-QA Incheon Airport T1 → Myeongdong travel adventure
 - Current candidate: none
 - Core content: 2,088 original items
 - Primary user: Japanese-speaking complete Korean beginner
@@ -48,23 +48,22 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 결제 버튼·가격·상품 카드·유료 잠금·Premium·Plus·구독·업셀·외부 결제 링크를 앱 어디에도
   만들지 않는다. 별도 수익화 논의와 사용자의 명시적 승인 뒤에만 재검토한다.
 
-## v50 검증
+## v51 검증
 
-- 전체 자동검사 45/45 통과, 2,088개 원본 문제와 runtime v50 무결성 통과
-- 생성형 도트 에셋 21개를 배경 4·플레이어 스킨 3·NPC 2·소품/보상 6·UI 타일 6으로
-  등록하고 모든 장면의 레이어 참조와 실제 파일을 자동검사
-- 시작 79,000원 + 공항 정답당 2,000원으로 첫 3개를 모두 성공하면 실제 운임 85,000원의
-  택시 분기가 정확히 열리고, 일반열차·직통열차와 남는 재화/시간을 선택하게 균형 조정
-- GitHub CI의 Chrome 390×844 일본어 화면에서 실제 버튼을 눌러 공항 시작 → NPC 대화 →
-  표지 터치 → 발권기 → 3개 교통 분기 → 명동 도착을 완주하고 6개 화면을 확인했다.
-  배경·플레이어·NPC·두 표지의 분리, 수집품·여행 원 반응, 일본어 글꼴, 6/6 완료와
-  콘솔/런타임 오류 0건을 확인
-- `malbitStoryV1` 키와 이전 episode를 유지하고, 재시작 뒤에도 공항 지도·교통카드·도장과
-  최고 기록이 남는 저장 회귀 검사 통과
+- 전체 자동검사 45/45, 2,088개 원본 문제, runtime v51 무결성 통과
+- GitHub CI의 Chrome 375×667·390×844 일본어 화면에서 실제 버튼 입력으로 오답 회복과
+  일반열차·직통열차·택시 세 경로를 각각 완주했다. 재접속과 뒤로가기·이어하기,
+  터치 영역·가로 넘침·스크롤 초기화·TTS 중지·콘솔 오류 0건을 확인했다.
+- 기차는 서울역에서 교통카드로 환승하고, 택시는 서울역을 거치지 않고 기사에게 명동
+  목적지와 하차 위치를 말하도록 실제 동선을 분리했다.
+- 정답 뒤 불필요한 선택지를 접고 해설 자동 펼침을 없앴으며, 답안 문장이 번호 배지 CSS를
+  물려받아 뭉개지던 결함과 여행 원 단위 중복을 모바일 스크린샷으로 찾아 수정했다.
+- `malbitStoryV1`과 기존 단어장·게임·복습 저장 루트를 플레이 전후 비교해 모두 보존됨을
+  확인했다.
 - 결제 버튼·가격·유료 잠금·API 키를 추가하지 않음
-- 변경 PR: https://github.com/okometsbu-beep/topik-quest/pull/47
+- 변경 PR: https://github.com/okometsbu-beep/topik-quest/pull/48
 - 배포 주소: https://okometsbu-beep.github.io/topik-quest/
-- 되돌리기 기준: v49 main `3e0ed21b6be563ab839c74754545cfd88856c204`
+- 되돌리기 기준: v50 main `83e7504197c903c8d1b14a1e3eb02401ff70300f`
 
 ## 초기 두 바퀴 사전 검증
 
