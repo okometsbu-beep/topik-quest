@@ -1,0 +1,41 @@
+name: MALBIT AI 작업 지시
+description: 휴대폰에서 다음 자율 개발 작업과 우선순위를 입력합니다.
+title: "[AI 지시] "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        공개 저장소입니다. 비밀번호, API 키, 개인정보는 적지 마세요.
+  - type: textarea
+    id: outcome
+    attributes:
+      label: 원하는 결과
+      description: 사용자가 무엇을 볼 수 있거나 할 수 있어야 하나요?
+      placeholder: 예) 완전 초보자가 일본어 안내만 보고 Story 첫 단계를 완료한다.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 직접 본 문제와 이유
+      description: 현재 무엇이 불편하고 왜 우선해야 하나요?
+    validations:
+      required: true
+  - type: textarea
+    id: done
+    attributes:
+      label: 완료 기준
+      description: 어떤 화면과 조작을 확인하면 끝인가요?
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 우선순위
+      options:
+        - 긴급 — 다음 바퀴에서 최우선
+        - 높음 — 기존 다음 작업보다 우선
+        - 보통 — 순서대로 처리
+    validations:
+      required: true
