@@ -49,8 +49,12 @@ try{
   const tap=async(selector,index=0,delay=170)=>{
     const found=await evaluate(`(()=>{const el=document.querySelectorAll(${JSON.stringify(selector)})[${index}];if(!el||el.disabled)return false;el.scrollIntoView({block:'center',inline:'center',behavior:'auto'});return true})()`);
     assert.ok(found,`tap target missing or disabled: ${selector}[${index}]`);
-    await sleep(50);
-    const point=await evaluate(`(()=>{const el=document.querySelectorAll(${JSON.stringify(selector)})[${index}],r=el.getBoundingClientRect(),s=getComputedStyle(el);return{visible:s.display!=='none'&&s.visibility!=='hidden'&&r.width>0&&r.height>0,x:r.left+r.width/2,y:r.top+r.height/2,width:r.width,height:r.height,top:r.top,bottom:r.bottom}})()`);
+    let point;
+    for(let attempt=0;attempt<40;attempt++){
+      point=await evaluate(`(()=>{const el=document.querySelectorAll(${JSON.stringify(selector)})[${index}];if(!el)return{visible:false};el.scrollIntoView({block:'center',inline:'center',behavior:'auto'});const r=el.getBoundingClientRect(),s=getComputedStyle(el);return{visible:s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)!==0&&r.width>0&&r.height>0,x:r.left+r.width/2,y:r.top+r.height/2,width:r.width,height:r.height,top:r.top,bottom:r.bottom}})()`);
+      if(point.visible)break;
+      await sleep(50);
+    }
     assert.ok(point.visible,`tap target hidden: ${selector}[${index}]`);
     const viewport=await evaluate(`({width:innerWidth,height:innerHeight})`);
     assert.ok(point.x>=0&&point.x<=viewport.width&&point.y>=0&&point.y<=viewport.height,`tap target outside viewport: ${selector}[${index}]`);
