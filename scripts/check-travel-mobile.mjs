@@ -200,7 +200,7 @@ try{
   await tap('.travelWordBank button',1);
   await tap('.travelWordBank button',1);
   await tap('.travelWordBank button',0);
-  assert.equal(await evaluate(`document.querySelector('.travelSentence')?.textContent.replace(/\s+/g,' ').trim()`),'명동 관광안내소가 어디예요?');
+  assert.deepEqual(await evaluate(`[...document.querySelectorAll('.travelSentence button')].map(button=>button.textContent.trim())`),['명동','관광안내소가','어디예요?']);
   await tap('.travelOrderActions .travelPrimary');
   assert.match(await evaluate(`document.querySelector('.travelQuestionNo span')?.textContent`),/NPC QUEST CLEAR/);
   const hubQuest=await state();assert.equal(hubQuest.myeongdong.quests['guide-directions'].completed,true);assert.ok(hubQuest.inventory.includes('hangulStampPostcard'));
