@@ -58,4 +58,22 @@ the runtime map, fast/content/release lanes, cache rules, and browser regression
 Release versions are synchronized across the page bootstrap and service worker with
 `npm run version:bump`; do not edit those values independently.
 
+## Autonomous development
+
+MALBIT can run a fresh GitHub-connected development pass at 00:00, 06:00, 12:00, and 18:00
+(Asia/Seoul) without WSL or an always-on PC. Each pass follows [`loop/PROMPT.md`](loop/PROMPT.md),
+does one bounded task, opens at most one PR, waits for CI, deploys passing changes to GitHub Pages,
+and rolls back a failed live release.
+
+- Add work from a phone with the **MALBIT AI 작업 지시** GitHub Issue template.
+- Put `[긴급]` after `[AI 지시]` when it must run first.
+- Open `[AI 제어] PAUSE` to make scheduled passes no-op; close it to resume work.
+- Disable the task in ChatGPT Scheduled for a complete stop.
+- Read [`loop/CONFIG.md`](loop/CONFIG.md) for controls and deployment boundaries.
+- Read [`docs/STATUS.md`](docs/STATUS.md) for the current result and the next single task.
+
+Issues in this public repository are public. Never paste credentials or private information into
+the control surface. GitHub Pages is the only automatic production target until signed store release
+lanes and rollback procedures exist.
+
 Migration trigger: parser fix 2026-08-09.
