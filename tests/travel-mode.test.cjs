@@ -34,33 +34,33 @@ function assertI18n(value, label) {
 test('the first travel route is a complete, reachable six-question journey', () => {
   assert.equal(packs.length, 1);
   const pack = packs[0];
-  assert.equal(pack.id, 'case-001-missing-ticket');
+  assert.equal(pack.id, 'route-001-airport-myeongdong');
   assert.equal(pack.questionCount, 6);
   assert.equal(pack.scenes.filter(scene => scene.type === 'question').length, 6);
-  assert.deepEqual(Array.from(pack.map.stops, stop => stop.id), ['seoul-station', 'city-hall', 'gwanghwamun']);
-  assert.deepEqual(Array.from(pack.map.stops, stop => stop.unlockAt), [0, 2, 4]);
+  assert.deepEqual(Array.from(pack.map.stops, stop => stop.id), ['airport-t1', 'seoul-station', 'myeongdong']);
+  assert.deepEqual(Array.from(pack.map.stops, stop => stop.unlockAt), [0, 3, 6]);
   assert.deepEqual(Array.from(pack.skins, skin => skin.unlock), ['default', 'clear', 'perfect']);
 
   const ids = pack.scenes.map(scene => scene.id);
   assert.equal(new Set(ids).size, ids.length, 'scene IDs must be unique');
-  const reached = new Set();
-  let scene = pack.scenes[0];
-  while (scene && !reached.has(scene.id)) {
-    reached.add(scene.id);
-    scene = scene.next ? pack.scenes.find(candidate => candidate.id === scene.next) : null;
-  }
-  assert.equal(reached.size, pack.scenes.length, 'the complete episode must be reachable from its first scene');
+  const transport=pack.scenes.find(scene=>scene.id==='transport');
+  assert.deepEqual(Array.from(transport.choices, choice=>choice.id),['all-stop','express','taxi']);
+  assert.deepEqual(Array.from(transport.choices, choice=>choice.cost),[4750,18100,85000]);
+  for(const choice of transport.choices)assert.ok(pack.scenes.some(scene=>scene.id===choice.next),`${choice.id} branch must be reachable`);
   assert.equal(pack.scenes.at(-1).type, 'ending');
 });
 
-test('travel questions reuse valid original TOPIK I bank items', () => {
+test('travel questions are complete original beginner items with one verified answer', () => {
   const pack = packs[0];
   for (const scene of pack.scenes.filter(item => item.type === 'question')) {
-    const question = bank.byId(scene.bankId);
-    assert.ok(question, `${scene.id} references missing bank item ${scene.bankId}`);
+    const question = scene.question;
+    assert.ok(question, `${scene.id} must provide a beginner question`);
     assert.equal(question.level, pack.level, `${scene.bankId} should match the episode level`);
     assert.notEqual(question.section, 'writing');
-    assert.equal(question.options.length, 4);
+    assert.equal(question.choices.length, 4);
+    assert.ok(Number.isInteger(question.answerIndex)&&question.answerIndex>=0&&question.answerIndex<4);
+    for(const choice of question.choices)assertI18n(choice,`${scene.id}.choice`);
+    assertI18n(question.explanationI18n,`${scene.id}.explanation`);
   }
 });
 
@@ -75,7 +75,7 @@ test('travel UI copy is complete in Korean, Japanese, English, and Chinese', () 
     for (const choice of scene.choices || []) {
       assertI18n(choice.label, `${scene.id}.${choice.id}.label`);
       assertI18n(choice.detail, `${scene.id}.${choice.id}.detail`);
-      assertI18n(choice.title, `${scene.id}.${choice.id}.title`);
+      if(choice.title)assertI18n(choice.title, `${scene.id}.${choice.id}.title`);
     }
     if (scene.clue) {
       assertI18n(scene.clue.label, `${scene.id}.clue.label`);
@@ -159,15 +159,12 @@ test('the travel runtime can complete, resume, replay, and record a wrong answer
   assert.match(screen.innerHTML, /여행모드/);
   assert.match(screen.innerHTML, /서울역/);
   assert.match(screen.innerHTML, /내 여행자/);
-  runtime.malbitTravelStart('case-001-missing-ticket', false);
-  assert.match(screen.innerHTML, /서울에 도착했다/);
+  runtime.malbitTravelStart('route-001-airport-myeongdong', false);
+  assert.match(screen.innerHTML, /한국 여행이 시작됐다/);
   runtime.malbitTravelNext();
-  assert.match(screen.innerHTML, /어떤 여행자가 될까/);
-  runtime.malbitTravelChoose('reader');
   assert.match(screen.innerHTML, /MISSION 1 \/ 6/);
   runtime.malbitTravelToggleTranscript();
-  assert.match(screen.innerHTML, /시험이 다음 주죠/);
-  assert.doesNotMatch(screen.innerHTML, /지훈\(한빛센터\):/);
+  assert.match(screen.innerHTML, /안녕하세요/);
 
   const pack = runtime.MALBIT_TRAVEL_PACKS[0];
   let guard = 0;
@@ -180,7 +177,7 @@ test('the travel runtime can complete, resume, replay, and record a wrong answer
     else if (scene.type === 'choice') runtime.malbitTravelChoose(scene.choices[0].id);
     else if (scene.type === 'question') {
       if (!state.answers[scene.id]) {
-        const question = runtime.MALBIT_BANK.present(scene.bankId, state.orders[scene.id]);
+        const question = scene.question;
         runtime.malbitTravelSelect(question.answerIndex);
         runtime.malbitTravelSubmit();
       }
@@ -191,6 +188,9 @@ test('the travel runtime can complete, resume, replay, and record a wrong answer
   assert.equal(completed.completed, true);
   assert.equal(completed.bestScore, 6);
   assert.equal(Object.keys(completed.answers).length, 6);
+  assert.equal(completed.route,'all-stop');
+  assert.equal(completed.wallet,25250,'six rewards, all-stop fare, and perfect bonus are balanced');
+  assert.ok(completed.inventory.includes('myeongdong-first-stamp'));
   assert.match(screen.innerHTML, /ROUTE CLEAR/);
   const completedStore = JSON.parse(runtimeStorage.get('malbitStoryV1'));
   assert.ok(completedStore.avatar.unlocked.includes('seoul-sunset'));
@@ -204,10 +204,9 @@ test('the travel runtime can complete, resume, replay, and record a wrong answer
 
   runtime.malbitTravelRestart(pack.id);
   runtime.malbitTravelNext();
-  runtime.malbitTravelChoose('listener');
   const replay = JSON.parse(runtimeStorage.get('malbitStoryV1')).episodes[pack.id];
   const firstScene = pack.scenes.find(item => item.id === replay.sceneId);
-  const firstQuestion = runtime.MALBIT_BANK.present(firstScene.bankId, replay.orders[firstScene.id]);
+  const firstQuestion = firstScene.question;
   runtime.malbitTravelSelect((firstQuestion.answerIndex + 1) % 4);
   runtime.malbitTravelSubmit();
   assert.equal(reviews.length, 1);

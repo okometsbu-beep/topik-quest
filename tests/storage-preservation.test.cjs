@@ -84,11 +84,12 @@ test('backup import preserves newer roots that are absent from an older file', (
   assert.match(source, /MALBIT_STORAGE_GUARD\?\.clear\?\.\(\)/);
 });
 
-test('the travel replacement keeps the legacy progress key and scene IDs', () => {
+test('the airport route keeps the legacy storage root and leaves old episodes untouched', () => {
   const runtime = read('travel-mode.js');
   const pack = read('data/travel-pack-seoul-001.js');
   assert.match(runtime, /const STORAGE_KEY='malbitStoryV1'/);
-  for (const id of ['briefing', 'approach', 'q-topic', 'q-checklist', 'hallway', 'q-entrance', 'q-bag', 'q-desk', 'q-sequence', 'ending']) {
+  assert.doesNotMatch(runtime,/store\.episodes\s*=\s*\{\}/);
+  for (const id of ['arrival', 'q-hello', 'q-station', 'q-myeongdong', 'transport', 'ride-all-stop', 'ride-express', 'ride-taxi', 'q-ticket', 'q-transfer', 'q-thanks', 'ending']) {
     assert.match(pack, new RegExp("id:'" + id + "'"));
   }
 });

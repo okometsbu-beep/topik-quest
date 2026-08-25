@@ -3,7 +3,7 @@ name: Verify MALBIT
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [main, 'agent/**']
 
 permissions:
   contents: read
@@ -22,3 +22,11 @@ jobs:
         with:
           node-version: 22
       - run: npm run check
+      - name: Verify Travel Mode at 390x844
+        run: node scripts/check-travel-mobile.mjs
+      - name: Upload mobile visual evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: travel-mobile-${{ github.sha }}
+          path: artifacts/travel-mobile/*.png
+          if-no-files-found: error
