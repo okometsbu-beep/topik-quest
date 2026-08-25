@@ -41,18 +41,33 @@ try{
   await sleep(250);await shot('01-airport-start.png');
   assert.equal(await evaluate(`document.querySelector('.travelSceneCard h1')?.textContent`),'韓国旅行が始まった！');
   assert.deepEqual(await evaluate(`({w:innerWidth,h:innerHeight})`),{w:390,h:844});
-  await evaluate(`malbitTravelNext()`);
-  for(let i=0;i<3;i++){assert.ok(await evaluate(`document.querySelectorAll('.travelAnswer').length===4`));await evaluate(`malbitTravelSelect(0);malbitTravelSubmit();malbitTravelNext()`)}
-  await sleep(200);await shot('02-transport-choice.png');
+  const layers=await evaluate(`({background:document.querySelector('.travelWorldBg')?.getAttribute('src'),player:document.querySelector('.travelWorldPlayer')?.getAttribute('src'),npc:document.querySelector('.travelWorldNpc')?.getAttribute('src'),props:[...document.querySelectorAll('.travelWorldProp')].map(image=>image.getAttribute('src')),wallet:JSON.parse(localStorage.getItem('malbitStoryV1')).episodes['route-001-airport-myeongdong'].wallet,primary:getComputedStyle(document.querySelector('.travelPrimary')).backgroundImage})`);
+  assert.match(layers.background,/bg-airport-t1\.webp$/);assert.match(layers.player,/avatar-traveler-blue\.webp$/);assert.match(layers.npc,/npc-airport-guide\.webp$/);assert.ok(layers.props.some(file=>/suitcase\.webp$/.test(file)));assert.equal(layers.wallet,79000);assert.match(layers.primary,/ui-button-primary\.webp/);
+  await evaluate(`document.querySelector('.travelPrimary').click()`);
+  await sleep(200);await shot('02-dialogue-action.png');
+  assert.equal(await evaluate(`document.querySelectorAll('.travelAnswers.dialogue .travelAnswer').length`),4);
+  assert.match(await evaluate(`getComputedStyle(document.querySelector('.travelAnswer')).backgroundImage`),/ui-tile-answer\.webp/);
+  await evaluate(`document.querySelectorAll('.travelAnswer')[0].click();document.querySelector('.travelPrimary').click()`);await sleep(220);await shot('03-dialogue-world-reaction.png');
+  const firstResult=await evaluate(`({success:document.querySelector('.travelWorld')?.classList.contains('is-success'),reward:document.querySelector('.travelWorldReward')?.textContent,item:document.querySelector('.travelWorldItem')?.textContent,inventory:JSON.parse(localStorage.getItem('malbitStoryV1')).episodes['route-001-airport-myeongdong'].inventory})`);
+  assert.ok(firstResult.success);assert.match(firstResult.reward,/2,000원/);assert.ok(firstResult.item);assert.ok(firstResult.inventory.includes('airportMap'));
+  await evaluate(`document.querySelector('.travelPrimary').click()`);await sleep(180);await shot('04-sign-hotspot.png');
+  assert.equal(await evaluate(`document.querySelectorAll('.travelAnswers.hotspot .travelAnswer').length`),4);
+  assert.equal(await evaluate(`document.querySelectorAll('.travelAnswers.hotspot .travelAnswer img').length`),4);
+  const signPositions=await evaluate(`(['railsign','taxisign'].map(name=>{const rect=document.querySelector('.prop-'+name)?.getBoundingClientRect();return rect&&{left:Math.round(rect.left),top:Math.round(rect.top)}}))`);
+  assert.ok(signPositions.every(Boolean));assert.notDeepEqual(signPositions[0],signPositions[1],'rail and taxi signs must occupy separate world-layer positions');
+  await evaluate(`document.querySelectorAll('.travelAnswer')[0].click();document.querySelector('.travelPrimary').click();document.querySelector('.travelPrimary').click()`);
+  assert.equal(await evaluate(`document.querySelectorAll('.travelAnswers.machine .travelAnswer').length`),4);
+  await evaluate(`document.querySelectorAll('.travelAnswer')[0].click();document.querySelector('.travelPrimary').click();document.querySelector('.travelPrimary').click()`);
+  await sleep(200);await shot('05-transport-choice.png');
   const transport=await evaluate(`({title:document.querySelector('.travelSceneCard h1')?.textContent,wallet:JSON.parse(localStorage.getItem('malbitStoryV1')).episodes['route-001-airport-myeongdong'].wallet,disabled:[...document.querySelectorAll('.travelRoutes button')].map(button=>button.disabled),heights:[...document.querySelectorAll('.travelRoutes button')].map(button=>Math.round(button.getBoundingClientRect().height))})`);
-  assert.equal(transport.title,'どうやって明洞へ行く？');assert.equal(transport.wallet,19000);assert.deepEqual(transport.disabled,[false,false,true]);assert.ok(transport.heights.every(height=>height>=69));
-  await evaluate(`malbitTravelChoose('express');malbitTravelNext()`);
-  for(let i=0;i<3;i++)await evaluate(`malbitTravelSelect(0);malbitTravelSubmit();malbitTravelNext()`);
-  await sleep(250);await shot('03-myeongdong-arrival.png');
+  assert.equal(transport.title,'どうやって明洞へ行く？');assert.equal(transport.wallet,85000);assert.deepEqual(transport.disabled,[false,false,false]);assert.ok(transport.heights.every(height=>height>=84));
+  await evaluate(`document.querySelectorAll('.travelRoutes button')[1].click();document.querySelector('.travelPrimary').click()`);
+  for(let i=0;i<3;i++)await evaluate(`document.querySelectorAll('.travelAnswer')[0].click();document.querySelector('.travelPrimary').click();document.querySelector('.travelPrimary').click()`);
+  await sleep(250);await shot('06-myeongdong-arrival.png');
   const ending=await evaluate(`({clear:document.body.innerText.includes('ROUTE CLEAR'),title:document.querySelector('.travelEndingCard h1')?.textContent,state:JSON.parse(localStorage.getItem('malbitStoryV1')).episodes['route-001-airport-myeongdong']})`);
-  assert.ok(ending.clear);assert.equal(ending.title,'完璧な初入国');assert.equal(ending.state.completed,true);assert.equal(ending.state.route,'express');assert.equal(ending.state.wallet,11900);assert.ok(ending.state.inventory.includes('myeongdong-first-stamp'));
+  assert.ok(ending.clear);assert.equal(ending.title,'完璧な初入国');assert.equal(ending.state.completed,true);assert.equal(ending.state.route,'express');assert.equal(ending.state.wallet,77900);assert.ok(ending.state.inventory.includes('airportMap'));assert.ok(ending.state.inventory.includes('transitCard'));assert.ok(ending.state.inventory.includes('myeongdong-first-stamp'));
   assert.deepEqual(errors,[]);
-  console.log(`travel mobile visual: 390x844, 3 screenshots, route=${ending.state.route}, wallet=${ending.state.wallet}, errors=0`);
+  console.log(`travel mobile visual: 390x844, 6 screenshots, layered world, dialogue/hotspot/machine, route=${ending.state.route}, wallet=${ending.state.wallet}, errors=0`);
 }finally{
   try{socket?.close()}catch(error){}
   chrome.kill('SIGTERM');server.kill('SIGTERM');

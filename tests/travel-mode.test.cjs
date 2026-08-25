@@ -46,8 +46,30 @@ test('the first travel route is a complete, reachable six-question journey', () 
   const transport=pack.scenes.find(scene=>scene.id==='transport');
   assert.deepEqual(Array.from(transport.choices, choice=>choice.id),['all-stop','express','taxi']);
   assert.deepEqual(Array.from(transport.choices, choice=>choice.cost),[4750,18100,85000]);
+  assert.equal(pack.startWallet+pack.questionReward*3,transport.choices[2].cost,'three successful airport missions should unlock the taxi branch exactly');
   for(const choice of transport.choices)assert.ok(pack.scenes.some(scene=>scene.id===choice.next),`${choice.id} branch must be reachable`);
   assert.equal(pack.scenes.at(-1).type, 'ending');
+});
+
+test('travel graphics use generated background, avatar, NPC, prop, and UI layers', () => {
+  const pack=packs[0];
+  assert.deepEqual(Object.keys(pack.assets),['backgrounds','avatars','npcs','props','ui']);
+  for(const [group,assets] of Object.entries(pack.assets)){
+    assert.ok(Object.keys(assets).length>0,`${group} asset registry must not be empty`);
+    for(const [key,file] of Object.entries(assets)){
+      const absolute=path.join(root,file);
+      assert.ok(fs.existsSync(absolute),`${group}.${key} is missing: ${file}`);
+      assert.ok(fs.statSync(absolute).size>1000,`${group}.${key} must be a real generated image`);
+    }
+  }
+  for(const scene of pack.scenes){
+    assert.ok(scene.world,`${scene.id} needs a composited world`);
+    assert.ok(pack.assets.backgrounds[scene.world.background],`${scene.id} background is not registered`);
+    if(scene.world.npc)assert.ok(pack.assets.npcs[scene.world.npc],`${scene.id} NPC is not registered`);
+    for(const prop of scene.world.props||[])assert.ok(pack.assets.props[prop],`${scene.id}.${prop} is not registered`);
+    for(const prop of scene.choiceAssets||[])assert.ok(pack.assets.props[prop],`${scene.id}.${prop} choice art is not registered`);
+  }
+  assert.deepEqual(Array.from(pack.scenes.filter(scene=>scene.type==='question').slice(0,3),scene=>scene.interaction),['dialogue','hotspot','machine']);
 });
 
 test('travel questions are complete original beginner items with one verified answer', () => {
@@ -61,6 +83,9 @@ test('travel questions are complete original beginner items with one verified an
     assert.ok(Number.isInteger(question.answerIndex)&&question.answerIndex>=0&&question.answerIndex<4);
     for(const choice of question.choices)assertI18n(choice,`${scene.id}.choice`);
     assertI18n(question.explanationI18n,`${scene.id}.explanation`);
+    assertI18n(scene.instruction,`${scene.id}.instruction`);
+    assertI18n(scene.success,`${scene.id}.success`);
+    assertI18n(scene.recovery,`${scene.id}.recovery`);
   }
 });
 
@@ -189,7 +214,9 @@ test('the travel runtime can complete, resume, replay, and record a wrong answer
   assert.equal(completed.bestScore, 6);
   assert.equal(Object.keys(completed.answers).length, 6);
   assert.equal(completed.route,'all-stop');
-  assert.equal(completed.wallet,25250,'six rewards, all-stop fare, and perfect bonus are balanced');
+  assert.equal(completed.wallet,91250,'starter budget, six rewards, all-stop fare, and one perfect bonus are balanced');
+  assert.ok(completed.inventory.includes('airportMap'));
+  assert.ok(completed.inventory.includes('transitCard'));
   assert.ok(completed.inventory.includes('myeongdong-first-stamp'));
   assert.match(screen.innerHTML, /ROUTE CLEAR/);
   const completedStore = JSON.parse(runtimeStorage.get('malbitStoryV1'));
@@ -205,10 +232,17 @@ test('the travel runtime can complete, resume, replay, and record a wrong answer
   runtime.malbitTravelRestart(pack.id);
   runtime.malbitTravelNext();
   const replay = JSON.parse(runtimeStorage.get('malbitStoryV1')).episodes[pack.id];
+  assert.ok(replay.inventory.includes('airportMap'),'restart keeps earned collection items');
+  assert.ok(replay.inventory.includes('transitCard'),'restart keeps earned collection items');
+  assert.ok(replay.inventory.includes('myeongdong-first-stamp'),'restart keeps the route stamp');
   const firstScene = pack.scenes.find(item => item.id === replay.sceneId);
   const firstQuestion = firstScene.question;
+  const beforeWrongClock=replay.clockMinutes;
   runtime.malbitTravelSelect((firstQuestion.answerIndex + 1) % 4);
   runtime.malbitTravelSubmit();
+  const afterWrong=JSON.parse(runtimeStorage.get('malbitStoryV1')).episodes[pack.id];
+  assert.equal(afterWrong.clockMinutes-beforeWrongClock,4,'a wrong action is recoverable but costs four minutes');
+  assert.equal(afterWrong.answers[firstScene.id].itemReward,null,'a missed mission does not grant its item twice');
   assert.equal(reviews.length, 1);
   assert.equal(reviews[0][4], 'travel');
   assert.equal(JSON.parse(runtimeStorage.get('malbitStoryV1')).episodes[pack.id].bestScore, 6, 'replay keeps the best score');
