@@ -39,6 +39,11 @@ these facts from conversation history or the large TOPIK source bundle.
   full check, mobile flow check, branch/PR, CI, merge, and live smoke.
 - The connected GitHub integration can publish without GitHub CLI. Do not ask the user to install
   `gh` merely because it is absent inside a temporary workspace.
+- Autonomous development uses a standalone GitHub-connected ChatGPT Scheduled task at Asia/Seoul
+  00:00, 06:00, 12:00, and 18:00. Durable instructions live in `loop/PROMPT.md`, product intent in
+  `docs/DESIGN.md`, current state in `docs/STATUS.md`, and phone input in `[AI 지시]` GitHub Issues.
+- Each autonomous pass handles one bounded task and at most one PR. Passing changes may deploy to
+  GitHub Pages; App Store and Google Play publishing stay disabled until signed release lanes exist.
 - Ignore `TOPIK_public_sources_bundle*.zip` unless the requested change actually concerns question
   content, provenance, or rebuilding the bank.
 
