@@ -5,7 +5,7 @@
   const item=(id,asset,cost,name,detail,unlock='always')=>Object.freeze({id,asset,cost,name,detail,unlock});
 
   const hub=Object.freeze({
-    id:'myeongdong-hub',version:1,routeId:'route-001-airport-myeongdong',
+    id:'myeongdong-hub',version:2,routeId:'route-001-airport-myeongdong',
     title:t('명동 여행 허브','明洞トラベルハブ','Myeongdong Travel Hub','明洞旅行中心'),
     subtitle:t('현지인과 말하고, 여행 원으로 추억을 모으세요.','現地の人と話し、旅ウォンで思い出を集めよう。','Talk with locals and collect memories with travel won.','与当地人交谈，用旅行韩元收集回忆。'),
     location:t('서울 지하철 4호선 · 명동역','ソウル地下鉄4号線・明洞駅','Seoul Subway Line 4 · Myeongdong Station','首尔地铁4号线 · 明洞站'),
@@ -19,6 +19,7 @@
         myeongdongExchange:'assets/art/travel/layers/prop-myeongdong-exchange.webp',
         hangulStampPostcard:'assets/art/travel/layers/item-hangul-stamp-postcard.webp',
         hotteokMemory:'assets/art/travel/layers/item-hotteok-memory.webp',
+        myeongdongExitBadge:'assets/art/travel/layers/item-myeongdong-exit-badge.webp',
         namsanCharm:'assets/art/travel/layers/item-namsan-charm.webp'
       })
     }),
@@ -54,11 +55,26 @@
         answer:Object.freeze(['호떡','한 개','주세요.']),
         success:t('상인이 따뜻한 호떡을 건네고, 명동의 저녁 추억이 여행 가방에 저장됐어요.','店員が温かいホットクを渡し、明洞の夜の思い出が旅バッグに入りました。','The vendor hands you a warm hotteok, saving an evening Myeongdong memory in your bag.','摊主递给你热乎乎的糖饼，明洞夜晚回忆已存入旅行包。'),
         explanation:t('“물건 + 수량 + 주세요” 순서로 말하면 원하는 것을 정중하게 주문할 수 있습니다.','「品物＋数量＋주세요」の順で、欲しいものを丁寧に注文できます。','Use “item + quantity + 주세요” to order politely.','按“物品＋数量＋주세요”的顺序可以礼貌点单。')
+      }),
+      stationSign:Object.freeze({
+        id:'myeongdong-station-sign',interaction:'sign-build',followup:true,npc:'myeongdongGuide',reward:1800,itemReward:'myeongdongExitBadge',
+        badge:t('후속 미션 · 표지판 읽기','追加ミッション・標識を読む','Follow-up mission · read a sign','追加任务 · 阅读标牌'),
+        title:t('명동역 표지판을 완성하자','明洞駅の標識を完成させよう','Complete the Myeongdong Station sign','完成明洞站标牌'),
+        speaker:t('명동 여행안내원','明洞の観光案内スタッフ','Myeongdong travel guide','明洞旅游咨询员'),
+        dialogue:t('표지판의 한글이 흩어졌어요! 명동역을 완성해 볼까요?','標識のハングルがばらばらになりました！「明洞駅」を完成させてみましょう。','The Hangul on the sign is scattered! Shall we complete “Myeongdong Station”?','标牌上的韩文字散开了！来完成“明洞站”吧。'),
+        instruction:t('필요한 세 글자만 골라 “명동역” 순서로 놓으세요. 헷갈리는 글자는 남겨도 됩니다.','必要な3文字だけを選び、「명동역」の順に並べよう。まぎらわしい文字は残してかまいません。','Choose only the three needed syllables and arrange them as “명동역”. Leave the decoys behind.','只选出需要的三个字，按“명동역”的顺序排列；干扰字可以留下。'),
+        prompt:t('“명동역”을 완성해 6번 출구 표지를 켜세요.','「명동역」を完成させ、6番出口の標識を点灯させよう。','Complete “명동역” and light the Exit 6 sign.','完成“명동역”，点亮6号出口标牌。'),
+        signLabel:t('명동역 · 6번 출구','明洞駅・6番出口','Myeongdong Station · Exit 6','明洞站 · 6号出口'),
+        tokens:Object.freeze(['동','몽','명','역','면']),
+        answer:Object.freeze(['명','동','역']),
+        success:t('명동역 6번 출구 표지가 환하게 켜졌어요. 안내원이 명동 길찾기 배지를 여행 가방에 달아 줬어요.','明洞駅6番出口の標識が明るく点灯しました。案内スタッフが明洞道案内バッジを旅バッグにつけてくれました。','The Myeongdong Station Exit 6 sign lights up, and the guide pins a wayfinding badge to your travel bag.','明洞站6号出口的标牌亮了起来，咨询员把明洞导览徽章别在了旅行包上。'),
+        explanation:t('명 + 동 + 역을 이어 “명동역”이라고 읽습니다. “역”은 지하철이나 기차를 타는 station입니다.','「명＋동＋역」で「명동역」と読みます。「역」は地下鉄や電車に乗る駅（station）です。','Read 명 + 동 + 역 together as “명동역”. 역 means a subway or train station.','把“명＋동＋역”连起来读作“명동역”；“역”表示地铁站或火车站。')
       })
     }),
     exchange:Object.freeze([
       item('hangulStampPostcard','hangulStampPostcard',2000,t('한글 스탬프 엽서','ハングルスタンプ葉書','Hangul stamp postcard','韩文印章明信片'),t('명동의 건축과 남산 풍경을 담은 여행 기록','明洞の建築と南山の景色を残す旅の記録','A travel record of Myeongdong architecture and Namsan','记录明洞建筑与南山风景的旅行纪念')),
       item('hotteokMemory','hotteokMemory',3000,t('따뜻한 호떡 추억','あつあつホットクの思い出','Warm hotteok memory','热乎乎的糖饼回忆'),t('저녁 이벤트에서 만나는 명동 거리 간식','夜イベントで出会う明洞の屋台グルメ','A Myeongdong street snack from the evening event','夜间活动中的明洞街头小吃'),'evening'),
+      item('myeongdongExitBadge','myeongdongExitBadge',3500,t('명동 길찾기 배지','明洞道案内バッジ','Myeongdong wayfinding badge','明洞导览徽章'),t('명동역 표지판을 직접 완성한 여행자의 수집품','明洞駅の標識を自分で完成させた旅人のコレクション','A collectible for travelers who complete the station sign','亲手完成明洞站标牌的旅行者收藏品'),'sign'),
       item('namsanCharm','namsanCharm',5000,t('남산 야경 참','南山夜景チャーム','Namsan night-view charm','南山夜景挂饰'),t('NPC 한국어 퀘스트를 끝낸 여행자에게 열리는 수집품','NPC韓国語クエストを終えると開くコレクション','A collectible unlocked after the NPC Korean quest','完成NPC韩语任务后解锁的收藏品'),'quest')
     ])
   });

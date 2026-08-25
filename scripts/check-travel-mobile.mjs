@@ -193,8 +193,8 @@ try{
   await tap('.travelEndingCard .travelPrimary');
   assert.match(await evaluate(`document.querySelector('.travelMyeongdongHead h1')?.textContent`),/明洞トラベルハブ/);
   assert.equal(await evaluate(`document.querySelectorAll('.travelMyeongdongWorld .travelWorldBg,.travelMyeongdongWorld .travelWorldPlayer,.travelMyeongdongWorld .travelWorldNpc,.travelMyeongdongWorld .prop-myeongdongexchange').length`),4,'Myeongdong world must compose background, player, NPC, and exchange prop layers');
-  assert.equal(await evaluate(`document.querySelectorAll('.travelExchangeCard').length`),3);
-  assert.equal(await evaluate(`document.querySelectorAll('.travelExchangeCard img[src*="item-"]').length`),3,'exchange must use generated collectible art');
+  assert.equal(await evaluate(`document.querySelectorAll('.travelExchangeCard').length`),4);
+  assert.equal(await evaluate(`document.querySelectorAll('.travelExchangeCard img[src*="item-"]').length`),4,'exchange must use generated collectible art');
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertFits(`Myeongdong hub ${width}px`)}
   await setViewport(390,844);await shot('09-myeongdong-hub-day.png');
   await tap('.travelEventCard .travelPrimary');
@@ -210,18 +210,37 @@ try{
   const hubQuest=await state();assert.equal(hubQuest.myeongdong.quests['guide-directions'].completed,true);assert.ok(hubQuest.inventory.includes('hangulStampPostcard'));
   await shot('10-word-order-clear.png');
   await tap('.travelHubResult .travelPrimary');
+  assert.match(await evaluate(`document.querySelector('.travelEventCard h2')?.textContent`),/明洞駅の標識を完成させよう/);
+  assert.equal(await evaluate(`document.querySelectorAll('.travelExchangeCard')[2].disabled`),true,'sign collectible stays locked before the sign mission');
+  await tap('.travelEventCard .travelPrimary');
+  await tap('.travelMyeongdongCard>.travelPrimary');
+  assert.match(await evaluate(`document.querySelector('.travelQuestionNo span')?.textContent`),/SIGN BUILD/);
+  assert.equal(await evaluate(`document.querySelectorAll('.travelWordBank button').length`),5,'sign challenge must offer three answers plus two decoys');
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertFits(`Myeongdong sign build ${width}px`)}
+  await setViewport(390,844);await shot('11-sign-build.png');
+  await tap('.travelWordBank button',2);
+  await tap('.travelWordBank button',0);
+  await tap('.travelWordBank button',1);
+  assert.deepEqual(await evaluate(`[...document.querySelectorAll('.travelSentence button')].map(button=>button.textContent.trim())`),['명','동','역']);
+  assert.equal(await evaluate(`document.querySelectorAll('.travelWordBank button').length`),2,'decoy syllables must remain unused');
+  await tap('.travelOrderActions .travelPrimary');
+  assert.match(await evaluate(`document.querySelector('.travelQuestionNo span')?.textContent`),/SIGN QUEST CLEAR/);
+  const signQuest=await state();assert.equal(signQuest.myeongdong.quests['myeongdong-station-sign'].completed,true);assert.ok(signQuest.inventory.includes('myeongdongExitBadge'));
+  assert.match(await evaluate(`document.querySelector('.travelWorldSign')?.textContent`),/명동역/);
+  await shot('12-sign-clear.png');
+  await tap('.travelHubResult .travelPrimary');
   const beforeCharm=(await state()).wallet;
-  await tap('.travelExchangeCard',2);
+  await tap('.travelExchangeCard',3);
   const afterCharm=await state();assert.equal(beforeCharm-afterCharm.wallet,5000);assert.ok(afterCharm.inventory.includes('namsanCharm'));
   assert.match(await evaluate(`document.querySelector('.travelPurchaseBurst')?.textContent`),/南山夜景チャーム/);
-  await shot('11-collectible-exchange.png');
+  await shot('13-collectible-exchange.png');
   await evaluate(`(()=>{const store=JSON.parse(localStorage.getItem('malbitStoryV1'));store.episodes['route-001-airport-myeongdong'].clockMinutes=1140;store.episodes['route-001-airport-myeongdong'].myeongdong.lastPurchase=null;localStorage.setItem('malbitStoryV1',JSON.stringify(store));render()})()`);
   assert.match(await evaluate(`document.querySelector('.travelEventCard h2')?.textContent`),/屋台で注文しよう/);
   assert.match(await evaluate(`document.querySelector('.travelWorldNpc')?.getAttribute('src')`),/npc-myeongdong-vendor\.webp/);
   assert.equal(await evaluate(`document.querySelectorAll('.travelExchangeCard')[1].disabled`),false,'evening must unlock the hotteok memory exchange');
   await tap('.travelExchangeCard',1);
   assert.ok((await state()).inventory.includes('hotteokMemory'));
-  await shot('12-myeongdong-hub-evening.png');
+  await shot('14-myeongdong-hub-evening.png');
   await send('Page.reload',{ignoreCache:true});await ready();await sleep(160);
   assert.equal((await state()).completed,true);assert.equal((await state()).route,'taxi');
   assert.ok(await evaluate(`document.body.innerText.includes('明洞トラベルハブ')`),'Myeongdong hub state must survive reload');
@@ -230,7 +249,7 @@ try{
   const durableAfter=await evaluate(`({vocab:JSON.parse(localStorage.getItem('topikQuestV8')).vocab,gameUnlock:JSON.parse(localStorage.getItem('topikQuestV8')).gameUnlock,game:localStorage.getItem('topikQuestTopik1GameV1'),review:localStorage.getItem('malbitWrongReviewV3')})`);
   assert.deepEqual(durableAfter,durableBefore,'travel play must not alter vocabulary, game, or review records');
   assert.deepEqual(errors,[]);
-  console.log('travel mobile QA: 320/375/390/430px containment, hit-tested route + Myeongdong NPC word order, day/evening events, travel-won exchange, reload/back-resume, durable records, screenshots=13, errors=0');
+  console.log('travel mobile QA: 320/375/390/430px containment, hit-tested route + NPC word order + Hangul sign build with decoys, day/evening events, travel-won exchange, reload/back-resume, durable records, screenshots=15, errors=0');
 }finally{
   try{socket?.close()}catch(error){}
   chrome.kill('SIGTERM');server.kill('SIGTERM');
