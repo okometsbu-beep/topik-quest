@@ -29,7 +29,7 @@ An independent Korean-learning game and unofficial TOPIK I & II practice app.
 - A lightweight browser-local profile that preserves the learner's existing language, level, and progress
 - Explicit enter/select/submit/complete learning events, with external product analytics disabled until the learner opts in
 - Fixed bottom dice/route controls, automatic battle-card focus, and current-space map centering for one-handed game play
-- Honest account, backup, notification, support, terms, privacy, and Free/Plus surfaces with integration boundaries for future cloud sync and verified store billing
+- Honest account, backup, notification, support, terms, and privacy surfaces with no payment or upsell UI
 - A first-Shorts vocabulary save prompt with next-day review scheduling and option-specific review reasons grounded in each passage or transcript
 
 ## Roadmap
