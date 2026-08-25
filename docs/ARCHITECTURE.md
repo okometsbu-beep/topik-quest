@@ -13,11 +13,11 @@ changed.
 
 `site-patch.js` owns the canonical runtime order:
 
-1. shared DOM/runtime patch
-2. TOPIK I, Shorts, explanation, Story Mode, and question-bank data
+1. shared DOM/runtime patch and durable storage guard
+2. TOPIK I, Shorts, explanation, Travel Mode, and question-bank data
 3. question-bank engine
 4. TOPIK I and learning features
-5. Story Mode engine
+5. Travel Mode engine
 6. product UI/growth layers
 7. compatibility layers v22, v24, v33, v34, and v35
 
@@ -48,16 +48,17 @@ for manual editing.
 `question-bank-engine.js` normalizes those rows and supplies all modes with stable IDs, difficulty
 pools, shuffled display order, multilingual explanations, and no-repeat behavior.
 
-## Story Mode
+## Travel Mode
 
-`story-mode.js` owns the reusable scene renderer, episode progress, clue notebook, result grading,
-question-bank delivery, and wrong-answer handoff. Authored episode content stays in purpose-named
-`data/story-pack-*.js` files. A new episode should normally require a data pack and focused tests,
+`travel-mode.js` owns the Seoul map, route renderer, travel passport, avatar rewards, result grading,
+question-bank delivery, and wrong-answer handoff. Authored route content stays in purpose-named
+`data/travel-pack-seoul-*.js` files. A new route should normally require a data pack and focused tests,
 not another runtime engine or numbered compatibility layer.
 
-Story progress uses the independent `malbitStoryV1` browser-storage root, with one state record per
-episode. It does not share navigation or answer state with the full mock exam, so resuming or
-replaying a case cannot overwrite an in-progress timed exam.
+Travel progress intentionally keeps the independent legacy `malbitStoryV1` browser-storage root,
+with one state record per route. Keeping the key and original scene IDs migrates existing Story
+answers, clears, and best scores in place. It does not share navigation or answer state with the
+full mock exam, so resuming or replaying a route cannot overwrite an in-progress timed exam.
 
 ## Persistence contract
 
@@ -65,6 +66,12 @@ Progress, wrong answers, vocabulary, listening preferences, and game state live 
 Vocabulary enrichment stays inside each existing `topikQuestV8.vocab` entry, so old entries and exported progress files remain compatible. `vocab-editor.js` owns the detail editor and exposes a narrow `MALBIT_AI_ADAPTER` boundary for optional server-side translation and enrichment; the static client contains no provider secret.
 Changing a key without migration silently destroys a user's continuity, so storage keys are treated
 as public API. Any migration must accept old values, write the new representation, and have a test.
+
+`storage-guard.js` maintains a last-known-good `malbitRecoverySnapshotV1` for durable roots and
+restores missing, malformed, or suspiciously empty core progress during boot. Translation cache is
+excluded to control size. Explicit full reset clears the snapshot first; ordinary app updates and
+imports do not. An older exported file may replace keys it contains but cannot delete newer roots
+that are absent from that file.
 
 ## Cache contract
 

@@ -58,9 +58,13 @@ npm run smoke -- https://okometsbu-beep.github.io/topik-quest/
 - TOPIK I and II Random Practice open the correct pool.
 - Shorts can select, submit, show the current displayed answer number, and advance.
 - Expedition can roll, move, enter battle, and return without a frozen screen.
+- Travel Mode opens the Seoul map, resumes the current mission, reaches all three stops, equips an
+  unlocked avatar look, and never shows a payment surface.
 - Beginner handwriting accepts pointer input, rings on a match, and advances.
 - Listening preference buttons remain clickable and persist after reload.
-- Existing progress survives reload and service-worker replacement.
+- Existing vocabulary, game, review, beginner, and Travel records survive reload and
+  service-worker replacement. Run `node --test tests/storage-preservation.test.cjs` with the
+  focused UI test whenever a storage root or import/reset path changes.
 
 ## Release version
 
