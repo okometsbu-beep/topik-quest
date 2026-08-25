@@ -10,7 +10,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Story step within ten minutes
 - Autonomous runtime: GitHub-connected ChatGPT Scheduled task, four fresh runs per day
-- Long-term game direction: Seoul exploration quests, learning-earned avatar rewards, cosmetic IAP
+- Long-term game direction: Seoul exploration quests and learning-earned avatar rewards; all payment UI deferred
 
 ## 최근 안정 기능
 
@@ -19,7 +19,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - editable vocabulary details with safe AI integration boundary
 - one detailed global TTS setting with device fallback and optional local neural pack
 - token-minimal repository handoff, focused verification lanes, GitHub CI and Pages deployment
-- Seoul learning-RPG and non-pay-to-win avatar monetization north star documented
+- Seoul learning-RPG and payment-free avatar reward north star documented
 
 ## 다음 우선순위
 
@@ -38,7 +38,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 양대 앱스토어 자동 배포는 아직 금지한다.
 - 서울맵·NPC 퀘스트·아바타 꾸미기를 장기 재방문 구조로 삼되 학습이 본체라는 경계를
   유지한다.
-- 수익화는 직접 구매형 꾸미기부터 검증하고 pay-to-win과 첫 성취 전 결제 노출을 금지한다.
+- 결제 버튼·가격·상품 카드·유료 잠금·Premium·Plus·구독·업셀·외부 결제 링크를 앱 어디에도
+  만들지 않는다. 별도 수익화 논의와 사용자의 명시적 승인 뒤에만 재검토한다.
 
 ## 초기 두 바퀴 사전 검증
 
@@ -61,3 +62,4 @@ Story Mode EP.01의 첫 10분 초보 흐름을 일본어 사용자 관점에서 
 - 공개 Issue에 비밀정보를 적으면 안 된다.
 - UI 변경은 CI만으로 시각 품질을 보증할 수 없으므로 병합 전 모바일 확인이 필수다.
 - 서울 전체 지도와 다량의 스킨을 먼저 만들면 학습·재방문 검증 없이 제작비만 커질 수 있다.
+- 기존 임시 Plus·가격·결제 암시 UI가 새 화면에 재사용되지 않도록 계속 검사해야 한다.
