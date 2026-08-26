@@ -123,7 +123,13 @@ try{
     if(routeId==='taxi')assert.equal(firstTitle,'運転手に行き先を伝えよう');
     else assert.equal(firstTitle,'交通カードで改札を通ろう');
     if(reloadAtTransfer){
-      await send('Page.reload',{ignoreCache:true});await ready();await sleep(160);
+      await send('Page.reload',{ignoreCache:true});
+      let restored=false;
+      for(let wait=0;wait<100;wait++){
+        if(await evaluate(`document.readyState==='complete'&&document.querySelector('.travelQuestionCard h1')?.textContent===${JSON.stringify(firstTitle)}`)){restored=true;break}
+        await sleep(100);
+      }
+      assert.ok(restored,'reload must restore the active Travel question before assertions continue');
       assert.equal((await state()).sceneId,'q-ticket');
       assert.equal(await evaluate(`document.querySelector('.travelQuestionCard h1')?.textContent`),firstTitle);
     }
