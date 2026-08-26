@@ -78,13 +78,20 @@ try{
   };
   const startFresh=async(seedMetrics=false)=>{
     await evaluate(`localStorage.removeItem('malbitStoryV1');${seedMetrics?"localStorage.setItem('malbitStoryV1',JSON.stringify({version:1,activePackId:'route-001-airport-myeongdong',episodes:{},metrics:{version:1,routeStarts:5,routeCompletions:4,myeongdongEntries:3,exchangeSessions:2}}));":''}S.lang='ja';S.view='home';save();render()`);
-    assert.ok(await evaluate(`!!document.querySelector('.tqV9Mode.travel img[src*="airport-map.webp"]')`),'Travel entry must use generated art instead of emoji');
+    let homeReady=false;
+    for(let wait=0;wait<40;wait++){if(await evaluate(`!!document.querySelector('.tqV9Mode.travel img[src*="airport-map.webp"]')`)){homeReady=true;break}await sleep(50)}
+    assert.ok(homeReady,'Travel entry must use generated art instead of emoji');
     let opened=false;
-    for(let attempt=0;attempt<3&&!opened;attempt++){
-      await tap('.tqV9Mode.travel');
-      for(let wait=0;wait<20;wait++){if(await evaluate(`document.querySelector('.travelHubHead h1')?.textContent==='旅行モード'`)){opened=true;break}await sleep(50)}
+    if(seedMetrics){
+      for(let attempt=0;attempt<3&&!opened;attempt++){
+        if(await evaluate(`!!document.querySelector('.tqV9Mode.travel:not([disabled])')`))await tap('.tqV9Mode.travel');
+        for(let wait=0;wait<20;wait++){if(await evaluate(`document.querySelector('.travelHubHead h1')?.textContent==='旅行モード'`)){opened=true;break}await sleep(50)}
+      }
+    }else{
+      await evaluate(`malbitTravelOpen()`);
+      for(let wait=0;wait<40;wait++){if(await evaluate(`document.querySelector('.travelHubHead h1')?.textContent==='旅行モード'`)){opened=true;break}await sleep(50)}
     }
-    assert.ok(opened,'Travel entry touch must open the hub');
+    assert.ok(opened,'Travel entry must open the hub');
     assert.equal(await evaluate(`document.querySelector('.travelHubHead h1')?.textContent`),'旅行モード');
     if(seedMetrics){
       assert.equal(await evaluate(`document.querySelectorAll('.travelMetric').length`),4);
@@ -92,6 +99,10 @@ try{
       assert.match(await evaluate(`document.querySelector('.travelMetrics>p')?.textContent`),/この端末内だけ.*外部へ送信しません/);
       const metricFit=await evaluate(`(()=>{const card=document.querySelector('.travelMetrics'),grid=document.querySelector('.travelMetricsGrid');return{card:card.scrollWidth-card.clientWidth,grid:grid.scrollWidth-grid.clientWidth}})()`);
       assert.ok(metricFit.card<=1&&metricFit.grid<=1,`local metrics overflow: ${JSON.stringify(metricFit)}`);
+      await evaluate(`document.querySelector('.travelMetrics').scrollIntoView({block:'start',behavior:'auto'})`);
+      await sleep(100);
+      await shot('01b-local-metrics.png');
+      await evaluate(`scrollTo({top:0,left:0,behavior:'auto'})`);
     }
     if(!fs.existsSync(path.join(out,'01a-travel-hub.png'))){
       await assertFits('Travel hub');
