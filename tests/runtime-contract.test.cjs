@@ -52,6 +52,8 @@ test('game feedback stays scroll-stable and teaches a repeatable solving method'
   assert.doesNotMatch(focus, /scrollIntoView|scrollTo/,'rendering a battle must not move the page automatically');
   assert.match(topik, /function gameTutorMarkup/);
   assert.match(topik, /gameTutorMarkup\(q,sel\)/);
+  assert.match(topik, /시간이 끝나 보기를 고르지 못했습니다/);
+  assert.match(topik, /時間切れで選択できませんでした/);
   assert.match(styles, /body\.tq-game-active #screen[\s\S]{0,180}overflow-anchor:none/);
 });
 
