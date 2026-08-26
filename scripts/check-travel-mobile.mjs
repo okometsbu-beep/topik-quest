@@ -195,9 +195,21 @@ try{
   await shot('04-correct-reward.png');
   await nextQuestion();assert.ok(await evaluate(`window.__travelAudio.cancelled`)>=1,'audio must stop when the scene changes');
   assert.equal(await evaluate(`document.querySelectorAll('.travelAnswers.hotspot img').length`),4);
-  await answer(0);await nextQuestion();
-  assert.equal(await evaluate(`document.querySelector('.travelQuestionCard h1')?.textContent`),'券売機に目的地を入れよう');
-  assert.match(await evaluate(`document.querySelector('.travelContext')?.textContent`),/機械に話しかけるのではなく/);
+  assert.equal(await evaluate(`document.querySelector('.travelQuestionCard h1')?.textContent`),'空港鉄道の標識を探せ');
+  await assertFits('airport rail sign question');
+  await shot('04a-airport-rail-question.png');
+  await answer(0);
+  assert.match(await evaluate(`document.querySelector('.travelTutor')?.textContent`),/空港鉄道/);
+  await shot('04b-airport-rail-coaching.png');
+  await nextQuestion();
+  assert.equal(await evaluate(`document.querySelector('.travelQuestionCard h1')?.textContent`),'キオスクで明洞を探そう');
+  assert.match(await evaluate(`document.querySelector('.travelContext')?.textContent`),/直通切符の券売機ではありません/);
+  await assertFits('destination kiosk question');
+  await shot('04c-destination-kiosk.png');
+  await answer(0);
+  assert.match(await evaluate(`document.querySelector('.travelTutor')?.textContent`),/最終目的地/);
+  assert.match(await evaluate(`document.querySelector('.travelTutor')?.textContent`),/서울역/);
+  await shot('04d-destination-coaching.png');
 
   await runRoute(0,'all-stop');
   await runRoute(1,'express',{reloadAtTransfer:true});

@@ -49,13 +49,13 @@
         tokens:Object.freeze(['안녕하세요!','저','는','일본','에서','왔어요.','명동','관광안내소','화장실','지하철역','카페','이','가','은','어디','에','있어요?','가고','싶어요.','감사합니다.']),
         answer:Object.freeze(['명동','관광안내소','가','어디','에','있어요?']),
         accepted:Object.freeze([
-          Object.freeze({pattern:'^(?:안녕하세요!\\s*)?(?:명동\\s*)?(?:관광안내소|화장실|지하철역|카페)(?:이|가|은|는)?\\s*어디(?:에)?\\s*있어요\\?$',response:t('네, 저쪽 큰길을 따라가면 있어요.','はい、あちらの大通りに沿って行くとあります。','Yes. Follow the main street over there.','有的，沿着那边的大路走就到了。')}),
+          Object.freeze({pattern:'^(?:안녕하세요!\\s*)?(?:명동\\s*)?(?:관광안내소|화장실|지하철역|카페)(?:이|가|은|는)?\\s*어디(?:에)?\\s*있어요\\?$',response:t('네, 저쪽 큰길을 따라가면 있어요.','はい、あちらの大通り沿いにあります。','Yes. Follow the main street over there.','有的，沿着那边的大路走就到了。')}),
           Object.freeze({pattern:'^(?:안녕하세요!\\s*)?(?:저는\\s*)?일본에서\\s*왔어요\\.$',response:t('반가워요! 명동 여행을 환영해요.','はじめまして！明洞旅行へようこそ。','Nice to meet you! Welcome to Myeongdong.','很高兴见到你！欢迎来到明洞。')}),
           Object.freeze({pattern:'^(?:명동\\s*)?(?:관광안내소|화장실|지하철역|카페)(?:에)?\\s*가고\\s*싶어요\\.$',response:t('좋아요. 제가 가는 길을 알려 드릴게요.','いいですね。行き方を案内します。','Great. I will show you how to get there.','好的，我来告诉你怎么走。')}),
           Object.freeze({pattern:'^(?:안녕하세요!|감사합니다\\.)$',response:t('네, 반가워요! 천천히 말해도 괜찮아요.','はい、はじめまして！ゆっくり話して大丈夫です。','Nice to meet you! It is okay to speak slowly.','很高兴见到你！慢慢说也没关系。')})
         ]),
         success:t('안내원이 을지로 쪽 안내소 방향을 가리키며 한글 스탬프 엽서를 건넸어요.','案内スタッフが乙支路側の案内所を示し、ハングルスタンプのポストカードをくれました。','The guide points toward the Eulji-ro information center and gives you a Hangul-stamp postcard.','咨询员指向乙支路一带的咨询中心，并送你一张韩文印章明信片。'),
-        explanation:t('“명동 관광안내소가 어디예요?”는 장소를 정중하게 묻는 초급 표현입니다.','「명동 관광안내소가 어디예요?」は場所を丁寧に尋ねる初級表現です。','“명동 관광안내소가 어디예요?” politely asks where a place is.','“명동 관광안내소가 어디예요?” 是礼貌询问地点的初级表达。')
+        explanation:t('“명동 관광안내소가 어디에 있어요?”는 장소의 위치를 정중하게 묻는 초급 표현입니다. 장소 뒤의 “가”와 위치를 묻는 “어디에 있어요?”를 함께 기억하세요.','「명동 관광안내소가 어디에 있어요?」は場所の位置を丁寧に尋ねる初級表現です。場所の後の「가」と、位置を尋ねる「어디에 있어요?」を手がかりにします。','“명동 관광안내소가 어디에 있어요?” politely asks for a location. Use 가 after the place and 어디에 있어요? to ask where it is.','“명동 관광안내소가 어디에 있어요?” 是礼貌询问地点位置的初级表达。地点后用“가”，再用“어디에 있어요?”询问位置。')
       }),
       evening:Object.freeze({
         id:'vendor-order',interaction:'free-compose',from:1080,to:1980,npc:'myeongdongVendor',reward:2500,partialReward:300,maxPartialRewards:3,itemReward:'hotteokMemory',
@@ -92,9 +92,9 @@
         conversation:Object.freeze([
           Object.freeze({role:'npc',korean:'표지판을 읽을 수 있어요?',support:t('표지판을 읽을 수 있어요?','標識を読めますか？','Can you read the sign?','你能读这个标牌吗？')}),
           Object.freeze({role:'player',korean:'조금 읽을 수 있어요.',support:t('조금 읽을 수 있어요.','少し読めます。','I can read a little.','我能读一点。')}),
-          Object.freeze({role:'npc',korean:'좋아요! 명동역 세 글자를 찾아볼까요?',support:t('좋아요! 명동역 세 글자를 찾아볼까요?','いいですね！「명동역」の3文字を探してみましょう。','Great! Shall we find the three syllables in 명동역?','很好！来找出“명동역”这三个字吧。')})
+          Object.freeze({role:'npc',korean:'좋아요! 명동역 세 글자를 찾아볼까요?',support:t('좋아요! 명동역 세 글자를 찾아볼까요?','いいですね！「명동역」の3つのハングル音節ブロックを探してみましょう。','Great! Shall we find the three syllables in 명동역?','很好！来找出“명동역”这三个字吧。')})
         ]),
-        instruction:t('필요한 세 글자만 골라 “명동역” 순서로 놓으세요. 헷갈리는 글자는 남겨도 됩니다.','必要な3文字だけを選び、「명동역」の順に並べよう。まぎらわしい文字は残してかまいません。','Choose only the three needed syllables and arrange them as “명동역”. Leave the decoys behind.','只选出需要的三个字，按“명동역”的顺序排列；干扰字可以留下。'),
+        instruction:t('필요한 세 글자만 골라 “명동역” 순서로 놓으세요. 헷갈리는 글자는 남겨도 됩니다.','必要な3つのハングル音節ブロックだけを選び、「명동역」の順に並べよう。まぎらわしい文字は残してかまいません。','Choose only the three needed syllables and arrange them as “명동역”. Leave the decoys behind.','只选出需要的三个字，按“명동역”的顺序排列；干扰字可以留下。'),
         prompt:t('“명동역”을 완성해 6번 출구 표지를 켜세요.','「명동역」を完成させ、6番出口の標識を点灯させよう。','Complete “명동역” and light the Exit 6 sign.','完成“명동역”，点亮6号出口标牌。'),
         signLabel:t('명동역 · 6번 출구','明洞駅・6番出口','Myeongdong Station · Exit 6','明洞站 · 6号出口'),
         tokens:Object.freeze(['동','몽','명','역','면']),
@@ -113,7 +113,7 @@
           Object.freeze({role:'player',korean:'호떡은 이천 원이에요?',support:t('호떡은 이천 원이에요?','ホットクは2,000ウォンですか？','Is hotteok 2,000 won?','糖饼是2,000韩元吗？')}),
           Object.freeze({role:'npc',korean:'네, 한 개에 이천 원이에요.',support:t('네, 한 개에 이천 원이에요.','はい、1個2,000ウォンです。','Yes, it is 2,000 won each.','对，一个2,000韩元。')}),
           Object.freeze({role:'player',korean:'오늘 예산은 오천 원이에요.',support:t('오늘 예산은 오천 원이에요.','今日の予算は5,000ウォンです。','My budget today is 5,000 won.','今天的预算是5,000韩元。')}),
-          Object.freeze({role:'npc',korean:'좋아요. 예산 안에서 최대 몇 개 드릴까요?',support:t('좋아요. 예산 안에서 최대 몇 개 드릴까요?','では、予算内で最大何個にしますか？','Great. What is the maximum quantity within your budget?','好。在预算内最多要几个？')})
+          Object.freeze({role:'npc',korean:'좋아요. 5,000원으로 몇 개까지 살 수 있는지 계산해 볼까요?',support:t('좋아요. 5,000원으로 몇 개까지 살 수 있는지 계산해 볼까요?','では、5,000ウォンで何個まで買えるか計算してみましょう。','Great. Shall we calculate how many you can buy with 5,000 won?','好。来算算5,000韩元最多能买几个吧。')})
         ]),
         instruction:t('한국어 가격표를 읽고 수량을 조절하세요. 합계가 5,000 여행 원을 넘지 않으면서 가장 많은 수량을 찾습니다.','韓国語の値札を読み、数量を調整しよう。合計が5,000旅ウォン以内になる最大数を探します。','Read the Korean price board and adjust the quantity. Find the most you can buy without exceeding 5,000 travel won.','阅读韩文价目表并调整数量，找出不超过5,000旅行韩元的最大数量。'),
         prompt:t('호떡은 한 개 2,000원입니다. 5,000 여행 원 안에서 최대 몇 개를 살 수 있을까요?','ホットクは1個2,000ウォン。5,000旅ウォン以内で最大何個買えますか？','Hotteok costs 2,000 won each. What is the maximum quantity within 5,000 travel won?','糖饼一个2,000韩元。5,000旅行韩元内最多能买几个？'),
