@@ -12,14 +12,23 @@ for(const file of fs.readdirSync(out))if(file.endsWith('.png'))fs.unlinkSync(pat
 const chromePath=[process.env.CHROME_PATH,'/usr/bin/google-chrome','/usr/bin/google-chrome-stable','/usr/bin/chromium','/usr/bin/chromium-browser'].find(candidate=>candidate&&fs.existsSync(candidate));
 assert.ok(chromePath,'Chrome/Chromium not found; set CHROME_PATH to the browser executable');
 const server=spawn(process.execPath,['scripts/serve.mjs'],{cwd:root,stdio:'ignore'});
-const chrome=spawn(chromePath,['--headless','--no-sandbox','--disable-gpu','--disable-dev-shm-usage','--hide-scrollbars','--remote-debugging-address=127.0.0.1','--remote-debugging-port=9222',`--user-data-dir=/tmp/malbit-chrome-profile-${process.pid}`,'about:blank'],{stdio:['ignore','ignore','inherit']});
+const chromeArgs=['--headless','--no-sandbox','--disable-gpu','--disable-dev-shm-usage','--hide-scrollbars','--remote-debugging-address=127.0.0.1','--remote-debugging-port=9222',`--user-data-dir=/tmp/malbit-chrome-profile-${process.pid}`,'about:blank'];
+const launchChrome=()=>spawn(chromePath,chromeArgs,{stdio:['ignore','ignore','inherit']});
+let chrome=launchChrome();
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const json=async(url,options)=>{const response=await fetch(url,options);assert.ok(response.ok,`${url}: ${response.status}`);return response.json()};
-async function waitFor(url){for(let i=0;i<150;i++){try{return await json(url)}catch(error){await sleep(100)}}throw new Error(`Timed out: ${url}`)}
+async function waitFor(url){for(let i=0;i<300;i++){try{return await json(url)}catch(error){await sleep(100)}}throw new Error(`Timed out: ${url}`)}
 
 let socket;
 try{
-  await waitFor('http://127.0.0.1:9222/json/version');
+  try{
+    await waitFor('http://127.0.0.1:9222/json/version');
+  }catch(firstStartError){
+    chrome.kill('SIGTERM');
+    await sleep(250);
+    chrome=launchChrome();
+    await waitFor('http://127.0.0.1:9222/json/version');
+  }
   const target=await json('http://127.0.0.1:9222/json/new?http://127.0.0.1:4173',{method:'PUT'});
   socket=new WebSocket(target.webSocketDebuggerUrl);
   await new Promise((resolve,reject)=>{socket.addEventListener('open',resolve,{once:true});socket.addEventListener('error',reject,{once:true})});
@@ -341,5 +350,5 @@ try{
   console.log('travel mobile QA: 320/375/390/430px containment, hit-tested route + NPC word order + Hangul sign build with decoys, day/evening events, travel-won exchange, reload/back-resume, durable records, screenshots=15, errors=0');
 }finally{
   try{socket?.close()}catch(error){}
-  chrome.kill('SIGTERM');server.kill('SIGTERM');
+  chrome?.kill('SIGTERM');server.kill('SIGTERM');
 }
