@@ -63,6 +63,31 @@ test('the first travel route is a complete, reachable six-question journey', () 
   assert.equal(pack.scenes.at(-1).type, 'ending');
 });
 
+test('travel Korean and Japanese guidance stays faithful to the real route context', () => {
+  const scenes = Object.fromEntries(packs[0].scenes.map(scene => [scene.id, scene]));
+  const station = scenes['q-station'];
+  const destination = scenes['q-myeongdong'];
+  const thanks = scenes['q-thanks'];
+  assert.equal(station.question.script, '공항철도가 어디예요?');
+  assert.equal(station.question.prompt, '공항철도가 어디예요?');
+  assert.match(station.question.explanationI18n.ja, /空港鉄道/);
+  assert.match(station.question.explanationI18n.ja, /이\/가 어디예요\?/);
+  assert.equal(destination.title.ja, 'キオスクで明洞を探そう');
+  assert.match(destination.context.ja, /直通切符の券売機ではありません/);
+  assert.match(destination.question.explanationI18n.ja, /最終目的地/);
+  assert.match(destination.question.explanationI18n.ja, /서울역.*途中駅/);
+  assert.equal(thanks.question.choices.find(choice => choice.ko === '미안합니다.').ja, 'すみません。');
+
+  const hub = hubs[0];
+  assert.match(hub.events.daytime.explanation.ko, /명동 관광안내소가 어디에 있어요\?/);
+  assert.match(hub.events.daytime.explanation.ja, /「가」/);
+  assert.match(hub.events.daytime.explanation.ja, /「어디에 있어요\?」/);
+  assert.match(hub.events.stationSign.conversation.at(-1).support.ja, /ハングル音節ブロック/);
+  assert.match(hub.events.stationSign.instruction.ja, /ハングル音節ブロック/);
+  assert.equal(hub.events.menuBudget.conversation.at(-1).korean, '좋아요. 5,000원으로 몇 개까지 살 수 있는지 계산해 볼까요?');
+  assert.equal(hub.events.menuBudget.conversation.at(-1).support.ja, 'では、5,000ウォンで何個まで買えるか計算してみましょう。');
+});
+
 test('travel graphics use generated background, avatar, NPC, prop, and UI layers', () => {
   const pack=packs[0];
   assert.deepEqual(Object.keys(pack.assets),['backgrounds','avatars','npcs','props','ui']);
