@@ -31,28 +31,54 @@
     world:Object.freeze({background:'myeongdongMarket',props:Object.freeze(['myeongdongExchange'])}),
     events:Object.freeze({
       daytime:Object.freeze({
-        id:'guide-directions',from:540,to:1080,npc:'myeongdongGuide',reward:2500,itemReward:'hangulStampPostcard',
+        id:'guide-directions',interaction:'free-compose',from:540,to:1080,npc:'myeongdongGuide',reward:2500,partialReward:300,maxPartialRewards:3,itemReward:'hangulStampPostcard',
         badge:t('09:00–18:00 · 안내소 운영 시간','09:00–18:00・案内所の時間','09:00–18:00 · visitor information hours','09:00–18:00 · 咨询中心开放时间'),
         title:t('여행안내원에게 길을 묻자','案内スタッフに道を聞こう','Ask the guide for directions','向旅游咨询员问路'),
         speaker:t('명동 여행안내원','明洞の観光案内スタッフ','Myeongdong travel guide','明洞旅游咨询员'),
         dialogue:t('안녕하세요! 어디를 찾고 있어요?','「안녕하세요! 어디를 찾고 있어요?」どこを探していますか？','“안녕하세요! 어디를 찾고 있어요?” What are you looking for?','“안녕하세요! 어디를 찾고 있어요?” 你在找哪里？'),
-        instruction:t('단어 카드를 올바른 순서로 눌러 길을 물어보세요.','単語カードを正しい順番でタップして道を聞こう。','Tap the word cards in the right order to ask for directions.','按正确顺序点击词卡来问路。'),
-        prompt:t('“명동 관광안내소가 어디예요?”라는 문장을 만드세요.','「明洞観光案内所はどこですか？」という文を作ろう。','Build: “Where is the Myeongdong tourist information center?”','请排列出“明洞旅游咨询中心在哪里？”'),
-        tokens:Object.freeze(['어디예요?','명동','관광안내소가']),
-        answer:Object.freeze(['명동','관광안내소가','어디예요?']),
+        conversation:Object.freeze([
+          Object.freeze({role:'npc',korean:'안녕하세요! 여행 오셨어요?',support:t('안녕하세요! 여행 오셨어요?','こんにちは！旅行で来ましたか？','Hello! Are you traveling?','你好！你是来旅行的吗？')}),
+          Object.freeze({role:'player',korean:'네, 처음 왔어요.',support:t('네, 처음 왔어요.','はい、初めて来ました。','Yes, it is my first time here.','是的，我第一次来。')}),
+          Object.freeze({role:'npc',korean:'반가워요. 어디에서 왔어요?',support:t('반가워요. 어디에서 왔어요?','はじめまして。どこから来ましたか？','Nice to meet you. Where are you from?','很高兴见到你。你从哪里来？')}),
+          Object.freeze({role:'player',korean:'일본에서 왔어요.',support:t('일본에서 왔어요.','日本から来ました。','I came from Japan.','我从日本来。')}),
+          Object.freeze({role:'npc',korean:'어서 오세요! 이제 어디를 찾고 있어요?',support:t('어서 오세요! 이제 어디를 찾고 있어요?','ようこそ！今はどこを探していますか？','Welcome! What are you looking for now?','欢迎！你现在在找哪里？')})
+        ]),
+        instruction:t('단어·조사를 골라 원하는 말을 직접 만드세요. 모범 문장이 아니어도 뜻이 통하면 창의 보상을 받습니다.','単語・助詞を選んで自分の文を作ろう。模範文と違っても、意味が通じれば創作報酬を獲得できます。','Choose words and particles to build your own sentence. A meaningful alternative earns a creative reward.','选择单词和助词自由造句；即使不是标准答案，只要意思通顺也能获得创意奖励。'),
+        prompt:t('안내소의 위치를 물으면 큰 보상. 자기소개나 다른 자연스러운 질문도 작은 보상!','案内所の場所を尋ねると大きな報酬。自己紹介や自然な別の質問でも小さな報酬！','Ask for the information center for the main reward; a natural introduction or another question still earns a small reward.','询问咨询中心位置可获大奖；自然的自我介绍或其他问题也有小奖励。'),
+        tokens:Object.freeze(['안녕하세요!','저','는','일본','에서','왔어요.','명동','관광안내소','화장실','지하철역','카페','이','가','은','어디','에','있어요?','가고','싶어요.','감사합니다.']),
+        answer:Object.freeze(['명동','관광안내소','가','어디','에','있어요?']),
+        accepted:Object.freeze([
+          Object.freeze({pattern:'^(?:안녕하세요!\\s*)?(?:명동\\s*)?(?:관광안내소|화장실|지하철역|카페)(?:이|가|은|는)?\\s*어디(?:에)?\\s*있어요\\?$',response:t('네, 저쪽 큰길을 따라가면 있어요.','はい、あちらの大通りに沿って行くとあります。','Yes. Follow the main street over there.','有的，沿着那边的大路走就到了。')}),
+          Object.freeze({pattern:'^(?:안녕하세요!\\s*)?(?:저는\\s*)?일본에서\\s*왔어요\\.$',response:t('반가워요! 명동 여행을 환영해요.','はじめまして！明洞旅行へようこそ。','Nice to meet you! Welcome to Myeongdong.','很高兴见到你！欢迎来到明洞。')}),
+          Object.freeze({pattern:'^(?:명동\\s*)?(?:관광안내소|화장실|지하철역|카페)(?:에)?\\s*가고\\s*싶어요\\.$',response:t('좋아요. 제가 가는 길을 알려 드릴게요.','いいですね。行き方を案内します。','Great. I will show you how to get there.','好的，我来告诉你怎么走。')}),
+          Object.freeze({pattern:'^(?:안녕하세요!|감사합니다\\.)$',response:t('네, 반가워요! 천천히 말해도 괜찮아요.','はい、はじめまして！ゆっくり話して大丈夫です。','Nice to meet you! It is okay to speak slowly.','很高兴见到你！慢慢说也没关系。')})
+        ]),
         success:t('안내원이 을지로 쪽 안내소 방향을 가리키며 한글 스탬프 엽서를 건넸어요.','案内スタッフが乙支路側の案内所を示し、ハングルスタンプのポストカードをくれました。','The guide points toward the Eulji-ro information center and gives you a Hangul-stamp postcard.','咨询员指向乙支路一带的咨询中心，并送你一张韩文印章明信片。'),
         explanation:t('“명동 관광안내소가 어디예요?”는 장소를 정중하게 묻는 초급 표현입니다.','「명동 관광안내소가 어디예요?」は場所を丁寧に尋ねる初級表現です。','“명동 관광안내소가 어디예요?” politely asks where a place is.','“명동 관광안내소가 어디예요?” 是礼貌询问地点的初级表达。')
       }),
       evening:Object.freeze({
-        id:'vendor-order',from:1080,to:1980,npc:'myeongdongVendor',reward:2500,itemReward:'hotteokMemory',
+        id:'vendor-order',interaction:'free-compose',from:1080,to:1980,npc:'myeongdongVendor',reward:2500,partialReward:300,maxPartialRewards:3,itemReward:'hotteokMemory',
         badge:t('저녁 이벤트 · 거리 간식','夜イベント・屋台グルメ','Evening event · street snack','夜间活动 · 街头小吃'),
         title:t('거리 상인에게 주문하자','屋台で注文しよう','Order from the street vendor','向街头摊主点单'),
         speaker:t('명동 거리 상인','明洞の屋台スタッフ','Myeongdong street vendor','明洞街头摊主'),
         dialogue:t('어서 오세요! 무엇을 드릴까요?','「어서 오세요! 무엇을 드릴까요?」何にしますか？','“어서 오세요! 무엇을 드릴까요?” What would you like?','“어서 오세요! 무엇을 드릴까요?” 想要什么？'),
-        instruction:t('단어 카드를 올바른 순서로 눌러 주문하세요.','単語カードを正しい順番でタップして注文しよう。','Tap the word cards in the right order to order.','按正确顺序点击词卡来点单。'),
-        prompt:t('“호떡 한 개 주세요.”라는 문장을 만드세요.','「ホットクを1つください。」という文を作ろう。','Build: “One hotteok, please.”','请排列出“请给我一个糖饼。”'),
-        tokens:Object.freeze(['주세요.','호떡','한 개']),
-        answer:Object.freeze(['호떡','한 개','주세요.']),
+        conversation:Object.freeze([
+          Object.freeze({role:'npc',korean:'어서 오세요! 처음 오셨어요?',support:t('어서 오세요! 처음 오셨어요?','いらっしゃいませ！初めてですか？','Welcome! Is this your first visit?','欢迎！第一次来吗？')}),
+          Object.freeze({role:'player',korean:'네, 처음 왔어요.',support:t('네, 처음 왔어요.','はい、初めて来ました。','Yes, it is my first visit.','是的，第一次来。')}),
+          Object.freeze({role:'npc',korean:'호떡은 달고 따뜻해요. 괜찮아요?',support:t('호떡은 달고 따뜻해요. 괜찮아요?','ホットクは甘くて温かいです。大丈夫ですか？','Hotteok is sweet and warm. Is that okay?','糖饼又甜又热，可以吗？')}),
+          Object.freeze({role:'player',korean:'네, 좋아요!',support:t('네, 좋아요!','はい、いいです！','Yes, sounds good!','好，我喜欢！')}),
+          Object.freeze({role:'npc',korean:'몇 개 드릴까요?',support:t('몇 개 드릴까요?','いくつ差し上げましょうか？','How many would you like?','要几个？')})
+        ]),
+        instruction:t('음식·수량·조사를 자유롭게 골라 주문하세요. 다른 자연스러운 말도 작은 보상을 받습니다.','食べ物・数量・助詞を自由に選んで注文しよう。自然な別の表現にも小さな報酬があります。','Freely combine food, quantity, and particles. Other natural phrases earn a small reward too.','自由组合食物、数量和助词；其他自然表达也能获得小奖励。'),
+        prompt:t('호떡 한 개를 주문하면 큰 보상. 인사하거나 다른 음식을 자연스럽게 주문해도 작은 보상!','ホットクを1つ注文すると大きな報酬。あいさつや別の自然な注文でも小さな報酬！','Order one hotteok for the main reward; a greeting or another natural order still earns a small reward.','点一个糖饼可获大奖；问候或自然点其他食物也有小奖励。'),
+        tokens:Object.freeze(['안녕하세요!','호떡','떡볶이','물','을','를','한','두','개','주세요.','먹고','싶어요.','감사합니다.','괜찮아요.','매워요?']),
+        answer:Object.freeze(['호떡','한','개','주세요.']),
+        accepted:Object.freeze([
+          Object.freeze({pattern:'^(?:안녕하세요!\\s*)?(?:호떡|떡볶이)(?:을|를)?\\s*(?:한|두)\\s*개\\s*주세요\\.$',response:t('네, 바로 만들어 드릴게요!','はい、すぐにお作りします！','Sure, I will make it right away!','好的，马上给你做！')}),
+          Object.freeze({pattern:'^(?:호떡|떡볶이|물)(?:을|를)?\\s*주세요\\.$',response:t('네, 여기 있습니다.','はい、どうぞ。','Of course. Here you are.','好的，给你。')}),
+          Object.freeze({pattern:'^(?:호떡|떡볶이)(?:을|를)?\\s*먹고\\s*싶어요\\.$',response:t('좋아요! 따뜻하게 준비해 드릴게요.','いいですね！温かく用意します。','Great! I will prepare it warm.','好的！给你准备热乎的。')}),
+          Object.freeze({pattern:'^(?:안녕하세요!|감사합니다\\.|괜찮아요\\.|매워요\\?)$',response:t('천천히 말씀하세요. 제가 도와드릴게요.','ゆっくり話してください。お手伝いします。','Take your time. I will help you.','慢慢说，我会帮你的。')})
+        ]),
         success:t('상인이 따뜻한 호떡을 건네고, 명동의 저녁 추억이 여행 가방에 저장됐어요.','店員が温かいホットクを渡し、明洞の夜の思い出が旅バッグに入りました。','The vendor hands you a warm hotteok, saving an evening Myeongdong memory in your bag.','摊主递给你热乎乎的糖饼，明洞夜晚回忆已存入旅行包。'),
         explanation:t('“물건 + 수량 + 주세요” 순서로 말하면 원하는 것을 정중하게 주문할 수 있습니다.','「品物＋数量＋주세요」の順で、欲しいものを丁寧に注文できます。','Use “item + quantity + 주세요” to order politely.','按“物品＋数量＋주세요”的顺序可以礼貌点单。')
       }),
@@ -62,6 +88,11 @@
         title:t('명동역 표지판을 완성하자','明洞駅の標識を完成させよう','Complete the Myeongdong Station sign','完成明洞站标牌'),
         speaker:t('명동 여행안내원','明洞の観光案内スタッフ','Myeongdong travel guide','明洞旅游咨询员'),
         dialogue:t('표지판의 한글이 흩어졌어요! 명동역을 완성해 볼까요?','標識のハングルがばらばらになりました！「明洞駅」を完成させてみましょう。','The Hangul on the sign is scattered! Shall we complete “Myeongdong Station”?','标牌上的韩文字散开了！来完成“明洞站”吧。'),
+        conversation:Object.freeze([
+          Object.freeze({role:'npc',korean:'표지판을 읽을 수 있어요?',support:t('표지판을 읽을 수 있어요?','標識を読めますか？','Can you read the sign?','你能读这个标牌吗？')}),
+          Object.freeze({role:'player',korean:'조금 읽을 수 있어요.',support:t('조금 읽을 수 있어요.','少し読めます。','I can read a little.','我能读一点。')}),
+          Object.freeze({role:'npc',korean:'좋아요! 명동역 세 글자를 찾아볼까요?',support:t('좋아요! 명동역 세 글자를 찾아볼까요?','いいですね！「명동역」の3文字を探してみましょう。','Great! Shall we find the three syllables in 명동역?','很好！来找出“명동역”这三个字吧。')})
+        ]),
         instruction:t('필요한 세 글자만 골라 “명동역” 순서로 놓으세요. 헷갈리는 글자는 남겨도 됩니다.','必要な3文字だけを選び、「명동역」の順に並べよう。まぎらわしい文字は残してかまいません。','Choose only the three needed syllables and arrange them as “명동역”. Leave the decoys behind.','只选出需要的三个字，按“명동역”的顺序排列；干扰字可以留下。'),
         prompt:t('“명동역”을 완성해 6번 출구 표지를 켜세요.','「명동역」を完成させ、6番出口の標識を点灯させよう。','Complete “명동역” and light the Exit 6 sign.','完成“명동역”，点亮6号出口标牌。'),
         signLabel:t('명동역 · 6번 출구','明洞駅・6番出口','Myeongdong Station · Exit 6','明洞站 · 6号出口'),

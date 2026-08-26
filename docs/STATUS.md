@@ -6,7 +6,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 - Production: GitHub Pages static PWA
 - Production release: v52 · Myeongdong NPC hub, word-order quest, and mobile-safe Travel UI
-- Current candidate: v53 · Myeongdong Station Hangul sign-build quest
+- Current candidate: v54 · multi-turn NPC dialogue, free composition, and mobile gameplay repair
 - Core content: 2,088 original items
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
@@ -22,8 +22,11 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - generated pixel-art backgrounds, interchangeable player skins, NPCs, props/rewards, and UI tiles
   composed as separate layers instead of emoji or characters baked into scenery
 - Myeongdong day/evening hub with separate street background, guide/vendor NPCs, exchange prop,
-  four collectible images, NPC dialogue, shuffled word order, Hangul sign building with decoys,
+  four collectible images, multi-turn NPC dialogue, free Korean composition, Hangul sign building with decoys,
   and a travel-won-only exchange
+- Korean-only answer choices before grading, selected/correct translation reveal after grading, and
+  evidence → distractor → solving-tip instructor feedback in Travel and Game modes
+- Game battle rendering preserves the learner's scroll position instead of forcing smooth scrolling
 - Travel UI containment contract: nine-slice variable-height frames, safe content insets, wrapping,
   44px touch targets, and automated 320/375/390/430px overflow/overlap checks
 - first-minute dialogue, sign-hotspot, and ticket-machine actions with immediate world reactions,
@@ -36,7 +39,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 우선순위
 
-1. 명동 허브의 다음 학습 변화구로 실제 메뉴 가격 읽기를 추가하되, 표지판 조합과 겹치지
+1. 명동 허브의 다음 학습 변화구로 실제 메뉴 가격 읽기를 추가하되, 자유 작문·표지판 조합과 겹치지
    않는 입력 방식과 작은 여행 원 소비 결정을 연결한다.
 2. 첫 여행 코스와 명동 NPC 대화의 정답·해설·일본어 번역을 문맥 단위로 표본 검수한다.
 3. 다음 역을 만들기 전에 첫 코스 완료율·명동 진입률·수집품 교환률을 개인정보 없이 로컬
