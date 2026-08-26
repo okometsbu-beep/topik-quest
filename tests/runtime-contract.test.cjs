@@ -55,6 +55,8 @@ test('game feedback stays scroll-stable and teaches a repeatable solving method'
   assert.match(topik, /시간이 끝나 보기를 고르지 못했습니다/);
   assert.match(topik, /時間切れで選択できませんでした/);
   assert.match(styles, /body\.tq-game-active #screen[\s\S]{0,180}overflow-anchor:none/);
+  assert.match(styles, /\.malbitBattleScreen>\.t1hud\{display:grid/);
+  assert.match(styles, /\.malbitBattleScreen>\.t1hud>\.t1ModeLang[\s\S]{0,120}width:44px;height:44px/);
 });
 
 test('one command bumps bootstrap, worker, and every literal asset URL', () => {
