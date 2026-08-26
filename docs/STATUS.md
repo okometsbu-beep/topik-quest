@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v52 · Myeongdong NPC hub, word-order quest, and mobile-safe Travel UI
-- Current candidate: v53 · Myeongdong Station Hangul sign-build quest
+- Production release: v53 · Myeongdong station-sign quest and layered pixel-art reward
+- Current candidate: v54 · multi-turn NPC dialogue, free composition, and mobile gameplay repair
 - Core content: 2,088 original items
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
@@ -22,8 +22,11 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - generated pixel-art backgrounds, interchangeable player skins, NPCs, props/rewards, and UI tiles
   composed as separate layers instead of emoji or characters baked into scenery
 - Myeongdong day/evening hub with separate street background, guide/vendor NPCs, exchange prop,
-  four collectible images, NPC dialogue, shuffled word order, Hangul sign building with decoys,
+  four collectible images, multi-turn NPC dialogue, free Korean composition, Hangul sign building with decoys,
   and a travel-won-only exchange
+- Korean-only answer choices before grading, selected/correct translation reveal after grading, and
+  evidence → distractor → solving-tip instructor feedback in Travel and Game modes
+- Game battle rendering preserves the learner's scroll position instead of forcing smooth scrolling
 - Travel UI containment contract: nine-slice variable-height frames, safe content insets, wrapping,
   44px touch targets, and automated 320/375/390/430px overflow/overlap checks
 - first-minute dialogue, sign-hotspot, and ticket-machine actions with immediate world reactions,
@@ -36,7 +39,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 우선순위
 
-1. 명동 허브의 다음 학습 변화구로 실제 메뉴 가격 읽기를 추가하되, 표지판 조합과 겹치지
+1. 명동 허브의 다음 학습 변화구로 실제 메뉴 가격 읽기를 추가하되, 자유 작문·표지판 조합과 겹치지
    않는 입력 방식과 작은 여행 원 소비 결정을 연결한다.
 2. 첫 여행 코스와 명동 NPC 대화의 정답·해설·일본어 번역을 문맥 단위로 표본 검수한다.
 3. 다음 역을 만들기 전에 첫 코스 완료율·명동 진입률·수집품 교환률을 개인정보 없이 로컬
@@ -54,22 +57,21 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 결제 버튼·가격·상품 카드·유료 잠금·Premium·Plus·구독·업셀·외부 결제 링크를 앱 어디에도
   만들지 않는다. 별도 수익화 논의와 사용자의 명시적 승인 뒤에만 재검토한다.
 
-## v53 검증 및 배포 후보
+## v54 검증 및 배포 후보
 
-- GitHub CI `npm run check`, 51개 JavaScript 구문, 2,088개 원본 문제, runtime v53 무결성 통과
-- GitHub CI Chrome에서 실제 버튼 입력으로 공항부터 명동까지 세 교통 경로를 완주하고,
-  낮 안내원 NPC 순서 맞추기 뒤에 정답 3음절과 방해 글자 2개를 구분하는 표지판 조립,
-  저녁 노점 NPC 전환·수집품 교환·재접속을 검사했다.
-- 320·375·390·430px에서 가로 넘침, 화면 밖 터치 요소, 44px 미만 조작부, 흐름 요소 겹침을
-  자동으로 차단했고 15장의 실제 화면 중 표지판 입력·정답·상점 화면을 사람이 확인했다.
-- 새 수집 보상은 이모지 대신 투명 배경 도트 그래픽으로 생성했고, 기존 배경·캐릭터·NPC·상점
-  레이어와 분리해 합성한다. 표지판 문자는 이미지에 굽지 않고 접근 가능한 HTML로 표시한다.
-- `malbitStoryV1` 저장 루트와 기존 episode 필드를 유지하고 새 퀘스트만 하위 필드에 추가했다.
-  단어장·게임·복습 기록을 플레이 전후 비교해 모두 보존했다.
-- 결제 버튼·가격·유료 잠금·API 키를 추가하지 않음
-- 변경 PR: https://github.com/okometsbu-beep/topik-quest/pull/50
+- runtime v54 무결성, 51개 JavaScript 구문, 2,088개 원본 문제와 전체 47개 테스트를 통과했다.
+- 실제 Chrome 390×844에서 공항부터 명동까지 완주한 뒤 낮 NPC 다섯 차례 대화, 자유 작문,
+  검수된 대체 문장 300 여행 원 보상, 모범 문장 2,500 여행 원 보상을 차례로 확인했다.
+- 여행 선택지는 채점 전 한국어만 보이고 채점 뒤 선택 답·정답에만 번역이 열린다. 해설은
+  정답 근거 → 선택 답/시간초과 분석 → 문제풀이 요령 순서로 Travel과 Game 모두 확인했다.
+- 320·375·390·430px Game 화면과 390×844 Travel 화면에서 국기 버튼, 가운데 맞춘 배경,
+  가변 높이 카드, 44px 터치 영역을 점검했다. 최종 320px HUD의 화면 밖 요소는 0개다.
+- 강제 `smooth` 스크롤을 제거하고 스크롤 앵커를 고정해 Game 문제 전환의 덜컥임을 막았다.
+- `malbitStoryV1`과 기존 단어장·게임·복습 저장 루트를 유지하고 새 작문 기록만 하위 필드에
+  추가했다. 결제 버튼·가격·유료 잠금·API 키는 추가하지 않았다.
+- 변경 PR: https://github.com/okometsbu-beep/topik-quest/pull/51
 - 배포 주소: https://okometsbu-beep.github.io/topik-quest/
-- 되돌리기 기준: v52 main `676ee9b2a94a9b7ff22551aefc7e8eda3e5caf44`
+- 되돌리기 기준: v53 main `51bf5d9b901f3e6b80d44948df07ed7c69d70159`
 
 ## 초기 두 바퀴 사전 검증
 

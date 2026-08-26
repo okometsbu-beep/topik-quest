@@ -43,6 +43,22 @@ test('service worker installs a small shell and deletes only MALBIT caches', () 
   assert.doesNotMatch(worker, /keys\.filter\(key=>key!==CACHE\)/);
 });
 
+test('game feedback stays scroll-stable and teaches a repeatable solving method', () => {
+  const growth = read('product-growth.js');
+  const topik = read('topik1.js');
+  const styles = read('styles.css');
+  const focus = growth.match(/function focusBattleCard\(\)\{[^\n]*/)?.[0] || '';
+  assert.ok(focus, 'battle focus hook should remain explicit');
+  assert.doesNotMatch(focus, /scrollIntoView|scrollTo/,'rendering a battle must not move the page automatically');
+  assert.match(topik, /function gameTutorMarkup/);
+  assert.match(topik, /gameTutorMarkup\(q,sel\)/);
+  assert.match(topik, /시간이 끝나 보기를 고르지 못했습니다/);
+  assert.match(topik, /時間切れで選択できませんでした/);
+  assert.match(styles, /body\.tq-game-active #screen[\s\S]{0,180}overflow-anchor:none/);
+  assert.match(styles, /body\.tq-game-active #screen \.t1hud\{display:grid/);
+  assert.match(styles, /body\.tq-game-active #screen \.t1hud>\.t1ModeLang[\s\S]{0,120}width:44px;height:44px/);
+});
+
 test('one command bumps bootstrap, worker, and every literal asset URL', () => {
   const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'malbit-version-'));
   try {

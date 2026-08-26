@@ -92,10 +92,13 @@ test('Myeongdong hub is a layered, localized, time-aware learning game extension
   const hub=hubs[0];
   assert.equal(hub.routeId,packs[0].id);
   assert.deepEqual(Object.keys(hub.events),['daytime','evening','stationSign']);
-  assert.deepEqual(Array.from(hub.events.daytime.answer),['명동','관광안내소가','어디예요?']);
-  assert.deepEqual(Array.from(hub.events.evening.answer),['호떡','한 개','주세요.']);
-  assert.notDeepEqual(Array.from(hub.events.daytime.tokens),Array.from(hub.events.daytime.answer),'word-order mission must start shuffled');
-  assert.notDeepEqual(Array.from(hub.events.evening.tokens),Array.from(hub.events.evening.answer),'evening word-order mission must start shuffled');
+  assert.equal(hub.events.daytime.interaction,'free-compose');
+  assert.equal(hub.events.evening.interaction,'free-compose');
+  assert.deepEqual(Array.from(hub.events.daytime.answer),['명동','관광안내소','가','어디','에','있어요?']);
+  assert.deepEqual(Array.from(hub.events.evening.answer),['호떡','한','개','주세요.']);
+  assert.ok(hub.events.daytime.tokens.length>=20,'day dialogue needs a broad word and particle bank');
+  assert.ok(hub.events.evening.tokens.length>=15,'evening dialogue needs varied order vocabulary');
+  assert.ok(hub.events.daytime.accepted.length>=4&&hub.events.evening.accepted.length>=4,'meaningful alternative sentences need partial-reward rules');
   assert.equal(hub.events.stationSign.interaction,'sign-build');
   assert.deepEqual(Array.from(hub.events.stationSign.answer),['명','동','역']);
   assert.ok(hub.events.stationSign.tokens.length>hub.events.stationSign.answer.length,'sign build needs decoy syllables');
@@ -103,7 +106,11 @@ test('Myeongdong hub is a layered, localized, time-aware learning game extension
   assert.deepEqual(Array.from(hub.exchange,item=>item.cost),[2000,3000,3500,5000]);
   assert.deepEqual(Array.from(hub.exchange,item=>item.unlock),['always','evening','sign','quest']);
   for(const field of ['title','subtitle','location'])assertI18n(hub[field],`hub.${field}`);
-  for(const event of Object.values(hub.events))for(const field of ['badge','title','speaker','dialogue','instruction','prompt','success','explanation'])assertI18n(event[field],`hub.${event.id}.${field}`);
+  for(const event of Object.values(hub.events)){
+    for(const field of ['badge','title','speaker','dialogue','instruction','prompt','success','explanation'])assertI18n(event[field],`hub.${event.id}.${field}`);
+    assert.ok(event.conversation.length>=3,`${event.id} should exchange several NPC/player turns before the task`);
+    for(const [index,turn] of event.conversation.entries()){assert.ok(turn.korean,`${event.id}.conversation.${index}.korean is missing`);assertI18n(turn.support,`${event.id}.conversation.${index}.support`)}
+  }
   for(const item of hub.exchange){assertI18n(item.name,`hub.${item.id}.name`);assertI18n(item.detail,`hub.${item.id}.detail`)}
   for(const [group,assets] of Object.entries(hub.assets))for(const [key,file] of Object.entries(assets)){
     assert.ok(fs.existsSync(path.join(root,file)),`hub ${group}.${key} is missing`);
@@ -178,6 +185,9 @@ test('Travel Mode is independent from Full Mock and wired into the ordered runti
   assert.match(runtime, /function cleanScript/);
   assert.match(runtime, /function resetViewport/);
   assert.match(runtime, /function resetTransient/);
+  assert.match(runtime, /function compositionResult/);
+  assert.match(runtime, /partialReward/);
+  assert.match(runtime, /window\.LANGS\?\.\[lang\(\)\]\?\.flag/);
   assert.match(runtime, /travelAnswers \$\{h\(interaction\)\} \$\{answer\?'answered'/);
   assert.match(runtime, /replace\(\/\(\^\|\\n\)\[\^:\\n\]/);
   assert.match(runtime, /S\.view==='travel'\|\|S\.view==='travelPlay'/);
@@ -284,9 +294,10 @@ test('the travel runtime can complete, resume, replay, and record a wrong answer
   assert.match(screen.innerHTML,/여행안내원에게 길을 묻자/);
   runtime.malbitTravelTalk();
   assert.match(screen.innerHTML,/NPC TALK/);
+  assert.match(screen.innerHTML,/NPC TALK · 1\/5/);
   runtime.malbitTravelOrderStart();
-  assert.match(screen.innerHTML,/WORD ORDER · NPC TALK/);
-  for(const index of [1,2,0])runtime.malbitTravelOrderAdd(index);
+  assert.match(screen.innerHTML,/FREE COMPOSE · NPC TALK/);
+  for(const index of [6,7,12,14,15,16])runtime.malbitTravelOrderAdd(index);
   runtime.malbitTravelOrderSubmit();
   const afterHubQuest=JSON.parse(runtimeStorage.get('malbitStoryV1')).episodes[pack.id];
   assert.equal(afterHubQuest.myeongdong.quests['guide-directions'].completed,true);
