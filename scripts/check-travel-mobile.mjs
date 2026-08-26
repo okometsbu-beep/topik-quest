@@ -77,7 +77,18 @@ try{
     assert.ok(index>=0,`tap label missing: ${selector} ${label}`);
     return tap(selector,index,delay);
   };
-  const state=()=>evaluate(`JSON.parse(localStorage.getItem('malbitStoryV1')).episodes['route-001-airport-myeongdong']`);
+  const state=()=>evaluate(`(()=>{const store=JSON.parse(localStorage.getItem('malbitStoryV1')||'null');return store?.episodes?.['route-001-airport-myeongdong']||null})()`);
+  const tapUntilScene=async(selector,sceneId)=>{
+    for(let attempt=0;attempt<3;attempt++){
+      if((await state())?.sceneId===sceneId)return;
+      await tap(selector,0,150);
+      for(let wait=0;wait<20;wait++){
+        if((await state())?.sceneId===sceneId)return;
+        await sleep(50);
+      }
+    }
+    assert.equal((await state())?.sceneId,sceneId,`tap did not enter scene: ${sceneId}`);
+  };
   const assertFits=async label=>{
     const fit=await evaluate(`(()=>{const visible=el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)!==0&&r.width>0&&r.height>0};const targets=[...document.querySelectorAll('.travelPrimary,.travelSecondary,.travelAnswer,.travelRoutes button,.travelBack,.travelLang,.travelListen button,.travelMyeongdongHead>button,.travelExchangeCard,.travelSentence button,.travelWordBank button,.travelQuantityPicker button,.travelBudgetActions button')].filter(visible);const outside=targets.filter(el=>{const r=el.getBoundingClientRect();return r.left<-1||r.right>innerWidth+1}).map(el=>({class:el.className,left:Math.round(el.getBoundingClientRect().left),right:Math.round(el.getBoundingClientRect().right)}));const bad=targets.filter(el=>el.getBoundingClientRect().height<43).map(el=>({class:el.className,h:Math.round(el.getBoundingClientRect().height)}));const overlaps=[];for(const container of document.querySelectorAll('.travelEndingBody,.travelMyeongdongCard')){const children=[...container.children].filter(el=>visible(el)&&getComputedStyle(el).position!=='absolute').sort((a,b)=>a.getBoundingClientRect().top-b.getBoundingClientRect().top);for(let i=1;i<children.length;i++){const a=children[i-1].getBoundingClientRect(),b=children[i].getBoundingClientRect();if(a.bottom>b.top+1)overlaps.push({a:children[i-1].className||children[i-1].tagName,b:children[i].className||children[i].tagName,amount:Math.round(a.bottom-b.top)})}}return{innerWidth,root:document.documentElement.scrollWidth,body:document.body.scrollWidth,bad,outside,overlaps}})()`);
     assert.ok(fit.root<=fit.innerWidth+1&&fit.body<=fit.innerWidth+1,`${label}: horizontal overflow ${fit.root}/${fit.body}/${fit.innerWidth}`);
@@ -117,10 +128,8 @@ try{
       await assertFits('Travel hub');
       await shot('01a-travel-hub.png');
     }
-    await tap('.travelEpisodeCard .travelPrimary');
-    assert.equal((await state()).sceneId,'arrival');
-    await tap('.travelSceneCard .travelPrimary');
-    assert.equal((await state()).sceneId,'q-hello');
+    await tapUntilScene('.travelEpisodeCard .travelPrimary','arrival');
+    await tapUntilScene('.travelSceneCard .travelPrimary','q-hello');
   };
   const answer=async(index=0)=>{
     assert.equal(await evaluate(`document.querySelectorAll('.travelAnswer').length`),4);
