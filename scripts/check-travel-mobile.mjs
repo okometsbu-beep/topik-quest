@@ -76,8 +76,8 @@ try{
     assert.deepEqual(fit.outside,[],`${label}: interactive element leaves viewport`);
     assert.deepEqual(fit.overlaps,[],`${label}: flow elements overlap`);
   };
-  const startFresh=async()=>{
-    await evaluate(`localStorage.removeItem('malbitStoryV1');S.lang='ja';S.view='home';save();render()`);
+  const startFresh=async(seedMetrics=false)=>{
+    await evaluate(`localStorage.removeItem('malbitStoryV1');${seedMetrics?"localStorage.setItem('malbitStoryV1',JSON.stringify({version:1,activePackId:'route-001-airport-myeongdong',episodes:{},metrics:{version:1,routeStarts:5,routeCompletions:4,myeongdongEntries:3,exchangeSessions:2}}));":''}S.lang='ja';S.view='home';save();render()`);
     assert.ok(await evaluate(`!!document.querySelector('.tqV9Mode.travel img[src*="airport-map.webp"]')`),'Travel entry must use generated art instead of emoji');
     let opened=false;
     for(let attempt=0;attempt<3&&!opened;attempt++){
@@ -86,6 +86,13 @@ try{
     }
     assert.ok(opened,'Travel entry touch must open the hub');
     assert.equal(await evaluate(`document.querySelector('.travelHubHead h1')?.textContent`),'旅行モード');
+    if(seedMetrics){
+      assert.equal(await evaluate(`document.querySelectorAll('.travelMetric').length`),4);
+      assert.deepEqual(await evaluate(`[...document.querySelectorAll('.travelMetric b')].map(node=>node.textContent)`),['5','80%','75%','67%']);
+      assert.match(await evaluate(`document.querySelector('.travelMetrics>p')?.textContent`),/この端末内だけ.*外部へ送信しません/);
+      const metricFit=await evaluate(`(()=>{const card=document.querySelector('.travelMetrics'),grid=document.querySelector('.travelMetricsGrid');return{card:card.scrollWidth-card.clientWidth,grid:grid.scrollWidth-grid.clientWidth}})()`);
+      assert.ok(metricFit.card<=1&&metricFit.grid<=1,`local metrics overflow: ${JSON.stringify(metricFit)}`);
+    }
     if(!fs.existsSync(path.join(out,'01a-travel-hub.png'))){
       await assertFits('Travel hub');
       await shot('01a-travel-hub.png');
@@ -163,7 +170,7 @@ try{
   const durableBefore=await evaluate(`({vocab:JSON.parse(localStorage.getItem('topikQuestV8')).vocab,gameUnlock:JSON.parse(localStorage.getItem('topikQuestV8')).gameUnlock,game:localStorage.getItem('topikQuestTopik1GameV1'),review:localStorage.getItem('malbitWrongReviewV3')})`);
 
   await evaluate(`S.view='home';save();render()`);await sleep(1000);await shot('01-game-entry.png');
-  await startFresh();
+  await startFresh(true);
   assert.equal(await evaluate(`document.querySelector('.travelLang')?.textContent.trim()`),'🇯🇵','Travel Mode language control must remain a flag');
   await setViewport(375,667);
   const firstViewport=await evaluate(`(()=>{const first=document.querySelector('.travelAnswer').getBoundingClientRect();return{top:Math.round(first.top),bottom:Math.round(first.bottom),height:innerHeight,overflow:document.documentElement.scrollWidth-innerWidth}})()`);

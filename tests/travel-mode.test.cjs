@@ -216,6 +216,10 @@ test('Travel Mode is independent from Full Mock and wired into the ordered runti
   assert.match(runtime, /function cleanScript/);
   assert.match(runtime, /function resetViewport/);
   assert.match(runtime, /function resetTransient/);
+  assert.match(runtime, /function normalizeMetrics/);
+  assert.match(runtime, /window\.malbitTravelMetrics/);
+  assert.match(runtime, /localOnly:true/);
+  assert.doesNotMatch(runtime, /navigator\.sendBeacon|XMLHttpRequest|\bfetch\s*\(/);
   assert.match(runtime, /function compositionResult/);
   assert.match(runtime, /partialReward/);
   assert.match(runtime, /window\.LANGS\?\.\[lang\(\)\]\?\.flag/);
@@ -275,8 +279,13 @@ test('the travel runtime can complete, resume, replay, and record a wrong answer
   assert.match(screen.innerHTML, /여행모드/);
   assert.match(screen.innerHTML, /서울역/);
   assert.match(screen.innerHTML, /내 여행자/);
+  assert.match(screen.innerHTML, /이 기기의 여행 기록/);
+  assert.match(screen.innerHTML, /외부로 전송하지 않습니다/);
+  assert.equal(runtime.malbitTravelMetrics().routeStarts,0);
   runtime.malbitTravelStart('route-001-airport-myeongdong', false);
   assert.match(screen.innerHTML, /한국 여행이 시작됐다/);
+  assert.equal(runtime.malbitTravelMetrics().routeStarts,1);
+  assert.equal(runtime.malbitTravelMetrics().completionRate,0);
   runtime.malbitTravelNext();
   assert.match(screen.innerHTML, /MISSION 1 \/ 6/);
   runtime.malbitTravelToggleTranscript();
@@ -313,6 +322,10 @@ test('the travel runtime can complete, resume, replay, and record a wrong answer
   const completedStore = JSON.parse(runtimeStorage.get('malbitStoryV1'));
   assert.ok(completedStore.avatar.unlocked.includes('seoul-sunset'));
   assert.ok(completedStore.avatar.unlocked.includes('hanbok-night'));
+  assert.equal(completedStore.metrics.routeStarts,1);
+  assert.equal(completedStore.metrics.routeCompletions,1);
+  assert.equal(runtime.malbitTravelMetrics().completionRate,100);
+  assert.equal(runtime.malbitTravelMetrics().myeongdongEntryRate,0);
 
   completed.clockMinutes=600;
   const storeAtMyeongdong=JSON.parse(runtimeStorage.get('malbitStoryV1'));
@@ -322,6 +335,9 @@ test('the travel runtime can complete, resume, replay, and record a wrong answer
   runtime.malbitTravelMyeongdongOpen();
   assert.match(screen.innerHTML,/명동 여행 허브/);
   assert.match(screen.innerHTML,/게임 재화 전용 · 결제 없음/);
+  assert.equal(runtime.malbitTravelMetrics().myeongdongEntries,1);
+  assert.equal(runtime.malbitTravelMetrics().myeongdongEntryRate,100);
+  assert.equal(runtime.malbitTravelMetrics().collectibleExchangeRate,0);
   assert.match(screen.innerHTML,/여행안내원에게 길을 묻자/);
   runtime.malbitTravelTalk();
   assert.match(screen.innerHTML,/NPC TALK/);
@@ -355,6 +371,9 @@ test('the travel runtime can complete, resume, replay, and record a wrong answer
   assert.ok(afterExchange.inventory.includes('namsanCharm'));
   assert.equal(afterExchange.spent.at(-1).currency,'travel-won');
   assert.match(screen.innerHTML,/여행 가방에 저장/);
+  assert.equal(runtime.malbitTravelMetrics().myeongdongEntries,1,'reopening the hub must not double-count one route');
+  assert.equal(runtime.malbitTravelMetrics().exchangeSessions,1);
+  assert.equal(runtime.malbitTravelMetrics().collectibleExchangeRate,100);
 
   runtime.malbitTravelBack();
   runtime.malbitTravelStart(pack.id, false);
@@ -363,6 +382,11 @@ test('the travel runtime can complete, resume, replay, and record a wrong answer
   assert.match(screen.innerHTML, /ROUTE CLEAR/);
 
   runtime.malbitTravelRestart(pack.id);
+  assert.equal(runtime.malbitTravelMetrics().routeStarts,2);
+  assert.equal(runtime.malbitTravelMetrics().routeCompletions,1);
+  assert.equal(runtime.malbitTravelMetrics().completionRate,50);
+  assert.equal(runtime.malbitTravelMetrics().myeongdongEntryRate,100);
+  assert.equal(runtime.malbitTravelMetrics().collectibleExchangeRate,100);
   runtime.malbitTravelNext();
   const replay = JSON.parse(runtimeStorage.get('malbitStoryV1')).episodes[pack.id];
   assert.ok(replay.inventory.includes('airportMap'),'restart keeps earned collection items');

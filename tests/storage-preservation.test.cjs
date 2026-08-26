@@ -45,7 +45,7 @@ test('an update recovers vocabulary, game, review, and travel roots from the dur
     vocab: [{ text: '여행', meanings: { ja: '旅行' }, repetitions: 3 }],
     transCache: { disposable: 'not copied into recovery' }
   };
-  const travel = { version: 1, activePackId: 'case-001-missing-ticket', episodes: { 'case-001-missing-ticket': { completed: true, bestScore: 5 } } };
+  const travel = { version: 1, activePackId: 'case-001-missing-ticket', metrics: { version: 1, routeStarts: 3, routeCompletions: 2, myeongdongEntries: 2, exchangeSessions: 1 }, episodes: { 'case-001-missing-ticket': { completed: true, bestScore: 5 } } };
   const snapshot = {
     schema: 1,
     storage: {
@@ -63,6 +63,7 @@ test('an update recovers vocabulary, game, review, and travel roots from the dur
   assert.deepEqual(JSON.parse(storage.get('topikQuestTopik1GameV1')).profiles, { 1: { unlock: 6 } });
   assert.equal(JSON.parse(storage.get('malbitWrongReviewV3')).items.length, 1);
   assert.equal(JSON.parse(storage.get('malbitStoryV1')).episodes['case-001-missing-ticket'].bestScore, 5);
+  assert.deepEqual(JSON.parse(storage.get('malbitStoryV1')).metrics, travel.metrics);
 });
 
 test('a suspicious empty core cannot overwrite a richer learner record', () => {
