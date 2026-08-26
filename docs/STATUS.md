@@ -5,7 +5,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v55 · Myeongdong Korean price-board budget quest
+- Production release: v56 · first-route context and Japanese coaching audit
 - Current candidate: none
 - Core content: 2,088 original items
 - Primary user: Japanese-speaking complete Korean beginner
@@ -39,10 +39,10 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 우선순위
 
-1. 첫 여행 코스와 명동 NPC 대화의 정답·해설·일본어 번역을 문맥 단위로 표본 검수한다.
-2. 다음 역을 만들기 전에 첫 코스 완료율·명동 진입률·수집품 교환률을 개인정보 없이 로컬
+1. 다음 역을 만들기 전에 첫 코스 완료율·명동 진입률·수집품 교환률을 개인정보 없이 로컬
    계측한다.
-3. 명동 가격 퀘스트의 완료율과 여행 원 잔액을 확인한 뒤 다음 지역·상점 밸런스를 설계한다.
+2. 명동 가격 퀘스트의 완료율과 여행 원 잔액을 확인한 뒤 다음 지역·상점 밸런스를 설계한다.
+3. 실제 학습 데이터를 확인한 뒤에만 다음 역의 퀘스트 형식과 보상 수치를 확정한다.
 
 ## 이번 운영 변경
 
@@ -56,20 +56,20 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 결제 버튼·가격·상품 카드·유료 잠금·Premium·Plus·구독·업셀·외부 결제 링크를 앱 어디에도
   만들지 않는다. 별도 수익화 논의와 사용자의 명시적 승인 뒤에만 재검토한다.
 
-## v55 검증 및 배포
+## v56 검증 및 배포
 
-- 명동 상인과 5턴 대화한 뒤 한국어 가격표 3종을 읽고, 5,000 여행 원 안에서 2,000원짜리
-  호떡의 최대 수량 2개를 수량 조절기로 계산하는 후속 퀘스트를 추가했다.
-- 정답 성공 시 4,000 여행 원을 한 번만 차감하고 `street-food` 소비 기록·수량·잔액을
-  기존 `malbitStoryV1` 하위에 저장한다. 기존 단어장·게임·복습·여행 키는 바꾸지 않았다.
-- 가격은 2026년 공개 명동 노점 가이드의 범위 안에서 학습용 예시로 사용하고, 가게마다
-  달라질 수 있음을 화면과 출처에 함께 표시했다.
-- 전체 `npm run check`와 실제 Chrome 모바일 완주 검사를 통과했다. 320·375·390·430px에서
-  가격표·수량 버튼·결과 영수증의 화면 밖 요소, 겹침, 44px 미만 터치 영역, 콘솔 오류가 0개다.
-- 실제 결제·상품 가격·유료 잠금·API 키는 추가하지 않았다.
-- 변경 PR: https://github.com/okometsbu-beep/topik-quest/pull/52
+- 첫 여행 코스 6문제와 명동 NPC 이벤트를 표본 검수해 실제 대상과 어긋난 공항철도 길찾기,
+  명동 직통 발권으로 오해할 수 있던 키오스크 문맥, 어색한 일본어·NPC 표현을 교정했다.
+- 공항철도는 질문·표지·풀이를 일치시키고, 명동은 최종 목적지이며 서울역은 철도 경로의
+  환승역이라는 근거를 일본어 해설에 명시했다.
+- 명동 안내소 작문은 `가 + 어디에 있어요?` 구조를 설명하고, `명·동·역`은 일본어에서
+  세 개의 한글 음절 블록이라고 안내한다. 상인의 예산 질문도 자연스러운 계산 제안으로 바꿨다.
+- 전체 48개 테스트와 Chrome 모바일 완주 검사를 통과했다. 320·375·390·430px에서
+  21개 화면 증거, 화면 넘침·겹침·콘솔 오류 0개를 확인했다.
+- 저장 구조·보상·게임 밸런스·결제 UI·API 키는 변경하지 않았다.
+- 변경 PR: https://github.com/okometsbu-beep/topik-quest/pull/53
 - 배포 주소: https://okometsbu-beep.github.io/topik-quest/
-- 되돌리기 기준: v54 main `ab4a5b1a8c20c115f372b2f1f1e06c0bb7bfd385`
+- 되돌리기 기준: v55 main `ee7811a9606eac31eb1e7787668781f4d3e2317f`
 
 ## 초기 두 바퀴 사전 검증
 
@@ -83,8 +83,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-첫 여행 코스와 명동 NPC 대화의 정답·해설·일본어 번역을 문맥 단위로 표본 검수하고,
-불확실한 항목은 병합하지 않은 채 근거와 수정 후보를 기록한다.
+첫 코스 완료율·명동 진입률·수집품 교환률을 개인정보 없이 로컬 계측해, 다음 역과 상점
+밸런스를 감이 아니라 실제 학습 흐름으로 판단할 수 있게 한다.
 
 ## 알려진 위험
 
