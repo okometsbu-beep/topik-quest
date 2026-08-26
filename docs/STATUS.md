@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v53 · Myeongdong station-sign quest and layered pixel-art reward
-- Current candidate: v54 · multi-turn NPC dialogue, free composition, and mobile gameplay repair
+- Production release: v55 · Myeongdong Korean price-board budget quest
+- Current candidate: none
 - Core content: 2,088 original items
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
@@ -23,7 +23,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
   composed as separate layers instead of emoji or characters baked into scenery
 - Myeongdong day/evening hub with separate street background, guide/vendor NPCs, exchange prop,
   four collectible images, multi-turn NPC dialogue, free Korean composition, Hangul sign building with decoys,
-  and a travel-won-only exchange
+  Korean price-board reading with a quantity stepper, and a travel-won-only exchange
 - Korean-only answer choices before grading, selected/correct translation reveal after grading, and
   evidence → distractor → solving-tip instructor feedback in Travel and Game modes
 - Game battle rendering preserves the learner's scroll position instead of forcing smooth scrolling
@@ -39,11 +39,10 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 우선순위
 
-1. 명동 허브의 다음 학습 변화구로 실제 메뉴 가격 읽기를 추가하되, 자유 작문·표지판 조합과 겹치지
-   않는 입력 방식과 작은 여행 원 소비 결정을 연결한다.
-2. 첫 여행 코스와 명동 NPC 대화의 정답·해설·일본어 번역을 문맥 단위로 표본 검수한다.
-3. 다음 역을 만들기 전에 첫 코스 완료율·명동 진입률·수집품 교환률을 개인정보 없이 로컬
+1. 첫 여행 코스와 명동 NPC 대화의 정답·해설·일본어 번역을 문맥 단위로 표본 검수한다.
+2. 다음 역을 만들기 전에 첫 코스 완료율·명동 진입률·수집품 교환률을 개인정보 없이 로컬
    계측한다.
+3. 명동 가격 퀘스트의 완료율과 여행 원 잔액을 확인한 뒤 다음 지역·상점 밸런스를 설계한다.
 
 ## 이번 운영 변경
 
@@ -57,21 +56,20 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 결제 버튼·가격·상품 카드·유료 잠금·Premium·Plus·구독·업셀·외부 결제 링크를 앱 어디에도
   만들지 않는다. 별도 수익화 논의와 사용자의 명시적 승인 뒤에만 재검토한다.
 
-## v54 검증 및 배포 후보
+## v55 검증 및 배포
 
-- runtime v54 무결성, 51개 JavaScript 구문, 2,088개 원본 문제와 전체 47개 테스트를 통과했다.
-- 실제 Chrome 390×844에서 공항부터 명동까지 완주한 뒤 낮 NPC 다섯 차례 대화, 자유 작문,
-  검수된 대체 문장 300 여행 원 보상, 모범 문장 2,500 여행 원 보상을 차례로 확인했다.
-- 여행 선택지는 채점 전 한국어만 보이고 채점 뒤 선택 답·정답에만 번역이 열린다. 해설은
-  정답 근거 → 선택 답/시간초과 분석 → 문제풀이 요령 순서로 Travel과 Game 모두 확인했다.
-- 320·375·390·430px Game 화면과 390×844 Travel 화면에서 국기 버튼, 가운데 맞춘 배경,
-  가변 높이 카드, 44px 터치 영역을 점검했다. 최종 320px HUD의 화면 밖 요소는 0개다.
-- 강제 `smooth` 스크롤을 제거하고 스크롤 앵커를 고정해 Game 문제 전환의 덜컥임을 막았다.
-- `malbitStoryV1`과 기존 단어장·게임·복습 저장 루트를 유지하고 새 작문 기록만 하위 필드에
-  추가했다. 결제 버튼·가격·유료 잠금·API 키는 추가하지 않았다.
-- 변경 PR: https://github.com/okometsbu-beep/topik-quest/pull/51
+- 명동 상인과 5턴 대화한 뒤 한국어 가격표 3종을 읽고, 5,000 여행 원 안에서 2,000원짜리
+  호떡의 최대 수량 2개를 수량 조절기로 계산하는 후속 퀘스트를 추가했다.
+- 정답 성공 시 4,000 여행 원을 한 번만 차감하고 `street-food` 소비 기록·수량·잔액을
+  기존 `malbitStoryV1` 하위에 저장한다. 기존 단어장·게임·복습·여행 키는 바꾸지 않았다.
+- 가격은 2026년 공개 명동 노점 가이드의 범위 안에서 학습용 예시로 사용하고, 가게마다
+  달라질 수 있음을 화면과 출처에 함께 표시했다.
+- 전체 `npm run check`와 실제 Chrome 모바일 완주 검사를 통과했다. 320·375·390·430px에서
+  가격표·수량 버튼·결과 영수증의 화면 밖 요소, 겹침, 44px 미만 터치 영역, 콘솔 오류가 0개다.
+- 실제 결제·상품 가격·유료 잠금·API 키는 추가하지 않았다.
+- 변경 PR: https://github.com/okometsbu-beep/topik-quest/pull/52
 - 배포 주소: https://okometsbu-beep.github.io/topik-quest/
-- 되돌리기 기준: v53 main `51bf5d9b901f3e6b80d44948df07ed7c69d70159`
+- 되돌리기 기준: v54 main `ab4a5b1a8c20c115f372b2f1f1e06c0bb7bfd385`
 
 ## 초기 두 바퀴 사전 검증
 
@@ -85,8 +83,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-명동 허브의 다음 학습 변화구로 실제 메뉴 가격 읽기를 추가하고, 표지판 조합과 겹치지 않는
-입력 방식 및 작은 여행 원 소비 결정을 연결한다.
+첫 여행 코스와 명동 NPC 대화의 정답·해설·일본어 번역을 문맥 단위로 표본 검수하고,
+불확실한 항목은 병합하지 않은 채 근거와 수정 후보를 기록한다.
 
 ## 알려진 위험
 

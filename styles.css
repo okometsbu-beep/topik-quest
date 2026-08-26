@@ -157,3 +157,50 @@ body.tq-game-active #screen .t1hud>.t1ModeLang{grid-column:4;grid-row:1;justify-
 .t1TutorCoach{display:grid;gap:7px;margin-top:9px;text-align:left;font-weight:600}.t1TutorCoach>div{border-top:1px solid currentColor;padding-top:7px}.t1TutorCoach small{display:block;font-size:8px;font-weight:950;letter-spacing:.02em;opacity:.82}.t1TutorCoach p{margin:3px 0 0;color:inherit;font-size:10px;font-weight:650;line-height:1.58;opacity:.9}
 @media(display-mode:standalone){.travelHub,.travelPlay{padding-top:max(48px,calc(14px + env(safe-area-inset-top)))}.travelQuestionPlay{padding-top:max(48px,calc(12px + env(safe-area-inset-top)))}}
 @media(max-width:430px){.travelQuestionCard>.travelWorld{aspect-ratio:2/1}.travelAnswer{grid-template-columns:32px minmax(0,1fr);padding-inline:9px}.travelAnswer:has(>img){grid-template-columns:48px minmax(0,1fr)}.travelAnswer>img{width:46px;height:46px}.travelAnswers.hotspot .travelAnswer{min-height:112px}.travelTutor p,.travelFeedback .travelTutor p{font-size:8.5px}.travelDialogueFlow>div{width:calc(100% - 12px)}.travelDialogueFlow .npc{margin-right:12px}.travelDialogueFlow .player{margin-left:12px}}
+
+
+/* v55 · Myeongdong price-reading quest */
+.travelBudgetCard{overflow:hidden}
+.travelBudgetCard>*{max-width:100%;min-width:0}
+.travelMenuBoard{margin:10px 0;border:10px solid transparent;border-image:url("assets/art/travel/layers/ui-panel-dialogue.webp") 150 fill/13px stretch;background:#082743;padding:12px 14px;overflow:hidden}
+.travelMenuBoard header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;border-bottom:1px dashed rgba(255,224,110,.45);padding-bottom:8px}
+.travelMenuBoard header span{color:#ffe06e;font-size:10px;font-weight:1000;letter-spacing:.12em}
+.travelMenuBoard header small{max-width:56%;color:#b9c9de;font-size:7px;font-weight:800;line-height:1.4;text-align:right;word-break:keep-all}
+.travelMenuBoard [role="table"]{display:grid;margin-top:5px}
+.travelMenuBoard [role="row"]{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;min-height:36px;border-bottom:1px solid rgba(255,255,255,.08);padding:5px 2px}
+.travelMenuBoard [role="row"]:last-child{border-bottom:0}
+.travelMenuBoard [role="row"].target{color:#7ce0c8}
+.travelMenuBoard [role="row"] b{font-size:13px;overflow-wrap:anywhere}
+.travelMenuBoard [role="row"] span{font-size:11px;font-weight:1000;white-space:nowrap}
+.travelBudgetMeter{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:9px 0}
+.travelBudgetMeter>div{display:grid;gap:3px;min-width:0;border:1px solid rgba(126,224,200,.25);border-radius:13px;background:#091d33;padding:9px 10px}
+.travelBudgetMeter small{color:#9fb2ca;font-size:7px;font-weight:950;line-height:1.35}
+.travelBudgetMeter b{color:#7ce0c8;font-size:12px;overflow-wrap:anywhere}
+.travelBudgetMeter b.over{color:#ff8294}
+.travelQuantityPicker{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:9px;border:10px solid transparent;border-image:url("assets/art/travel/layers/ui-tile-answer.webp") 128 fill/13px stretch;background:#fff0c0;padding:8px 11px;color:#102b4b;overflow:hidden}
+.travelQuantityPicker p{display:grid;gap:2px;min-width:0;margin:0}
+.travelQuantityPicker p b{font-size:13px}
+.travelQuantityPicker p span{font-size:8px;font-weight:900}
+.travelQuantityPicker>div{display:grid;grid-template-columns:44px 38px 44px;align-items:center}
+.travelQuantityPicker button{display:grid;place-items:center;width:44px;height:44px;border:1px solid #31557d;border-radius:11px;background:#0d4879;color:#fff;font-size:20px;font-weight:1000}
+.travelQuantityPicker strong{text-align:center;font-size:17px}
+.travelQuantityPicker output{grid-column:1/-1;margin-top:7px;border-top:1px solid rgba(16,43,75,.2);padding-top:7px;font-size:9px;font-weight:900;text-align:right}
+.travelQuantityPicker output b{font-size:13px}
+.travelBudgetActions{display:grid;grid-template-columns:minmax(96px,.42fr) minmax(0,1fr);gap:8px;align-items:end}
+.travelBudgetActions .travelTextButton{min-height:48px;border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:10px;margin-top:13px}
+.travelCurrencyNote{margin:7px 2px 0;color:#8297b2;font-size:7px;font-weight:750;line-height:1.45;text-align:center}
+.travelBudgetReceipt{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:10px 0}
+.travelBudgetReceipt>div{display:grid;gap:3px;min-width:0;border:1px solid rgba(255,224,110,.35);border-radius:12px;background:#0b2844;padding:9px}
+.travelBudgetReceipt small{color:#a9bdd4;font-size:7px;font-weight:950}
+.travelBudgetReceipt b{color:#ffe06e;font-size:11px;overflow-wrap:anywhere}
+.travelTeacherTip{display:grid;gap:4px;margin:9px 0;border:1px solid rgba(126,224,200,.35);border-radius:14px;background:#092c43;padding:11px}
+.travelTeacherTip>b{color:#7ce0c8;font-size:8px;font-weight:1000;letter-spacing:.04em}
+.travelTeacherTip p{margin:0;color:#dce8f4;font-size:9px;font-weight:700;line-height:1.55;word-break:keep-all}
+@media(max-width:340px){
+  .travelMenuBoard{padding-inline:10px}
+  .travelBudgetMeter{grid-template-columns:1fr}
+  .travelQuantityPicker{grid-template-columns:1fr}
+  .travelQuantityPicker>div{justify-self:center}
+  .travelBudgetActions{grid-template-columns:1fr}
+  .travelBudgetActions .travelTextButton{margin-top:7px}
+}

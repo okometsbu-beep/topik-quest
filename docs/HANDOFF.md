@@ -24,6 +24,9 @@ these facts from conversation history or the large TOPIK source bundle.
   of meaningful non-canonical sentences for a limited smaller reward.
 - Game and Travel explanations follow evidence → distractor/selected-choice analysis → reusable solving
   tip. Game battle rendering must not force `scrollIntoView` or smooth page scrolling.
+- Myeongdong follow-ups now progress from free NPC composition to Hangul sign building and a Korean
+  price-board budget quest. The budget quest uses only game travel won, records one idempotent
+  `street-food` spend under `malbitStoryV1`, and states that stall prices can vary.
 - Travel UI uses nine-slice generated frames with explicit safe-area content wrappers. Never stretch a
   square frame over variable copy, absolutely position learning content, or truncate essential Japanese.
   Every UI change must pass 320/375/390/430px containment, sibling-overlap, 44px touch-target, console,

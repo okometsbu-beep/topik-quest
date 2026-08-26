@@ -26,7 +26,8 @@
     sources:Object.freeze([
       Object.freeze({label:'Visit Seoul · Myeong-dong',url:'https://english.visitseoul.net/area/Myeong-dong/ENP000067'}),
       Object.freeze({label:'Visit Korea · Tourist Information Center',url:'https://english.visitkorea.or.kr/svc/contents/contentsView.do?menuSn=351&vcontsId=63293'}),
-      Object.freeze({label:'Visit Seoul · Myeongdong Cathedral',url:'https://english.visitseoul.net/attractions/Myeongdong%20Cathedral/ENP004036'})
+      Object.freeze({label:'Visit Seoul · Myeongdong Cathedral',url:'https://english.visitseoul.net/attractions/Myeongdong%20Cathedral/ENP004036'}),
+      Object.freeze({label:'2026 Myeongdong street-food price guide · prices vary by stall',url:'https://knowaboutkorea.com/places/guide/myeongdong-shopping-street-food-guide'})
     ]),
     world:Object.freeze({background:'myeongdongMarket',props:Object.freeze(['myeongdongExchange'])}),
     events:Object.freeze({
@@ -100,6 +101,30 @@
         answer:Object.freeze(['명','동','역']),
         success:t('명동역 6번 출구 표지가 환하게 켜졌어요. 안내원이 명동 길찾기 배지를 여행 가방에 달아 줬어요.','明洞駅6番出口の標識が明るく点灯しました。案内スタッフが明洞道案内バッジを旅バッグにつけてくれました。','The Myeongdong Station Exit 6 sign lights up, and the guide pins a wayfinding badge to your travel bag.','明洞站6号出口的标牌亮了起来，咨询员把明洞导览徽章别在了旅行包上。'),
         explanation:t('명 + 동 + 역을 이어 “명동역”이라고 읽습니다. “역”은 지하철이나 기차를 타는 station입니다.','「명＋동＋역」で「명동역」と読みます。「역」は地下鉄や電車に乗る駅（station）です。','Read 명 + 동 + 역 together as “명동역”. 역 means a subway or train station.','把“명＋동＋역”连起来读作“명동역”；“역”表示地铁站或火车站。')
+      }),
+      menuBudget:Object.freeze({
+        id:'myeongdong-menu-budget',interaction:'price-budget',followup:true,npc:'myeongdongVendor',reward:0,
+        badge:t('후속 미션 · 가격표 읽기','追加ミッション・値札を読む','Follow-up mission · read a price board','追加任务 · 阅读价目表'),
+        title:t('여행 원으로 호떡을 주문하자','旅ウォンでホットクを注文しよう','Order hotteok with travel won','用旅行韩元点糖饼'),
+        speaker:t('명동 거리 상인','明洞の屋台スタッフ','Myeongdong street vendor','明洞街头摊主'),
+        dialogue:t('가격표를 읽고 오늘 쓸 여행 원을 정해 볼까요?','値札を読んで、今日使う旅ウォンを決めてみましょう。','Read the price board and plan today’s travel-won spending.','阅读价目表，决定今天要花多少旅行韩元。'),
+        conversation:Object.freeze([
+          Object.freeze({role:'npc',korean:'어서 오세요! 가격표를 먼저 봐 주세요.',support:t('어서 오세요! 가격표를 먼저 봐 주세요.','いらっしゃいませ！まず値札を見てください。','Welcome! Please check the price board first.','欢迎！请先看价目表。')}),
+          Object.freeze({role:'player',korean:'호떡은 이천 원이에요?',support:t('호떡은 이천 원이에요?','ホットクは2,000ウォンですか？','Is hotteok 2,000 won?','糖饼是2,000韩元吗？')}),
+          Object.freeze({role:'npc',korean:'네, 한 개에 이천 원이에요.',support:t('네, 한 개에 이천 원이에요.','はい、1個2,000ウォンです。','Yes, it is 2,000 won each.','对，一个2,000韩元。')}),
+          Object.freeze({role:'player',korean:'오늘 예산은 오천 원이에요.',support:t('오늘 예산은 오천 원이에요.','今日の予算は5,000ウォンです。','My budget today is 5,000 won.','今天的预算是5,000韩元。')}),
+          Object.freeze({role:'npc',korean:'좋아요. 예산 안에서 최대 몇 개 드릴까요?',support:t('좋아요. 예산 안에서 최대 몇 개 드릴까요?','では、予算内で最大何個にしますか？','Great. What is the maximum quantity within your budget?','好。在预算内最多要几个？')})
+        ]),
+        instruction:t('한국어 가격표를 읽고 수량을 조절하세요. 합계가 5,000 여행 원을 넘지 않으면서 가장 많은 수량을 찾습니다.','韓国語の値札を読み、数量を調整しよう。合計が5,000旅ウォン以内になる最大数を探します。','Read the Korean price board and adjust the quantity. Find the most you can buy without exceeding 5,000 travel won.','阅读韩文价目表并调整数量，找出不超过5,000旅行韩元的最大数量。'),
+        prompt:t('호떡은 한 개 2,000원입니다. 5,000 여행 원 안에서 최대 몇 개를 살 수 있을까요?','ホットクは1個2,000ウォン。5,000旅ウォン以内で最大何個買えますか？','Hotteok costs 2,000 won each. What is the maximum quantity within 5,000 travel won?','糖饼一个2,000韩元。5,000旅行韩元内最多能买几个？'),
+        menu:Object.freeze([
+          Object.freeze({id:'hotteok',name:'호떡',price:2000}),
+          Object.freeze({id:'eggBread',name:'계란빵',price:2000}),
+          Object.freeze({id:'tteokbokki',name:'떡볶이',price:4000})
+        ]),
+        budget:5000,targetItem:'hotteok',targetQuantity:2,maxQuantity:3,
+        success:t('“호떡 두 개 주세요.”라고 주문하고 4,000 여행 원을 냈어요. 1,000 여행 원을 남기며 예산 안에서 주문했습니다.','「호떡 두 개 주세요」と注文し、4,000旅ウォンを使いました。1,000旅ウォンを残して予算内で注文できました。','You ordered “호떡 두 개 주세요,” spent 4,000 travel won, and kept 1,000 within the practice budget.','你说“请给我两个糖饼”，花了4,000旅行韩元，并在练习预算内留下1,000。'),
+        explanation:t('가격 × 수량으로 합계를 계산합니다. 2,000×2=4,000은 예산 안이고, 2,000×3=6,000은 5,000을 넘습니다. 주문할 때는 “음식 + 수량 + 주세요”를 씁니다.','値段×数量で合計を計算します。2,000×2=4,000は予算内、2,000×3=6,000は5,000を超えます。注文は「食べ物＋数量＋주세요」の順です。','Multiply price by quantity. 2,000×2=4,000 fits; 2,000×3=6,000 exceeds 5,000. Order with “food + quantity + 주세요.”','用价格×数量计算总额。2,000×2=4,000在预算内，2,000×3=6,000超过5,000。点单用“食物＋数量＋주세요”。')
       })
     }),
     exchange:Object.freeze([
