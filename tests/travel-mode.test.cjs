@@ -91,7 +91,7 @@ test('Myeongdong hub is a layered, localized, time-aware learning game extension
   assert.equal(hubs.length,1);
   const hub=hubs[0];
   assert.equal(hub.routeId,packs[0].id);
-  assert.deepEqual(Object.keys(hub.events),['daytime','evening','stationSign']);
+  assert.deepEqual(Object.keys(hub.events),['daytime','evening','stationSign','menuBudget']);
   assert.equal(hub.events.daytime.interaction,'free-compose');
   assert.equal(hub.events.evening.interaction,'free-compose');
   assert.deepEqual(Array.from(hub.events.daytime.answer),['명동','관광안내소','가','어디','에','있어요?']);
@@ -103,6 +103,12 @@ test('Myeongdong hub is a layered, localized, time-aware learning game extension
   assert.deepEqual(Array.from(hub.events.stationSign.answer),['명','동','역']);
   assert.ok(hub.events.stationSign.tokens.length>hub.events.stationSign.answer.length,'sign build needs decoy syllables');
   for(const syllable of hub.events.stationSign.answer)assert.ok(hub.events.stationSign.tokens.includes(syllable),`sign token ${syllable} is missing`);
+  assert.equal(hub.events.menuBudget.interaction,'price-budget');
+  assert.equal(hub.events.menuBudget.budget,5000);
+  assert.equal(hub.events.menuBudget.targetQuantity,2);
+  assert.deepEqual(Array.from(hub.events.menuBudget.menu,item=>[item.name,item.price]),[['호떡',2000],['계란빵',2000],['떡볶이',4000]]);
+  assert.ok(hub.events.menuBudget.menu.find(item=>item.id===hub.events.menuBudget.targetItem),'budget target must exist on the menu');
+  assert.equal(hub.events.menuBudget.menu.find(item=>item.id===hub.events.menuBudget.targetItem).price*hub.events.menuBudget.targetQuantity,4000);
   assert.deepEqual(Array.from(hub.exchange,item=>item.cost),[2000,3000,3500,5000]);
   assert.deepEqual(Array.from(hub.exchange,item=>item.unlock),['always','evening','sign','quest']);
   for(const field of ['title','subtitle','location'])assertI18n(hub[field],`hub.${field}`);
@@ -116,7 +122,7 @@ test('Myeongdong hub is a layered, localized, time-aware learning game extension
     assert.ok(fs.existsSync(path.join(root,file)),`hub ${group}.${key} is missing`);
     assert.ok(fs.statSync(path.join(root,file)).size>1000,`hub ${group}.${key} must be generated art`);
   }
-  assert.equal(hub.sources.length,3);
+  assert.equal(hub.sources.length,4);
   for(const source of hub.sources)assert.match(source.url,/^https:\/\//);
 });
 

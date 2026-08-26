@@ -10,6 +10,7 @@
   const SELECTED=Object.create(null);
   const TRANSCRIPTS=Object.create(null);
   const HUB_ORDER=Object.create(null);
+  const HUB_BUDGET=Object.create(null);
   const HUB_DIALOGUE_STEP=Object.create(null);
   const HUB_COMPOSE_RESULT=Object.create(null);
 
@@ -317,8 +318,8 @@
     sc.innerHTML=`<div class="travelPlay travelMyeongdong">${commonTop(pack,state,{location:hub.location})}<article class="travelMyeongdongCard"><header class="travelMyeongdongHead"><button onclick="malbitTravelMyeongdongClose()" aria-label="Back">‹</button><div><small>AREA 01 · MYEONGDONG</small><h1>${h(l(hub.title))}</h1><p>${h(l(hub.subtitle))}</p></div></header>${hubWorld(pack,state,hub,event)}<section class="travelEventCard ${done?'complete':''}"><div><small>${h(eventStatus)}</small><h2>${h(l(event.title))}</h2><p>${h(l(event.dialogue))}</p></div><button class="travelPrimary" onclick="malbitTravelTalk()">${h(done?l({ko:'대화 다시 보기',ja:'会話をもう一度',en:'Replay dialogue',zh:'重看对话'}):l({ko:'NPC에게 말 걸기',ja:'NPCに話しかける',en:'Talk to NPC',zh:'与NPC交谈'}))} <b>→</b></button></section>${last?`<div class="travelPurchaseBurst" role="status">${propImage(pack,last,'')}<span><small>${h(l({ko:'여행 가방에 저장',ja:'旅バッグに保存',en:'SAVED TO TRAVEL BAG',zh:'已存入旅行包'}))}</small><b>${h(l(hub.exchange.find(item=>item.id===last)?.name||last))}</b></span></div>`:''}${exchangeMarkup(pack,state,hub,event)}${notebook(pack,state)}<details class="travelFacts"><summary>${h(l({ko:'명동 현지 정보 출처',ja:'明洞の現地情報ソース',en:'Myeongdong fact sources',zh:'明洞实地信息来源'}))}</summary>${hub.sources.map(source=>`<a href="${h(source.url)}" target="_blank" rel="noopener">${h(source.label)}</a>`).join('')}</details></article></div>`;
   }
   function renderHubDialogue(sc,pack,state,hub,event){
-    const sign=event.interaction==='sign-build';
-    const action=sign?l({ko:'표지판 글자 조립하기',ja:'標識の文字を組み立てる',en:'Build the station sign',zh:'拼出车站标牌'}):l({ko:'내 말로 문장 만들기',ja:'自分の言葉で文を作る',en:'Build my own sentence',zh:'用自己的话造句'});
+    const sign=event.interaction==='sign-build',budget=event.interaction==='price-budget';
+    const action=sign?l({ko:'표지판 글자 조립하기',ja:'標識の文字を組み立てる',en:'Build the station sign',zh:'拼出车站标牌'}):budget?l({ko:'가격표 읽고 수량 정하기',ja:'値札を読んで数量を決める',en:'Read prices and choose quantity',zh:'阅读价格并决定数量'}):l({ko:'내 말로 문장 만들기',ja:'自分の言葉で文を作る',en:'Build my own sentence',zh:'用自己的话造句'});
     const turns=Array.isArray(event.conversation)&&event.conversation.length?event.conversation:[{role:'npc',korean:event.dialogue?.ko||'',support:event.dialogue},{role:'player',korean:'',support:event.prompt}];
     const step=Math.max(0,Math.min(turns.length-1,Number(HUB_DIALOGUE_STEP[event.id])||0)),finished=step>=turns.length-1;
     const conversation=turns.slice(0,step+1).map((turn,index)=>{const player=turn.role==='player';return`<div class="${player?'player':'npc'} ${index===step?'current':''}"><small>${h(player?l({ko:'나',ja:'あなた',en:'YOU',zh:'你'}):l(event.speaker))}</small>${turn.korean?`<p lang="ko">${h(turn.korean)}</p>`:''}${lang()!=='ko'&&turn.support?`<span>${h(l(turn.support))}</span>`:''}</div>`}).join('');
@@ -326,6 +327,14 @@
     const nextLabel=finished?action:l({ko:'대화 계속하기',ja:'会話を続ける',en:'Continue the conversation',zh:'继续对话'});
     sc.innerHTML=`<div class="travelPlay travelMyeongdong">${commonTop(pack,state,{location:hub.location})}<article class="travelMyeongdongCard"><div class="travelQuestionNo"><span>NPC TALK · ${step+1}/${turns.length}</span><em>${h(clock(state.clockMinutes))}</em></div><h1>${h(l(event.title))}</h1>${hubWorld(pack,state,hub,event)}<div class="travelDialogueFlow" aria-live="polite">${conversation}</div><button class="travelPrimary" onclick="${nextAction}">${h(nextLabel)} <b>→</b></button><button class="travelTextButton" onclick="malbitTravelMyeongdongOpen()">${h(l({ko:'거리로 돌아가기',ja:'通りへ戻る',en:'Back to the street',zh:'返回街道'}))}</button></article></div>`;
   }
+  function renderHubBudget(sc,pack,state,hub,event){
+  const item=event.menu.find(entry=>entry.id===event.targetItem)||event.menu[0];
+  const quantity=Math.max(0,Math.min(Number(event.maxQuantity)||3,Number(HUB_BUDGET[event.id])||1));
+  const total=item.price*quantity,remaining=event.budget-total,over=remaining<0,wrong=state.myeongdong.lastAttemptCorrect===false;
+  const rows=event.menu.map(entry=>`<div class="${entry.id===item.id?'target':''}" role="row"><b lang="ko">${h(entry.name)}</b><span>${h(won(entry.price))}</span></div>`).join('');
+  const hint=quantity<event.targetQuantity?l({ko:'예산 안에서 한 개 더 살 수 있어요.',ja:'予算内でもう1個買えます。',en:'You can still afford one more.',zh:'预算内还可以买一个。'}):l({ko:'합계가 연습 예산을 넘었어요.',ja:'合計が練習予算を超えています。',en:'The total exceeds the practice budget.',zh:'总额超过练习预算。'});
+  sc.innerHTML=`<div class="travelPlay travelMyeongdong">${commonTop(pack,state,{location:hub.location})}<article class="travelMyeongdongCard travelBudgetCard"><div class="travelQuestionNo"><span>PRICE READING · BUDGET</span><em>${h(l({ko:'가격표 계산',ja:'値札を計算',en:'PRICE MATH',zh:'价格计算'}))}</em></div><h1>${h(l(event.title))}</h1>${hubWorld(pack,state,hub,event)}<div class="travelPrompt"><small>${h(l(event.instruction))}</small><b>${h(l(event.prompt))}</b></div><section class="travelMenuBoard" aria-label="${h(l({ko:'명동 간식 가격표',ja:'明洞おやつの値札',en:'Myeongdong snack prices',zh:'明洞小吃价目表'}))}"><header><span>MENU · 명동</span><small>${h(l({ko:'가게마다 가격이 달라질 수 있어요',ja:'店によって価格は異なります',en:'Prices vary by stall',zh:'各摊位价格可能不同'}))}</small></header><div role="table">${rows}</div></section><section class="travelBudgetMeter"><div><small>${h(l({ko:'오늘의 연습 예산',ja:'今日の練習予算',en:'PRACTICE BUDGET',zh:'今日练习预算'}))}</small><b>${h(won(event.budget))}</b></div><div><small>${h(l({ko:'남길 여행 원',ja:'残る旅ウォン',en:'TRAVEL WON LEFT',zh:'剩余旅行韩元'}))}</small><b class="${over?'over':''}">${h(won(remaining))}</b></div></section><section class="travelQuantityPicker"><p><b lang="ko">${h(item.name)}</b><span>${h(won(item.price))} × ${quantity}</span></p><div><button onclick="malbitTravelBudgetChange(-1)" aria-label="${h(l({ko:'수량 줄이기',ja:'数量を減らす',en:'Decrease quantity',zh:'减少数量'}))}">−</button><strong aria-live="polite">${quantity}</strong><button onclick="malbitTravelBudgetChange(1)" aria-label="${h(l({ko:'수량 늘리기',ja:'数量を増やす',en:'Increase quantity',zh:'增加数量'}))}">＋</button></div><output>${h(l({ko:'합계',ja:'合計',en:'TOTAL',zh:'合计'}))} <b>${h(won(total))}</b></output></section>${wrong?`<div class="travelFeedback bad" role="status"><div><b>${h(hint)}</b><p>${h(l(event.explanation))}</p></div></div>`:''}<div class="travelBudgetActions"><button class="travelTextButton" onclick="malbitTravelMyeongdongOpen()">${h(l({ko:'거리로 돌아가기',ja:'通りへ戻る',en:'Back to street',zh:'返回街道'}))}</button><button class="travelPrimary ${!over&&quantity>0?'ready':''}" onclick="malbitTravelBudgetSubmit()">${h(l({ko:'이 수량으로 주문하기',ja:'この数量で注文する',en:'Order this quantity',zh:'按此数量下单'}))}</button></div><p class="travelCurrencyNote">${h(l({ko:'게임 속 여행 원만 사용하며 실제 결제는 없습니다.',ja:'ゲーム内の旅ウォンのみ使用し、実際の決済はありません。',en:'Uses game travel won only; no real payment.',zh:'仅使用游戏内旅行韩元，不涉及真实支付。'}))}</p></article></div>`;
+}
   function renderHubOrder(sc,pack,state,hub,event){
     const selected=Array.isArray(HUB_ORDER[event.id])?HUB_ORDER[event.id]:[];
     const built=selected.map(index=>event.tokens[index]);
@@ -342,7 +351,12 @@
     const compositionFeedback=result?`<div class="travelFeedback ${result.grade==='partial'?'good':'bad'} travelCompositionFeedback" role="status"><div><b>${h(result.grade==='partial'?result.earned>0?l({ko:`말이 통해서 +${won(result.earned)}`,ja:`言葉が通じた・+${won(result.earned)}`,en:`They understood you · +${won(result.earned)}`,zh:`表达被理解 · +${won(result.earned)}`}):l({ko:'좋은 문장이에요 · 이미 받은 창의 보상',ja:'自然な文です・創作報酬は受取済み',en:'Good sentence · creative reward already claimed',zh:'句子通顺 · 创意奖励已领取'}):l({ko:'뜻을 더 분명하게 만들어 보세요 · 1분 경과',ja:'意味をもう少し明確にしよう・1分経過',en:'Make the meaning a little clearer · 1 min passed',zh:'请让意思更明确 · 经过1分钟'}))}</b><p lang="ko">${h(result.phrase)}</p><span>${h(l(result.response))}</span></div></div>`:'';
     sc.innerHTML=`<div class="travelPlay travelMyeongdong">${commonTop(pack,state,{location:hub.location})}<article class="travelMyeongdongCard travelOrderCard ${sign?'travelSignCard':''} ${free?'travelComposeCard':''}"><div class="travelQuestionNo"><span>${modeLabel}</span><em>${h(modeName)}</em></div><h1>${h(l(event.title))}</h1>${hubWorld(pack,state,hub,event)}<div class="travelPrompt"><small>${h(l(event.instruction))}</small><b>${h(l(event.prompt))}</b></div>${sign?`<div class="travelSignPreview" aria-label="Built station sign"><small>EXIT 6 · LINE 4</small><b>${slots}</b></div>`:''}${free&&phrase?`<div class="travelCompositionPreview"><small>${h(l({ko:'지금 만든 말',ja:'今作った文',en:'YOUR SENTENCE',zh:'当前句子'}))}</small><b lang="ko">${h(phrase)}</b></div>`:''}<div class="travelSentence" aria-label="Built sentence">${built.length?selected.map((index,position)=>`<button class="${tokenKind(event.tokens[index])}" onclick="malbitTravelOrderRemove(${position})" lang="ko">${h(event.tokens[index])}</button>`).join(''):`<p>${h(empty)}</p>`}</div><div class="travelWordBank ${free?'free':''}">${remaining.map(item=>`<button class="${tokenKind(item.token)}" onclick="malbitTravelOrderAdd(${item.index})" lang="ko">${h(item.token)}</button>`).join('')}</div>${compositionFeedback}${wrong&&!free?`<div class="travelFeedback bad" role="status"><div><b>${h(wrongTitle)}</b><p>${h(l(event.explanation))}</p></div></div>`:''}<div class="travelOrderActions"><button class="travelTextButton" onclick="malbitTravelOrderReset()">${h(free?l({ko:'새 문장 만들기',ja:'新しい文を作る',en:'New sentence',zh:'创建新句子'}):l({ko:'다시 놓기',ja:'やり直す',en:'Reset',zh:'重置'}))}</button><button class="travelPrimary ${(free?selected.length>=2:selected.length===required)?'ready':''}" onclick="malbitTravelOrderSubmit()">${h(submit)}</button></div></article></div>`;
   }
+  function renderHubBudgetResult(sc,pack,state,hub,event){
+  const quest=state.myeongdong.quests[event.id]||{},quantity=Math.max(0,Number(quest.quantity)||0),cost=Math.max(0,Number(quest.cost)||0),unitPrice=quantity?Math.round(cost/quantity):0;
+  sc.innerHTML=`<div class="travelPlay travelMyeongdong">${commonTop(pack,state,{location:hub.location})}<article class="travelMyeongdongCard travelHubResult travelBudgetResult"><div class="travelQuestionNo"><span>MENU READING CLEAR</span><em>−${h(won(cost))}</em></div><h1>${h(l({ko:'가격을 읽고 예산 안에서 주문했다!',ja:'値段を読んで予算内で注文できた！',en:'You read the price and ordered within budget!',zh:'读懂价格并在预算内完成点单！'}))}</h1>${hubWorld(pack,state,hub,event,{correct:true,earned:0})}<blockquote class="travelKorean" lang="ko">호떡 두 개 주세요.</blockquote><p class="travelSupport">${h(l(event.success))}</p><div class="travelBudgetReceipt"><div><small>${h(l({ko:'단가',ja:'単価',en:'UNIT PRICE',zh:'单价'}))}</small><b>${h(won(unitPrice))}</b></div><div><small>${h(l({ko:'수량',ja:'数量',en:'QUANTITY',zh:'数量'}))}</small><b>${quantity}</b></div><div><small>${h(l({ko:'쓴 여행 원',ja:'使った旅ウォン',en:'SPENT',zh:'已花费'}))}</small><b>−${h(won(cost))}</b></div><div><small>${h(l({ko:'현재 잔액',ja:'現在の残高',en:'CURRENT WALLET',zh:'当前余额'}))}</small><b>${h(won(state.wallet))}</b></div></div><div class="travelTeacherTip"><b>${h(l({ko:'다음에도 쓰는 계산 요령',ja:'次にも使える計算のコツ',en:'REUSABLE SOLVING TIP',zh:'可复用的计算技巧'}))}</b><p>${h(l(event.explanation))}</p></div><button class="travelPrimary" onclick="malbitTravelMyeongdongOpen()">${h(l({ko:'명동 거리로 돌아가기',ja:'明洞の通りへ戻る',en:'Return to Myeongdong street',zh:'返回明洞街道'}))} <b>→</b></button></article></div>`;
+}
   function renderHubResult(sc,pack,state,hub,event){
+    if(event.interaction==='price-budget')return renderHubBudgetResult(sc,pack,state,hub,event);
     const quest=state.myeongdong.quests[event.id];
     const earned=Number.isFinite(Number(quest?.earned))?Number(quest.earned):Number(event.reward)||0;
     const sign=event.interaction==='sign-build',clearLabel=sign?'SIGN QUEST CLEAR':'NPC QUEST CLEAR';
@@ -353,7 +367,7 @@
   function renderMyeongdong(sc,pack,state,hub){
     const event=Object.values(hub.events).find(item=>item.id===state.myeongdong.activeEvent)||activeHubEvent(hub,state);
     if(state.myeongdong.screen==='dialogue')return renderHubDialogue(sc,pack,state,hub,event);
-    if(state.myeongdong.screen==='order')return renderHubOrder(sc,pack,state,hub,event);
+    if(state.myeongdong.screen==='order')return event.interaction==='price-budget'?renderHubBudget(sc,pack,state,hub,event):renderHubOrder(sc,pack,state,hub,event);
     if(state.myeongdong.screen==='result')return renderHubResult(sc,pack,state,hub,event);
     return renderMyeongdongHub(sc,pack,state,hub);
   }
@@ -434,9 +448,32 @@
     const {pack,state}=current(),hub=hubByRoute(pack.id);
     if(!hub)return;
     const event=Object.values(hub.events).find(item=>item.id===state.myeongdong.activeEvent)||activeHubEvent(hub,state);
-    HUB_ORDER[event.id]=[];delete HUB_COMPOSE_RESULT[event.id];state.myeongdong.screen='order';state.myeongdong.lastAttemptCorrect=null;
+    HUB_ORDER[event.id]=[];HUB_BUDGET[event.id]=1;delete HUB_COMPOSE_RESULT[event.id];state.myeongdong.screen='order';state.myeongdong.lastAttemptCorrect=null;
     writeState(state);render();resetViewport();
   };
+  function changeHubBudget(delta){
+  const {pack,state}=current(),hub=hubByRoute(pack.id);if(!hub||state.myeongdong.screen!=='order')return;
+  const event=Object.values(hub.events).find(item=>item.id===state.myeongdong.activeEvent)||activeHubEvent(hub,state);if(event.interaction!=='price-budget')return;
+  const currentQuantity=Math.max(0,Number(HUB_BUDGET[event.id])||1),maximum=Math.max(1,Number(event.maxQuantity)||3);
+  HUB_BUDGET[event.id]=Math.max(0,Math.min(maximum,currentQuantity+Number(delta||0)));state.myeongdong.lastAttemptCorrect=null;render();
+}
+  function submitHubBudget(){
+  const {pack,state}=current(),hub=hubByRoute(pack.id);if(!hub||state.myeongdong.screen!=='order')return;
+  const event=Object.values(hub.events).find(item=>item.id===state.myeongdong.activeEvent)||activeHubEvent(hub,state);if(event.interaction!=='price-budget')return;
+  const item=event.menu.find(entry=>entry.id===event.targetItem)||event.menu[0],quantity=Math.max(0,Number(HUB_BUDGET[event.id])||0),cost=item.price*quantity;
+  if(quantity!==Number(event.targetQuantity)||cost>Number(event.budget)){
+    state.myeongdong.attempts+=1;state.myeongdong.lastAttemptCorrect=false;state.clockMinutes+=1;state.updatedAt=now();writeState(state);render();revealFeedback();return;
+  }
+  if(cost>state.wallet)return notify(l({ko:'여행 원이 부족합니다. 다른 퀘스트에서 조금 더 모아 주세요.',ja:'旅ウォンが足りません。ほかのクエストでもう少し集めよう。',en:'Not enough travel won. Earn a little more in another quest.',zh:'旅行韩元不足，请先在其他任务中赚取。'}));
+  const already=hubQuestDone(state,event.id),previous=state.myeongdong.quests[event.id]&&typeof state.myeongdong.quests[event.id]==='object'?state.myeongdong.quests[event.id]:{};
+  if(!already){state.wallet-=cost;state.spent=Array.isArray(state.spent)?state.spent:[];state.spent.push({kind:'street-food',id:event.id,item:item.id,quantity,cost,currency:'travel-won',at:now()});}
+  state.myeongdong.quests[event.id]={...previous,completed:true,earned:0,quantity,cost,completedAt:previous.completedAt||now()};
+  state.myeongdong.lastAttemptCorrect=null;state.myeongdong.screen='result';state.clockMinutes+=3;state.updatedAt=now();
+  if(!state.evidence.includes(`hub:${event.id}`))state.evidence.push(`hub:${event.id}`);
+  writeState(state);render();resetViewport();
+}
+  window.malbitTravelBudgetChange=changeHubBudget;
+  window.malbitTravelBudgetSubmit=submitHubBudget;
   window.malbitTravelOrderAdd=index=>{
     const {pack,state}=current(),hub=hubByRoute(pack.id);if(!hub||state.myeongdong.screen!=='order')return;
     const event=Object.values(hub.events).find(item=>item.id===state.myeongdong.activeEvent)||activeHubEvent(hub,state);
