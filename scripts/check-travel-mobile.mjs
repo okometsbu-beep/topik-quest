@@ -76,16 +76,34 @@ try{
     assert.deepEqual(fit.outside,[],`${label}: interactive element leaves viewport`);
     assert.deepEqual(fit.overlaps,[],`${label}: flow elements overlap`);
   };
-  const startFresh=async()=>{
-    await evaluate(`localStorage.removeItem('malbitStoryV1');S.lang='ja';S.view='home';save();render()`);
-    assert.ok(await evaluate(`!!document.querySelector('.tqV9Mode.travel img[src*="airport-map.webp"]')`),'Travel entry must use generated art instead of emoji');
+  const startFresh=async(seedMetrics=false)=>{
+    await evaluate(`localStorage.removeItem('malbitStoryV1');${seedMetrics?"localStorage.setItem('malbitStoryV1',JSON.stringify({version:1,activePackId:'route-001-airport-myeongdong',episodes:{},metrics:{version:1,routeStarts:5,routeCompletions:4,myeongdongEntries:3,exchangeSessions:2}}));":''}S.lang='ja';S.view='home';save();render()`);
+    let homeReady=false;
+    for(let wait=0;wait<40;wait++){if(await evaluate(`!!document.querySelector('.tqV9Mode.travel img[src*="airport-map.webp"]')`)){homeReady=true;break}await sleep(50)}
+    assert.ok(homeReady,'Travel entry must use generated art instead of emoji');
     let opened=false;
-    for(let attempt=0;attempt<3&&!opened;attempt++){
-      await tap('.tqV9Mode.travel');
-      for(let wait=0;wait<20;wait++){if(await evaluate(`document.querySelector('.travelHubHead h1')?.textContent==='旅行モード'`)){opened=true;break}await sleep(50)}
+    if(seedMetrics){
+      for(let attempt=0;attempt<3&&!opened;attempt++){
+        if(await evaluate(`!!document.querySelector('.tqV9Mode.travel:not([disabled])')`))await tap('.tqV9Mode.travel');
+        for(let wait=0;wait<20;wait++){if(await evaluate(`document.querySelector('.travelHubHead h1')?.textContent==='旅行モード'`)){opened=true;break}await sleep(50)}
+      }
+    }else{
+      await evaluate(`malbitTravelOpen()`);
+      for(let wait=0;wait<40;wait++){if(await evaluate(`document.querySelector('.travelHubHead h1')?.textContent==='旅行モード'`)){opened=true;break}await sleep(50)}
     }
-    assert.ok(opened,'Travel entry touch must open the hub');
+    assert.ok(opened,'Travel entry must open the hub');
     assert.equal(await evaluate(`document.querySelector('.travelHubHead h1')?.textContent`),'旅行モード');
+    if(seedMetrics){
+      assert.equal(await evaluate(`document.querySelectorAll('.travelMetric').length`),4);
+      assert.deepEqual(await evaluate(`[...document.querySelectorAll('.travelMetric b')].map(node=>node.textContent)`),['5','80%','75%','67%']);
+      assert.match(await evaluate(`document.querySelector('.travelMetrics>p')?.textContent`),/この端末内だけ.*外部へ送信しません/);
+      const metricFit=await evaluate(`(()=>{const card=document.querySelector('.travelMetrics'),grid=document.querySelector('.travelMetricsGrid');return{card:card.scrollWidth-card.clientWidth,grid:grid.scrollWidth-grid.clientWidth}})()`);
+      assert.ok(metricFit.card<=1&&metricFit.grid<=1,`local metrics overflow: ${JSON.stringify(metricFit)}`);
+      await evaluate(`document.querySelector('.travelMetrics').scrollIntoView({block:'start',behavior:'auto'})`);
+      await sleep(100);
+      await shot('01b-local-metrics.png');
+      await evaluate(`scrollTo({top:0,left:0,behavior:'auto'})`);
+    }
     if(!fs.existsSync(path.join(out,'01a-travel-hub.png'))){
       await assertFits('Travel hub');
       await shot('01a-travel-hub.png');
@@ -101,6 +119,13 @@ try{
     assert.equal(await evaluate(`document.querySelectorAll('.travelAnswer.selected').length`),1);
     await tap('.travelQuestionCard .travelPrimary');
     return state();
+  };
+  const waitForQuestionTitle=async(expected)=>{
+    for(let wait=0;wait<40;wait++){
+      if(await evaluate(`document.querySelector('.travelQuestionCard h1')?.textContent===${JSON.stringify(expected)}`))return expected;
+      await sleep(50);
+    }
+    return evaluate(`document.querySelector('.travelQuestionCard h1')?.textContent`);
   };
   const nextQuestion=async()=>{
     await tap('.travelQuestionCard .travelPrimary');
@@ -119,9 +144,8 @@ try{
     await tap('.travelRoutes button',routeIndex);
     assert.equal((await state()).route,routeId);
     await tap('.travelSceneCard .travelPrimary');
-    const firstTitle=await evaluate(`document.querySelector('.travelQuestionCard h1')?.textContent`);
-    if(routeId==='taxi')assert.equal(firstTitle,'運転手に行き先を伝えよう');
-    else assert.equal(firstTitle,'交通カードで改札を通ろう');
+    const firstTitle=routeId==='taxi'?'運転手に行き先を伝えよう':'交通カードで改札を通ろう';
+    assert.equal(await waitForQuestionTitle(firstTitle),firstTitle,'route question must finish rendering before verification');
     if(reloadAtTransfer){
       await send('Page.reload',{ignoreCache:true});
       let restored=false;
@@ -136,16 +160,16 @@ try{
     if(routeId==='express')await shot('06-rail-transfer.png');
     if(routeId==='taxi')await shot('07-taxi-direct.png');
     await answer(0);await nextQuestion();
-    if(routeId==='taxi')assert.equal(await evaluate(`document.querySelector('.travelQuestionCard h1')?.textContent`),'降りる場所を確認しよう');
+    if(routeId==='taxi')assert.equal(await waitForQuestionTitle('降りる場所を確認しよう'),'降りる場所を確認しよう');
     if(taxiBackResume){
       await tap('.travelBack');
       assert.equal(await evaluate(`document.querySelectorAll('.travelMap .travelStop').length`),2,'taxi route map must skip Seoul Station');
       assert.equal(await evaluate(`document.querySelector('.travelMap').style.getPropertyValue('--travel-stops')`),'2');
       await tap('.travelEpisodeCard .travelPrimary');
-      assert.equal(await evaluate(`document.querySelector('.travelQuestionCard h1')?.textContent`),'降りる場所を確認しよう');
+      assert.equal(await waitForQuestionTitle('降りる場所を確認しよう'),'降りる場所を確認しよう');
     }
     await answer(0);await nextQuestion();
-    if(routeId==='taxi')assert.equal(await evaluate(`document.querySelector('.travelQuestionCard h1')?.textContent`),'運転手にお礼を伝えよう');
+    if(routeId==='taxi')assert.equal(await waitForQuestionTitle('運転手にお礼を伝えよう'),'運転手にお礼を伝えよう');
     await answer(0);await nextQuestion();
     const end=await state();
     assert.equal(end.completed,true);assert.equal(end.route,routeId);assert.equal(Object.keys(end.answers).length,6);
@@ -163,7 +187,7 @@ try{
   const durableBefore=await evaluate(`({vocab:JSON.parse(localStorage.getItem('topikQuestV8')).vocab,gameUnlock:JSON.parse(localStorage.getItem('topikQuestV8')).gameUnlock,game:localStorage.getItem('topikQuestTopik1GameV1'),review:localStorage.getItem('malbitWrongReviewV3')})`);
 
   await evaluate(`S.view='home';save();render()`);await sleep(1000);await shot('01-game-entry.png');
-  await startFresh();
+  await startFresh(true);
   assert.equal(await evaluate(`document.querySelector('.travelLang')?.textContent.trim()`),'🇯🇵','Travel Mode language control must remain a flag');
   await setViewport(375,667);
   const firstViewport=await evaluate(`(()=>{const first=document.querySelector('.travelAnswer').getBoundingClientRect();return{top:Math.round(first.top),bottom:Math.round(first.bottom),height:innerHeight,overflow:document.documentElement.scrollWidth-innerWidth}})()`);

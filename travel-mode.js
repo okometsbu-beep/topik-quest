@@ -13,6 +13,12 @@
   const HUB_BUDGET=Object.create(null);
   const HUB_DIALOGUE_STEP=Object.create(null);
   const HUB_COMPOSE_RESULT=Object.create(null);
+  const METRIC_KEYS=Object.freeze({
+    routeStarted:'routeStarts',
+    routeCompleted:'routeCompletions',
+    myeongdongEntered:'myeongdongEntries',
+    exchangeSession:'exchangeSessions'
+  });
 
   if(!PACKS.length){console.error('[MALBIT travel] travel pack missing');return}
 
@@ -55,6 +61,57 @@
   function resetTransient(pack){
     for(const scene of pack.scenes){delete SELECTED[scene.id];delete TRANSCRIPTS[scene.id]}
   }
+  function normalizeMetrics(value){
+    const raw=value&&typeof value==='object'?value:{};
+    return{
+      version:1,
+      routeStarts:Math.max(0,Number(raw.routeStarts)||0),
+      routeCompletions:Math.max(0,Number(raw.routeCompletions)||0),
+      myeongdongEntries:Math.max(0,Number(raw.myeongdongEntries)||0),
+      exchangeSessions:Math.max(0,Number(raw.exchangeSessions)||0)
+    };
+  }
+  function normalizeMeasurement(value){
+    const raw=value&&typeof value==='object'?value:{};
+    return{
+      routeStarted:!!raw.routeStarted,
+      routeCompleted:!!raw.routeCompleted,
+      myeongdongEntered:!!raw.myeongdongEntered,
+      exchangeSession:!!raw.exchangeSession
+    };
+  }
+  function recordMilestones(store,state,names){
+    store.metrics=normalizeMetrics(store.metrics);
+    state.measurement=normalizeMeasurement(state.measurement);
+    for(const name of names){
+      const key=METRIC_KEYS[name];
+      if(!key||state.measurement[name])continue;
+      state.measurement[name]=true;
+      store.metrics[key]+=1;
+    }
+  }
+  const metricRate=(part,total)=>total?Math.round(part/total*100):null;
+  function metricsSnapshot(store=readStore()){
+    const metrics=normalizeMetrics(store.metrics);
+    return Object.freeze({
+      ...metrics,
+      completionRate:metricRate(metrics.routeCompletions,metrics.routeStarts),
+      myeongdongEntryRate:metricRate(metrics.myeongdongEntries,metrics.routeCompletions),
+      collectibleExchangeRate:metricRate(metrics.exchangeSessions,metrics.myeongdongEntries),
+      localOnly:true
+    });
+  }
+  const metricPercent=value=>value===null?'—':`${value}%`;
+  function metricsMarkup(store){
+    const metrics=metricsSnapshot(store);
+    const labels=[
+      [l({ko:'코스 시작',ja:'コース開始',en:'Route starts',zh:'路线开始'}),String(metrics.routeStarts)],
+      [l({ko:'완주율',ja:'完走率',en:'Completion',zh:'完成率'}),metricPercent(metrics.completionRate)],
+      [l({ko:'명동 진입률',ja:'明洞到達率',en:'Myeongdong entry',zh:'明洞进入率'}),metricPercent(metrics.myeongdongEntryRate)],
+      [l({ko:'교환 경험률',ja:'交換体験率',en:'Exchange use',zh:'兑换体验率'}),metricPercent(metrics.collectibleExchangeRate)]
+    ];
+    return`<section class="travelMetrics" aria-labelledby="travel-metrics-title"><div class="travelMetricsHead"><div><small>LOCAL LEARNING SIGNALS</small><h2 id="travel-metrics-title">${h(l({ko:'이 기기의 여행 기록',ja:'この端末の旅記録',en:'Travel record on this device',zh:'此设备的旅行记录'}))}</h2></div><span>LOCAL</span></div><div class="travelMetricsGrid">${labels.map(([label,value])=>`<div class="travelMetric"><b>${h(value)}</b><small>${h(label)}</small></div>`).join('')}</div><p>${h(l({ko:'v57 이후 이 기기에만 저장하며 외부로 전송하지 않습니다.',ja:'v57以降、この端末内だけに保存し、外部へ送信しません。',en:'Stored only on this device from v57; never sent outside.',zh:'自v57起仅保存在本设备，不会发送到外部。'}))}</p></section>`;
+  }
   function readStore(){
     try{
       const parsed=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');
@@ -73,6 +130,7 @@
     }
     const equipped=unlocked.has(store.avatar?.equipped)?store.avatar.equipped:DEFAULT_SKIN;
     store.avatar={equipped,unlocked:[...unlocked]};
+    store.metrics=normalizeMetrics(store.metrics);
     return store;
   }
   function writeStore(store){
@@ -103,11 +161,13 @@
     value.clockMinutes=Number.isFinite(Number(value.clockMinutes))?Number(value.clockMinutes):new Date().getHours()*60+new Date().getMinutes();
     value.inventory=Array.isArray(value.inventory)?value.inventory:[];
     value.myeongdong=normalizeHubState(value.myeongdong);
+    value.measurement=normalizeMeasurement(value.measurement);
     return value;
   }
   function readState(pack){return normalizeState(pack,readStore().episodes[pack.id])}
-  function writeState(state){
+  function writeState(state,milestones=[]){
     const store=readStore();
+    recordMilestones(store,state,milestones);
     store.activePackId=state.packId;
     store.episodes[state.packId]=state;
     writeStore(store);
@@ -123,7 +183,8 @@
       wallet:Number(pack.startWallet)||0,clockMinutes:new Date().getHours()*60+new Date().getMinutes(),inventory:Array.from(new Set(Array.isArray(previous?.inventory)?previous.inventory:[])),spent:[],
       completed:false,startedAt:now(),updatedAt:now(),completedAt:null,
       bestScore:Math.max(Number(previous?.bestScore)||0,previous?.completed?correctCount(previous):0),
-      clears:Number(previous?.clears)||0,perfectBonusClaimed:!!previous?.perfectBonusClaimed
+      clears:Number(previous?.clears)||0,perfectBonusClaimed:!!previous?.perfectBonusClaimed,
+      measurement:normalizeMeasurement(null)
     };
     state.myeongdong=normalizeHubState(previous?.myeongdong);
     state.myeongdong.screen='ending';
@@ -267,7 +328,7 @@
       const action=!state?l({ko:'서울 여행 시작',ja:'ソウル旅を始める',en:'Start Seoul journey',zh:'开始首尔旅行'}):complete?l({ko:'완주 기록 보기',ja:'完走記録を見る',en:'View journey record',zh:'查看旅行记录'}):l({ko:'여행 이어가기',ja:'旅を続ける',en:'Continue journey',zh:'继续旅行'});
       return`<article class="travelEpisodeCard" style="--travel-accent:${h(pack.cover.accent)}"><div class="travelEpisodeArt pixel"><img src="${h(pack.cover.image)}" alt="" width="960" height="640"><i>${h(pack.badge)}</i></div><div class="travelEpisodeBody"><div class="travelEpisodeFlags"><span>BEGINNER</span><span>${h(l(pack.duration))}</span>${complete?`<span class="clear">ROUTE CLEAR</span>`:''}</div><h2>${h(l(pack.title))}</h2><p>${h(l(pack.description))}</p>${state?`<div class="travelEpisodeStats"><span>${h(l({ko:'미션',ja:'ミッション',en:'Missions',zh:'任务'}))} ${answered}/${pack.questionCount}</span><span>${h(won(state.wallet))}</span></div>`:''}<button class="travelPrimary" onclick="malbitTravelStart('${h(pack.id)}',false)">${action} <b>→</b></button>${state?`<button class="travelTextButton" onclick="malbitTravelRestart('${h(pack.id)}')">${h(l({ko:'코스 처음부터',ja:'コースを最初から',en:'Restart route',zh:'重新开始路线'}))}</button>`:''}</div></article>`;
     }).join('');
-    sc.innerHTML=`<div class="travelHub"><header class="travelHubHead"><button onclick="setView('home')">‹</button><div><small>LEARN · TRAVEL · COLLECT</small><h1>${h(l({ko:'여행모드',ja:'旅行モード',en:'Travel Mode',zh:'旅行模式'}))}</h1><p>${h(l({ko:'말하고, 표지를 찾고, 발권하며 서울을 직접 여행하세요.',ja:'話して、標識を探して、発券しながらソウルを旅しよう。',en:'Speak, find signs, and use the ticket machine as you travel Seoul.',zh:'通过对话、找标志和购票，亲自游览首尔。'}))}</p></div><button class="travelLang" onclick="event.stopPropagation();flagMenu()" aria-label="${h(l({ko:'설명 언어 바꾸기',ja:'説明言語を変更',en:'Change explanation language',zh:'切换解析语言'}))}">${flag()}</button></header><section class="travelHubBanner"><div><small>KOREA ROUTE 001</small><b>${h(l({ko:'인천공항 T1 → 명동',ja:'仁川空港 T1 → 明洞',en:'Incheon Airport T1 → Myeongdong',zh:'仁川机场 T1 → 明洞'}))}</b><p>${h(l({ko:'6개 현장 미션 · 이동 선택 · 수집품 · 무료 의상',ja:'現地6ミッション・移動選択・コレクション・無料衣装',en:'6 field missions · route choice · collectibles · free outfit',zh:'6个现场任务 · 路线选择 · 收藏品 · 免费服装'}))}</p></div></section>${mapMarkup(focus,focusState)}<div class="travelSectionTitle"><b>${h(l({ko:'첫 번째 여행 코스',ja:'最初の旅行コース',en:'First travel route',zh:'第一条旅行路线'}))}</b><span>${PACKS.length} ROUTE</span></div>${cards}${avatarMarkup(focus,store)}<article class="travelComingSoon"><span>02</span><div><b>${h(l({ko:'다음 서울 지역',ja:'次のソウルエリア',en:'Next Seoul area',zh:'下一个首尔区域'}))}</b><p>${h(l({ko:'남은 여행 원·시간·수집품을 그대로 들고 다음 역으로 이어집니다.',ja:'残った旅ウォン・時間・コレクションを持って次の駅へ進みます。',en:'Carry your travel won, time, and collection to the next station.',zh:'携带剩余旅行韩元、时间和收藏前往下一站。'}))}</p></div><em>LOCKED</em></article></div>`;
+    sc.innerHTML=`<div class="travelHub"><header class="travelHubHead"><button onclick="setView('home')">‹</button><div><small>LEARN · TRAVEL · COLLECT</small><h1>${h(l({ko:'여행모드',ja:'旅行モード',en:'Travel Mode',zh:'旅行模式'}))}</h1><p>${h(l({ko:'말하고, 표지를 찾고, 발권하며 서울을 직접 여행하세요.',ja:'話して、標識を探して、発券しながらソウルを旅しよう。',en:'Speak, find signs, and use the ticket machine as you travel Seoul.',zh:'通过对话、找标志和购票，亲自游览首尔。'}))}</p></div><button class="travelLang" onclick="event.stopPropagation();flagMenu()" aria-label="${h(l({ko:'설명 언어 바꾸기',ja:'説明言語を変更',en:'Change explanation language',zh:'切换解析语言'}))}">${flag()}</button></header><section class="travelHubBanner"><div><small>KOREA ROUTE 001</small><b>${h(l({ko:'인천공항 T1 → 명동',ja:'仁川空港 T1 → 明洞',en:'Incheon Airport T1 → Myeongdong',zh:'仁川机场 T1 → 明洞'}))}</b><p>${h(l({ko:'6개 현장 미션 · 이동 선택 · 수집품 · 무료 의상',ja:'現地6ミッション・移動選択・コレクション・無料衣装',en:'6 field missions · route choice · collectibles · free outfit',zh:'6个现场任务 · 路线选择 · 收藏品 · 免费服装'}))}</p></div></section>${mapMarkup(focus,focusState)}<div class="travelSectionTitle"><b>${h(l({ko:'첫 번째 여행 코스',ja:'最初の旅行コース',en:'First travel route',zh:'第一条旅行路线'}))}</b><span>${PACKS.length} ROUTE</span></div>${cards}${metricsMarkup(store)}${avatarMarkup(focus,store)}<article class="travelComingSoon"><span>02</span><div><b>${h(l({ko:'다음 서울 지역',ja:'次のソウルエリア',en:'Next Seoul area',zh:'下一个首尔区域'}))}</b><p>${h(l({ko:'남은 여행 원·시간·수집품을 그대로 들고 다음 역으로 이어집니다.',ja:'残った旅ウォン・時間・コレクションを持って次の駅へ進みます。',en:'Carry your travel won, time, and collection to the next station.',zh:'携带剩余旅行韩元、时间和收藏前往下一站。'}))}</p></div><em>LOCKED</em></article></div>`;
   }
   function renderNarrative(sc,pack,state,scene){
     sc.innerHTML=`<div class="travelPlay">${commonTop(pack,state,scene)}<article class="travelSceneCard"><div class="travelChapter">AREA ${scene.chapter}</div><h1>${h(l(scene.title))}</h1>${worldMarkup(pack,state,scene)}${koreanCopy(scene)}<button class="travelPrimary" onclick="malbitTravelNext()">${h(l({ko:'여행 계속',ja:'旅を続ける',en:'Continue journey',zh:'继续旅行'}))} <b>→</b></button></article>${notebook(pack,state)}</div>`;
@@ -378,7 +439,7 @@
       state.completed=true;state.completedAt=now();state.updatedAt=now();state.clears=(Number(state.clears)||0)+1;state.bestScore=Math.max(Number(state.bestScore)||0,correctCount(state));
       if(perfect&&!state.perfectBonusClaimed){state.wallet+=Number(pack.perfectBonus)||0;state.perfectBonusClaimed=true}
       if(!state.inventory.includes('myeongdong-first-stamp'))state.inventory.push('myeongdong-first-stamp');
-      writeState(state);
+      writeState(state,['routeStarted','routeCompleted']);
     }
     const result=pack.endings[endingType(pack,state)],score=correctCount(state);
     const reward=skinById(pack,score===pack.questionCount?pack.perfectSkin:pack.rewardSkin);
@@ -399,9 +460,13 @@
   window.malbitTravelOpen=()=>setView('travel');
   window.malbitTravelStart=(packId,fresh)=>{
     const pack=packById(packId)||PACKS[0],store=readStore(),previous=normalizeState(pack,store.episodes[pack.id]);
+    let state=previous;
     store.activePackId=pack.id;
-    if(fresh||!previous){resetTransient(pack);store.episodes[pack.id]=newState(pack,previous)}
-    else if(previous.completed)previous.myeongdong.screen='ending';
+    if(fresh||!previous){resetTransient(pack);state=newState(pack,previous)}
+    else if(previous.completed)state.myeongdong.screen='ending';
+    recordMilestones(store,state,['routeStarted']);
+    if(state.completed)recordMilestones(store,state,['routeCompleted']);
+    store.episodes[pack.id]=state;
     writeStore(store);
     setView('travelPlay');
     resetViewport();
@@ -424,7 +489,7 @@
     if(!hub||!state.completed||scene.type!=='ending')return;
     const event=activeHubEvent(hub,state);
     state.myeongdong.screen='hub';state.myeongdong.activeEvent=event.id;state.myeongdong.lastAttemptCorrect=null;
-    writeState(state);cancelAudio();render();resetViewport();
+    writeState(state,['routeStarted','routeCompleted','myeongdongEntered']);cancelAudio();render();resetViewport();
   };
   window.malbitTravelMyeongdongClose=()=>{
     const {state}=current();
@@ -529,7 +594,7 @@
     const cost=Math.max(0,Number(item.cost)||0);
     state.wallet-=cost;state.clockMinutes+=2;state.inventory.push(item.id);state.myeongdong.lastPurchase=item.id;state.myeongdong.screen='hub';state.updatedAt=now();
     state.spent=Array.isArray(state.spent)?state.spent:[];state.spent.push({kind:'collectible',id:item.id,cost,currency:'travel-won',at:now()});
-    writeState(state);render();
+    writeState(state,['routeStarted','routeCompleted','myeongdongEntered','exchangeSession']);render();
   };
   window.malbitTravelNext=()=>{
     const {pack,state,scene}=current();
@@ -586,6 +651,8 @@
     }catch(error){notify(l({ko:'음성 재생에 실패했습니다.',ja:'音声の再生に失敗しました。',en:'Could not play audio.',zh:'语音播放失败。'}))}
   };
 
+  window.malbitTravelMetrics=()=>metricsSnapshot();
+
   // A returning tab may still hold the old view name. Migrate it without touching any progress.
   if(S.view==='story'||S.view==='storyPlay'){
     S.view=S.view==='storyPlay'?'travelPlay':'travel';
@@ -618,6 +685,6 @@
     return renderPlay(sc);
   };
 
-  window.MALBIT_TRAVEL=Object.freeze({storageKey:STORAGE_KEY,packs:PACKS,hubs:HUBS,open:window.malbitTravelOpen});
+  window.MALBIT_TRAVEL=Object.freeze({storageKey:STORAGE_KEY,packs:PACKS,hubs:HUBS,open:window.malbitTravelOpen,metrics:window.malbitTravelMetrics});
   window.MALBIT_STORY=window.MALBIT_TRAVEL;
 })();
