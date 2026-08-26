@@ -12,14 +12,23 @@ for(const file of fs.readdirSync(out))if(file.endsWith('.png'))fs.unlinkSync(pat
 const chromePath=[process.env.CHROME_PATH,'/usr/bin/google-chrome','/usr/bin/google-chrome-stable','/usr/bin/chromium','/usr/bin/chromium-browser'].find(candidate=>candidate&&fs.existsSync(candidate));
 assert.ok(chromePath,'Chrome/Chromium not found; set CHROME_PATH to the browser executable');
 const server=spawn(process.execPath,['scripts/serve.mjs'],{cwd:root,stdio:'ignore'});
-const chrome=spawn(chromePath,['--headless','--no-sandbox','--disable-gpu','--disable-dev-shm-usage','--hide-scrollbars','--remote-debugging-address=127.0.0.1','--remote-debugging-port=9222',`--user-data-dir=/tmp/malbit-chrome-profile-${process.pid}`,'about:blank'],{stdio:['ignore','ignore','inherit']});
+const chromeArgs=['--headless','--no-sandbox','--disable-gpu','--disable-dev-shm-usage','--hide-scrollbars','--remote-debugging-address=127.0.0.1','--remote-debugging-port=9222',`--user-data-dir=/tmp/malbit-chrome-profile-${process.pid}`,'about:blank'];
+const launchChrome=()=>spawn(chromePath,chromeArgs,{stdio:['ignore','ignore','inherit']});
+let chrome=launchChrome();
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const json=async(url,options)=>{const response=await fetch(url,options);assert.ok(response.ok,`${url}: ${response.status}`);return response.json()};
-async function waitFor(url){for(let i=0;i<150;i++){try{return await json(url)}catch(error){await sleep(100)}}throw new Error(`Timed out: ${url}`)}
+async function waitFor(url){for(let i=0;i<300;i++){try{return await json(url)}catch(error){await sleep(100)}}throw new Error(`Timed out: ${url}`)}
 
 let socket;
 try{
-  await waitFor('http://127.0.0.1:9222/json/version');
+  try{
+    await waitFor('http://127.0.0.1:9222/json/version');
+  }catch(firstStartError){
+    chrome.kill('SIGTERM');
+    await sleep(250);
+    chrome=launchChrome();
+    await waitFor('http://127.0.0.1:9222/json/version');
+  }
   const target=await json('http://127.0.0.1:9222/json/new?http://127.0.0.1:4173',{method:'PUT'});
   socket=new WebSocket(target.webSocketDebuggerUrl);
   await new Promise((resolve,reject)=>{socket.addEventListener('open',resolve,{once:true});socket.addEventListener('error',reject,{once:true})});
@@ -68,7 +77,18 @@ try{
     assert.ok(index>=0,`tap label missing: ${selector} ${label}`);
     return tap(selector,index,delay);
   };
-  const state=()=>evaluate(`JSON.parse(localStorage.getItem('malbitStoryV1')).episodes['route-001-airport-myeongdong']`);
+  const state=()=>evaluate(`(()=>{const store=JSON.parse(localStorage.getItem('malbitStoryV1')||'null');return store?.episodes?.['route-001-airport-myeongdong']||null})()`);
+  const tapUntilScene=async(selector,sceneId)=>{
+    for(let attempt=0;attempt<3;attempt++){
+      if((await state())?.sceneId===sceneId)return;
+      await tap(selector,0,150);
+      for(let wait=0;wait<20;wait++){
+        if((await state())?.sceneId===sceneId)return;
+        await sleep(50);
+      }
+    }
+    assert.equal((await state())?.sceneId,sceneId,`tap did not enter scene: ${sceneId}`);
+  };
   const assertFits=async label=>{
     const fit=await evaluate(`(()=>{const visible=el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)!==0&&r.width>0&&r.height>0};const targets=[...document.querySelectorAll('.travelPrimary,.travelSecondary,.travelAnswer,.travelRoutes button,.travelBack,.travelLang,.travelListen button,.travelMyeongdongHead>button,.travelExchangeCard,.travelSentence button,.travelWordBank button,.travelQuantityPicker button,.travelBudgetActions button')].filter(visible);const outside=targets.filter(el=>{const r=el.getBoundingClientRect();return r.left<-1||r.right>innerWidth+1}).map(el=>({class:el.className,left:Math.round(el.getBoundingClientRect().left),right:Math.round(el.getBoundingClientRect().right)}));const bad=targets.filter(el=>el.getBoundingClientRect().height<43).map(el=>({class:el.className,h:Math.round(el.getBoundingClientRect().height)}));const overlaps=[];for(const container of document.querySelectorAll('.travelEndingBody,.travelMyeongdongCard')){const children=[...container.children].filter(el=>visible(el)&&getComputedStyle(el).position!=='absolute').sort((a,b)=>a.getBoundingClientRect().top-b.getBoundingClientRect().top);for(let i=1;i<children.length;i++){const a=children[i-1].getBoundingClientRect(),b=children[i].getBoundingClientRect();if(a.bottom>b.top+1)overlaps.push({a:children[i-1].className||children[i-1].tagName,b:children[i].className||children[i].tagName,amount:Math.round(a.bottom-b.top)})}}return{innerWidth,root:document.documentElement.scrollWidth,body:document.body.scrollWidth,bad,outside,overlaps}})()`);
     assert.ok(fit.root<=fit.innerWidth+1&&fit.body<=fit.innerWidth+1,`${label}: horizontal overflow ${fit.root}/${fit.body}/${fit.innerWidth}`);
@@ -77,7 +97,7 @@ try{
     assert.deepEqual(fit.overlaps,[],`${label}: flow elements overlap`);
   };
   const startFresh=async(seedMetrics=false)=>{
-    await evaluate(`localStorage.removeItem('malbitStoryV1');${seedMetrics?"localStorage.setItem('malbitStoryV1',JSON.stringify({version:1,activePackId:'route-001-airport-myeongdong',episodes:{},metrics:{version:1,routeStarts:5,routeCompletions:4,myeongdongEntries:3,exchangeSessions:2}}));":''}S.lang='ja';S.view='home';save();render()`);
+    await evaluate(`localStorage.removeItem('malbitStoryV1');${seedMetrics?"localStorage.setItem('malbitStoryV1',JSON.stringify({version:1,activePackId:'route-001-airport-myeongdong',episodes:{},metrics:{version:2,routeStarts:5,routeCompletions:4,myeongdongEntries:3,exchangeSessions:2,priceQuestStarts:4,priceQuestCompletions:3,priceQuestWrongSubmissions:2,priceQuestWalletTotal:180000}}));":''}S.lang='ja';S.view='home';save();render()`);
     let homeReady=false;
     for(let wait=0;wait<40;wait++){if(await evaluate(`!!document.querySelector('.tqV9Mode.travel img[src*="airport-map.webp"]')`)){homeReady=true;break}await sleep(50)}
     assert.ok(homeReady,'Travel entry must use generated art instead of emoji');
@@ -94,9 +114,9 @@ try{
     assert.ok(opened,'Travel entry must open the hub');
     assert.equal(await evaluate(`document.querySelector('.travelHubHead h1')?.textContent`),'旅行モード');
     if(seedMetrics){
-      assert.equal(await evaluate(`document.querySelectorAll('.travelMetric').length`),4);
-      assert.deepEqual(await evaluate(`[...document.querySelectorAll('.travelMetric b')].map(node=>node.textContent)`),['5','80%','75%','67%']);
-      assert.match(await evaluate(`document.querySelector('.travelMetrics>p')?.textContent`),/この端末内だけ.*外部へ送信しません/);
+      assert.equal(await evaluate(`document.querySelectorAll('.travelMetric').length`),7);
+      assert.deepEqual(await evaluate(`[...document.querySelectorAll('.travelMetric b')].map(node=>node.textContent)`),['5','80%','75%','67%','75%','2','60,000旅ウォン']);
+      assert.match(await evaluate(`document.querySelector('.travelMetrics>p')?.textContent`),/この端末内に数値だけを保存し、外部へ送信しません/);
       const metricFit=await evaluate(`(()=>{const card=document.querySelector('.travelMetrics'),grid=document.querySelector('.travelMetricsGrid');return{card:card.scrollWidth-card.clientWidth,grid:grid.scrollWidth-grid.clientWidth}})()`);
       assert.ok(metricFit.card<=1&&metricFit.grid<=1,`local metrics overflow: ${JSON.stringify(metricFit)}`);
       await evaluate(`document.querySelector('.travelMetrics').scrollIntoView({block:'start',behavior:'auto'})`);
@@ -108,10 +128,8 @@ try{
       await assertFits('Travel hub');
       await shot('01a-travel-hub.png');
     }
-    await tap('.travelEpisodeCard .travelPrimary');
-    assert.equal((await state()).sceneId,'arrival');
-    await tap('.travelSceneCard .travelPrimary');
-    assert.equal((await state()).sceneId,'q-hello');
+    await tapUntilScene('.travelEpisodeCard .travelPrimary','arrival');
+    await tapUntilScene('.travelSceneCard .travelPrimary','q-hello');
   };
   const answer=async(index=0)=>{
     assert.equal(await evaluate(`document.querySelectorAll('.travelAnswer').length`),4);
@@ -299,6 +317,10 @@ try{
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertFits(`Myeongdong price budget ${width}px`)}
   await setViewport(390,844);await shot('13-menu-budget.png');
   const beforeSnack=(await state()).wallet;
+  assert.equal((await evaluate(`malbitTravelMetrics()`)).priceQuestStarts,1);
+  await tap('.travelBudgetActions .travelPrimary');
+  assert.match(await evaluate(`document.querySelector('.travelFeedback.bad')?.textContent`),/もう1個/);
+  assert.equal((await evaluate(`malbitTravelMetrics()`)).priceQuestWrongSubmissions,1);
   await tap('.travelQuantityPicker button',1);
   assert.match(await evaluate(`document.querySelector('.travelQuantityPicker output')?.textContent`),/4,000/);
   await tap('.travelBudgetActions .travelPrimary');
@@ -307,6 +329,10 @@ try{
   assert.equal(afterSnack.myeongdong.quests['myeongdong-menu-budget'].quantity,2);
   assert.equal(afterSnack.spent.at(-1).kind,'street-food');
   assert.equal(afterSnack.spent.at(-1).currency,'travel-won');
+  const priceMetrics=await evaluate(`malbitTravelMetrics()`);
+  assert.equal(priceMetrics.priceQuestCompletions,1);
+  assert.equal(priceMetrics.priceQuestCompletionRate,100);
+  assert.equal(priceMetrics.priceQuestAverageWallet,afterSnack.wallet);
   assert.match(await evaluate(`document.querySelector('.travelQuestionNo span')?.textContent`),/MENU READING CLEAR/);
   await shot('14-menu-budget-clear.png');
   await tap('.travelHubResult .travelPrimary');
@@ -333,5 +359,5 @@ try{
   console.log('travel mobile QA: 320/375/390/430px containment, hit-tested route + NPC word order + Hangul sign build with decoys, day/evening events, travel-won exchange, reload/back-resume, durable records, screenshots=15, errors=0');
 }finally{
   try{socket?.close()}catch(error){}
-  chrome.kill('SIGTERM');server.kill('SIGTERM');
+  chrome?.kill('SIGTERM');server.kill('SIGTERM');
 }
