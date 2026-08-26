@@ -17,7 +17,9 @@
     routeStarted:'routeStarts',
     routeCompleted:'routeCompletions',
     myeongdongEntered:'myeongdongEntries',
-    exchangeSession:'exchangeSessions'
+    exchangeSession:'exchangeSessions',
+    priceQuestStarted:'priceQuestStarts',
+    priceQuestCompleted:'priceQuestCompletions'
   });
 
   if(!PACKS.length){console.error('[MALBIT travel] travel pack missing');return}
@@ -64,11 +66,15 @@
   function normalizeMetrics(value){
     const raw=value&&typeof value==='object'?value:{};
     return{
-      version:1,
+      version:2,
       routeStarts:Math.max(0,Number(raw.routeStarts)||0),
       routeCompletions:Math.max(0,Number(raw.routeCompletions)||0),
       myeongdongEntries:Math.max(0,Number(raw.myeongdongEntries)||0),
-      exchangeSessions:Math.max(0,Number(raw.exchangeSessions)||0)
+      exchangeSessions:Math.max(0,Number(raw.exchangeSessions)||0),
+      priceQuestStarts:Math.max(0,Number(raw.priceQuestStarts)||0),
+      priceQuestCompletions:Math.max(0,Number(raw.priceQuestCompletions)||0),
+      priceQuestWrongSubmissions:Math.max(0,Number(raw.priceQuestWrongSubmissions)||0),
+      priceQuestWalletTotal:Math.max(0,Number(raw.priceQuestWalletTotal)||0)
     };
   }
   function normalizeMeasurement(value){
@@ -77,7 +83,9 @@
       routeStarted:!!raw.routeStarted,
       routeCompleted:!!raw.routeCompleted,
       myeongdongEntered:!!raw.myeongdongEntered,
-      exchangeSession:!!raw.exchangeSession
+      exchangeSession:!!raw.exchangeSession,
+      priceQuestStarted:!!raw.priceQuestStarted,
+      priceQuestCompleted:!!raw.priceQuestCompleted
     };
   }
   function recordMilestones(store,state,names){
@@ -90,6 +98,14 @@
       store.metrics[key]+=1;
     }
   }
+  function recordMetricAggregates(store,aggregates){
+    store.metrics=normalizeMetrics(store.metrics);
+    const wrong=Math.max(0,Number(aggregates?.priceQuestWrongSubmissions)||0);
+    store.metrics.priceQuestWrongSubmissions+=wrong;
+    if(Number.isFinite(Number(aggregates?.priceQuestWalletAfterCompletion))){
+      store.metrics.priceQuestWalletTotal+=Math.max(0,Number(aggregates.priceQuestWalletAfterCompletion));
+    }
+  }
   const metricRate=(part,total)=>total?Math.round(part/total*100):null;
   function metricsSnapshot(store=readStore()){
     const metrics=normalizeMetrics(store.metrics);
@@ -98,19 +114,27 @@
       completionRate:metricRate(metrics.routeCompletions,metrics.routeStarts),
       myeongdongEntryRate:metricRate(metrics.myeongdongEntries,metrics.routeCompletions),
       collectibleExchangeRate:metricRate(metrics.exchangeSessions,metrics.myeongdongEntries),
+      priceQuestCompletionRate:metricRate(metrics.priceQuestCompletions,metrics.priceQuestStarts),
+      priceQuestAverageWallet:metrics.priceQuestCompletions?Math.round(metrics.priceQuestWalletTotal/metrics.priceQuestCompletions):null,
       localOnly:true
     });
   }
   const metricPercent=value=>value===null?'—':`${value}%`;
   function metricsMarkup(store){
     const metrics=metricsSnapshot(store);
-    const labels=[
+    const routeLabels=[
       [l({ko:'코스 시작',ja:'コース開始',en:'Route starts',zh:'路线开始'}),String(metrics.routeStarts)],
       [l({ko:'완주율',ja:'完走率',en:'Completion',zh:'完成率'}),metricPercent(metrics.completionRate)],
       [l({ko:'명동 진입률',ja:'明洞到達率',en:'Myeongdong entry',zh:'明洞进入率'}),metricPercent(metrics.myeongdongEntryRate)],
       [l({ko:'교환 경험률',ja:'交換体験率',en:'Exchange use',zh:'兑换体验率'}),metricPercent(metrics.collectibleExchangeRate)]
     ];
-    return`<section class="travelMetrics" aria-labelledby="travel-metrics-title"><div class="travelMetricsHead"><div><small>LOCAL LEARNING SIGNALS</small><h2 id="travel-metrics-title">${h(l({ko:'이 기기의 여행 기록',ja:'この端末の旅記録',en:'Travel record on this device',zh:'此设备的旅行记录'}))}</h2></div><span>LOCAL</span></div><div class="travelMetricsGrid">${labels.map(([label,value])=>`<div class="travelMetric"><b>${h(value)}</b><small>${h(label)}</small></div>`).join('')}</div><p>${h(l({ko:'v57 이후 이 기기에만 저장하며 외부로 전송하지 않습니다.',ja:'v57以降、この端末内だけに保存し、外部へ送信しません。',en:'Stored only on this device from v57; never sent outside.',zh:'自v57起仅保存在本设备，不会发送到外部。'}))}</p></section>`;
+    const priceLabels=[
+      [l({ko:'가격 퀘스트 완료율',ja:'値段クエスト完了率',en:'Price quest completion',zh:'价格任务完成率'}),metricPercent(metrics.priceQuestCompletionRate)],
+      [l({ko:'완료 전 오답 제출',ja:'完了前の誤答',en:'Wrong tries before clear',zh:'完成前错答'}),String(metrics.priceQuestWrongSubmissions)],
+      [l({ko:'완료 후 평균 잔액',ja:'完了後の平均残高',en:'Average wallet after clear',zh:'完成后平均余额'}),metrics.priceQuestAverageWallet===null?'—':won(metrics.priceQuestAverageWallet)]
+    ];
+    const grid=(labels,kind='')=>`<div class="travelMetricsGrid ${kind}"${kind?' aria-label="'+h(l({ko:'명동 가격 퀘스트 기록',ja:'明洞の値段クエスト記録',en:'Myeongdong price quest record',zh:'明洞价格任务记录'}))+'"':''}>${labels.map(([label,value])=>`<div class="travelMetric"><b>${h(value)}</b><small>${h(label)}</small></div>`).join('')}</div>`;
+    return`<section class="travelMetrics" aria-labelledby="travel-metrics-title"><div class="travelMetricsHead"><div><small>LOCAL LEARNING SIGNALS</small><h2 id="travel-metrics-title">${h(l({ko:'이 기기의 여행 기록',ja:'この端末の旅記録',en:'Travel record on this device',zh:'此设备的旅行记录'}))}</h2></div><span>LOCAL</span></div>${grid(routeLabels)}<div class="travelMetricsSubhead">${h(l({ko:'명동 가격 퀘스트',ja:'明洞の値段クエスト',en:'Myeongdong price quest',zh:'明洞价格任务'}))}</div>${grid(priceLabels,'price')}<p>${h(l({ko:'이 기기에만 숫자로 저장하며 외부로 전송하지 않습니다.',ja:'この端末内に数値だけを保存し、外部へ送信しません。',en:'Only numeric totals are stored on this device and never sent outside.',zh:'仅以数字保存在本设备，不会发送到外部。'}))}</p></section>`;
   }
   function readStore(){
     try{
@@ -165,9 +189,10 @@
     return value;
   }
   function readState(pack){return normalizeState(pack,readStore().episodes[pack.id])}
-  function writeState(state,milestones=[]){
+  function writeState(state,milestones=[],aggregates=null){
     const store=readStore();
     recordMilestones(store,state,milestones);
+    recordMetricAggregates(store,aggregates);
     store.activePackId=state.packId;
     store.episodes[state.packId]=state;
     writeStore(store);
@@ -514,7 +539,7 @@
     if(!hub)return;
     const event=Object.values(hub.events).find(item=>item.id===state.myeongdong.activeEvent)||activeHubEvent(hub,state);
     HUB_ORDER[event.id]=[];HUB_BUDGET[event.id]=1;delete HUB_COMPOSE_RESULT[event.id];state.myeongdong.screen='order';state.myeongdong.lastAttemptCorrect=null;
-    writeState(state);render();resetViewport();
+    writeState(state,event.interaction==='price-budget'&&!hubQuestDone(state,event.id)?['priceQuestStarted']:[]);render();resetViewport();
   };
   function changeHubBudget(delta){
   const {pack,state}=current(),hub=hubByRoute(pack.id);if(!hub||state.myeongdong.screen!=='order')return;
@@ -527,7 +552,9 @@
   const event=Object.values(hub.events).find(item=>item.id===state.myeongdong.activeEvent)||activeHubEvent(hub,state);if(event.interaction!=='price-budget')return;
   const item=event.menu.find(entry=>entry.id===event.targetItem)||event.menu[0],quantity=Math.max(0,Number(HUB_BUDGET[event.id])||0),cost=item.price*quantity;
   if(quantity!==Number(event.targetQuantity)||cost>Number(event.budget)){
-    state.myeongdong.attempts+=1;state.myeongdong.lastAttemptCorrect=false;state.clockMinutes+=1;state.updatedAt=now();writeState(state);render();revealFeedback();return;
+    const tracking=!hubQuestDone(state,event.id);
+    state.myeongdong.attempts+=1;state.myeongdong.lastAttemptCorrect=false;state.clockMinutes+=1;state.updatedAt=now();
+    writeState(state,tracking?['priceQuestStarted']:[],tracking?{priceQuestWrongSubmissions:1}:null);render();revealFeedback();return;
   }
   if(cost>state.wallet)return notify(l({ko:'여행 원이 부족합니다. 다른 퀘스트에서 조금 더 모아 주세요.',ja:'旅ウォンが足りません。ほかのクエストでもう少し集めよう。',en:'Not enough travel won. Earn a little more in another quest.',zh:'旅行韩元不足，请先在其他任务中赚取。'}));
   const already=hubQuestDone(state,event.id),previous=state.myeongdong.quests[event.id]&&typeof state.myeongdong.quests[event.id]==='object'?state.myeongdong.quests[event.id]:{};
@@ -535,7 +562,7 @@
   state.myeongdong.quests[event.id]={...previous,completed:true,earned:0,quantity,cost,completedAt:previous.completedAt||now()};
   state.myeongdong.lastAttemptCorrect=null;state.myeongdong.screen='result';state.clockMinutes+=3;state.updatedAt=now();
   if(!state.evidence.includes(`hub:${event.id}`))state.evidence.push(`hub:${event.id}`);
-  writeState(state);render();resetViewport();
+  writeState(state,already?[]:['priceQuestStarted','priceQuestCompleted'],already?null:{priceQuestWalletAfterCompletion:state.wallet});render();resetViewport();
 }
   window.malbitTravelBudgetChange=changeHubBudget;
   window.malbitTravelBudgetSubmit=submitHubBudget;

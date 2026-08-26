@@ -45,7 +45,7 @@ test('an update recovers vocabulary, game, review, and travel roots from the dur
     vocab: [{ text: '여행', meanings: { ja: '旅行' }, repetitions: 3 }],
     transCache: { disposable: 'not copied into recovery' }
   };
-  const travel = { version: 1, activePackId: 'case-001-missing-ticket', metrics: { version: 1, routeStarts: 3, routeCompletions: 2, myeongdongEntries: 2, exchangeSessions: 1 }, episodes: { 'case-001-missing-ticket': { completed: true, bestScore: 5 } } };
+  const travel = { version: 1, activePackId: 'case-001-missing-ticket', metrics: { version: 2, routeStarts: 3, routeCompletions: 2, myeongdongEntries: 2, exchangeSessions: 1, priceQuestStarts: 2, priceQuestCompletions: 1, priceQuestWrongSubmissions: 2, priceQuestWalletTotal: 87400 }, episodes: { 'case-001-missing-ticket': { completed: true, bestScore: 5 } } };
   const snapshot = {
     schema: 1,
     storage: {

@@ -28,8 +28,10 @@ these facts from conversation history or the large TOPIK source bundle.
   price-board budget quest. The budget quest uses only game travel won, records one idempotent
   `street-food` spend under `malbitStoryV1`, and states that stall prices can vary.
 - Travel Mode keeps privacy-free local funnel counters under `malbitStoryV1.metrics`: route starts,
-  first completions, first Myeongdong entries, and first collectible-exchange sessions per attempt.
-  The on-device Travel card shows derived rates; no event, identifier, timestamp, or counter leaves the browser.
+  first completions, first Myeongdong entries, first collectible-exchange sessions, and the Myeongdong
+  price quest's starts, first clears, pre-clear wrong submissions, and aggregate wallet-after-clear.
+  The on-device Travel card shows derived rates and average remaining travel won; no event, identifier,
+  timestamp, device detail, or counter leaves the browser.
 - Travel UI uses nine-slice generated frames with explicit safe-area content wrappers. Never stretch a
   square frame over variable copy, absolutely position learning content, or truncate essential Japanese.
   Every UI change must pass 320/375/390/430px containment, sibling-overlap, 44px touch-target, console,

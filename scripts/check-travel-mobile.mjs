@@ -77,7 +77,7 @@ try{
     assert.deepEqual(fit.overlaps,[],`${label}: flow elements overlap`);
   };
   const startFresh=async(seedMetrics=false)=>{
-    await evaluate(`localStorage.removeItem('malbitStoryV1');${seedMetrics?"localStorage.setItem('malbitStoryV1',JSON.stringify({version:1,activePackId:'route-001-airport-myeongdong',episodes:{},metrics:{version:1,routeStarts:5,routeCompletions:4,myeongdongEntries:3,exchangeSessions:2}}));":''}S.lang='ja';S.view='home';save();render()`);
+    await evaluate(`localStorage.removeItem('malbitStoryV1');${seedMetrics?"localStorage.setItem('malbitStoryV1',JSON.stringify({version:1,activePackId:'route-001-airport-myeongdong',episodes:{},metrics:{version:2,routeStarts:5,routeCompletions:4,myeongdongEntries:3,exchangeSessions:2,priceQuestStarts:4,priceQuestCompletions:3,priceQuestWrongSubmissions:2,priceQuestWalletTotal:180000}}));":''}S.lang='ja';S.view='home';save();render()`);
     let homeReady=false;
     for(let wait=0;wait<40;wait++){if(await evaluate(`!!document.querySelector('.tqV9Mode.travel img[src*="airport-map.webp"]')`)){homeReady=true;break}await sleep(50)}
     assert.ok(homeReady,'Travel entry must use generated art instead of emoji');
@@ -94,8 +94,8 @@ try{
     assert.ok(opened,'Travel entry must open the hub');
     assert.equal(await evaluate(`document.querySelector('.travelHubHead h1')?.textContent`),'旅行モード');
     if(seedMetrics){
-      assert.equal(await evaluate(`document.querySelectorAll('.travelMetric').length`),4);
-      assert.deepEqual(await evaluate(`[...document.querySelectorAll('.travelMetric b')].map(node=>node.textContent)`),['5','80%','75%','67%']);
+      assert.equal(await evaluate(`document.querySelectorAll('.travelMetric').length`),7);
+      assert.deepEqual(await evaluate(`[...document.querySelectorAll('.travelMetric b')].map(node=>node.textContent)`),['5','80%','75%','67%','75%','2','60,000旅ウォン']);
       assert.match(await evaluate(`document.querySelector('.travelMetrics>p')?.textContent`),/この端末内だけ.*外部へ送信しません/);
       const metricFit=await evaluate(`(()=>{const card=document.querySelector('.travelMetrics'),grid=document.querySelector('.travelMetricsGrid');return{card:card.scrollWidth-card.clientWidth,grid:grid.scrollWidth-grid.clientWidth}})()`);
       assert.ok(metricFit.card<=1&&metricFit.grid<=1,`local metrics overflow: ${JSON.stringify(metricFit)}`);
@@ -299,6 +299,10 @@ try{
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertFits(`Myeongdong price budget ${width}px`)}
   await setViewport(390,844);await shot('13-menu-budget.png');
   const beforeSnack=(await state()).wallet;
+  assert.equal((await evaluate(`malbitTravelMetrics()`)).priceQuestStarts,1);
+  await tap('.travelBudgetActions .travelPrimary');
+  assert.match(await evaluate(`document.querySelector('.travelFeedback.bad')?.textContent`),/もう1個/);
+  assert.equal((await evaluate(`malbitTravelMetrics()`)).priceQuestWrongSubmissions,1);
   await tap('.travelQuantityPicker button',1);
   assert.match(await evaluate(`document.querySelector('.travelQuantityPicker output')?.textContent`),/4,000/);
   await tap('.travelBudgetActions .travelPrimary');
@@ -307,6 +311,10 @@ try{
   assert.equal(afterSnack.myeongdong.quests['myeongdong-menu-budget'].quantity,2);
   assert.equal(afterSnack.spent.at(-1).kind,'street-food');
   assert.equal(afterSnack.spent.at(-1).currency,'travel-won');
+  const priceMetrics=await evaluate(`malbitTravelMetrics()`);
+  assert.equal(priceMetrics.priceQuestCompletions,1);
+  assert.equal(priceMetrics.priceQuestCompletionRate,100);
+  assert.equal(priceMetrics.priceQuestAverageWallet,afterSnack.wallet);
   assert.match(await evaluate(`document.querySelector('.travelQuestionNo span')?.textContent`),/MENU READING CLEAR/);
   await shot('14-menu-budget-clear.png');
   await tap('.travelHubResult .travelPrimary');
