@@ -34,14 +34,30 @@
   };
 
   const rows = raw.rows;
-  const items = rows.map((row) => ({
+  const rowItem = (row) => ({
     id: row[0], set: Number(row[1]), level: Number(row[2]), section: SECTION[row[3]], no: Number(row[4]),
     itemType: row[5], difficulty: DIFFICULTY[row[6]], difficultyRank: RANK[DIFFICULTY[row[6]]] || 1,
     instruction: cleanProblemText(row[7]), passage: cleanProblemText(row[8]), script: cleanProblemText(row[9]), prompt: cleanProblemText(row[10]), options: row[11],
     answerIndex: row[3] === 'w' ? null : Number(row[12]), acceptedAnswer: row[3] === 'w' ? row[12] : null,
     explanationKo: row[13], explanationJa: row[14], targetSkills: row[15] || [], visual: row[16],
-    model: row[17], rubric: row[18], stimulusGroup: row[19] || null
-  }));
+    model: row[17], rubric: row[18], stimulusGroup: row[19] || null, coach: null
+  });
+  const authoredItem = (source) => ({
+    id:String(source.id||''),set:Number(source.set)||0,level:Number(source.level)===1?1:2,section:String(source.section||'reading'),no:Number(source.no)||0,
+    itemType:String(source.itemType||'content_match'),difficulty:String(source.difficulty||'medium'),difficultyRank:RANK[String(source.difficulty||'medium')]||2,
+    instruction:cleanProblemText(source.instruction),passage:cleanProblemText(source.passage),script:cleanProblemText(source.script),prompt:cleanProblemText(source.prompt),
+    options:Array.from(source.options||[]),answerIndex:Number(source.answerIndex),acceptedAnswer:null,
+    explanationKo:String(source.explanationKo||source.coach?.ko?.reason||''),explanationJa:String(source.explanationJa||source.coach?.ja?.reason||''),
+    targetSkills:Array.from(source.targetSkills||[]),visual:null,model:null,rubric:null,stimulusGroup:null,coach:source.coach||null
+  });
+  const expansion=Array.isArray(window.MALBIT_QUESTION_BANK_EXPANSION)?window.MALBIT_QUESTION_BANK_EXPANSION:[];
+  const items=[...rows.map(rowItem),...expansion.map(authoredItem)];
+  const uniqueIds=new Set();
+  for(const item of items){
+    if(!item.id||uniqueIds.has(item.id))throw new Error(`[MALBIT bank] missing or duplicate id: ${item.id}`);
+    if(item.section!=='writing'&&(item.options.length!==4||!Number.isInteger(item.answerIndex)||item.answerIndex<0||item.answerIndex>3))throw new Error(`[MALBIT bank] invalid authored MCQ: ${item.id}`);
+    uniqueIds.add(item.id);
+  }
   const byId = new Map(items.map((item) => [item.id, item]));
   const identity = Object.freeze([0, 1, 2, 3]);
 
@@ -99,10 +115,13 @@
     if (item.itemType === 'place_identification') return 'place';
     if (item.itemType === 'topic_identification') return 'topic';
     if (item.itemType === 'picture_selection') return 'picture';
+    if (item.itemType === 'speaker_action') return 'action';
     if (item.itemType === 'notice_mismatch' || /(?:일치하지|맞지 않|틀린|아닌|않은)\s*(?:것|내용|문장)/u.test(question)) return 'mismatch';
     if (item.itemType === 'grammar_blank') return 'grammar';
     if (item.itemType === 'vocabulary_blank') return 'vocabulary';
-    if (item.itemType === 'same_meaning') return 'paraphrase';
+    if (item.itemType === 'same_meaning') {
+      return (item.targetSkills || []).some((skill) => /(?:관용|표현|숙어)/u.test(String(skill))) ? 'wordmeaning' : 'paraphrase';
+    }
     if (item.itemType === 'headline_interpretation') return 'headline';
     if (item.itemType === 'sentence_order') return 'order';
     if (item.itemType === 'sentence_insertion' || item.itemType === 'sentence_insertion_long') return 'insertion';
@@ -162,11 +181,40 @@
   function writingExplanation(item) {
     const task = cleanEvidence(item.prompt || item.passage).slice(0, 150);
     const skills = (item.targetSkills || []).join(' · ');
+    const plans = {
+      writing_short_fill_practical: {
+        ko:'① 앞뒤 문장에서 보내는 사람과 받는 사람의 관계를 확인하고 ② 요청·안내의 핵심 정보를 한 칸에 하나씩 넣은 뒤 ③ 높임말과 문장 끝맺음을 통일합니다.',
+        ja:'①前後の文から送り手と受け手の関係を確認し、②依頼・案内の核心情報を一つの空欄に一つずつ入れ、③敬語と文末を統一します。',
+        en:'1) Identify sender and recipient. 2) Put one required request or notice in each blank. 3) Keep honorifics and endings consistent.',
+        zh:'①确认发件人与收件人的关系；②每个空格只填一个核心请求或通知；③统一敬语和句尾。'
+      },
+      writing_short_fill_expository: {
+        ko:'① 빈칸 앞뒤의 공통 명사를 찾고 ② 원인·결과·대조 중 연결 관계를 정한 뒤 ③ 본문 표현을 짧게 바꾸어 문법적으로 완결된 절을 씁니다.',
+        ja:'①空欄前後の共通名詞を探し、②原因・結果・対比のどの関係かを決め、③本文の表現を短く言い換えて文法的に完結した節を書きます。',
+        en:'1) Find shared keywords around the blank. 2) Decide cause, result, or contrast. 3) Paraphrase the source as a complete clause.',
+        zh:'①找空格前后的共同关键词；②判断因果或对比关系；③简洁改写原文，写成语法完整的分句。'
+      },
+      writing_graph_summary: {
+        ko:'① 전체 증가·감소 흐름을 첫 문장에 쓰고 ② 최고·최저나 큰 변화 수치를 비교하며 ③ 제시된 원인을 덧붙입니다. 자료에 없는 의견은 넣지 않습니다.',
+        ja:'①全体の増減傾向を最初に書き、②最高・最低または大きな変化の数値を比較し、③提示された原因を加えます。資料にない意見は書きません。',
+        en:'1) State the overall trend. 2) Compare key highs, lows, or changes with figures. 3) Add the given cause without unsupported opinions.',
+        zh:'①先写总体增减趋势；②用数字比较最高、最低或主要变化；③补充材料给出的原因，不添加无依据的观点。'
+      },
+      writing_essay: {
+        ko:'① 질문의 세부 요구를 서론의 주장으로 묶고 ② 본론마다 이유와 구체적 예를 하나씩 제시한 뒤 ③ 반론·대안 또는 실천 방안으로 결론을 닫습니다. 600~700자와 격식체를 지킵니다.',
+        ja:'①設問の細部を序論の主張にまとめ、②各本論に理由と具体例を一つずつ示し、③反論・代案または実践案で結論を閉じます。600～700字と書き言葉を守ります。',
+        en:'1) Turn every sub-prompt into a thesis. 2) Give one reason and concrete example per body paragraph. 3) Conclude with a counterpoint, alternative, or action while keeping 600–700 characters and formal style.',
+        zh:'①把各项要求整合成开头论点；②每段给出一个理由和具体例子；③用反驳、替代方案或行动建议收束，并保持600～700字和书面语。'
+      }
+    };
+    const plan=plans[item.itemType]||plans.writing_essay;
+    const sourceKo=String(item.explanationKo||'').trim();
+    const sourceJa=String(item.explanationJa||'').trim().replace(/\.$/u,'。');
     return {
-      ko: `이 쓰기 문항은 “${task}”의 조건을 빠짐없이 반영해야 합니다. ${skills ? `채점 핵심은 ${skills}이며, ` : ''}모범 답안과 표현이 달라도 문맥과 문법이 자연스럽고 요구한 정보가 모두 들어가면 됩니다.`,
-      ja: `この作文問題では「${task}」の条件を漏れなく反映する必要があります。評価の中心は課題条件の充足、構成、文法の正確さです。模範解答と表現が違っても、必要な情報が自然に含まれていれば構いません。`,
-      en: `This writing task must cover every condition in “${task}.” It is scored for task completion, organization, and grammatical accuracy; wording may differ from the model answer if it is natural and complete.`,
-      zh: `这道写作题必须完整回应“${task}”中的全部要求。评分重点是任务完成度、结构和语法准确性；表达不必与范文完全相同，只要自然且信息完整即可。`
+      ko: `【문제 요구】“${task}”의 조건을 빠짐없이 반영합니다.\n【답안 설계】${sourceKo||'제시된 정보의 관계를 먼저 정리한 뒤 필요한 내용만 자연스러운 문장으로 씁니다.'}\n【유형별 작성법】${plan.ko}${skills?` 채점 핵심: ${skills}.`:''}`,
+      ja: `【設問の要求】「${task}」の条件を漏れなく反映します。\n【解答設計】${sourceJa||'提示された情報の関係を整理してから、必要な内容だけを自然な文で書きます。'}\n【タイプ別の書き方】${plan.ja}`,
+      en: `【Task requirements】Cover every condition in “${task}.”\n【Answer design】Organize the relationship among the given facts, then write only the required information in natural sentences.\n【Type-specific method】${plan.en}`,
+      zh: `【题目要求】完整回应“${task}”中的全部条件。\n【答案设计】先整理材料之间的关系，再用自然句子写出必要信息。\n【题型写法】${plan.zh}`
     };
   }
   function explanationReason(item, answer, evidence) {
@@ -195,6 +243,12 @@
         ja: `音声の動作と状況「${evidence}」をそのまま表している場面が「${answer}」です。`,
         en: `“${answer}” is the scene that matches the action and situation described in “${evidence}.”`,
         zh: `“${answer}”所描绘的场景与音频中的行为和情境“${evidence}”一致。`
+      },
+      action: {
+        ko: `대화의 핵심 목적어와 동작 “${evidence}”를 같은 주체·시제로 바꾸어 말한 행동이 “${answer}”입니다.`,
+        ja: `会話の中心となる目的語と動作「${evidence}」を、同じ主体・時制で言い換えた行動が「${answer}」です。`,
+        en: `“${answer}” restates the key object and action in “${evidence}” with the same actor and time frame.`,
+        zh: `“${answer}”用相同的主体和时态概括了“${evidence}”中的核心对象与动作。`
       },
       mismatch: {
         ko: `이 문제는 내용과 일치하지 않는 보기를 찾는 문제입니다. 근거 “${evidence}”와 달리 “${answer}”는 본문에서 확인되지 않거나 반대되는 내용이므로 정답입니다.`,
@@ -294,6 +348,56 @@
     };
     return reasons[mode] || reasons.general;
   }
+  function instructorTrap(item){
+    const mode=explanationMode(item),packs={
+      response:{ko:'질문의 의문사와 말하기 기능을 바꾼 보기는 자연스러워 보여도 직접 응답이 아닙니다.',ja:'疑問詞と発話の働きを変えた選択肢は、自然に見えても直接の返答ではありません。',en:'A choice that changes the question word or speech act may sound natural but does not answer directly.',zh:'改变疑问词或言语功能的选项即使听起来自然，也不是直接回答。'},
+      place:{ko:'대화에 나온 한 단어만 보고 장소를 고르지 말고, 그곳에서 하는 행동과 서비스를 함께 확인합니다.',ja:'会話に出た一語だけで場所を決めず、そこで行う行動とサービスを一緒に確認します。',en:'Do not choose a place from one word alone; match both the action and service.',zh:'不要只凭一个词判断场所，要同时核对行为和服务。'},
+      topic:{ko:'장소·사람 같은 주변 명사보다 대화에서 반복되거나 새로 바뀐 정보를 중심으로 잡습니다.',ja:'場所・人物などの周辺名詞より、会話で繰り返される情報や新しく変わった情報を中心にします。',en:'Prioritize repeated or newly changed information over incidental nouns such as places or people.',zh:'比起场所、人物等附带名词，应优先抓住反复出现或发生变化的信息。'},
+      picture:{ko:'대화에 나온 한 단어만 같은 그림보다 주체·물건·동작·방향이 모두 맞는 장면을 고릅니다.',ja:'会話に出た一語だけが同じ絵ではなく、主体・物・動作・方向がすべて合う場面を選びます。',en:'Do not match one noun alone; the actor, object, action, and direction must all fit.',zh:'不要只匹配一个名词，人物、物品、动作和方向必须全部一致。'},
+      action:{ko:'같은 소재라도 누가 무엇을 이미 했는지, 지금 하는지, 앞으로 할지가 다르면 오답입니다.',ja:'同じ話題でも、誰が何をすでにしたか、今しているか、これからするかが違えば誤答です。',en:'A choice is wrong if it changes who performs the action or whether it is past, current, or next.',zh:'即使话题相同，只要改变了动作主体或已做、正在做、将要做的时态，就是错项。'},
+      mismatch:{ko:'부정 표현을 놓치면 맞는 보기를 고르게 됩니다. 세 보기가 근거와 맞는지 확인한 뒤 남는 모순을 고릅니다.',ja:'否定表現を見落とすと一致する選択肢を選んでしまいます。三つが根拠と合うことを確認し、残る矛盾を選びます。',en:'Missing the negative reverses the task. Verify three matching choices, then select the remaining contradiction.',zh:'忽略否定词会把题目做反；先确认三项与原文相符，再选剩下的矛盾项。'},
+      match:{ko:'시간·대상·수량·긍정/부정 중 하나만 바꾼 보기가 대표적인 함정입니다.',ja:'時間・対象・数量・肯定／否定のうち一つだけを変えた選択肢が典型的なひっかけです。',en:'A typical distractor changes just one axis: time, subject, quantity, or polarity.',zh:'典型干扰项只改动一个要素：时间、对象、数量或肯否。'},
+      purpose:{ko:'소재가 무엇인지가 아니라, 마지막에 상대에게 무엇을 요청·설명·설득하는지를 봅니다.',ja:'話題が何かではなく、最後に相手へ何を依頼・説明・説得しているかを見ます。',en:'Look beyond the topic and identify what the speaker ultimately requests, explains, or persuades.',zh:'不要只看谈论的主题，要看说话者最终想请求、说明或说服什么。'},
+      grammar:{ko:'뜻이 비슷해 보여도 앞말의 품사·받침과 뒤 절의 논리 관계가 맞지 않으면 탈락입니다.',ja:'意味が似ていても、前の語の品詞・パッチムと後続節との論理関係が合わなければ除外します。',en:'Eliminate choices whose attachment or clause relationship is wrong, even if their broad meaning seems similar.',zh:'即使大意相近，只要接续形式或前后分句关系不对就应排除。'},
+      vocabulary:{ko:'사전 뜻만 비슷한 단어보다 문장 속 목적어·부사와 자연스럽게 결합하는 단어를 고릅니다.',ja:'辞書的な意味が似た語より、文中の目的語・副詞と自然に結びつく語を選びます。',en:'Prefer the word that forms a natural collocation with the sentence, not merely a loose synonym.',zh:'不要只看词典释义相近，要选择与句中宾语、状语搭配自然的词。'},
+      wordmeaning:{ko:'숙어를 구성 단어의 문자 뜻으로 풀거나 문맥의 감정 방향을 반대로 바꾼 보기를 조심합니다.',ja:'慣用表現を構成語の字面どおりに解釈したり、文脈の感情方向を逆にした選択肢に注意します。',en:'Beware literal readings of idioms and choices that reverse the context’s emotional direction.',zh:'注意把惯用语按字面解释，或把语境的感情色彩反转的选项。'},
+      paraphrase:{ko:'주체·시제·부정·원인과 결과 중 하나라도 달라지면 같은 의미가 아닙니다.',ja:'主体・時制・否定・原因と結果のどれか一つでも変われば同じ意味ではありません。',en:'A change in subject, tense, negation, or cause and result means the sentence is not equivalent.',zh:'主体、时态、否定或因果任一改变，都不再是同义表达。'},
+      headline:{ko:'제목의 짧은 명사를 보고 추측을 더하지 말고, 생략된 조사와 원인→결과만 완전한 문장으로 복원합니다.',ja:'見出しの短い名詞から推測を足さず、省略された助詞と原因→結果だけを完全な文に戻します。',en:'Do not add assumptions to a compressed headline; restore only its omitted particles and cause-result relation.',zh:'不要根据标题中的短词自行添加推测，只需还原省略的助词和因果关系。'},
+      main:{ko:'예시 하나만 크게 말한 보기와 본문보다 강한 ‘항상·모두’ 표현을 먼저 제거합니다.',ja:'一つの例だけを大きく述べた選択肢と、本文より強い「常に・すべて」を先に除外します。',en:'First eliminate choices that overfocus on one example or overstate the passage with “always” or “all.”',zh:'先排除只放大一个例子或用“总是、全部”把原文说得过强的选项。'},
+      order:{ko:'시간 표현, 지시어, 원인→결과를 따로 표시하면 겉으로 자연스러운 잘못된 순서를 제거할 수 있습니다.',ja:'時間表現・指示語・原因→結果を別々に印を付けると、表面上自然な誤順を除外できます。',en:'Mark time words, references, and cause-result links to reject sequences that only sound smooth.',zh:'分别标出时间词、指示关系和因果，可排除表面通顺但顺序错误的选项。'},
+      insertion:{ko:'삽입문의 이/그/이러한 같은 지시어가 가리키는 명사가 반드시 앞에 있어야 합니다.',ja:'挿入文の「この・その・このような」に当たる指示語が指す名詞は、必ず前になければなりません。',en:'The noun referenced by demonstratives such as this, that, or such must appear before the insertion point.',zh:'插入句中“这、那、这种”等指示词所指的名词必须出现在前面。'},
+      stance:{ko:'장점을 인정한 뒤 ‘그러나·따라서’ 뒤에 제시한 평가나 대안이 글쓴이의 최종 태도입니다.',ja:'利点を認めた後、「しかし・したがって」以降に示す評価や代案が筆者の最終的な態度です。',en:'After concessions, the evaluation or alternative following “however” or “therefore” usually reveals the final stance.',zh:'承认优点之后，“但是、因此”后提出的评价或方案通常才是作者最终态度。'},
+      practical:{ko:'실용문은 대상·날짜·장소·해야 할 행동을 표로 나누듯 비교하면 추측 없이 풀 수 있습니다.',ja:'実用文は対象・日付・場所・必要な行動を表のように分けて比べると、推測せずに解けます。',en:'Treat a practical text like a table: compare audience, date, place, and required action.',zh:'把实用文当作表格，逐项比较对象、日期、地点和必须采取的行动。'},
+      inference:{ko:'상식으로 그럴듯한 답을 만들지 말고, 빈칸 앞의 근거와 뒤의 결론을 동시에 만족하는 보기만 남깁니다.',ja:'常識でそれらしい答えを作らず、空欄前の根拠と後ろの結論を同時に満たす選択肢だけを残します。',en:'Do not rely on general knowledge; keep only the choice that satisfies both preceding evidence and following conclusion.',zh:'不要凭常识选“听起来合理”的答案，只保留同时符合空前依据和空后结论的选项。'},
+      general:{ko:'문제의 요구어를 먼저 표시하고, 각 보기가 본문 근거와 정확히 같은 범위인지 확인합니다.',ja:'設問の要求語を先に印し、各選択肢が本文の根拠と同じ範囲か確認します。',en:'Mark the task word first, then check whether each choice matches the exact scope of the evidence.',zh:'先标出题目要求词，再核对各选项是否与原文依据范围完全一致。'}
+    };
+    return packs[mode]||packs.general;
+  }
+  function instructorStrategy(item){
+    const mode=explanationMode(item),packs={
+      response:{ko:'① 마지막 질문의 의문사를 찾고 ② 질문·제안·요청 중 기능을 정한 뒤 ③ 그 기능에 직접 답하는 보기를 고릅니다.',ja:'①最後の発話の疑問詞を探し、②質問・誘い・依頼のどれかを決め、③その働きに直接答える選択肢を選びます。',en:'1) Find the final question word. 2) Identify question, suggestion, or request. 3) Choose the direct response.',zh:'①找最后一句的疑问词；②判断是提问、建议还是请求；③选择直接回应的一项。'},
+      place:{ko:'① 사람들의 행동 ② 제공되는 물건·서비스 ③ 장소 전용 표현을 묶어 장소를 확정합니다.',ja:'①人の行動、②提供される物・サービス、③その場所特有の表現を組み合わせて場所を確定します。',en:'Combine 1) actions, 2) goods or services, and 3) place-specific expressions.',zh:'结合①人物行为、②提供的物品或服务、③场所专用表达来确定地点。'},
+      topic:{ko:'대화 전체에서 반복되는 명사와 마지막에 새로 결정·변경된 정보를 한 문장으로 요약합니다.',ja:'会話全体で繰り返される名詞と、最後に新しく決定・変更された情報を一文で要約します。',en:'Summarize repeated nouns and the final newly decided or changed information in one sentence.',zh:'用一句话概括对话中反复出现的名词及最后决定或变更的信息。'},
+      picture:{ko:'① 문장에서 주체 ② 물건 ③ 동작 ④ 방향·위치를 표시한 뒤 네 요소가 모두 보이는 그림을 고릅니다.',ja:'①文の主体、②物、③動作、④方向・位置に印を付け、四つすべてが見える絵を選びます。',en:'Mark 1) actor, 2) object, 3) action, and 4) direction or position, then choose the scene matching all four.',zh:'①标出人物；②物品；③动作；④方向或位置，再选四项都符合的图。'},
+      action:{ko:'① 질문이 ‘하고 있는/한/할’ 중 무엇을 묻는지 표시하고 ② 행동 주체를 고정한 뒤 ③ 목적어+동사를 한 덩어리로 바꿔 말한 보기를 찾습니다.',ja:'①設問が「している・した・する」のどれを問うか印を付け、②行動主体を固定し、③目的語＋動詞を一まとまりで言い換えた選択肢を探します。',en:'1) Mark whether the question asks current, completed, or next action. 2) Fix the actor. 3) Find the choice paraphrasing the object-plus-verb unit.',zh:'①标出题目问正在做、已做还是将做；②固定动作主体；③寻找整体改写“宾语＋动词”的选项。'},
+      mismatch:{ko:'① ‘같지 않은/아닌’을 표시하고 ② 각 보기를 본문에서 하나씩 검증해 ③ 근거가 없거나 반대인 하나를 고릅니다.',ja:'①「一致しない・ではない」に印を付け、②各選択肢を本文で一つずつ検証し、③根拠がないか反対の一つを選びます。',en:'1) Mark the negative. 2) Verify each choice. 3) Select the unsupported or contradictory one.',zh:'①圈出“不符/不是”；②逐项回原文核对；③选择无依据或相反的一项。'},
+      match:{ko:'보기마다 사람·시간·수량·장소·긍정/부정을 체크하고 다섯 요소가 모두 같은 보기만 남깁니다.',ja:'各選択肢の人物・時間・数量・場所・肯定／否定を確認し、すべて一致するものだけを残します。',en:'Check person, time, quantity, place, and polarity; keep only the choice matching all five.',zh:'逐项核对人物、时间、数量、地点和肯否，只保留五项都一致的选项。'},
+      purpose:{ko:'사정 설명은 근거이고 마지막 요청·제안·주장이 목적입니다. 마지막 한두 문장을 먼저 확인합니다.',ja:'事情説明は根拠で、最後の依頼・提案・主張が目的です。最後の一、二文を先に確認します。',en:'Background is evidence; the final request, suggestion, or claim is the purpose. Read the last one or two sentences first.',zh:'情况说明是依据，最后的请求、建议或主张才是目的；先看最后一两句。'},
+      grammar:{ko:'① 빈칸 앞말의 형태 ② 앞뒤 절의 의미 관계 ③ 시제·높임을 차례로 확인합니다.',ja:'①空欄前の語形、②前後節の意味関係、③時制・敬語の順に確認します。',en:'Check 1) attachment form, 2) clause relation, and 3) tense or politeness.',zh:'依次检查①空前词形、②前后分句关系、③时态与敬语。'},
+      vocabulary:{ko:'빈칸 주변의 목적어·부사를 먼저 묶고, 네 보기를 넣어 실제로 자주 쓰는 결합인지 소리 내어 확인합니다.',ja:'空欄周辺の目的語・副詞を先にまとめ、四つを入れて実際によく使う組み合わせか確認します。',en:'Group the nearby object and adverb, then test which option forms the natural collocation.',zh:'先把空格附近的宾语和副词组合起来，再代入四项判断哪一项搭配自然。'},
+      wordmeaning:{ko:'표현 앞뒤의 결과와 감정 방향을 보고, 숙어 전체를 한 단어로 바꿔도 문장이 유지되는지 확인합니다.',ja:'表現の前後にある結果と感情の方向を見て、慣用句全体を一語に替えても文が保たれるか確認します。',en:'Use surrounding result and emotional direction, then replace the entire idiom with one phrase.',zh:'观察前后结果和感情色彩，再把整个熟语替换成一个短语，看句意是否保持。'},
+      paraphrase:{ko:'원문과 보기의 주체·시제·부정·원인·결과를 나란히 놓고 모두 같을 때만 정답으로 남깁니다.',ja:'原文と選択肢の主体・時制・否定・原因・結果を並べ、すべて同じ場合だけ正解として残します。',en:'Align subject, tense, negation, cause, and result; all must stay unchanged.',zh:'并列比较主体、时态、否定、原因和结果，全部不变才可能同义。'},
+      headline:{ko:'조사를 보충해 ‘누가/무엇이 → 왜 → 어떻게 됐다’의 완전한 문장으로 바꾼 뒤 보기와 비교합니다.',ja:'助詞を補い、「誰・何が→なぜ→どうなった」の完全な文に戻してから選択肢と比べます。',en:'Restore a full “who/what → why → result” sentence, then compare choices.',zh:'补出助词，还原成“谁/什么→为什么→结果如何”的完整句再比较。'},
+      main:{ko:'각 문장의 공통 키워드를 묶고, 예시를 모두 포함하면서도 본문보다 강하지 않은 한 문장을 고릅니다.',ja:'各文の共通キーワードをまとめ、例をすべて含みつつ本文より強くない一文を選びます。',en:'Combine common keywords and choose the statement broad enough for all examples but no stronger than the text.',zh:'归纳各句共同关键词，选择能涵盖所有例子且不比原文更绝对的一句。'},
+      order:{ko:'첫 문장 후보를 정한 뒤 지시어의 선행어, 접속어, 시간 순서가 끊기지 않는지 연결합니다.',ja:'最初の文の候補を決め、指示語の先行詞・接続語・時間順が切れないようにつなぎます。',en:'Choose a possible opening, then link antecedents, connectors, and chronology without breaks.',zh:'先确定首句候选，再按指示词先行词、连接词和时间顺序无断裂地连接。'},
+      insertion:{ko:'삽입문의 지시어와 접속어를 표시하고, 바로 앞에서 대상을 소개하며 바로 뒤가 그 결과·설명을 잇는 위치를 찾습니다.',ja:'挿入文の指示語と接続語に印を付け、直前で対象を紹介し、直後が結果・説明を続ける位置を探します。',en:'Mark references and connectors; find the point whose previous sentence introduces the referent and next sentence continues it.',zh:'标出插入句的指示词和连接词，寻找前句介绍对象、后句承接结果或说明的位置。'},
+      stance:{ko:'‘하지만/그러나/따라서’ 뒤의 평가와 해결책에 밑줄을 긋고, 인정·비판·대안 중 태도를 정합니다.',ja:'「しかし・ところが・したがって」以降の評価と解決策に線を引き、容認・批判・代案のどれかを決めます。',en:'Underline evaluation and solution after contrast or conclusion markers, then classify concession, criticism, or alternative.',zh:'给“但是/然而/因此”后的评价与方案画线，再判断是认可、批评还是提出替代方案。'},
+      practical:{ko:'제목으로 문서 목적을 잡고 대상·날짜·장소·준비물·금지를 표처럼 정리해 보기와 대조합니다.',ja:'題名で文書の目的をつかみ、対象・日付・場所・持ち物・禁止事項を表のように整理して照合します。',en:'Use the title for purpose, then tabulate audience, date, place, required items, and prohibitions.',zh:'先由标题确定目的，再把对象、日期、地点、准备物和禁止事项列表核对。'},
+      inference:{ko:'빈칸 앞을 ‘근거’, 뒤를 ‘결론’으로 표시하고 두 부분을 동시에 이어 주는 논리만 선택합니다.',ja:'空欄の前を「根拠」、後ろを「結論」と印し、両方を同時につなぐ論理だけを選びます。',en:'Label text before the blank as evidence and after it as conclusion; choose the bridge satisfying both.',zh:'把空前标为“依据”、空后标为“结论”，只选能同时连接两者的逻辑。'},
+      general:{ko:'먼저 질문이 요구하는 관계를 한 단어로 적고, 본문에 직접 근거가 있는 보기만 남깁니다.',ja:'まず設問が求める関係を一語で書き、本文に直接の根拠がある選択肢だけを残します。',en:'Name the requested relationship first, then keep only choices directly supported by the text.',zh:'先用一个词写出题目要求的关系，再只保留原文有直接依据的选项。'}
+    };
+    return packs[mode]||packs.general;
+  }
   function explanationPack(idOrItem, displayedAnswerIndex, displayedChoices) {
     const item = typeof idOrItem === 'string' ? byId.get(idOrItem) : (idOrItem?.bankId ? byId.get(String(idOrItem.bankId)) : idOrItem);
     if (!item) return null;
@@ -303,12 +407,15 @@
       ? Number(displayedAnswerIndex) : Number(item.answerIndex);
     const answer = cleanChoice(choices[index] || item.options[item.answerIndex]);
     const evidence = bestEvidence(item, answer) || cleanEvidence(item.prompt || item.instruction);
-    const reason = explanationReason(item, answer, evidence), position = answerPositionLine(index + 1);
+    const reason=explanationReason(item,answer,evidence),trap=instructorTrap(item),strategy=instructorStrategy(item),position=answerPositionLine(index+1);
+    const headings={ko:['정답 근거','오답 함정','유형별 풀이법'],ja:['正解の根拠','ひっかけ分析','タイプ別の解き方'],en:['Why this is correct','Distractor trap','Type-solving method'],zh:['正确依据','干扰项陷阱','题型解法']};
+    const answerLines={ko:`정답 표현은 “${answer}”입니다.`,ja:`正解の表現は「${answer}」です。`,en:`The correct expression is “${answer}.”`,zh:`正确表达是“${answer}”。`};
+    const custom=item.coach||{};
     return Object.freeze({
-      ko: `${reason.ko} ${position.ko}`,
-      ja: `${reason.ja} ${position.ja}`,
-      en: `${reason.en} ${position.en}`,
-      zh: `${reason.zh} ${position.zh}`
+      ko: `【${headings.ko[0]}】${custom.ko?.reason||reason.ko} ${answerLines.ko}\n【${headings.ko[1]}】${custom.ko?.trap||trap.ko}\n【${headings.ko[2]}】${strategy.ko} ${position.ko}`,
+      ja: `【${headings.ja[0]}】${custom.ja?.reason||reason.ja} ${answerLines.ja}\n【${headings.ja[1]}】${custom.ja?.trap||trap.ja}\n【${headings.ja[2]}】${strategy.ja} ${position.ja}`,
+      en: `【${headings.en[0]}】${reason.en} ${answerLines.en}\n【${headings.en[1]}】${trap.en}\n【${headings.en[2]}】${strategy.en} ${position.en}`,
+      zh: `【${headings.zh[0]}】${reason.zh} ${answerLines.zh}\n【${headings.zh[1]}】${trap.zh}\n【${headings.zh[2]}】${strategy.zh} ${position.zh}`
     });
   }
   function choiceExplanationPack(item, answerIndex, choices, overall) {

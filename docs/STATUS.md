@@ -6,8 +6,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 - Production: GitHub Pages static PWA
 - Production release: v60 · one-tap return to the next Myeongdong learning quest
-- Current candidate: none
-- Core content: 2,088 original items
+- Current candidate: v61 · original TOPIK/Shorts expansion and instructor explanations
+- Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
 - Autonomous runtime: GitHub-connected scheduled task, four fresh runs per day
@@ -16,6 +16,9 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 최근 안정 기능
 
 - TOPIK I·II, Shorts, Random Practice, full mock exams, Review, Vocabulary, Statistics
+- 172 TOPIK I and 116 TOPIK II quick-practice questions; fixed 12-set mock composition remains intact
+- bank explanations structured as answer evidence → distractor trap → reusable type-solving method,
+  with separate TOPIK II writing 51–54 plans
 - independent Seoul Travel Mode and Wordlight Expedition
 - Incheon Airport T1 → Seoul Station → Myeongdong route with six beginner missions,
   factual transport choices, travel-won rewards, a persistent clock, and free avatar looks

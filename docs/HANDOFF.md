@@ -9,8 +9,9 @@ these facts from conversation history or the large TOPIK source bundle.
   Pages. It must remain usable without login.
 - Browser progress is local-first. Existing storage keys, saved questions, vocabulary, review
   intervals, game state, and settings are compatibility contracts.
-- The bank contains 2,088 original practice items. Generated bank parts are build output and must
-  not be opened or edited for non-content work.
+- The runtime bank contains 2,144 original practice items: the immutable 2,088-item generated bank
+  plus 56 type-focused items in `data/question-bank-practice-v1.js`. Generated bank parts are build
+  output and must not be opened or edited for non-content work.
 - Travel Mode is an independent Seoul learning-adventure below Game Mode and cannot overwrite a
   timed mock exam. Its first route is Incheon Airport T1 → Seoul Station → Myeongdong.
 - Travel scenes compose generated pixel-art backgrounds, player skins, NPCs, props/rewards, and UI
@@ -22,8 +23,9 @@ these facts from conversation history or the large TOPIK source bundle.
 - Before grading, Travel answer choices expose Korean only; the selected and correct translations are
   revealed afterward. NPC quests use multi-turn dialogue, and free composition accepts a reviewed set
   of meaningful non-canonical sentences for a limited smaller reward.
-- Game and Travel explanations follow evidence → distractor/selected-choice analysis → reusable solving
-  tip. Game battle rendering must not force `scrollIntoView` or smooth page scrolling.
+- Bank, Game, and Travel explanations follow evidence → distractor/selected-choice analysis → reusable
+  type-solving tip. TOPIK II writing uses separate short-fill, expository-fill, graph-summary, and essay
+  plans. Game battle rendering must not force `scrollIntoView` or smooth page scrolling.
 - Myeongdong follow-ups now progress from free NPC composition to Hangul sign building and a Korean
   price-board budget quest. The budget quest uses only game travel won, records one idempotent
   `street-food` spend under `malbitStoryV1`, and states that stall prices can vary.

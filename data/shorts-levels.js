@@ -2,7 +2,44 @@
 (function(){
 'use strict';
 
-const item=(level,type,term,ko,ja,en,zh,example)=>({level,type,term,meaning:{ko,ja,en,zh},example});
+const TYPE_TIP={
+  word:{
+    ko:'뜻만 따로 외우지 말고 예문에서 어떤 말과 함께 쓰였는지 묶어 기억하세요.',
+    ja:'意味だけを単独で覚えず、例文でどの語と一緒に使われるかをまとめて覚えましょう。',
+    en:'Learn the word together with the words it naturally pairs with in the example.',
+    zh:'不要只记单独的词义，要连同例句中的常见搭配一起记。'
+  },
+  grammar:{
+    ko:'앞절과 뒤절의 관계를 먼저 판단하고, 예문의 연결 형태까지 한 덩어리로 익히세요.',
+    ja:'前件と後件の関係を先に判断し、例文の接続形まで一まとまりで覚えましょう。',
+    en:'Identify the relationship between the two clauses, then learn the attached form as one chunk.',
+    zh:'先判断前后分句的关系，再把例句中的接续形式整体记住。'
+  },
+  expression:{
+    ko:'낱말을 직역하지 말고 표현 전체를 하나의 의미 덩어리로 기억하세요.',
+    ja:'単語ごとに直訳せず、表現全体を一つの意味のまとまりとして覚えましょう。',
+    en:'Do not translate each word literally; learn the whole expression as one meaning unit.',
+    zh:'不要逐词直译，要把整个表达当作一个意义单位来记。'
+  },
+  idiom:{
+    ko:'낱말을 직역하지 말고 관용 표현 전체가 문맥에서 만드는 뜻을 확인하세요.',
+    ja:'単語どおりに直訳せず、慣用表現全体が文脈で表す意味を確認しましょう。',
+    en:'Avoid a literal word-by-word reading; identify what the full idiom means in context.',
+    zh:'不要逐词按字面理解，要确认整个惯用语在语境中的意思。'
+  }
+};
+const item=(level,type,term,ko,ja,en,zh,example)=>{
+  const tip=TYPE_TIP[type]||TYPE_TIP.word;
+  return Object.freeze({
+    level,type,term,meaning:Object.freeze({ko,ja,en,zh}),example,
+    explanationI18n:Object.freeze({
+      ko:`【뜻】${ko}\n【문맥】“${example}”에서 실제 쓰임을 확인하세요.\n【기억법】${tip.ko}`,
+      ja:`【意味】${ja}\n【文脈】「${example}」で実際の使い方を確認しましょう。\n【覚え方】${tip.ja}`,
+      en:`[Meaning] ${en}\n[Context] See how it works in “${example}”\n[Study tip] ${tip.en}`,
+      zh:`【含义】${zh}\n【语境】请通过“${example}”确认实际用法。\n【记忆法】${tip.zh}`
+    })
+  });
+};
 
 const TOPIK_I=[
   item(1,'word','가게','상점','店','store; shop','商店','집 앞 가게에서 우유를 샀어요.'),
@@ -23,6 +60,10 @@ const TOPIK_I=[
   item(1,'word','필요하다','꼭 있어야 하다','必要だ','need; be necessary','需要；必要','통장을 만들려면 신분증이 필요해요.'),
   item(1,'word','도착하다','목적지에 이르다','到着する','arrive','到达','택배가 오늘 오후에 도착해요.'),
   item(1,'word','예약하다','자리나 시간을 미리 정하다','予約する','reserve; book','预约','주말 식당을 예약했어요.'),
+  item(1,'word','깜빡하다','해야 할 일이나 물건을 순간적으로 잊다','うっかり忘れる','forget by accident','一时忘记','우산을 가져오는 것을 깜빡했어요.'),
+  item(1,'word','미끄럽다','표면이 매끈해서 쉽게 넘어질 수 있다','滑りやすい','be slippery','滑','비가 와서 길이 미끄러워요.'),
+  item(1,'word','포장하다','물건을 싸거나 음식을 가져갈 수 있게 담다','包む；持ち帰り用にする','wrap; pack to go','包装；打包','남은 음식은 포장해 주세요.'),
+  item(1,'word','직접','다른 사람을 통하지 않고 스스로','直接；自分で','directly; in person','亲自；直接','신청서를 직접 제출했습니다.'),
 
   item(1,'grammar','-고 싶다','~하기를 원하다','～したい','want to','想……','한국 음식을 먹고 싶어요.'),
   item(1,'grammar','-아/어 주세요','정중하게 부탁함','～してください','please ...','请……','문을 닫아 주세요.'),
@@ -34,6 +75,10 @@ const TOPIK_I=[
   item(1,'grammar','-고 나서','~한 뒤에','～してから','after doing','……之后','숙제를 하고 나서 영화를 봤어요.'),
   item(1,'grammar','-지만','앞뒤 내용이 반대됨','～だが；～けれど','but; although','虽然……但是……','작지만 깨끗한 방이에요.'),
   item(1,'grammar','-거나','둘 이상의 선택','～たり；または','or','或者……','주말에는 책을 읽거나 운동해요.'),
+  item(1,'grammar','-기 전에','뒤 행동보다 앞서 함','～する前に','before doing','在……之前','집을 나가기 전에 창문을 확인하세요.'),
+  item(1,'grammar','-아/어도','그 상황을 인정해도 뒤 내용이 유지됨','～しても','even if; even though','即使……也……','조금 늦어도 꼭 와 주세요.'),
+  item(1,'grammar','-(으)면','조건이나 가정을 나타냄','～すれば；～なら','if; when','如果……','시간이 있으면 같이 등산해요.'),
+  item(1,'grammar','-는 동안','어떤 행동이나 상태가 계속되는 시간','～している間','while; during','在……期间','버스를 기다리는 동안 책을 읽었어요.'),
 
   item(1,'expression','마음에 들다','좋아하거나 만족하다','気に入る','like','喜欢；中意','이 셔츠가 마음에 들어요.'),
   item(1,'expression','괜찮아요','문제없어요','大丈夫です','It is okay.','没关系。','조금 늦어도 괜찮아요.'),
@@ -42,7 +87,11 @@ const TOPIK_I=[
   item(1,'expression','잘 먹겠습니다','먹기 전에 하는 감사 인사','いただきます','Thanks for the meal.','我开动了。','음식을 준비해 주셔서 감사합니다. 잘 먹겠습니다.'),
   item(1,'expression','수고하세요','일하는 사람에게 하는 인사','お疲れさまです','Keep up the good work.','辛苦了。','먼저 가겠습니다. 수고하세요.'),
   item(1,'expression','길이 막히다','교통이 혼잡하다','道が混む','traffic is congested','堵车','월요일 아침에는 길이 많이 막혀요.'),
-  item(1,'expression','배가 고프다','음식을 먹고 싶다','お腹がすく','be hungry','饿','아침을 안 먹어서 배가 고파요.')
+  item(1,'expression','배가 고프다','음식을 먹고 싶다','お腹がすく','be hungry','饿','아침을 안 먹어서 배가 고파요.'),
+  item(1,'expression','시간이 나다','해야 할 일이 없어 여유 시간이 생기다','時間が空く','have some free time','有空','오후에 시간이 나면 같이 차를 마셔요.'),
+  item(1,'expression','손이 모자라다','일할 사람이 부족하다','人手が足りない','be short-handed','人手不足','축제 준비를 도울 사람이 적어서 손이 모자라요.'),
+  item(1,'expression','잘 부탁드립니다','앞으로 좋은 관계나 도움을 정중히 청하는 인사','よろしくお願いします','I look forward to working with you.','请多关照','오늘부터 함께 일하게 되었습니다. 잘 부탁드립니다.'),
+  item(1,'expression','다녀오겠습니다','나갔다가 돌아오겠다고 알리는 인사','行ってきます','I am leaving and will be back.','我出门了，会回来的','학교에 다녀오겠습니다.')
 ];
 
 const TOPIK_II=[
@@ -61,6 +110,10 @@ const TOPIK_II=[
   item(2,'word','아끼다','소중히 여기거나 절약하다','大切にする；節約する','cherish; save','珍惜；节省','물을 아껴 쓰는 습관이 필요해요.'),
   item(2,'word','막상','실제 상황이 되었을 때','いざ','when it comes to it','真到……时','막상 발표를 시작하니 긴장이 풀렸어요.'),
   item(2,'word','오히려','예상과 반대로','むしろ；かえって','rather; instead','反而','너무 많이 자서 오히려 피곤해요.'),
+  item(2,'word','간과하다','중요한 사실을 제대로 보지 못하고 넘기다','見過ごす','overlook','忽视','작은 오류를 간과하면 큰 문제가 될 수 있어요.'),
+  item(2,'word','선뜻','망설이지 않고 기꺼이','快く；ためらわずに','readily; willingly','欣然；爽快地','어려운 부탁인데도 선뜻 도와주었어요.'),
+  item(2,'word','줄곧','처음부터 끝까지 계속','ずっと；終始','all along; throughout','一直；始终','그는 십 년 동안 줄곧 같은 분야를 연구했어요.'),
+  item(2,'word','마련하다','필요한 것을 준비하거나 만들다','用意する；設ける','prepare; provide','准备；筹备','주민들을 위한 쉼터를 마련했어요.'),
 
   item(2,'idiom','눈에 띄다','두드러져 보이다','目立つ','stand out','显眼；引人注目','빨간 우산이 멀리서도 눈에 띄어요.'),
   item(2,'idiom','손이 크다','넉넉하게 많이 준비하다','気前よく多く用意する','prepare generously','出手大方；准备得多','할머니는 손이 커서 음식을 많이 만드세요.'),
@@ -72,6 +125,10 @@ const TOPIK_II=[
   item(2,'idiom','마음을 놓다','걱정을 멈추고 안심하다','安心する','feel relieved','放心；安心','검사 결과를 듣고 마음을 놓았어요.'),
   item(2,'idiom','발 벗고 나서다','적극적으로 도와주다','一肌脱ぐ','go out of one’s way to help','挺身相助','친구들이 발 벗고 나서서 도와줬어요.'),
   item(2,'idiom','손에 익다','일이 익숙해지다','手慣れる','get the hang of it','上手；熟练','새 도구가 이제 손에 익었어요.'),
+  item(2,'idiom','눈코 뜰 새 없다','잠깐 쉴 틈도 없을 만큼 매우 바쁘다','目が回るほど忙しい','be extremely busy','忙得不可开交','연말이라 눈코 뜰 새 없이 바빠요.'),
+  item(2,'idiom','두고 볼 일이다','지금 결론 내리지 않고 앞으로의 결과를 지켜봐야 한다','今後の成り行きを見守る必要がある','remain to be seen','还要看今后的结果','새 정책의 효과는 아직 두고 볼 일이에요.'),
+  item(2,'idiom','난처한 입장에 놓이다','대응하기 어려운 곤란한 상황이 되다','困った立場に置かれる','be put in an awkward position','陷入为难的处境','갑작스러운 변경으로 회사가 난처한 입장에 놓였어요.'),
+  item(2,'idiom','갈피를 못 잡다','상황을 이해하거나 방향을 정하지 못하다','見当がつかない；方針を決められない','be unable to get one’s bearings','摸不着头绪','정보가 너무 많아서 갈피를 못 잡겠어요.'),
 
   item(2,'grammar','-는 바람에','뜻밖의 원인으로 나쁜 결과가 생김','～したせいで','because ... unexpectedly','因为意外……而……','버스를 놓치는 바람에 지각했어요.'),
   item(2,'grammar','-기는커녕','앞의 사실은 전혀 아니고 반대 상황임','～どころか','far from; let alone','别说……反而……','도와주기는커녕 방해만 했어요.'),
@@ -89,7 +146,11 @@ const TOPIK_II=[
   item(2,'grammar','-는 대신에','앞의 것을 다른 것으로 바꿈','～する代わりに','instead of','代替……','택시 대신에 지하철을 이용했어요.'),
   item(2,'grammar','-(으)려던 참이다','마침 하려고 하던 순간','ちょうど～しようとしていた','be just about to','正打算……','저도 전화하려던 참이었어요.'),
   item(2,'grammar','-(으)ㄹ 리가 없다','가능성을 강하게 부정함','～はずがない','there is no way','不可能……','그 사람이 약속을 잊을 리가 없어요.'),
-  item(2,'grammar','-기만 하면','그때마다 같은 결과가 나타남','～するたびに','whenever','每当……','이 노래를 듣기만 하면 여행이 생각나요.')
+  item(2,'grammar','-기만 하면','그때마다 같은 결과가 나타남','～するたびに','whenever','每当……','이 노래를 듣기만 하면 여행이 생각나요.'),
+  item(2,'grammar','-더라도','앞 상황을 인정해도 뒤의 판단이나 결과가 유지됨','～としても','even if; even though','即使……也……','결과가 좋지 않더라도 과정에서 배울 수 있어요.'),
+  item(2,'grammar','-(으)ㄹ 뿐만 아니라','앞의 사실에 뒤의 사실을 더함','～だけでなく','not only ... but also','不仅……而且……','이 도서관은 자료가 다양할 뿐만 아니라 늦게까지 문을 열어요.'),
+  item(2,'grammar','-기 마련이다','일반적으로 그렇게 되는 것이 당연하거나 자연스러움','～ものだ','be bound to; naturally','总会……；自然会……','새로운 일을 시작하면 실수하기 마련이에요.'),
+  item(2,'grammar','-는 한','앞의 조건이 유지되는 범위에서','～する限り','as long as','只要……','원칙을 지키는 한 신뢰를 잃지 않을 거예요.')
 ];
 
 window.MALBIT_SHORTS_DECKS={1:TOPIK_I,2:TOPIK_II};
