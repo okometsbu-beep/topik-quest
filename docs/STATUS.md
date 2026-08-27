@@ -6,7 +6,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 - Production: GitHub Pages static PWA
 - Production release: v58 · privacy-free Myeongdong price-quest learning metrics
-- Current candidate: none
+- Current candidate: v59 · on-device price-quest learning feedback
 - Core content: 2,088 original items
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
@@ -32,9 +32,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 우선순위
 
-1. 가격 퀘스트 완료율·오답·평균 잔액을 사용자가 이해할 수 있는 개인정보 없는 로컬 진단 문구를 검토한다.
-2. 충분한 실제 사용 기록이 쌓인 뒤 여행 기록 화면의 수치로 다음 지역·상점 밸런스를 검토한다.
-3. 실제 학습 흐름을 확인한 뒤에만 다음 역의 퀘스트 형식과 보상 수치를 확정한다.
+1. 충분한 실제 사용 기록이 쌓인 뒤 여행 기록 화면의 수치로 다음 지역·상점 밸런스를 검토한다.
+2. 실제 학습 흐름을 확인한 뒤에만 다음 역의 퀘스트 형식과 보상 수치를 확정한다.
 
 ## 이번 운영 변경
 
@@ -64,8 +63,21 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-가격 퀘스트의 기기 내 수치를 초보자가 오해하지 않도록 완료율·오답·잔액 조합에 따른 짧은
-일본어 학습 피드백의 기준을 설계하고, 개인정보 전송 없이 같은 카드에서 설명한다.
+실제 기기에 가격 퀘스트 기록이 더 쌓인 뒤 완료율·오답·평균 잔액을 확인하고, 다음 지역의
+가격 학습 난이도나 보상 수치를 바꿀 근거가 충분한지 검토한다.
+
+## v59 후보 검증
+
+- 시작 전, 미완료, 오답 포함 완료, 무오답 완주, 중도 이탈 조합을 구분해 같은 여행 기록 카드에
+  짧은 학습 힌트를 표시한다.
+- 일본어 기준으로 완료율·오답·평균 잔액을 그대로 보여 주고 `값×개수 → 예산−합계` 순서를 안내한다.
+- 새 저장 키나 외부 전송 없이 기존 `malbitStoryV1.metrics`의 기기 내 숫자만 읽는다.
+- runtime contract v59와 빠른 검사 43개를 통과했다.
+- GitHub Actions 전체 검사, 320·375·390·430px containment, 실제 터치 여행 흐름, 콘솔 오류 0개를 통과했다.
+- 일본어 모바일 증거에서 힌트·긴 숫자·다음 카드의 돌출과 겹침이 없음을 확인했다.
+- 후보 브랜치: `agent/loop-20260827-price-feedback`
+- 후보 체크포인트: `66874759edc7e09a64122a2b6b6a699e0e1ccbc1`
+- 되돌리기 기준: v58 main `1c8b4a0175e53f5c7db3df9bfff83da81f209bfa`
 
 ## 알려진 위험
 
