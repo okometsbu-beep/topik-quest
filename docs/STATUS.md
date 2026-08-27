@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v58 · privacy-free Myeongdong price-quest learning metrics
-- Current candidate: v59 · on-device price-quest learning feedback
+- Production release: v59 · on-device Myeongdong price-quest learning feedback
+- Current candidate: none
 - Core content: 2,088 original items
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
@@ -66,7 +66,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 실제 기기에 가격 퀘스트 기록이 더 쌓인 뒤 완료율·오답·평균 잔액을 확인하고, 다음 지역의
 가격 학습 난이도나 보상 수치를 바꿀 근거가 충분한지 검토한다.
 
-## v59 후보 검증
+## v59 검증 및 배포
 
 - 시작 전, 미완료, 오답 포함 완료, 무오답 완주, 중도 이탈 조합을 구분해 같은 여행 기록 카드에
   짧은 학습 힌트를 표시한다.
@@ -75,8 +75,9 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - runtime contract v59와 빠른 검사 43개를 통과했다.
 - GitHub Actions 전체 검사, 320·375·390·430px containment, 실제 터치 여행 흐름, 콘솔 오류 0개를 통과했다.
 - 일본어 모바일 증거에서 힌트·긴 숫자·다음 카드의 돌출과 겹침이 없음을 확인했다.
-- 후보 브랜치: `agent/loop-20260827-price-feedback`
-- 후보 체크포인트: `66874759edc7e09a64122a2b6b6a699e0e1ccbc1`
+- 변경 PR: https://github.com/okometsbu-beep/topik-quest/pull/56
+- 배포 주소: https://okometsbu-beep.github.io/topik-quest/
+- 배포 main: `6ee302f175f17688f22e2661a36c7ccee217b45f`
 - 되돌리기 기준: v58 main `1c8b4a0175e53f5c7db3df9bfff83da81f209bfa`
 
 ## 알려진 위험
