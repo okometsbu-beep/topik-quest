@@ -116,9 +116,11 @@ try{
     if(seedMetrics){
       assert.equal(await evaluate(`document.querySelectorAll('.travelMetric').length`),7);
       assert.deepEqual(await evaluate(`[...document.querySelectorAll('.travelMetric b')].map(node=>node.textContent)`),['5','80%','75%','67%','75%','2','60,000旅ウォン']);
+      assert.match(await evaluate(`document.querySelector('.travelMetricFeedback')?.textContent`),/完了率75%・誤答2回・完了後の平均60,000旅ウォン/);
+      assert.match(await evaluate(`document.querySelector('.travelMetricFeedback')?.textContent`),/値段×個数、そのあと予算−合計/);
       assert.match(await evaluate(`document.querySelector('.travelMetrics>p')?.textContent`),/この端末内に数値だけを保存し、外部へ送信しません/);
-      const metricFit=await evaluate(`(()=>{const card=document.querySelector('.travelMetrics'),grid=document.querySelector('.travelMetricsGrid');return{card:card.scrollWidth-card.clientWidth,grid:grid.scrollWidth-grid.clientWidth}})()`);
-      assert.ok(metricFit.card<=1&&metricFit.grid<=1,`local metrics overflow: ${JSON.stringify(metricFit)}`);
+      const metricFit=await evaluate(`(()=>{const card=document.querySelector('.travelMetrics'),grid=document.querySelector('.travelMetricsGrid'),feedback=document.querySelector('.travelMetricFeedback');return{card:card.scrollWidth-card.clientWidth,grid:grid.scrollWidth-grid.clientWidth,feedback:feedback.scrollWidth-feedback.clientWidth}})()`);
+      assert.ok(metricFit.card<=1&&metricFit.grid<=1&&metricFit.feedback<=1,`local metrics overflow: ${JSON.stringify(metricFit)}`);
       await evaluate(`document.querySelector('.travelMetrics').scrollIntoView({block:'start',behavior:'auto'})`);
       await sleep(100);
       await shot('01b-local-metrics.png');

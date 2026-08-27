@@ -120,6 +120,31 @@
     });
   }
   const metricPercent=value=>value===null?'—':`${value}%`;
+  function priceQuestFeedback(metrics){
+    const rate=metricPercent(metrics.priceQuestCompletionRate);
+    const wrong=metrics.priceQuestWrongSubmissions;
+    const wallet=metrics.priceQuestAverageWallet===null?'—':won(metrics.priceQuestAverageWallet);
+    if(!metrics.priceQuestStarts)return{
+      title:l({ko:'기록이 쌓이면 여기서 연습 요령을 알려드려요',ja:'記録がたまると、ここに練習のコツが出ます',en:'Practice guidance will appear after your first try',zh:'完成首次尝试后，这里会显示练习建议'}),
+      body:l({ko:'가격표를 읽고 가격 × 개수 → 예산 − 합계 순서로 계산해 보세요.',ja:'値札を読み、「値段×個数 → 予算−合計」の順で計算してみよう。',en:'Read the price board, then calculate price × quantity → budget − total.',zh:'读取价目表后，按价格×数量→预算−合计的顺序计算。'})
+    };
+    if(!metrics.priceQuestCompletions)return{
+      title:l({ko:'아직 진행 중이에요. 합계를 먼저 만드세요',ja:'まだ途中です。まず合計を作ろう',en:'Still in progress: find the total first',zh:'仍在进行中：先算出合计'}),
+      body:l({ko:`완료율 ${rate} · 완료 전 오답 ${wrong}회. 가격 × 개수를 구한 뒤 예산에서 빼세요.`,ja:`完了率${rate}・完了前の誤答${wrong}回。値段×個数を出してから、予算から引こう。`,en:`Completion ${rate} · ${wrong} wrong tries before clear. Multiply price by quantity, then subtract from the budget.`,zh:`完成率${rate} · 完成前错答${wrong}次。先计算价格×数量，再从预算中减去。`})
+    };
+    if(wrong>0)return{
+      title:l({ko:'계산을 두 단계로 나누면 실수를 줄일 수 있어요',ja:'計算を2段階に分けると、ミスを減らせます',en:'Split the calculation into two steps',zh:'把计算分成两步可减少失误'}),
+      body:l({ko:`완료율 ${rate} · 오답 ${wrong}회 · 완료 후 평균 ${wallet}. 가격 × 개수, 그다음 예산 − 합계 순서로 확인하세요.`,ja:`完了率${rate}・誤答${wrong}回・完了後の平均${wallet}。値段×個数、そのあと予算−合計の順で確認しよう。`,en:`Completion ${rate} · ${wrong} wrong tries · average after clear ${wallet}. Check price × quantity, then budget − total.`,zh:`完成率${rate} · 错答${wrong}次 · 完成后平均${wallet}。先检查价格×数量，再检查预算−合计。`})
+    };
+    if(metrics.priceQuestCompletionRate===100)return{
+      title:l({ko:'계산 순서를 안정적으로 지켰어요',ja:'計算の順番を安定して守れています',en:'Your calculation order is consistent',zh:'计算顺序保持得很稳定'}),
+      body:l({ko:`완료율 ${rate} · 오답 0회 · 완료 후 평균 ${wallet}. 다음에는 먼저 남길 여행 원을 정해 보세요.`,ja:`完了率${rate}・誤答0回・完了後の平均${wallet}。次は、残したい旅ウォンを先に決めてみよう。`,en:`Completion ${rate} · 0 wrong tries · average after clear ${wallet}. Next, decide how much travel won to keep first.`,zh:`完成率${rate} · 错答0次 · 完成后平均${wallet}。下次先决定要保留多少旅行韩元。`})
+    };
+    return{
+      title:l({ko:'시작한 문제를 끝까지 마무리해 보세요',ja:'始めた問題を最後まで仕上げよう',en:'Finish each attempt you start',zh:'把已开始的题目完成到底'}),
+      body:l({ko:`완료율 ${rate} · 오답 0회 · 완료 후 평균 ${wallet}. 개수를 정한 뒤 합계와 잔액을 차례로 확인하세요.`,ja:`完了率${rate}・誤答0回・完了後の平均${wallet}。個数を決めたら、合計と残高を順に確認しよう。`,en:`Completion ${rate} · 0 wrong tries · average after clear ${wallet}. After choosing a quantity, check the total and balance in order.`,zh:`完成率${rate} · 错答0次 · 完成后平均${wallet}。决定数量后，依次检查合计和余额。`})
+    };
+  }
   function metricsMarkup(store){
     const metrics=metricsSnapshot(store);
     const routeLabels=[
@@ -133,8 +158,9 @@
       [l({ko:'완료 전 오답 제출',ja:'完了前の誤答',en:'Wrong tries before clear',zh:'完成前错答'}),String(metrics.priceQuestWrongSubmissions)],
       [l({ko:'완료 후 평균 잔액',ja:'完了後の平均残高',en:'Average wallet after clear',zh:'完成后平均余额'}),metrics.priceQuestAverageWallet===null?'—':won(metrics.priceQuestAverageWallet)]
     ];
+    const feedback=priceQuestFeedback(metrics);
     const grid=(labels,kind='')=>`<div class="travelMetricsGrid ${kind}"${kind?' aria-label="'+h(l({ko:'명동 가격 퀘스트 기록',ja:'明洞の値段クエスト記録',en:'Myeongdong price quest record',zh:'明洞价格任务记录'}))+'"':''}>${labels.map(([label,value])=>`<div class="travelMetric"><b>${h(value)}</b><small>${h(label)}</small></div>`).join('')}</div>`;
-    return`<section class="travelMetrics" aria-labelledby="travel-metrics-title"><div class="travelMetricsHead"><div><small>LOCAL LEARNING SIGNALS</small><h2 id="travel-metrics-title">${h(l({ko:'이 기기의 여행 기록',ja:'この端末の旅記録',en:'Travel record on this device',zh:'此设备的旅行记录'}))}</h2></div><span>LOCAL</span></div>${grid(routeLabels)}<div class="travelMetricsSubhead">${h(l({ko:'명동 가격 퀘스트',ja:'明洞の値段クエスト',en:'Myeongdong price quest',zh:'明洞价格任务'}))}</div>${grid(priceLabels,'price')}<p>${h(l({ko:'이 기기에만 숫자로 저장하며 외부로 전송하지 않습니다.',ja:'この端末内に数値だけを保存し、外部へ送信しません。',en:'Only numeric totals are stored on this device and never sent outside.',zh:'仅以数字保存在本设备，不会发送到外部。'}))}</p></section>`;
+    return`<section class="travelMetrics" aria-labelledby="travel-metrics-title"><div class="travelMetricsHead"><div><small>LOCAL LEARNING SIGNALS</small><h2 id="travel-metrics-title">${h(l({ko:'이 기기의 여행 기록',ja:'この端末の旅記録',en:'Travel record on this device',zh:'此设备的旅行记录'}))}</h2></div><span>LOCAL</span></div>${grid(routeLabels)}<div class="travelMetricsSubhead">${h(l({ko:'명동 가격 퀘스트',ja:'明洞の値段クエスト',en:'Myeongdong price quest',zh:'明洞价格任务'}))}</div>${grid(priceLabels,'price')}<div class="travelMetricFeedback" role="note"><small>${h(l({ko:'이 기록으로 보는 학습 한마디',ja:'この記録からの学習ヒント',en:'Learning tip from this record',zh:'根据此记录的学习提示'}))}</small><b>${h(feedback.title)}</b><p>${h(feedback.body)}</p></div><p>${h(l({ko:'이 기기에만 숫자로 저장하며 외부로 전송하지 않습니다.',ja:'この端末内に数値だけを保存し、外部へ送信しません。',en:'Only numeric totals are stored on this device and never sent outside.',zh:'仅以数字保存在本设备，不会发送到外部。'}))}</p></section>`;
   }
   function readStore(){
     try{
@@ -356,7 +382,7 @@
     sc.innerHTML=`<div class="travelHub"><header class="travelHubHead"><button onclick="setView('home')">‹</button><div><small>LEARN · TRAVEL · COLLECT</small><h1>${h(l({ko:'여행모드',ja:'旅行モード',en:'Travel Mode',zh:'旅行模式'}))}</h1><p>${h(l({ko:'말하고, 표지를 찾고, 발권하며 서울을 직접 여행하세요.',ja:'話して、標識を探して、発券しながらソウルを旅しよう。',en:'Speak, find signs, and use the ticket machine as you travel Seoul.',zh:'通过对话、找标志和购票，亲自游览首尔。'}))}</p></div><button class="travelLang" onclick="event.stopPropagation();flagMenu()" aria-label="${h(l({ko:'설명 언어 바꾸기',ja:'説明言語を変更',en:'Change explanation language',zh:'切换解析语言'}))}">${flag()}</button></header><section class="travelHubBanner"><div><small>KOREA ROUTE 001</small><b>${h(l({ko:'인천공항 T1 → 명동',ja:'仁川空港 T1 → 明洞',en:'Incheon Airport T1 → Myeongdong',zh:'仁川机场 T1 → 明洞'}))}</b><p>${h(l({ko:'6개 현장 미션 · 이동 선택 · 수집품 · 무료 의상',ja:'現地6ミッション・移動選択・コレクション・無料衣装',en:'6 field missions · route choice · collectibles · free outfit',zh:'6个现场任务 · 路线选择 · 收藏品 · 免费服装'}))}</p></div></section>${mapMarkup(focus,focusState)}<div class="travelSectionTitle"><b>${h(l({ko:'첫 번째 여행 코스',ja:'最初の旅行コース',en:'First travel route',zh:'第一条旅行路线'}))}</b><span>${PACKS.length} ROUTE</span></div>${cards}${metricsMarkup(store)}${avatarMarkup(focus,store)}<article class="travelComingSoon"><span>02</span><div><b>${h(l({ko:'다음 서울 지역',ja:'次のソウルエリア',en:'Next Seoul area',zh:'下一个首尔区域'}))}</b><p>${h(l({ko:'남은 여행 원·시간·수집품을 그대로 들고 다음 역으로 이어집니다.',ja:'残った旅ウォン・時間・コレクションを持って次の駅へ進みます。',en:'Carry your travel won, time, and collection to the next station.',zh:'携带剩余旅行韩元、时间和收藏前往下一站。'}))}</p></div><em>LOCKED</em></article></div>`;
   }
   function renderNarrative(sc,pack,state,scene){
-    sc.innerHTML=`<div class="travelPlay">${commonTop(pack,state,scene)}<article class="travelSceneCard"><div class="travelChapter">AREA ${scene.chapter}</div><h1>${h(l(scene.title))}</h1>${worldMarkup(pack,state,scene)}${koreanCopy(scene)}<button class="travelPrimary" onclick="malbitTravelNext()">${h(l({ko:'여행 계속',ja:'旅を続ける',en:'Continue journey',zh:'继续旅行'}))} <b>→</b></button></article>${notebook(pack,state)}</div>`;
+    sc.innerHTML=`<div class="travelPlay">${commonTop(pack,state,scene)}<article class="travelSceneCard"><div class="travelChapter">AREA ${scene.chapter}</div><h1>${h(l(scene.title))}</h1>${worldMarkup(pack,state,scene)}${koreanCopy(scene)}<button class="travelPrimary" onclick="malbitTravelNext()">${h(l({ko:'여행 계속',ja:'旅を��ける',en:'Continue journey',zh:'继续旅行'}))} <b>→</b></button></article>${notebook(pack,state)}</div>`;
   }
   function renderChoice(sc,pack,state,scene){
     sc.innerHTML=`<div class="travelPlay">${commonTop(pack,state,scene)}<article class="travelSceneCard"><div class="travelChapter">CHOOSE YOUR ROUTE</div><h1>${h(l(scene.title))}</h1>${worldMarkup(pack,state,scene)}${koreanCopy(scene)}<div class="travelRoutes">${scene.choices.map(choice=>{const locked=Number(choice.cost)>state.wallet,src=assetPath(pack,'props',choice.asset);return`<button onclick="malbitTravelChoose('${h(choice.id)}')" ${locked?'disabled':''}>${src?`<img src="${h(src)}" alt="">`:`<span>${h(choice.code||choice.id)}</span>`}<div><b>${h(l(choice.label))}</b><small>${h(l(choice.detail))}</small><strong>${h(won(choice.cost))} · ${h(choice.durationMinutes)} MIN</strong>${locked?`<small class="need">${h(l({ko:`${won(choice.cost-state.wallet)} 더 필요`,ja:`あと${won(choice.cost-state.wallet)}必要`,en:`Need ${won(choice.cost-state.wallet)} more`,zh:`还需${won(choice.cost-state.wallet)}`}))}</small>`:''}</div><em>${locked?'LOCK':'›'}</em></button>`}).join('')}</div><details class="travelFacts"><summary>${h(l({ko:'실제 교통 정보 출처',ja:'実際の交通情報の出典',en:'Real transport sources',zh:'真实交通信息来源'}))}</summary>${pack.sources.map(source=>`<a href="${h(source.url)}" target="_blank" rel="noopener">${h(source.label)}</a>`).join('')}</details></article></div>`;

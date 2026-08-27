@@ -285,6 +285,8 @@ test('the travel runtime can complete, resume, replay, and record a wrong answer
   assert.equal(runtime.malbitTravelMetrics().priceQuestStarts,0);
   assert.equal(runtime.malbitTravelMetrics().priceQuestCompletionRate,null);
   assert.match(screen.innerHTML,/가격 퀘스트 완료율/);
+  assert.match(screen.innerHTML,/기록이 쌓이면 여기서 연습 요령을 알려드려요/);
+  assert.match(screen.innerHTML,/가격 × 개수 → 예산 − 합계/);
   runtime.malbitTravelStart('route-001-airport-myeongdong', false);
   assert.match(screen.innerHTML, /한국 여행이 시작됐다/);
   assert.equal(runtime.malbitTravelMetrics().routeStarts,1);
@@ -401,6 +403,12 @@ test('the travel runtime can complete, resume, replay, and record a wrong answer
   assert.equal(runtime.malbitTravelMetrics().myeongdongEntries,1,'reopening the hub must not double-count one route');
   assert.equal(runtime.malbitTravelMetrics().exchangeSessions,1);
   assert.equal(runtime.malbitTravelMetrics().collectibleExchangeRate,100);
+  runtime.S.lang='ja';
+  runtime.malbitTravelOpen();
+  assert.match(screen.innerHTML,/この記録からの学習ヒント/);
+  assert.match(screen.innerHTML,/計算を2段階に分けると、ミスを減らせます/);
+  assert.match(screen.innerHTML,new RegExp(`完了率100%・誤答1回・完了後の平均${afterBudget.wallet.toLocaleString('en-US')}旅ウォン`));
+  runtime.S.lang='ko';
 
   runtime.malbitTravelBack();
   runtime.malbitTravelStart(pack.id, false);
