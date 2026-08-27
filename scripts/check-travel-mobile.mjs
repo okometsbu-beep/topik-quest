@@ -233,9 +233,10 @@ try{
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`curated Shorts ${width}px`)}
   await setViewport(390,844);await shot('00a-shorts-idiom-coaching.png');
 
+  const curatedLength=await evaluate(`window.MALBIT_SHORTS_DECKS[2].length`);
   const bankShortsIndex=await evaluate(`window.MALBIT_SHORTS_DECKS[2].length+window.MALBIT_BANK.shorts(2).findIndex(item=>item.bankId==='P01-II-R-06')`);
   const bankShortsAnswer=await evaluate(`(()=>{const item=window.MALBIT_BANK.shorts(2).find(entry=>entry.bankId==='P01-II-R-06');return item.choices[item.answerIndex]})()`);
-  assert.ok(bankShortsIndex>=window.MALBIT_SHORTS_DECKS[2].length,'new TOPIK II practice item must enter Shorts');
+  assert.ok(bankShortsIndex>=curatedLength,'new TOPIK II practice item must enter Shorts');
   await openStoredShorts(bankShortsIndex);await submitShortsLabel(bankShortsAnswer);
   const bankCoach=await evaluate(`document.querySelector('.shortsFeedback small')?.innerText`);
   assert.match(bankCoach,/【正解の根拠】[\s\S]*【ひっかけ分析】[\s\S]*【タイプ別の解き方】/);
