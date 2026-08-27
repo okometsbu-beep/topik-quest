@@ -20,6 +20,7 @@ context.window.window = context.window;
 context.window.localStorage = context.localStorage;
 vm.createContext(context);
 for (let part = 1; part <= 4; part++) vm.runInContext(read(`data/question-bank-v1-part${part}.js`), context);
+vm.runInContext(read('data/question-bank-practice-v1.js'), context);
 vm.runInContext(read('question-bank-engine.js'), context);
 vm.runInContext(read('data/travel-pack-seoul-001.js'), context);
 vm.runInContext(read('data/travel-myeongdong-hub.js'), context);
@@ -268,6 +269,7 @@ test('the travel runtime can complete, resume, replay, and record a wrong answer
   runtime.setView = view => { runtime.S.view = view; runtime.render(); };
   vm.createContext(runtime);
   for (let part = 1; part <= 4; part++) vm.runInContext(read(`data/question-bank-v1-part${part}.js`), runtime);
+  vm.runInContext(read('data/question-bank-practice-v1.js'), runtime);
   vm.runInContext(read('question-bank-engine.js'), runtime);
   vm.runInContext(read('data/travel-pack-seoul-001.js'), runtime);
   vm.runInContext(read('data/travel-myeongdong-hub.js'), runtime);

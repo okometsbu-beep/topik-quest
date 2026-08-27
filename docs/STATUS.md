@@ -5,9 +5,9 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v60 · one-tap return to the next Myeongdong learning quest
+- Production release: v61 · original TOPIK/Shorts expansion and instructor explanations
 - Current candidate: none
-- Core content: 2,088 original items
+- Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
 - Autonomous runtime: GitHub-connected scheduled task, four fresh runs per day
@@ -16,6 +16,9 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 최근 안정 기능
 
 - TOPIK I·II, Shorts, Random Practice, full mock exams, Review, Vocabulary, Statistics
+- 172 TOPIK I and 116 TOPIK II quick-practice questions; fixed 12-set mock composition remains intact
+- bank explanations structured as answer evidence → distractor trap → reusable type-solving method,
+  with separate TOPIK II writing 51–54 plans
 - independent Seoul Travel Mode and Wordlight Expedition
 - Incheon Airport T1 → Seoul Station → Myeongdong route with six beginner missions,
   factual transport choices, travel-won rewards, a persistent clock, and free avatar looks
@@ -32,9 +35,9 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 우선순위
 
-1. 사용자가 실제 기기 수치를 직접 제공하기 전에는 가격 퀘스트 난이도·가격·보상을 유지한다.
-2. 기존 코스 재진입 시 다음 학습 행동을 한 번에 찾을 수 있는지 먼저 개선한다.
-3. 실제 학습 흐름을 확인한 뒤에만 다음 역의 퀘스트 형식과 보상 수치를 확정한다.
+1. 새 연습 문항에서 실제 학습자가 자주 틀리는 선택지와 해설 구간을 먼저 확인한다.
+2. 근거가 확인된 유형부터 같은 기준으로 오리지널 문항과 유형별 풀이법을 추가한다.
+3. 실제 기기 수치가 없으면 가격 퀘스트 난이도·가격·보상은 유지한다.
 
 ## 이번 운영 변경
 
@@ -47,22 +50,25 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-실제 기기 가격 퀘스트 수치나 새 `[AI 지시]`가 들어오기 전에는 밸런스·보상·다음 지역을
-변경하지 않는다. 근거가 들어오면 식별정보 없이 완료율·오답·평균 잔액부터 검토한다.
+새 연습 문항의 실제 오답 근거가 들어오면, 가장 많이 막히는 유형 하나의 문항·해설 품질을
+먼저 보강한다. 식별정보 없이 유형·선택지·해설 도움 여부만 검토한다.
 
-## v60 검증 및 배포
+## v61 검증 및 배포
 
-- 완주했지만 미완료 명동 학습 퀘스트가 남은 코스의 기본 CTA를 `명동 다음 퀘스트`로 바꿨다.
-- CTA 한 번으로 시간대에 맞는 다음 미완료 퀘스트가 있는 명동 허브에 들어간다. 모든 명동
-  퀘스트를 마치면 기존 `완주 기록 보기`를 유지한다.
-- `malbitStoryV1` 저장 구조, 지갑, 수집품, 단어장·게임·복습 기록은 그대로 보존한다.
-- runtime contract v60, JavaScript 51개 구문, 빠른 검사 43개와 GitHub Actions 전체 검사를 통과했다.
-- 실제 Chrome에서 320·375·390·430px containment, CTA 한 번의 터치 재진입, 세 경로 완주,
-  명동 학습·재접속과 콘솔 오류 0개를 확인했다. 일본어 CTA와 도착 허브 화면도 직접 확인했다.
+- 고정 모의고사 12세트는 바꾸지 않고 TOPIK I 28개와 TOPIK II 28개의 오리지널 유형별
+  연습 문제를 추가해 런타임 문제은행을 2,144개로 늘렸다.
+- Shorts는 TOPIK I 172개, TOPIK II 116개로 늘리고 단어·숙어·문법·표현의 일본어 해설에
+  의미·문맥·기억법을 넣었다.
+- 객관식 해설은 정답 근거 → 오답 함정 → 유형별 풀이법으로 통일하고, TOPIK II 쓰기
+  51–54번은 실용문 빈칸·설명문 빈칸·도표 요약·논술 전략을 각각 제공한다.
+- runtime contract v61, JavaScript 52개 구문, 16,768개 다국어 셔플 조합과 전체 48개 검사를
+  통과했다. 기존 단어장·게임·복습·여행·설정 기록도 보존했다.
+- 실제 Chrome에서 320·375·390·430px, Shorts 강사형 해설, Travel 전체 회귀, 터치·재접속,
+  가로 넘침과 콘솔 오류 0개를 확인했다.
 - 결제 UI·API 키·개인정보 수집·외부 전송은 추가하지 않았다.
-- 변경 PR: https://github.com/okometsbu-beep/topik-quest/pull/58
+- 변경 PR: https://github.com/okometsbu-beep/topik-quest/pull/59
 - 배포 주소: https://okometsbu-beep.github.io/topik-quest/
-- 되돌리기 기준: v59 main `66e47397bd65e1622e636446d01a213b111b62bf`
+- 되돌리기 기준: v60 main `aa03c80158136a7fac2b0c42649282de8638b060`
 
 ## 알려진 위험
 

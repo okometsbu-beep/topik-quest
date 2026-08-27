@@ -3,12 +3,12 @@
 An independent Korean-learning game and unofficial TOPIK I & II practice app.
 
 ## Current build
-- Original question bank with 2,088 items across 12 complete mock sets: TOPIK I listening 360 / reading 480, TOPIK II listening 600 / writing 48 / reading 600
+- Original 2,088-item bank across 12 complete mock sets, plus 56 original type-focused practice items for a 2,144-item runtime pool: TOPIK I listening 360 / reading 480, TOPIK II listening 600 / writing 48 / reading 600 remain fixed-set counts
 - Difficulty-aware delivery in Shorts, Random Practice, full mock exams, review, and Expedition battles; regular monsters draw from lower tiers while elites and bosses draw progressively harder items
 - Persistent Expedition no-repeat history and per-encounter answer shuffling, including a guaranteed change to the correct option's displayed position on a repeat encounter
 - TOPIK I listening and reading practice (70 questions)
 - TOPIK II reading, writing and listening practice
-- Separate TOPIK I and TOPIK II Shorts decks, progress, and same-category distractors, using concise equivalents in the selected UI language
+- Separate TOPIK I and TOPIK II Shorts decks with 172 and 116 quick questions respectively, same-category distractors, and meaning → context → memory coaching in the selected UI language
 - Level-locked Random Practice: TOPIK I uses only its listening/reading pool; TOPIK II uses its listening/reading/writing pool
 - Full timed mock-exam mode
 - Standalone Seoul Travel Mode, separate from the full mock exam, with a Seoul Station → City Hall → Gwanghwamun route, six Korean missions, three stamps, free avatar rewards, save/resume, replay, best-score retention, and wrong-answer review integration
@@ -17,7 +17,7 @@ An independent Korean-learning game and unofficial TOPIK I & II practice app.
 - Difficulty- and passage-length-aware game timers with a 20% overall time increase
 - One-tap selection and second-tap submission for multiple-choice questions
 - Persistent wrong-answer review queue with double-tap retries, full-question translation, and detailed evidence, grammar, vocabulary, and distractor explanations
-- Reviewed question-specific inline explanations in Korean / Japanese / English / Chinese, including TOPIK II writing guidance
+- Question-specific Korean / Japanese / English / Chinese instructor explanations organized as evidence → distractor trap → type-solving method, plus separate answer-planning methods for TOPIK II writing 51–54
 - Context-aware long-press vocabulary capture with particle/conjugation cleanup, incomplete-fragment rejection, and review tools
 - Per-word vocabulary detail editing for multilingual meanings, Korean definitions, examples and translations, word origins, notes, source metadata, and review history; safe AI adapters never expose provider keys in the static client
 - Completion-only learning metrics (opening a mode does not count), daily goals, pace statistics, skill accuracy, and a recommended next action

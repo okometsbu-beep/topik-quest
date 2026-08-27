@@ -11,13 +11,15 @@ vm.runInContext(fs.readFileSync(path.join(root, 'data/shorts-levels.js'), 'utf8'
 
 test('TOPIK study library is complete, multilingual, and organized by level', () => {
   const decks = context.window.MALBIT_SHORTS_DECKS;
-  assert.equal(decks[1].length, 36);
-  assert.equal(decks[2].length, 42);
+  assert.equal(decks[1].length, 48);
+  assert.equal(decks[2].length, 54);
   assert.deepEqual([...new Set(decks[1].map(item => item.type))].sort(), ['expression', 'grammar', 'word']);
   assert.deepEqual([...new Set(decks[2].map(item => item.type))].sort(), ['grammar', 'idiom', 'word']);
   for (const level of [1, 2]) {
     assert.equal(new Set(decks[level].map(item => item.term)).size, decks[level].length, `TOPIK ${level} terms should be unique`);
     assert.ok(decks[level].every(item => item.term && item.example && ['ko', 'ja', 'en', 'zh'].every(lang => item.meaning[lang])));
+    assert.ok(decks[level].every(item => ['ko', 'ja', 'en', 'zh'].every(lang => item.explanationI18n[lang])));
+    assert.ok(decks[level].every(item => /【意味】[\s\S]*【文脈】[\s\S]*【覚え方】/u.test(item.explanationI18n.ja)));
   }
 });
 

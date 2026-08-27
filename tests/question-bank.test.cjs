@@ -16,13 +16,14 @@ context.window.window = context.window;
 context.window.localStorage = context.localStorage;
 vm.createContext(context);
 for (let part = 1; part <= 4; part++) vm.runInContext(fs.readFileSync(`data/question-bank-v1-part${part}.js`, 'utf8'), context);
+vm.runInContext(fs.readFileSync('data/question-bank-practice-v1.js', 'utf8'), context);
 vm.runInContext(fs.readFileSync('question-bank-engine.js', 'utf8'), context);
 
 const bank = context.window.MALBIT_BANK;
 assert.ok(bank, 'question bank engine should initialize');
-assert.equal(bank.total, 2088);
-assert.equal(bank.stats.topik1, 840);
-assert.equal(bank.stats.topik2, 1248);
+assert.equal(bank.total, 2144);
+assert.equal(bank.stats.topik1, 868);
+assert.equal(bank.stats.topik2, 1276);
 
 for (let set = 1; set <= 12; set++) {
   assert.equal(bank.mock(1, set, 'listening').length, 30, `TOPIK I listening set ${set}`);
@@ -65,8 +66,8 @@ for (const level of [1, 2]) {
 }
 delete context.window.MALBIT_LISTENING_ENABLED;
 
-assert.equal(bank.shorts(1).length, 108);
-assert.equal(bank.shorts(2).length, 48);
+assert.equal(bank.shorts(1).length, 124);
+assert.equal(bank.shorts(2).length, 62);
 
 const listening = [], readingWriting = [];
 assert.equal(bank.activateTopik2Set(7, listening, readingWriting), true);
@@ -77,7 +78,7 @@ assert.equal(readingWriting[50].bankId, 'M07-II-W-51');
 
 assert.ok(bank.items.every((item) => item.explanationKo && item.explanationJa));
 const mcqItems = bank.items.filter((item) => item.section !== 'writing');
-assert.equal(mcqItems.length, 2040);
+assert.equal(mcqItems.length, 2096);
 const explanationNumbers = {
   ko: (n) => `현재 보기 순서에서는 ${n}번이 정답입니다.`,
   ja: (n) => `現在の選択肢では${n}番が正解です。`,
@@ -100,6 +101,13 @@ for (const item of mcqItems) {
       assert.ok(explanation, `${item.id} should have a ${lang} explanation`);
       assert.ok(explanation.includes(correctChoice), `${item.id} ${lang} explanation should name the actual answer`);
       assert.ok(explanation.includes(explanationNumbers[lang](currentNumber)), `${item.id} ${lang} explanation should use displayed option ${currentNumber}`);
+      const requiredSections = {
+        ko: ['【정답 근거】', '【오답 함정】', '【유형별 풀이법】'],
+        ja: ['【正解の根拠】', '【ひっかけ分析】', '【タイプ別の解き方】'],
+        en: ['【Why this is correct】', '【Distractor trap】', '【Type-solving method】'],
+        zh: ['【正确依据】', '【干扰项陷阱】', '【题型解法】']
+      }[lang];
+      assert.ok(requiredSections.every((section) => explanation.includes(section)), `${item.id} ${lang} explanation should teach evidence, traps, and a type-solving method`);
       assert.doesNotMatch(explanation, /(?:undefined|null|\[object Object\])/u, `${item.id} ${lang} explanation should be clean`);
       uniqueExplanations.add(`${lang}:${explanation}`);
     }
@@ -120,11 +128,29 @@ assert.doesNotMatch(screenshotQuestion.explanationI18n.ja, /正解は2番です/
 assert.match(screenshotQuestion.explanationI18n.ja, /저는 토요일이나 일요일에 동생과 테니스를 합니다/u);
 assert.match(bank.explain(screenshotItem.id, 2, screenshotQuestion.choices).ja, /3番が正解/u);
 
+const practiceItems = bank.items.filter((item) => item.set === 0 && /^P01-/u.test(item.id));
+assert.equal(practiceItems.length, 56);
+assert.equal(practiceItems.filter((item) => item.level === 1).length, 28);
+assert.equal(practiceItems.filter((item) => item.level === 2).length, 28);
+assert.ok(practiceItems.every((item) => item.coach?.ko?.reason && item.coach?.ko?.trap && item.coach?.ja?.reason && item.coach?.ja?.trap));
+const idiomQuestion = bank.present('P01-II-R-06', [0, 1, 2, 3]);
+assert.match(idiomQuestion.explanationI18n.ko, /잠깐 쉴 틈도 없을 만큼/u);
+assert.match(idiomQuestion.explanationI18n.ja, /慣用句全体/u);
+assert.match(idiomQuestion.explanationI18n.ja, /タイプ別の解き方/u);
+
 for (const item of bank.items.filter((entry) => entry.section === 'writing')) {
   const question = bank.present(item);
   for (const lang of ['ko', 'ja', 'en', 'zh']) assert.ok(question.explanationI18n[lang], `${item.id} should have a ${lang} writing guide`);
+  assert.match(question.explanationI18n.ko, /【문제 요구】[\s\S]*【답안 설계】[\s\S]*【유형별 작성법】/u);
+  assert.match(question.explanationI18n.ja, /【設問の要求】[\s\S]*【解答設計】[\s\S]*【タイプ別の書き方】/u);
 }
+assert.match(bank.present('M01-II-W-51').explanationI18n.ja, /敬語と文末/u);
+assert.match(bank.present('M01-II-W-53').explanationI18n.ko, /최고·최저/u);
+assert.match(bank.present('M01-II-W-54').explanationI18n.ja, /600～700字/u);
+assert.doesNotMatch(bank.present('M01-II-W-54').explanationI18n.ja, /논리 전개/u);
+assert.match(bank.present('M01-I-L-15').explanationI18n.ja, /主体・物・動作・方向/u);
+assert.match(bank.present('M01-II-L-04').explanationI18n.ko, /하고 있는\/한\/할/u);
 const noisyProblemHeader = /^\s*[<〈《][^>〉》\n]{2,120}[>〉》]\s*(?:\r?\n|$)/u;
 assert.ok(bank.items.every((item) => [item.instruction, item.passage, item.script, item.prompt]
   .every((value) => !noisyProblemHeader.test(String(value || '')))), 'generated problem headers should be removed');
-console.log('question-bank.test: 2,088 items, 16,320 shuffled multilingual explanation fields, clean prompts, 12 mock sets, and no-repeat policies passed');
+console.log('question-bank.test: 2,144 items, 16,768 shuffled multilingual instructor explanations, clean prompts, 12 fixed mock sets, and no-repeat policies passed');

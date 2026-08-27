@@ -45,8 +45,14 @@ Consolidation can proceed feature by feature after browser parity tests exist. T
 browser payloads plus `data/question-bank-manifest.json`. The generated payloads are not source files
 for manual editing.
 
-`question-bank-engine.js` normalizes those rows and supplies all modes with stable IDs, difficulty
-pools, shuffled display order, multilingual explanations, and no-repeat behavior.
+`data/question-bank-practice-v1.js` is a reviewed set-0 expansion loaded after those generated parts.
+It adds type-focused Random Practice, Game, Shorts, and Review items without changing the size or
+composition of any fixed mock set.
+
+`question-bank-engine.js` normalizes both sources and supplies all modes with stable IDs, difficulty
+pools, shuffled display order, multilingual instructor explanations, and no-repeat behavior. The
+curated Shorts decks contain 48 TOPIK I and 54 TOPIK II cards; eligible bank items bring the actual
+quick-practice pools to 172 and 116.
 
 ## Travel Mode
 
