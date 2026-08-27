@@ -375,9 +375,11 @@
     navActive('home');
     const store=readStore(),focus=PACKS[0],focusState=readState(focus);
     const cards=PACKS.map(pack=>{
-      const state=readState(pack),answered=answeredCount(state),score=correctCount(state),complete=!!state?.completed;
-      const action=!state?l({ko:'서울 여행 시작',ja:'ソウル旅を始める',en:'Start Seoul journey',zh:'开始首尔旅行'}):complete?l({ko:'완주 기록 보기',ja:'完走記録を見る',en:'View journey record',zh:'查看旅行记录'}):l({ko:'여행 이어가기',ja:'旅を続ける',en:'Continue journey',zh:'继续旅行'});
-      return`<article class="travelEpisodeCard" style="--travel-accent:${h(pack.cover.accent)}"><div class="travelEpisodeArt pixel"><img src="${h(pack.cover.image)}" alt="" width="960" height="640"><i>${h(pack.badge)}</i></div><div class="travelEpisodeBody"><div class="travelEpisodeFlags"><span>BEGINNER</span><span>${h(l(pack.duration))}</span>${complete?`<span class="clear">ROUTE CLEAR</span>`:''}</div><h2>${h(l(pack.title))}</h2><p>${h(l(pack.description))}</p>${state?`<div class="travelEpisodeStats"><span>${h(l({ko:'미션',ja:'ミッション',en:'Missions',zh:'任务'}))} ${answered}/${pack.questionCount}</span><span>${h(won(state.wallet))}</span></div>`:''}<button class="travelPrimary" onclick="malbitTravelStart('${h(pack.id)}',false)">${action} <b>→</b></button>${state?`<button class="travelTextButton" onclick="malbitTravelRestart('${h(pack.id)}')">${h(l({ko:'코스 처음부터',ja:'コースを最初から',en:'Restart route',zh:'重新开始路线'}))}</button>`:''}</div></article>`;
+      const state=readState(pack),answered=answeredCount(state),score=correctCount(state),complete=!!state?.completed,hub=hubByRoute(pack.id);
+      const hasNextQuest=complete&&hub&&Object.values(hub.events).some(event=>!hubQuestDone(state,event.id));
+      const action=!state?l({ko:'서울 여행 시작',ja:'ソウル旅を始める',en:'Start Seoul journey',zh:'开始首尔旅行'}):hasNextQuest?l({ko:'명동 다음 퀘스트',ja:'明洞の次のクエストへ',en:'Next Myeongdong quest',zh:'前往明洞下个任务'}):complete?l({ko:'완주 기록 보기',ja:'完走記録を見る',en:'View journey record',zh:'查看旅行记录'}):l({ko:'여행 이어가기',ja:'旅を続ける',en:'Continue journey',zh:'继续旅行'});
+      const primaryAction=hasNextQuest?`malbitTravelContinue('${h(pack.id)}')`:`malbitTravelStart('${h(pack.id)}',false)`;
+      return`<article class="travelEpisodeCard" style="--travel-accent:${h(pack.cover.accent)}"><div class="travelEpisodeArt pixel"><img src="${h(pack.cover.image)}" alt="" width="960" height="640"><i>${h(pack.badge)}</i></div><div class="travelEpisodeBody"><div class="travelEpisodeFlags"><span>BEGINNER</span><span>${h(l(pack.duration))}</span>${complete?`<span class="clear">ROUTE CLEAR</span>`:''}</div><h2>${h(l(pack.title))}</h2><p>${h(l(pack.description))}</p>${state?`<div class="travelEpisodeStats"><span>${h(l({ko:'미션',ja:'ミッション',en:'Missions',zh:'任务'}))} ${answered}/${pack.questionCount}</span><span>${h(won(state.wallet))}</span></div>`:''}<button class="travelPrimary" onclick="${primaryAction}">${action} <b>→</b></button>${state?`<button class="travelTextButton" onclick="malbitTravelRestart('${h(pack.id)}')">${h(l({ko:'코스 처음부터',ja:'コースを最初から',en:'Restart route',zh:'重新开始路线'}))}</button>`:''}</div></article>`;
     }).join('');
     sc.innerHTML=`<div class="travelHub"><header class="travelHubHead"><button onclick="setView('home')">‹</button><div><small>LEARN · TRAVEL · COLLECT</small><h1>${h(l({ko:'여행모드',ja:'旅行モード',en:'Travel Mode',zh:'旅行模式'}))}</h1><p>${h(l({ko:'말하고, 표지를 찾고, 발권하며 서울을 직접 여행하세요.',ja:'話して、標識を探して、発券しながらソウルを旅しよう。',en:'Speak, find signs, and use the ticket machine as you travel Seoul.',zh:'通过对话、找标志和购票，亲自游览首尔。'}))}</p></div><button class="travelLang" onclick="event.stopPropagation();flagMenu()" aria-label="${h(l({ko:'설명 언어 바꾸기',ja:'説明言語を変更',en:'Change explanation language',zh:'切换解析语言'}))}">${flag()}</button></header><section class="travelHubBanner"><div><small>KOREA ROUTE 001</small><b>${h(l({ko:'인천공항 T1 → 명동',ja:'仁川空港 T1 → 明洞',en:'Incheon Airport T1 → Myeongdong',zh:'仁川机场 T1 → 明洞'}))}</b><p>${h(l({ko:'6개 현장 미션 · 이동 선택 · 수집품 · 무료 의상',ja:'現地6ミッション・移動選択・コレクション・無料衣装',en:'6 field missions · route choice · collectibles · free outfit',zh:'6个现场任务 · 路线选择 · 收藏品 · 免费服装'}))}</p></div></section>${mapMarkup(focus,focusState)}<div class="travelSectionTitle"><b>${h(l({ko:'첫 번째 여행 코스',ja:'最初の旅行コース',en:'First travel route',zh:'第一条旅行路线'}))}</b><span>${PACKS.length} ROUTE</span></div>${cards}${metricsMarkup(store)}${avatarMarkup(focus,store)}<article class="travelComingSoon"><span>02</span><div><b>${h(l({ko:'다음 서울 지역',ja:'次のソウルエリア',en:'Next Seoul area',zh:'下一个首尔区域'}))}</b><p>${h(l({ko:'남은 여행 원·시간·수집품을 그대로 들고 다음 역으로 이어집니다.',ja:'残った旅ウォン・時間・コレクションを持って次の駅へ進みます。',en:'Carry your travel won, time, and collection to the next station.',zh:'携带剩余旅行韩元、时间和收藏前往下一站。'}))}</p></div><em>LOCKED</em></article></div>`;
   }
@@ -521,6 +523,10 @@
     writeStore(store);
     setView('travelPlay');
     resetViewport();
+  };
+  window.malbitTravelContinue=packId=>{
+    window.malbitTravelStart(packId,false);
+    window.malbitTravelMyeongdongOpen();
   };
   window.malbitTravelRestart=packId=>{
     const message=l({ko:'이 여행 코스를 처음부터 다시 시작할까요? 최고 기록과 의상은 남습니다.',ja:'この旅行コースを最初からやり直しますか？ベスト記録と衣装は残ります。',en:'Restart this route? Your best score and outfits stay.',zh:'要从头开始这条路线吗？最高纪录和服装会保留。'});

@@ -262,7 +262,11 @@ try{
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertFits(`ending ${width}px`)}
   await setViewport(390,844);
   await evaluate(`(()=>{const store=JSON.parse(localStorage.getItem('malbitStoryV1'));store.episodes['route-001-airport-myeongdong'].clockMinutes=600;localStorage.setItem('malbitStoryV1',JSON.stringify(store));render()})()`);
-  await tap('.travelEndingCard .travelPrimary');
+  await tap('.travelEndingCard .travelSecondary');
+  assert.match(await evaluate(`document.querySelector('.travelEpisodeCard .travelPrimary')?.textContent`),/明洞の次のクエストへ/);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertFits(`completed route CTA ${width}px`)}
+  await setViewport(390,844);await shot('08a-completed-route-cta.png');
+  await tap('.travelEpisodeCard .travelPrimary');
   assert.match(await evaluate(`document.querySelector('.travelMyeongdongHead h1')?.textContent`),/明洞トラベルハブ/);
   assert.equal(await evaluate(`document.querySelectorAll('.travelMyeongdongWorld .travelWorldBg,.travelMyeongdongWorld .travelWorldPlayer,.travelMyeongdongWorld .travelWorldNpc,.travelMyeongdongWorld .prop-myeongdongexchange').length`),4,'Myeongdong world must compose background, player, NPC, and exchange prop layers');
   assert.equal(await evaluate(`document.querySelectorAll('.travelExchangeCard').length`),4);
@@ -358,7 +362,7 @@ try{
   const durableAfter=await evaluate(`({vocab:JSON.parse(localStorage.getItem('topikQuestV8')).vocab,gameUnlock:JSON.parse(localStorage.getItem('topikQuestV8')).gameUnlock,game:localStorage.getItem('topikQuestTopik1GameV1'),review:localStorage.getItem('malbitWrongReviewV3')})`);
   assert.deepEqual(durableAfter,durableBefore,'travel play must not alter vocabulary, game, or review records');
   assert.deepEqual(errors,[]);
-  console.log('travel mobile QA: 320/375/390/430px containment, hit-tested route + NPC word order + Hangul sign build with decoys, day/evening events, travel-won exchange, reload/back-resume, durable records, screenshots=15, errors=0');
+  console.log('travel mobile QA: 320/375/390/430px containment, hit-tested route + one-tap completed-route re-entry + NPC word order + Hangul sign build with decoys, day/evening events, travel-won exchange, reload/back-resume, durable records, screenshots=16, errors=0');
 }finally{
   try{socket?.close()}catch(error){}
   chrome?.kill('SIGTERM');server.kill('SIGTERM');
