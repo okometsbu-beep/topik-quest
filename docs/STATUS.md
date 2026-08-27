@@ -32,8 +32,9 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 우선순위
 
-1. 충분한 실제 사용 기록이 쌓인 뒤 여행 기록 화면의 수치로 다음 지역·상점 밸런스를 검토한다.
-2. 실제 학습 흐름을 확인한 뒤에만 다음 역의 퀘스트 형식과 보상 수치를 확정한다.
+1. 사용자가 실제 기기 수치를 직접 제공하기 전에는 가격 퀘스트 난이도·가격·보상을 유지한다.
+2. 기존 코스 재진입 시 다음 학습 행동을 한 번에 찾을 수 있는지 먼저 개선한다.
+3. 실제 학습 흐름을 확인한 뒤에만 다음 역의 퀘스트 형식과 보상 수치를 확정한다.
 
 ## 이번 운영 변경
 
@@ -44,27 +45,10 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 결제 버튼·가격·상품 카드·유료 잠금·Premium·Plus·구독·업셀·외부 결제 링크를 앱 어디에도
   만들지 않는다. 별도 수익화 논의와 사용자의 명시적 승인 뒤에만 재검토한다.
 
-## v58 검증 및 배포
-
-- 가격 퀘스트 시작·첫 완료·첫 완료 전 오답 제출·완료 직후 잔액을 기존
-  `malbitStoryV1.metrics`의 숫자 합계로만 집계한다.
-- 완료율·오답 제출 수·완료 후 평균 여행 원을 기기 안 여행 기록 카드에 표시한다.
-- 재플레이·재접속은 시작/완료/오답/잔액을 중복 집계하지 않으며 v57 숫자 지표를 보존한다.
-- 단어장·게임·복습·여행·설정 저장 키와 복구 스냅샷을 유지한다.
-- runtime contract v58, JavaScript 51개 구문, 전체 48개 테스트를 통과했다.
-- Chrome 모바일에서 320·375·390·430px containment, 터치, 세 경로 완주, NPC 작문,
-  표지 조립, 가격 오답→정답, 재접속과 기존 기록을 검사했다. 증거 22개와 콘솔 오류 0개를 확인했다.
-- 일본어 지표 카드·가격 문제·정답 보상·여행 허브 캡처를 눈으로 확인했고 돌출·겹침이 없었다.
-- 간헐적인 Chrome 시작과 장면 탭을 재시도하되 실제 터치·장면 전환 검증은 유지하도록 QA를 보강했다.
-- 결제 UI·API 키·외부 전송은 추가하지 않았다.
-- 변경 PR: https://github.com/okometsbu-beep/topik-quest/pull/55
-- 배포 주소: https://okometsbu-beep.github.io/topik-quest/
-- 되돌리기 기준: v57 main `c9250c58ce96b912d2bc17d42d8d9d7e908567f3`
-
 ## 다음 한 작업
 
-실제 기기에 가격 퀘스트 기록이 더 쌓인 뒤 완료율·오답·평균 잔액을 확인하고, 다음 지역의
-가격 학습 난이도나 보상 수치를 바꿀 근거가 충분한지 검토한다.
+코스 완주 후 여행모드에 재진입한 초보자가 명동 허브의 다음 미완료 학습 퀘스트를 한 번의
+명확한 행동으로 찾을 수 있는지 검토하고, 필요하면 저장 구조를 유지한 채 CTA 하나만 개선한다.
 
 ## v59 검증 및 배포
 
@@ -79,6 +63,19 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 배포 주소: https://okometsbu-beep.github.io/topik-quest/
 - 배포 main: `6ee302f175f17688f22e2661a36c7ccee217b45f`
 - 되돌리기 기준: v58 main `1c8b4a0175e53f5c7db3df9bfff83da81f209bfa`
+
+## v59 가격 밸런스 근거 검토
+
+- GitHub·CI에는 실제 사용자의 완료율·오답·평균 잔액이 없다. 지표는 개인정보 보호를 위해
+  `malbitStoryV1.metrics`에만 있고 외부 전송 계약도 없다.
+- 모바일 QA의 `5회 시작·4회 완주` 같은 값은 레이아웃·계산 검사용 시드이며 실제 행동 근거가 아니다.
+- 따라서 현재는 가격 퀘스트 난이도·가격·보상과 다음 지역 수치를 바꾸지 않는다. 가짜 데이터로
+  밸런싱하는 것은 최적화가 아니라 숫자 분장을 한 주술이다.
+- 사용자가 식별정보 없이 실제 기기 숫자를 `[AI 지시]` Issue로 제공한 경우에만 다시 검토한다.
+- 코드·콘텐츠·저장 키·결제 표면은 변경하지 않았고 production v59를 그대로 유지한다.
+- 검사: runtime contract v59
+- 배포 주소: https://okometsbu-beep.github.io/topik-quest/
+- 되돌리기 기준: main `eb7168c04d1794c865ae6b3e0a0140ec7270f510`
 
 ## 알려진 위험
 
