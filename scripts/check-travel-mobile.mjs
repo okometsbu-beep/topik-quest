@@ -400,7 +400,8 @@ try{
   const durableAfter=await evaluate(`({vocab:JSON.parse(localStorage.getItem('topikQuestV8')).vocab,gameUnlock:JSON.parse(localStorage.getItem('topikQuestV8')).gameUnlock,game:localStorage.getItem('topikQuestTopik1GameV1'),review:localStorage.getItem('malbitWrongReviewV3')})`);
   assert.deepEqual(durableAfter,durableBefore,'travel play must not alter vocabulary, game, or review records');
   assert.deepEqual(errors,[]);
-  console.log('mobile QA: 320/375/390/430px Shorts instructor feedback + hit-tested Travel route + one-tap completed-route re-entry + NPC word order + Hangul sign build with decoys, day/evening events, travel-won exchange, reload/back-resume, durable records, screenshots=18, errors=0');
+  const screenshotCount=fs.readdirSync(out).filter(file=>file.endsWith('.png')).length;
+  console.log(`mobile QA: 320/375/390/430px Shorts instructor feedback + hit-tested Travel route + one-tap completed-route re-entry + NPC word order + Hangul sign build with decoys, day/evening events, travel-won exchange, reload/back-resume, durable records, screenshots=${screenshotCount}, errors=0`);
 }finally{
   try{socket?.close()}catch(error){}
   chrome?.kill('SIGTERM');server.kill('SIGTERM');
