@@ -337,7 +337,9 @@ test('the travel runtime can complete, resume, replay, and record a wrong answer
   storeAtMyeongdong.episodes[pack.id]=completed;
   runtimeStorage.set('malbitStoryV1',JSON.stringify(storeAtMyeongdong));
   const beforeHubWallet=completed.wallet;
-  runtime.malbitTravelMyeongdongOpen();
+  runtime.malbitTravelBack();
+  assert.match(screen.innerHTML,/명동 다음 퀘스트/);
+  runtime.malbitTravelContinue(pack.id);
   assert.match(screen.innerHTML,/명동 여행 허브/);
   assert.match(screen.innerHTML,/게임 재화 전용 · 결제 없음/);
   assert.equal(runtime.malbitTravelMetrics().myeongdongEntries,1);
