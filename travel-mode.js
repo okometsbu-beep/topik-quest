@@ -120,6 +120,31 @@
     });
   }
   const metricPercent=value=>value===null?'—':`${value}%`;
+  function priceQuestFeedback(metrics){
+    const rate=metricPercent(metrics.priceQuestCompletionRate);
+    const wrong=metrics.priceQuestWrongSubmissions;
+    const wallet=metrics.priceQuestAverageWallet===null?'—':won(metrics.priceQuestAverageWallet);
+    if(!metrics.priceQuestStarts)return{
+      title:l({ko:'기록이 쌓이면 여기서 연습 요령을 알려드려요',ja:'記録がたまると、ここに練習のコツが出ます',en:'Practice guidance will appear after your first try',zh:'完成首次尝试后，这里会显示练习建议'}),
+      body:l({ko:'가격표를 읽고 가격 × 개수 → 예산 − 합계 순서로 계산해 보세요.',ja:'値札を読み、「値段×個数 → 予算−合計」の順で計算してみよう。',en:'Read the price board, then calculate price × quantity → budget − total.',zh:'读取价目表后，按价格×数量→预算−合计的顺序计算。'})
+    };
+    if(!metrics.priceQuestCompletions)return{
+      title:l({ko:'아직 진행 중이에요. 합계를 먼저 만드세요',ja:'まだ途中です。まず合計を作ろう',en:'Still in progress: find the total first',zh:'仍在进行中：先算出合计'}),
+      body:l({ko:`완료율 ${rate} · 완료 전 오답 ${wrong}회. 가격 × 개수를 구한 뒤 예산에서 빼세요.`,ja:`完了率${rate}・完了前の誤答${wrong}回。値段×個数を出してから、予算から引こう。`,en:`Completion ${rate} · ${wrong} wrong tries before clear. Multiply price by quantity, then subtract from the budget.`,zh:`完成率${rate} · 完成前错答${wrong}次。先计算价格×数量，再从预算中减去。`})
+    };
+    if(wrong>0)return{
+      title:l({ko:'계산을 두 단계로 나누면 실수를 줄일 수 있어요',ja:'計算を2段階に分けると、ミスを減らせます',en:'Split the calculation into two steps',zh:'把计算分成两步可减少失误'}),
+      body:l({ko:`완료율 ${rate} · 오답 ${wrong}회 · 완료 후 평균 ${wallet}. 가격 × 개수, 그다음 예산 − 합계 순서로 확인하세요.`,ja:`完了率${rate}・誤答${wrong}回・完了後の平均${wallet}。値段×個数、そのあと予算−合計の順で確認しよう。`,en:`Completion ${rate} · ${wrong} wrong tries · average after clear ${wallet}. Check price × quantity, then budget − total.`,zh:`完成率${rate} · 错答${wrong}次 · 完成后平均${wallet}。先检查价格×数量，再检查预算−合计。`})
+    };
+    if(metrics.priceQuestCompletionRate===100)return{
+      title:l({ko:'계산 순서를 안정적으로 지켰어요',ja:'計算の順番を安定して守れています',en:'Your calculation order is consistent',zh:'计算顺序保持得很稳定'}),
+      body:l({ko:`완료율 ${rate} · 오답 0회 · 완료 후 평균 ${wallet}. 다음에는 먼저 남길 여행 원을 정해 보세요.`,ja:`完了率${rate}・誤答0回・完了後の平均${wallet}。次は、残したい旅ウォンを先に決めてみよう。`,en:`Completion ${rate} · 0 wrong tries · average after clear ${wallet}. Next, decide how much travel won to keep first.`,zh:`完成率${rate} · 错答0次 · 完成后平均${wallet}。下次先决定要保留多少旅行韩元。`})
+    };
+    return{
+      title:l({ko:'시작한 문제를 끝까지 마무리해 보세요',ja:'始めた問題を最後まで仕上げよう',en:'Finish each attempt you start',zh:'把已开始的题目完成到底'}),
+      body:l({ko:`완료율 ${rate} · 오답 0회 · 완료 후 평균 ${wallet}. 개수를 정한 뒤 합계와 잔액을 차례로 확인하세요.`,ja:`完了率${rate}・誤答0回・完了後の平均${wallet}。個数を決めたら、合計と残高を順に確認しよう。`,en:`Completion ${rate} · 0 wrong tries · average after clear ${wallet}. After choosing a quantity, check the total and balance in order.`,zh:`完成率${rate} · 错答0次 · 完成后平均${wallet}。决定数量后，依次检查合计和余额。`})
+    };
+  }
   function metricsMarkup(store){
     const metrics=metricsSnapshot(store);
     const routeLabels=[
@@ -133,8 +158,9 @@
       [l({ko:'완료 전 오답 제출',ja:'完了前の誤答',en:'Wrong tries before clear',zh:'完成前错答'}),String(metrics.priceQuestWrongSubmissions)],
       [l({ko:'완료 후 평균 잔액',ja:'完了後の平均残高',en:'Average wallet after clear',zh:'完成后平均余额'}),metrics.priceQuestAverageWallet===null?'—':won(metrics.priceQuestAverageWallet)]
     ];
+    const feedback=priceQuestFeedback(metrics);
     const grid=(labels,kind='')=>`<div class="travelMetricsGrid ${kind}"${kind?' aria-label="'+h(l({ko:'명동 가격 퀘스트 기록',ja:'明洞の値段クエスト記録',en:'Myeongdong price quest record',zh:'明洞价格任务记录'}))+'"':''}>${labels.map(([label,value])=>`<div class="travelMetric"><b>${h(value)}</b><small>${h(label)}</small></div>`).join('')}</div>`;
-    return`<section class="travelMetrics" aria-labelledby="travel-metrics-title"><div class="travelMetricsHead"><div><small>LOCAL LEARNING SIGNALS</small><h2 id="travel-metrics-title">${h(l({ko:'이 기기의 여행 기록',ja:'この端末の旅記録',en:'Travel record on this device',zh:'此设备的旅行记录'}))}</h2></div><span>LOCAL</span></div>${grid(routeLabels)}<div class="travelMetricsSubhead">${h(l({ko:'명동 가격 퀘스트',ja:'明洞の値段クエスト',en:'Myeongdong price quest',zh:'明洞价格任务'}))}</div>${grid(priceLabels,'price')}<p>${h(l({ko:'이 기기에만 숫자로 저장하며 외부로 전송하지 않습니다.',ja:'この端末内に数値だけを保存し、外部へ送信しません。',en:'Only numeric totals are stored on this device and never sent outside.',zh:'仅以数字保存在本设备，不会发送到外部。'}))}</p></section>`;
+    return`<section class="travelMetrics" aria-labelledby="travel-metrics-title"><div class="travelMetricsHead"><div><small>LOCAL LEARNING SIGNALS</small><h2 id="travel-metrics-title">${h(l({ko:'이 기기의 여행 기록',ja:'この端末の旅記録',en:'Travel record on this device',zh:'此设备的旅行记录'}))}</h2></div><span>LOCAL</span></div>${grid(routeLabels)}<div class="travelMetricsSubhead">${h(l({ko:'명동 가격 퀘스트',ja:'明洞の値段クエスト',en:'Myeongdong price quest',zh:'明洞价格任务'}))}</div>${grid(priceLabels,'price')}<div class="travelMetricFeedback" role="note"><small>${h(l({ko:'이 기록으로 보는 학습 한마디',ja:'この記録からの学習ヒント',en:'Learning tip from this record',zh:'根据此记录的学习提示'}))}</small><b>${h(feedback.title)}</b><p>${h(feedback.body)}</p></div><p>${h(l({ko:'이 기기에만 숫자로 저장하며 외부로 전송하지 않습니다.',ja:'この端末内に数値だけを保存し、外部へ送信しません。',en:'Only numeric totals are stored on this device and never sent outside.',zh:'仅以数字保存在本设备，不会发送到外部。'}))}</p></section>`;
   }
   function readStore(){
     try{
