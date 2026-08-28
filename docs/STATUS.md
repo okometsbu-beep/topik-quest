@@ -5,7 +5,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v63 · Home visual system and mobile regression gate
+- Production release: v64 · Shorts visual system and mobile regression gate
 - Current candidate: none
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
@@ -37,11 +37,13 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
   and direct 320/375/390/430px screenshot review
 - Home hero, level controls, learning cards, weekly goal, and bottom navigation use the same semantic
   surfaces and four-width visual gate
+- Shorts question, choice, graded feedback, instructor coaching, and save proposal use one bright
+  semantic visual owner with unanswered/graded four-width gates
 
 ## 다음 우선순위
 
-1. Shorts의 문제·선택·채점·해설 카드를 같은 의미 기반 토큰과 시각 게이트로 옮긴다.
-2. 그다음 Random Practice·Review를 한 화면씩 옮기며 중복 override를 제거한다.
+1. Random Practice의 문제·선택·채점·해설 카드를 같은 의미 기반 토큰과 시각 게이트로 옮긴다.
+2. 그다음 Review를 한 화면씩 옮기며 중복 override를 제거한다.
 3. 새 연습 문항은 실제 학습자가 자주 틀리는 유형 근거가 확인된 뒤 추가한다.
 
 ## 이번 운영 변경
@@ -55,25 +57,26 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-Shorts 화면 하나를 대상으로 문제·선택·채점·해설 카드의 폭·간격·정렬·색·44px 조작부를
-같은 시각 계약으로 옮기고, 일본어 강사형 해설과 기존 학습 기록이 유지되는지 확인한다.
+Random Practice 화면 하나를 대상으로 문제·선택·채점·해설 카드의 폭·간격·정렬·색과
+44px 조작부를 같은 시각 계약으로 옮기고, 유형별 일본어 해설과 기존 기록을 유지한다.
 
-## v63 검증 및 배포
+## v64 검증 및 배포
 
-- Home의 빠른 연습·전체 모의·말하기·주간 목표 카드를 밝은 공통 표면으로 통일하고,
-  언어·입문·TOPIK I·II·통계 조작부에 44px 기준을 적용했다.
-- 목적 기반 `home-visual-system.js`가 Home의 최종 시각 소유자가 됐으며, 과거 호환 bridge는
-  한 곳에 격리하고 개수를 테스트해 새 override 누적을 막았다.
-- runtime contract v63, JavaScript 56개 구문, 전체 52개 검사를 통과했다. 기존 문제·해설·정답,
+- Shorts의 문제·선택·채점·강사형 해설·저장 제안을 밝은 공통 표면으로 통일하고,
+  모든 조작부에 44px 기준과 10px 이상 보조문구를 적용했다.
+- 목적 기반 `shorts-visual-system.js`가 Shorts의 최종 시각 소유자가 됐으며, 과거 제안 문구의
+  호환 bridge는 한 곳에 격리하고 개수를 테스트해 새 override 누적을 막았다.
+- runtime contract v64, JavaScript 58개 구문, 전체 54개 검사를 통과했다. 기존 문제·해설·정답,
   단어장·게임·복습·여행·설정 기록은 바꾸지 않았다.
-- 실제 Chrome에서 320·375·390·430px의 가로 넘침·좌우 비대칭·44px 미만 조작부·10px 미만
-  보조문구·어두운 학습 타일을 검사하고 28장 화면을 직접 확인했으며 콘솔 오류는 0개였다.
+- 실제 Chrome에서 미제출·채점 Shorts를 320·375·390·430px로 검사해 가로 넘침·좌우 비대칭·
+  44px 미만 조작부·10px 미만 문구·어두운 타일이 없음을 확인하고 화면 29장을 직접 검토했다.
+  일본어 강사형 해설 구조와 선택→채점→재진입을 유지했고 콘솔 오류는 0개였다.
 - 결제 UI·API 키·개인정보 수집·외부 전송은 추가하지 않았다.
-- 추적 Issue: https://github.com/okometsbu-beep/topik-quest/issues/62
-- 변경 PR: https://github.com/okometsbu-beep/topik-quest/pull/63
-- 검증: https://github.com/okometsbu-beep/topik-quest/actions/runs/33139494669
+- 추적 Issue: https://github.com/okometsbu-beep/topik-quest/issues/64
+- 변경 PR: 제출 전
+- 검증: https://github.com/okometsbu-beep/topik-quest/actions/runs/33158269960
 - 배포 주소: https://okometsbu-beep.github.io/topik-quest/
-- 되돌리기 기준: v62 main `08e28e98de932e30a09dde2dcca9a62fdd1cbafe`
+- 되돌리기 기준: v63 main `3514042a16b960a3010d6590930ff2dc56ff83cb`
 
 ## 알려진 위험
 
