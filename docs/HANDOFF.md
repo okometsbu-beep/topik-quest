@@ -42,6 +42,9 @@ these facts from conversation history or the large TOPIK source bundle.
   `game-visual-system.js` final owner. Equipment, rarity, stage, run-slot, and map-node tiles must stay
   readable rather than near-black. CI checks 320/375/390/430px symmetry, overflow, 44px enabled controls,
   10px minimum support copy, tile brightness, console errors, and screenshot evidence.
+- Home uses the same semantic contract through `home-visual-system.js`. The hero remains scenic, while
+  level controls, Quick Practice, full mock, speaking, weekly-goal, and bottom-navigation surfaces use
+  readable light cards. CI applies the same four-width geometry, 44px, 10px, brightness, and evidence gate.
 - The old Story Mode is retired from product UI. Travel Mode deliberately keeps the legacy
   `malbitStoryV1` root and scene IDs so saved answers, clears, and best scores migrate in place.
 - `storage-guard.js` keeps a last-known-good `malbitRecoverySnapshotV1` of durable learner roots.
