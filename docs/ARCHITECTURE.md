@@ -24,6 +24,7 @@ changed.
 9. `home-visual-system.js`, the final owner for Home cards, entry controls, and navigation surfaces
 10. `shorts-visual-system.js`, the final owner for Shorts question, answer, and coaching surfaces
 11. `random-practice-visual-system.js`, the final owner for TOPIK I/II Random Practice surfaces
+12. `review-visual-system.js`, the final owner for Review queue, retry, translation, and coaching surfaces
 
 All runtime files are preloaded in parallel, then executed serially. This preserves override order
 without paying a network round trip between every script.
@@ -45,6 +46,11 @@ Random Practice follows through `random-practice-visual-system.js`. It owns both
 statistics, question and choice cards, graded states, translation, and expandable type coaching without
 changing either question engine. Its fixed bridge contains the remaining v24 feedback declarations; mobile
 checks cover unanswered and graded states at four widths and retain the three-part Japanese coaching flow.
+
+Review follows through `review-visual-system.js`. It owns the level filters, queue cards, retry sheet,
+translation, graded states, and detailed option elimination without changing `malbitWrongReviewV3`.
+Its count-locked bridge contains the remaining v33 theme declarations; mobile checks cover queue, filter,
+unanswered retry, Japanese translation, graded coaching, resolution, and re-entry at four widths.
 
 ## Why the compatibility layers remain
 
