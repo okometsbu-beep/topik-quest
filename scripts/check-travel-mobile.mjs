@@ -288,7 +288,8 @@ try{
   await setViewport(390,844);await shot('00j-review-queue.png');
   await tap('.tqReviewFilters button',2,120);
   assert.equal(await evaluate(`document.querySelectorAll('.tqReviewItem').length`),1,'TOPIK II filter must narrow the queue');
-  assert.equal(await evaluate(`document.querySelector('.tqReviewFilters button.on')?.textContent.replace(/\s+/g,' ').trim()`),'TOPIK II 1');
+  assert.equal(await evaluate(`document.querySelector('.tqReviewFilters button.on span')?.textContent`),'TOPIK II');
+  assert.equal(await evaluate(`document.querySelector('.tqReviewFilters button.on b')?.textContent`),'1');
   await tap('.tqReviewFilters button',0,120);
   await evaluate(`openReviewRetry('2:read:P01-II-R-06')`);await sleep(180);
   assert.equal(await evaluate(`document.querySelectorAll('#tqReviewTranslation .tqReviewQuestion').length`),0,'Review translation stays closed until requested');
