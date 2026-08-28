@@ -107,6 +107,18 @@ try{
     assert.deepEqual(fit.darkTiles,[],`${label}: dark Shorts learning tile`);
     assert.deepEqual(fit.tinyCopy,[],`${label}: Shorts copy below 10px`);
   };
+  const assertRandomPracticeFits=async label=>{
+    const fit=await evaluate(`(()=>{const root=document.querySelector('.tqRandomPracticeScreen');if(!root)return{missing:true};const visible=el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)!==0&&r.width>0&&r.height>0};const rect=el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),right:Math.round(r.right),width:Math.round(r.width),height:Math.round(r.height)}};const controls=[...root.querySelectorAll('button:not(:disabled)')].filter(visible);const surfaces=[...root.querySelectorAll('.card')].filter(visible);const tiles=[...root.querySelectorAll('.card,.choice,.infinityBar div,.t1RandomTop .t1hud span,.hud span,.malbitQuestionTranslation,.malbitExplanationToggle,.malbitRandomExplanation.open .tqInlineExplanation')].filter(visible);const copy=[...root.querySelectorAll('.randomPracticeTop small,.infinityBar small,.t1hud span,.hud span,.instruction,.cat,.doubleTapHint,.t1TutorCoach small,.malbitQuestionTranslation small,.tqInlineAnswer small,.tqInlineExplanation h4,.counter')].filter(visible);const channels=color=>(color.match(/[\\d.]+/g)||[]).slice(0,3).map(Number);const card=root.querySelector('.card');return{missing:false,active:document.body.classList.contains('tq-random-practice-active'),innerWidth,rootWidth:document.documentElement.scrollWidth,bodyWidth:document.body.scrollWidth,cardOverflow:card?card.scrollWidth-card.clientWidth:0,outside:controls.filter(el=>{const r=el.getBoundingClientRect();return r.left<-1||r.right>innerWidth+1}).map(rect),small:controls.filter(el=>{const r=el.getBoundingClientRect();return r.width<43||r.height<43}).map(rect),offCenter:surfaces.filter(el=>{const r=el.getBoundingClientRect();return Math.abs(r.left-(innerWidth-r.right))>2}).map(el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),rightGap:Math.round(innerWidth-r.right)}}),darkTiles:tiles.map(el=>({class:el.className,color:getComputedStyle(el).backgroundColor,rgb:channels(getComputedStyle(el).backgroundColor)})).filter(row=>row.rgb.length===3&&row.rgb.reduce((sum,value)=>sum+value,0)/3<170),tinyCopy:copy.map(el=>({class:el.className,size:parseFloat(getComputedStyle(el).fontSize)})).filter(row=>row.size<9.9)}})()`);
+    assert.equal(fit.missing,false,`${label}: Random Practice root missing`);
+    assert.equal(fit.active,true,`${label}: Random Practice body contract inactive`);
+    assert.ok(fit.rootWidth<=fit.innerWidth+1&&fit.bodyWidth<=fit.innerWidth+1,`${label}: horizontal overflow ${fit.rootWidth}/${fit.bodyWidth}/${fit.innerWidth}`);
+    assert.ok(fit.cardOverflow<=1,`${label}: Random Practice card content overflow ${fit.cardOverflow}`);
+    assert.deepEqual(fit.outside,[],`${label}: interactive element leaves viewport`);
+    assert.deepEqual(fit.small,[],`${label}: enabled touch target below 44px`);
+    assert.deepEqual(fit.offCenter,[],`${label}: asymmetric Random Practice card`);
+    assert.deepEqual(fit.darkTiles,[],`${label}: dark Random Practice learning tile`);
+    assert.deepEqual(fit.tinyCopy,[],`${label}: Random Practice copy below 10px`);
+  };
   const assertGameFits=async(label,rootSelector)=>{
     const fit=await evaluate(`(()=>{const root=document.querySelector(${JSON.stringify(rootSelector)});if(!root)return{missing:true};const visible=el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)!==0&&r.width>0&&r.height>0};const rect=el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),right:Math.round(r.right),width:Math.round(r.width),height:Math.round(r.height)}};const controls=[...root.querySelectorAll('button:not(:disabled)')].filter(visible);const surfaces=[...root.querySelectorAll('.tqGameArena,.t1GameLoadout,.tqGameStageList,.t1TrailBoard,.t1RunLoadout,.malbitBattleScreen>.card')].filter(visible);const tiles=[...root.querySelectorAll('.t1GameGear,.tqGameStage:not(.on),.t1RunSlot,.t1TrailNode.unknown')].filter(visible);const copy=[...root.querySelectorAll('.t1GameGear small,.t1RarityLegend span,.t1RunRule,.t1RunSlot small,.tqGameTts')].filter(visible);const channels=color=>(color.match(/[\d.]+/g)||[]).slice(0,3).map(Number);return{missing:false,innerWidth,rootWidth:document.documentElement.scrollWidth,bodyWidth:document.body.scrollWidth,outside:controls.filter(el=>{const r=el.getBoundingClientRect();return r.left<-1||r.right>innerWidth+1}).map(rect),small:controls.filter(el=>{const r=el.getBoundingClientRect();return r.width<43||r.height<43}).map(rect),offCenter:surfaces.filter(el=>{const r=el.getBoundingClientRect();return Math.abs(r.left-(innerWidth-r.right))>2}).map(el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),rightGap:Math.round(innerWidth-r.right)}}),darkTiles:tiles.map(el=>({class:el.className,color:getComputedStyle(el).backgroundColor,rgb:channels(getComputedStyle(el).backgroundColor)})).filter(row=>row.rgb.length===3&&row.rgb.reduce((sum,value)=>sum+value,0)/3<110),tinyCopy:copy.map(el=>({class:el.className,size:parseFloat(getComputedStyle(el).fontSize)})).filter(row=>row.size<9.9)}})()`);
     assert.equal(fit.missing,false,`${label}: Game root missing`);
@@ -268,6 +280,30 @@ try{
   await setViewport(390,844);await shot('00d-game-trail-visual-contract.png');
   await evaluate(`S.view='home';save();render()`);await sleep(300);
   const durableBefore=await evaluate(`({vocab:JSON.parse(localStorage.getItem('topikQuestV8')).vocab,gameUnlock:JSON.parse(localStorage.getItem('topikQuestV8')).gameUnlock,game:localStorage.getItem('topikQuestTopik1GameV1'),review:localStorage.getItem('malbitWrongReviewV3')})`);
+
+  await evaluate(`(()=>{S.lang='ja';save();localStorage.setItem('topikQuestExamLevel','1');tqStartMode('random')})()`);await sleep(300);
+  assert.ok(await evaluate(`!!document.querySelector('#malbitRandomPracticeVisualSystem')`),'Random Practice visual system must load after compatibility layers');
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertRandomPracticeFits(`TOPIK I unanswered Random Practice ${width}px`)}
+  const topik1Answer=await evaluate(`cur().answerIndex`);
+  await tap('.choice',topik1Answer,100);await tap('.choice',topik1Answer,250);
+  assert.equal(await evaluate(`document.querySelectorAll('.t1TutorCoach>div').length`),3,'TOPIK I feedback must keep evidence, selected-choice analysis, and a solving tip');
+  assert.match(await evaluate(`document.querySelector('.t1TutorCoach')?.innerText`),/正解の根拠[\s\S]*選んだ選択肢の分析[\s\S]*解き方のコツ/);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertRandomPracticeFits(`TOPIK I graded Random Practice ${width}px`)}
+  await setViewport(390,844);await shot('00g-random-practice-topik1-coaching.png');
+
+  await evaluate(`(()=>{S.lang='ja';S.view='infinity';S.infinity={active:true,examLevel:2,count:0,graded:0,correct:0,writing:0,totalSec:0,targetSec:0,last:null,feedback:null,seenIds:[],current:{type:'read',id:956,bankId:'P01-II-R-06',choiceOrder:[0,1,2,3]}};save();render()})()`);await sleep(300);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertRandomPracticeFits(`TOPIK II unanswered Random Practice ${width}px`)}
+  await setViewport(390,844);await shot('00h-random-practice-unanswered.png');
+  const topik2Answer=await evaluate(`infinityCurrentQuestion().answerIndex`);
+  await tap('.choice',topik2Answer,100);await tap('.choice',topik2Answer,350);
+  assert.ok(await evaluate(`!!document.querySelector('.malbitQuestionTranslation')`),'TOPIK II graded feedback must keep the full-question translation');
+  await tap('.malbitExplanationToggle',0,180);
+  const randomCoach=await evaluate(`document.querySelector('.malbitRandomExplanation')?.innerText`);
+  assert.match(randomCoach,/【正解の根拠】[\s\S]*【ひっかけ分析】[\s\S]*【タイプ別の解き方】/);
+  assert.match(randomCoach,/慣用句全体/);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertRandomPracticeFits(`TOPIK II graded Random Practice ${width}px`)}
+  await setViewport(390,844);await shot('00i-random-practice-topik2-coaching.png');
+  await evaluate(`S.infinity=null;S.view='home';save();render()`);await sleep(300);
 
   const curatedIndex=await evaluate(`window.MALBIT_SHORTS_DECKS[2].findIndex(item=>item.term==='갈피를 못 잡다')`);
   assert.ok(curatedIndex>=0,'new TOPIK II idiom must be in the curated Shorts deck');
@@ -449,7 +485,7 @@ try{
   assert.deepEqual(durableAfter,durableBefore,'travel play must not alter vocabulary, game, or review records');
   assert.deepEqual(errors,[]);
   const screenshotCount=fs.readdirSync(out).filter(file=>file.endsWith('.png')).length;
-  console.log(`mobile QA: 320/375/390/430px Home + Game + Shorts visual contracts, level re-entry, Shorts question/answer/instructor feedback + hit-tested Travel route + one-tap completed-route re-entry + NPC word order + Hangul sign build with decoys, day/evening events, travel-won exchange, reload/back-resume, durable records, screenshots=${screenshotCount}, errors=0`);
+  console.log(`mobile QA: 320/375/390/430px Home + Game + Shorts + Random Practice visual contracts, TOPIK I/II random question/answer/type coaching, level re-entry, Shorts question/answer/instructor feedback + hit-tested Travel route + one-tap completed-route re-entry + NPC word order + Hangul sign build with decoys, day/evening events, travel-won exchange, reload/back-resume, durable records, screenshots=${screenshotCount}, errors=0`);
 }finally{
   try{socket?.close()}catch(error){}
   chrome?.kill('SIGTERM');server.kill('SIGTERM');

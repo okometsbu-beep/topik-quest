@@ -48,6 +48,10 @@ these facts from conversation history or the large TOPIK source bundle.
 - Shorts uses `shorts-visual-system.js` as the final visual owner for question, choice, graded feedback,
   instructor coaching, and save-proposal surfaces. CI checks unanswered and graded cards at all four widths
   while preserving Japanese coaching structure and the existing Shorts progress root.
+- Random Practice uses `random-practice-visual-system.js` as the final visual owner for both TOPIK I and II
+  headers, stats, questions, choices, graded states, translations, and expandable coaching. CI checks the
+  unanswered and graded flows at all four widths while preserving each engine, stored session, and Japanese
+  evidence → distractor → type-solving structure.
 - The old Story Mode is retired from product UI. Travel Mode deliberately keeps the legacy
   `malbitStoryV1` root and scene IDs so saved answers, clears, and best scores migrate in place.
 - `storage-guard.js` keeps a last-known-good `malbitRecoverySnapshotV1` of durable learner roots.
