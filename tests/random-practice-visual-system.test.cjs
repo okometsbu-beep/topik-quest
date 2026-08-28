@@ -19,7 +19,7 @@ test('Random Practice has one final visual owner for TOPIK I and II',()=>{
 });
 
 test('Random Practice contract keeps readable learning surfaces and coaching',()=>{
-  const visual=read('random-practice-visual-system.js');
+  const visual=read('random-practice-visual-system.js'),feedback=read('app-polish-v24.js');
   const sizes=[...visual.matchAll(/font-size:(\d+)px/g)].map(match=>Number(match[1]));
   assert.ok(sizes.length>0);
   assert.ok(sizes.every(size=>size>=10),`Random Practice visual system contains sub-10px text: ${sizes.filter(size=>size<10)}`);
@@ -29,4 +29,5 @@ test('Random Practice contract keeps readable learning surfaces and coaching',()
   assert.match(visual,/\.t1TutorCoach small\{font-size:10px/);
   assert.match(visual,/\.tqInlineExplanation p[^}]*white-space:pre-line/);
   assert.match(visual,/\.malbitExplanationToggle\{[^}]*min-height:48px/);
+  assert.match(feedback,/x\?\.bankId&&window\.MALBIT_BANK\?window\.MALBIT_BANK\.present\(x\.bankId,x\.choiceOrder\)/);
 });

@@ -76,10 +76,10 @@ function patchBattle(){
 
 function randomQuestionState(){
   if(appState()?.view==='t1quiz'){
-    const q=session();if(q?.mode!=='random'||!q.locked)return null;const id=q.ids?.[q.i],item=(window.TOPIK1_QUESTIONS||[]).find(x=>String(x.id)===String(id));if(!item)return null;
+    const q=session();if(q?.mode!=='random'||!q.locked)return null;const id=q.ids?.[q.i],item=window.MALBIT_BANK?.byId(id)?window.MALBIT_BANK.present(String(id),q.choiceOrders?.[id]):(window.TOPIK1_QUESTIONS||[]).find(x=>String(x.id)===String(id));if(!item)return null;
     return{level:1,type:item.section==='listening'?'listen':'read',id:item.id,q:item,key:`t1:${id}:${q.total||0}`};
   }
-  const state=appState();if(state?.view==='infinity'&&state.infinity?.feedback){const x=state.infinity.current,listen=typeof LS!=='undefined'?LS:[],read=typeof RW!=='undefined'?RW:[],item=x?.type==='listen'?listen[x.id-1]:read[x.id-1];if(!item)return null;return{level:2,type:x.type,id:x.id,q:item,key:`t2:${x.type}:${x.id}:${state.infinity.count||0}`}}
+  const state=appState();if(state?.view==='infinity'&&state.infinity?.feedback){const x=state.infinity.current,listen=typeof LS!=='undefined'?LS:[],read=typeof RW!=='undefined'?RW:[],item=x?.bankId&&window.MALBIT_BANK?window.MALBIT_BANK.present(x.bankId,x.choiceOrder):(x?.type==='listen'?listen[x.id-1]:read[x.id-1]);if(!item)return null;return{level:2,type:x.type,id:x.bankId||x.id,q:item,key:`t2:${x.type}:${x.bankId||x.id}:${state.infinity.count||0}`}}
   return null;
 }
 
