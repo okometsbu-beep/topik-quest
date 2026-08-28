@@ -305,7 +305,7 @@ try{
   assert.match(reviewCoach,/【正解の根拠】[\s\S]*【ひっかけ分析】[\s\S]*【タイプ別の解き方】/);
   assert.match(reviewCoach,/選択肢ごとの消去/);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertReviewFits(`Review graded coaching ${width}px`,true)}
-  await setViewport(390,844);await shot('00l-review-coaching.png');
+  await setViewport(390,844);await evaluate(`document.querySelector('.tqReviewDeep').scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);await shot('00l-review-coaching.png');
   assert.deepEqual(await evaluate(`(()=>{const item=MALBIT_REVIEW.items()['2:read:P01-II-R-06'];return{active:item.active,retryCount:item.retryCount,wrongCount:item.wrongCount}})()`),{active:false,retryCount:1,wrongCount:1},'correct Review retry must resolve exactly one saved item');
   await tap('.tqReviewRetrySheet>.closeBtn',0,180);
   assert.equal(await evaluate(`document.querySelectorAll('.tqReviewItem').length`),1,'resolved item must leave the active queue after re-entry');
