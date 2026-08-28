@@ -210,6 +210,8 @@ test('Travel Mode is independent from Full Mock and wired into the ordered runti
   assert.match(topik, /<button onclick="tqStartMode\('real'\)">[\s\S]{0,500}전체 모의고사/);
   assert.match(topik, /class="tqV9Mode travel" onclick="tqStartMode\('travel'\)"/);
   assert.ok(bootstrap.indexOf("'data/travel-pack-seoul-001.js'") < bootstrap.indexOf("'travel-mode.js'"));
+  assert.ok(bootstrap.indexOf("'data/travel-map-seoul-v1.js'") < bootstrap.indexOf("'travel-rpg-engine.js'"));
+  assert.ok(bootstrap.indexOf("'travel-rpg-engine.js'") < bootstrap.indexOf("'travel-mode.js'"));
   assert.ok(bootstrap.indexOf("'question-bank-engine.js'") < bootstrap.indexOf("'travel-mode.js'"));
   assert.ok(bootstrap.indexOf("'topik1.js'") < bootstrap.indexOf("'travel-mode.js'"));
   assert.match(runtime, /const STORAGE_KEY='malbitStoryV1'/);
@@ -219,6 +221,10 @@ test('Travel Mode is independent from Full Mock and wired into the ordered runti
   assert.match(runtime, /function resetTransient/);
   assert.match(runtime, /function normalizeMetrics/);
   assert.match(runtime, /window\.malbitTravelMetrics/);
+  assert.match(runtime, /window\.malbitTravelStep/);
+  assert.match(runtime, /window\.malbitTravelInteract/);
+  assert.match(runtime, /state\.exploration=RPG\.normalizeProgress/);
+  assert.doesNotMatch(runtime, /document\.documentElement\.style\.colorScheme='dark'/);
   assert.match(runtime, /localOnly:true/);
   assert.doesNotMatch(runtime, /navigator\.sendBeacon|XMLHttpRequest|\bfetch\s*\(/);
   assert.match(runtime, /function compositionResult/);

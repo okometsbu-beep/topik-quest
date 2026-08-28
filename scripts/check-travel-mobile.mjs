@@ -52,7 +52,7 @@ try{
     await sleep(80);
   };
   const ready=async()=>{
-    for(let i=0;i<100;i++){if(await evaluate(`document.readyState==='complete'&&!!window.MALBIT_TRAVEL`))return;await sleep(100)}
+    for(let i=0;i<100;i++){if(await evaluate(`document.readyState==='complete'&&!!window.MALBIT_TRAVEL&&!document.documentElement.classList.contains('tq-booting')`))return;await sleep(100)}
     throw new Error('MALBIT travel runtime did not become ready');
   };
   const tap=async(selector,index=0,delay=250)=>{
@@ -90,11 +90,19 @@ try{
     assert.equal((await state())?.sceneId,sceneId,`tap did not enter scene: ${sceneId}`);
   };
   const assertFits=async label=>{
-    const fit=await evaluate(`(()=>{const visible=el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)!==0&&r.width>0&&r.height>0};const targets=[...document.querySelectorAll('.travelPrimary,.travelSecondary,.travelAnswer,.travelRoutes button,.travelBack,.travelLang,.travelListen button,.travelMyeongdongHead>button,.travelExchangeCard,.travelSentence button,.travelWordBank button,.travelQuantityPicker button,.travelBudgetActions button')].filter(visible);const outside=targets.filter(el=>{const r=el.getBoundingClientRect();return r.left<-1||r.right>innerWidth+1}).map(el=>({class:el.className,left:Math.round(el.getBoundingClientRect().left),right:Math.round(el.getBoundingClientRect().right)}));const bad=targets.filter(el=>el.getBoundingClientRect().height<43).map(el=>({class:el.className,h:Math.round(el.getBoundingClientRect().height)}));const overlaps=[];for(const container of document.querySelectorAll('.travelEndingBody,.travelMyeongdongCard')){const children=[...container.children].filter(el=>visible(el)&&getComputedStyle(el).position!=='absolute').sort((a,b)=>a.getBoundingClientRect().top-b.getBoundingClientRect().top);for(let i=1;i<children.length;i++){const a=children[i-1].getBoundingClientRect(),b=children[i].getBoundingClientRect();if(a.bottom>b.top+1)overlaps.push({a:children[i-1].className||children[i-1].tagName,b:children[i].className||children[i].tagName,amount:Math.round(a.bottom-b.top)})}}return{innerWidth,root:document.documentElement.scrollWidth,body:document.body.scrollWidth,bad,outside,overlaps}})()`);
+    const fit=await evaluate(`(()=>{const visible=el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)!==0&&r.width>0&&r.height>0};const targets=[...document.querySelectorAll('.travelPrimary,.travelSecondary,.travelAnswer,.travelRoutes button,.travelBack,.travelLang,.travelListen button,.travelMyeongdongHead>button,.travelExchangeCard,.travelSentence button,.travelWordBank button,.travelQuantityPicker button,.travelBudgetActions button,.travelRpgDpad button,.travelRpgAction,.travelRpgDiscovery button')].filter(visible);const outside=targets.filter(el=>{const r=el.getBoundingClientRect();return r.left<-1||r.right>innerWidth+1}).map(el=>({class:el.className,left:Math.round(el.getBoundingClientRect().left),right:Math.round(el.getBoundingClientRect().right)}));const bad=targets.filter(el=>el.getBoundingClientRect().height<43).map(el=>({class:el.className,h:Math.round(el.getBoundingClientRect().height)}));const overlaps=[];for(const container of document.querySelectorAll('.travelEndingBody,.travelMyeongdongCard')){const children=[...container.children].filter(el=>visible(el)&&getComputedStyle(el).position!=='absolute').sort((a,b)=>a.getBoundingClientRect().top-b.getBoundingClientRect().top);for(let i=1;i<children.length;i++){const a=children[i-1].getBoundingClientRect(),b=children[i].getBoundingClientRect();if(a.bottom>b.top+1)overlaps.push({a:children[i-1].className||children[i-1].tagName,b:children[i].className||children[i].tagName,amount:Math.round(a.bottom-b.top)})}}return{innerWidth,root:document.documentElement.scrollWidth,body:document.body.scrollWidth,bad,outside,overlaps}})()`);
     assert.ok(fit.root<=fit.innerWidth+1&&fit.body<=fit.innerWidth+1,`${label}: horizontal overflow ${fit.root}/${fit.body}/${fit.innerWidth}`);
     assert.deepEqual(fit.bad,[],`${label}: touch target below 44px`);
     assert.deepEqual(fit.outside,[],`${label}: interactive element leaves viewport`);
     assert.deepEqual(fit.overlaps,[],`${label}: flow elements overlap`);
+  };
+  const assertRpgFits=async(label,theme)=>{
+    const fit=await evaluate(`(()=>{const root=document.querySelector('.travelRpgCard'),viewport=document.querySelector('.travelRpgViewport'),player=document.querySelector('.travelRpgPlayer'),map=document.querySelector('.travelRpgMap');if(!root||!viewport||!player||!map)return{missing:true};const rect=el=>{const r=el.getBoundingClientRect();return{left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width,height:r.height}};const vr=rect(viewport),pr=rect(player),rr=rect(root),controls=[...root.querySelectorAll('.travelRpgDpad button,.travelRpgAction,.travelRpgDiscovery button')];const small=controls.filter(el=>{const r=el.getBoundingClientRect();return r.width<43||r.height<43}).map(el=>({class:el.className,width:Math.round(el.getBoundingClientRect().width),height:Math.round(el.getBoundingClientRect().height)}));const outside=controls.filter(el=>{const r=el.getBoundingClientRect();return r.left<-1||r.right>innerWidth+1}).length;const copy=[...root.querySelectorAll('small,.travelRpgObjective p,.travelRpgCard>footer')].map(el=>parseFloat(getComputedStyle(el).fontSize)).filter(size=>size<9.9);const mapStyle=getComputedStyle(map);return{missing:false,theme:document.documentElement.dataset.theme,rootWidth:document.documentElement.scrollWidth,bodyWidth:document.body.scrollWidth,innerWidth,asymmetry:Math.abs(rr.left-(innerWidth-rr.right)),ratio:vr.width/vr.height,playerInside:pr.left>=vr.left-1&&pr.right<=vr.right+1&&pr.top>=vr.top-1&&pr.bottom<=vr.bottom+1,small,outside,copy,mapOpacity:mapStyle.opacity,mapFilter:mapStyle.filter,mapSrc:map.getAttribute('src')}})()`);
+    assert.equal(fit.missing,false,`${label}: RPG map missing`);assert.equal(fit.theme,theme,`${label}: wrong theme`);
+    assert.ok(fit.rootWidth<=fit.innerWidth+1&&fit.bodyWidth<=fit.innerWidth+1,`${label}: horizontal overflow`);
+    assert.ok(fit.asymmetry<=2,`${label}: asymmetric card ${fit.asymmetry}`);assert.ok(Math.abs(fit.ratio-4/3)<.03,`${label}: map ratio ${fit.ratio}`);
+    assert.equal(fit.playerInside,true,`${label}: player leaves camera`);assert.deepEqual(fit.small,[],`${label}: control below 44px`);assert.equal(fit.outside,0,`${label}: control leaves viewport`);assert.deepEqual(fit.copy,[],`${label}: copy below 10px`);
+    assert.equal(fit.mapOpacity,'1');assert.equal(fit.mapFilter,'none');assert.match(fit.mapSrc,/airport-arrivals-map-v1\.webp/);
   };
   const assertShortsFits=async label=>{
     const fit=await evaluate(`(()=>{const root=document.querySelector('.tqShortsScreen');if(!root)return{missing:true};const visible=el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)!==0&&r.width>0&&r.height>0};const rect=el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),right:Math.round(r.right),width:Math.round(r.width),height:Math.round(r.height)}};const controls=[...root.querySelectorAll('.shortsTop button,.shortsChoice,.shortsAction button,.malbitShortTools button,.malbitShortProposal>button')].filter(visible);const surfaces=[...root.querySelectorAll('.shortsCard')].filter(visible);const tiles=[...root.querySelectorAll('.shortsCard,.shortsChoice,.shortsFeedback,.malbitShortProposal')].filter(visible);const copy=[...root.querySelectorAll('.shortsInstruction,.shortsFeedback small,.doubleTapHint,.shortsSwipe,.malbitShortTools button,.malbitShortDaily,.malbitShortProposal small,.malbitShortProposal p')].filter(visible);const channels=color=>(color.match(/[\\d.]+/g)||[]).slice(0,3).map(Number);const card=document.querySelector('.shortsCard');return{missing:false,innerWidth,rootWidth:document.documentElement.scrollWidth,bodyWidth:document.body.scrollWidth,cardOverflow:card?card.scrollWidth-card.clientWidth:0,outside:controls.filter(el=>{const r=el.getBoundingClientRect();return r.left<-1||r.right>innerWidth+1}).map(rect),small:controls.filter(el=>{const r=el.getBoundingClientRect();return r.width<43||r.height<43}).map(rect),offCenter:surfaces.filter(el=>{const r=el.getBoundingClientRect();return Math.abs(r.left-(innerWidth-r.right))>2}).map(el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),rightGap:Math.round(innerWidth-r.right)}}),darkTiles:tiles.map(el=>({class:el.className,color:getComputedStyle(el).backgroundColor,rgb:channels(getComputedStyle(el).backgroundColor)})).filter(row=>row.rgb.length===3&&row.rgb.reduce((sum,value)=>sum+value,0)/3<170),tinyCopy:copy.map(el=>({class:el.className,size:parseFloat(getComputedStyle(el).fontSize)})).filter(row=>row.size<9.9)}})()`);
@@ -163,6 +171,19 @@ try{
     await tap('.shortsChoice',choiceIndex,120);await tap('.shortsChoice',choiceIndex,180);
     assert.ok(await evaluate(`!!document.querySelector('.shortsFeedback')`),'Shorts feedback must appear after submission');
   };
+  const rpgPath=async(kind='scene',targetId='')=>evaluate(`(()=>{const store=JSON.parse(localStorage.getItem('malbitStoryV1')),state=store.episodes['route-001-airport-myeongdong'],match=MALBIT_TRAVEL_RPG.zoneForScene(state.packId,state.sceneId);if(!match)return null;const target=${JSON.stringify(kind)}==='scene'?match.anchor:match.zone.pois.find(item=>item.id===${JSON.stringify(targetId)});if(!target)return null;const queue=[{x:state.exploration.x,y:state.exploration.y,path:[]}],seen=new Set([state.exploration.x+','+state.exploration.y]);while(queue.length){const current=queue.shift();if(Math.abs(current.x-target.x)+Math.abs(current.y-target.y)<=1)return current.path;for(const [direction,delta] of Object.entries(MALBIT_TRAVEL_RPG.directions)){const x=current.x+delta.x,y=current.y+delta.y,key=x+','+y;if(seen.has(key)||!MALBIT_TRAVEL_RPG.isWalkable(match.zone,x,y,state.sceneId))continue;seen.add(key);queue.push({x,y,path:[...current.path,direction]})}}return null})()`);
+  const moveRpgTo=async(kind='scene',targetId='')=>{
+    const path=await rpgPath(kind,targetId);assert.ok(Array.isArray(path),`RPG target unreachable: ${kind} ${targetId}`);
+    const index={up:0,left:1,down:2,right:3};
+    for(const direction of path)await tap('.travelRpgDpad button',index[direction],35);
+    assert.equal(await evaluate(`document.querySelector('.travelRpgAction')?.disabled`),false,`RPG action disabled at ${kind} ${targetId}`);
+  };
+  const openRpgScene=async()=>{
+    if(!await evaluate(`!!document.querySelector('.travelRpgCard')`))return false;
+    await moveRpgTo('scene');await tap('.travelRpgAction',0,160);
+    assert.equal(await evaluate(`!!document.querySelector('.travelRpgCard')`),false,'scene interaction must open the existing event card');
+    return true;
+  };
   const startFresh=async(seedMetrics=false)=>{
     await evaluate(`localStorage.removeItem('malbitStoryV1');${seedMetrics?"localStorage.setItem('malbitStoryV1',JSON.stringify({version:1,activePackId:'route-001-airport-myeongdong',episodes:{},metrics:{version:2,routeStarts:5,routeCompletions:4,myeongdongEntries:3,exchangeSessions:2,priceQuestStarts:4,priceQuestCompletions:3,priceQuestWrongSubmissions:2,priceQuestWalletTotal:180000}}));":''}S.lang='ja';S.view='home';save();render()`);
     let homeReady=false;
@@ -198,7 +219,29 @@ try{
       await shot('01a-travel-hub.png');
     }
     await tapUntilScene('.travelEpisodeCard .travelPrimary','arrival');
+    const captureRpgVisuals=!fs.existsSync(path.join(out,'00m-travel-rpg-light.png'));
+    if(captureRpgVisuals){
+      await evaluate(`malbitSetTheme('light')`);await sleep(120);
+      for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertRpgFits(`Travel RPG light ${width}px`,'light');await assertFits(`Travel RPG light ${width}px`)}
+      await setViewport(390,844);await shot('00m-travel-rpg-light.png');
+      await moveRpgTo('poi','baggage-carousel');await tap('.travelRpgAction',0,120);
+      assert.match(await evaluate(`document.querySelector('.travelRpgDiscovery')?.innerText`),/수하물 찾는 곳/);
+      assert.equal((await state()).wallet,79200);await shot('00n-travel-rpg-investigation.png');await tap('.travelRpgDiscovery button',0,90);
+      await evaluate(`malbitSetTheme('dark')`);await sleep(120);
+      for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertRpgFits(`Travel RPG dark ${width}px`,'dark');await assertFits(`Travel RPG dark ${width}px`)}
+      await setViewport(390,844);await shot('00o-travel-rpg-dark.png');
+    }
+    await openRpgScene();
     await tapUntilScene('.travelSceneCard .travelPrimary','q-hello');
+    await openRpgScene();
+    if(captureRpgVisuals){
+      await evaluate(`malbitSetTheme('light')`);await sleep(120);
+      for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertFits(`Travel event light ${width}px`)}
+      const eventTheme=await evaluate(`(()=>{const card=document.querySelector('.travelQuestionCard'),style=getComputedStyle(card),surface=getComputedStyle(document.body).getPropertyValue('--travel-surface').trim(),rgb=(style.backgroundColor.match(/[0-9.]+/g)||[]).slice(0,3).map(Number);return{theme:document.documentElement.dataset.theme,bodyClass:document.body.className,surface,background:style.backgroundColor,brightness:rgb.length===3?rgb.reduce((sum,value)=>sum+value,0)/3:null,borderImage:style.borderImageSource}})()`);
+      await setViewport(390,844);await shot('00p-travel-event-light.png');
+      assert.equal(eventTheme.theme,'light');assert.match(eventTheme.bodyClass,/(^|\s)travel-active(\s|$)/);assert.equal(eventTheme.surface,'#fff');assert.ok(eventTheme.brightness>235,`light event card is unexpectedly dark: ${JSON.stringify(eventTheme)}`);assert.equal(eventTheme.borderImage,'none');
+      await evaluate(`malbitSetTheme('dark')`);await sleep(100);
+    }
   };
   const answer=async(index=0)=>{
     assert.equal(await evaluate(`document.querySelectorAll('.travelAnswer').length`),4);
@@ -208,7 +251,7 @@ try{
     return state();
   };
   const waitForQuestionTitle=async(expected)=>{
-    for(let wait=0;wait<40;wait++){
+    for(let wait=0;wait<100;wait++){
       if(await evaluate(`document.querySelector('.travelQuestionCard h1')?.textContent===${JSON.stringify(expected)}`))return expected;
       await sleep(50);
     }
@@ -216,6 +259,7 @@ try{
   };
   const nextQuestion=async()=>{
     await tap('.travelQuestionCard .travelPrimary');
+    await openRpgScene();
     for(let i=0;i<20&&await evaluate('scrollY')>1;i++)await sleep(25);
     assert.ok(await evaluate('scrollY')<=1,'next scene must begin at the top instead of keeping the previous scroll position');
   };
@@ -237,7 +281,7 @@ try{
       await send('Page.reload',{ignoreCache:true});
       let restored=false;
       for(let wait=0;wait<100;wait++){
-        if(await evaluate(`document.readyState==='complete'&&document.querySelector('.travelQuestionCard h1')?.textContent===${JSON.stringify(firstTitle)}`)){restored=true;break}
+        if(await evaluate(`document.readyState==='complete'&&!document.documentElement.classList.contains('tq-booting')&&document.querySelector('.travelQuestionCard h1')?.textContent===${JSON.stringify(firstTitle)}`)){restored=true;break}
         await sleep(100);
       }
       assert.ok(restored,'reload must restore the active Travel question before assertions continue');

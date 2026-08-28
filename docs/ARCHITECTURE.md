@@ -14,10 +14,10 @@ changed.
 `site-patch.js` owns the canonical runtime order:
 
 1. shared DOM/runtime patch and durable storage guard
-2. TOPIK I, Shorts, explanation, Travel Mode, and question-bank data
+2. TOPIK I, Shorts, explanation, Travel route/world-map, and question-bank data
 3. question-bank engine
 4. TOPIK I and learning features
-5. Travel Mode engine
+5. pure Travel RPG movement engine, then the Travel Mode renderer
 6. product UI/growth layers
 7. compatibility layers v22, v24, v33, v34, and v35
 8. `game-visual-system.js`, the final owner for Game/Expedition geometry and visual surfaces
@@ -84,15 +84,29 @@ quick-practice pools to 172 and 116.
 
 ## Travel Mode
 
-`travel-mode.js` owns the Seoul map, route renderer, travel passport, avatar rewards, result grading,
-question-bank delivery, and wrong-answer handoff. Authored route content stays in purpose-named
-`data/travel-pack-seoul-*.js` files. A new route should normally require a data pack and focused tests,
-not another runtime engine or numbered compatibility layer.
+Travel now separates authored learning events from spatial exploration. `data/travel-pack-seoul-*.js`
+owns the route scenes and questions. `data/travel-map-seoul-v1.js` owns the stable world → district →
+zone graph, collision rows, scene anchors, investigation points, and future portals. The background art
+contains no player or NPC; `travel-mode.js` composes those actors as independent layers.
+
+`travel-rpg-engine.js` is a DOM-free rules module for lookup, progress normalization, collision, movement,
+interaction priority, and schema validation. `travel-mode.js` adapts it to the camera, touch/keyboard
+controls, local rewards, the travel passport, question-bank delivery, and wrong-answer handoff. A second
+zone should extend world data and connect one reviewed portal; it must not copy the movement runtime or
+create another numbered polish layer.
+
+The first vertical slice is `seoul-world-v1 / incheon-airport / icn-t1-arrivals`. Only the first airport
+scenes are spatial: the player walks to a staff member, sign, kiosk, or exit and opens the existing event.
+Later route scenes remain on the proven scene renderer until their own zone is implemented and verified.
+This keeps each Seoul expansion small and reversible.
 
 Travel progress intentionally keeps the independent legacy `malbitStoryV1` browser-storage root,
 with one state record per route. Keeping the key and original scene IDs migrates existing Story
 answers, clears, and best scores in place. It does not share navigation or answer state with the
 full mock exam, so resuming or replaying a route cannot overwrite an in-progress timed exam.
+Exploration coordinates, direction, step count, and stable discovery IDs live inside the same episode's
+`exploration` field. Investigation rewards are idempotent, and no new storage root or external event log
+is introduced.
 
 ## Persistence contract
 
