@@ -30,4 +30,6 @@ test('Game visual contract keeps readable copy and a fixed legacy bridge',()=>{
   assert.match(visual,/\.t1RarityLegend span\{[^}]*font-size:10px/);
   assert.match(visual,/\.t1RunSlot small\{[^}]*font-size:10px/);
   assert.match(visual,/\.t1TrailScreen button:not\(\.t1TrailNode\)\{min-height:var\(--ui-touch\)\}/);
+  assert.match(visual,/\.t1TrailSceneCopy b\{color:#fff/);
+  assert.match(visual,/\.malbitMapTools\{[^}]*background:rgba\(255,255,255,\.96\)/);
 });

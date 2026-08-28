@@ -45,7 +45,12 @@ body.tq-game-active .t1TrailStats span,body.tq-game-active #screen .t1hud>span{m
 body.tq-game-active .t1TrailStats .t1ModeLang{width:var(--ui-touch);height:var(--ui-touch);border:1px solid var(--game-border);background:var(--game-surface);font-size:19px}
 body.tq-game-active .t1TrailBoard{border-color:#b8cadc;background:var(--game-surface-soft);box-shadow:0 16px 34px rgba(35,55,82,.16)}
 body.tq-game-active .t1TrailScene{border-bottom-color:#9fb5cd}
+body.tq-game-active .t1TrailSceneCopy small{color:#b9dcff;text-shadow:0 1px 4px rgba(0,0,0,.72)}
+body.tq-game-active .t1TrailSceneCopy b{color:#fff;text-shadow:0 2px 7px rgba(0,0,0,.86)}
+body.tq-game-active .t1TrailSceneCopy p{color:#e5effa;text-shadow:0 1px 4px rgba(0,0,0,.78)}
 body.tq-game-active .t1TrailRoute{background:#dfe9f2}
+body.tq-game-active .malbitMapTools{border-color:var(--game-border);background:rgba(255,255,255,.96);color:var(--game-muted);box-shadow:0 5px 14px rgba(35,55,82,.1)}
+body.tq-game-active .malbitMapTools button{background:#365e91;color:#fff}
 body.tq-game-active .t1TrailGrid{border:1px solid #a9bfd1;filter:brightness(1.14) saturate(.9) contrast(.94);box-shadow:inset 0 0 28px rgba(56,93,122,.18)}
 body.tq-game-active .t1TrailNode{border-color:#7aa3bf;background:#e9f2f8;color:#244d68;box-shadow:0 5px 12px rgba(31,66,91,.24),inset 0 0 0 2px rgba(255,255,255,.66)}
 body.tq-game-active .t1TrailNode.unknown{border-color:#7aa3bf;background:#e9f2f8;color:#244d68}
