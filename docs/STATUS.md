@@ -78,7 +78,7 @@ Review 화면 하나를 대상으로 목록·필터·문제·해설 카드의 �
   선택→채점→해설→재진입을 유지했고 콘솔 오류는 0개였다.
 - 결제 UI·API 키·개인정보 수집·외부 전송은 추가하지 않았다.
 - 추적 Issue: https://github.com/okometsbu-beep/topik-quest/issues/66
-- 변경 PR: 제출 전
+- 변경 PR: https://github.com/okometsbu-beep/topik-quest/pull/67
 - 검증: https://github.com/okometsbu-beep/topik-quest/actions/runs/33185025383
 - 배포 주소: https://okometsbu-beep.github.io/topik-quest/
 - 되돌리기 기준: v64 main `d6f8ed1103f183fd77a4046aca218f177bed1674`
