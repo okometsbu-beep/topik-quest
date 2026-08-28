@@ -38,6 +38,10 @@ these facts from conversation history or the large TOPIK source bundle.
   square frame over variable copy, absolutely position learning content, or truncate essential Japanese.
   Every UI change must pass 320/375/390/430px containment, sibling-overlap, 44px touch-target, console,
   and durable-storage checks before merge.
+- Game Mode now uses semantic spacing, type, surface, border, and accent tokens through the purpose-named
+  `game-visual-system.js` final owner. Equipment, rarity, stage, run-slot, and map-node tiles must stay
+  readable rather than near-black. CI checks 320/375/390/430px symmetry, overflow, 44px enabled controls,
+  10px minimum support copy, tile brightness, console errors, and screenshot evidence.
 - The old Story Mode is retired from product UI. Travel Mode deliberately keeps the legacy
   `malbitStoryV1` root and scene IDs so saved answers, clears, and best scores migrate in place.
 - `storage-guard.js` keeps a last-known-good `malbitRecoverySnapshotV1` of durable learner roots.
