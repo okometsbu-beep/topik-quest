@@ -22,6 +22,7 @@ changed.
 7. compatibility layers v22, v24, v33, v34, and v35
 8. `game-visual-system.js`, the final owner for Game/Expedition geometry and visual surfaces
 9. `home-visual-system.js`, the final owner for Home cards, entry controls, and navigation surfaces
+10. `shorts-visual-system.js`, the final owner for Shorts question, answer, and coaching surfaces
 
 All runtime files are preloaded in parallel, then executed serially. This preserves override order
 without paying a network round trip between every script.
@@ -34,6 +35,10 @@ belongs in this owner while older compatibility rules are removed incrementally 
 Home follows the same migration pattern. `home-visual-system.js` owns its semantic surfaces and geometry,
 while a count-locked bridge contains only the remaining v24/v35 declarations. New Home styling belongs in
 that module and must extend the four-width browser contract rather than add a compatibility layer.
+
+Shorts follows the same pattern through `shorts-visual-system.js`. It owns the question header, choices,
+graded states, instructor feedback, actions, and save proposal. Its count-locked bridge exists only for the
+older proposal copy declarations, and the mobile gate covers both unanswered and graded cards.
 
 ## Why the compatibility layers remain
 
