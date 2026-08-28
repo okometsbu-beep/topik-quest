@@ -5,7 +5,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v62 · Game Mode visual system and mobile regression gate
+- Production release: v63 · Home visual system and mobile regression gate
 - Current candidate: none
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
@@ -35,11 +35,13 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - semantic spacing, type, surface, border, and touch tokens with Game Mode as the first reference screen
 - Game hub and trail checks for 44px controls, 10px support copy, symmetry, overflow, tile brightness,
   and direct 320/375/390/430px screenshot review
+- Home hero, level controls, learning cards, weekly goal, and bottom navigation use the same semantic
+  surfaces and four-width visual gate
 
 ## 다음 우선순위
 
-1. Home의 학습 카드와 빠른 시작 조작부를 같은 의미 기반 토큰과 시각 게이트로 옮긴다.
-2. 그다음 Shorts·Random Practice·Review를 한 화면씩 옮기며 중복 override를 제거한다.
+1. Shorts의 문제·선택·채점·해설 카드를 같은 의미 기반 토큰과 시각 게이트로 옮긴다.
+2. 그다음 Random Practice·Review를 한 화면씩 옮기며 중복 override를 제거한다.
 3. 새 연습 문항은 실제 학습자가 자주 틀리는 유형 근거가 확인된 뒤 추가한다.
 
 ## 이번 운영 변경
@@ -53,25 +55,25 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-Home 화면 하나를 대상으로 학습 카드의 폭·간격·정렬·색·44px 조작부를 Game Mode와 같은
-시각 계약으로 옮기고, 기존 학습 동선과 저장 기록이 유지되는지 확인한다.
+Shorts 화면 하나를 대상으로 문제·선택·채점·해설 카드의 폭·간격·정렬·색·44px 조작부를
+같은 시각 계약으로 옮기고, 일본어 강사형 해설과 기존 학습 기록이 유지되는지 확인한다.
 
-## v62 검증 및 배포
+## v63 검증 및 배포
 
-- Game Mode의 장비·등급·스테이지·원정 슬롯·지도 노드를 밝은 공통 표면으로 통일하고,
-  원정 제목 대비와 지도 조작부를 읽기 쉽게 고쳤다.
-- 의미 기반 시각 토큰과 목적 기반 최종 Game 스타일 소유자를 추가했다. 과거 `!important`
-  호환 bridge는 한 곳에 격리하고 개수를 테스트해 새 override 누적을 막았다.
-- runtime contract v62, JavaScript 54개 구문, 전체 50개 검사를 통과했다. 기존 문제·해설·정답,
+- Home의 빠른 연습·전체 모의·말하기·주간 목표 카드를 밝은 공통 표면으로 통일하고,
+  언어·입문·TOPIK I·II·통계 조작부에 44px 기준을 적용했다.
+- 목적 기반 `home-visual-system.js`가 Home의 최종 시각 소유자가 됐으며, 과거 호환 bridge는
+  한 곳에 격리하고 개수를 테스트해 새 override 누적을 막았다.
+- runtime contract v63, JavaScript 56개 구문, 전체 52개 검사를 통과했다. 기존 문제·해설·정답,
   단어장·게임·복습·여행·설정 기록은 바꾸지 않았다.
 - 실제 Chrome에서 320·375·390·430px의 가로 넘침·좌우 비대칭·44px 미만 조작부·10px 미만
-  보조문구·거의 검은 조작 타일을 검사하고 27장 화면을 직접 확인했으며 콘솔 오류는 0개였다.
+  보조문구·어두운 학습 타일을 검사하고 28장 화면을 직접 확인했으며 콘솔 오류는 0개였다.
 - 결제 UI·API 키·개인정보 수집·외부 전송은 추가하지 않았다.
-- 추적 Issue: https://github.com/okometsbu-beep/topik-quest/issues/60
-- 변경 PR: https://github.com/okometsbu-beep/topik-quest/pull/61
-- 검증: https://github.com/okometsbu-beep/topik-quest/actions/runs/33138629186
+- 추적 Issue: https://github.com/okometsbu-beep/topik-quest/issues/62
+- 변경 PR: https://github.com/okometsbu-beep/topik-quest/pull/63
+- 검증: https://github.com/okometsbu-beep/topik-quest/actions/runs/33139494669
 - 배포 주소: https://okometsbu-beep.github.io/topik-quest/
-- 되돌리기 기준: v61 main `9c11d1920d2f2ce932f646d03d600843b51fb470`
+- 되돌리기 기준: v62 main `08e28e98de932e30a09dde2dcca9a62fdd1cbafe`
 
 ## 알려진 위험
 
