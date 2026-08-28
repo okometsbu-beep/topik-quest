@@ -14,6 +14,7 @@ test('Random Practice has one final visual owner for TOPIK I and II',()=>{
   assert.match(visual,/view==='infinity'/);
   assert.match(visual,/view==='t1quiz'/);
   assert.match(visual,/storedSession\(\)\?\.mode==='random'/);
+  assert.match(visual,/new MutationObserver\(sync\)/);
   for(const token of ['--ui-space-2','--ui-touch','--ui-radius-card','--ui-surface','--ui-border','--ui-ink'])assert.match(visual,new RegExp(`var\\(${token}\\)`));
 });
 

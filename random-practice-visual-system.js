@@ -81,5 +81,6 @@ if(typeof window.render==='function'){
   const baseRender=window.render;
   window.render=function(){const out=baseRender.apply(this,arguments);sync();requestAnimationFrame(sync);return out};
 }
+new MutationObserver(sync).observe(document.body,{childList:true,subtree:true});
 sync();
 })();
