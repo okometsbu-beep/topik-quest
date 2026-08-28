@@ -76,10 +76,10 @@ function patchBattle(){
 
 function randomQuestionState(){
   if(appState()?.view==='t1quiz'){
-    const q=session();if(q?.mode!=='random'||!q.locked)return null;const id=q.ids?.[q.i],item=(window.TOPIK1_QUESTIONS||[]).find(x=>String(x.id)===String(id));if(!item)return null;
+    const q=session();if(q?.mode!=='random'||!q.locked)return null;const id=q.ids?.[q.i],item=window.MALBIT_BANK?.byId(id)?window.MALBIT_BANK.present(String(id),q.choiceOrders?.[id]):(window.TOPIK1_QUESTIONS||[]).find(x=>String(x.id)===String(id));if(!item)return null;
     return{level:1,type:item.section==='listening'?'listen':'read',id:item.id,q:item,key:`t1:${id}:${q.total||0}`};
   }
-  const state=appState();if(state?.view==='infinity'&&state.infinity?.feedback){const x=state.infinity.current,listen=typeof LS!=='undefined'?LS:[],read=typeof RW!=='undefined'?RW:[],item=x?.type==='listen'?listen[x.id-1]:read[x.id-1];if(!item)return null;return{level:2,type:x.type,id:x.id,q:item,key:`t2:${x.type}:${x.id}:${state.infinity.count||0}`}}
+  const state=appState();if(state?.view==='infinity'&&state.infinity?.feedback){const x=state.infinity.current,listen=typeof LS!=='undefined'?LS:[],read=typeof RW!=='undefined'?RW:[],item=x?.bankId&&window.MALBIT_BANK?window.MALBIT_BANK.present(x.bankId,x.choiceOrder):(x?.type==='listen'?listen[x.id-1]:read[x.id-1]);if(!item)return null;return{level:2,type:x.type,id:x.bankId||x.id,q:item,key:`t2:${x.type}:${x.bankId||x.id}:${state.infinity.count||0}`}}
   return null;
 }
 
@@ -111,7 +111,7 @@ window.malbitToggleRandomExplanation=()=>{const panel=document.querySelector('.m
 function patchRandomFeedback(){
   const state=randomQuestionState(),card=document.querySelector('.card');if(!state||!card||card.dataset.v24Feedback===state.key)return;card.dataset.v24Feedback=state.key;
   const strip=card.querySelector('.resultStrip'),inline=card.querySelector('.tqInlineExplanation'),detailed=card.querySelector('.malbitDetailedReviewLink');
-  if(state.level===1&&strip){const correct=strip.classList.contains('good'),answer=Number(state.q.answerIndex)+1;strip.textContent=correct?L('정답입니다.','正解です。','Correct.','回答正确。'):L(`오답 · 정답은 ${answer}번입니다.`,`不正解 · 正解は${answer}番です。`,`Incorrect · The answer is option ${answer}.`,`答错 · 正确答案是第${answer}项。`)}
+  if(state.level===1&&strip){const correct=strip.classList.contains('good'),answer=Number(state.q.answerIndex)+1,tutorCoach=strip.querySelector('.t1TutorCoach');strip.textContent=correct?L('정답입니다.','正解です。','Correct.','回答正确。'):L(`오답 · 정답은 ${answer}번입니다.`,`不正解 · 正解は${answer}番です。`,`Incorrect · The answer is option ${answer}.`,`答错 · 正确答案是第${answer}项。`);if(tutorCoach)strip.appendChild(tutorCoach)}
   const translation=document.createElement('section');translation.className='malbitQuestionTranslation';translation.dataset.key=state.key;translation.innerHTML=`<div><span>🌐</span><b>${L('문제 전체 번역','問題全体の翻訳','Full question translation','整题翻译')}</b><small>${L('문맥을 유지해 한 번에 읽어요','文脈を保ってまとめて読みます','Read as one context-preserving question','保留完整语境阅读')}</small></div><p>${L('번역을 준비하는 중…','翻訳を準備中…','Preparing translation…','正在准备翻译…')}</p>`;
   strip?.insertAdjacentElement('afterend',translation)||card.querySelector('.choices')?.insertAdjacentElement('afterend',translation);
   const panel=document.createElement('section');panel.className='malbitRandomExplanation';panel.innerHTML=`<div class="malbitExplanationLoading">${L('해설을 준비하는 중…','解説を準備中…','Preparing explanation…','正在准备解析…')}</div>`;

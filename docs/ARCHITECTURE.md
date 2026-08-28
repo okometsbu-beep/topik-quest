@@ -23,6 +23,7 @@ changed.
 8. `game-visual-system.js`, the final owner for Game/Expedition geometry and visual surfaces
 9. `home-visual-system.js`, the final owner for Home cards, entry controls, and navigation surfaces
 10. `shorts-visual-system.js`, the final owner for Shorts question, answer, and coaching surfaces
+11. `random-practice-visual-system.js`, the final owner for TOPIK I/II Random Practice surfaces
 
 All runtime files are preloaded in parallel, then executed serially. This preserves override order
 without paying a network round trip between every script.
@@ -39,6 +40,11 @@ that module and must extend the four-width browser contract rather than add a co
 Shorts follows the same pattern through `shorts-visual-system.js`. It owns the question header, choices,
 graded states, instructor feedback, actions, and save proposal. Its count-locked bridge exists only for the
 older proposal copy declarations, and the mobile gate covers both unanswered and graded cards.
+
+Random Practice follows through `random-practice-visual-system.js`. It owns both TOPIK I and II headers,
+statistics, question and choice cards, graded states, translation, and expandable type coaching without
+changing either question engine. Its fixed bridge contains the remaining v24 feedback declarations; mobile
+checks cover unanswered and graded states at four widths and retain the three-part Japanese coaching flow.
 
 ## Why the compatibility layers remain
 
