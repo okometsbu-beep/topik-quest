@@ -36,6 +36,7 @@ body.tq-game-active .tqGameStage:disabled{opacity:.72}
 body.tq-game-active .tqGameStage small{font-size:10px}
 body.tq-game-active .tqGameTts{border-color:var(--game-border);background:var(--game-surface-soft);color:var(--game-muted);font-size:10px}
 body.tq-game-active .t1TrailScreen{color:var(--game-ink)}
+body.tq-game-active .t1TrailScreen button:not(.t1TrailNode){min-height:var(--ui-touch)}
 body.tq-game-active .t1TrailTop{grid-template-columns:var(--ui-touch) minmax(0,1fr) auto;gap:var(--ui-space-2);margin-bottom:var(--ui-space-3)}
 body.tq-game-active .t1TrailTop h1{color:var(--game-ink);font-size:17px}
 body.tq-game-active .t1TrailTop small{color:var(--game-muted);font-size:10px}
