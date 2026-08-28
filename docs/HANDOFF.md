@@ -45,6 +45,9 @@ these facts from conversation history or the large TOPIK source bundle.
 - Home uses the same semantic contract through `home-visual-system.js`. The hero remains scenic, while
   level controls, Quick Practice, full mock, speaking, weekly-goal, and bottom-navigation surfaces use
   readable light cards. CI applies the same four-width geometry, 44px, 10px, brightness, and evidence gate.
+- Shorts uses `shorts-visual-system.js` as the final visual owner for question, choice, graded feedback,
+  instructor coaching, and save-proposal surfaces. CI checks unanswered and graded cards at all four widths
+  while preserving Japanese coaching structure and the existing Shorts progress root.
 - The old Story Mode is retired from product UI. Travel Mode deliberately keeps the legacy
   `malbitStoryV1` root and scene IDs so saved answers, clears, and best scores migrate in place.
 - `storage-guard.js` keeps a last-known-good `malbitRecoverySnapshotV1` of durable learner roots.
