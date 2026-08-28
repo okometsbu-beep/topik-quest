@@ -11,8 +11,8 @@ test('Random Practice has one final visual owner for TOPIK I and II',()=>{
   assert.ok(bootstrap.indexOf("'random-practice-visual-system.js'")>bootstrap.indexOf("'shorts-visual-system.js'"));
   assert.ok(bootstrap.indexOf("'random-practice-visual-system.js'")<bootstrap.indexOf("'vocab-editor.js'"));
   assert.match(visual,/style\.id='malbitRandomPracticeVisualSystem'/);
-  assert.match(visual,/S\?\.view==='infinity'/);
-  assert.match(visual,/S\?\.view==='t1quiz'/);
+  assert.match(visual,/view==='infinity'/);
+  assert.match(visual,/view==='t1quiz'/);
   assert.match(visual,/storedSession\(\)\?\.mode==='random'/);
   for(const token of ['--ui-space-2','--ui-touch','--ui-radius-card','--ui-surface','--ui-border','--ui-ink'])assert.match(visual,new RegExp(`var\\(${token}\\)`));
 });

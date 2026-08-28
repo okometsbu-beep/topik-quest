@@ -72,7 +72,8 @@ document.head.appendChild(style);
 
 function storedSession(){try{return JSON.parse(localStorage.getItem('topikQuestTopik1Session')||'null')}catch(error){return null}}
 function sync(){
-  const random=window.S?.view==='infinity'||(window.S?.view==='t1quiz'&&storedSession()?.mode==='random');
+  const view=typeof S!=='undefined'?S?.view:'';
+  const random=view==='infinity'||(view==='t1quiz'&&storedSession()?.mode==='random');
   document.body.classList.toggle('tq-random-practice-active',random);
   const screen=document.getElementById('screen');if(screen)screen.classList.toggle('tqRandomPracticeScreen',random);
 }
