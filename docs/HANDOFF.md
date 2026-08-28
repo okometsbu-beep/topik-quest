@@ -52,6 +52,9 @@ these facts from conversation history or the large TOPIK source bundle.
   headers, stats, questions, choices, graded states, translations, and expandable coaching. CI checks the
   unanswered and graded flows at all four widths while preserving each engine, stored session, and Japanese
   evidence → distractor → type-solving structure.
+- Review uses `review-visual-system.js` as the final visual owner for its TOPIK I/II filter, queue, retry sheet,
+  requested translation, graded state, and detailed option elimination. CI checks all four widths, resolution,
+  and list re-entry while preserving the `malbitWrongReviewV3` root and existing explanation text.
 - The old Story Mode is retired from product UI. Travel Mode deliberately keeps the legacy
   `malbitStoryV1` root and scene IDs so saved answers, clears, and best scores migrate in place.
 - `storage-guard.js` keeps a last-known-good `malbitRecoverySnapshotV1` of durable learner roots.
