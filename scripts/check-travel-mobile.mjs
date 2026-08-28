@@ -52,7 +52,7 @@ try{
     await sleep(80);
   };
   const ready=async()=>{
-    for(let i=0;i<100;i++){if(await evaluate(`document.readyState==='complete'&&!!window.MALBIT_TRAVEL`))return;await sleep(100)}
+    for(let i=0;i<100;i++){if(await evaluate(`document.readyState==='complete'&&!!window.MALBIT_TRAVEL&&!document.documentElement.classList.contains('tq-booting')`))return;await sleep(100)}
     throw new Error('MALBIT travel runtime did not become ready');
   };
   const tap=async(selector,index=0,delay=250)=>{
@@ -281,7 +281,7 @@ try{
       await send('Page.reload',{ignoreCache:true});
       let restored=false;
       for(let wait=0;wait<100;wait++){
-        if(await evaluate(`document.readyState==='complete'&&document.querySelector('.travelQuestionCard h1')?.textContent===${JSON.stringify(firstTitle)}`)){restored=true;break}
+        if(await evaluate(`document.readyState==='complete'&&!document.documentElement.classList.contains('tq-booting')&&document.querySelector('.travelQuestionCard h1')?.textContent===${JSON.stringify(firstTitle)}`)){restored=true;break}
         await sleep(100);
       }
       assert.ok(restored,'reload must restore the active Travel question before assertions continue');
