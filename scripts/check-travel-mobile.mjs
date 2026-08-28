@@ -103,6 +103,16 @@ try{
     assert.deepEqual(fit.outside,[],`${label}: interactive element leaves viewport`);
     assert.deepEqual(fit.small,[],`${label}: touch target below 42px`);
   };
+  const assertGameFits=async(label,rootSelector)=>{
+    const fit=await evaluate(`(()=>{const root=document.querySelector(${JSON.stringify(rootSelector)});if(!root)return{missing:true};const visible=el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)!==0&&r.width>0&&r.height>0};const rect=el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),right:Math.round(r.right),width:Math.round(r.width),height:Math.round(r.height)}};const controls=[...root.querySelectorAll('button:not(:disabled)')].filter(visible);const surfaces=[...root.querySelectorAll('.tqGameArena,.t1GameLoadout,.tqGameStageList,.t1TrailBoard,.t1RunLoadout,.malbitBattleScreen>.card')].filter(visible);const tiles=[...root.querySelectorAll('.t1GameGear,.tqGameStage:not(.on),.t1RunSlot,.t1TrailNode.unknown')].filter(visible);const copy=[...root.querySelectorAll('.t1GameGear small,.t1RarityLegend span,.t1RunRule,.t1RunSlot small,.tqGameTts')].filter(visible);const channels=color=>(color.match(/[\d.]+/g)||[]).slice(0,3).map(Number);return{missing:false,innerWidth,rootWidth:document.documentElement.scrollWidth,bodyWidth:document.body.scrollWidth,outside:controls.filter(el=>{const r=el.getBoundingClientRect();return r.left<-1||r.right>innerWidth+1}).map(rect),small:controls.filter(el=>{const r=el.getBoundingClientRect();return r.width<43||r.height<43}).map(rect),offCenter:surfaces.filter(el=>{const r=el.getBoundingClientRect();return Math.abs(r.left-(innerWidth-r.right))>2}).map(el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),rightGap:Math.round(innerWidth-r.right)}}),darkTiles:tiles.map(el=>({class:el.className,color:getComputedStyle(el).backgroundColor,rgb:channels(getComputedStyle(el).backgroundColor)})).filter(row=>row.rgb.length===3&&row.rgb.reduce((sum,value)=>sum+value,0)/3<110),tinyCopy:copy.map(el=>({class:el.className,size:parseFloat(getComputedStyle(el).fontSize)})).filter(row=>row.size<9.9)}})()`);
+    assert.equal(fit.missing,false,`${label}: Game root missing`);
+    assert.ok(fit.rootWidth<=fit.innerWidth+1&&fit.bodyWidth<=fit.innerWidth+1,`${label}: horizontal overflow ${fit.rootWidth}/${fit.bodyWidth}/${fit.innerWidth}`);
+    assert.deepEqual(fit.outside,[],`${label}: interactive element leaves viewport`);
+    assert.deepEqual(fit.small,[],`${label}: enabled touch target below 44px`);
+    assert.deepEqual(fit.offCenter,[],`${label}: asymmetric Game surface`);
+    assert.deepEqual(fit.darkTiles,[],`${label}: near-black Game tile`);
+    assert.deepEqual(fit.tinyCopy,[],`${label}: Game copy below 10px`);
+  };
   const openStoredShorts=async index=>{
     await evaluate(`(()=>{S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','2');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:2,activeLevel:2,levels:{1:{index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null},2:{index:${Number(index)},selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null}},daily:{}}))})()`);
     await send('Page.reload',{ignoreCache:true});await ready();
@@ -223,6 +233,17 @@ try{
   await setViewport(390,844);
   await send('Page.navigate',{url:'http://127.0.0.1:4173/?visual-check=travel'});await ready();
   await evaluate(`localStorage.clear();S.lang='ja';S.vocab=[{text:'여행',meanings:{ja:'旅行'},repetitions:3}];S.gameUnlock=17;S.gameAnswers={16:{clear:true}};save();localStorage.setItem('topikQuestTopik1GameV1',JSON.stringify({profiles:{1:{unlock:6}}}));localStorage.setItem('malbitWrongReviewV3',JSON.stringify({items:[{id:'M01-I-L-11'}]}));render()`);
+
+  await evaluate(`(()=>{S.lang='ja';save();localStorage.setItem('topikQuestExamLevel','1');t1OpenGameMap(1)})()`);
+  for(let wait=0;wait<60;wait++){if(await evaluate(`!!document.querySelector('.tqGameHub')`))break;await sleep(50)}
+  assert.ok(await evaluate(`!!document.querySelector('#malbitGameVisualSystem')`),'Game visual system must load after compatibility layers');
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertGameFits(`Game hub ${width}px`,'.tqGameHub')}
+  await setViewport(390,844);await shot('00c-game-hub-visual-contract.png');
+  await evaluate(`t1StartGameStage(1)`);
+  for(let wait=0;wait<60;wait++){if(await evaluate(`!!document.querySelector('.t1TrailScreen')`))break;await sleep(50)}
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertGameFits(`Game trail ${width}px`,'.t1TrailScreen')}
+  await setViewport(390,844);await shot('00d-game-trail-visual-contract.png');
+  await evaluate(`S.view='home';save();render()`);await sleep(300);
   const durableBefore=await evaluate(`({vocab:JSON.parse(localStorage.getItem('topikQuestV8')).vocab,gameUnlock:JSON.parse(localStorage.getItem('topikQuestV8')).gameUnlock,game:localStorage.getItem('topikQuestTopik1GameV1'),review:localStorage.getItem('malbitWrongReviewV3')})`);
 
   const curatedIndex=await evaluate(`window.MALBIT_SHORTS_DECKS[2].findIndex(item=>item.term==='갈피를 못 잡다')`);
@@ -401,7 +422,7 @@ try{
   assert.deepEqual(durableAfter,durableBefore,'travel play must not alter vocabulary, game, or review records');
   assert.deepEqual(errors,[]);
   const screenshotCount=fs.readdirSync(out).filter(file=>file.endsWith('.png')).length;
-  console.log(`mobile QA: 320/375/390/430px Shorts instructor feedback + hit-tested Travel route + one-tap completed-route re-entry + NPC word order + Hangul sign build with decoys, day/evening events, travel-won exchange, reload/back-resume, durable records, screenshots=${screenshotCount}, errors=0`);
+  console.log(`mobile QA: 320/375/390/430px Game visual contract + Shorts instructor feedback + hit-tested Travel route + one-tap completed-route re-entry + NPC word order + Hangul sign build with decoys, day/evening events, travel-won exchange, reload/back-resume, durable records, screenshots=${screenshotCount}, errors=0`);
 }finally{
   try{socket?.close()}catch(error){}
   chrome?.kill('SIGTERM');server.kill('SIGTERM');

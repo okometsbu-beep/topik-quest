@@ -20,9 +20,15 @@ changed.
 5. Travel Mode engine
 6. product UI/growth layers
 7. compatibility layers v22, v24, v33, v34, and v35
+8. `game-visual-system.js`, the final owner for Game/Expedition geometry and visual surfaces
 
 All runtime files are preloaded in parallel, then executed serially. This preserves override order
 without paying a network round trip between every script.
+
+Game visual consolidation begins with a purpose-named final owner rather than another numbered polish
+layer. It consumes semantic tokens from `styles.css`; a small fixed legacy bridge overrides only the
+remaining v24/v33 `!important` declarations and is count-locked by a focused test. New Game styling
+belongs in this owner while older compatibility rules are removed incrementally behind screenshot parity.
 
 ## Why the compatibility layers remain
 
