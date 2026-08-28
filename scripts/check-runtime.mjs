@@ -66,6 +66,8 @@ before(runtime, 'tts-quality.js', 'learning-features.js');
 before(runtime, 'question-bank-engine.js', 'topik1.js');
 before(runtime, 'topik1.js', 'learning-features.js');
 before(runtime, 'data/travel-pack-seoul-001.js', 'travel-mode.js');
+before(runtime, 'data/travel-map-seoul-v1.js', 'travel-rpg-engine.js');
+before(runtime, 'travel-rpg-engine.js', 'travel-mode.js');
 before(runtime, 'question-bank-engine.js', 'travel-mode.js');
 before(runtime, 'learning-features.js', 'travel-mode.js');
 before(runtime, 'travel-mode.js', 'product-polish.js');
