@@ -284,7 +284,7 @@ try{
   await evaluate(`(()=>{S.lang='ja';save();localStorage.setItem('topikQuestExamLevel','1');localStorage.setItem('malbitProductPrefsV1',JSON.stringify({listeningMode:'off'}));tqStartMode('random')})()`);await sleep(300);
   assert.ok(await evaluate(`!!document.querySelector('#malbitRandomPracticeVisualSystem')`),'Random Practice visual system must load after compatibility layers');
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertRandomPracticeFits(`TOPIK I unanswered Random Practice ${width}px`)}
-  const topik1Answer=await evaluate(`cur().answerIndex`);
+  const topik1Answer=await evaluate(`(()=>{const session=JSON.parse(localStorage.getItem('topikQuestTopik1Session'));const id=session.ids[session.i];return MALBIT_BANK.present(id,session.choiceOrders[id]).answerIndex})()`);
   await tap('.choice',topik1Answer,100);await tap('.choice',topik1Answer,250);
   assert.equal(await evaluate(`document.querySelectorAll('.t1TutorCoach>div').length`),3,'TOPIK I feedback must keep evidence, selected-choice analysis, and a solving tip');
   assert.match(await evaluate(`document.querySelector('.t1TutorCoach')?.innerText`),/正解の根拠[\s\S]*選んだ選択肢の分析[\s\S]*解き方のコツ/);
@@ -294,7 +294,7 @@ try{
   await evaluate(`(()=>{S.lang='ja';S.view='infinity';S.infinity={active:true,examLevel:2,count:0,graded:0,correct:0,writing:0,totalSec:0,targetSec:0,last:null,feedback:null,seenIds:[],current:{type:'read',id:956,bankId:'P01-II-R-06',choiceOrder:[0,1,2,3]}};save();render()})()`);await sleep(300);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertRandomPracticeFits(`TOPIK II unanswered Random Practice ${width}px`)}
   await setViewport(390,844);await shot('00h-random-practice-unanswered.png');
-  const topik2Answer=await evaluate(`infinityCurrentQuestion().answerIndex`);
+  const topik2Answer=await evaluate(`MALBIT_BANK.present('P01-II-R-06',[0,1,2,3]).answerIndex`);
   await tap('.choice',topik2Answer,100);await tap('.choice',topik2Answer,350);
   assert.ok(await evaluate(`!!document.querySelector('.malbitQuestionTranslation')`),'TOPIK II graded feedback must keep the full-question translation');
   await tap('.malbitExplanationToggle',0,180);
