@@ -17,6 +17,11 @@ these facts from conversation history or the large TOPIK source bundle.
 - Travel scenes compose generated pixel-art backgrounds, player skins, NPCs, props/rewards, and UI
   tiles as separate layers. Do not bake characters into backgrounds or replace travel art with emoji;
   keep localized and accessible text as HTML above the generated surfaces.
+- Travel exploration uses `data/travel-map-seoul-v1.js` for world/district/zone/collision/POI/portal data
+  and the DOM-free `travel-rpg-engine.js` for movement. Add Seoul one verified zone and portal at a time;
+  never duplicate the engine inside a route pack or draw the whole city as one untestable canvas.
+- The first spatial slice is Incheon Airport T1 arrivals. Player position, facing, steps, and discovery IDs
+  are stored under the existing route episode's `exploration` field in `malbitStoryV1`; rewards are one-time.
 - Beginner missions follow situation → action → visible world reaction → reward or recoverable time
   cost. The first route varies the input as dialogue, sign hotspot, and ticket-machine action instead
   of presenting six visually identical worksheets.
@@ -34,10 +39,10 @@ these facts from conversation history or the large TOPIK source bundle.
   price quest's starts, first clears, pre-clear wrong submissions, and aggregate wallet-after-clear.
   The on-device Travel card shows derived rates and average remaining travel won; no event, identifier,
   timestamp, device detail, or counter leaves the browser.
-- Travel UI uses nine-slice generated frames with explicit safe-area content wrappers. Never stretch a
-  square frame over variable copy, absolutely position learning content, or truncate essential Japanese.
-  Every UI change must pass 320/375/390/430px containment, sibling-overlap, 44px touch-target, console,
-  and durable-storage checks before merge.
+- Travel UI follows the saved system/light/dark preference. Do not force `colorScheme`, paint a whole mode
+  bright, or use a near-black placeholder tile as scenery. Map art stays unfiltered while cards, controls,
+  text, borders, and focus states use theme tokens. Every UI change must pass both Travel themes plus
+  320/375/390/430px containment, symmetry, 44px touch-target, console, and durable-storage checks.
 - Game Mode now uses semantic spacing, type, surface, border, and accent tokens through the purpose-named
   `game-visual-system.js` final owner. Equipment, rarity, stage, run-slot, and map-node tiles must stay
   readable rather than near-black. CI checks 320/375/390/430px symmetry, overflow, 44px enabled controls,

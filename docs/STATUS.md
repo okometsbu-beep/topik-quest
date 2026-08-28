@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v66 · Review visual system and mobile regression gate
-- Current candidate: none
+- Production release: v67 · Travel RPG engine, Incheon Airport arrivals, and restored Travel themes
+- Current candidate: PR #71 until live Pages verification
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
@@ -43,12 +43,15 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
   the same bright semantic surfaces with unanswered/graded four-width gates
 - Review TOPIK I·II filters, queue, retry, requested translation, grading, and option elimination use
   the same bright semantic surfaces with resolution/re-entry four-width gates
+- Travel exploration separates Seoul world/district/zone/collision/POI/portal data from route learning events
+- Incheon Airport T1 arrivals supports tile movement, collision, camera tracking, investigations, and event entry
+- Travel respects system/light/dark appearance; map art is unfiltered and actors remain separate layers
 
 ## 다음 우선순위
 
-1. Vocabulary의 목록·상세·편집 화면을 같은 의미 기반 토큰과 시각 게이트로 옮긴다.
-2. 그다음 실제 학습자가 자주 틀리는 유형 근거를 정리해 새 연습 문항 작업의 범위를 확정한다.
-3. 새 연습 문항은 실제 학습자가 자주 틀리는 유형 근거가 확인된 뒤 추가한다.
+1. 인천공항 T1 교통센터를 두 번째 구역으로 추가하고 입국장과 포털 하나로 연결한다.
+2. Home·Game 등 목적 기반 시각 소유자를 밝은/어두운 테마 토큰으로 한 화면씩 전환한다.
+3. 실제 학습자가 자주 틀리는 유형 근거를 정리한 뒤 TOPIK·Shorts 문항을 추가한다.
 
 ## 이번 운영 변경
 
@@ -61,27 +64,24 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-Vocabulary 화면 하나를 대상으로 목록·검색·필터·상세·편집 카드의 폭·간격·정렬·색과
-44px 조작부를 같은 시각 계약으로 옮기고, 단어장 및 복습 기록을 유지한다.
+`icn-t1-transport-center` 구역 하나를 추가해 입국장 출구 포털과 왕복 이동을 연결하고,
+교통 표지 조사 하나를 넣는다. 새 학습 문항이나 서울역 구역은 아직 추가하지 않는다.
 
-## v66 검증 및 배포
+## v67 검증 및 배포
 
-- Review의 TOPIK I·II 급수 필터, 오답 목록, 재도전, 요청형 전체 번역, 채점과 선택지별 소거
-  해설을 밝은 공통 표면으로 통일하고 44px 조작부와 10px 이상 보조문구를 적용했다.
-- 목적 기반 `review-visual-system.js`가 최종 시각 소유자가 됐으며 v33 테마 호환 bridge는
-  한 곳에 격리하고 개수를 테스트해 새 override 누적을 막았다.
-- 정답 재도전은 해당 항목 하나만 해결 처리하고 목록 재진입 뒤 나머지 오답을 그대로 유지한다.
-- runtime contract v66, JavaScript 62개 구문, 전체 58개 검사를 통과했다. 기존 문제·해설·정답,
-  단어장·게임·복습·여행·설정 기록은 바꾸지 않았다.
-- 실제 Chrome에서 목록·필터·미응답 재도전·일본어 전체 번역·채점·상세 해설을
-  320·375·390·430px로 검사해 돌출·비대칭·44px 미만 조작부·10px 미만 문구·어두운 타일이
-  없음을 확인하고 화면 35장을 직접 검토했다. 해결 처리와 목록 재진입을 유지했고 콘솔 오류는 0개였다.
+- 서울 월드·지역·구역·충돌·조사·이벤트·포털 데이터와 DOM 없는 이동 엔진을 분리하고,
+  인천공항 T1 입국장에서 걷기·충돌·카메라·조사·기존 학습 이벤트 진입을 구현했다.
+- Travel의 강제 어두운 색상 설정을 제거하고 밝은/어두운 테마별 카드·조작부 토큰을 적용했다.
+  공항 맵 원화에는 캐릭터·NPC·검은 도색을 넣지 않고 실행 중 별도 레이어로 합성한다.
+- 좌표·방향·걸음·조사 ID는 기존 `malbitStoryV1` episode 안에 저장하며 조사 보상은 한 번만 지급한다.
+- 전체 62개 자동검사와 실제 Chrome 320·375·390·430px 밝은/어두운 RPG 검사를 통과했다.
+  대칭·돌출·44px 조작부·10px 문구·카메라 안 캐릭터·조사 보상·기존 기록 보존·콘솔 오류 0개를 확인했다.
 - 결제 UI·API 키·개인정보 수집·외부 전송은 추가하지 않았다.
-- 추적 Issue: https://github.com/okometsbu-beep/topik-quest/issues/68
-- 변경 PR: https://github.com/okometsbu-beep/topik-quest/pull/69
-- 검증: https://github.com/okometsbu-beep/topik-quest/actions/runs/33211525974
+- 추적 Issue: https://github.com/okometsbu-beep/topik-quest/issues/70
+- 변경 PR: https://github.com/okometsbu-beep/topik-quest/pull/71
+- 모바일 검증: https://github.com/okometsbu-beep/topik-quest/actions/runs/33217107943
 - 배포 주소: https://okometsbu-beep.github.io/topik-quest/
-- 되돌리기 기준: v65 main `d52f7f5f6ddd3bb4d04ff41d473cdf0d9f73b26c`
+- 되돌리기 기준: v66 main `3a20dda2afdeee7c2afc27db22441cd98cb85197`
 
 ## 알려진 위험
 
@@ -89,4 +89,5 @@ Vocabulary 화면 하나를 대상으로 목록·검색·필터·상세·편집 
 - UI 변경은 CI와 실제 모바일 증거가 모두 있어야 병합할 수 있다.
 - 로컬 지표는 서버로 수집되지 않으므로 사용자 기기에서 직접 확인한 값만 밸런스 근거로 쓸 수 있다.
 - `malbitStoryV1`은 기존 진행을 지키는 Travel Mode 호환 저장 키이므로 이름을 바꾸거나 삭제하면 안 된다.
+- 현재 실제 이동 구역은 입국장 하나뿐이다. 서울 전체를 한 캔버스로 늘리지 말고 포털로 구역을 연결한다.
 - 기존 Plus·가격·결제 암시 UI가 새 화면에 재사용되지 않도록 계속 검사해야 한다.

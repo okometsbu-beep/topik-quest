@@ -219,7 +219,8 @@ try{
       await shot('01a-travel-hub.png');
     }
     await tapUntilScene('.travelEpisodeCard .travelPrimary','arrival');
-    if(!fs.existsSync(path.join(out,'00m-travel-rpg-light.png'))){
+    const captureRpgVisuals=!fs.existsSync(path.join(out,'00m-travel-rpg-light.png'));
+    if(captureRpgVisuals){
       await evaluate(`malbitSetTheme('light')`);await sleep(120);
       for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertRpgFits(`Travel RPG light ${width}px`,'light');await assertFits(`Travel RPG light ${width}px`)}
       await setViewport(390,844);await shot('00m-travel-rpg-light.png');
@@ -233,6 +234,13 @@ try{
     await openRpgScene();
     await tapUntilScene('.travelSceneCard .travelPrimary','q-hello');
     await openRpgScene();
+    if(captureRpgVisuals){
+      await evaluate(`malbitSetTheme('light')`);await sleep(120);
+      for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertFits(`Travel event light ${width}px`)}
+      const eventTheme=await evaluate(`(()=>{const card=document.querySelector('.travelQuestionCard'),rgb=(getComputedStyle(card).backgroundColor.match(/[\d.]+/g)||[]).slice(0,3).map(Number);return{theme:document.documentElement.dataset.theme,brightness:rgb.reduce((sum,value)=>sum+value,0)/3,borderImage:getComputedStyle(card).borderImageSource}})()`);
+      assert.equal(eventTheme.theme,'light');assert.ok(eventTheme.brightness>235,`light event card is unexpectedly dark: ${JSON.stringify(eventTheme)}`);assert.equal(eventTheme.borderImage,'none');
+      await setViewport(390,844);await shot('00p-travel-event-light.png');await evaluate(`malbitSetTheme('dark')`);await sleep(100);
+    }
   };
   const answer=async(index=0)=>{
     assert.equal(await evaluate(`document.querySelectorAll('.travelAnswer').length`),4);
