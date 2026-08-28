@@ -30,4 +30,6 @@ test('Random Practice contract keeps readable learning surfaces and coaching',()
   assert.match(visual,/\.tqInlineExplanation p[^}]*white-space:pre-line/);
   assert.match(visual,/\.malbitExplanationToggle\{[^}]*min-height:48px/);
   assert.match(feedback,/x\?\.bankId&&window\.MALBIT_BANK\?window\.MALBIT_BANK\.present\(x\.bankId,x\.choiceOrder\)/);
+  assert.match(feedback,/tutorCoach=strip\.querySelector\('\.t1TutorCoach'\)/);
+  assert.match(feedback,/if\(tutorCoach\)strip\.appendChild\(tutorCoach\)/);
 });
