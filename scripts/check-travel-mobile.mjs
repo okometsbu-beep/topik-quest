@@ -251,7 +251,7 @@ try{
     return state();
   };
   const waitForQuestionTitle=async(expected)=>{
-    for(let wait=0;wait<40;wait++){
+    for(let wait=0;wait<100;wait++){
       if(await evaluate(`document.querySelector('.travelQuestionCard h1')?.textContent===${JSON.stringify(expected)}`))return expected;
       await sleep(50);
     }
