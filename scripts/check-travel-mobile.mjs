@@ -119,6 +119,18 @@ try{
     assert.deepEqual(fit.darkTiles,[],`${label}: dark Random Practice learning tile`);
     assert.deepEqual(fit.tinyCopy,[],`${label}: Random Practice copy below 10px`);
   };
+  const assertReviewFits=async(label,retry=false)=>{
+    const fit=await evaluate(`(()=>{const root=document.querySelector(${retry?"'#sheetBody.tqReviewRetrySheet'":"'.tqReviewScreen'"});if(!root)return{missing:true};const visible=el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)!==0&&r.width>0&&r.height>0};const rect=el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),right:Math.round(r.right),width:Math.round(r.width),height:Math.round(r.height)}};const controls=[...root.querySelectorAll('button:not(:disabled)')].filter(visible);const surfaces=[...root.querySelectorAll(${retry?"'.tqReviewQuestion,.tqReviewDeep'":"'.tqReviewHero,.tqReviewStats,.tqReviewFilters,.tqReviewItem,.tqReviewEmpty'"})].filter(visible);const tiles=[...root.querySelectorAll(${retry?"'.tqReviewQuestion,.tqReviewChoices .choice,.tqReviewDeep,.tqReviewChoiceAnalysis li'":"'.tqReviewStats>div,.tqReviewFilters button,.tqReviewItem,.tqReviewEmpty'"})].filter(visible);const copy=[...root.querySelectorAll(${retry?"'.reward small,.tqReviewQuestion>small,.tqReviewQuestion li,.tqTranslationToggle,.doubleTapHint,.tqReviewDeep h4,.tqReviewDeep blockquote,.tqReviewChoiceAnalysis span'":"'.tqReviewHero small,.tqReviewHero p,.tqReviewStats small,.tqReviewFilters button,.tqReviewBadge small,.tqReviewItem p,.tqReviewItem>div>small,.tqReviewEmpty p'"})].filter(visible);const channels=color=>(color.match(/[\\d.]+/g)||[]).slice(0,3).map(Number);return{missing:false,active:document.body.classList.contains('tq-review-active'),innerWidth,rootWidth:document.documentElement.scrollWidth,bodyWidth:document.body.scrollWidth,rootOverflow:root.scrollWidth-root.clientWidth,outside:controls.filter(el=>{const r=el.getBoundingClientRect();return r.left<-1||r.right>innerWidth+1}).map(rect),small:controls.filter(el=>{const r=el.getBoundingClientRect();return r.width<43||r.height<43}).map(rect),offCenter:surfaces.filter(el=>{const r=el.getBoundingClientRect();return Math.abs(r.left-(innerWidth-r.right))>2}).map(el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),rightGap:Math.round(innerWidth-r.right)}}),darkTiles:tiles.map(el=>({class:el.className,color:getComputedStyle(el).backgroundColor,rgb:channels(getComputedStyle(el).backgroundColor)})).filter(row=>row.rgb.length===3&&row.rgb.reduce((sum,value)=>sum+value,0)/3<170),tinyCopy:copy.map(el=>({class:el.className,size:parseFloat(getComputedStyle(el).fontSize)})).filter(row=>row.size<9.9)}})()`);
+    assert.equal(fit.missing,false,`${label}: Review root missing`);
+    assert.equal(fit.active,true,`${label}: Review body contract inactive`);
+    assert.ok(fit.rootWidth<=fit.innerWidth+1&&fit.bodyWidth<=fit.innerWidth+1,`${label}: horizontal overflow ${fit.rootWidth}/${fit.bodyWidth}/${fit.innerWidth}`);
+    assert.ok(fit.rootOverflow<=1,`${label}: Review content overflow ${fit.rootOverflow}`);
+    assert.deepEqual(fit.outside,[],`${label}: interactive element leaves viewport`);
+    assert.deepEqual(fit.small,[],`${label}: enabled touch target below 44px`);
+    assert.deepEqual(fit.offCenter,[],`${label}: asymmetric Review surface`);
+    assert.deepEqual(fit.darkTiles,[],`${label}: dark Review learning tile`);
+    assert.deepEqual(fit.tinyCopy,[],`${label}: Review copy below 10px`);
+  };
   const assertGameFits=async(label,rootSelector)=>{
     const fit=await evaluate(`(()=>{const root=document.querySelector(${JSON.stringify(rootSelector)});if(!root)return{missing:true};const visible=el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)!==0&&r.width>0&&r.height>0};const rect=el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),right:Math.round(r.right),width:Math.round(r.width),height:Math.round(r.height)}};const controls=[...root.querySelectorAll('button:not(:disabled)')].filter(visible);const surfaces=[...root.querySelectorAll('.tqGameArena,.t1GameLoadout,.tqGameStageList,.t1TrailBoard,.t1RunLoadout,.malbitBattleScreen>.card')].filter(visible);const tiles=[...root.querySelectorAll('.t1GameGear,.tqGameStage:not(.on),.t1RunSlot,.t1TrailNode.unknown')].filter(visible);const copy=[...root.querySelectorAll('.t1GameGear small,.t1RarityLegend span,.t1RunRule,.t1RunSlot small,.tqGameTts')].filter(visible);const channels=color=>(color.match(/[\d.]+/g)||[]).slice(0,3).map(Number);return{missing:false,innerWidth,rootWidth:document.documentElement.scrollWidth,bodyWidth:document.body.scrollWidth,outside:controls.filter(el=>{const r=el.getBoundingClientRect();return r.left<-1||r.right>innerWidth+1}).map(rect),small:controls.filter(el=>{const r=el.getBoundingClientRect();return r.width<43||r.height<43}).map(rect),offCenter:surfaces.filter(el=>{const r=el.getBoundingClientRect();return Math.abs(r.left-(innerWidth-r.right))>2}).map(el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),rightGap:Math.round(innerWidth-r.right)}}),darkTiles:tiles.map(el=>({class:el.className,color:getComputedStyle(el).backgroundColor,rgb:channels(getComputedStyle(el).backgroundColor)})).filter(row=>row.rgb.length===3&&row.rgb.reduce((sum,value)=>sum+value,0)/3<110),tinyCopy:copy.map(el=>({class:el.className,size:parseFloat(getComputedStyle(el).fontSize)})).filter(row=>row.size<9.9)}})()`);
     assert.equal(fit.missing,false,`${label}: Game root missing`);
@@ -268,6 +280,36 @@ try{
   assert.match(await evaluate(`document.querySelector('.tqHomeScreen>.t1level button.on')?.textContent`),/TOPIK II/);
   await tap('.tqHomeScreen>.t1level button',1,120);
   assert.match(await evaluate(`document.querySelector('.tqHomeScreen>.t1level button.on')?.textContent`),/TOPIK I/);
+
+  await evaluate(`(()=>{MALBIT_REVIEW.record(1,'read','P01-I-R-09',-1,'random',{choiceOrder:[0,1,2,3]});MALBIT_REVIEW.record(2,'read','P01-II-R-06',-1,'random',{choiceOrder:[0,1,2,3]});S.lang='ja';S.view='review';save();render()})()`);await sleep(300);
+  assert.ok(await evaluate(`!!document.querySelector('#malbitReviewVisualSystem')`),'Review visual system must load after compatibility layers');
+  assert.equal(await evaluate(`document.querySelectorAll('.tqReviewItem').length`),2,'Review queue must show both seeded TOPIK levels');
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertReviewFits(`Review queue ${width}px`)}
+  await setViewport(390,844);await shot('00j-review-queue.png');
+  await tap('.tqReviewFilters button',2,120);
+  assert.equal(await evaluate(`document.querySelectorAll('.tqReviewItem').length`),1,'TOPIK II filter must narrow the queue');
+  assert.equal(await evaluate(`document.querySelector('.tqReviewFilters button.on')?.textContent.replace(/\s+/g,' ').trim()`),'TOPIK II 1');
+  await tap('.tqReviewFilters button',0,120);
+  await evaluate(`openReviewRetry('2:read:P01-II-R-06')`);await sleep(180);
+  assert.equal(await evaluate(`document.querySelectorAll('#tqReviewTranslation .tqReviewQuestion').length`),0,'Review translation stays closed until requested');
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertReviewFits(`Review retry ${width}px`,true)}
+  await setViewport(390,844);await shot('00k-review-retry.png');
+  await tap('.tqTranslationToggle',0,120);
+  for(let wait=0;wait<100&&!await evaluate(`!!document.querySelector('#tqReviewTranslation .tqReviewQuestion')`);wait++)await sleep(100);
+  assert.ok(await evaluate(`document.querySelector('#tqReviewTranslation .tqReviewQuestion')?.innerText.length>20`),'Review must reveal a complete Japanese translation on request');
+  const reviewAnswer=await evaluate(`MALBIT_BANK.present('P01-II-R-06',[0,1,2,3]).answerIndex`);
+  await tap('.tqReviewChoices .choice',reviewAnswer,100);await tap('.tqReviewChoices .choice',reviewAnswer,350);
+  for(let wait=0;wait<100&&!await evaluate(`!!document.querySelector('.tqReviewDeep .tqReviewChoiceAnalysis')`);wait++)await sleep(100);
+  const reviewCoach=await evaluate(`document.querySelector('.tqReviewDeep')?.innerText`);
+  assert.match(reviewCoach,/【正解の根拠】[\s\S]*【ひっかけ分析】[\s\S]*【タイプ別の解き方】/);
+  assert.match(reviewCoach,/選択肢ごとの消去/);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertReviewFits(`Review graded coaching ${width}px`,true)}
+  await setViewport(390,844);await shot('00l-review-coaching.png');
+  assert.deepEqual(await evaluate(`(()=>{const item=MALBIT_REVIEW.items()['2:read:P01-II-R-06'];return{active:item.active,retryCount:item.retryCount,wrongCount:item.wrongCount}})()`),{active:false,retryCount:1,wrongCount:1},'correct Review retry must resolve exactly one saved item');
+  await tap('.tqReviewRetrySheet>.closeBtn',0,180);
+  assert.equal(await evaluate(`document.querySelectorAll('.tqReviewItem').length`),1,'resolved item must leave the active queue after re-entry');
+  assert.equal(await evaluate(`document.body.classList.contains('tq-review-active')`),true,'Review visual contract must survive sheet close and re-entry');
+  await evaluate(`S.view='home';save();render()`);await sleep(180);
 
   await evaluate(`(()=>{S.lang='ja';save();localStorage.setItem('topikQuestExamLevel','1');t1OpenGameMap(1)})()`);
   for(let wait=0;wait<60;wait++){if(await evaluate(`!!document.querySelector('.tqGameHub')`))break;await sleep(50)}
@@ -485,7 +527,7 @@ try{
   assert.deepEqual(durableAfter,durableBefore,'travel play must not alter vocabulary, game, or review records');
   assert.deepEqual(errors,[]);
   const screenshotCount=fs.readdirSync(out).filter(file=>file.endsWith('.png')).length;
-  console.log(`mobile QA: 320/375/390/430px Home + Game + Shorts + Random Practice visual contracts, TOPIK I/II random question/answer/type coaching, level re-entry, Shorts question/answer/instructor feedback + hit-tested Travel route + one-tap completed-route re-entry + NPC word order + Hangul sign build with decoys, day/evening events, travel-won exchange, reload/back-resume, durable records, screenshots=${screenshotCount}, errors=0`);
+  console.log(`mobile QA: 320/375/390/430px Home + Game + Shorts + Random Practice + Review visual contracts, Review queue/filter/retry/translation/type coaching/re-entry, TOPIK I/II random question/answer/type coaching, level re-entry, Shorts question/answer/instructor feedback + hit-tested Travel route + one-tap completed-route re-entry + NPC word order + Hangul sign build with decoys, day/evening events, travel-won exchange, reload/back-resume, durable records, screenshots=${screenshotCount}, errors=0`);
 }finally{
   try{socket?.close()}catch(error){}
   chrome?.kill('SIGTERM');server.kill('SIGTERM');
