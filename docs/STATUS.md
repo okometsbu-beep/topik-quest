@@ -78,7 +78,7 @@ Vocabulary 화면 하나를 대상으로 목록·검색·필터·상세·편집 
   없음을 확인하고 화면 35장을 직접 검토했다. 해결 처리와 목록 재진입을 유지했고 콘솔 오류는 0개였다.
 - 결제 UI·API 키·개인정보 수집·외부 전송은 추가하지 않았다.
 - 추적 Issue: https://github.com/okometsbu-beep/topik-quest/issues/68
-- 변경 PR: 제출 전
+- 변경 PR: https://github.com/okometsbu-beep/topik-quest/pull/69
 - 검증: https://github.com/okometsbu-beep/topik-quest/actions/runs/33211525974
 - 배포 주소: https://okometsbu-beep.github.io/topik-quest/
 - 되돌리기 기준: v65 main `d52f7f5f6ddd3bb4d04ff41d473cdf0d9f73b26c`
