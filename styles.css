@@ -216,11 +216,12 @@ body.travel-active,body.travel-active .app{background:radial-gradient(circle at 
 .travelRpgObjective{margin:0 16px 12px;border-left:3px solid var(--travel-accent-strong);padding:4px 0 4px 11px}
 .travelRpgObjective small{display:block;color:var(--travel-accent);font-size:10px;font-weight:950}.travelRpgObjective b{display:block;margin-top:3px;color:var(--travel-text);font-size:14px;line-height:1.35}.travelRpgObjective p{margin:4px 0 0;color:var(--travel-muted);font-size:11px;line-height:1.45}
 .travelRpgViewport{position:relative;width:100%;aspect-ratio:4/3;overflow:hidden;border-block:1px solid var(--travel-line);background:#dbe7e5;isolation:isolate;touch-action:manipulation}
-.travelRpgBoard{position:absolute;width:160%;height:160%;max-width:none;transition:left .16s ease-out,top .16s ease-out;will-change:left,top}
+.travelRpgBoard{position:absolute;width:160%;height:160%;max-width:none;transition:left .28s cubic-bezier(.2,.78,.24,1),top .28s cubic-bezier(.2,.78,.24,1);will-change:left,top}
 .travelRpgMap{position:absolute;z-index:0;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;image-rendering:pixelated;user-select:none;-webkit-user-drag:none}
 .travelRpgMapTag{position:absolute;z-index:12;left:10px;top:10px;max-width:calc(100% - 20px);border:1px solid rgba(255,255,255,.65);border-radius:10px;background:rgba(255,255,255,.9);padding:5px 8px;color:#17314c;font-size:10px;font-weight:950;box-shadow:0 5px 14px rgba(42,67,76,.16);backdrop-filter:blur(5px)}
 .travelRpgPlayer,.travelRpgTarget,.travelRpgPoi,.travelRpgPortal{position:absolute;z-index:6;transform:translate(-50%,-70%);pointer-events:none}
-.travelRpgPlayer{width:8.2%;height:17%;filter:drop-shadow(0 6px 4px rgba(37,43,51,.34));transition:left .16s ease-out,top .16s ease-out}.travelRpgPlayer.left img{transform:scaleX(-1)}
+.travelRpgPlayer{width:8.2%;height:17%;filter:drop-shadow(0 6px 4px rgba(37,43,51,.34));transition:left .19s linear,top .19s linear}.travelRpgPlayer.left img{transform:scaleX(-1)}
+.travelRpgPlayer.walking img{animation:travelRpgWalk .19s ease-in-out infinite alternate}.travelRpgPlayer.blocked.bump-up img{animation:travelRpgBumpUp .13s ease-out}.travelRpgPlayer.blocked.bump-down img{animation:travelRpgBumpDown .13s ease-out}.travelRpgPlayer.blocked.bump-left img{animation:travelRpgBumpLeft .13s ease-out}.travelRpgPlayer.blocked.bump-right img{animation:travelRpgBumpRight .13s ease-out}
 .travelRpgPlayer img,.travelRpgTarget.character img{width:100%;height:100%;max-width:none;object-fit:contain;object-position:center bottom;image-rendering:pixelated}
 .travelRpgTarget.character{z-index:5;width:8.8%;height:18%;filter:drop-shadow(0 6px 4px rgba(37,43,51,.3))}
 .travelRpgTarget.marker{z-index:5;width:5.5%;aspect-ratio:1;transform:translate(-50%,-50%)}
@@ -236,8 +237,13 @@ body.travel-active,body.travel-active .app{background:radial-gradient(circle at 
 .travelRpgAction{display:flex;min-width:0;min-height:93px;flex-direction:column;align-items:flex-start;justify-content:center;border:0;border-radius:16px;background:linear-gradient(145deg,var(--travel-action),color-mix(in srgb,var(--travel-action) 70%,#6b5be8));padding:12px 14px;color:#fff;text-align:left;box-shadow:0 9px 19px color-mix(in srgb,var(--travel-action) 25%,transparent)}.travelRpgAction small{display:block;max-width:100%;font-size:10px;font-weight:800;line-height:1.35;opacity:.86}.travelRpgAction b{display:block;max-width:100%;margin-top:5px;font-size:14px;line-height:1.35}.travelRpgAction:disabled{border:1px solid var(--travel-line);background:var(--travel-surface-soft);color:var(--travel-muted);box-shadow:none;opacity:1}
 .travelRpgCard>footer{display:grid;gap:3px;border-top:1px solid var(--travel-line);padding:10px 15px 13px;color:var(--travel-muted);font-size:10px;font-weight:750;line-height:1.4}.travelRpgCard>footer span:first-child{color:var(--travel-accent);font-weight:950}
 @keyframes travelRpgPulse{50%{transform:scale(1.12);box-shadow:0 0 0 7px rgba(44,108,232,.12),0 5px 11px rgba(34,59,82,.2)}}
+@keyframes travelRpgWalk{to{translate:0 -3px;filter:brightness(1.04)}}
+@keyframes travelRpgBumpUp{50%{translate:0 -5px}}
+@keyframes travelRpgBumpDown{50%{translate:0 5px}}
+@keyframes travelRpgBumpLeft{50%{translate:-5px 0}}
+@keyframes travelRpgBumpRight{50%{translate:5px 0}}
 @media(max-width:350px){.travelRpgControls{grid-template-columns:140px minmax(0,1fr);gap:6px;padding-inline:10px}.travelRpgDpad{grid-template-columns:repeat(3,44px);grid-template-rows:repeat(2,44px);gap:4px}.travelRpgDpad button{width:44px;height:44px}.travelRpgAction{min-height:92px;padding-inline:10px}.travelRpgCard>header{padding-inline:13px}.travelRpgObjective{margin-inline:13px}}
-@media(prefers-reduced-motion:reduce){.travelRpgBoard,.travelRpgPlayer{transition:none}.travelRpgTarget.marker>i{animation:none}}
+@media(prefers-reduced-motion:reduce){.travelRpgBoard,.travelRpgPlayer{transition:none}.travelRpgPlayer img,.travelRpgTarget.marker>i{animation:none!important}}
 .travelBudgetMeter{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:9px 0}
 .travelBudgetMeter>div{display:grid;gap:3px;min-width:0;border:1px solid rgba(126,224,200,.25);border-radius:13px;background:#091d33;padding:9px 10px}
 .travelBudgetMeter small{color:#9fb2ca;font-size:7px;font-weight:950;line-height:1.35}

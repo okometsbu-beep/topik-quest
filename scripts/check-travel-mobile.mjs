@@ -177,7 +177,24 @@ try{
     const path=await rpgPath(kind,targetId);assert.ok(Array.isArray(path),`RPG target unreachable: ${kind} ${targetId}`);
     const index={up:0,left:1,down:2,right:3};
     for(const direction of path)await tap('.travelRpgDpad button',index[direction],35);
+    for(let wait=0;wait<200;wait++){if(!await evaluate(`MALBIT_TRAVEL_RPG_MOTION.busy`))break;await sleep(20)}
+    assert.equal(await evaluate(`MALBIT_TRAVEL_RPG_MOTION.busy`),false,'RPG movement queue did not settle');
     assert.equal(await evaluate(`document.querySelector('.travelRpgAction')?.disabled`),false,`RPG action disabled at ${kind} ${targetId}`);
+  };
+  const assertSmoothRpgMotion=async()=>{
+    const before=await evaluate(`(()=>{const board=document.querySelector('.travelRpgBoard'),player=document.querySelector('.travelRpgPlayer'),b=board.getBoundingClientRect();return{left:b.left,playerLeft:player.style.left,duration:getComputedStyle(board).transitionDuration}})()`);
+    await evaluate(`malbitTravelStep('left')`);await sleep(70);
+    const middle=await evaluate(`(()=>{const board=document.querySelector('.travelRpgBoard'),player=document.querySelector('.travelRpgPlayer'),b=board.getBoundingClientRect();return{left:b.left,busy:MALBIT_TRAVEL_RPG_MOTION.busy,walking:player.classList.contains('walking'),animations:board.getAnimations().length}})()`);
+    assert.equal(middle.busy,true,'movement must stay active while interpolating');assert.equal(middle.walking,true,'player walk cycle missing');assert.ok(middle.animations>0,'camera transition missing');
+    for(let wait=0;wait<40;wait++){if(!await evaluate(`MALBIT_TRAVEL_RPG_MOTION.busy`))break;await sleep(20)}
+    const after=await evaluate(`(()=>{const board=document.querySelector('.travelRpgBoard'),player=document.querySelector('.travelRpgPlayer'),b=board.getBoundingClientRect();return{left:b.left,busy:MALBIT_TRAVEL_RPG_MOTION.busy,playerLeft:player.style.left}})()`);
+    assert.equal(after.busy,false);assert.notEqual(before.playerLeft,after.playerLeft,'player did not reach the next tile');
+    assert.ok(Math.abs(middle.left-before.left)>0.5,'camera did not leave its start');assert.ok(Math.abs(after.left-middle.left)>0.5,'camera snapped directly to its end');
+    assert.match(before.duration,/0\.28s/);
+    await evaluate(`malbitTravelStep('right');malbitTravelStep('left');malbitTravelStep('right')`);
+    assert.ok(await evaluate(`MALBIT_TRAVEL_RPG_MOTION.queued>=2`),'rapid input was not queued');
+    for(let wait=0;wait<100;wait++){if(!await evaluate(`MALBIT_TRAVEL_RPG_MOTION.busy`))break;await sleep(20)}
+    assert.equal(await evaluate(`MALBIT_TRAVEL_RPG_MOTION.busy`),false,'rapid movement queue did not finish');
   };
   const openRpgScene=async()=>{
     if(!await evaluate(`!!document.querySelector('.travelRpgCard')`))return false;
@@ -220,6 +237,7 @@ try{
       await shot('01a-travel-hub.png');
     }
     await tapUntilScene('.travelEpisodeCard .travelPrimary','arrival');
+    await assertSmoothRpgMotion();
     const captureRpgVisuals=!fs.existsSync(path.join(out,'00m-travel-rpg-light.png'));
     if(captureRpgVisuals){
       await evaluate(`malbitSetTheme('light')`);await sleep(120);
