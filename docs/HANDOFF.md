@@ -59,6 +59,9 @@ these facts from conversation history or the large TOPIK source bundle.
 - Travel zones declare upper-foreground silhouettes, object baselines, and collision cells together.
   Ground, foot-depth actors, and upper foreground render as separate DOM layers; signs, kiosks, ticket
   gates, machines, and planters reuse exact pixels from the unfiltered map rather than a dark overlay.
+- Player and visible NPC contact shadows render in their own layer between ground and actors. Each
+  shadow shares the actor's foot coordinate and depth, stays the same DOM node through movement, and
+  uses a small bounded pixel oval instead of a baked image filter or scene-wide dark paint.
 - Game Mode now uses semantic spacing, type, surface, border, and accent tokens through the purpose-named
   `game-visual-system.js` final owner. Equipment, rarity, stage, run-slot, and map-node tiles must stay
   readable rather than near-black. CI checks 320/375/390/430px symmetry, overflow, 44px enabled controls,
@@ -99,9 +102,8 @@ these facts from conversation history or the large TOPIK source bundle.
   All voice and speed controls stay in the single detailed More-screen setting.
 - A returning GitHub Pages tab can briefly show the previous release while its service worker swaps;
   closing and reopening the tab completes the update without deleting progress.
-- Travel actor shadows, light, and environment effects are not implemented yet. Add them as separate
-  bounded layers after the foreground contract; never bake them into a character or simulate night with
-  a black scene overlay.
+- Travel light and environment effects are not implemented yet. Add them as separate bounded layers;
+  never bake them into a character or simulate night with a black scene overlay.
 
 ## Execution defaults
 
