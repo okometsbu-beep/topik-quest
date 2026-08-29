@@ -212,7 +212,9 @@ body.travel-active,body.travel-active .app{background:radial-gradient(circle at 
 .travelRpgShell{position:relative;height:100vh;height:100dvh;min-height:560px;isolation:isolate}
 .travelRpgViewport{position:absolute;inset:0;width:100%;height:100%;overflow:hidden;background:#dbe7e5;isolation:isolate;touch-action:manipulation}
 .travelRpgBoard{position:absolute;height:120%;width:auto;max-width:none;aspect-ratio:4/3;transition:left .28s cubic-bezier(.2,.78,.24,1),top .28s cubic-bezier(.2,.78,.24,1);will-change:left,top}
+.travelRpgGroundLayer,.travelRpgActorLayer,.travelRpgUpperLayer{display:contents}
 .travelRpgMap{position:absolute;z-index:0;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;image-rendering:pixelated;user-select:none;-webkit-user-drag:none}
+.travelRpgForeground{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;opacity:1;filter:none;image-rendering:pixelated;pointer-events:none;user-select:none;-webkit-user-drag:none}
 .travelRpgTopHud{position:absolute;z-index:20;top:max(10px,env(safe-area-inset-top));left:12px;right:12px;display:grid;grid-template-columns:44px minmax(0,1fr) 44px;align-items:center;gap:8px;max-width:none}
 .travelRpgBack,.travelRpgLang{display:grid;place-items:center;width:44px;height:44px;border:1px solid rgba(255,255,255,.72);border-radius:14px;background:color-mix(in srgb,var(--travel-surface) 86%,transparent);color:var(--travel-text);box-shadow:0 7px 20px rgba(20,39,58,.2);backdrop-filter:blur(12px)}
 .travelRpgBack{font-size:27px}.travelRpgLang{font-size:18px;font-weight:950}

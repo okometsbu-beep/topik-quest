@@ -56,6 +56,9 @@ these facts from conversation history or the large TOPIK source bundle.
   status, D-pad, and interaction controls are compact overlays. Viewport resizing snaps camera bounds
   before restoring movement interpolation so no empty edge flashes. Investigation copy expands only
   while a discovery is open.
+- Travel zones declare upper-foreground silhouettes, object baselines, and collision cells together.
+  Ground, foot-depth actors, and upper foreground render as separate DOM layers; signs, kiosks, ticket
+  gates, machines, and planters reuse exact pixels from the unfiltered map rather than a dark overlay.
 - Game Mode now uses semantic spacing, type, surface, border, and accent tokens through the purpose-named
   `game-visual-system.js` final owner. Equipment, rarity, stage, run-slot, and map-node tiles must stay
   readable rather than near-black. CI checks 320/375/390/430px symmetry, overflow, 44px enabled controls,
@@ -96,9 +99,9 @@ these facts from conversation history or the large TOPIK source bundle.
   All voice and speed controls stay in the single detailed More-screen setting.
 - A returning GitHub Pages tab can briefly show the previous release while its service worker swaps;
   closing and reopening the tab completes the update without deleting progress.
-- Travel foreground occlusion and Y-depth are not implemented yet. Until the next bounded task splits
-  ground/actor/upper-foreground layers, tall machines, signs, and planters can visually overlap the actor
-  incorrectly even though collision remains data-driven.
+- Travel actor shadows, light, and environment effects are not implemented yet. Add them as separate
+  bounded layers after the foreground contract; never bake them into a character or simulate night with
+  a black scene overlay.
 
 ## Execution defaults
 

@@ -34,7 +34,8 @@
   function occupied(zone,x,y,sceneId){
     const anchor=zoneScene(zone,sceneId);
     if(anchor?.x===x&&anchor?.y===y)return true;
-    return !!zone?.pois?.some(item=>item.x===x&&item.y===y);
+    if(zone?.pois?.some(item=>item.x===x&&item.y===y))return true;
+    return !!zone?.foregrounds?.some(item=>item.collision?.some(point=>point.x===x&&point.y===y));
   }
   function isWalkable(zone,x,y,sceneId){return cell(zone,x,y)!=='#'&&!occupied(zone,x,y,sceneId)}
   function normalizeProgress(packId,value,sceneId){
@@ -93,6 +94,15 @@
       if(cell(zone,zone.spawn?.x,zone.spawn?.y)==='#')errors.push(`${zone.id}: blocked spawn`);
       const ids=(zone.pois||[]).map(item=>item.id);
       if(new Set(ids).size!==ids.length)errors.push(`${zone.id}: duplicate POI`);
+      const foregroundIds=(zone.foregrounds||[]).map(item=>item.id);
+      if(new Set(foregroundIds).size!==foregroundIds.length)errors.push(`${zone.id}: duplicate foreground`);
+      for(const foreground of zone.foregrounds||[]){
+        if(!Number.isFinite(Number(foreground.depthY)))errors.push(`${zone.id}:${foreground.id}: missing depth`);
+        if(!Array.isArray(foreground.polygon)||foreground.polygon.length<3)errors.push(`${zone.id}:${foreground.id}: invalid polygon`);
+        else if(foreground.polygon.some(point=>!Number.isFinite(Number(point.x))||!Number.isFinite(Number(point.y))||point.x<0||point.y<0||point.x>zone.width||point.y>zone.height))errors.push(`${zone.id}:${foreground.id}: polygon out of bounds`);
+        if(!Array.isArray(foreground.collision)||!foreground.collision.length)errors.push(`${zone.id}:${foreground.id}: missing collision`);
+        else if(foreground.collision.some(point=>!Number.isInteger(Number(point.x))||!Number.isInteger(Number(point.y))||point.x<0||point.y<0||point.x>=zone.width||point.y>=zone.height))errors.push(`${zone.id}:${foreground.id}: collision out of bounds`);
+      }
       for(const portal of zone.portals||[]){
         const targetZone=zoneById(world,portal.targetZoneId);
         if(!targetZone)errors.push(`${zone.id}:${portal.id}: missing target zone`);
