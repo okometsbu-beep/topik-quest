@@ -20,8 +20,8 @@ these facts from conversation history or the large TOPIK source bundle.
 - Travel exploration uses `data/travel-map-seoul-v1.js` for world/district/zone/collision/POI/portal data
   and the DOM-free `travel-rpg-engine.js` for movement. Add Seoul one verified zone and portal at a time;
   never duplicate the engine inside a route pack or draw the whole city as one untestable canvas.
-- The first spatial slice has separate Incheon Airport T1 Arrivals and Transport Center zones joined by
-  one bidirectional portal connection. Player zone, position, facing, steps, and discovery IDs are stored
+- The first spatial slice has separate Incheon Airport T1 Arrivals, Transport Center, and Airport Railroad
+  Concourse zones joined by bidirectional portal connections. Player zone, position, facing, steps, and discovery IDs are stored
   under the existing route episode's `exploration` field in `malbitStoryV1`; rewards are one-time.
 - Beginner missions follow situation → action → visible world reaction → reward or recoverable time
   cost. The first route varies the input as dialogue, sign hotspot, and ticket-machine action instead

@@ -33,8 +33,8 @@ test('Seoul travel world has a valid extensible district, zone, collision, POI, 
   const runtime=loadWorld(),engine=runtime.MALBIT_TRAVEL_RPG,world=runtime.MALBIT_TRAVEL_WORLDS[0],zone=world.zones[0];
   assert.equal(world.id,'seoul-world-v1');
   assert.deepEqual(Array.from(world.districts,item=>item.id),['incheon-airport']);
-  assert.deepEqual(Array.from(world.districts[0].zoneIds),['icn-t1-arrivals','icn-t1-transport-center']);
-  assert.deepEqual(Array.from(world.zones, item=>item.id),['icn-t1-arrivals','icn-t1-transport-center']);
+  assert.deepEqual(Array.from(world.districts[0].zoneIds),['icn-t1-arrivals','icn-t1-transport-center','icn-t1-airport-rail-concourse']);
+  assert.deepEqual(Array.from(world.zones, item=>item.id),['icn-t1-arrivals','icn-t1-transport-center','icn-t1-airport-rail-concourse']);
   assert.equal(zone.width,12);assert.equal(zone.height,9);
   assert.equal(zone.grid.length,zone.height);
   assert.deepEqual(Array.from(engine.validateWorld(world)),[]);
@@ -49,10 +49,15 @@ test('Seoul travel world has a valid extensible district, zone, collision, POI, 
   }
   const transport=engine.zoneById(world,'icn-t1-transport-center');
   assert.equal(transport.pois.length,1);assert.equal(transport.pois[0].id,'transport-center-sign');
-  assert.equal(zone.portals.length,1);assert.equal(transport.portals.length,1);
+  const rail=engine.zoneById(world,'icn-t1-airport-rail-concourse');
+  assert.equal(rail.pois.length,1);assert.equal(rail.pois[0].id,'boarding-direction-sign');
+  assert.ok(pathToInteraction(engine,rail,rail.spawn,rail.pois[0],null),'the boarding-direction sign must be reachable');
+  assert.equal(zone.portals.length,1);assert.equal(transport.portals.length,2);assert.equal(rail.portals.length,1);
   assert.equal(zone.portals[0].connectionId,transport.portals[0].connectionId,'both endpoints form one connection');
   const transportArt=path.join(root,transport.background);
   assert.ok(fs.existsSync(transportArt));assert.ok(fs.statSync(transportArt).size>80000);
+  const railArt=path.join(root,rail.background);
+  assert.ok(fs.existsSync(railArt));assert.ok(fs.statSync(railArt).size>80000);
 });
 
 test('the airport portal moves both ways while preserving route progress',()=>{
@@ -66,6 +71,12 @@ test('the airport portal moves both ways while preserving route progress',()=>{
   assert.equal(engine.contextForProgress('route-001-airport-myeongdong',progress,'arrival').zone.id,transport.id);
   progress=engine.enterPortal(world,progress,transport.portals[0]);
   assert.equal(progress.zoneId,'icn-t1-arrivals');assert.deepEqual({x:progress.x,y:progress.y},{x:9,y:7});
+
+  progress=engine.enterPortal(world,{...progress,zoneId:transport.id,x:5,y:2},transport.portals[1]);
+  assert.equal(progress.zoneId,'icn-t1-airport-rail-concourse');assert.deepEqual({x:progress.x,y:progress.y},{x:5,y:7});
+  const rail=engine.zoneById(world,'icn-t1-airport-rail-concourse');
+  progress=engine.enterPortal(world,progress,rail.portals[0]);
+  assert.equal(progress.zoneId,'icn-t1-transport-center');assert.deepEqual({x:progress.x,y:progress.y},{x:5,y:2});
 });
 
 test('movement blocks scenery, preserves direction and discoveries, and prioritizes the active event',()=>{
@@ -123,6 +134,21 @@ test('Travel runtime layers exploration over the existing event flow and saves o
   assert.equal(state.wallet,79400);assert.ok(state.exploration.discoveries.includes('icn-t1-transport-center:transport-center-sign'));
   runtime.malbitTravelInteract();assert.equal(JSON.parse(storage.get('malbitStoryV1')).episodes['route-001-airport-myeongdong'].wallet,79400);
   runtime.malbitTravelCloseDiscovery();
+  state=JSON.parse(storage.get('malbitStoryV1')).episodes['route-001-airport-myeongdong'];
+  for(const direction of pathToInteraction(engine,transport,state.exploration,transport.portals[1],'arrival'))runtime.malbitTravelStep(direction);
+  runtime.malbitTravelInteract();assert.match(screen.innerHTML,/airport-rail-concourse-map-v1\.webp/);assert.match(screen.innerHTML,/공항철도 대합실/);
+  state=JSON.parse(storage.get('malbitStoryV1')).episodes['route-001-airport-myeongdong'];
+  assert.equal(state.exploration.zoneId,'icn-t1-airport-rail-concourse');
+  const rail=engine.zoneById(runtime.MALBIT_TRAVEL_WORLDS[0],'icn-t1-airport-rail-concourse'),boardingSign=rail.pois[0];
+  for(const direction of pathToInteraction(engine,rail,state.exploration,boardingSign,'arrival'))runtime.malbitTravelStep(direction);
+  runtime.malbitTravelInteract();assert.match(screen.innerHTML,/승차 방향 표지/);assert.match(screen.innerHTML,/\+200원/);
+  state=JSON.parse(storage.get('malbitStoryV1')).episodes['route-001-airport-myeongdong'];
+  assert.equal(state.wallet,79600);assert.ok(state.exploration.discoveries.includes('icn-t1-airport-rail-concourse:boarding-direction-sign'));
+  runtime.malbitTravelInteract();assert.equal(JSON.parse(storage.get('malbitStoryV1')).episodes['route-001-airport-myeongdong'].wallet,79600);
+  runtime.malbitTravelCloseDiscovery();
+  state=JSON.parse(storage.get('malbitStoryV1')).episodes['route-001-airport-myeongdong'];
+  for(const direction of pathToInteraction(engine,rail,state.exploration,rail.portals[0],'arrival'))runtime.malbitTravelStep(direction);
+  runtime.malbitTravelInteract();assert.match(screen.innerHTML,/airport-transport-center-map-v1\.webp/);
   state=JSON.parse(storage.get('malbitStoryV1')).episodes['route-001-airport-myeongdong'];
   for(const direction of pathToInteraction(engine,transport,state.exploration,transport.portals[0],'arrival'))runtime.malbitTravelStep(direction);
   runtime.malbitTravelInteract();assert.match(screen.innerHTML,/airport-arrivals-map-v1\.webp/);
