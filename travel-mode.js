@@ -560,7 +560,10 @@
     const context=activeRpgContext(),board=document.querySelector?.('.travelRpgBoard');
     if(!context||!board||RPG_EVENT_OPEN[context.scene.id])return;
     const progress=RPG.normalizeProgress(context.pack.id,context.state.exploration,context.scene.id),camera=rpgCameraValues(context.zone,progress);
+    board.style.transition='none';
     board.style.left=camera.left;board.style.top=camera.top;
+    void board.offsetWidth;
+    requestAnimationFrame(()=>{if(board.isConnected)board.style.removeProperty('transition')});
   }
   function scheduleRpgCameraSync(){
     if(RPG_CAMERA_FRAME||typeof requestAnimationFrame!=='function')return;
