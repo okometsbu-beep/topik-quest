@@ -529,9 +529,16 @@
   });
   const rpgPoint=(zone,item)=>{const point=rpgPointValues(zone,item);return`left:${point.left};top:${point.top}`};
   function rpgCameraValues(zone,progress){
+    const viewport=document.querySelector?.('.travelRpgViewport');
+    const viewportWidth=Math.max(1,Number(viewport?.clientWidth)||Math.min(Number(window.innerWidth)||390,720));
+    const viewportHeight=Math.max(1,Number(viewport?.clientHeight)||Number(window.innerHeight)||700);
+    const boardHeight=viewportHeight,boardWidth=boardHeight*4/3;
     const x=(Number(progress.x)+.5)/zone.width,y=(Number(progress.y)+.5)/zone.height;
-    const clamp=value=>Math.max(-60,Math.min(0,value));
-    return{left:`${clamp(50-(x*160)).toFixed(2)}%`,top:`${clamp(50-(y*160)).toFixed(2)}%`};
+    const clamp=(value,min)=>Math.max(min,Math.min(0,value));
+    return{
+      left:`${clamp(viewportWidth/2-x*boardWidth,viewportWidth-boardWidth).toFixed(2)}px`,
+      top:`${clamp(viewportHeight/2-y*boardHeight,viewportHeight-boardHeight).toFixed(2)}px`
+    };
   }
   function rpgCamera(zone,progress){const camera=rpgCameraValues(zone,progress);return`left:${camera.left};top:${camera.top}`}
   function animateRpgStep(zone,progress,blocked){
@@ -577,6 +584,7 @@
     return`<section class="travelRpgDiscovery" role="dialog" aria-live="polite"><div><small>${notice.found?'DISCOVERY COMPLETE':'DISCOVERY RECORD'}</small><h2>${h(l(target.title))}</h2></div><blockquote lang="ko">${h(target.korean)}</blockquote><p>${h(l(target.detail))}</p>${reward?`<strong>+${h(won(reward))}</strong>`:`<strong>${h(l({ko:'여행 기록에 저장됨',ja:'旅の記録に保存済み',en:'Saved to journey record',zh:'已保存到旅行记录'}))}</strong>`}<button onclick="malbitTravelCloseDiscovery()">${h(l({ko:'지도로 돌아가기',ja:'マップに戻る',en:'Back to map',zh:'返回地图'}))}</button></section>`;
   }
   function renderExploration(sc,pack,state,scene,match){
+    document.body.classList.toggle('travel-rpg-active',true);
     const {world,zone,anchor}=match,progress=RPG.normalizeProgress(pack.id,state.exploration,scene.id),interaction=RPG.interactionAt(zone,progress,scene.id);
     state.exploration=progress;
     const store=readStore(),skin=skinById(pack,store.avatar.equipped),targetAsset=rpgTargetAsset(pack,scene,anchor),near=interaction?.type==='scene';
@@ -587,7 +595,9 @@
     const target=anchor?(targetAsset?`<span class="travelRpgTarget character ${near?'near':''}" style="${rpgPoint(zone,anchor)}"><img src="${h(targetAsset)}" alt=""><b>${h(l(anchor.label))}</b></span>`:`<span class="travelRpgTarget marker ${near?'near':''}" style="${rpgPoint(zone,anchor)}"><i></i><b>${h(l(anchor.label))}</b></span>`):'';
     const portals=(zone.portals||[]).map(item=>`<span class="travelRpgPortal ${interaction?.type==='portal'&&interaction.target.id===item.id?'near':''}" style="${rpgPoint(zone,item)}" aria-hidden="true"><i></i></span>`).join('');
     const notice=RPG_NOTICE[scene.id];
-    sc.innerHTML=`<div class="travelPlay travelRpgScreen">${commonTop(pack,state,scene)}<article class="travelRpgCard"><header><div><small>SEOUL WORLD · ${h(world.id.toUpperCase())}</small><h1>${h(l(zone.title))}</h1></div><span>${h(progress.steps)} STEP</span></header><div class="travelRpgObjective"><small>${h(l({ko:'현재 목표',ja:'現在の目標',en:'CURRENT OBJECTIVE',zh:'当前目标'}))}</small><b>${h(l(scene.title))}</b><p>${h(l(zone.subtitle))}</p></div><div class="travelRpgViewport" role="img" aria-label="${h(l(zone.title))}"><div class="travelRpgBoard" style="${rpgCamera(zone,progress)}"><img class="travelRpgMap" src="${h(zone.background)}" alt="" width="1200" height="900" loading="eager">${pois}${portals}${target}${skin?.image?`<span class="travelRpgPlayer ${h(progress.direction)}" style="${rpgPoint(zone,progress)}"><img src="${h(skin.image)}" alt="${h(l(skin.name))}"></span>`:''}</div><span class="travelRpgMapTag">${h(l(zone.title))}</span></div>${rpgNoticeMarkup(scene,notice)}<div class="travelRpgControls"><div class="travelRpgDpad" aria-label="${h(l({ko:'이동 방향',ja:'移動方向',en:'Movement controls',zh:'移动方向'}))}"><button onclick="malbitTravelStep('up')" aria-label="${h(l({ko:'위로 이동',ja:'上へ移動',en:'Move up',zh:'向上移动'}))}">↑</button><button onclick="malbitTravelStep('left')" aria-label="${h(l({ko:'왼쪽으로 이동',ja:'左へ移動',en:'Move left',zh:'向左移动'}))}">←</button><button onclick="malbitTravelStep('down')" aria-label="${h(l({ko:'아래로 이동',ja:'下へ移動',en:'Move down',zh:'向下移动'}))}">↓</button><button onclick="malbitTravelStep('right')" aria-label="${h(l({ko:'오른쪽으로 이동',ja:'右へ移動',en:'Move right',zh:'向右移动'}))}">→</button></div><button class="travelRpgAction" onclick="malbitTravelInteract()" ${interaction?'':'disabled'}><small>${interaction?`${h(targetTitle)} · `:''}${h(l({ko:'상호작용',ja:'インタラクト',en:'INTERACT',zh:'互动'}))}</small><b>${h(actionLabel)}</b></button></div><footer><span>${progress.discoveries.filter(id=>id.startsWith(`${zone.id}:`)).length}/${zone.pois.length} ${h(l({ko:'조사 기록',ja:'調査記録',en:'discoveries',zh:'调查记录'}))}</span><span>${h(l({ko:'이동과 조사는 이 기기에 자동 저장됩니다.',ja:'移動と調査はこの端末に自動保存されます。',en:'Movement and discoveries save on this device.',zh:'移动与调查会自动保存在此设备。'}))}</span></footer></article></div>`;
+    const discoveryCount=progress.discoveries.filter(id=>id.startsWith(`${zone.id}:`)).length;
+    const backLabel=l({ko:'여행 지도',ja:'旅マップ',en:'Travel map',zh:'旅行地图'});
+    sc.innerHTML=`<div class="travelPlay travelRpgScreen"><article class="travelRpgCard travelRpgShell ${notice?.type==='poi'?'has-discovery':''}"><div class="travelRpgViewport" role="img" aria-label="${h(l(zone.title))}"><div class="travelRpgBoard" style="${rpgCamera(zone,progress)}"><img class="travelRpgMap" src="${h(zone.background)}" alt="" width="1200" height="900" loading="eager">${pois}${portals}${target}${skin?.image?`<span class="travelRpgPlayer ${h(progress.direction)}" style="${rpgPoint(zone,progress)}"><img src="${h(skin.image)}" alt="${h(l(skin.name))}"></span>`:''}</div><header class="travelRpgTopHud"><button class="travelRpgBack" onclick="malbitTravelBack()" aria-label="${h(backLabel)}">‹</button><div class="travelRpgLocationHud"><small>SEOUL WORLD · ${h(progress.steps)} STEP</small><b>${h(l(zone.title))}</b></div><button class="travelRpgLang" onclick="event.stopPropagation();flagMenu()" aria-label="${h(l({ko:'설명 언어 바꾸기',ja:'説明言語を変更',en:'Change explanation language',zh:'切换解析语言'}))}">${flag()}</button></header><div class="travelRpgStatusHud" aria-label="${h(l({ko:'여행 상태',ja:'旅のステータス',en:'Travel status',zh:'旅行状态'}))}"><span><small>${h(l({ko:'여행 원',ja:'旅ウォン',en:'TRAVEL WON',zh:'旅行韩元'}))}</small><b>${h(won(state.wallet))}</b></span><span><small>${h(l({ko:'여행 시각',ja:'旅の時刻',en:'TRIP TIME',zh:'旅行时间'}))}</small><b>${h(clock(state.clockMinutes))}</b></span><span><small>${h(l({ko:'조사',ja:'調査',en:'FOUND',zh:'调查'}))}</small><b>${h(discoveryCount)}/${h(zone.pois.length)}</b></span></div><div class="travelRpgObjectiveHud"><small>${h(l({ko:'현재 목표',ja:'現在の目標',en:'CURRENT OBJECTIVE',zh:'当前目标'}))}</small><b>${h(l(scene.title))}</b></div>${rpgNoticeMarkup(scene,notice)}<div class="travelRpgControls"><div class="travelRpgDpad" aria-label="${h(l({ko:'이동 방향',ja:'移動方向',en:'Movement controls',zh:'移动方向'}))}"><button onclick="malbitTravelStep('up')" aria-label="${h(l({ko:'위로 이동',ja:'上へ移動',en:'Move up',zh:'向上移动'}))}">↑</button><button onclick="malbitTravelStep('left')" aria-label="${h(l({ko:'왼쪽으로 이동',ja:'左へ移動',en:'Move left',zh:'向左移动'}))}">←</button><button onclick="malbitTravelStep('down')" aria-label="${h(l({ko:'아래로 이동',ja:'下へ移動',en:'Move down',zh:'向下移动'}))}">↓</button><button onclick="malbitTravelStep('right')" aria-label="${h(l({ko:'오른쪽으로 이동',ja:'右へ移動',en:'Move right',zh:'向右移动'}))}">→</button></div><button class="travelRpgAction" onclick="malbitTravelInteract()" ${interaction?'':'disabled'}><small>${interaction?`${h(targetTitle)} · `:''}${h(l({ko:'상호작용',ja:'インタラクト',en:'INTERACT',zh:'互动'}))}</small><b>${h(actionLabel)}</b></button></div><p class="travelRpgSaveStatus">${h(l({ko:'이동과 조사는 이 기기에 자동 저장됩니다.',ja:'移動と調査はこの端末に自動保存されます。',en:'Movement and discoveries save on this device.',zh:'移动与调查会自动保存在此设备。'}))}</p></div></article></div>`;
   }
   function renderPlay(sc){
     const {pack,state,scene}=current();
@@ -893,6 +903,7 @@
   window.render=function(){
     const travelView=S.view==='travel'||S.view==='travelPlay';
     document.body.classList.toggle('travel-active',travelView);
+    document.body.classList.remove('travel-rpg-active');
     if(!travelView)return baseRender.apply(this,arguments);
     document.body.classList.remove('tq-home-active','tq-shorts-active','tq-stats-active','tq-game-active');
     try{hideSelection()}catch(error){}try{renderShell()}catch(error){}

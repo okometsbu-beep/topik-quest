@@ -164,7 +164,12 @@ test('Travel styles expose separate light and dark theme tokens without forcing 
   assert.match(css,/html\[data-theme="light"\] body\.travel-active/);
   assert.match(css,/--travel-canvas:#071321/);assert.match(css,/--travel-canvas:#eef3fb/);
   assert.match(css,/\.travelRpgViewport/);assert.match(css,/\.travelRpgDpad button/);
+  assert.match(css,/\.travelRpgShell\{position:relative;height:100vh;height:100dvh/);
+  assert.match(css,/\.travelRpgTopHud/);assert.match(css,/\.travelRpgObjectiveHud/);
+  assert.match(css,/\.travelRpgControls\{position:absolute/);
   assert.match(css,/travelRpgWalk/);assert.match(css,/cubic-bezier\(\.2,\.78,\.24,1\)/);
+  assert.match(runtime,/travelRpgCard travelRpgShell/);assert.match(runtime,/travelRpgStatusHud/);
+  assert.match(runtime,/document\.body\.classList\.toggle\('travel-rpg-active',true\)/);
   assert.match(runtime,/MALBIT_TRAVEL_RPG_MOTION/);assert.match(runtime,/RPG_MOTION\.queue\.length<32/);
   assert.doesNotMatch(runtime,/document\.documentElement\.style\.colorScheme='dark'/);
 });
