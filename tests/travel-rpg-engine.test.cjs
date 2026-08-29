@@ -168,6 +168,7 @@ test('Travel styles expose separate light and dark theme tokens without forcing 
   assert.match(css,/\.travelRpgTopHud/);assert.match(css,/\.travelRpgObjectiveHud/);
   assert.match(css,/\.travelRpgControls\{position:absolute/);
   assert.match(css,/\.travelRpgBoard\{position:absolute;height:120%/);
+  assert.match(css,/\.travelRpgPlayer\{width:7\.4%;height:14%/);
   assert.match(css,/background-size:800% 400%/);assert.match(css,/travelRpgWalk12 \.333333s/);
   assert.match(css,/@keyframes travelRpgIdle4/);assert.match(css,/@keyframes travelRpgWalk12/);
   assert.doesNotMatch(css,/@keyframes travelRpgWalk12[^}]*filter:/);
