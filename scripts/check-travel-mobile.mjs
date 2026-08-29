@@ -339,7 +339,7 @@ try{
       }
       assert.ok(restored,'reload must restore the active Travel question before assertions continue');
       assert.equal((await state()).sceneId,'q-ticket');
-      assert.equal(await evaluate(`document.querySelector('.travelQuestionCard h1')?.textContent`),firstTitle);
+      assert.equal(await waitForQuestionTitle(firstTitle),firstTitle);
     }
     if(routeId==='express')await shot('06-rail-transfer.png');
     if(routeId==='taxi')await shot('07-taxi-direct.png');
