@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v71 · map-first full-screen exploration shell and minimal HUD
-- Current candidate: v72 · four-direction traveler idle/walk sprite and 12fps walking
+- Production release: v72 · four-direction traveler idle/walk sprite and 12fps walking
+- Current candidate: v73 · foot-anchored foreground occlusion and matching collision
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
@@ -57,11 +57,14 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
   frame in place without swapping image URLs, opacity, brightness, or map DOM.
 - The camera has 1.2× vertical overscan, follows both axes around interior tiles, and snaps to valid
   map bounds without a transition when the mobile viewport resizes, preventing empty-edge flashes.
+- Travel maps render ground, foot-depth actors, and upper foreground as separate DOM layers. Tall
+  signs, kiosks, ticket gates, machines, and planters reuse the exact map pixels through bounded
+  silhouettes, cross actors at their object baseline, and own collision cells in the same zone data.
 
 ## 다음 우선순위
 
-1. 지면·배우·상단 전경을 분리하고 오브젝트 가림·Y-depth·충돌 규칙을 만든다.
-2. 그림자·빛·환경 효과를 별도 레이어로 만든다.
+1. 플레이어·NPC의 발 접지 그림자를 배우와 분리된 레이어로 만든다.
+2. 빛·환경 효과를 검은 도색 없는 별도 레이어로 만든다.
 3. 실제 학습자가 자주 틀리는 유형 근거를 정리한 뒤 TOPIK·Shorts 문항을 추가한다.
 
 ## 이번 운영 변경
@@ -75,26 +78,23 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-지면/배경, 배우, 상단 전경 DOM 레이어를 분리한다. 키 큰 기계·표지·화단은 발 위치와
-Y-depth에 따라 캐릭터를 자연스럽게 가리고, 통과 불가 타일은 충돌 데이터와 일치시킨다.
-검은 덧칠, 새 구역, 학습 문항, 추가 스킨 애니메이션은 같은 작업에 넣지 않는다.
+플레이어와 NPC 아래에 같은 발 접지점을 쓰는 타원형 도트 그림자 레이어를 추가한다.
+이동·방향·idle/walk 중 발과 함께 움직이되 캐릭터 프레임에 굽지 않고, 밝은/어두운 테마에서
+모두 자연스럽게 보여야 한다. 빛·날씨·새 구역·학습 문항은 같은 작업에 넣지 않는다.
 
-## v72 후보 검증 및 배포
+## v73 후보 검증 및 배포
 
-- 기본 여행자 하나에 4방향 idle 4프레임과 walk 4프레임을 연결하고 걷기를 정확히 12fps로 고정했다.
-- 모든 프레임의 발을 같은 접지점에 맞췄고, 방향 전환과 이동 중에도 같은 DOM·같은 PNG를 유지한다.
-- 프레임에서 opacity·filter·밝기를 바꾸지 않으며 sprite PNG를 시작 전에 미리 읽어 걷는 중 번쩍임을 막는다.
-- 실제 화면 검토에서 잘린 원격 PNG를 발견해 365,968바이트 투명 팔레트로 최적화했고,
-  원격과 로컬 Git blob `2563733a9b47aaa93637258522771dbaee56d9fe`가 일치함을 확인했다.
-- 320px 리사이즈 때 카메라 보간 중 빈 가장자리가 보이던 문제는 전환 없는 경계 재계산으로 막았다.
+- 세 구역의 지면·배우·상단 전경 DOM을 분리하고 발 타일과 오브젝트 기준선으로 Y-depth를 계산한다.
+- 안내 데스크·표지·지도 키오스크·개찰기·발권기·화단의 원본 픽셀 실루엣 12개를 전경으로 재사용한다.
+- 각 전경의 충돌 셀을 같은 구역 데이터에 묶고, 누락·범위·중복·통과 가능 상태를 자동 검사한다.
+- 실제 화면에서 발견한 공항철도 개찰기 내부 진입은 좌우 개찰기 뱅크 충돌로 막고 중앙 통로를 유지했다.
 - 전체 63개 자동검사와 실제 Chrome 320·375·390·430px 밝은/어두운 검사를 통과했다.
-  네 방향 프레임, 12fps, 온전한 캐릭터 크기, 중앙 발 접지, 무점멸, 카메라 경계,
-  포털 왕복·재진입·저장 보존·콘솔 오류 0개를 확인했다.
-- 결제 UI·API 키·개인정보 수집·외부 전송은 추가하지 않았다.
+  앞/뒤 z순서, 기계 충돌, 12fps 보행·카메라·포털·재진입·저장 보존·콘솔 오류 0개를 확인했다.
+- 원화에 opacity·filter·검은 덧칠을 추가하지 않았고 문제·해설·정답·결제 UI·API 키·개인정보 전송을 바꾸지 않았다.
 - 상위권 품질 지시: https://github.com/okometsbu-beep/topik-quest/issues/76
-- 모바일 검증: https://github.com/okometsbu-beep/topik-quest/actions/runs/33248170532
-- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (병합 뒤 v72 확인)
-- 되돌리기 기준: v71 main `8a55d4b0c55f7f7f473b2c9129ff7757a8e9e31a`
+- 모바일 검증: https://github.com/okometsbu-beep/topik-quest/actions/runs/33259977672
+- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (병합 뒤 v73 확인 예정)
+- 되돌리기 기준: v72 main `8aebed12edcf8fb71647efeae4ab1e911f31dfd2`
 
 ## 알려진 위험
 
@@ -104,5 +104,6 @@ Y-depth에 따라 캐릭터를 자연스럽게 가리고, 통과 불가 타일�
 - `malbitStoryV1`은 기존 진행을 지키는 Travel Mode 호환 저장 키이므로 이름을 바꾸거나 삭제하면 안 된다.
 - 현재 실제 이동 구역은 입국장·교통센터·공항철도 대합실 세 곳이다. 서울 전체를 한 캔버스로 늘리지 말고 포털로 구역을 연결한다.
 - 기본 여행자만 4방향 애니메이션이며 해금 의상은 기존 정적 이미지로 안전하게 대체한다.
-- 기계·표지·화단의 전경 가림과 Y-depth는 아직 없으므로 다음 작업 전까지 캐릭터와 겹쳐 보일 수 있다.
+- 새 구역은 키 큰 오브젝트의 실루엣·기준선·충돌 셀을 함께 선언하지 않으면 검증을 통과할 수 없다.
+- 배우별 발 접지 그림자와 빛·환경 효과 레이어는 아직 없으며 P3의 남은 작은 작업이다.
 - 기존 Plus·가격·결제 암시 UI가 새 화면에 재사용되지 않도록 계속 검사해야 한다.
