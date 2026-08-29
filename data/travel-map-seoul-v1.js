@@ -83,7 +83,7 @@
     id:'icn-t1-airport-rail-concourse',
     districtId:'incheon-airport',
     version:1,
-    title:t('인천공항 T1 공항철도 대합실','仁川空港T1 空港鉄道コンコース','Incheon Airport T1 Airport Railroad Concourse','仁川机场T1机场铁路大厅'),
+    title:t('T1 공항철도 대합실','T1 空港鉄道コンコース','T1 Airport Railroad Concourse','T1机场铁路大厅'),
     subtitle:t('승차 방향 표지를 조사하고 교통센터로 돌아가는 길을 확인해 보세요.','乗車方向の表示を調べ、交通センターへ戻る道を確認しよう。','Inspect the boarding-direction sign and find the way back to the transport center.','调查乘车方向标志并确认返回交通中心的路线。'),
     background:'assets/art/travel/rpg/airport-rail-concourse-map-v1.webp',
     width:12,
