@@ -12,6 +12,9 @@
   const TRANSCRIPTS=Object.create(null);
   const RPG_EVENT_OPEN=Object.create(null);
   const RPG_NOTICE=Object.create(null);
+  const RPG_MOTION={busy:false,queue:[],timer:null,token:0,pendingInteraction:false};
+  const RPG_STEP_MS=190;
+  const RPG_SETTLE_MS=90;
   const HUB_ORDER=Object.create(null);
   const HUB_BUDGET=Object.create(null);
   const HUB_DIALOGUE_STEP=Object.create(null);
@@ -59,11 +62,20 @@
     const reset=()=>{try{window.scrollTo?.({top:0,left:0,behavior:'auto'})}catch(error){try{window.scrollTo?.(0,0)}catch(innerError){}}};
     try{requestAnimationFrame(reset)}catch(error){reset()}
   }
+  function cancelRpgMotion(){
+    RPG_MOTION.token+=1;
+    RPG_MOTION.busy=false;
+    RPG_MOTION.queue.length=0;
+    RPG_MOTION.pendingInteraction=false;
+    if(RPG_MOTION.timer&&typeof clearTimeout==='function')clearTimeout(RPG_MOTION.timer);
+    RPG_MOTION.timer=null;
+  }
   function revealFeedback(){
     const reveal=()=>{try{document.querySelector('.travelFeedback')?.scrollIntoView({block:'nearest',behavior:'auto'})}catch(error){}};
     try{requestAnimationFrame(reveal)}catch(error){reveal()}
   }
   function resetTransient(pack){
+    cancelRpgMotion();
     for(const scene of pack.scenes){delete SELECTED[scene.id];delete TRANSCRIPTS[scene.id];delete RPG_EVENT_OPEN[scene.id];delete RPG_NOTICE[scene.id]}
   }
   function normalizeMetrics(value){
@@ -511,11 +523,44 @@
     const hub=hubByRoute(pack.id);
     sc.innerHTML=`<div class="travelPlay travelEnding">${commonTop(pack,state,scene)}<article class="travelEndingCard"><div class="travelEndingGlow"></div>${worldMarkup(pack,state,scene)}<div class="travelEndingBody"><span class="travelEndingIcon">${h(result.icon)}</span><small>ROUTE CLEAR · ${h(pack.badge)}</small><h1>${h(l(result.title))}</h1><p>${h(l(result.detail))}</p><div class="travelScore"><b>${score}</b><span>/ ${pack.questionCount}</span><small>${h(l({ko:'정답 미션',ja:'正解ミッション',en:'correct missions',zh:'答对任务'}))}</small></div><div class="travelReward" style="--reward:${h(reward.accent)}"><img src="${h(reward.image)}" alt=""><div><small>${h(l({ko:'무료 여행 보상',ja:'無料の旅報酬',en:'Free journey reward',zh:'免费旅行奖励'}))}</small><b>${h(l(reward.name))}</b><p>${h(won(state.wallet))} · ${h(clock(state.clockMinutes))}</p></div></div>${koreanCopy(scene)}${notebook(pack,state)}${hub?`<button class="travelPrimary" onclick="malbitTravelMyeongdongOpen()">${h(l({ko:'명동 거리를 탐험하기',ja:'明洞の街を探索する',en:'Explore Myeongdong',zh:'探索明洞街道'}))} <b>→</b></button>`:''}<button class="travelSecondary" onclick="malbitTravelBack()">${h(l({ko:'여행 지도로',ja:'旅マップへ',en:'Back to travel map',zh:'返回旅行地图'}))}</button><button class="travelTextButton" onclick="malbitTravelRestart('${h(pack.id)}')">${h(l({ko:'다른 이동 수단으로 다시',ja:'別の移動手段で再挑戦',en:'Replay with another route',zh:'换路线重玩'}))}</button></div></article></div>`;
   }
-  const rpgPoint=(zone,item)=>`left:${((Number(item.x)+.5)/zone.width*100).toFixed(3)}%;top:${((Number(item.y)+.5)/zone.height*100).toFixed(3)}%`;
-  function rpgCamera(zone,progress){
+  const rpgPointValues=(zone,item)=>({
+    left:`${((Number(item.x)+.5)/zone.width*100).toFixed(3)}%`,
+    top:`${((Number(item.y)+.5)/zone.height*100).toFixed(3)}%`
+  });
+  const rpgPoint=(zone,item)=>{const point=rpgPointValues(zone,item);return`left:${point.left};top:${point.top}`};
+  function rpgCameraValues(zone,progress){
     const x=(Number(progress.x)+.5)/zone.width,y=(Number(progress.y)+.5)/zone.height;
     const clamp=value=>Math.max(-60,Math.min(0,value));
-    return`left:${clamp(50-(x*160)).toFixed(2)}%;top:${clamp(50-(y*160)).toFixed(2)}%`;
+    return{left:`${clamp(50-(x*160)).toFixed(2)}%`,top:`${clamp(50-(y*160)).toFixed(2)}%`};
+  }
+  function rpgCamera(zone,progress){const camera=rpgCameraValues(zone,progress);return`left:${camera.left};top:${camera.top}`}
+  function animateRpgStep(zone,progress,blocked){
+    if(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return false;
+    const card=document.querySelector?.('.travelRpgCard'),viewport=card?.querySelector?.('.travelRpgViewport'),board=card?.querySelector?.('.travelRpgBoard'),player=card?.querySelector?.('.travelRpgPlayer');
+    if(!card||!viewport||!board||!player||typeof setTimeout!=='function')return false;
+    const point=rpgPointValues(zone,progress),camera=rpgCameraValues(zone,progress),direction=String(progress.direction||'down');
+    player.className=`travelRpgPlayer ${h(direction)} ${blocked?`blocked bump-${h(direction)}`:'walking'}`;
+    player.style.left=point.left;player.style.top=point.top;
+    board.style.left=camera.left;board.style.top=camera.top;
+    card.classList.add('is-moving');viewport.setAttribute('aria-busy','true');
+    return true;
+  }
+  function finishRpgMotion(sceneId,moved,token){
+    if(token!==RPG_MOTION.token)return;
+    const next=RPG_MOTION.queue.shift();
+    if(next){
+      RPG_MOTION.busy=false;
+      window.malbitTravelStep(next);
+      return;
+    }
+    const settle=moved?RPG_SETTLE_MS:0;
+    RPG_MOTION.timer=setTimeout(()=>{
+      if(token!==RPG_MOTION.token)return;
+      const interact=RPG_MOTION.pendingInteraction;
+      RPG_MOTION.busy=false;RPG_MOTION.timer=null;RPG_MOTION.pendingInteraction=false;
+      render();
+      if(interact)requestAnimationFrame?.(()=>window.malbitTravelInteract());
+    },settle);
   }
   function rpgTargetAsset(pack,scene,anchor){
     if(!anchor)return'';
@@ -559,6 +604,7 @@
 
   window.malbitTravelOpen=()=>setView('travel');
   window.malbitTravelStart=(packId,fresh)=>{
+    cancelRpgMotion();
     const pack=packById(packId)||PACKS[0],store=readStore(),previous=normalizeState(pack,store.episodes[pack.id]);
     let state=previous;
     store.activePackId=pack.id;
@@ -580,26 +626,38 @@
     if(!confirm(message))return;
     window.malbitTravelStart(packId,true);
   };
-  window.malbitTravelBack=()=>{cancelAudio();setView('travel');resetViewport()};
+  window.malbitTravelBack=()=>{cancelRpgMotion();cancelAudio();setView('travel');resetViewport()};
   function activeRpgContext(){
     const {pack,state,scene}=current(),sceneMatch=RPG?.zoneForScene(pack.id,scene?.id),match=sceneMatch?RPG.contextForProgress(pack.id,state.exploration,scene?.id):null;
     return match?{pack,state,scene,...match}:null;
   }
   window.malbitTravelStep=direction=>{
+    if(!RPG.directions?.[direction])return;
+    if(RPG_MOTION.busy){
+      if(RPG_MOTION.queue.length<32)RPG_MOTION.queue.push(direction);
+      return;
+    }
     const context=activeRpgContext();
     if(!context||RPG_EVENT_OPEN[context.scene.id])return;
     const progress=RPG.normalizeProgress(context.pack.id,context.state.exploration,context.scene.id);
     const result=RPG.step(context.zone,progress,direction,context.scene.id);
     context.state.exploration=result.progress;context.state.updatedAt=now();
     if(result.blocked)RPG_NOTICE[context.scene.id]={type:'blocked'};else delete RPG_NOTICE[context.scene.id];
-    writeState(context.state);render();
+    writeState(context.state);
+    const animated=animateRpgStep(context.zone,result.progress,result.blocked);
+    if(!animated){render();return}
+    RPG_MOTION.busy=true;
+    const token=RPG_MOTION.token;
+    RPG_MOTION.timer=setTimeout(()=>finishRpgMotion(context.scene.id,result.moved,token),result.blocked?130:RPG_STEP_MS);
   };
   window.malbitTravelInteract=()=>{
+    if(RPG_MOTION.busy){RPG_MOTION.pendingInteraction=true;return}
     const context=activeRpgContext();
     if(!context||RPG_EVENT_OPEN[context.scene.id])return;
     const progress=RPG.normalizeProgress(context.pack.id,context.state.exploration,context.scene.id),interaction=RPG.interactionAt(context.zone,progress,context.scene.id);
     if(!interaction){RPG_NOTICE[context.scene.id]={type:'blocked'};render();return}
     if(interaction.type==='scene'){
+      cancelRpgMotion();
       delete RPG_NOTICE[context.scene.id];RPG_EVENT_OPEN[context.scene.id]=true;cancelAudio();render();resetViewport();return;
     }
     if(interaction.type==='poi'){
@@ -610,6 +668,7 @@
       RPG_NOTICE[context.scene.id]={type:'poi',target:interaction.target,found,reward};render();return;
     }
     if(interaction.type==='portal'){
+      cancelRpgMotion();
       const next=RPG.enterPortal(context.world,progress,interaction.target);
       if(!next){RPG_NOTICE[context.scene.id]={type:'blocked'};render();return}
       context.state.exploration=next;context.state.updatedAt=now();writeState(context.state);
@@ -619,7 +678,7 @@
     RPG_NOTICE[context.scene.id]={type:'blocked'};render();
   };
   window.malbitTravelCloseDiscovery=()=>{const context=activeRpgContext();if(!context)return;delete RPG_NOTICE[context.scene.id];render()};
-  window.malbitTravelCloseEvent=()=>{const context=activeRpgContext();if(!context)return;delete RPG_EVENT_OPEN[context.scene.id];cancelAudio();render();resetViewport()};
+  window.malbitTravelCloseEvent=()=>{const context=activeRpgContext();if(!context)return;cancelRpgMotion();delete RPG_EVENT_OPEN[context.scene.id];cancelAudio();render();resetViewport()};
   window.malbitTravelEquip=skinId=>{
     const store=readStore(),pack=activePack();
     if(!store.avatar.unlocked.includes(skinId)||!skinById(pack,skinId))return;
@@ -797,6 +856,11 @@
   };
 
   window.malbitTravelMetrics=()=>metricsSnapshot();
+  window.MALBIT_TRAVEL_RPG_MOTION=Object.freeze({
+    get busy(){return RPG_MOTION.busy},
+    get queued(){return RPG_MOTION.queue.length},
+    durationMs:RPG_STEP_MS
+  });
 
   document.addEventListener?.('keydown',event=>{
     if(S.view!=='travelPlay'||event.defaultPrevented||event.metaKey||event.ctrlKey||event.altKey)return;

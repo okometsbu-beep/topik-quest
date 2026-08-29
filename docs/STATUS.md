@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v68 · Incheon Airport T1 arrivals and transport center RPG zones
-- Current candidate: v69 · Airport Railroad concourse and second bidirectional zone portal
+- Production release: v69 · three Incheon Airport T1 Travel RPG zones
+- Current candidate: v70 · interpolated movement, camera follow, and rapid-input queue
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
@@ -48,11 +48,13 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - Incheon Airport T1 transport center is a separate 12×9 zone connected to Arrivals by one bidirectional portal
 - Incheon Airport T1 Airport Railroad concourse is a third 12×9 zone connected to the transport center
 - Travel respects system/light/dark appearance; map art is unfiltered and actors remain separate layers
+- Travel movement keeps the map DOM alive for a 190ms player step, 280ms camera follow, ordered rapid
+  input, directional collision response, and reduced-motion fallback
 
 ## 다음 우선순위
 
-1. 인천공항 T1 공항철도 승강장을 네 번째 구역으로 추가하고 대합실과 포털 하나로 연결한다.
-2. Home·Game 등 목적 기반 시각 소유자를 밝은/어두운 테마 토큰으로 한 화면씩 전환한다.
+1. Travel RPG를 맵 중심 전체화면 탐험 셸과 최소 HUD로 전환한다.
+2. 4방향 idle/walk 스프라이트 규격과 발 접지·전경 가림 파이프라인을 만든다.
 3. 실제 학습자가 자주 틀리는 유형 근거를 정리한 뒤 TOPIK·Shorts 문항을 추가한다.
 
 ## 이번 운영 변경
@@ -66,22 +68,21 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-`icn-t1-airport-rail-platform` 구역 하나를 추가해 대합실과 포털 하나로 왕복 연결하고,
-승강장 번호 표지 조사 하나를 넣는다. 열차 이동이나 서울역 구역은 아직 추가하지 않는다.
+Travel RPG 탐험 화면 하나를 맵 중심 전체화면 셸로 바꾸고, 목표·재화·조작을 맵을 가리지 않는
+최소 HUD로 재배치한다. 새 구역·학습 문항·캐릭터 스프라이트는 같은 작업에 추가하지 않는다.
 
-## v69 후보 검증 및 배포
+## v70 후보 검증 및 배포
 
-- `icn-t1-airport-rail-concourse` 12×9 구역과 독립 배경을 추가하고 교통센터와 한 연결 ID의 왕복 포털로 묶었다.
-- `승차 방향` 표지 조사는 한국어 형태와 일본어 의미를 설명하고 처음 한 번만 200 여행 원을 지급한다.
-- 구역 ID·좌표·방향·발견 기록은 기존 `malbitStoryV1` episode 안에 저장하며 새 저장 키를 만들지 않았다.
+- 이동 때마다 탐험 DOM 전체를 다시 그리지 않고 캐릭터와 카메라 위치만 갱신한 뒤 정착 시 렌더한다.
+- 190ms 캐릭터 보간, 280ms 지연 카메라, 최대 32개 연타 입력 큐와 네 방향 충돌 반응을 추가했다.
+- `prefers-reduced-motion` 환경은 지연 없이 기존 즉시 이동으로 안전하게 돌아간다.
 - 전체 63개 자동검사와 실제 Chrome 320·375·390·430px 밝은/어두운 검사를 통과했다.
-  두 포털 왕복·표지 조사·터치·재진입·44px·10px·대칭·돌출·카메라 네 변 덮기·기존 기록 보존·콘솔 오류 0개를 확인했다.
-- 첫 화면 검토에서 발견한 한국어·일본어 구역명 중간 줄바꿈은 위치 맥락을 유지한 짧은 제목으로 고치고 재검증했다.
+  시작·70ms 중간·도착 좌표, 카메라 애니메이션, 연타 3회 순서 처리, 왕복·재진입·저장 보존·콘솔 오류 0개를 확인했다.
 - 결제 UI·API 키·개인정보 수집·외부 전송은 추가하지 않았다.
-- 추적 Issue: https://github.com/okometsbu-beep/topik-quest/issues/74
-- 모바일 검증: https://github.com/okometsbu-beep/topik-quest/actions/runs/33232086441
-- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (병합 뒤 v69 확인)
-- 되돌리기 기준: v68 main `de61866e3f9fc873412de65b26d99b1505ed8f0d`
+- 상위권 품질 지시: https://github.com/okometsbu-beep/topik-quest/issues/76
+- 모바일 검증: https://github.com/okometsbu-beep/topik-quest/actions/runs/33241882390
+- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (병합 뒤 v70 확인)
+- 되돌리기 기준: v69 main `262000050a3f5560d3f28e76cca660abf7e88114`
 
 ## 알려진 위험
 

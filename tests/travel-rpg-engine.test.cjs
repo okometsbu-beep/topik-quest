@@ -155,6 +155,8 @@ test('Travel runtime layers exploration over the existing event flow and saves o
   const after=JSON.parse(storage.get('malbitStoryV1')).episodes['route-001-airport-myeongdong'];
   assert.ok(after.exploration.steps>0);assert.equal(after.exploration.worldId,'seoul-world-v1');
   assert.equal(after.exploration.zoneId,'icn-t1-arrivals');
+  assert.equal(runtime.MALBIT_TRAVEL_RPG_MOTION.durationMs,190);
+  assert.equal(runtime.MALBIT_TRAVEL_RPG_MOTION.busy,false);
 });
 
 test('Travel styles expose separate light and dark theme tokens without forcing a scheme at render time',()=>{
@@ -162,5 +164,7 @@ test('Travel styles expose separate light and dark theme tokens without forcing 
   assert.match(css,/html\[data-theme="light"\] body\.travel-active/);
   assert.match(css,/--travel-canvas:#071321/);assert.match(css,/--travel-canvas:#eef3fb/);
   assert.match(css,/\.travelRpgViewport/);assert.match(css,/\.travelRpgDpad button/);
+  assert.match(css,/travelRpgWalk/);assert.match(css,/cubic-bezier\(\.2,\.78,\.24,1\)/);
+  assert.match(runtime,/MALBIT_TRAVEL_RPG_MOTION/);assert.match(runtime,/RPG_MOTION\.queue\.length<32/);
   assert.doesNotMatch(runtime,/document\.documentElement\.style\.colorScheme='dark'/);
 });
