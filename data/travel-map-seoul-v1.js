@@ -74,7 +74,38 @@
       poi('transport-center-sign',5,4,'inspect',t('교통센터 표지','交通センター表示','Transport center sign','交通中心标志'),'교통센터',t('“교통”은 transportation, “센터”는 center라는 뜻입니다. 두 단어를 붙이면 여러 교통수단을 이용하는 곳을 가리켜요.','「교통」は交通・移動手段、「센터」はセンターという意味です。二つを合わせると、さまざまな交通手段を利用する場所を表します。','교통 means transportation and 센터 means center. Together they name a place for connecting to different transport options.','“교통”表示交通，“센터”表示中心，组合起来指连接多种交通方式的场所。'),200)
     ]),
     portals:Object.freeze([
-      portal('transport-to-arrivals','icn-t1-arrivals-transport',5,8,'icn-t1-arrivals',9,7,'left',t('입국장으로','到着ロビーへ','To Arrivals','前往到达大厅'))
+      portal('transport-to-arrivals','icn-t1-arrivals-transport',5,8,'icn-t1-arrivals',9,7,'left',t('입국장으로','到着ロビーへ','To Arrivals','前往到达大厅')),
+      portal('transport-to-rail-concourse','icn-t1-transport-rail-concourse',5,1,'icn-t1-airport-rail-concourse',5,7,'up',t('공항철도 대합실로','空港鉄道コンコースへ','To the Airport Railroad concourse','前往机场铁路大厅'))
+    ])
+  });
+
+  const airportRailConcourse=Object.freeze({
+    id:'icn-t1-airport-rail-concourse',
+    districtId:'incheon-airport',
+    version:1,
+    title:t('인천공항 T1 공항철도 대합실','仁川空港T1 空港鉄道コンコース','Incheon Airport T1 Airport Railroad Concourse','仁川机场T1机场铁路大厅'),
+    subtitle:t('승차 방향 표지를 조사하고 교통센터로 돌아가는 길을 확인해 보세요.','乗車方向の表示を調べ、交通センターへ戻る道を確認しよう。','Inspect the boarding-direction sign and find the way back to the transport center.','调查乘车方向标志并确认返回交通中心的路线。'),
+    background:'assets/art/travel/rpg/airport-rail-concourse-map-v1.webp',
+    width:12,
+    height:9,
+    grid:Object.freeze([
+      '############',
+      '#..........#',
+      '#.###..###.#',
+      '#..........#',
+      '#..........#',
+      '#..........#',
+      '#..........#',
+      '#..........#',
+      '#####..#####'
+    ]),
+    spawn:Object.freeze({x:5,y:7,direction:'up'}),
+    scenes:Object.freeze({}),
+    pois:Object.freeze([
+      poi('boarding-direction-sign',8,3,'inspect',t('승차 방향 표지','乗車方向の表示','Boarding-direction sign','乘车方向标志'),'승차 방향',t('“승차”는 차나 열차에 타는 것, “방향”은 가야 할 쪽을 뜻합니다. 역에서는 이 표지로 열차를 타러 가는 길을 확인해요.','「승차」は乗車、「방향」は方向という意味です。駅ではこの表示で、列車に乗るために進む方向を確認します。','승차 means boarding a vehicle or train, and 방향 means direction. At a station, this sign shows which way to go to board the train.','“승차”表示乘车，“방향”表示方向。在车站可通过这个标志确认前往乘车处的方向。'),200)
+    ]),
+    portals:Object.freeze([
+      portal('rail-concourse-to-transport','icn-t1-transport-rail-concourse',5,8,'icn-t1-transport-center',5,2,'down',t('교통센터로','交通センターへ','To the transport center','前往交通中心'))
     ])
   });
 
@@ -87,10 +118,10 @@
       Object.freeze({
         id:'incheon-airport',
         title:t('인천공항','仁川空港','Incheon Airport','仁川机场'),
-        zoneIds:Object.freeze(['icn-t1-arrivals','icn-t1-transport-center'])
+        zoneIds:Object.freeze(['icn-t1-arrivals','icn-t1-transport-center','icn-t1-airport-rail-concourse'])
       })
     ]),
-    zones:Object.freeze([airportArrivals,airportTransportCenter])
+    zones:Object.freeze([airportArrivals,airportTransportCenter,airportRailConcourse])
   });
 
   window.MALBIT_TRAVEL_WORLDS=Object.freeze([world]);

@@ -239,6 +239,20 @@ try{
       await evaluate(`malbitSetTheme('dark')`);await sleep(120);
       for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertRpgFits(`Transport center dark ${width}px`,'dark','airport-transport-center-map-v1.webp');await assertFits(`Transport center dark ${width}px`)}
       await setViewport(390,844);await shot('00o-transport-center-dark.png');
+      await moveRpgTo('portal','transport-to-rail-concourse');await tap('.travelRpgAction',0,140);
+      assert.equal((await state()).exploration.zoneId,'icn-t1-airport-rail-concourse');
+      assert.match(await evaluate(`document.querySelector('.travelRpgMap')?.getAttribute('src')`),/airport-rail-concourse-map-v1\.webp/);
+      for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertRpgFits(`Airport rail concourse dark ${width}px`,'dark','airport-rail-concourse-map-v1.webp');await assertFits(`Airport rail concourse dark ${width}px`)}
+      await setViewport(390,844);await shot('00oa-airport-rail-concourse-dark.png');
+      await moveRpgTo('poi','boarding-direction-sign');await tap('.travelRpgAction',0,120);
+      assert.match(await evaluate(`document.querySelector('.travelRpgDiscovery')?.innerText`),/「승차」は乗車、「방향」は方向/);
+      assert.equal((await state()).wallet,79600);await shot('00ob-boarding-direction-sign.png');await tap('.travelRpgDiscovery button',0,90);
+      await evaluate(`malbitSetTheme('light')`);await sleep(120);
+      for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertRpgFits(`Airport rail concourse light ${width}px`,'light','airport-rail-concourse-map-v1.webp');await assertFits(`Airport rail concourse light ${width}px`)}
+      await setViewport(390,844);await shot('00oc-airport-rail-concourse-light.png');
+      await moveRpgTo('portal','rail-concourse-to-transport');await tap('.travelRpgAction',0,140);
+      assert.equal((await state()).exploration.zoneId,'icn-t1-transport-center');
+      assert.match(await evaluate(`document.querySelector('.travelRpgMap')?.getAttribute('src')`),/airport-transport-center-map-v1\.webp/);
       await moveRpgTo('portal','transport-to-arrivals');await tap('.travelRpgAction',0,140);
       assert.equal((await state()).exploration.zoneId,'icn-t1-arrivals');
       assert.match(await evaluate(`document.querySelector('.travelRpgMap')?.getAttribute('src')`),/airport-arrivals-map-v1\.webp/);
