@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v70 · interpolated movement, camera follow, and rapid-input queue
-- Current candidate: v71 · map-first full-screen exploration shell and minimal HUD
+- Production release: v71 · map-first full-screen exploration shell and minimal HUD
+- Current candidate: v72 · four-direction traveler idle/walk sprite and 12fps walking
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
@@ -52,11 +52,16 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
   input, directional collision response, and reduced-motion fallback
 - Travel exploration uses a full-height map surface with aspect-correct world art, horizontal camera
   tracking, overlaid location/objective/status HUD, and bottom-corner movement/action controls
+- The default traveler uses one preloaded 8×4 transparent sprite sheet: down/left/right/up rows,
+  four idle frames, four 12fps walk frames, and one shared foot anchor. Movement changes the row and
+  frame in place without swapping image URLs, opacity, brightness, or map DOM.
+- The camera has 1.2× vertical overscan, follows both axes around interior tiles, and snaps to valid
+  map bounds without a transition when the mobile viewport resizes, preventing empty-edge flashes.
 
 ## 다음 우선순위
 
-1. 4방향 idle/walk 스프라이트 규격과 발 접지 파이프라인을 만든다.
-2. 전경 가림·그림자·빛·환경 효과 레이어를 만든다.
+1. 지면·배우·상단 전경을 분리하고 오브젝트 가림·Y-depth·충돌 규칙을 만든다.
+2. 그림자·빛·환경 효과를 별도 레이어로 만든다.
 3. 실제 학습자가 자주 틀리는 유형 근거를 정리한 뒤 TOPIK·Shorts 문항을 추가한다.
 
 ## 이번 운영 변경
@@ -70,21 +75,26 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-기본 여행자 스킨 하나에 4방향 idle/walk 프레임 규격과 발 접지점을 적용하고, 방향 전환과
-걷기 프레임을 실제 이동 상태에 연결한다. 새 구역·학습 문항·전경 효과는 같은 작업에 추가하지 않는다.
+지면/배경, 배우, 상단 전경 DOM 레이어를 분리한다. 키 큰 기계·표지·화단은 발 위치와
+Y-depth에 따라 캐릭터를 자연스럽게 가리고, 통과 불가 타일은 충돌 데이터와 일치시킨다.
+검은 덧칠, 새 구역, 학습 문항, 추가 스킨 애니메이션은 같은 작업에 넣지 않는다.
 
-## v71 후보 검증 및 배포
+## v72 후보 검증 및 배포
 
-- 탐험의 큰 제목·재화 카드·목표 카드·조작부를 맵 밖에서 제거하고 전체 높이 맵 위 최소 HUD로 재배치했다.
-- 4:3 지형 원본은 늘이지 않고 세로 높이에 맞춰 렌더하며 카메라는 플레이어를 따라 가로로 추적한다.
-- 조사 설명은 필요할 때만 하단 카드로 확장하고 평상시에는 목표·여행 원·시각·조사 수만 표시한다.
+- 기본 여행자 하나에 4방향 idle 4프레임과 walk 4프레임을 연결하고 걷기를 정확히 12fps로 고정했다.
+- 모든 프레임의 발을 같은 접지점에 맞췄고, 방향 전환과 이동 중에도 같은 DOM·같은 PNG를 유지한다.
+- 프레임에서 opacity·filter·밝기를 바꾸지 않으며 sprite PNG를 시작 전에 미리 읽어 걷는 중 번쩍임을 막는다.
+- 실제 화면 검토에서 잘린 원격 PNG를 발견해 365,968바이트 투명 팔레트로 최적화했고,
+  원격과 로컬 Git blob `2563733a9b47aaa93637258522771dbaee56d9fe`가 일치함을 확인했다.
+- 320px 리사이즈 때 카메라 보간 중 빈 가장자리가 보이던 문제는 전환 없는 경계 재계산으로 막았다.
 - 전체 63개 자동검사와 실제 Chrome 320·375·390·430px 밝은/어두운 검사를 통과했다.
-  전체 높이 점유율, HUD 안전영역, 44px 조작, 이동 보간·연타 큐, 포털 왕복·재진입·저장 보존·콘솔 오류 0개를 확인했다.
+  네 방향 프레임, 12fps, 온전한 캐릭터 크기, 중앙 발 접지, 무점멸, 카메라 경계,
+  포털 왕복·재진입·저장 보존·콘솔 오류 0개를 확인했다.
 - 결제 UI·API 키·개인정보 수집·외부 전송은 추가하지 않았다.
 - 상위권 품질 지시: https://github.com/okometsbu-beep/topik-quest/issues/76
-- 모바일 검증: https://github.com/okometsbu-beep/topik-quest/actions/runs/33244717959
-- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (병합 뒤 v71 확인)
-- 되돌리기 기준: v70 main `16377ed7ff5de7027aa9386d2def8b831b95f7ff`
+- 모바일 검증: https://github.com/okometsbu-beep/topik-quest/actions/runs/33248170532
+- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (병합 뒤 v72 확인)
+- 되돌리기 기준: v71 main `8a55d4b0c55f7f7f473b2c9129ff7757a8e9e31a`
 
 ## 알려진 위험
 
@@ -93,4 +103,6 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 로컬 지표는 서버로 수집되지 않으므로 사용자 기기에서 직접 확인한 값만 밸런스 근거로 쓸 수 있다.
 - `malbitStoryV1`은 기존 진행을 지키는 Travel Mode 호환 저장 키이므로 이름을 바꾸거나 삭제하면 안 된다.
 - 현재 실제 이동 구역은 입국장·교통센터·공항철도 대합실 세 곳이다. 서울 전체를 한 캔버스로 늘리지 말고 포털로 구역을 연결한다.
+- 기본 여행자만 4방향 애니메이션이며 해금 의상은 기존 정적 이미지로 안전하게 대체한다.
+- 기계·표지·화단의 전경 가림과 Y-depth는 아직 없으므로 다음 작업 전까지 캐릭터와 겹쳐 보일 수 있다.
 - 기존 Plus·가격·결제 암시 UI가 새 화면에 재사용되지 않도록 계속 검사해야 한다.
