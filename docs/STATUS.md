@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v69 · three Incheon Airport T1 Travel RPG zones
-- Current candidate: v70 · interpolated movement, camera follow, and rapid-input queue
+- Production release: v70 · interpolated movement, camera follow, and rapid-input queue
+- Current candidate: v71 · map-first full-screen exploration shell and minimal HUD
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
@@ -50,11 +50,13 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - Travel respects system/light/dark appearance; map art is unfiltered and actors remain separate layers
 - Travel movement keeps the map DOM alive for a 190ms player step, 280ms camera follow, ordered rapid
   input, directional collision response, and reduced-motion fallback
+- Travel exploration uses a full-height map surface with aspect-correct world art, horizontal camera
+  tracking, overlaid location/objective/status HUD, and bottom-corner movement/action controls
 
 ## 다음 우선순위
 
-1. Travel RPG를 맵 중심 전체화면 탐험 셸과 최소 HUD로 전환한다.
-2. 4방향 idle/walk 스프라이트 규격과 발 접지·전경 가림 파이프라인을 만든다.
+1. 4방향 idle/walk 스프라이트 규격과 발 접지 파이프라인을 만든다.
+2. 전경 가림·그림자·빛·환경 효과 레이어를 만든다.
 3. 실제 학습자가 자주 틀리는 유형 근거를 정리한 뒤 TOPIK·Shorts 문항을 추가한다.
 
 ## 이번 운영 변경
@@ -68,21 +70,21 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-Travel RPG 탐험 화면 하나를 맵 중심 전체화면 셸로 바꾸고, 목표·재화·조작을 맵을 가리지 않는
-최소 HUD로 재배치한다. 새 구역·학습 문항·캐릭터 스프라이트는 같은 작업에 추가하지 않는다.
+기본 여행자 스킨 하나에 4방향 idle/walk 프레임 규격과 발 접지점을 적용하고, 방향 전환과
+걷기 프레임을 실제 이동 상태에 연결한다. 새 구역·학습 문항·전경 효과는 같은 작업에 추가하지 않는다.
 
-## v70 후보 검증 및 배포
+## v71 후보 검증 및 배포
 
-- 이동 때마다 탐험 DOM 전체를 다시 그리지 않고 캐릭터와 카메라 위치만 갱신한 뒤 정착 시 렌더한다.
-- 190ms 캐릭터 보간, 280ms 지연 카메라, 최대 32개 연타 입력 큐와 네 방향 충돌 반응을 추가했다.
-- `prefers-reduced-motion` 환경은 지연 없이 기존 즉시 이동으로 안전하게 돌아간다.
+- 탐험의 큰 제목·재화 카드·목표 카드·조작부를 맵 밖에서 제거하고 전체 높이 맵 위 최소 HUD로 재배치했다.
+- 4:3 지형 원본은 늘이지 않고 세로 높이에 맞춰 렌더하며 카메라는 플레이어를 따라 가로로 추적한다.
+- 조사 설명은 필요할 때만 하단 카드로 확장하고 평상시에는 목표·여행 원·시각·조사 수만 표시한다.
 - 전체 63개 자동검사와 실제 Chrome 320·375·390·430px 밝은/어두운 검사를 통과했다.
-  시작·70ms 중간·도착 좌표, 카메라 애니메이션, 연타 3회 순서 처리, 왕복·재진입·저장 보존·콘솔 오류 0개를 확인했다.
+  전체 높이 점유율, HUD 안전영역, 44px 조작, 이동 보간·연타 큐, 포털 왕복·재진입·저장 보존·콘솔 오류 0개를 확인했다.
 - 결제 UI·API 키·개인정보 수집·외부 전송은 추가하지 않았다.
 - 상위권 품질 지시: https://github.com/okometsbu-beep/topik-quest/issues/76
-- 모바일 검증: https://github.com/okometsbu-beep/topik-quest/actions/runs/33241882390
-- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (병합 뒤 v70 확인)
-- 되돌리기 기준: v69 main `262000050a3f5560d3f28e76cca660abf7e88114`
+- 모바일 검증: https://github.com/okometsbu-beep/topik-quest/actions/runs/33244717959
+- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (병합 뒤 v71 확인)
+- 되돌리기 기준: v70 main `16377ed7ff5de7027aa9386d2def8b831b95f7ff`
 
 ## 알려진 위험
 

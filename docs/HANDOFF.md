@@ -47,6 +47,9 @@ these facts from conversation history or the large TOPIK source bundle.
 - Travel tile movement updates saved progress synchronously but keeps the live map DOM in place for a
   190ms player step and 280ms lagging camera follow. Rapid taps queue in order, blocked movement has a
   short directional response, and reduced-motion devices fall back to immediate rendering.
+- Travel exploration is map-first: the 4:3 world stays aspect-correct at full viewport height, the camera
+  pans horizontally, and location, objective, travel status, D-pad, and interaction controls are compact
+  overlays. Investigation copy expands only while a discovery is open.
 - Game Mode now uses semantic spacing, type, surface, border, and accent tokens through the purpose-named
   `game-visual-system.js` final owner. Equipment, rarity, stage, run-slot, and map-node tiles must stay
   readable rather than near-black. CI checks 320/375/390/430px symmetry, overflow, 44px enabled controls,
