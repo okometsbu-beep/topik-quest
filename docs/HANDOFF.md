@@ -44,6 +44,9 @@ these facts from conversation history or the large TOPIK source bundle.
   bright, or use a near-black placeholder tile as scenery. Map art stays unfiltered while cards, controls,
   text, borders, and focus states use theme tokens. Every UI change must pass both Travel themes plus
   320/375/390/430px containment, symmetry, 44px touch-target, console, and durable-storage checks.
+- Travel tile movement updates saved progress synchronously but keeps the live map DOM in place for a
+  190ms player step and 280ms lagging camera follow. Rapid taps queue in order, blocked movement has a
+  short directional response, and reduced-motion devices fall back to immediate rendering.
 - Game Mode now uses semantic spacing, type, surface, border, and accent tokens through the purpose-named
   `game-visual-system.js` final owner. Equipment, rarity, stage, run-slot, and map-node tiles must stay
   readable rather than near-black. CI checks 320/375/390/430px symmetry, overflow, 44px enabled controls,
