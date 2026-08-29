@@ -58,6 +58,18 @@ test('Seoul travel world has a valid extensible district, zone, collision, POI, 
   assert.ok(fs.existsSync(transportArt));assert.ok(fs.statSync(transportArt).size>80000);
   const railArt=path.join(root,rail.background);
   assert.ok(fs.existsSync(railArt));assert.ok(fs.statSync(railArt).size>80000);
+  assert.deepEqual(Array.from(zone.foregrounds,item=>item.id),['information-desk','rail-wayfinding-sign','arrival-flower-planter']);
+  assert.deepEqual(Array.from(transport.foregrounds,item=>item.id),['center-map-kiosk','south-left-planter','south-right-planter']);
+  assert.deepEqual(Array.from(rail.foregrounds,item=>item.id),['left-ticket-machine','right-ticket-machine','south-left-planter','south-right-planter']);
+  for(const candidate of world.zones){
+    for(const foreground of candidate.foregrounds){
+      assert.ok(foreground.polygon.length>=4,`${candidate.id}:${foreground.id} needs an upper-layer silhouette`);
+      for(const point of foreground.collision)assert.equal(engine.isWalkable(candidate,point.x,point.y,null),false,`${candidate.id}:${foreground.id} collision must block movement`);
+    }
+  }
+  assert.equal(engine.isWalkable(zone,6,4,null),false,'the rail sign base cannot be walked through');
+  assert.equal(engine.isWalkable(transport,5,5,null),false,'the center kiosk base cannot be walked through');
+  assert.equal(engine.isWalkable(rail,1,4,null),false,'the ticket machine base cannot be walked through');
 });
 
 test('the airport portal moves both ways while preserving route progress',()=>{
@@ -105,6 +117,8 @@ test('Travel runtime layers exploration over the existing event flow and saves o
   for(const file of ['data/question-bank-practice-v1.js','question-bank-engine.js','data/travel-pack-seoul-001.js','data/travel-myeongdong-hub.js','data/travel-map-seoul-v1.js','travel-rpg-engine.js','travel-mode.js'])vm.runInContext(read(file),runtime);
   runtime.malbitTravelStart('route-001-airport-myeongdong',false);
   assert.match(screen.innerHTML,/travelRpgCard/);assert.match(screen.innerHTML,/airport-arrivals-map-v1\.webp/);assert.match(screen.innerHTML,/한국 여행이 시작됐다/);
+  assert.match(screen.innerHTML,/travelRpgGroundLayer/);assert.match(screen.innerHTML,/travelRpgActorLayer/);assert.match(screen.innerHTML,/travelRpgUpperLayer/);
+  assert.match(screen.innerHTML,/data-depth-contract="foot-y"/);assert.match(screen.innerHTML,/data-foreground-id="rail-wayfinding-sign"/);
   for(const direction of ['left','left','up','up'])runtime.malbitTravelStep(direction);
   assert.match(screen.innerHTML,/수하물 벨트/);
   runtime.malbitTravelInteract();
@@ -168,6 +182,9 @@ test('Travel styles expose separate light and dark theme tokens without forcing 
   assert.match(css,/\.travelRpgTopHud/);assert.match(css,/\.travelRpgObjectiveHud/);
   assert.match(css,/\.travelRpgControls\{position:absolute/);
   assert.match(css,/\.travelRpgBoard\{position:absolute;height:120%/);
+  assert.match(css,/\.travelRpgGroundLayer,\.travelRpgActorLayer,\.travelRpgUpperLayer\{display:contents\}/);
+  assert.match(css,/\.travelRpgForeground\{position:absolute;inset:0/);
+  assert.match(css,/\.travelRpgForeground[^}]*opacity:1;filter:none/);
   assert.match(css,/\.travelRpgPlayer\{width:7\.4%;height:14%/);
   assert.match(css,/background-size:800% 400%/);assert.match(css,/travelRpgWalk12 \.333333s/);
   assert.match(css,/@keyframes travelRpgIdle4/);assert.match(css,/@keyframes travelRpgWalk12/);
@@ -175,6 +192,7 @@ test('Travel styles expose separate light and dark theme tokens without forcing 
   assert.match(css,/cubic-bezier\(\.2,\.78,\.24,1\)/);
   assert.match(runtime,/travelRpgCard travelRpgShell/);assert.match(runtime,/travelRpgStatusHud/);
   assert.match(runtime,/class="travelRpgPlayer has-sprite idle/);assert.match(runtime,/data-walk-fps=/);
+  assert.match(runtime,/rpgForegroundMarkup/);assert.match(runtime,/data-depth-y=/);assert.match(runtime,/player\.style\.zIndex=String\(point\.depth\)/);
   assert.match(runtime,/player\.classList\.contains\('has-sprite'\)/);
   assert.match(runtime,/const RPG_CAMERA_SCALE=1\.2/);assert.match(runtime,/boardHeight=viewportHeight\*RPG_CAMERA_SCALE/);
   assert.match(runtime,/addEventListener\?\.\('resize',scheduleRpgCameraSync/);

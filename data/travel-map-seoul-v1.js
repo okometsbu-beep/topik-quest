@@ -5,6 +5,12 @@
   const t=(ko,ja,en,zh)=>Object.freeze({ko,ja,en,zh});
   const scene=(sceneId,x,y,kind,label,action)=>Object.freeze({sceneId,x,y,kind,label,action});
   const poi=(id,x,y,kind,title,korean,detail,reward=0)=>Object.freeze({id,x,y,kind,title,korean,detail,reward});
+  const foreground=(id,depthY,polygon,collision)=>Object.freeze({
+    id,
+    depthY,
+    polygon:Object.freeze(polygon.map(([x,y])=>Object.freeze({x,y}))),
+    collision:Object.freeze(collision.map(([x,y])=>Object.freeze({x,y})))
+  });
   const portal=(id,connectionId,x,y,targetZoneId,targetX,targetY,direction,label)=>Object.freeze({
     id,connectionId,x,y,targetZoneId,targetX,targetY,direction,label,
     action:t('이동','移動','Travel','移动')
@@ -43,6 +49,11 @@
       poi('information-board',3,3,'inspect',t('공항 안내판','空港案内板','Airport information board','机场信息牌'),'안내',t('“안내”는 information 또는 guidance라는 뜻입니다.','「안내」は information や guidance という意味です。','안내 means information or guidance.','“안내”表示信息或指引。'),200),
       poi('terminal-window',7,1,'inspect',t('공항 전망창','空港の展望窓','Terminal window','航站楼观景窗'),'인천공항',t('창밖으로 인천공항의 활주로와 관제탑이 보입니다.','窓の外に仁川空港の滑走路と管制塔が見えます。','The runway and control tower of Incheon Airport are visible outside.','窗外可以看到仁川机场的跑道和管制塔。'),0)
     ]),
+    foregrounds:Object.freeze([
+      foreground('information-desk',3.98,[[.46,2.5],[3.67,2.5],[3.67,3.98],[.46,3.98]],[[1,3],[2,3],[3,3]]),
+      foreground('rail-wayfinding-sign',4.48,[[5.34,3.47],[7.09,3.47],[7.09,4.48],[5.34,4.48]],[[5,4],[6,4],[7,4]]),
+      foreground('arrival-flower-planter',6.84,[[5.28,5.78],[6.72,5.78],[6.72,6.84],[5.28,6.84]],[[5,6],[6,6]])
+    ]),
     portals:Object.freeze([
       portal('arrivals-to-transport','icn-t1-arrivals-transport',10,7,'icn-t1-transport-center',5,7,'up',t('교통센터로','交通センターへ','To the transport center','前往交通中心'))
     ])
@@ -72,6 +83,11 @@
     scenes:Object.freeze({}),
     pois:Object.freeze([
       poi('transport-center-sign',5,4,'inspect',t('교통센터 표지','交通センター表示','Transport center sign','交通中心标志'),'교통센터',t('“교통”은 transportation, “센터”는 center라는 뜻입니다. 두 단어를 붙이면 여러 교통수단을 이용하는 곳을 가리켜요.','「교통」は交通・移動手段、「센터」はセンターという意味です。二つを合わせると、さまざまな交通手段を利用する場所を表します。','교통 means transportation and 센터 means center. Together they name a place for connecting to different transport options.','“교통”表示交通，“센터”表示中心，组合起来指连接多种交通方式的场所。'),200)
+    ]),
+    foregrounds:Object.freeze([
+      foreground('center-map-kiosk',5.82,[[5.14,4.43],[6.86,4.43],[6.86,5.82],[5.14,5.82]],[[5,4],[6,4],[5,5],[6,5]]),
+      foreground('south-left-planter',8.17,[[3.53,7.01],[4.59,7.01],[4.59,8.17],[3.53,8.17]],[[3,7],[4,7]]),
+      foreground('south-right-planter',8.17,[[7.41,7.01],[8.48,7.01],[8.48,8.17],[7.41,8.17]],[[7,7],[8,7]])
     ]),
     portals:Object.freeze([
       portal('transport-to-arrivals','icn-t1-arrivals-transport',5,8,'icn-t1-arrivals',9,7,'left',t('입국장으로','到着ロビーへ','To Arrivals','前往到达大厅')),
@@ -103,6 +119,12 @@
     scenes:Object.freeze({}),
     pois:Object.freeze([
       poi('boarding-direction-sign',8,3,'inspect',t('승차 방향 표지','乗車方向の表示','Boarding-direction sign','乘车方向标志'),'승차 방향',t('“승차”는 차나 열차에 타는 것, “방향”은 가야 할 쪽을 뜻합니다. 역에서는 이 표지로 열차를 타러 가는 길을 확인해요.','「승차」は乗車、「방향」は方向という意味です。駅ではこの表示で、列車に乗るために進む方向を確認します。','승차 means boarding a vehicle or train, and 방향 means direction. At a station, this sign shows which way to go to board the train.','“승차”表示乘车，“방향”表示方向。在车站可通过这个标志确认前往乘车处的方向。'),200)
+    ]),
+    foregrounds:Object.freeze([
+      foreground('left-ticket-machine',5.18,[[.47,3.68],[1.22,3.68],[1.22,5.18],[.47,5.18]],[[1,4]]),
+      foreground('right-ticket-machine',5.18,[[10.78,3.68],[11.53,3.68],[11.53,5.18],[10.78,5.18]],[[10,4]]),
+      foreground('south-left-planter',8.16,[[3.54,7.03],[4.6,7.03],[4.6,8.16],[3.54,8.16]],[[3,7],[4,7]]),
+      foreground('south-right-planter',8.16,[[7.4,7.03],[8.46,7.03],[8.46,8.16],[7.4,8.16]],[[7,7],[8,7]])
     ]),
     portals:Object.freeze([
       portal('rail-concourse-to-transport','icn-t1-transport-rail-concourse',5,8,'icn-t1-transport-center',5,2,'down',t('교통센터로','交通センターへ','To the transport center','前往交通中心'))
