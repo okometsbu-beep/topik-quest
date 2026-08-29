@@ -47,9 +47,15 @@ these facts from conversation history or the large TOPIK source bundle.
 - Travel tile movement updates saved progress synchronously but keeps the live map DOM in place for a
   190ms player step and 280ms lagging camera follow. Rapid taps queue in order, blocked movement has a
   short directional response, and reduced-motion devices fall back to immediate rendering.
+- The default `traveler-blue` skin owns one optimized transparent 8×4 sprite sheet. Rows are
+  down/left/right/up; columns 0–3 are a 4fps idle loop and 4–7 are a 12fps walk loop. Every frame uses
+  the same `.5,.9375` foot anchor and one preloaded image URL, so movement must not swap `src`, opacity,
+  filter, or brightness. Clear/perfect reward skins intentionally keep the prior static fallback.
 - Travel exploration is map-first: the 4:3 world stays aspect-correct at full viewport height, the camera
-  pans horizontally, and location, objective, travel status, D-pad, and interaction controls are compact
-  overlays. Investigation copy expands only while a discovery is open.
+  follows both axes around interior tiles with 1.2× vertical overscan, and location, objective, travel
+  status, D-pad, and interaction controls are compact overlays. Viewport resizing snaps camera bounds
+  before restoring movement interpolation so no empty edge flashes. Investigation copy expands only
+  while a discovery is open.
 - Game Mode now uses semantic spacing, type, surface, border, and accent tokens through the purpose-named
   `game-visual-system.js` final owner. Equipment, rarity, stage, run-slot, and map-node tiles must stay
   readable rather than near-black. CI checks 320/375/390/430px symmetry, overflow, 44px enabled controls,
@@ -90,6 +96,9 @@ these facts from conversation history or the large TOPIK source bundle.
   All voice and speed controls stay in the single detailed More-screen setting.
 - A returning GitHub Pages tab can briefly show the previous release while its service worker swaps;
   closing and reopening the tab completes the update without deleting progress.
+- Travel foreground occlusion and Y-depth are not implemented yet. Until the next bounded task splits
+  ground/actor/upper-foreground layers, tall machines, signs, and planters can visually overlap the actor
+  incorrectly even though collision remains data-driven.
 
 ## Execution defaults
 

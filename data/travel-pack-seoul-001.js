@@ -61,7 +61,16 @@
       Object.freeze({id:'myeongdong',asset:'transitCard',unlockAt:6,name:t('명동역','明洞駅','Myeongdong Station','明洞站')})
     ])}),
     skins:Object.freeze([
-      Object.freeze({id:'traveler-blue',image:'assets/art/travel/layers/avatar-traveler-blue.webp',accent:'#4b8df8',unlock:'default',name:t('첫 여행자','はじめての旅人','First Traveler','初次旅人')}),
+      Object.freeze({id:'traveler-blue',image:'assets/art/travel/layers/avatar-traveler-blue.webp',sprite:Object.freeze({
+        image:'assets/art/travel/rpg/traveler-blue-4dir-v1.png',
+        layout:Object.freeze({columns:8,rows:4,cellWidth:192,cellHeight:272}),
+        directions:Object.freeze({down:0,left:1,right:2,up:3}),
+        states:Object.freeze({
+          idle:Object.freeze({start:0,frames:4,fps:4}),
+          walk:Object.freeze({start:4,frames:4,fps:12})
+        }),
+        footAnchor:Object.freeze({x:.5,y:.9375})
+      }),accent:'#4b8df8',unlock:'default',name:t('첫 여행자','はじめての旅人','First Traveler','初次旅人')}),
       Object.freeze({id:'seoul-sunset',image:'assets/art/travel/layers/avatar-seoul-sunset.webp',accent:'#f17c5a',unlock:'clear',name:t('명동 노을','明洞夕焼け','Myeongdong Sunset','明洞晚霞')}),
       Object.freeze({id:'hanbok-night',image:'assets/art/travel/layers/avatar-hanbok-night.webp',accent:'#8d70e8',unlock:'perfect',name:t('서울의 밤','ソウルの夜','Seoul Night','首尔之夜')})
     ]),rewardSkin:'seoul-sunset',perfectSkin:'hanbok-night',

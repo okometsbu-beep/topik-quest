@@ -43,6 +43,20 @@ test('the first travel route is a complete, reachable six-question journey', () 
   assert.deepEqual(Array.from(pack.map.stops, stop => stop.id), ['airport-t1', 'seoul-station', 'myeongdong']);
   assert.deepEqual(Array.from(pack.map.stops, stop => stop.unlockAt), [0, 3, 6]);
   assert.deepEqual(Array.from(pack.skins, skin => skin.unlock), ['default', 'clear', 'perfect']);
+  const sprite=pack.skins[0].sprite;
+  assert.equal(sprite.image,'assets/art/travel/rpg/traveler-blue-4dir-v1.png');
+  assert.deepEqual({...sprite.layout},{columns:8,rows:4,cellWidth:192,cellHeight:272});
+  assert.deepEqual({...sprite.directions},{down:0,left:1,right:2,up:3});
+  assert.deepEqual({...sprite.states.walk},{start:4,frames:4,fps:12});
+  assert.deepEqual({...sprite.states.idle},{start:0,frames:4,fps:4});
+  assert.deepEqual({...sprite.footAnchor},{x:.5,y:.9375});
+  const spritePng=fs.readFileSync(path.join(root,sprite.image));
+  assert.equal(spritePng.subarray(1,4).toString(),'PNG');
+  assert.equal(spritePng.readUInt32BE(16),sprite.layout.columns*sprite.layout.cellWidth);
+  assert.equal(spritePng.readUInt32BE(20),sprite.layout.rows*sprite.layout.cellHeight);
+  assert.ok([3,6].includes(spritePng[25]),'sprite PNG must use transparent palette or RGBA pixels');
+  if(spritePng[25]===3)assert.ok(spritePng.includes(Buffer.from('tRNS')),'palette sprite must preserve transparency');
+  assert.ok(spritePng.length<700000,'sprite must stay below the reliable static-asset delivery budget');
 
   const ids = pack.scenes.map(scene => scene.id);
   assert.equal(new Set(ids).size, ids.length, 'scene IDs must be unique');
@@ -212,6 +226,7 @@ test('Travel Mode is independent from Full Mock and wired into the ordered runti
   assert.ok(bootstrap.indexOf("'data/travel-pack-seoul-001.js'") < bootstrap.indexOf("'travel-mode.js'"));
   assert.ok(bootstrap.indexOf("'data/travel-map-seoul-v1.js'") < bootstrap.indexOf("'travel-rpg-engine.js'"));
   assert.ok(bootstrap.indexOf("'travel-rpg-engine.js'") < bootstrap.indexOf("'travel-mode.js'"));
+  assert.match(bootstrap,/preloadImage\('assets\/art\/travel\/rpg\/traveler-blue-4dir-v1\.png'\)/);
   assert.ok(bootstrap.indexOf("'question-bank-engine.js'") < bootstrap.indexOf("'travel-mode.js'"));
   assert.ok(bootstrap.indexOf("'topik1.js'") < bootstrap.indexOf("'travel-mode.js'"));
   assert.match(runtime, /const STORAGE_KEY='malbitStoryV1'/);

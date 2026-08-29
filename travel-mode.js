@@ -15,6 +15,8 @@
   const RPG_MOTION={busy:false,queue:[],timer:null,token:0,pendingInteraction:false};
   const RPG_STEP_MS=190;
   const RPG_SETTLE_MS=90;
+  const RPG_CAMERA_SCALE=1.2;
+  let RPG_CAMERA_FRAME=0;
   const HUB_ORDER=Object.create(null);
   const HUB_BUDGET=Object.create(null);
   const HUB_DIALOGUE_STEP=Object.create(null);
@@ -528,11 +530,23 @@
     top:`${((Number(item.y)+.5)/zone.height*100).toFixed(3)}%`
   });
   const rpgPoint=(zone,item)=>{const point=rpgPointValues(zone,item);return`left:${point.left};top:${point.top}`};
+  function rpgPlayerMarkup(skin,zone,progress){
+    if(!skin)return'';
+    const direction=String(progress.direction||'down'),sprite=skin.sprite;
+    if(sprite?.image){
+      const footX=Math.max(0,Math.min(1,Number(sprite.footAnchor?.x)||.5));
+      const footY=Math.max(0,Math.min(1,Number(sprite.footAnchor?.y)||.9375));
+      const walkFps=Math.max(1,Number(sprite.states?.walk?.fps)||12);
+      return`<span class="travelRpgPlayer has-sprite idle ${h(direction)}" role="img" aria-label="${h(l(skin.name))}" data-sprite-columns="${h(sprite.layout?.columns||8)}" data-sprite-rows="${h(sprite.layout?.rows||4)}" data-walk-fps="${h(walkFps)}" data-foot-anchor="${h(`${footX},${footY}`)}" style="${rpgPoint(zone,progress)};--travel-rpg-anchor-x:${h((-footX*100).toFixed(3))}%;--travel-rpg-anchor-y:${h((-footY*100).toFixed(3))}%"><i class="travelRpgSprite" aria-hidden="true" style="--travel-rpg-sprite:url('${h(sprite.image)}')"></i></span>`;
+    }
+    if(!skin.image)return'';
+    return`<span class="travelRpgPlayer idle ${h(direction)}" role="img" aria-label="${h(l(skin.name))}" style="${rpgPoint(zone,progress)}"><img src="${h(skin.image)}" alt=""></span>`;
+  }
   function rpgCameraValues(zone,progress){
     const viewport=document.querySelector?.('.travelRpgViewport');
     const viewportWidth=Math.max(1,Number(viewport?.clientWidth)||Math.min(Number(window.innerWidth)||390,720));
     const viewportHeight=Math.max(1,Number(viewport?.clientHeight)||Number(window.innerHeight)||700);
-    const boardHeight=viewportHeight,boardWidth=boardHeight*4/3;
+    const boardHeight=viewportHeight*RPG_CAMERA_SCALE,boardWidth=boardHeight*4/3;
     const x=(Number(progress.x)+.5)/zone.width,y=(Number(progress.y)+.5)/zone.height;
     const clamp=(value,min)=>Math.max(min,Math.min(0,value));
     return{
@@ -541,12 +555,27 @@
     };
   }
   function rpgCamera(zone,progress){const camera=rpgCameraValues(zone,progress);return`left:${camera.left};top:${camera.top}`}
+  function syncRpgCamera(){
+    RPG_CAMERA_FRAME=0;
+    const context=activeRpgContext(),board=document.querySelector?.('.travelRpgBoard');
+    if(!context||!board||RPG_EVENT_OPEN[context.scene.id])return;
+    const progress=RPG.normalizeProgress(context.pack.id,context.state.exploration,context.scene.id),camera=rpgCameraValues(context.zone,progress);
+    board.style.transition='none';
+    board.style.left=camera.left;board.style.top=camera.top;
+    void board.offsetWidth;
+    requestAnimationFrame(()=>{if(board.isConnected)board.style.removeProperty('transition')});
+  }
+  function scheduleRpgCameraSync(){
+    if(RPG_CAMERA_FRAME||typeof requestAnimationFrame!=='function')return;
+    RPG_CAMERA_FRAME=requestAnimationFrame(syncRpgCamera);
+  }
   function animateRpgStep(zone,progress,blocked){
     if(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return false;
     const card=document.querySelector?.('.travelRpgCard'),viewport=card?.querySelector?.('.travelRpgViewport'),board=card?.querySelector?.('.travelRpgBoard'),player=card?.querySelector?.('.travelRpgPlayer');
     if(!card||!viewport||!board||!player||typeof setTimeout!=='function')return false;
     const point=rpgPointValues(zone,progress),camera=rpgCameraValues(zone,progress),direction=String(progress.direction||'down');
-    player.className=`travelRpgPlayer ${h(direction)} ${blocked?`blocked bump-${h(direction)}`:'walking'}`;
+    const spriteClass=player.classList.contains('has-sprite')?' has-sprite':'';
+    player.className=`travelRpgPlayer${spriteClass} ${h(direction)} ${blocked?`blocked bump-${h(direction)}`:'walking'}`;
     player.style.left=point.left;player.style.top=point.top;
     board.style.left=camera.left;board.style.top=camera.top;
     card.classList.add('is-moving');viewport.setAttribute('aria-busy','true');
@@ -597,7 +626,7 @@
     const notice=RPG_NOTICE[scene.id];
     const discoveryCount=progress.discoveries.filter(id=>id.startsWith(`${zone.id}:`)).length;
     const backLabel=l({ko:'여행 지도',ja:'旅マップ',en:'Travel map',zh:'旅行地图'});
-    sc.innerHTML=`<div class="travelPlay travelRpgScreen"><article class="travelRpgCard travelRpgShell ${notice?.type==='poi'?'has-discovery':''}"><div class="travelRpgViewport" role="img" aria-label="${h(l(zone.title))}"><div class="travelRpgBoard" style="${rpgCamera(zone,progress)}"><img class="travelRpgMap" src="${h(zone.background)}" alt="" width="1200" height="900" loading="eager">${pois}${portals}${target}${skin?.image?`<span class="travelRpgPlayer ${h(progress.direction)}" style="${rpgPoint(zone,progress)}"><img src="${h(skin.image)}" alt="${h(l(skin.name))}"></span>`:''}</div><header class="travelRpgTopHud"><button class="travelRpgBack" onclick="malbitTravelBack()" aria-label="${h(backLabel)}">‹</button><div class="travelRpgLocationHud"><small>SEOUL WORLD · ${h(progress.steps)} STEP</small><b>${h(l(zone.title))}</b></div><button class="travelRpgLang" onclick="event.stopPropagation();flagMenu()" aria-label="${h(l({ko:'설명 언어 바꾸기',ja:'説明言語を変更',en:'Change explanation language',zh:'切换解析语言'}))}">${flag()}</button></header><div class="travelRpgStatusHud" aria-label="${h(l({ko:'여행 상태',ja:'旅のステータス',en:'Travel status',zh:'旅行状态'}))}"><span><small>${h(l({ko:'여행 원',ja:'旅ウォン',en:'TRAVEL WON',zh:'旅行韩元'}))}</small><b>${h(won(state.wallet))}</b></span><span><small>${h(l({ko:'여행 시각',ja:'旅の時刻',en:'TRIP TIME',zh:'旅行时间'}))}</small><b>${h(clock(state.clockMinutes))}</b></span><span><small>${h(l({ko:'조사',ja:'調査',en:'FOUND',zh:'调查'}))}</small><b>${h(discoveryCount)}/${h(zone.pois.length)}</b></span></div><div class="travelRpgObjectiveHud"><small>${h(l({ko:'현재 목표',ja:'現在の目標',en:'CURRENT OBJECTIVE',zh:'当前目标'}))}</small><b>${h(l(scene.title))}</b></div>${rpgNoticeMarkup(scene,notice)}<div class="travelRpgControls"><div class="travelRpgDpad" aria-label="${h(l({ko:'이동 방향',ja:'移動方向',en:'Movement controls',zh:'移动方向'}))}"><button onclick="malbitTravelStep('up')" aria-label="${h(l({ko:'위로 이동',ja:'上へ移動',en:'Move up',zh:'向上移动'}))}">↑</button><button onclick="malbitTravelStep('left')" aria-label="${h(l({ko:'왼쪽으로 이동',ja:'左へ移動',en:'Move left',zh:'向左移动'}))}">←</button><button onclick="malbitTravelStep('down')" aria-label="${h(l({ko:'아래로 이동',ja:'下へ移動',en:'Move down',zh:'向下移动'}))}">↓</button><button onclick="malbitTravelStep('right')" aria-label="${h(l({ko:'오른쪽으로 이동',ja:'右へ移動',en:'Move right',zh:'向右移动'}))}">→</button></div><button class="travelRpgAction" onclick="malbitTravelInteract()" ${interaction?'':'disabled'}><small>${interaction?`${h(targetTitle)} · `:''}${h(l({ko:'상호작용',ja:'インタラクト',en:'INTERACT',zh:'互动'}))}</small><b>${h(actionLabel)}</b></button></div><p class="travelRpgSaveStatus">${h(l({ko:'이동과 조사는 이 기기에 자동 저장됩니다.',ja:'移動と調査はこの端末に自動保存されます。',en:'Movement and discoveries save on this device.',zh:'移动与调查会自动保存在此设备。'}))}</p></div></article></div>`;
+    sc.innerHTML=`<div class="travelPlay travelRpgScreen"><article class="travelRpgCard travelRpgShell ${notice?.type==='poi'?'has-discovery':''}"><div class="travelRpgViewport" role="img" aria-label="${h(l(zone.title))}"><div class="travelRpgBoard" style="${rpgCamera(zone,progress)}"><img class="travelRpgMap" src="${h(zone.background)}" alt="" width="1200" height="900" loading="eager">${pois}${portals}${target}${rpgPlayerMarkup(skin,zone,progress)}</div><header class="travelRpgTopHud"><button class="travelRpgBack" onclick="malbitTravelBack()" aria-label="${h(backLabel)}">‹</button><div class="travelRpgLocationHud"><small>SEOUL WORLD · ${h(progress.steps)} STEP</small><b>${h(l(zone.title))}</b></div><button class="travelRpgLang" onclick="event.stopPropagation();flagMenu()" aria-label="${h(l({ko:'설명 언어 바꾸기',ja:'説明言語を変更',en:'Change explanation language',zh:'切换解析语言'}))}">${flag()}</button></header><div class="travelRpgStatusHud" aria-label="${h(l({ko:'여행 상태',ja:'旅のステータス',en:'Travel status',zh:'旅行状态'}))}"><span><small>${h(l({ko:'여행 원',ja:'旅ウォン',en:'TRAVEL WON',zh:'旅行韩元'}))}</small><b>${h(won(state.wallet))}</b></span><span><small>${h(l({ko:'여행 시각',ja:'旅の時刻',en:'TRIP TIME',zh:'旅行时间'}))}</small><b>${h(clock(state.clockMinutes))}</b></span><span><small>${h(l({ko:'조사',ja:'調査',en:'FOUND',zh:'调查'}))}</small><b>${h(discoveryCount)}/${h(zone.pois.length)}</b></span></div><div class="travelRpgObjectiveHud"><small>${h(l({ko:'현재 목표',ja:'現在の目標',en:'CURRENT OBJECTIVE',zh:'当前目标'}))}</small><b>${h(l(scene.title))}</b></div>${rpgNoticeMarkup(scene,notice)}<div class="travelRpgControls"><div class="travelRpgDpad" aria-label="${h(l({ko:'이동 방향',ja:'移動方向',en:'Movement controls',zh:'移动方向'}))}"><button onclick="malbitTravelStep('up')" aria-label="${h(l({ko:'위로 이동',ja:'上へ移動',en:'Move up',zh:'向上移动'}))}">↑</button><button onclick="malbitTravelStep('left')" aria-label="${h(l({ko:'왼쪽으로 이동',ja:'左へ移動',en:'Move left',zh:'向左移动'}))}">←</button><button onclick="malbitTravelStep('down')" aria-label="${h(l({ko:'아래로 이동',ja:'下へ移動',en:'Move down',zh:'向下移动'}))}">↓</button><button onclick="malbitTravelStep('right')" aria-label="${h(l({ko:'오른쪽으로 이동',ja:'右へ移動',en:'Move right',zh:'向右移动'}))}">→</button></div><button class="travelRpgAction" onclick="malbitTravelInteract()" ${interaction?'':'disabled'}><small>${interaction?`${h(targetTitle)} · `:''}${h(l({ko:'상호작용',ja:'インタラクト',en:'INTERACT',zh:'互动'}))}</small><b>${h(actionLabel)}</b></button></div><p class="travelRpgSaveStatus">${h(l({ko:'이동과 조사는 이 기기에 자동 저장됩니다.',ja:'移動と調査はこの端末に自動保存されます。',en:'Movement and discoveries save on this device.',zh:'移动与调查会自动保存在此设备。'}))}</p></div></article></div>`;
   }
   function renderPlay(sc){
     const {pack,state,scene}=current();
@@ -869,7 +898,8 @@
   window.MALBIT_TRAVEL_RPG_MOTION=Object.freeze({
     get busy(){return RPG_MOTION.busy},
     get queued(){return RPG_MOTION.queue.length},
-    durationMs:RPG_STEP_MS
+    durationMs:RPG_STEP_MS,
+    cameraScale:RPG_CAMERA_SCALE
   });
 
   document.addEventListener?.('keydown',event=>{
@@ -881,6 +911,7 @@
     if(direction){event.preventDefault();window.malbitTravelStep(direction);return}
     if(event.key==='Enter'||event.key===' '||event.key==='e'||event.key==='E'){event.preventDefault();window.malbitTravelInteract()}
   });
+  window.addEventListener?.('resize',scheduleRpgCameraSync,{passive:true});
 
   // A returning tab may still hold the old view name. Migrate it without touching any progress.
   if(S.view==='story'||S.view==='storyPlay'){
