@@ -171,7 +171,7 @@ try{
     await tap('.shortsChoice',choiceIndex,120);await tap('.shortsChoice',choiceIndex,180);
     assert.ok(await evaluate(`!!document.querySelector('.shortsFeedback')`),'Shorts feedback must appear after submission');
   };
-  const rpgPath=async(kind='scene',targetId='')=>evaluate(`(()=>{const store=JSON.parse(localStorage.getItem('malbitStoryV1')),state=store.episodes['route-001-airport-myeongdong'],match=MALBIT_TRAVEL_RPG.zoneForScene(state.packId,state.sceneId);if(!match)return null;const target=${JSON.stringify(kind)}==='scene'?match.anchor:match.zone.pois.find(item=>item.id===${JSON.stringify(targetId)});if(!target)return null;const queue=[{x:state.exploration.x,y:state.exploration.y,path:[]}],seen=new Set([state.exploration.x+','+state.exploration.y]);while(queue.length){const current=queue.shift();if(Math.abs(current.x-target.x)+Math.abs(current.y-target.y)<=1)return current.path;for(const [direction,delta] of Object.entries(MALBIT_TRAVEL_RPG.directions)){const x=current.x+delta.x,y=current.y+delta.y,key=x+','+y;if(seen.has(key)||!MALBIT_TRAVEL_RPG.isWalkable(match.zone,x,y,state.sceneId))continue;seen.add(key);queue.push({x,y,path:[...current.path,direction]})}}return null})()`);
+  const rpgPath=async(kind='scene',targetId='')=>evaluate(`(()=>{const store=JSON.parse(localStorage.getItem('malbitStoryV1')),state=store.episodes['route-001-airport-myeongdong'],match=MALBIT_TRAVEL_RPG.contextForProgress(state.packId,state.exploration,state.sceneId);if(!match)return null;const target=${JSON.stringify(kind)}==='scene'?match.anchor:${JSON.stringify(kind)}==='portal'?match.zone.portals.find(item=>item.id===${JSON.stringify(targetId)}):match.zone.pois.find(item=>item.id===${JSON.stringify(targetId)});if(!target)return null;const queue=[{x:state.exploration.x,y:state.exploration.y,path:[]}],seen=new Set([state.exploration.x+','+state.exploration.y]);while(queue.length){const current=queue.shift();if(Math.abs(current.x-target.x)+Math.abs(current.y-target.y)<=1)return current.path;for(const [direction,delta] of Object.entries(MALBIT_TRAVEL_RPG.directions)){const x=current.x+delta.x,y=current.y+delta.y,key=x+','+y;if(seen.has(key)||!MALBIT_TRAVEL_RPG.isWalkable(match.zone,x,y,state.sceneId))continue;seen.add(key);queue.push({x,y,path:[...current.path,direction]})}}return null})()`);
   const moveRpgTo=async(kind='scene',targetId='')=>{
     const path=await rpgPath(kind,targetId);assert.ok(Array.isArray(path),`RPG target unreachable: ${kind} ${targetId}`);
     const index={up:0,left:1,down:2,right:3};
@@ -227,9 +227,20 @@ try{
       await moveRpgTo('poi','baggage-carousel');await tap('.travelRpgAction',0,120);
       assert.match(await evaluate(`document.querySelector('.travelRpgDiscovery')?.innerText`),/수하물 찾는 곳/);
       assert.equal((await state()).wallet,79200);await shot('00n-travel-rpg-investigation.png');await tap('.travelRpgDiscovery button',0,90);
+      await moveRpgTo('portal','arrivals-to-transport');await tap('.travelRpgAction',0,140);
+      assert.equal((await state()).exploration.zoneId,'icn-t1-transport-center');
+      assert.match(await evaluate(`document.querySelector('.travelRpgMap')?.getAttribute('src')`),/airport-transport-center-map-v1\.webp/);
+      for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertRpgFits(`Transport center light ${width}px`,'light');await assertFits(`Transport center light ${width}px`)}
+      await setViewport(390,844);await shot('00na-transport-center-light.png');
+      await moveRpgTo('poi','transport-center-sign');await tap('.travelRpgAction',0,120);
+      assert.match(await evaluate(`document.querySelector('.travelRpgDiscovery')?.innerText`),/「교통」は交通・移動手段/);
+      assert.equal((await state()).wallet,79400);await shot('00nb-transport-sign-investigation.png');await tap('.travelRpgDiscovery button',0,90);
       await evaluate(`malbitSetTheme('dark')`);await sleep(120);
-      for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertRpgFits(`Travel RPG dark ${width}px`,'dark');await assertFits(`Travel RPG dark ${width}px`)}
-      await setViewport(390,844);await shot('00o-travel-rpg-dark.png');
+      for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertRpgFits(`Transport center dark ${width}px`,'dark');await assertFits(`Transport center dark ${width}px`)}
+      await setViewport(390,844);await shot('00o-transport-center-dark.png');
+      await moveRpgTo('portal','transport-to-arrivals');await tap('.travelRpgAction',0,140);
+      assert.equal((await state()).exploration.zoneId,'icn-t1-arrivals');
+      assert.match(await evaluate(`document.querySelector('.travelRpgMap')?.getAttribute('src')`),/airport-arrivals-map-v1\.webp/);
     }
     await openRpgScene();
     await tapUntilScene('.travelSceneCard .travelPrimary','q-hello');

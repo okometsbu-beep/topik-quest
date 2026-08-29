@@ -5,6 +5,10 @@
   const t=(ko,ja,en,zh)=>Object.freeze({ko,ja,en,zh});
   const scene=(sceneId,x,y,kind,label,action)=>Object.freeze({sceneId,x,y,kind,label,action});
   const poi=(id,x,y,kind,title,korean,detail,reward=0)=>Object.freeze({id,x,y,kind,title,korean,detail,reward});
+  const portal=(id,connectionId,x,y,targetZoneId,targetX,targetY,direction,label)=>Object.freeze({
+    id,connectionId,x,y,targetZoneId,targetX,targetY,direction,label,
+    action:t('이동','移動','Travel','移动')
+  });
 
   const airportArrivals=Object.freeze({
     id:'icn-t1-arrivals',
@@ -39,7 +43,39 @@
       poi('information-board',3,3,'inspect',t('공항 안내판','空港案内板','Airport information board','机场信息牌'),'안내',t('“안내”는 information 또는 guidance라는 뜻입니다.','「안내」は information や guidance という意味です。','안내 means information or guidance.','“안내”表示信息或指引。'),200),
       poi('terminal-window',7,1,'inspect',t('공항 전망창','空港の展望窓','Terminal window','航站楼观景窗'),'인천공항',t('창밖으로 인천공항의 활주로와 관제탑이 보입니다.','窓の外に仁川空港の滑走路と管制塔が見えます。','The runway and control tower of Incheon Airport are visible outside.','窗外可以看到仁川机场的跑道和管制塔。'),0)
     ]),
-    portals:Object.freeze([])
+    portals:Object.freeze([
+      portal('arrivals-to-transport','icn-t1-arrivals-transport',10,7,'icn-t1-transport-center',5,7,'up',t('교통센터로','交通センターへ','To the transport center','前往交通中心'))
+    ])
+  });
+
+  const airportTransportCenter=Object.freeze({
+    id:'icn-t1-transport-center',
+    districtId:'incheon-airport',
+    version:1,
+    title:t('인천공항 T1 교통센터','仁川空港T1 交通センター','Incheon Airport T1 Transport Center','仁川机场T1交通中心'),
+    subtitle:t('교통 표지를 조사하고 입국장으로 돌아가는 길을 확인해 보세요.','交通表示を調べ、到着ロビーへ戻る道を確認しよう。','Inspect the transport sign and find the way back to Arrivals.','调查交通标志并确认返回到达大厅的路线。'),
+    background:'assets/art/travel/rpg/airport-transport-center-map-v1.webp',
+    width:12,
+    height:9,
+    grid:Object.freeze([
+      '############',
+      '#..........#',
+      '#..........#',
+      '#.###..###.#',
+      '#.###.####.#',
+      '#.###..###.#',
+      '#..........#',
+      '#..........#',
+      '#####..#####'
+    ]),
+    spawn:Object.freeze({x:5,y:7,direction:'up'}),
+    scenes:Object.freeze({}),
+    pois:Object.freeze([
+      poi('transport-center-sign',5,4,'inspect',t('교통센터 표지','交通センター表示','Transport center sign','交通中心标志'),'교통센터',t('“교통”은 transportation, “센터”는 center라는 뜻입니다. 두 단어를 붙이면 여러 교통수단을 이용하는 곳을 가리켜요.','「교통」は交通・移動手段、「센터」はセンターという意味です。二つを合わせると、さまざまな交通手段を利用する場所を表します。','교통 means transportation and 센터 means center. Together they name a place for connecting to different transport options.','“교통”表示交通，“센터”表示中心，组合起来指连接多种交通方式的场所。'),200)
+    ]),
+    portals:Object.freeze([
+      portal('transport-to-arrivals','icn-t1-arrivals-transport',5,8,'icn-t1-arrivals',9,7,'left',t('입국장으로','到着ロビーへ','To Arrivals','前往到达大厅'))
+    ])
   });
 
   const world=Object.freeze({
@@ -51,10 +87,10 @@
       Object.freeze({
         id:'incheon-airport',
         title:t('인천공항','仁川空港','Incheon Airport','仁川机场'),
-        zoneIds:Object.freeze(['icn-t1-arrivals'])
+        zoneIds:Object.freeze(['icn-t1-arrivals','icn-t1-transport-center'])
       })
     ]),
-    zones:Object.freeze([airportArrivals])
+    zones:Object.freeze([airportArrivals,airportTransportCenter])
   });
 
   window.MALBIT_TRAVEL_WORLDS=Object.freeze([world]);
