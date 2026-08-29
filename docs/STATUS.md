@@ -78,7 +78,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 첫 화면 검토에서 발견한 카메라 오른쪽 빈 띠는 공통 `max-width` 충돌을 제거하고 재발 검사로 고정했다.
 - 결제 UI·API 키·개인정보 수집·외부 전송은 추가하지 않았다.
 - 추적 Issue: https://github.com/okometsbu-beep/topik-quest/issues/72
-- 변경 PR: 최종 CI 뒤 기록
+- 변경 PR: https://github.com/okometsbu-beep/topik-quest/pull/73
 - 모바일 검증: https://github.com/okometsbu-beep/topik-quest/actions/runs/33230963069
 - 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (병합 뒤 v68 확인)
 - 되돌리기 기준: v67 main `70fe955289e1501174427a34fccfe709842bd64d`
