@@ -167,8 +167,14 @@ test('Travel styles expose separate light and dark theme tokens without forcing 
   assert.match(css,/\.travelRpgShell\{position:relative;height:100vh;height:100dvh/);
   assert.match(css,/\.travelRpgTopHud/);assert.match(css,/\.travelRpgObjectiveHud/);
   assert.match(css,/\.travelRpgControls\{position:absolute/);
-  assert.match(css,/travelRpgWalk/);assert.match(css,/cubic-bezier\(\.2,\.78,\.24,1\)/);
+  assert.match(css,/\.travelRpgBoard\{position:absolute;height:120%/);
+  assert.match(css,/background-size:800% 400%/);assert.match(css,/travelRpgWalk12 \.333333s/);
+  assert.match(css,/@keyframes travelRpgIdle4/);assert.match(css,/@keyframes travelRpgWalk12/);
+  assert.doesNotMatch(css,/@keyframes travelRpgWalk12[^}]*filter:/);
+  assert.match(css,/cubic-bezier\(\.2,\.78,\.24,1\)/);
   assert.match(runtime,/travelRpgCard travelRpgShell/);assert.match(runtime,/travelRpgStatusHud/);
+  assert.match(runtime,/class="travelRpgPlayer has-sprite idle/);assert.match(runtime,/data-walk-fps=/);
+  assert.match(runtime,/const RPG_CAMERA_SCALE=1\.2/);assert.match(runtime,/boardHeight=viewportHeight\*RPG_CAMERA_SCALE/);
   assert.match(runtime,/document\.body\.classList\.toggle\('travel-rpg-active',true\)/);
   assert.match(runtime,/MALBIT_TRAVEL_RPG_MOTION/);assert.match(runtime,/RPG_MOTION\.queue\.length<32/);
   assert.doesNotMatch(runtime,/document\.documentElement\.style\.colorScheme='dark'/);

@@ -1,8 +1,8 @@
-// MALBIT bootstrap v71
+// MALBIT bootstrap v72
 // Load the shared core, reviewed data, TOPIK I engine, then learning interactions.
 (function(){
   'use strict';
-  const VERSION='71';
+  const VERSION='72';
   const RUNTIME_FILES=Object.freeze([
     'site-patch-core.js',
     'storage-guard.js',
@@ -51,6 +51,13 @@
     link.href=versioned(src);
     document.head.appendChild(link);
   };
+  const preloadImage=src=>{
+    const link=document.createElement('link');
+    link.rel='preload';
+    link.as='image';
+    link.href=src;
+    document.head.appendChild(link);
+  };
   const load=src=>new Promise((resolve,reject)=>{
     const s=document.createElement('script');
     let settled=false;
@@ -72,6 +79,7 @@
   });
   const loadSeries=async files=>{for(const file of files)await load(file)};
   window.__MALBIT_RUNTIME__=Object.freeze({version:VERSION,files:RUNTIME_FILES});
+  preloadImage('assets/art/travel/rpg/traveler-blue-4dir-v1.png');
   RUNTIME_FILES.forEach(preload);
   (async()=>{
     await loadSeries(RUNTIME_FILES);
