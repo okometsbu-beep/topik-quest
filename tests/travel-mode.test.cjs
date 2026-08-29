@@ -54,7 +54,9 @@ test('the first travel route is a complete, reachable six-question journey', () 
   assert.equal(spritePng.subarray(1,4).toString(),'PNG');
   assert.equal(spritePng.readUInt32BE(16),sprite.layout.columns*sprite.layout.cellWidth);
   assert.equal(spritePng.readUInt32BE(20),sprite.layout.rows*sprite.layout.cellHeight);
-  assert.equal(spritePng[25],6,'sprite PNG must preserve an alpha channel');
+  assert.ok([3,6].includes(spritePng[25]),'sprite PNG must use transparent palette or RGBA pixels');
+  if(spritePng[25]===3)assert.ok(spritePng.includes(Buffer.from('tRNS')),'palette sprite must preserve transparency');
+  assert.ok(spritePng.length<700000,'sprite must stay below the reliable static-asset delivery budget');
 
   const ids = pack.scenes.map(scene => scene.id);
   assert.equal(new Set(ids).size, ids.length, 'scene IDs must be unique');
