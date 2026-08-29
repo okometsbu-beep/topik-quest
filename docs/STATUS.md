@@ -6,7 +6,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 - Production: GitHub Pages static PWA
 - Production release: v67 · Travel RPG engine, Incheon Airport arrivals, and restored Travel themes
-- Current candidate: PR #71 until live Pages verification
+- Current candidate: v68 · Incheon Airport T1 transport center and bidirectional zone portal
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
@@ -45,11 +45,12 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
   the same bright semantic surfaces with resolution/re-entry four-width gates
 - Travel exploration separates Seoul world/district/zone/collision/POI/portal data from route learning events
 - Incheon Airport T1 arrivals supports tile movement, collision, camera tracking, investigations, and event entry
+- Incheon Airport T1 transport center is a separate 12×9 zone connected to Arrivals by one bidirectional portal
 - Travel respects system/light/dark appearance; map art is unfiltered and actors remain separate layers
 
 ## 다음 우선순위
 
-1. 인천공항 T1 교통센터를 두 번째 구역으로 추가하고 입국장과 포털 하나로 연결한다.
+1. 인천공항 T1 공항철도 대합실을 세 번째 구역으로 추가하고 교통센터와 포털 하나로 연결한다.
 2. Home·Game 등 목적 기반 시각 소유자를 밝은/어두운 테마 토큰으로 한 화면씩 전환한다.
 3. 실제 학습자가 자주 틀리는 유형 근거를 정리한 뒤 TOPIK·Shorts 문항을 추가한다.
 
@@ -64,24 +65,23 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-`icn-t1-transport-center` 구역 하나를 추가해 입국장 출구 포털과 왕복 이동을 연결하고,
-교통 표지 조사 하나를 넣는다. 새 학습 문항이나 서울역 구역은 아직 추가하지 않는다.
+`icn-t1-airport-rail-concourse` 구역 하나를 추가해 교통센터와 포털 하나로 왕복 연결하고,
+승차 방향 표지 조사 하나를 넣는다. 새 학습 문항이나 서울역 구역은 아직 추가하지 않는다.
 
-## v67 검증 및 배포
+## v68 후보 검증 및 배포
 
-- 서울 월드·지역·구역·충돌·조사·이벤트·포털 데이터와 DOM 없는 이동 엔진을 분리하고,
-  인천공항 T1 입국장에서 걷기·충돌·카메라·조사·기존 학습 이벤트 진입을 구현했다.
-- Travel의 강제 어두운 색상 설정을 제거하고 밝은/어두운 테마별 카드·조작부 토큰을 적용했다.
-  공항 맵 원화에는 캐릭터·NPC·검은 도색을 넣지 않고 실행 중 별도 레이어로 합성한다.
-- 좌표·방향·걸음·조사 ID는 기존 `malbitStoryV1` episode 안에 저장하며 조사 보상은 한 번만 지급한다.
-- 전체 62개 자동검사와 실제 Chrome 320·375·390·430px 밝은/어두운 RPG 검사를 통과했다.
-  대칭·돌출·44px 조작부·10px 문구·카메라 안 캐릭터·조사 보상·기존 기록 보존·콘솔 오류 0개를 확인했다.
+- `icn-t1-transport-center` 12×9 구역과 독립 배경을 추가하고 입국장과 한 연결 ID의 왕복 포털로 묶었다.
+- `교통센터` 표지 조사는 한국어 형태와 일본어 의미를 설명하고 처음 한 번만 200 여행 원을 지급한다.
+- 구역 ID·좌표·방향·발견 기록은 기존 `malbitStoryV1` episode 안에 저장하며 새 저장 키를 만들지 않았다.
+- 전체 63개 자동검사와 실제 Chrome 320·375·390·430px 밝은/어두운 검사를 통과했다.
+  왕복·터치·재진입·44px·10px·대칭·돌출·카메라 네 변 덮기·기존 기록 보존·콘솔 오류 0개를 확인했다.
+- 첫 화면 검토에서 발견한 카메라 오른쪽 빈 띠는 공통 `max-width` 충돌을 제거하고 재발 검사로 고정했다.
 - 결제 UI·API 키·개인정보 수집·외부 전송은 추가하지 않았다.
-- 추적 Issue: https://github.com/okometsbu-beep/topik-quest/issues/70
-- 변경 PR: https://github.com/okometsbu-beep/topik-quest/pull/71
-- 모바일 검증: https://github.com/okometsbu-beep/topik-quest/actions/runs/33217107943
-- 배포 주소: https://okometsbu-beep.github.io/topik-quest/
-- 되돌리기 기준: v66 main `3a20dda2afdeee7c2afc27db22441cd98cb85197`
+- 추적 Issue: https://github.com/okometsbu-beep/topik-quest/issues/72
+- 변경 PR: https://github.com/okometsbu-beep/topik-quest/pull/73
+- 모바일 검증: https://github.com/okometsbu-beep/topik-quest/actions/runs/33230963069
+- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (병합 뒤 v68 확인)
+- 되돌리기 기준: v67 main `70fe955289e1501174427a34fccfe709842bd64d`
 
 ## 알려진 위험
 
@@ -89,5 +89,5 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - UI 변경은 CI와 실제 모바일 증거가 모두 있어야 병합할 수 있다.
 - 로컬 지표는 서버로 수집되지 않으므로 사용자 기기에서 직접 확인한 값만 밸런스 근거로 쓸 수 있다.
 - `malbitStoryV1`은 기존 진행을 지키는 Travel Mode 호환 저장 키이므로 이름을 바꾸거나 삭제하면 안 된다.
-- 현재 실제 이동 구역은 입국장 하나뿐이다. 서울 전체를 한 캔버스로 늘리지 말고 포털로 구역을 연결한다.
+- 현재 실제 이동 구역은 입국장과 교통센터 두 곳이다. 서울 전체를 한 캔버스로 늘리지 말고 포털로 구역을 연결한다.
 - 기존 Plus·가격·결제 암시 UI가 새 화면에 재사용되지 않도록 계속 검사해야 한다.

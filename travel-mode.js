@@ -518,6 +518,7 @@
     return`left:${clamp(50-(x*160)).toFixed(2)}%;top:${clamp(50-(y*160)).toFixed(2)}%`;
   }
   function rpgTargetAsset(pack,scene,anchor){
+    if(!anchor)return'';
     if(anchor.kind==='npc')return assetPath(pack,'npcs',scene.world?.npc);
     if(anchor.kind==='sign')return assetPath(pack,'props','railSign');
     return'';
@@ -525,6 +526,7 @@
   function rpgNoticeMarkup(scene,notice){
     if(!notice)return'';
     if(notice.type==='blocked')return`<p class="travelRpgToast" role="status">${h(l({ko:'그쪽은 지나갈 수 없어요. 다른 길을 찾아보세요.',ja:'そちらは通れません。別の道を探そう。',en:'That way is blocked. Try another path.',zh:'那里无法通行，请寻找其他路线。'}))}</p>`;
+    if(notice.type==='portal')return`<p class="travelRpgToast" role="status">${h(l({ko:`${l(notice.target.title)} 도착`,ja:`${l(notice.target.title)}に到着`,en:`Arrived: ${l(notice.target.title)}`,zh:`已到达：${l(notice.target.title)}`}))}</p>`;
     if(notice.type!=='poi')return'';
     const target=notice.target,reward=Number(notice.reward)||0;
     return`<section class="travelRpgDiscovery" role="dialog" aria-live="polite"><div><small>${notice.found?'DISCOVERY COMPLETE':'DISCOVERY RECORD'}</small><h2>${h(l(target.title))}</h2></div><blockquote lang="ko">${h(target.korean)}</blockquote><p>${h(l(target.detail))}</p>${reward?`<strong>+${h(won(reward))}</strong>`:`<strong>${h(l({ko:'여행 기록에 저장됨',ja:'旅の記録に保存済み',en:'Saved to journey record',zh:'已保存到旅行记录'}))}</strong>`}<button onclick="malbitTravelCloseDiscovery()">${h(l({ko:'지도로 돌아가기',ja:'マップに戻る',en:'Back to map',zh:'返回地图'}))}</button></section>`;
@@ -533,20 +535,21 @@
     const {world,zone,anchor}=match,progress=RPG.normalizeProgress(pack.id,state.exploration,scene.id),interaction=RPG.interactionAt(zone,progress,scene.id);
     state.exploration=progress;
     const store=readStore(),skin=skinById(pack,store.avatar.equipped),targetAsset=rpgTargetAsset(pack,scene,anchor),near=interaction?.type==='scene';
-    const actionLabel=interaction?interaction.type==='scene'?l(interaction.target.action):l({ko:'조사하기',ja:'調べる',en:'Inspect',zh:'调查'}):l({ko:'대상 가까이 가기',ja:'対象に近づく',en:'Move closer',zh:'靠近目标'});
+    const actionLabel=interaction?(interaction.type==='scene'||interaction.type==='portal')?l(interaction.target.action):l({ko:'조사하기',ja:'調べる',en:'Inspect',zh:'调查'}):l({ko:'대상 가까이 가기',ja:'対象に近づく',en:'Move closer',zh:'靠近目标'});
     const targetTitle=interaction?l(interaction.target.title||interaction.target.label):'';
     const discovered=new Set(progress.discoveries||[]);
     const pois=(zone.pois||[]).map(item=>`<span class="travelRpgPoi ${discovered.has(`${zone.id}:${item.id}`)?'found':''}" style="${rpgPoint(zone,item)}" aria-hidden="true"><i></i></span>`).join('');
-    const target=targetAsset?`<span class="travelRpgTarget character ${near?'near':''}" style="${rpgPoint(zone,anchor)}"><img src="${h(targetAsset)}" alt=""><b>${h(l(anchor.label))}</b></span>`:`<span class="travelRpgTarget marker ${near?'near':''}" style="${rpgPoint(zone,anchor)}"><i></i><b>${h(l(anchor.label))}</b></span>`;
+    const target=anchor?(targetAsset?`<span class="travelRpgTarget character ${near?'near':''}" style="${rpgPoint(zone,anchor)}"><img src="${h(targetAsset)}" alt=""><b>${h(l(anchor.label))}</b></span>`:`<span class="travelRpgTarget marker ${near?'near':''}" style="${rpgPoint(zone,anchor)}"><i></i><b>${h(l(anchor.label))}</b></span>`):'';
+    const portals=(zone.portals||[]).map(item=>`<span class="travelRpgPortal ${interaction?.type==='portal'&&interaction.target.id===item.id?'near':''}" style="${rpgPoint(zone,item)}" aria-hidden="true"><i></i></span>`).join('');
     const notice=RPG_NOTICE[scene.id];
-    sc.innerHTML=`<div class="travelPlay travelRpgScreen">${commonTop(pack,state,scene)}<article class="travelRpgCard"><header><div><small>SEOUL WORLD · ${h(world.id.toUpperCase())}</small><h1>${h(l(zone.title))}</h1></div><span>${h(progress.steps)} STEP</span></header><div class="travelRpgObjective"><small>${h(l({ko:'현재 목표',ja:'現在の目標',en:'CURRENT OBJECTIVE',zh:'当前目标'}))}</small><b>${h(l(scene.title))}</b><p>${h(l(zone.subtitle))}</p></div><div class="travelRpgViewport" role="img" aria-label="${h(l(zone.title))}"><div class="travelRpgBoard" style="${rpgCamera(zone,progress)}"><img class="travelRpgMap" src="${h(zone.background)}" alt="" width="1200" height="900" loading="eager">${pois}${target}${skin?.image?`<span class="travelRpgPlayer ${h(progress.direction)}" style="${rpgPoint(zone,progress)}"><img src="${h(skin.image)}" alt="${h(l(skin.name))}"></span>`:''}</div><span class="travelRpgMapTag">${h(l(zone.title))}</span></div>${rpgNoticeMarkup(scene,notice)}<div class="travelRpgControls"><div class="travelRpgDpad" aria-label="${h(l({ko:'이동 방향',ja:'移動方向',en:'Movement controls',zh:'移动方向'}))}"><button onclick="malbitTravelStep('up')" aria-label="${h(l({ko:'위로 이동',ja:'上へ移動',en:'Move up',zh:'向上移动'}))}">↑</button><button onclick="malbitTravelStep('left')" aria-label="${h(l({ko:'왼쪽으로 이동',ja:'左へ移動',en:'Move left',zh:'向左移动'}))}">←</button><button onclick="malbitTravelStep('down')" aria-label="${h(l({ko:'아래로 이동',ja:'下へ移動',en:'Move down',zh:'向下移动'}))}">↓</button><button onclick="malbitTravelStep('right')" aria-label="${h(l({ko:'오른쪽으로 이동',ja:'右へ移動',en:'Move right',zh:'向右移动'}))}">→</button></div><button class="travelRpgAction" onclick="malbitTravelInteract()" ${interaction?'':'disabled'}><small>${interaction?`${h(targetTitle)} · `:''}${h(l({ko:'상호작용',ja:'インタラクト',en:'INTERACT',zh:'互动'}))}</small><b>${h(actionLabel)}</b></button></div><footer><span>${progress.discoveries.length}/${zone.pois.length} ${h(l({ko:'조사 기록',ja:'調査記録',en:'discoveries',zh:'调查记录'}))}</span><span>${h(l({ko:'이동과 조사는 이 기기에 자동 저장됩니다.',ja:'移動と調査はこの端末に自動保存されます。',en:'Movement and discoveries save on this device.',zh:'移动与调查会自动保存在此设备。'}))}</span></footer></article></div>`;
+    sc.innerHTML=`<div class="travelPlay travelRpgScreen">${commonTop(pack,state,scene)}<article class="travelRpgCard"><header><div><small>SEOUL WORLD · ${h(world.id.toUpperCase())}</small><h1>${h(l(zone.title))}</h1></div><span>${h(progress.steps)} STEP</span></header><div class="travelRpgObjective"><small>${h(l({ko:'현재 목표',ja:'現在の目標',en:'CURRENT OBJECTIVE',zh:'当前目标'}))}</small><b>${h(l(scene.title))}</b><p>${h(l(zone.subtitle))}</p></div><div class="travelRpgViewport" role="img" aria-label="${h(l(zone.title))}"><div class="travelRpgBoard" style="${rpgCamera(zone,progress)}"><img class="travelRpgMap" src="${h(zone.background)}" alt="" width="1200" height="900" loading="eager">${pois}${portals}${target}${skin?.image?`<span class="travelRpgPlayer ${h(progress.direction)}" style="${rpgPoint(zone,progress)}"><img src="${h(skin.image)}" alt="${h(l(skin.name))}"></span>`:''}</div><span class="travelRpgMapTag">${h(l(zone.title))}</span></div>${rpgNoticeMarkup(scene,notice)}<div class="travelRpgControls"><div class="travelRpgDpad" aria-label="${h(l({ko:'이동 방향',ja:'移動方向',en:'Movement controls',zh:'移动方向'}))}"><button onclick="malbitTravelStep('up')" aria-label="${h(l({ko:'위로 이동',ja:'上へ移動',en:'Move up',zh:'向上移动'}))}">↑</button><button onclick="malbitTravelStep('left')" aria-label="${h(l({ko:'왼쪽으로 이동',ja:'左へ移動',en:'Move left',zh:'向左移动'}))}">←</button><button onclick="malbitTravelStep('down')" aria-label="${h(l({ko:'아래로 이동',ja:'下へ移動',en:'Move down',zh:'向下移动'}))}">↓</button><button onclick="malbitTravelStep('right')" aria-label="${h(l({ko:'오른쪽으로 이동',ja:'右へ移動',en:'Move right',zh:'向右移动'}))}">→</button></div><button class="travelRpgAction" onclick="malbitTravelInteract()" ${interaction?'':'disabled'}><small>${interaction?`${h(targetTitle)} · `:''}${h(l({ko:'상호작용',ja:'インタラクト',en:'INTERACT',zh:'互动'}))}</small><b>${h(actionLabel)}</b></button></div><footer><span>${progress.discoveries.filter(id=>id.startsWith(`${zone.id}:`)).length}/${zone.pois.length} ${h(l({ko:'조사 기록',ja:'調査記録',en:'discoveries',zh:'调查记录'}))}</span><span>${h(l({ko:'이동과 조사는 이 기기에 자동 저장됩니다.',ja:'移動と調査はこの端末に自動保存されます。',en:'Movement and discoveries save on this device.',zh:'移动与调查会自动保存在此设备。'}))}</span></footer></article></div>`;
   }
   function renderPlay(sc){
     const {pack,state,scene}=current();
     if(!scene)return setView('travel');
     const hub=hubByRoute(pack.id);
     if(scene.type==='ending'&&state.completed&&hub&&state.myeongdong.screen!=='ending')return renderMyeongdong(sc,pack,state,hub);
-    const match=RPG?.zoneForScene(pack.id,scene.id);
+    const sceneMatch=RPG?.zoneForScene(pack.id,scene.id),match=sceneMatch?RPG.contextForProgress(pack.id,state.exploration,scene.id):null;
     if(match&&!RPG_EVENT_OPEN[scene.id])return renderExploration(sc,pack,state,scene,match);
     if(scene.type==='narrative')return renderNarrative(sc,pack,state,scene);
     if(scene.type==='choice')return renderChoice(sc,pack,state,scene);
@@ -579,7 +582,7 @@
   };
   window.malbitTravelBack=()=>{cancelAudio();setView('travel');resetViewport()};
   function activeRpgContext(){
-    const {pack,state,scene}=current(),match=RPG?.zoneForScene(pack.id,scene?.id);
+    const {pack,state,scene}=current(),sceneMatch=RPG?.zoneForScene(pack.id,scene?.id),match=sceneMatch?RPG.contextForProgress(pack.id,state.exploration,scene?.id):null;
     return match?{pack,state,scene,...match}:null;
   }
   window.malbitTravelStep=direction=>{
@@ -605,6 +608,13 @@
         discoveries.add(key);progress.discoveries=[...discoveries];context.state.exploration=progress;context.state.wallet+=reward;context.state.clockMinutes+=1;context.state.updatedAt=now();writeState(context.state);
       }
       RPG_NOTICE[context.scene.id]={type:'poi',target:interaction.target,found,reward};render();return;
+    }
+    if(interaction.type==='portal'){
+      const next=RPG.enterPortal(context.world,progress,interaction.target);
+      if(!next){RPG_NOTICE[context.scene.id]={type:'blocked'};render();return}
+      context.state.exploration=next;context.state.updatedAt=now();writeState(context.state);
+      const targetZone=RPG.zoneById(context.world,next.zoneId);
+      RPG_NOTICE[context.scene.id]={type:'portal',target:targetZone};render();return;
     }
     RPG_NOTICE[context.scene.id]={type:'blocked'};render();
   };

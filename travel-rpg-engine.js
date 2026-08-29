@@ -22,6 +22,11 @@
     const zone=world?.zones?.find(candidate=>zoneScene(candidate,sceneId));
     return zone?{world,zone,anchor:zoneScene(zone,sceneId)}:null;
   }
+  function contextForProgress(packId,value,sceneId){
+    const sceneMatch=zoneForScene(packId,sceneId),world=sceneMatch?.world||worldByRoute(packId);
+    const zone=zoneById(world,value?.zoneId)||sceneMatch?.zone||world?.zones?.[0]||null;
+    return zone?{world,zone,anchor:zoneScene(zone,sceneId)}:null;
+  }
   function cell(zone,x,y){
     if(!zone||x<0||y<0||x>=zone.width||y>=zone.height)return'#';
     return String(zone.grid?.[y]||'').charAt(x)||'#';
@@ -33,10 +38,9 @@
   }
   function isWalkable(zone,x,y,sceneId){return cell(zone,x,y)!=='#'&&!occupied(zone,x,y,sceneId)}
   function normalizeProgress(packId,value,sceneId){
-    const match=zoneForScene(packId,sceneId);
+    const match=contextForProgress(packId,value,sceneId);
     const world=match?.world||worldByRoute(packId);
-    const requested=zoneById(world,value?.zoneId);
-    const zone=match?.zone||requested||world?.zones?.[0]||null;
+    const zone=match?.zone||null;
     if(!zone)return null;
     const spawn=point(zone.spawn,{x:0,y:0});
     let position=point(value,spawn);
@@ -66,8 +70,22 @@
     const portal=zone?.portals?.find(item=>distance(progress,item)<=1);
     return portal?{type:'portal',target:portal}:null;
   }
+  function enterPortal(world,progress,portal){
+    const zone=zoneById(world,portal?.targetZoneId);
+    if(!zone)return null;
+    const target=point({x:portal.targetX,y:portal.targetY},zone.spawn);
+    if(!isWalkable(zone,target.x,target.y,null))return null;
+    return{
+      ...progress,
+      worldId:world.id,
+      zoneId:zone.id,
+      x:target.x,
+      y:target.y,
+      direction:direction(portal.direction||zone.spawn?.direction)
+    };
+  }
   function validateWorld(world){
-    const errors=[],districtZones=new Set(world?.districts?.flatMap(item=>item.zoneIds||[])||[]);
+    const errors=[],districtZones=new Set(world?.districts?.flatMap(item=>item.zoneIds||[])||[]),connections=new Map();
     for(const zone of world?.zones||[]){
       if(zone.grid?.length!==zone.height)errors.push(`${zone.id}: height mismatch`);
       if(zone.grid?.some(row=>String(row).length!==zone.width))errors.push(`${zone.id}: width mismatch`);
@@ -75,7 +93,16 @@
       if(cell(zone,zone.spawn?.x,zone.spawn?.y)==='#')errors.push(`${zone.id}: blocked spawn`);
       const ids=(zone.pois||[]).map(item=>item.id);
       if(new Set(ids).size!==ids.length)errors.push(`${zone.id}: duplicate POI`);
+      for(const portal of zone.portals||[]){
+        const targetZone=zoneById(world,portal.targetZoneId);
+        if(!targetZone)errors.push(`${zone.id}:${portal.id}: missing target zone`);
+        else if(!isWalkable(targetZone,portal.targetX,portal.targetY,null))errors.push(`${zone.id}:${portal.id}: blocked target`);
+        if(cell(zone,portal.x,portal.y)==='#')errors.push(`${zone.id}:${portal.id}: blocked portal`);
+        if(!portal.connectionId)errors.push(`${zone.id}:${portal.id}: missing connection`);
+        else connections.set(portal.connectionId,(connections.get(portal.connectionId)||0)+1);
+      }
     }
+    for(const [id,count] of connections)if(count!==2)errors.push(`${id}: connection must have two endpoints`);
     return errors;
   }
 
@@ -86,11 +113,13 @@
     worldByRoute,
     zoneById,
     zoneForScene,
+    contextForProgress,
     zoneScene,
     normalizeProgress,
     isWalkable,
     step,
     interactionAt,
+    enterPortal,
     validateWorld
   });
 })();
