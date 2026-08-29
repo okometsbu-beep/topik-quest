@@ -60,7 +60,7 @@ test('Seoul travel world has a valid extensible district, zone, collision, POI, 
   assert.ok(fs.existsSync(railArt));assert.ok(fs.statSync(railArt).size>80000);
   assert.deepEqual(Array.from(zone.foregrounds,item=>item.id),['information-desk','rail-wayfinding-sign','arrival-flower-planter']);
   assert.deepEqual(Array.from(transport.foregrounds,item=>item.id),['center-map-kiosk','south-left-planter','south-right-planter']);
-  assert.deepEqual(Array.from(rail.foregrounds,item=>item.id),['left-ticket-machine','right-ticket-machine','south-left-planter','south-right-planter']);
+  assert.deepEqual(Array.from(rail.foregrounds,item=>item.id),['left-ticket-gates','right-ticket-gates','left-ticket-machine','right-ticket-machine','south-left-planter','south-right-planter']);
   for(const candidate of world.zones){
     for(const foreground of candidate.foregrounds){
       assert.ok(foreground.polygon.length>=4,`${candidate.id}:${foreground.id} needs an upper-layer silhouette`);
@@ -70,6 +70,7 @@ test('Seoul travel world has a valid extensible district, zone, collision, POI, 
   assert.equal(engine.isWalkable(zone,6,4,null),false,'the rail sign base cannot be walked through');
   assert.equal(engine.isWalkable(transport,5,5,null),false,'the center kiosk base cannot be walked through');
   assert.equal(engine.isWalkable(rail,1,4,null),false,'the ticket machine base cannot be walked through');
+  assert.equal(engine.isWalkable(rail,5,3,null),false,'the left ticket-gate bank cannot be walked through');
 });
 
 test('the airport portal moves both ways while preserving route progress',()=>{

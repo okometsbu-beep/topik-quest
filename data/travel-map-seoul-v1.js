@@ -121,6 +121,8 @@
       poi('boarding-direction-sign',8,3,'inspect',t('승차 방향 표지','乗車方向の表示','Boarding-direction sign','乘车方向标志'),'승차 방향',t('“승차”는 차나 열차에 타는 것, “방향”은 가야 할 쪽을 뜻합니다. 역에서는 이 표지로 열차를 타러 가는 길을 확인해요.','「승차」は乗車、「방향」は方向という意味です。駅ではこの表示で、列車に乗るために進む方向を確認します。','승차 means boarding a vehicle or train, and 방향 means direction. At a station, this sign shows which way to go to board the train.','“승차”表示乘车，“방향”表示方向。在车站可通过这个标志确认前往乘车处的方向。'),200)
     ]),
     foregrounds:Object.freeze([
+      foreground('left-ticket-gates',3.68,[[3.45,2.35],[5.55,2.35],[5.55,3.68],[3.45,3.68]],[[4,2],[5,2],[4,3],[5,3]]),
+      foreground('right-ticket-gates',3.68,[[6.45,2.35],[8.55,2.35],[8.55,3.68],[6.45,3.68]],[[7,2],[8,2],[7,3],[8,3]]),
       foreground('left-ticket-machine',5.18,[[.47,3.68],[1.22,3.68],[1.22,5.18],[.47,5.18]],[[1,4]]),
       foreground('right-ticket-machine',5.18,[[10.78,3.68],[11.53,3.68],[11.53,5.18],[10.78,5.18]],[[10,4]]),
       foreground('south-left-planter',8.16,[[3.54,7.03],[4.6,7.03],[4.6,8.16],[3.54,8.16]],[[3,7],[4,7]]),
