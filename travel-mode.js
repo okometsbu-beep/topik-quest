@@ -559,7 +559,8 @@
     const card=document.querySelector?.('.travelRpgCard'),viewport=card?.querySelector?.('.travelRpgViewport'),board=card?.querySelector?.('.travelRpgBoard'),player=card?.querySelector?.('.travelRpgPlayer');
     if(!card||!viewport||!board||!player||typeof setTimeout!=='function')return false;
     const point=rpgPointValues(zone,progress),camera=rpgCameraValues(zone,progress),direction=String(progress.direction||'down');
-    player.className=`travelRpgPlayer ${h(direction)} ${blocked?`blocked bump-${h(direction)}`:'walking'}`;
+    const spriteClass=player.classList.contains('has-sprite')?' has-sprite':'';
+    player.className=`travelRpgPlayer${spriteClass} ${h(direction)} ${blocked?`blocked bump-${h(direction)}`:'walking'}`;
     player.style.left=point.left;player.style.top=point.top;
     board.style.left=camera.left;board.style.top=camera.top;
     card.classList.add('is-moving');viewport.setAttribute('aria-busy','true');

@@ -174,6 +174,7 @@ test('Travel styles expose separate light and dark theme tokens without forcing 
   assert.match(css,/cubic-bezier\(\.2,\.78,\.24,1\)/);
   assert.match(runtime,/travelRpgCard travelRpgShell/);assert.match(runtime,/travelRpgStatusHud/);
   assert.match(runtime,/class="travelRpgPlayer has-sprite idle/);assert.match(runtime,/data-walk-fps=/);
+  assert.match(runtime,/player\.classList\.contains\('has-sprite'\)/);
   assert.match(runtime,/const RPG_CAMERA_SCALE=1\.2/);assert.match(runtime,/boardHeight=viewportHeight\*RPG_CAMERA_SCALE/);
   assert.match(runtime,/document\.body\.classList\.toggle\('travel-rpg-active',true\)/);
   assert.match(runtime,/MALBIT_TRAVEL_RPG_MOTION/);assert.match(runtime,/RPG_MOTION\.queue\.length<32/);
