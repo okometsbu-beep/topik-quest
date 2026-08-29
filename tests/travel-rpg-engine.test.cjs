@@ -118,7 +118,8 @@ test('Travel runtime layers exploration over the existing event flow and saves o
   for(const file of ['data/question-bank-practice-v1.js','question-bank-engine.js','data/travel-pack-seoul-001.js','data/travel-myeongdong-hub.js','data/travel-map-seoul-v1.js','travel-rpg-engine.js','travel-mode.js'])vm.runInContext(read(file),runtime);
   runtime.malbitTravelStart('route-001-airport-myeongdong',false);
   assert.match(screen.innerHTML,/travelRpgCard/);assert.match(screen.innerHTML,/airport-arrivals-map-v1\.webp/);assert.match(screen.innerHTML,/한국 여행이 시작됐다/);
-  assert.match(screen.innerHTML,/travelRpgGroundLayer/);assert.match(screen.innerHTML,/travelRpgActorLayer/);assert.match(screen.innerHTML,/travelRpgUpperLayer/);
+  assert.match(screen.innerHTML,/travelRpgGroundLayer/);assert.match(screen.innerHTML,/travelRpgShadowLayer/);assert.match(screen.innerHTML,/travelRpgActorLayer/);assert.match(screen.innerHTML,/travelRpgUpperLayer/);
+  assert.match(screen.innerHTML,/travelRpgShadow npc/);assert.match(screen.innerHTML,/travelRpgShadow player/);
   assert.match(screen.innerHTML,/data-depth-contract="foot-y"/);assert.match(screen.innerHTML,/data-foreground-id="rail-wayfinding-sign"/);
   for(const direction of ['left','left','up','up'])runtime.malbitTravelStep(direction);
   assert.match(screen.innerHTML,/수하물 벨트/);
@@ -183,9 +184,12 @@ test('Travel styles expose separate light and dark theme tokens without forcing 
   assert.match(css,/\.travelRpgTopHud/);assert.match(css,/\.travelRpgObjectiveHud/);
   assert.match(css,/\.travelRpgControls\{position:absolute/);
   assert.match(css,/\.travelRpgBoard\{position:absolute;height:120%/);
-  assert.match(css,/\.travelRpgGroundLayer,\.travelRpgActorLayer,\.travelRpgUpperLayer\{display:contents\}/);
+  assert.match(css,/\.travelRpgGroundLayer,\.travelRpgShadowLayer,\.travelRpgActorLayer,\.travelRpgUpperLayer\{display:contents\}/);
   assert.match(css,/\.travelRpgForeground\{position:absolute;inset:0/);
   assert.match(css,/\.travelRpgForeground[^}]*opacity:1;filter:none/);
+  assert.match(css,/--travel-contact-shadow:/);assert.match(css,/\.travelRpgShadow\{position:absolute;width:5\.4%;height:1\.6%/);
+  assert.match(css,/\.travelRpgShadow[^}]*clip-path:polygon/);assert.match(css,/\.travelRpgPlayer[^}]*filter:none/);
+  assert.doesNotMatch(css,/\.travelRpg(?:Player|Target\.character)[^}]*drop-shadow/);
   assert.match(css,/\.travelRpgPlayer\{width:7\.4%;height:14%/);
   assert.match(css,/background-size:800% 400%/);assert.match(css,/travelRpgWalk12 \.333333s/);
   assert.match(css,/@keyframes travelRpgIdle4/);assert.match(css,/@keyframes travelRpgWalk12/);
@@ -193,7 +197,8 @@ test('Travel styles expose separate light and dark theme tokens without forcing 
   assert.match(css,/cubic-bezier\(\.2,\.78,\.24,1\)/);
   assert.match(runtime,/travelRpgCard travelRpgShell/);assert.match(runtime,/travelRpgStatusHud/);
   assert.match(runtime,/class="travelRpgPlayer has-sprite idle/);assert.match(runtime,/data-walk-fps=/);
-  assert.match(runtime,/rpgForegroundMarkup/);assert.match(runtime,/data-depth-y=/);assert.match(runtime,/player\.style\.zIndex=String\(point\.depth\)/);
+  assert.match(runtime,/rpgForegroundMarkup/);assert.match(runtime,/data-depth-y=/);assert.match(runtime,/rpgShadowMarkup/);assert.match(runtime,/class="travelRpgShadow/);
+  assert.match(runtime,/player\.style\.zIndex=String\(point\.depth\)/);assert.match(runtime,/shadow\.style\.zIndex=String\(point\.depth\)/);
   assert.match(runtime,/player\.classList\.contains\('has-sprite'\)/);
   assert.match(runtime,/const RPG_CAMERA_SCALE=1\.2/);assert.match(runtime,/boardHeight=viewportHeight\*RPG_CAMERA_SCALE/);
   assert.match(runtime,/addEventListener\?\.\('resize',scheduleRpgCameraSync/);
