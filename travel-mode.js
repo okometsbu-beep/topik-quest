@@ -16,6 +16,7 @@
   const RPG_STEP_MS=190;
   const RPG_SETTLE_MS=90;
   const RPG_CAMERA_SCALE=1.2;
+  let RPG_CAMERA_FRAME=0;
   const HUB_ORDER=Object.create(null);
   const HUB_BUDGET=Object.create(null);
   const HUB_DIALOGUE_STEP=Object.create(null);
@@ -554,6 +555,17 @@
     };
   }
   function rpgCamera(zone,progress){const camera=rpgCameraValues(zone,progress);return`left:${camera.left};top:${camera.top}`}
+  function syncRpgCamera(){
+    RPG_CAMERA_FRAME=0;
+    const context=activeRpgContext(),board=document.querySelector?.('.travelRpgBoard');
+    if(!context||!board||RPG_EVENT_OPEN[context.scene.id])return;
+    const progress=RPG.normalizeProgress(context.pack.id,context.state.exploration,context.scene.id),camera=rpgCameraValues(context.zone,progress);
+    board.style.left=camera.left;board.style.top=camera.top;
+  }
+  function scheduleRpgCameraSync(){
+    if(RPG_CAMERA_FRAME||typeof requestAnimationFrame!=='function')return;
+    RPG_CAMERA_FRAME=requestAnimationFrame(syncRpgCamera);
+  }
   function animateRpgStep(zone,progress,blocked){
     if(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return false;
     const card=document.querySelector?.('.travelRpgCard'),viewport=card?.querySelector?.('.travelRpgViewport'),board=card?.querySelector?.('.travelRpgBoard'),player=card?.querySelector?.('.travelRpgPlayer');
@@ -896,6 +908,7 @@
     if(direction){event.preventDefault();window.malbitTravelStep(direction);return}
     if(event.key==='Enter'||event.key===' '||event.key==='e'||event.key==='E'){event.preventDefault();window.malbitTravelInteract()}
   });
+  window.addEventListener?.('resize',scheduleRpgCameraSync,{passive:true});
 
   // A returning tab may still hold the old view name. Migrate it without touching any progress.
   if(S.view==='story'||S.view==='storyPlay'){
