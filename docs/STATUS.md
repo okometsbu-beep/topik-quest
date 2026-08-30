@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v79 · Travel 10,000-step stamina and recovery loop
-- Current candidate: v79 · Travel 10,000-step stamina and recovery loop
+- Production release: v80 · Travel airport NPC dialogue lesson
+- Current candidate: v80 · Travel airport NPC dialogue lesson
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
@@ -79,12 +79,13 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
   successful tile move spends one step; collisions are free, and 0 opens a dedicated full-screen rest scene.
 - One-hour rest returns the traveler to the current zone spawn with full stamina while preserving route
   answers, discoveries, rewards, wallet, inventory, and lifetime exploration steps.
+- The first airport NPC now holds a five-turn Korean exchange before a keyword choice. Translation is
+  requested-only, wrong choices reveal two saved hint stages, and re-entry resumes the same conversation.
 
 ## 다음 우선순위
 
-1. 여러 차례 오가는 NPC 대화와 핵심 단어 선택 퀴즈, 단계적 힌트·번역 계약을 만든다.
-2. 한국적 조사 오브젝트와 재사용 서울 타일셋, 모바일 성능 예산을 확장한다.
-3. 실제 오답 근거를 모아 TOPIK I·II와 Shorts 문항·강사형 해설을 유형별로 확장한다.
+1. 한국적 조사 오브젝트와 재사용 서울 타일셋, 모바일 성능 예산을 확장한다.
+2. 실제 오답 근거를 모아 TOPIK I·II와 Shorts 문항·강사형 해설을 유형별로 확장한다.
 
 ## 이번 운영 변경
 
@@ -97,21 +98,22 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-공항 NPC와 여러 차례 오가는 현실적 대화, 핵심 단어 선택 퀴즈, 오답 뒤 단계적 힌트와
-요청형 번역 계약을 한 흐름으로 만든다. 새 구역·스태미너 조정·TOPIK 문항 확장은 넣지 않는다.
+입국장에 한국적인 조사 오브젝트 하나를 타일·충돌·학습 보상 계약으로 추가하고, 기존 세 구역
+DOM/frame 성능 예산을 수치로 고정한다. 새 구역·스태미너 조정·TOPIK 문항 확장은 넣지 않는다.
 
-## v79 후보 검증 및 배포
+## v80 후보 검증 및 배포
 
-- 기존 `malbitStoryV1`의 탐험 기록 안에 10,000보 스태미너를 저장하고, 정상 이동에서만
-  1보를 소모한다. 막힌 칸·게임오버 뒤 입력은 소모하지 않고 기존 저장은 100%로 이관한다.
-- 0%에서 별도 휴게 공간 이미지와 게임오버 화면을 열며, 1시간 휴식은 현재 구역 스폰으로
-  복귀시킨다. 발견·보상·지갑·답안·누적 걸음은 유지하고 여행 시각만 60분 진행한다.
-- 맵 원화에는 검은 덧칠·필터·opacity 변경을 하지 않고 게임오버 원화도 독립 이미지로 쓴다.
-- 전체 검사 66개와 Travel 집중 검사 7개를 통과했다. 실제 Chrome에서 320·375·390·430px,
-  밝은·어두운 테마, 54개 화면, 0% 전환·휴식 복귀를 확인했고 콘솔 오류는 0건이다.
-- 문제·정답·해설·번역·저장 키·결제 UI·API 키·개인정보 전송은 바꾸지 않았다.
-- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (모바일 CI와 병합 뒤 v79 확인)
-- 되돌리기 기준: v78 main `a757fbe6269c9f6b4ecc8ca5d7e0b4ce432e9db8`
+- 공항 직원과 한국어 다섯 턴을 이어 간 뒤 `교통`을 직접 고른다. 선택지 번역은 제출 전
+  숨기고, 번역은 학습자가 요청한 현재 대화와 단서에만 표시한다.
+- 첫 오답은 뜻 범주, 두 번째 오답은 복합어 분해 단서를 제공한다. 대화 턴·오답 횟수·번역
+  요청은 기존 `malbitStoryV1` 에피소드 안에 저장되어 재접속·재진입 뒤 이어진다.
+- 정답 해설은 근거·세 오답의 뜻과 함정·복합 표지어 풀이법을 한국어·일본어로 검증했다.
+- 전체 검사 66개와 Travel 집중 검사 20개를 통과했다. 실제 Chrome에서 320·375·390·430px,
+  밝은·어두운 테마, 58개 화면, 375×667 첫 선택지 노출을 확인했고 콘솔 오류는 0건이다.
+- 기존 답안·지갑·수집품·스태미너·탐험 기록과 저장 키를 유지했다. 결제 UI·API 키·개인정보
+  전송은 추가하지 않았다.
+- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (모바일 CI와 병합 뒤 v80 확인)
+- 되돌리기 기준: v79 main `a2dbf083a158989e6943cbad09dcb385a8ba6146`
 
 ## 알려진 위험
 
@@ -126,5 +128,5 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - v77 연출 계약은 공항 탐험 흐름부터 적용한다. 명동 NPC·보상 화면 연결과 실제 음원 선택 UI는 아직 없다.
 - 현재 공항 3개 구역은 기존 원화를 마이그레이션 아틀라스로 쓰되 런타임은 타일 ID별로만
   그린다. 서울 구역을 늘리기 전 반복 가능한 한국 거리 타일셋과 DOM/frame 성능 예산이 필요하다.
-- 장문 NPC 대화·단어 퀴즈·추가 한국 조사물은 후속 작업이며 아직 없다.
+- 첫 공항 NPC만 장문 대화·단어 퀴즈 계약에 편입됐다. 다른 NPC와 추가 한국 조사물은 후속이다.
 - 기존 Plus·가격·결제 암시 UI가 새 화면에 재사용되지 않도록 계속 검사해야 한다.

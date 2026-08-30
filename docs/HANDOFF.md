@@ -29,6 +29,9 @@ these facts from conversation history or the large TOPIK source bundle.
 - Before grading, Travel answer choices expose Korean only; the selected and correct translations are
   revealed afterward. NPC quests use multi-turn dialogue, and free composition accepts a reviewed set
   of meaningful non-canonical sentences for a limited smaller reward.
+- The first airport NPC lesson saves a five-turn Korean exchange, requested-only translation, the first
+  wrong keyword, and two progressive hint stages inside the existing route episode. Re-entry resumes the
+  same turn; a hinted resolution remains an honest missed first attempt for score and review.
 - Bank, Game, and Travel explanations follow evidence → distractor/selected-choice analysis → reusable
   type-solving tip. TOPIK II writing uses separate short-fill, expository-fill, graph-summary, and essay
   plans. Game battle rendering must not force `scrollIntoView` or smooth page scrolling.
@@ -127,8 +130,8 @@ these facts from conversation history or the large TOPIK source bundle.
   still need to adopt the same states; no audio files or persistent sound/vibration controls ship yet.
 - Current airport tile catalogs migrate the existing three backgrounds into explicit per-cell atlas entries.
   Before adding many Seoul districts, replace repeated migration entries with a reusable Korean streetscape
-  tileset and enforce a DOM/frame-time budget. Long keyword-learning NPC dialogue and additional Korean
-  investigation objects are planned follow-up slices.
+  tileset and enforce a DOM/frame-time budget. Other NPCs still need the keyword-learning contract, and
+  additional Korean investigation objects are planned follow-up slices.
 
 ## Execution defaults
 
