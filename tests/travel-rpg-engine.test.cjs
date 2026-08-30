@@ -126,6 +126,7 @@ test('Travel runtime layers exploration over the existing event flow and saves o
   assert.match(screen.innerHTML,/travelRpgCard/);assert.match(screen.innerHTML,/airport-arrivals-map-v1\.webp/);assert.match(screen.innerHTML,/한국 여행이 시작됐다/);
   assert.match(screen.innerHTML,/travelRpgGroundLayer/);assert.match(screen.innerHTML,/travelRpgEnvironmentLayer/);assert.match(screen.innerHTML,/travelRpgShadowLayer/);assert.match(screen.innerHTML,/travelRpgActorLayer/);assert.match(screen.innerHTML,/travelRpgUpperLayer/);
   assert.match(screen.innerHTML,/data-effect-contract="bounded-light"/);assert.match(screen.innerHTML,/data-light-id="west-pillar-lamp"/);
+  assert.match(screen.innerHTML,/travelRpgLight kind-screen/);assert.doesNotMatch(screen.innerHTML,/travelRpgLight screen/);
   assert.match(screen.innerHTML,/travelRpgShadow npc/);assert.match(screen.innerHTML,/travelRpgShadow player/);
   assert.match(screen.innerHTML,/data-depth-contract="foot-y"/);assert.match(screen.innerHTML,/data-foreground-id="rail-wayfinding-sign"/);
   for(const direction of ['left','left','up','up'])runtime.malbitTravelStep(direction);

@@ -544,7 +544,7 @@
     return(zone.lights||[]).map(item=>{
       const left=(Number(item.x)/zone.width*100).toFixed(3),top=(Number(item.y)/zone.height*100).toFixed(3);
       const width=(Number(item.width)/zone.width*100).toFixed(3),height=(Number(item.height)/zone.height*100).toFixed(3);
-      return`<span class="travelRpgLight ${h(item.kind)}" data-light-id="${h(item.id)}" data-light-kind="${h(item.kind)}" style="left:${left}%;top:${top}%;width:${width}%;height:${height}%;--travel-rpg-light-color:${h(item.color)};--travel-rpg-light-strength:${h(item.strength)}"></span>`;
+      return`<span class="travelRpgLight kind-${h(item.kind)}" data-light-id="${h(item.id)}" data-light-kind="${h(item.kind)}" style="left:${left}%;top:${top}%;width:${width}%;height:${height}%;--travel-rpg-light-color:${h(item.color)};--travel-rpg-light-strength:${h(item.strength)}"></span>`;
     }).join('');
   }
   function rpgPlayerMarkup(skin,zone,progress){
