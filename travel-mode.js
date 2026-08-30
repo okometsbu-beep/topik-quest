@@ -809,9 +809,10 @@
       const moveLabel=l({ko:'이동 방향',ja:'移動方向',en:'Movement controls',zh:'移动方向'});
       const directions=['up','left','down','right'];
       const labels={up:l({ko:'위로 이동',ja:'上へ移動',en:'Move up',zh:'向上移动'}),left:l({ko:'왼쪽으로 이동',ja:'左へ移動',en:'Move left',zh:'向左移动'}),down:l({ko:'아래로 이동',ja:'下へ移動',en:'Move down',zh:'向下移动'}),right:l({ko:'오른쪽으로 이동',ja:'右へ移動',en:'Move right',zh:'向右移动'})};
-      const buttons=directions.map(direction=>`<button data-direction="${direction}" onpointerdown="malbitTravelHoldStart(event,'${direction}')" onpointerup="malbitTravelHoldStop(event)" onpointercancel="malbitTravelHoldStop(event)" oncontextmenu="return false" aria-label="${h(labels[direction])}">${rpgArrowIcon(direction)}</button>`).join('');
+      const iosHoldGuard='oncontextmenu="return false" onselectstart="return false" ondragstart="return false"';
+      const buttons=directions.map(direction=>`<button data-direction="${direction}" onpointerdown="malbitTravelHoldStart(event,'${direction}')" onpointerup="malbitTravelHoldStop(event)" onpointercancel="malbitTravelHoldStop(event)" ${iosHoldGuard} aria-label="${h(labels[direction])}">${rpgArrowIcon(direction)}</button>`).join('');
       const actionAria=interaction?targetTitle:l({ko:'주변 조사',ja:'周辺を調べる',en:'Inspect nearby',zh:'调查周围'});
-      controls.innerHTML=`<div class="travelRpgDpad" aria-label="${h(moveLabel)}">${buttons}</div><button class="travelRpgAction" onclick="malbitTravelInteract()" aria-label="${h(actionAria)}" ${interaction?'':'disabled'}>${rpgActionIcon()}</button>`;
+      controls.innerHTML=`<div class="travelRpgDpad" aria-label="${h(moveLabel)}">${buttons}</div><button class="travelRpgAction" onclick="malbitTravelInteract()" ${iosHoldGuard} aria-label="${h(actionAria)}" ${interaction?'':'disabled'}>${rpgActionIcon()}</button>`;
     }
   }
   function renderPlay(sc){

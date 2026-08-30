@@ -304,6 +304,7 @@ test('Travel styles expose separate light and dark theme tokens without forcing 
   assert.match(css,/@keyframes travelRpgIdle4/);assert.match(css,/@keyframes travelRpgWalk12/);
   assert.doesNotMatch(css,/@keyframes travelRpgWalk12[^}]*filter:/);
   assert.match(css,/@keyframes travelRpgNpcIdle4/);assert.match(css,/touch-action:none/);
+  assert.match(css,/-webkit-touch-callout:none/);assert.match(css,/-webkit-user-select:none/);assert.match(css,/-webkit-user-drag:none/);
   assert.match(runtime,/travelRpgCard travelRpgShell/);assert.match(runtime,/travelRpgStatusHud/);
   assert.match(runtime,/class="travelRpgPlayer has-sprite idle/);assert.match(runtime,/data-walk-fps=/);
   assert.match(runtime,/rpgForegroundMarkup/);assert.match(runtime,/data-depth-y=/);assert.match(runtime,/rpgEnvironmentMarkup/);assert.match(runtime,/data-effect-contract="bounded-light"/);assert.match(runtime,/rpgShadowMarkup/);assert.match(runtime,/class="travelRpgShadow/);
@@ -311,6 +312,7 @@ test('Travel styles expose separate light and dark theme tokens without forcing 
   assert.match(runtime,/travelRpgPoi \$\{visual\?'has-prop'/);assert.match(runtime,/--travel-rpg-prop-width/);
   assert.match(css,/\.travelRpgPoi\.has-prop\{/);assert.match(css,/\.travelRpgPoi\.has-prop img\{/);
   assert.match(runtime,/malbitTravelHoldStart/);assert.match(runtime,/onpointerdown=/);assert.match(runtime,/rpgArrowIcon/);assert.match(runtime,/rpgActionIcon/);
+  assert.match(runtime,/oncontextmenu="return false" onselectstart="return false" ondragstart="return false"/);
   assert.doesNotMatch(runtime,/그쪽은 지나갈 수 없어요/);
   assert.match(runtime,/MALBIT_TRAVEL_RPG_CUES/);assert.match(runtime,/MALBIT_TRAVEL_CUE_HOOKS/);assert.match(runtime,/malbit:travel-cue/);
   assert.match(runtime,/player\.style\.zIndex=String\(point\.depth\)/);assert.match(runtime,/shadow\.style\.zIndex=String\(point\.depth\)/);

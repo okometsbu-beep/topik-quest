@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v81 · Travel Korean investigation and performance budget
-- Current candidate: v81 · Travel Korean investigation and performance budget
+- Production release: v82 · Travel iOS hold controls
+- Current candidate: v82 · Travel iOS hold controls
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
@@ -75,6 +75,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
   tile variables, and the world stacking context cannot cover the HUD.
 - D-pad and investigation controls are translucent, text-free SVG controls. Direction buttons keep moving
   while held, release cleanly, and movement never rebuilds the ground or sprite DOM.
+- Travel hold controls suppress iOS callout, text selection, and icon dragging without disabling
+  pointer-held movement or selection in ordinary learning copy.
 - Travel stamina starts at 10,000 steps and is saved inside the existing exploration record. Only a
   successful tile move spends one step; collisions are free, and 0 opens a dedicated full-screen rest scene.
 - One-hour rest returns the traveler to the current zone spawn with full stamina while preserving route
@@ -106,20 +108,18 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 아틀라스·카탈로그로 만들고, 기존 공항 구역은 바꾸지 않은 채 독립 검증 픽스처를 추가한다.
 새 구역·스태미너 조정·TOPIK/NPC 대화 확장은 넣지 않는다.
 
-## v81 후보 검증 및 배포
+## v82 후보 검증 및 배포
 
-- 입국장에 원화와 분리된 청사초롱 환영 장식을 3×4 타일 크기로 추가했다. 두 칸 충돌 영역과
-  발 기준 깊이를 함께 선언해 통과하거나 캐릭터를 덮지 않는다.
-- 조사는 `어서 오세요`를 가르치고 일본어로 `어서`가 재촉 명령이 아니라 환영의 느낌을
-  더한다고 설명한다. 최초 조사만 200 여행 원을 주며 재조사 보상은 없다.
-- 세 구역은 각각 지면 1,728개, 상단 전경 154/106/226개다. 구역당 상단 전경 256개,
-  보드 DOM 2,048개, 이동 p95 34ms, 50ms 초과 프레임 비율 15%를 CI 상한으로 고정했다.
-- 전체 검사 66개와 Travel 집중 검사 20개를 통과했다. 실제 Chrome에서 320·375·390·430px,
-  밝은·어두운 테마와 일본어 조사·일회 보상을 확인했고 콘솔 오류는 0건이다.
+- 방향키 네 개와 조사키의 iOS 길게 누르기 콜아웃·텍스트 선택·SVG 드래그를 막았다.
+  일반 문제·해설·단어 텍스트의 선택 범위는 바꾸지 않았다.
+- 방향키의 pointer capture, 누르고 유지 이동, 손을 뗐을 때 정지하는 계약은 그대로다.
+- 전체 검사 66개와 빠른 검사 61개를 통과했다. 실제 Chrome에서 320·375·390·430px,
+  밝은·어두운 테마, 다섯 버튼의 취소 가능한 세 이벤트와 SVG 포인터 통과를 확인했고
+  콘솔 오류는 0건이다.
 - 기존 답안·지갑·수집품·스태미너·탐험 기록과 저장 키를 유지했다. 결제 UI·API 키·개인정보
   전송은 추가하지 않았다.
-- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (모바일 CI와 병합 뒤 v81 확인)
-- 되돌리기 기준: v80 main `b65cfebf162695822f705b0346fe5568fc6e6d8f`
+- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (모바일 CI와 병합 뒤 v82 확인)
+- 되돌리기 기준: v81 main `1b9502138285927051e833f724c33c4304215a85`
 
 ## 알려진 위험
 
