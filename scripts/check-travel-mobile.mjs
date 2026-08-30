@@ -374,6 +374,10 @@ try{
     assert.equal(await evaluate(`document.querySelectorAll('.travelDialogueFlow span').length`),3,'requested translation must cover only visible turns');
     if(captureRpgVisuals){
       await shot('00u-airport-dialogue-requested-translation.png');
+      await evaluate(`malbitSetTheme('dark')`);await sleep(80);
+      for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertFits(`Airport NPC requested translation dark ${width}px`)}
+      await setViewport(390,844);await shot('00ua-airport-dialogue-requested-translation-dark.png');
+      await evaluate(`malbitSetTheme('light')`);await sleep(80);
       await send('Page.reload',{ignoreCache:true});await ready();
       for(let wait=0;wait<100&&await evaluate(`typeof window.malbitTravelStart!=='function'`);wait++)await sleep(50);
       await evaluate(`window.malbitTravelStart('route-001-airport-myeongdong',false)`);await sleep(100);await openRpgScene();
