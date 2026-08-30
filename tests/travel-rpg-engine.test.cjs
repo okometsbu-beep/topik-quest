@@ -61,10 +61,16 @@ test('Seoul travel world has a valid extensible district, zone, collision, POI, 
   assert.deepEqual(Array.from(zone.foregrounds,item=>item.id),['information-desk','rail-wayfinding-sign','arrival-flower-planter']);
   assert.deepEqual(Array.from(transport.foregrounds,item=>item.id),['center-map-kiosk','south-left-planter','south-right-planter']);
   assert.deepEqual(Array.from(rail.foregrounds,item=>item.id),['left-ticket-gates','right-ticket-gates','left-ticket-machine','right-ticket-machine','south-left-planter','south-right-planter']);
+  assert.deepEqual(Array.from(zone.lights,item=>item.id),['west-pillar-lamp','east-pillar-lamp','rail-wayfinding-glow']);
+  assert.equal(transport.lights.length,3);assert.equal(rail.lights.length,3);
   for(const candidate of world.zones){
     for(const foreground of candidate.foregrounds){
       assert.ok(foreground.polygon.length>=4,`${candidate.id}:${foreground.id} needs an upper-layer silhouette`);
       for(const point of foreground.collision)assert.equal(engine.isWalkable(candidate,point.x,point.y,null),false,`${candidate.id}:${foreground.id} collision must block movement`);
+    }
+    for(const light of candidate.lights){
+      assert.ok(light.x>=0&&light.y>=0&&light.x+light.width<=candidate.width&&light.y+light.height<=candidate.height,`${candidate.id}:${light.id} must stay bounded`);
+      assert.ok(light.strength>0&&light.strength<=.65,`${candidate.id}:${light.id} strength must remain local`);
     }
   }
   assert.equal(engine.isWalkable(zone,6,4,null),false,'the rail sign base cannot be walked through');
@@ -118,7 +124,9 @@ test('Travel runtime layers exploration over the existing event flow and saves o
   for(const file of ['data/question-bank-practice-v1.js','question-bank-engine.js','data/travel-pack-seoul-001.js','data/travel-myeongdong-hub.js','data/travel-map-seoul-v1.js','travel-rpg-engine.js','travel-mode.js'])vm.runInContext(read(file),runtime);
   runtime.malbitTravelStart('route-001-airport-myeongdong',false);
   assert.match(screen.innerHTML,/travelRpgCard/);assert.match(screen.innerHTML,/airport-arrivals-map-v1\.webp/);assert.match(screen.innerHTML,/한국 여행이 시작됐다/);
-  assert.match(screen.innerHTML,/travelRpgGroundLayer/);assert.match(screen.innerHTML,/travelRpgShadowLayer/);assert.match(screen.innerHTML,/travelRpgActorLayer/);assert.match(screen.innerHTML,/travelRpgUpperLayer/);
+  assert.match(screen.innerHTML,/travelRpgGroundLayer/);assert.match(screen.innerHTML,/travelRpgEnvironmentLayer/);assert.match(screen.innerHTML,/travelRpgShadowLayer/);assert.match(screen.innerHTML,/travelRpgActorLayer/);assert.match(screen.innerHTML,/travelRpgUpperLayer/);
+  assert.match(screen.innerHTML,/data-effect-contract="bounded-light"/);assert.match(screen.innerHTML,/data-light-id="west-pillar-lamp"/);
+  assert.match(screen.innerHTML,/travelRpgLight kind-screen/);assert.doesNotMatch(screen.innerHTML,/travelRpgLight screen/);
   assert.match(screen.innerHTML,/travelRpgShadow npc/);assert.match(screen.innerHTML,/travelRpgShadow player/);
   assert.match(screen.innerHTML,/data-depth-contract="foot-y"/);assert.match(screen.innerHTML,/data-foreground-id="rail-wayfinding-sign"/);
   for(const direction of ['left','left','up','up'])runtime.malbitTravelStep(direction);
@@ -184,7 +192,8 @@ test('Travel styles expose separate light and dark theme tokens without forcing 
   assert.match(css,/\.travelRpgTopHud/);assert.match(css,/\.travelRpgObjectiveHud/);
   assert.match(css,/\.travelRpgControls\{position:absolute/);
   assert.match(css,/\.travelRpgBoard\{position:absolute;height:120%/);
-  assert.match(css,/\.travelRpgGroundLayer,\.travelRpgShadowLayer,\.travelRpgActorLayer,\.travelRpgUpperLayer\{display:contents\}/);
+  assert.match(css,/\.travelRpgGroundLayer,\.travelRpgEnvironmentLayer,\.travelRpgShadowLayer,\.travelRpgActorLayer,\.travelRpgUpperLayer\{display:contents\}/);
+  assert.match(css,/\.travelRpgLight\{position:absolute;z-index:1;pointer-events:none;opacity:var\(--travel-rpg-light-strength\);filter:none;mix-blend-mode:screen/);
   assert.match(css,/\.travelRpgForeground\{position:absolute;inset:0/);
   assert.match(css,/\.travelRpgForeground[^}]*opacity:1;filter:none/);
   assert.match(css,/--travel-contact-shadow:/);assert.match(css,/\.travelRpgShadow\{position:absolute;width:5\.4%;height:1\.6%/);
@@ -197,7 +206,7 @@ test('Travel styles expose separate light and dark theme tokens without forcing 
   assert.match(css,/cubic-bezier\(\.2,\.78,\.24,1\)/);
   assert.match(runtime,/travelRpgCard travelRpgShell/);assert.match(runtime,/travelRpgStatusHud/);
   assert.match(runtime,/class="travelRpgPlayer has-sprite idle/);assert.match(runtime,/data-walk-fps=/);
-  assert.match(runtime,/rpgForegroundMarkup/);assert.match(runtime,/data-depth-y=/);assert.match(runtime,/rpgShadowMarkup/);assert.match(runtime,/class="travelRpgShadow/);
+  assert.match(runtime,/rpgForegroundMarkup/);assert.match(runtime,/data-depth-y=/);assert.match(runtime,/rpgEnvironmentMarkup/);assert.match(runtime,/data-effect-contract="bounded-light"/);assert.match(runtime,/rpgShadowMarkup/);assert.match(runtime,/class="travelRpgShadow/);
   assert.match(runtime,/player\.style\.zIndex=String\(point\.depth\)/);assert.match(runtime,/shadow\.style\.zIndex=String\(point\.depth\)/);
   assert.match(runtime,/player\.classList\.contains\('has-sprite'\)/);
   assert.match(runtime,/const RPG_CAMERA_SCALE=1\.2/);assert.match(runtime,/boardHeight=viewportHeight\*RPG_CAMERA_SCALE/);

@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v74 · independent player and NPC foot-contact shadows
-- Current candidate: v75 · app-wide light/dark semantic surfaces restored
+- Production release: v75 · app-wide light/dark semantic surfaces restored
+- Current candidate: v76 · bounded Travel environment-light layer
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
@@ -63,11 +63,14 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - Travel actors use a separate shadow layer between the ground and actor layers. Player and visible
   NPC shadows share their actor's foot coordinate and depth, move without replacing DOM, and never
   use a character filter or a scene-wide dark overlay.
+- Travel zones declare bounded lamp and screen highlights as data. They render in an independent
+  environment layer between ground and contact shadows, cover less than 8% of the map in total,
+  and never filter, tint, or darken the original map art.
 
 ## 다음 우선순위
 
-1. 빛·환경 효과를 검은 도색 없는 별도 레이어로 만든다.
-2. 포털·조사·NPC·보상의 짧은 진입·발견·복귀 연출 훅을 만든다.
+1. 포털·조사·NPC·보상의 짧은 진입·발견·복귀 연출 훅을 만든다.
+2. 대규모 서울 구역 제작 도구와 모바일 성능 예산을 만든다.
 3. 실제 학습자가 자주 틀리는 유형 근거를 정리한 뒤 TOPIK·Shorts 문항을 추가한다.
 
 ## 이번 운영 변경
@@ -81,20 +84,19 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-구역 데이터가 선언하는 작은 광원 하이라이트를 지면·배우와 분리된 환경 레이어로 만든다.
-창빛이나 안내 설비의 빛만 제한된 영역에 합성하고, 화면 전체의 검은 도색·날씨·새 구역·학습
-문항은 같은 작업에 넣지 않는다.
+포털·조사·NPC·보상에 재사용할 수 있는 짧은 진입·발견·복귀 연출 상태와 선택 가능한
+소리·진동 훅의 첫 계약을 만든다. 새 구역·새 문항·날씨 효과는 같은 작업에 넣지 않는다.
 
-## v75 후보 검증 및 배포
+## v76 후보 검증 및 배포
 
-- 공통 UI 표면을 기기 설정·밝게·어둡게 선택에 따라 한 번에 바꾸는 의미 토큰으로 복구한다.
-- Home·Game·Shorts·Random Practice·Review와 공용 문제 카드·시트·결과·단어장 표면이
-  어두운 테마에서 흰색으로 남거나 밝은 테마와 섞이지 않게 한다.
-- 모바일 검사는 320·375·390·430px에서 두 테마의 캔버스·표면 밝기, 텍스트 대비 3.5 이상,
-  44px 조작부, 10px 문구, 대칭·돌출·콘솔 오류를 함께 확인한다.
-- 로컬 전체 64개 자동검사를 통과했고 문제·정답·해설·저장 키·결제 UI·API 키·개인정보 전송은 바꾸지 않았다.
-- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (모바일 CI와 병합 뒤 v75 확인)
-- 되돌리기 기준: v74 main `d5876deb775eeecb08260482484022bf0ce24ba6`
+- 3개 Travel 구역이 작은 램프·안내 화면 하이라이트의 위치·크기·색·세기를 데이터로 선언한다.
+- 지면과 접지 그림자 사이의 독립 환경 레이어에서만 합성하며, 개별 효과 4%·전체 8% 미만의
+  맵 면적과 최대 세기 0.65를 자동 검사해 전체 화면 도색으로 변하는 것을 막는다.
+- 원본 맵·플레이어·NPC·전경의 opacity·filter와 기존 밝은/어두운 테마 선택을 바꾸지 않는다.
+- 로컬 전체 64개 자동검사와 v76 런타임 34개 파일·문제은행 해시 검증을 통과했다.
+- 문제·정답·해설·번역·저장 키·결제 UI·API 키·개인정보 전송은 바꾸지 않았다.
+- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (모바일 CI와 병합 뒤 v76 확인)
+- 되돌리기 기준: v75 main `2595dcb6b335897af31f210e9a9d2271ccf17082`
 
 ## 알려진 위험
 
@@ -105,5 +107,5 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 현재 실제 이동 구역은 입국장·교통센터·공항철도 대합실 세 곳이다. 서울 전체를 한 캔버스로 늘리지 말고 포털로 구역을 연결한다.
 - 기본 여행자만 4방향 애니메이션이며 해금 의상은 기존 정적 이미지로 안전하게 대체한다.
 - 새 구역은 키 큰 오브젝트의 실루엣·기준선·충돌 셀을 함께 선언하지 않으면 검증을 통과할 수 없다.
-- 빛·환경 효과 레이어는 아직 없으며 P3의 남은 작은 작업이다.
+- P3 레이어 기반은 완료됐지만 광원은 현재 정적 하이라이트뿐이며 날씨·시간대 변화는 아직 없다.
 - 기존 Plus·가격·결제 암시 UI가 새 화면에 재사용되지 않도록 계속 검사해야 한다.

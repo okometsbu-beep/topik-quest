@@ -103,6 +103,15 @@
         if(!Array.isArray(foreground.collision)||!foreground.collision.length)errors.push(`${zone.id}:${foreground.id}: missing collision`);
         else if(foreground.collision.some(point=>!Number.isInteger(Number(point.x))||!Number.isInteger(Number(point.y))||point.x<0||point.y<0||point.x>=zone.width||point.y>=zone.height))errors.push(`${zone.id}:${foreground.id}: collision out of bounds`);
       }
+      const lightIds=(zone.lights||[]).map(item=>item.id);
+      if(new Set(lightIds).size!==lightIds.length)errors.push(`${zone.id}: duplicate light`);
+      for(const light of zone.lights||[]){
+        const x=Number(light.x),y=Number(light.y),width=Number(light.width),height=Number(light.height),strength=Number(light.strength);
+        if(!['lamp','screen','window'].includes(light.kind))errors.push(`${zone.id}:${light.id}: invalid light kind`);
+        if(!Number.isFinite(x)||!Number.isFinite(y)||!Number.isFinite(width)||!Number.isFinite(height)||width<=0||height<=0||x<0||y<0||x+width>zone.width||y+height>zone.height)errors.push(`${zone.id}:${light.id}: light out of bounds`);
+        if(!/^#[0-9a-f]{6}$/i.test(String(light.color||'')))errors.push(`${zone.id}:${light.id}: invalid light color`);
+        if(!Number.isFinite(strength)||strength<=0||strength>.65)errors.push(`${zone.id}:${light.id}: invalid light strength`);
+      }
       for(const portal of zone.portals||[]){
         const targetZone=zoneById(world,portal.targetZoneId);
         if(!targetZone)errors.push(`${zone.id}:${portal.id}: missing target zone`);

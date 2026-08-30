@@ -11,6 +11,9 @@
     polygon:Object.freeze(polygon.map(([x,y])=>Object.freeze({x,y}))),
     collision:Object.freeze(collision.map(([x,y])=>Object.freeze({x,y})))
   });
+  const light=(id,kind,x,y,width,height,color,strength)=>Object.freeze({
+    id,kind,x,y,width,height,color,strength
+  });
   const portal=(id,connectionId,x,y,targetZoneId,targetX,targetY,direction,label)=>Object.freeze({
     id,connectionId,x,y,targetZoneId,targetX,targetY,direction,label,
     action:t('이동','移動','Travel','移动')
@@ -54,6 +57,11 @@
       foreground('rail-wayfinding-sign',4.48,[[5.34,3.47],[7.09,3.47],[7.09,4.48],[5.34,4.48]],[[5,4],[6,4],[7,4]]),
       foreground('arrival-flower-planter',6.84,[[5.28,5.78],[6.72,5.78],[6.72,6.84],[5.28,6.84]],[[5,6],[6,6]])
     ]),
+    lights:Object.freeze([
+      light('west-pillar-lamp','lamp',4.32,.5,.34,.84,'#ffd36b',.42),
+      light('east-pillar-lamp','lamp',9.38,.5,.34,.84,'#ffd36b',.42),
+      light('rail-wayfinding-glow','screen',5.22,3.27,2.02,.7,'#72dfff',.24)
+    ]),
     portals:Object.freeze([
       portal('arrivals-to-transport','icn-t1-arrivals-transport',10,7,'icn-t1-transport-center',5,7,'up',t('교통센터로','交通センターへ','To the transport center','前往交通中心'))
     ])
@@ -88,6 +96,11 @@
       foreground('center-map-kiosk',5.82,[[5.14,4.43],[6.86,4.43],[6.86,5.82],[5.14,5.82]],[[5,4],[6,4],[5,5],[6,5]]),
       foreground('south-left-planter',8.17,[[3.53,7.01],[4.59,7.01],[4.59,8.17],[3.53,8.17]],[[3,7],[4,7]]),
       foreground('south-right-planter',8.17,[[7.41,7.01],[8.48,7.01],[8.48,8.17],[7.41,8.17]],[[7,7],[8,7]])
+    ]),
+    lights:Object.freeze([
+      light('center-map-glow','screen',5.08,4.34,1.84,1.42,'#6de7ff',.23),
+      light('west-wayfinder-glow','screen',1.36,1.86,.92,1.36,'#73cfff',.2),
+      light('east-wayfinder-glow','screen',9.72,1.86,.92,1.36,'#73cfff',.2)
     ]),
     portals:Object.freeze([
       portal('transport-to-arrivals','icn-t1-arrivals-transport',5,8,'icn-t1-arrivals',9,7,'left',t('입국장으로','到着ロビーへ','To Arrivals','前往到达大厅')),
@@ -127,6 +140,11 @@
       foreground('right-ticket-machine',5.18,[[10.78,3.68],[11.53,3.68],[11.53,5.18],[10.78,5.18]],[[10,4]]),
       foreground('south-left-planter',8.16,[[3.54,7.03],[4.6,7.03],[4.6,8.16],[3.54,8.16]],[[3,7],[4,7]]),
       foreground('south-right-planter',8.16,[[7.4,7.03],[8.46,7.03],[8.46,8.16],[7.4,8.16]],[[7,7],[8,7]])
+    ]),
+    lights:Object.freeze([
+      light('west-ticket-map-glow','screen',1.43,2.23,.98,1.48,'#6cdcff',.22),
+      light('east-ticket-map-glow','screen',9.59,2.23,.98,1.48,'#6cdcff',.22),
+      light('gate-status-glow','screen',5.58,2.18,.84,1.2,'#76f0cf',.18)
     ]),
     portals:Object.freeze([
       portal('rail-concourse-to-transport','icn-t1-transport-rail-concourse',5,8,'icn-t1-transport-center',5,2,'down',t('교통센터로','交通センターへ','To the transport center','前往交通中心'))
