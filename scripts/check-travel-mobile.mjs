@@ -365,12 +365,35 @@ try{
       assert.equal(eventTheme.theme,'light');assert.match(eventTheme.bodyClass,/(^|\s)travel-active(\s|$)/);assert.equal(eventTheme.surface,'#fff');assert.ok(eventTheme.brightness>235,`light event card is unexpectedly dark: ${JSON.stringify(eventTheme)}`);assert.equal(eventTheme.borderImage,'none');
       await evaluate(`malbitSetTheme('dark')`);await sleep(100);
     }
+    assert.equal(await evaluate(`document.querySelector('.travelDialogueLesson')?.dataset.dialogueStep`),'1');
+    assert.equal(await evaluate(`document.querySelectorAll('.travelDialogueFlow span').length`),0,'airport dialogue translation must be hidden before request');
+    if(captureRpgVisuals){await evaluate(`malbitSetTheme('light')`);await sleep(80);await assertFits('Airport NPC dialogue turn 1 light');await shot('00t-airport-dialogue-turn-1.png')}
+    await tap('.travelDialogueNext');await tap('.travelDialogueNext');
+    assert.equal((await state()).dialogues['q-hello'].step,3);
+    await tap('.travelDialogueTools .travelTextButton');
+    assert.equal(await evaluate(`document.querySelectorAll('.travelDialogueFlow span').length`),3,'requested translation must cover only visible turns');
+    if(captureRpgVisuals){
+      await shot('00u-airport-dialogue-requested-translation.png');
+      await send('Page.reload',{ignoreCache:true});await ready();await openRpgScene();
+      assert.deepEqual(await evaluate(`(()=>({step:document.querySelector('.travelDialogueLesson')?.dataset.dialogueStep,support:document.querySelectorAll('.travelDialogueFlow span').length}))()`),{step:'3',support:3},'dialogue step and requested translation must survive reload');
+    }
+    await tap('.travelDialogueTools .travelTextButton');
+    while(await evaluate(`!!document.querySelector('.travelDialogueNext')`))await tap('.travelDialogueNext');
+    assert.equal(await evaluate(`document.querySelectorAll('.travelAnswer').length`),4);
+    assert.equal(await evaluate(`document.querySelectorAll('.travelAnswerCopy small').length`),0,'keyword choices must stay Korean-only before grading');
   };
   const answer=async(index=0)=>{
     assert.equal(await evaluate(`document.querySelectorAll('.travelAnswer').length`),4);
     await tap('.travelAnswer',index);
     assert.equal(await evaluate(`document.querySelectorAll('.travelAnswer.selected').length`),1);
     await tap('.travelQuestionCard .travelPrimary');
+    const active=await state();
+    if(!active.answers[active.sceneId]&&await evaluate(`!!document.querySelector('.travelDialogueHint')`)){
+      assert.ok(active.dialogues[active.sceneId].attempts>=1,'wrong keyword must advance the saved hint state');
+      assert.equal(await evaluate(`document.querySelectorAll('.travelDialogueHint span').length`),0,'hint translation must remain requested-only');
+      if(!fs.existsSync(path.join(out,'00v-airport-dialogue-hint.png')))await shot('00v-airport-dialogue-hint.png');
+      await tap('.travelAnswer',0);await tap('.travelQuestionCard .travelPrimary');
+    }
     return state();
   };
   const waitForQuestionTitle=async(expected)=>{

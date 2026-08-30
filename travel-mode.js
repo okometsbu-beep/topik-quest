@@ -272,6 +272,18 @@
       lastPurchase:typeof raw.lastPurchase==='string'?raw.lastPurchase:null
     };
   }
+  function normalizeDialogueState(value,scene){
+    const raw=value&&typeof value==='object'?value:{};
+    const turnCount=Math.max(1,scene?.dialogueLesson?.turns?.length||1);
+    const firstWrong=raw.firstWrong!==null&&raw.firstWrong!==''&&Number.isInteger(Number(raw.firstWrong))?Number(raw.firstWrong):null;
+    return{
+      step:Math.max(1,Math.min(turnCount,Number(raw.step)||1)),
+      attempts:Math.max(0,Number(raw.attempts)||0),
+      firstWrong:firstWrong>=0&&firstWrong<4?firstWrong:null,
+      translation:raw.translation===true,
+      completed:raw.completed===true
+    };
+  }
   function normalizeState(pack,value){
     if(!value||value.packId!==pack.id||!sceneById(pack,value.sceneId))return null;
     value.answers=value.answers&&typeof value.answers==='object'?value.answers:{};
@@ -281,6 +293,8 @@
     value.wallet=Math.max(0,Number(value.wallet??pack.startWallet)||0);
     value.clockMinutes=Number.isFinite(Number(value.clockMinutes))?Number(value.clockMinutes):new Date().getHours()*60+new Date().getMinutes();
     value.inventory=Array.isArray(value.inventory)?value.inventory:[];
+    value.dialogues=value.dialogues&&typeof value.dialogues==='object'?value.dialogues:{};
+    for(const scene of pack.scenes.filter(item=>item.dialogueLesson))value.dialogues[scene.id]=normalizeDialogueState(value.dialogues[scene.id],scene);
     value.myeongdong=normalizeHubState(value.myeongdong);
     value.measurement=normalizeMeasurement(value.measurement);
     if(RPG)value.exploration=RPG.normalizeProgress(pack.id,value.exploration,value.sceneId);
@@ -302,7 +316,7 @@
   function newState(pack,previous){
     const state={
       version:1,packId:pack.id,sceneId:pack.scenes[0].id,route:null,
-      answers:{},orders:{},evidence:[],visited:[pack.scenes[0].id],
+      answers:{},orders:{},dialogues:{},evidence:[],visited:[pack.scenes[0].id],
       wallet:Number(pack.startWallet)||0,clockMinutes:new Date().getHours()*60+new Date().getMinutes(),inventory:Array.from(new Set(Array.isArray(previous?.inventory)?previous.inventory:[])),spent:[],
       completed:false,startedAt:now(),updatedAt:now(),completedAt:null,
       bestScore:Math.max(Number(previous?.bestScore)||0,previous?.completed?correctCount(previous):0),
@@ -472,15 +486,15 @@
   function renderQuestion(sc,pack,state,scene){
     const payload=ensureQuestion(pack,state,scene);
     if(!payload){sc.innerHTML=`<div class="travelFatal">${h(l({ko:'문항을 불러오지 못했습니다.',ja:'問題を読み込めませんでした。',en:'Could not load this question.',zh:'无法加载题目。'}))}<button onclick="malbitTravelBack()">BACK</button></div>`;return}
-    const q=payload.display,answer=state.answers[scene.id],picked=answer?answer.selected:SELECTED[scene.id],listening=q.section==='listening',script=cleanScript(q.script),showTranscript=!!TRANSCRIPTS[scene.id],interaction=scene.interaction||'quiz';
+    const q=payload.display,answer=state.answers[scene.id],picked=answer?answer.selected:SELECTED[scene.id],listening=q.section==='listening',script=cleanScript(q.script),showTranscript=!!TRANSCRIPTS[scene.id],interaction=scene.interaction||'quiz',lesson=scene.dialogueLesson,dialogue=lesson?normalizeDialogueState(state.dialogues?.[scene.id],scene):null,dialogueReady=!lesson||dialogue.step>=lesson.turns.length;
     const explanation=answer?(q.explanationI18n?.[lang()]||q.explanationI18n?.ko||''):'';
     const choices=q.choices.map((choice,index)=>{
       const selected=picked===index,correct=!!answer&&index===q.answerIndex,wrong=!!answer&&selected&&!answer.correct,asset=scene.choiceAssets?.[index],src=assetPath(pack,'props',asset),ko=String(choice?.ko||l(choice)).replace(/^[①②③④]\s*/u,''),revealTranslation=!!answer&&lang()!=='ko'&&(selected||correct),translation=revealTranslation?String(l(choice)).replace(/^[①②③④]\s*/u,''):'';
       return`<button class="travelAnswer ${selected?'selected':''} ${correct?'correct':''} ${wrong?'wrong':''}" onclick="malbitTravelSelect(${index})" ${answer?'disabled':''}>${src?`<img src="${h(src)}" alt="">`:`<span>${index+1}</span>`}<span class="travelAnswerCopy"><b lang="ko">${h(ko)}</b>${translation?`<small>${h(translation)}</small>`:''}</span></button>`;
     }).join('');
-    const material=listening?`<div class="travelListen"><button onclick="malbitTravelSpeak()"><span>▶</span><b>${h(l({ko:'한국어 듣기',ja:'韓国語を聞く',en:'Play Korean audio',zh:'播放韩语'}))}</b></button><button class="transcript" onclick="malbitTravelToggleTranscript()">${showTranscript?h(l({ko:'대본 닫기',ja:'スクリプトを閉じる',en:'Hide transcript',zh:'隐藏文本'})):h(l({ko:'대본 보기',ja:'スクリプトを見る',en:'Show transcript',zh:'查看文本'}))}</button>${showTranscript?`<p lang="ko">${h(script)}</p>`:''}</div>`:`${q.passage?`<div class="travelPassage" lang="ko">${h(q.passage)}</div>`:''}`;
-    const feedback=answer?`<div class="travelFeedback ${answer.correct?'good':'bad'}" role="status"><div><b>${h(answer.correct?l({ko:`성공 · +${won(answer.earned)}`,ja:`成功・+${won(answer.earned)}`,en:`Success · +${won(answer.earned)}`,zh:`成功 · +${won(answer.earned)}`}):l({ko:`다시 길을 찾았어요 · ${answer.delayMinutes}분 경과`,ja:`ルート復帰・${answer.delayMinutes}分経過`,en:`Back on route · ${answer.delayMinutes} min passed`,zh:`已返回路线 · 经过${answer.delayMinutes}分钟`}))}</b>${travelCoachMarkup(scene,q,answer,explanation)}</div></div>${clueMarkup(scene,answer)}<button class="travelPrimary" onclick="malbitTravelNext()">${scene.next==='ending'?h(l({ko:'명동에 도착하기',ja:'明洞に到着',en:'Reach Myeongdong',zh:'抵达明洞'})):h(l({ko:'다음 행동',ja:'次の行動',en:'Next action',zh:'下一步行动'}))} <b>→</b></button>`:`<button class="travelPrimary ${Number.isInteger(picked)?'ready':''}" onclick="malbitTravelSubmit()">${h(l({ko:'이대로 행동하기',ja:'この行動に決める',en:'Do this',zh:'执行此操作'}))}</button>`;
-    sc.innerHTML=`<div class="travelPlay travelQuestionPlay">${commonTop(pack,state,scene)}<article class="travelQuestionCard"><div class="travelQuestionNo"><span>MISSION ${questionNumber(pack,scene)} / ${pack.questionCount}</span><em>${h(interaction.toUpperCase())}</em></div><h1>${h(l(scene.title))}</h1>${worldMarkup(pack,state,scene,answer)}<p class="travelContext">${h(l(scene.context))}</p>${material}<div class="travelPrompt"><small>${h(l(scene.instruction||q.instruction))}</small><b>${h(l(q.prompt))}</b></div><div class="travelAnswers ${h(interaction)} ${answer?'answered':''}">${choices}</div>${feedback}</article>${notebook(pack,state)}</div>`;
+    const dialogueMaterial=lesson?`<section class="travelDialogueLesson" data-dialogue-step="${dialogue.step}" data-dialogue-attempts="${dialogue.attempts}"><div class="travelDialogueFlow">${lesson.turns.slice(0,dialogue.step).map((turn,index)=>`<div class="${turn.role==='player'?'player':'npc'} ${index===dialogue.step-1?'current':''}"><small>${h(turn.role==='player'?l({ko:'나',ja:'あなた',en:'YOU',zh:'你'}):l(lesson.speaker))}</small><p lang="ko">${h(turn.korean)}</p>${dialogue.translation?`<span>${h(l(turn.support))}</span>`:''}</div>`).join('')}</div><div class="travelDialogueTools"><button class="travelTextButton" onclick="malbitTravelDialogueTranslation()">${h(dialogue.translation?l({ko:'번역 숨기기',ja:'訳を隠す',en:'Hide translation',zh:'隐藏翻译'}):l({ko:'필요할 때 번역 보기',ja:'必要なときだけ訳を見る',en:'Show translation when needed',zh:'需要时查看翻译'}))}</button>${dialogueReady?'':`<button class="travelPrimary travelDialogueNext" onclick="malbitTravelDialogueNext()">${h(l({ko:'대화 계속',ja:'会話を続ける',en:'Continue conversation',zh:'继续对话'}))} <b>→</b></button>`}</div>${dialogue.attempts?`<div class="travelDialogueHint" role="status"><small>${h(l({ko:`단서 ${Math.min(dialogue.attempts,lesson.hints.length)}단계`,ja:`ヒント ${Math.min(dialogue.attempts,lesson.hints.length)}`,en:`Hint ${Math.min(dialogue.attempts,lesson.hints.length)}`,zh:`提示 ${Math.min(dialogue.attempts,lesson.hints.length)}`}))}</small><p lang="ko">${h(lesson.hints[Math.min(dialogue.attempts,lesson.hints.length)-1].ko)}</p>${dialogue.translation?`<span>${h(l(lesson.hints[Math.min(dialogue.attempts,lesson.hints.length)-1]))}</span>`:''}</div>`:''}</section>`:(listening?`<div class="travelListen"><button onclick="malbitTravelSpeak()"><span>▶</span><b>${h(l({ko:'한국어 듣기',ja:'韓国語を聞く',en:'Play Korean audio',zh:'播放韩语'}))}</b></button><button class="transcript" onclick="malbitTravelToggleTranscript()">${showTranscript?h(l({ko:'대본 닫기',ja:'スクリプトを閉じる',en:'Hide transcript',zh:'隐藏文本'})):h(l({ko:'대본 보기',ja:'スクリプトを見る',en:'Show transcript',zh:'查看文本'}))}</button>${showTranscript?`<p lang="ko">${h(script)}</p>`:''}</div>`:`${q.passage?`<div class="travelPassage" lang="ko">${h(q.passage)}</div>`:''}`);
+    const feedback=answer?`<div class="travelFeedback ${answer.correct?'good':'bad'}" role="status"><div><b>${h(answer.correct?l({ko:`성공 · +${won(answer.earned)}`,ja:`成功・+${won(answer.earned)}`,en:`Success · +${won(answer.earned)}`,zh:`成功 · +${won(answer.earned)}`}):l({ko:`힌트로 해결 · ${answer.delayMinutes}분 경과`,ja:`ヒントで解決・${answer.delayMinutes}分経過`,en:`Solved with hints · ${answer.delayMinutes} min passed`,zh:`借助提示解决 · 经过${answer.delayMinutes}分钟`}))}</b>${travelCoachMarkup(scene,q,answer,explanation)}</div></div>${clueMarkup(scene,answer)}<button class="travelPrimary" onclick="malbitTravelNext()">${scene.next==='ending'?h(l({ko:'명동에 도착하기',ja:'明洞に到着',en:'Reach Myeongdong',zh:'抵达明洞'})):h(l({ko:'다음 행동',ja:'次の行動',en:'Next action',zh:'下一步行动'}))} <b>→</b></button>`:dialogueReady?`<button class="travelPrimary ${Number.isInteger(picked)?'ready':''}" onclick="malbitTravelSubmit()">${h(l({ko:'핵심어 확인',ja:'キーワードを確認',en:'Check keyword',zh:'确认关键词'}))}</button>`:'';
+    sc.innerHTML=`<div class="travelPlay travelQuestionPlay">${commonTop(pack,state,scene)}<article class="travelQuestionCard ${lesson?'travelDialogueQuestion':''}"><div class="travelQuestionNo"><span>MISSION ${questionNumber(pack,scene)} / ${pack.questionCount}</span><em>${h(lesson?'NPC TALK':interaction.toUpperCase())}</em></div><h1>${h(l(scene.title))}</h1>${worldMarkup(pack,state,scene,answer)}${lesson?'':`<p class="travelContext">${h(l(scene.context))}</p>`}${dialogueMaterial}${dialogueReady?`<div class="travelPrompt"><small>${h(l(scene.instruction||q.instruction))}</small><b lang="ko">${h(q.prompt)}</b></div><div class="travelAnswers ${h(interaction)} ${answer?'answered':''}">${choices}</div>`:''}${feedback}</article>${notebook(pack,state)}</div>`;
   }
   function activeHubEvent(hub,state){
     const minute=((Number(state.clockMinutes)||0)%1440+1440)%1440;
@@ -1062,6 +1076,19 @@
     SELECTED[scene.id]=Number(index);
     render();
   };
+  window.malbitTravelDialogueNext=()=>{
+    const {state,scene}=current(),lesson=scene?.dialogueLesson;
+    if(!lesson||state.answers[scene.id])return;
+    state.dialogues=state.dialogues&&typeof state.dialogues==='object'?state.dialogues:{};
+    const dialogue=normalizeDialogueState(state.dialogues[scene.id],scene);
+    dialogue.step=Math.min(lesson.turns.length,dialogue.step+1);state.dialogues[scene.id]=dialogue;state.updatedAt=now();writeState(state);render();
+  };
+  window.malbitTravelDialogueTranslation=()=>{
+    const {state,scene}=current();
+    if(!scene?.dialogueLesson)return;
+    state.dialogues=state.dialogues&&typeof state.dialogues==='object'?state.dialogues:{};
+    const dialogue=normalizeDialogueState(state.dialogues[scene.id],scene);dialogue.translation=!dialogue.translation;state.dialogues[scene.id]=dialogue;state.updatedAt=now();writeState(state);render();
+  };
   window.malbitTravelSubmit=()=>{
     const {pack,state,scene}=current();
     if(scene.type!=='question'||state.answers[scene.id])return;
@@ -1069,17 +1096,23 @@
     if(!Number.isInteger(selected))return notify(l({ko:'답을 먼저 선택해 주세요.',ja:'先に答えを選んでください。',en:'Select an answer first.',zh:'请先选择答案。'}));
     const payload=ensureQuestion(pack,state,scene);
     if(!payload)return;
-    const q=payload.display,correct=selected===q.answerIndex;
+    const q=payload.display,lesson=scene.dialogueLesson;
+    if(lesson&&selected!==q.answerIndex){
+      state.dialogues=state.dialogues&&typeof state.dialogues==='object'?state.dialogues:{};
+      const dialogue=normalizeDialogueState(state.dialogues[scene.id],scene);dialogue.attempts+=1;if(dialogue.firstWrong===null)dialogue.firstWrong=selected;state.dialogues[scene.id]=dialogue;delete SELECTED[scene.id];state.updatedAt=now();writeState(state);render();revealFeedback();return;
+    }
+    const dialogue=lesson?normalizeDialogueState(state.dialogues?.[scene.id],scene):null,correct=!dialogue?.attempts&&selected===q.answerIndex;
     const earned=correct?Number(scene.reward??pack.questionReward)||0:0;
     const delayMinutes=correct?2:4,itemReward=correct&&scene.itemReward?scene.itemReward:null;
-    state.answers[scene.id]={selected,correct,earned,delayMinutes,itemReward,bankId:q.bankId,choiceOrder:Array.from(q.choiceOrder),answeredAt:now()};
+    state.answers[scene.id]={selected:correct?selected:dialogue?.firstWrong??selected,resolvedSelected:selected,correct,earned,delayMinutes,itemReward,bankId:q.bankId,choiceOrder:Array.from(q.choiceOrder),answeredAt:now()};
+    if(dialogue){dialogue.completed=true;state.dialogues[scene.id]=dialogue}
     delete SELECTED[scene.id];
     state.wallet+=earned;state.clockMinutes+=delayMinutes;
     if(itemReward&&!state.inventory.includes(itemReward))state.inventory.push(itemReward);
     if(!state.evidence.includes(scene.id))state.evidence.push(scene.id);
     state.updatedAt=now();
     if(!correct){
-      try{window.MALBIT_REVIEW?.record(payload.source.level,q.section==='listening'?'listen':'read',q.bankId,selected,'travel',{choiceOrder:q.choiceOrder})}catch(error){}
+      try{window.MALBIT_REVIEW?.record(payload.source.level,q.section==='listening'?'listen':'read',q.bankId,state.answers[scene.id].selected,'travel',{choiceOrder:q.choiceOrder})}catch(error){}
     }
     writeState(state);
     render();
