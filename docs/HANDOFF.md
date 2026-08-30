@@ -44,13 +44,17 @@ these facts from conversation history or the large TOPIK source bundle.
   bright, or use a near-black placeholder tile as scenery. Map art stays unfiltered while cards, controls,
   text, borders, and focus states use theme tokens. Every UI change must pass both Travel themes plus
   320/375/390/430px containment, symmetry, 44px touch-target, console, and durable-storage checks.
-- Travel tile movement updates saved progress synchronously but keeps the live map DOM in place for a
-  190ms player step and 280ms lagging camera follow. Rapid taps queue in order, blocked movement has a
-  short directional response, and reduced-motion devices fall back to immediate rendering.
+- Travel zones use a 48×36, 25px tile contract. Every ground cell references an explicit catalog entry
+  with atlas coordinates, terrain, walkability, and layer; the browser paints individual tiles and never
+  a full-map `<img>`. Legacy 12×9 saved coordinates migrate once to version 2 without changing the storage key.
+- Travel movement keeps the live tile and sprite DOM in place for a 110ms player step and 160ms camera
+  follow. Pointer-held SVG direction controls repeat until release, blocked movement stops silently, and
+  reduced-motion devices settle immediately without map opacity, filter, or brightness changes.
 - The default `traveler-blue` skin owns one optimized transparent 8×4 sprite sheet. Rows are
   down/left/right/up; columns 0–3 are a 4fps idle loop and 4–7 are a 12fps walk loop. Every frame uses
   the same `.5,.9375` foot anchor and one preloaded image URL, so movement must not swap `src`, opacity,
-  filter, or brightness. Clear/perfect reward skins intentionally keep the prior static fallback.
+  filter, or brightness. Player and visible NPC containers share the same near-one-tile scale; NPC art
+  has an idle loop. Clear/perfect reward skins intentionally keep the prior static fallback.
 - Travel exploration is map-first: the 4:3 world stays aspect-correct at full viewport height, the camera
   follows both axes around interior tiles with 1.2× vertical overscan, and location, objective, travel
   status, D-pad, and interaction controls are compact overlays. Viewport resizing snaps camera bounds
@@ -59,6 +63,7 @@ these facts from conversation history or the large TOPIK source bundle.
 - Travel zones declare upper-foreground silhouettes, object baselines, and collision cells together.
   Ground, foot-depth actors, and upper foreground render as separate DOM layers; signs, kiosks, ticket
   gates, machines, and planters reuse exact pixels from the unfiltered map rather than a dark overlay.
+  The entire world is an isolated stacking context below HUD controls, so scaled Y-depth cannot cover UI.
 - Player and visible NPC contact shadows render in their own layer between ground and actors. Each
   shadow shares the actor's foot coordinate and depth, stays the same DOM node through movement, and
   uses a small bounded pixel oval instead of a baked image filter or scene-wide dark paint.
@@ -115,6 +120,10 @@ these facts from conversation history or the large TOPIK source bundle.
   effects must reuse the independent environment layer and must never simulate night with a black scene overlay.
 - The cue contract currently owns airport exploration interactions. Myeongdong dialogue/reward screens
   still need to adopt the same states; no audio files or persistent sound/vibration controls ship yet.
+- Current airport tile catalogs migrate the existing three backgrounds into explicit per-cell atlas entries.
+  Before adding many Seoul districts, replace repeated migration entries with a reusable Korean streetscape
+  tileset and enforce a DOM/frame-time budget. Stamina, game-over, and long keyword-learning NPC dialogue
+  are planned follow-up slices and are not implemented by the tile/input foundation.
 
 ## Execution defaults
 
