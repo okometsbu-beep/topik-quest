@@ -62,6 +62,10 @@ these facts from conversation history or the large TOPIK source bundle.
 - Player and visible NPC contact shadows render in their own layer between ground and actors. Each
   shadow shares the actor's foot coordinate and depth, stays the same DOM node through movement, and
   uses a small bounded pixel oval instead of a baked image filter or scene-wide dark paint.
+- Each Travel zone can declare bounded lamp, screen, or window highlights with position, size, color,
+  and strength. They render in a separate environment layer between ground and contact shadows;
+  validation rejects out-of-bounds effects, opacity above 0.65, and mobile coverage large enough to
+  become a scene-wide tint. The original map, actors, and foreground remain unfiltered.
 - Game Mode now uses semantic spacing, type, surface, border, and accent tokens through the purpose-named
   `game-visual-system.js` final owner. Equipment, rarity, stage, run-slot, and map-node tiles follow the
   saved system/light/dark preference and must stay readable rather than near-black. CI checks both themes
@@ -102,8 +106,8 @@ these facts from conversation history or the large TOPIK source bundle.
   All voice and speed controls stay in the single detailed More-screen setting.
 - A returning GitHub Pages tab can briefly show the previous release while its service worker swaps;
   closing and reopening the tab completes the update without deleting progress.
-- Travel light and environment effects are not implemented yet. Add them as separate bounded layers;
-  never bake them into a character or simulate night with a black scene overlay.
+- Travel has static bounded highlights but no weather or time-varying environment effects yet. Future
+  effects must reuse the independent environment layer and must never simulate night with a black scene overlay.
 
 ## Execution defaults
 
