@@ -19,7 +19,7 @@ function pathToInteraction(engine,zone,start,target,sceneId){
   const entries=Object.entries(engine.directions);
   while(queue.length){
     const current=queue.shift();
-    if(Math.abs(current.x-target.x)+Math.abs(current.y-target.y)<=1)return current.path;
+    if(Math.abs(current.x-target.x)+Math.abs(current.y-target.y)<=engine.interactionRange(zone))return current.path;
     for(const [direction,delta] of entries){
       const x=current.x+delta.x,y=current.y+delta.y,key=`${x},${y}`;
       if(seen.has(key)||!engine.isWalkable(zone,x,y,sceneId))continue;
@@ -35,8 +35,11 @@ test('Seoul travel world has a valid extensible district, zone, collision, POI, 
   assert.deepEqual(Array.from(world.districts,item=>item.id),['incheon-airport']);
   assert.deepEqual(Array.from(world.districts[0].zoneIds),['icn-t1-arrivals','icn-t1-transport-center','icn-t1-airport-rail-concourse']);
   assert.deepEqual(Array.from(world.zones, item=>item.id),['icn-t1-arrivals','icn-t1-transport-center','icn-t1-airport-rail-concourse']);
-  assert.equal(zone.width,12);assert.equal(zone.height,9);
+  assert.equal(zone.width,48);assert.equal(zone.height,36);
   assert.equal(zone.grid.length,zone.height);
+  assert.equal(zone.tilemap.coordinateScale,4);assert.equal(zone.tilemap.tileSize,25);
+  assert.equal(zone.tilemap.atlas.columns,zone.width);assert.equal(zone.tilemap.atlas.rows,zone.height);
+  assert.equal(zone.tilemap.layers.ground.length,zone.height);
   assert.deepEqual(Array.from(engine.validateWorld(world)),[]);
   assert.ok(zone.pois.length>=3);
   assert.deepEqual(Object.keys(zone.scenes),['arrival','q-hello','q-station','q-myeongdong','transport']);
@@ -73,10 +76,12 @@ test('Seoul travel world has a valid extensible district, zone, collision, POI, 
       assert.ok(light.strength>0&&light.strength<=.65,`${candidate.id}:${light.id} strength must remain local`);
     }
   }
-  assert.equal(engine.isWalkable(zone,6,4,null),false,'the rail sign base cannot be walked through');
-  assert.equal(engine.isWalkable(transport,5,5,null),false,'the center kiosk base cannot be walked through');
-  assert.equal(engine.isWalkable(rail,1,4,null),false,'the ticket machine base cannot be walked through');
-  assert.equal(engine.isWalkable(rail,5,3,null),false,'the left ticket-gate bank cannot be walked through');
+  assert.equal(engine.isWalkable(zone,26,18,null),false,'the rail sign base cannot be walked through');
+  assert.equal(engine.isWalkable(transport,22,22,null),false,'the center kiosk base cannot be walked through');
+  assert.equal(engine.isWalkable(rail,6,18,null),false,'the ticket machine base cannot be walked through');
+  assert.equal(engine.isWalkable(rail,22,14,null),false,'the left ticket-gate bank cannot be walked through');
+  const migrated=engine.normalizeProgress('route-001-airport-myeongdong',{version:1,zoneId:zone.id,x:5,y:7,direction:'up',steps:9,discoveries:[]},'arrival');
+  assert.equal(migrated.version,2);assert.deepEqual({x:migrated.x,y:migrated.y},{x:22,y:30});assert.equal(migrated.steps,9);
 });
 
 test('the airport portal moves both ways while preserving route progress',()=>{
@@ -89,13 +94,13 @@ test('the airport portal moves both ways while preserving route progress',()=>{
   assert.deepEqual(Array.from(progress.discoveries),['icn-t1-arrivals:baggage-carousel']);
   assert.equal(engine.contextForProgress('route-001-airport-myeongdong',progress,'arrival').zone.id,transport.id);
   progress=engine.enterPortal(world,progress,transport.portals[0]);
-  assert.equal(progress.zoneId,'icn-t1-arrivals');assert.deepEqual({x:progress.x,y:progress.y},{x:9,y:7});
+  assert.equal(progress.zoneId,'icn-t1-arrivals');assert.deepEqual({x:progress.x,y:progress.y},{x:38,y:30});
 
-  progress=engine.enterPortal(world,{...progress,zoneId:transport.id,x:5,y:2},transport.portals[1]);
-  assert.equal(progress.zoneId,'icn-t1-airport-rail-concourse');assert.deepEqual({x:progress.x,y:progress.y},{x:5,y:7});
+  progress=engine.enterPortal(world,{...progress,zoneId:transport.id,x:22,y:10},transport.portals[1]);
+  assert.equal(progress.zoneId,'icn-t1-airport-rail-concourse');assert.deepEqual({x:progress.x,y:progress.y},{x:22,y:30});
   const rail=engine.zoneById(world,'icn-t1-airport-rail-concourse');
   progress=engine.enterPortal(world,progress,rail.portals[0]);
-  assert.equal(progress.zoneId,'icn-t1-transport-center');assert.deepEqual({x:progress.x,y:progress.y},{x:5,y:2});
+  assert.equal(progress.zoneId,'icn-t1-transport-center');assert.deepEqual({x:progress.x,y:progress.y},{x:22,y:10});
 });
 
 test('interaction cue plans stay short, local, reusable, and explicitly opt-in for feedback',()=>{
@@ -145,12 +150,13 @@ test('Travel runtime layers exploration over the existing event flow and saves o
   assert.match(screen.innerHTML,/travelRpgLight kind-screen/);assert.doesNotMatch(screen.innerHTML,/travelRpgLight screen/);
   assert.match(screen.innerHTML,/travelRpgShadow npc/);assert.match(screen.innerHTML,/travelRpgShadow player/);
   assert.match(screen.innerHTML,/data-depth-contract="foot-y"/);assert.match(screen.innerHTML,/data-foreground-id="rail-wayfinding-sign"/);
-  for(const direction of ['left','left','up','up'])runtime.malbitTravelStep(direction);
-  assert.match(screen.innerHTML,/수하물 벨트/);
+  let state=JSON.parse(storage.get('malbitStoryV1')).episodes['route-001-airport-myeongdong'];
+  const startZone=runtime.MALBIT_TRAVEL_WORLDS[0].zones[0],startEngine=runtime.MALBIT_TRAVEL_RPG,baggage=startZone.pois[0];
+  for(const direction of pathToInteraction(startEngine,startZone,state.exploration,baggage,'arrival'))runtime.malbitTravelStep(direction);
   runtime.malbitTravelInteract();
   assert.match(screen.innerHTML,/수하물 찾는 곳/);assert.match(screen.innerHTML,/\+200원/);
   assert.deepEqual(cueSounds.slice(-2),['investigation-open','reward-earned']);assert.equal(cueVibrations.length,2);
-  let state=JSON.parse(storage.get('malbitStoryV1')).episodes['route-001-airport-myeongdong'];
+  state=JSON.parse(storage.get('malbitStoryV1')).episodes['route-001-airport-myeongdong'];
   assert.equal(state.wallet,79200);assert.deepEqual(state.exploration.discoveries,['icn-t1-arrivals:baggage-carousel']);
   runtime.malbitTravelInteract();
   state=JSON.parse(storage.get('malbitStoryV1')).episodes['route-001-airport-myeongdong'];
@@ -201,7 +207,7 @@ test('Travel runtime layers exploration over the existing event flow and saves o
   const after=JSON.parse(storage.get('malbitStoryV1')).episodes['route-001-airport-myeongdong'];
   assert.ok(after.exploration.steps>0);assert.equal(after.exploration.worldId,'seoul-world-v1');
   assert.equal(after.exploration.zoneId,'icn-t1-arrivals');
-  assert.equal(runtime.MALBIT_TRAVEL_RPG_MOTION.durationMs,190);
+  assert.equal(runtime.MALBIT_TRAVEL_RPG_MOTION.durationMs,110);
   assert.equal(runtime.MALBIT_TRAVEL_RPG_MOTION.busy,false);
   assert.equal(runtime.MALBIT_TRAVEL_RPG_CUES.active,false);assert.equal(runtime.MALBIT_TRAVEL_RPG_CUES.hookKey,'MALBIT_TRAVEL_CUE_HOOKS');
 });
@@ -215,24 +221,28 @@ test('Travel styles expose separate light and dark theme tokens without forcing 
   assert.match(css,/\.travelRpgTopHud/);assert.match(css,/\.travelRpgObjectiveHud/);
   assert.match(css,/\.travelRpgControls\{position:absolute/);
   assert.match(css,/\.travelRpgBoard\{position:absolute;height:120%/);
-  assert.match(css,/\.travelRpgGroundLayer,\.travelRpgEnvironmentLayer,\.travelRpgShadowLayer,\.travelRpgActorLayer,\.travelRpgUpperLayer\{display:contents\}/);
+  assert.match(css,/\.travelRpgGroundLayer\{position:absolute;z-index:0;inset:0;overflow:hidden/);
+  assert.match(css,/\.travelRpgTile\{position:absolute;display:block/);
   assert.match(css,/\.travelRpgLight\{position:absolute;z-index:1;pointer-events:none;opacity:var\(--travel-rpg-light-strength\);filter:none;mix-blend-mode:screen/);
   assert.match(css,/\.travelRpgForeground\{position:absolute;inset:0/);
   assert.match(css,/\.travelRpgForeground[^}]*opacity:1;filter:none/);
-  assert.match(css,/--travel-contact-shadow:/);assert.match(css,/\.travelRpgShadow\{position:absolute;width:5\.4%;height:1\.6%/);
+  assert.match(css,/--travel-contact-shadow:/);assert.match(css,/\.travelRpgShadow\{position:absolute;width:var\(--travel-rpg-shadow-width/);
   assert.match(css,/\.travelRpgShadow[^}]*clip-path:polygon/);assert.match(css,/\.travelRpgPlayer[^}]*filter:none/);
   assert.doesNotMatch(css,/\.travelRpg(?:Player|Target\.character)[^}]*drop-shadow/);
-  assert.match(css,/\.travelRpgPlayer\{width:7\.4%;height:14%/);
+  assert.match(css,/\.travelRpgPlayer\{width:var\(--travel-rpg-actor-width,1\.85%\);height:var\(--travel-rpg-actor-height,3\.5%\)/);
   assert.match(css,/\.travelRpgShell\.is-cue-active \.travelRpgControls\{pointer-events:none\}/);
   assert.match(css,/@keyframes travelRpgCueDiscover/);assert.match(css,/@keyframes travelRpgCueReward/);assert.match(css,/@keyframes travelRpgCueArrive/);
   assert.doesNotMatch(css,/travelRpgCue(?:Press|Discover|Reward|Arrive|Return)[^}]*filter:/);
   assert.match(css,/background-size:800% 400%/);assert.match(css,/travelRpgWalk12 \.333333s/);
   assert.match(css,/@keyframes travelRpgIdle4/);assert.match(css,/@keyframes travelRpgWalk12/);
   assert.doesNotMatch(css,/@keyframes travelRpgWalk12[^}]*filter:/);
-  assert.match(css,/cubic-bezier\(\.2,\.78,\.24,1\)/);
+  assert.match(css,/@keyframes travelRpgNpcIdle4/);assert.match(css,/touch-action:none/);
   assert.match(runtime,/travelRpgCard travelRpgShell/);assert.match(runtime,/travelRpgStatusHud/);
   assert.match(runtime,/class="travelRpgPlayer has-sprite idle/);assert.match(runtime,/data-walk-fps=/);
   assert.match(runtime,/rpgForegroundMarkup/);assert.match(runtime,/data-depth-y=/);assert.match(runtime,/rpgEnvironmentMarkup/);assert.match(runtime,/data-effect-contract="bounded-light"/);assert.match(runtime,/rpgShadowMarkup/);assert.match(runtime,/class="travelRpgShadow/);
+  assert.match(runtime,/rpgGroundMarkup/);assert.match(runtime,/data-tile-x=/);assert.match(runtime,/data-walkable=/);
+  assert.match(runtime,/malbitTravelHoldStart/);assert.match(runtime,/onpointerdown=/);assert.match(runtime,/rpgArrowIcon/);assert.match(runtime,/rpgActionIcon/);
+  assert.doesNotMatch(runtime,/그쪽은 지나갈 수 없어요/);
   assert.match(runtime,/MALBIT_TRAVEL_RPG_CUES/);assert.match(runtime,/MALBIT_TRAVEL_CUE_HOOKS/);assert.match(runtime,/malbit:travel-cue/);
   assert.match(runtime,/player\.style\.zIndex=String\(point\.depth\)/);assert.match(runtime,/shadow\.style\.zIndex=String\(point\.depth\)/);
   assert.match(runtime,/player\.classList\.contains\('has-sprite'\)/);

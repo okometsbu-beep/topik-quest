@@ -61,11 +61,13 @@
     const world=match?.world||worldByRoute(packId);
     const zone=match?.zone||null;
     if(!zone)return null;
-    const spawn=point(zone.spawn,{x:0,y:0});
-    let position=point(value,spawn);
+    const spawn=point(zone.spawn,{x:0,y:0}),scale=Math.max(1,Number(zone.tilemap?.coordinateScale)||1);
+    const legacy=value&&scale>1&&Number(value.version||1)<2;
+    const source=legacy?{x:Number(value.x)*scale+Math.floor(scale/2),y:Number(value.y)*scale+Math.floor(scale/2)}:value;
+    let position=point(source,spawn);
     if(value?.zoneId!==zone.id||!isWalkable(zone,position.x,position.y,sceneId))position=spawn;
     return{
-      version:1,
+      version:2,
       worldId:world.id,
       zoneId:zone.id,
       x:position.x,
@@ -81,12 +83,14 @@
     return{moved:true,blocked:false,progress:{...progress,x,y,direction:facing,steps:progress.steps+1}};
   }
   const distance=(a,b)=>Math.abs(Number(a.x)-Number(b.x))+Math.abs(Number(a.y)-Number(b.y));
+  const interactionRange=zone=>Math.max(1,(Number(zone?.tilemap?.coordinateScale)||1)-1);
   function interactionAt(zone,progress,sceneId){
+    const range=interactionRange(zone);
     const anchor=zoneScene(zone,sceneId);
-    if(anchor&&distance(progress,anchor)<=1)return{type:'scene',target:anchor};
-    const target=zone?.pois?.find(item=>distance(progress,item)<=1);
+    if(anchor&&distance(progress,anchor)<=range)return{type:'scene',target:anchor};
+    const target=zone?.pois?.find(item=>distance(progress,item)<=range);
     if(target)return{type:'poi',target};
-    const portal=zone?.portals?.find(item=>distance(progress,item)<=1);
+    const portal=zone?.portals?.find(item=>distance(progress,item)<=range);
     return portal?{type:'portal',target:portal}:null;
   }
   function enterPortal(world,progress,portal){
@@ -116,6 +120,13 @@
     for(const zone of world?.zones||[]){
       if(zone.grid?.length!==zone.height)errors.push(`${zone.id}: height mismatch`);
       if(zone.grid?.some(row=>String(row).length!==zone.width))errors.push(`${zone.id}: width mismatch`);
+      const tilemap=zone.tilemap,ground=tilemap?.layers?.ground;
+      if(!tilemap||tilemap.version!==1)errors.push(`${zone.id}: missing tilemap contract`);
+      else{
+        if(!tilemap.atlas?.image||tilemap.atlas.columns!==zone.width||tilemap.atlas.rows!==zone.height)errors.push(`${zone.id}: invalid tile atlas`);
+        if(!Array.isArray(ground)||ground.length!==zone.height||ground.some(row=>String(row).length!==zone.width))errors.push(`${zone.id}: invalid ground tile layer`);
+        for(const symbol of new Set(Array.from((ground||[]).join(''))))if(!tilemap.palette?.[symbol])errors.push(`${zone.id}: missing tile palette ${symbol}`);
+      }
       if(!districtZones.has(zone.id))errors.push(`${zone.id}: missing district link`);
       if(cell(zone,zone.spawn?.x,zone.spawn?.y)==='#')errors.push(`${zone.id}: blocked spawn`);
       const ids=(zone.pois||[]).map(item=>item.id);
@@ -163,6 +174,7 @@
     normalizeProgress,
     isWalkable,
     step,
+    interactionRange,
     interactionAt,
     enterPortal,
     cuePlan,
