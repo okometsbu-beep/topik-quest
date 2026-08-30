@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v78 · Travel semantic tilemap and held-control foundation
-- Current candidate: v78 · Travel semantic tilemap and held-control foundation
+- Production release: v79 · Travel 10,000-step stamina and recovery loop
+- Current candidate: v79 · Travel 10,000-step stamina and recovery loop
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
@@ -75,12 +75,16 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
   tile variables, and the world stacking context cannot cover the HUD.
 - D-pad and investigation controls are translucent, text-free SVG controls. Direction buttons keep moving
   while held, release cleanly, and movement never rebuilds the ground or sprite DOM.
+- Travel stamina starts at 10,000 steps and is saved inside the existing exploration record. Only a
+  successful tile move spends one step; collisions are free, and 0 opens a dedicated full-screen rest scene.
+- One-hour rest returns the traveler to the current zone spawn with full stamina while preserving route
+  answers, discoveries, rewards, wallet, inventory, and lifetime exploration steps.
 
 ## 다음 우선순위
 
-1. 10,000보 기준 스태미너 감소와 전용 게임오버 이미지·복귀 화면을 만든다.
-2. 여러 차례 오가는 NPC 대화와 핵심 단어 선택 퀴즈, 단계적 힌트·번역 계약을 만든다.
-3. 한국적 조사 오브젝트와 재사용 서울 타일셋, 모바일 성능 예산을 확장한다.
+1. 여러 차례 오가는 NPC 대화와 핵심 단어 선택 퀴즈, 단계적 힌트·번역 계약을 만든다.
+2. 한국적 조사 오브젝트와 재사용 서울 타일셋, 모바일 성능 예산을 확장한다.
+3. 실제 오답 근거를 모아 TOPIK I·II와 Shorts 문항·강사형 해설을 유형별로 확장한다.
 
 ## 이번 운영 변경
 
@@ -93,22 +97,21 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-10,000보에서 0이 되는 스태미너 계산·저장·HUD와 전용 게임오버 이미지·복귀 화면을 만든다.
-새 NPC 대화, 새 구역, 새 문항, 조사 오브젝트 확장은 같은 작업에 넣지 않는다.
+공항 NPC와 여러 차례 오가는 현실적 대화, 핵심 단어 선택 퀴즈, 오답 뒤 단계적 힌트와
+요청형 번역 계약을 한 흐름으로 만든다. 새 구역·스태미너 조정·TOPIK 문항 확장은 넣지 않는다.
 
-## v78 후보 검증 및 배포
+## v79 후보 검증 및 배포
 
-- 기존 12×9 이동 좌표를 저장 호환 가능한 48×36 타일 좌표로 이관하고, 각 칸을 명시적
-  타일 ID·아틀라스 좌표·지형·통행·레이어 속성으로 렌더한다.
-- 기본 캐릭터를 기존 약 1/4 크기로 줄이고 NPC와 같은 발 기준 크기를 사용한다. NPC idle,
-  타일 비례 월드 표식, HUD 아래 Y-depth 격리를 함께 검증한다.
-- 텍스트 없는 반투명 SVG 방향·조사 키, 누르고 이동·놓고 정지, 막힌 길 무팝업을 적용한다.
-- 이동 중 맵·스프라이트 DOM 교체와 원본 맵 opacity·filter·밝기 변경이 없다.
-- 전체 검사 65개와 Travel 집중 검사 6개를 통과했다. 실제 Chrome에서 320·375·390·430px,
-  밝은·어두운 테마, 51개 화면, 12fps 보행·조사·포털·깊이를 확인했고 콘솔 오류는 0건이다.
+- 기존 `malbitStoryV1`의 탐험 기록 안에 10,000보 스태미너를 저장하고, 정상 이동에서만
+  1보를 소모한다. 막힌 칸·게임오버 뒤 입력은 소모하지 않고 기존 저장은 100%로 이관한다.
+- 0%에서 별도 휴게 공간 이미지와 게임오버 화면을 열며, 1시간 휴식은 현재 구역 스폰으로
+  복귀시킨다. 발견·보상·지갑·답안·누적 걸음은 유지하고 여행 시각만 60분 진행한다.
+- 맵 원화에는 검은 덧칠·필터·opacity 변경을 하지 않고 게임오버 원화도 독립 이미지로 쓴다.
+- 전체 검사 66개와 Travel 집중 검사 7개를 통과했다. 실제 Chrome에서 320·375·390·430px,
+  밝은·어두운 테마, 54개 화면, 0% 전환·휴식 복귀를 확인했고 콘솔 오류는 0건이다.
 - 문제·정답·해설·번역·저장 키·결제 UI·API 키·개인정보 전송은 바꾸지 않았다.
-- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (모바일 CI와 병합 뒤 v78 확인)
-- 되돌리기 기준: v77 main `d0d482863125f90a168081da7262b4ddac7fc711`
+- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (모바일 CI와 병합 뒤 v79 확인)
+- 되돌리기 기준: v78 main `a757fbe6269c9f6b4ecc8ca5d7e0b4ce432e9db8`
 
 ## 알려진 위험
 
@@ -123,5 +126,5 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - v77 연출 계약은 공항 탐험 흐름부터 적용한다. 명동 NPC·보상 화면 연결과 실제 음원 선택 UI는 아직 없다.
 - 현재 공항 3개 구역은 기존 원화를 마이그레이션 아틀라스로 쓰되 런타임은 타일 ID별로만
   그린다. 서울 구역을 늘리기 전 반복 가능한 한국 거리 타일셋과 DOM/frame 성능 예산이 필요하다.
-- 스태미너·게임오버·장문 NPC 대화·단어 퀴즈·추가 한국 조사물은 후속 작업이며 아직 없다.
+- 장문 NPC 대화·단어 퀴즈·추가 한국 조사물은 후속 작업이며 아직 없다.
 - 기존 Plus·가격·결제 암시 UI가 새 화면에 재사용되지 않도록 계속 검사해야 한다.
