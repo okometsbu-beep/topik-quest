@@ -124,8 +124,12 @@
       if(!tilemap||tilemap.version!==1)errors.push(`${zone.id}: missing tilemap contract`);
       else{
         if(!tilemap.atlas?.image||tilemap.atlas.columns!==zone.width||tilemap.atlas.rows!==zone.height)errors.push(`${zone.id}: invalid tile atlas`);
-        if(!Array.isArray(ground)||ground.length!==zone.height||ground.some(row=>String(row).length!==zone.width))errors.push(`${zone.id}: invalid ground tile layer`);
-        for(const symbol of new Set(Array.from((ground||[]).join(''))))if(!tilemap.palette?.[symbol])errors.push(`${zone.id}: missing tile palette ${symbol}`);
+        if(!Array.isArray(ground)||ground.length!==zone.height||ground.some(row=>!Array.isArray(row)||row.length!==zone.width))errors.push(`${zone.id}: invalid ground tile layer`);
+        for(const tileId of new Set((ground||[]).flat())){
+          const entry=tilemap.palette?.[tileId];
+          if(!entry)errors.push(`${zone.id}: missing tile palette ${tileId}`);
+          else if(!Number.isInteger(Number(entry.atlasX))||!Number.isInteger(Number(entry.atlasY))||entry.atlasX<0||entry.atlasY<0||entry.atlasX>=tilemap.atlas.columns||entry.atlasY>=tilemap.atlas.rows)errors.push(`${zone.id}: invalid tile atlas coordinate ${tileId}`);
+        }
       }
       if(!districtZones.has(zone.id))errors.push(`${zone.id}: missing district link`);
       if(cell(zone,zone.spawn?.x,zone.spawn?.y)==='#')errors.push(`${zone.id}: blocked spawn`);

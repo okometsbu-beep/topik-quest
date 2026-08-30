@@ -19,9 +19,10 @@
     action:t('이동','移動','Travel','移动')
   });
 
-  // RPG Maker-style coordinate contract. Existing 12x9 art is treated as a tile atlas and each
-  // legacy cell becomes a 4x4 group of independent 25px tiles. New districts can replace atlas
-  // coordinates with reusable palette entries without changing movement, collision, or rendering.
+  // RPG Maker-style coordinate contract. Existing 12x9 art is treated as a migration atlas and each
+  // legacy cell becomes a 4x4 group of independent 25px tiles. Every map cell references an explicit
+  // catalog entry with atlas coordinates and terrain properties, so future districts can reuse tile IDs
+  // without changing movement, collision, layering, or rendering.
   const TILE_SCALE=4;
   const tilePoint=value=>Number(value)*TILE_SCALE+Math.floor(TILE_SCALE/2);
   const tileGrid=rows=>Object.freeze(rows.flatMap(row=>{
@@ -46,16 +47,25 @@
       ...item,x:Number(item.x)*TILE_SCALE,y:Number(item.y)*TILE_SCALE,
       width:Number(item.width)*TILE_SCALE,height:Number(item.height)*TILE_SCALE
     })));
+    const palette=Object.freeze(Array.from({length:width*height},(_,index)=>{
+      const x=index%width,y=Math.floor(index/width),blocked=String(grid[y]||'').charAt(x)==='#';
+      return Object.freeze({
+        id:`migration-${String(index).padStart(4,'0')}`,
+        atlasX:x,
+        atlasY:y,
+        terrain:blocked?'blocked':'walkable',
+        walkable:!blocked,
+        layer:'ground'
+      });
+    }));
+    const ground=Object.freeze(Array.from({length:height},(_,y)=>Object.freeze(Array.from({length:width},(_,x)=>y*width+x))));
     const tilemap=Object.freeze({
       version:1,
       coordinateScale:TILE_SCALE,
       tileSize:25,
       atlas:Object.freeze({image:base.background,width:1200,height:900,columns:width,rows:height}),
-      palette:Object.freeze({
-        '.':Object.freeze({id:'walkable',walkable:true,layer:'ground'}),
-        '#':Object.freeze({id:'blocked',walkable:false,layer:'ground'})
-      }),
-      layers:Object.freeze({ground:grid})
+      palette,
+      layers:Object.freeze({ground})
     });
     return Object.freeze({
       ...base,version:2,width,height,grid,tilemap,

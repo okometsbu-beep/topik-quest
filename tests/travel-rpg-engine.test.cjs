@@ -39,7 +39,9 @@ test('Seoul travel world has a valid extensible district, zone, collision, POI, 
   assert.equal(zone.grid.length,zone.height);
   assert.equal(zone.tilemap.coordinateScale,4);assert.equal(zone.tilemap.tileSize,25);
   assert.equal(zone.tilemap.atlas.columns,zone.width);assert.equal(zone.tilemap.atlas.rows,zone.height);
-  assert.equal(zone.tilemap.layers.ground.length,zone.height);
+  assert.equal(zone.tilemap.layers.ground.length,zone.height);assert.equal(zone.tilemap.palette.length,zone.width*zone.height);
+  const tileId=zone.tilemap.layers.ground[18][14],tile=zone.tilemap.palette[tileId];
+  assert.deepEqual({atlasX:tile.atlasX,atlasY:tile.atlasY,terrain:tile.terrain,walkable:tile.walkable,layer:tile.layer},{atlasX:14,atlasY:18,terrain:'walkable',walkable:true,layer:'ground'});
   assert.deepEqual(Array.from(engine.validateWorld(world)),[]);
   assert.ok(zone.pois.length>=3);
   assert.deepEqual(Object.keys(zone.scenes),['arrival','q-hello','q-station','q-myeongdong','transport']);
@@ -240,7 +242,7 @@ test('Travel styles expose separate light and dark theme tokens without forcing 
   assert.match(runtime,/travelRpgCard travelRpgShell/);assert.match(runtime,/travelRpgStatusHud/);
   assert.match(runtime,/class="travelRpgPlayer has-sprite idle/);assert.match(runtime,/data-walk-fps=/);
   assert.match(runtime,/rpgForegroundMarkup/);assert.match(runtime,/data-depth-y=/);assert.match(runtime,/rpgEnvironmentMarkup/);assert.match(runtime,/data-effect-contract="bounded-light"/);assert.match(runtime,/rpgShadowMarkup/);assert.match(runtime,/class="travelRpgShadow/);
-  assert.match(runtime,/rpgGroundMarkup/);assert.match(runtime,/data-tile-x=/);assert.match(runtime,/data-walkable=/);
+  assert.match(runtime,/rpgGroundMarkup/);assert.match(runtime,/data-tile-id=/);assert.match(runtime,/data-tile-x=/);assert.match(runtime,/data-walkable=/);
   assert.match(runtime,/malbitTravelHoldStart/);assert.match(runtime,/onpointerdown=/);assert.match(runtime,/rpgArrowIcon/);assert.match(runtime,/rpgActionIcon/);
   assert.doesNotMatch(runtime,/그쪽은 지나갈 수 없어요/);
   assert.match(runtime,/MALBIT_TRAVEL_RPG_CUES/);assert.match(runtime,/MALBIT_TRAVEL_CUE_HOOKS/);assert.match(runtime,/malbit:travel-cue/);

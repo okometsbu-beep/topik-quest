@@ -589,12 +589,13 @@
   const rpgForegroundDepth=item=>2+Math.max(0,Math.floor((Number(item.depthY)||0)*2));
   function rpgTileMarkup(zone,x,y,layer='ground'){
     const atlas=zone.tilemap?.atlas||{},rows=zone.tilemap?.layers?.ground||zone.grid||[];
-    const symbol=String(rows[y]||'').charAt(x)||'#',entry=zone.tilemap?.palette?.[symbol]||{};
+    const row=rows[y]||[],tileId=Array.isArray(row)?row[x]:String(row).charAt(x),entry=zone.tilemap?.palette?.[tileId]||{};
+    const atlasX=Number.isInteger(Number(entry.atlasX))?Number(entry.atlasX):x,atlasY=Number.isInteger(Number(entry.atlasY))?Number(entry.atlasY):y;
     const left=(x/zone.width*100).toFixed(4),top=(y/zone.height*100).toFixed(4);
     const width=(100/zone.width).toFixed(4),height=(100/zone.height).toFixed(4);
-    const positionX=zone.width>1?(x/(zone.width-1)*100).toFixed(5):0;
-    const positionY=zone.height>1?(y/(zone.height-1)*100).toFixed(5):0;
-    return`<i class="travelRpgTile terrain-${h(entry.id||'blocked')} layer-${h(layer)}" data-tile-x="${x}" data-tile-y="${y}" data-terrain="${h(entry.id||'blocked')}" data-walkable="${entry.walkable===true?'true':'false'}" style="left:${left}%;top:${top}%;width:${width}%;height:${height}%;background-image:url('${h(atlas.image||zone.background)}');background-size:${zone.width*100}% ${zone.height*100}%;background-position:${positionX}% ${positionY}%"></i>`;
+    const positionX=Number(atlas.columns)>1?(atlasX/(Number(atlas.columns)-1)*100).toFixed(5):0;
+    const positionY=Number(atlas.rows)>1?(atlasY/(Number(atlas.rows)-1)*100).toFixed(5):0;
+    return`<i class="travelRpgTile terrain-${h(entry.terrain||'blocked')} layer-${h(layer)}" data-tile-id="${h(entry.id??tileId)}" data-tile-x="${x}" data-tile-y="${y}" data-terrain="${h(entry.terrain||'blocked')}" data-walkable="${entry.walkable===true?'true':'false'}" style="left:${left}%;top:${top}%;width:${width}%;height:${height}%;background-image:url('${h(atlas.image||zone.background)}');background-size:${Number(atlas.columns||zone.width)*100}% ${Number(atlas.rows||zone.height)*100}%;background-position:${positionX}% ${positionY}%"></i>`;
   }
   function rpgGroundMarkup(zone){
     let output='';
