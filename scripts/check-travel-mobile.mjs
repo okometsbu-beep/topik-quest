@@ -201,6 +201,8 @@ try{
   };
   const rpgPath=async(kind='scene',targetId='')=>evaluate(`(()=>{const store=JSON.parse(localStorage.getItem('malbitStoryV1')),state=store.episodes['route-001-airport-myeongdong'],match=MALBIT_TRAVEL_RPG.contextForProgress(state.packId,state.exploration,state.sceneId);if(!match)return null;const target=${JSON.stringify(kind)}==='scene'?match.anchor:${JSON.stringify(kind)}==='portal'?match.zone.portals.find(item=>item.id===${JSON.stringify(targetId)}):match.zone.pois.find(item=>item.id===${JSON.stringify(targetId)});if(!target)return null;const queue=[{x:state.exploration.x,y:state.exploration.y,path:[]}],seen=new Set([state.exploration.x+','+state.exploration.y]);while(queue.length){const current=queue.shift();if(Math.abs(current.x-target.x)+Math.abs(current.y-target.y)<=1)return current.path;for(const [direction,delta] of Object.entries(MALBIT_TRAVEL_RPG.directions)){const x=current.x+delta.x,y=current.y+delta.y,key=x+','+y;if(seen.has(key)||!MALBIT_TRAVEL_RPG.isWalkable(match.zone,x,y,state.sceneId))continue;seen.add(key);queue.push({x,y,path:[...current.path,direction]})}}return null})()`);
   const moveRpgTo=async(kind='scene',targetId='')=>{
+    for(let wait=0;wait<30;wait++){if(!await evaluate(`MALBIT_TRAVEL_RPG_CUES?.active`))break;await sleep(20)}
+    assert.equal(await evaluate(`MALBIT_TRAVEL_RPG_CUES?.active`),false,'previous interaction cue did not release movement controls');
     const path=await rpgPath(kind,targetId);assert.ok(Array.isArray(path),`RPG target unreachable: ${kind} ${targetId}`);
     const index={up:0,left:1,down:2,right:3};
     for(const direction of path)await tap('.travelRpgDpad button',index[direction],35);
