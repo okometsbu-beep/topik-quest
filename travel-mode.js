@@ -785,7 +785,11 @@
     const actionLabel=interaction?(interaction.type==='scene'||interaction.type==='portal')?l(interaction.target.action):l({ko:'조사하기',ja:'調べる',en:'Inspect',zh:'调查'}):l({ko:'대상 가까이 가기',ja:'対象に近づく',en:'Move closer',zh:'靠近目标'});
     const targetTitle=interaction?l(interaction.target.title||interaction.target.label):'';
     const discovered=new Set(progress.discoveries||[]);
-    const pois=(zone.pois||[]).map(item=>`<span class="travelRpgPoi ${discovered.has(`${zone.id}:${item.id}`)?'found':''} ${interaction?.type==='poi'&&interaction.target.id===item.id?'near':''}" data-poi-id="${h(item.id)}" style="${rpgPoint(zone,item)}" aria-hidden="true"><i></i></span>`).join('');
+    const pois=(zone.pois||[]).map(item=>{
+      const visual=item.visual,point=visual?rpgActorPoint(zone,item):rpgPoint(zone,item);
+      const visualStyle=visual?`;--travel-rpg-prop-width:${h(visual.widthTiles)};--travel-rpg-prop-height:${h(visual.heightTiles)}`:'';
+      return`<span class="travelRpgPoi ${visual?'has-prop':''} ${discovered.has(`${zone.id}:${item.id}`)?'found':''} ${interaction?.type==='poi'&&interaction.target.id===item.id?'near':''}" data-poi-id="${h(item.id)}" style="${point}${visualStyle}" aria-hidden="true">${visual?`<img src="${h(visual.asset)}" alt="">`:''}<i></i></span>`;
+    }).join('');
     const targetIsActor=Boolean(anchor&&targetAsset&&anchor.kind==='npc');
     const target=anchor?(targetAsset?`<span class="travelRpgTarget character idle ${near?'near':''}" style="${rpgActorPoint(zone,anchor)}"><img src="${h(targetAsset)}" alt=""><b>${h(l(anchor.label))}</b></span>`:`<span class="travelRpgTarget marker ${near?'near':''}" style="${rpgPoint(zone,anchor)}"><i></i><b>${h(l(anchor.label))}</b></span>`):'';
     const playerFoot=skin?.sprite?.footAnchor?`${Number(skin.sprite.footAnchor.x)||.5},${Number(skin.sprite.footAnchor.y)||.9375}`:'.5,.7';

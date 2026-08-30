@@ -43,7 +43,24 @@ test('Seoul travel world has a valid extensible district, zone, collision, POI, 
   const tileId=zone.tilemap.layers.ground[18][14],tile=zone.tilemap.palette[tileId];
   assert.deepEqual({atlasX:tile.atlasX,atlasY:tile.atlasY,terrain:tile.terrain,walkable:tile.walkable,layer:tile.layer},{atlasX:14,atlasY:18,terrain:'walkable',walkable:true,layer:'ground'});
   assert.deepEqual(Array.from(engine.validateWorld(world)),[]);
-  assert.ok(zone.pois.length>=3);
+  assert.equal(zone.pois.length,4);
+  const welcome=zone.pois.find(item=>item.id==='cheongsachorong-welcome');
+  assert.ok(welcome,'the arrivals hall needs one Korean welcome investigation');
+  assert.equal(welcome.korean,'어서 오세요');
+  assert.match(welcome.detail.ja,/歓迎の気持ち/);
+  assert.deepEqual({asset:welcome.visual.asset,width:welcome.visual.widthTiles,height:welcome.visual.heightTiles,reward:welcome.reward},{asset:'assets/art/travel/rpg/cheongsachorong-welcome-prop-v1.webp',width:3,height:4,reward:200});
+  assert.equal(welcome.collision.length,2);
+  assert.ok(pathToInteraction(engine,zone,zone.spawn,welcome,'arrival'),'the welcome lanterns must be reachable');
+  for(const point of welcome.collision)assert.equal(engine.isWalkable(zone,point.x,point.y,null),false,'the lantern base must block its declared tiles');
+  const welcomeArt=path.join(root,welcome.visual.asset);
+  assert.ok(fs.existsSync(welcomeArt),'the Korean prop needs a production image');
+  assert.ok(fs.statSync(welcomeArt).size>30000,'the Korean prop must not be a tiny placeholder');
+  assert.deepEqual(JSON.parse(JSON.stringify(world.performanceBudget)),{version:1,maxGroundTilesPerZone:1728,maxUpperTilesPerZone:256,maxBoardDomNodes:2048,targetFrameMs:16.7,maxP95FrameMs:34,longFrameMs:50,maxLongFrameRatio:.15});
+  for(const candidate of world.zones){
+    const estimate=engine.performanceEstimate(candidate);
+    assert.ok(estimate.groundTiles<=world.performanceBudget.maxGroundTilesPerZone,`${candidate.id}: ground tile budget`);
+    assert.ok(estimate.upperTiles<=world.performanceBudget.maxUpperTilesPerZone,`${candidate.id}: upper tile budget`);
+  }
   assert.deepEqual(Object.keys(zone.scenes),['arrival','q-hello','q-station','q-myeongdong','transport']);
   const art=path.join(root,zone.background);
   assert.ok(fs.existsSync(art),'the production map asset must exist');
@@ -205,6 +222,15 @@ test('Travel runtime layers exploration over the existing event flow and saves o
   assert.equal(cueSounds.filter(name=>name==='reward-earned').length,1,'a recorded discovery cannot replay the reward cue');
   runtime.malbitTravelCloseDiscovery();
   assert.equal(cueSounds.at(-1),'interaction-return');
+  state=JSON.parse(storage.get('malbitStoryV1')).episodes['route-001-airport-myeongdong'];
+  const welcome=startZone.pois.find(item=>item.id==='cheongsachorong-welcome');
+  for(const direction of pathToInteraction(startEngine,startZone,state.exploration,welcome,'arrival'))runtime.malbitTravelStep(direction);
+  runtime.malbitTravelInteract();
+  assert.match(screen.innerHTML,/청사초롱 환영 장식/);assert.match(screen.innerHTML,/어서 오세요/);assert.match(screen.innerHTML,/\+200원/);
+  state=JSON.parse(storage.get('malbitStoryV1')).episodes['route-001-airport-myeongdong'];
+  assert.equal(state.wallet,79400);assert.ok(state.exploration.discoveries.includes('icn-t1-arrivals:cheongsachorong-welcome'));
+  runtime.malbitTravelInteract();assert.equal(JSON.parse(storage.get('malbitStoryV1')).episodes['route-001-airport-myeongdong'].wallet,79400,'the Korean investigation reward is one-time');
+  runtime.malbitTravelCloseDiscovery();
   const zone=runtime.MALBIT_TRAVEL_WORLDS[0].zones[0],engine=runtime.MALBIT_TRAVEL_RPG,target=zone.scenes.arrival;
   state=JSON.parse(storage.get('malbitStoryV1')).episodes['route-001-airport-myeongdong'];
   for(const direction of pathToInteraction(engine,zone,state.exploration,target,'arrival'))runtime.malbitTravelStep(direction);
@@ -224,8 +250,8 @@ test('Travel runtime layers exploration over the existing event flow and saves o
   for(const direction of pathToInteraction(engine,transport,state.exploration,sign,'arrival'))runtime.malbitTravelStep(direction);
   runtime.malbitTravelInteract();assert.match(screen.innerHTML,/교통센터 표지/);assert.match(screen.innerHTML,/\+200원/);
   state=JSON.parse(storage.get('malbitStoryV1')).episodes['route-001-airport-myeongdong'];
-  assert.equal(state.wallet,79400);assert.ok(state.exploration.discoveries.includes('icn-t1-transport-center:transport-center-sign'));
-  runtime.malbitTravelInteract();assert.equal(JSON.parse(storage.get('malbitStoryV1')).episodes['route-001-airport-myeongdong'].wallet,79400);
+  assert.equal(state.wallet,79600);assert.ok(state.exploration.discoveries.includes('icn-t1-transport-center:transport-center-sign'));
+  runtime.malbitTravelInteract();assert.equal(JSON.parse(storage.get('malbitStoryV1')).episodes['route-001-airport-myeongdong'].wallet,79600);
   runtime.malbitTravelCloseDiscovery();
   state=JSON.parse(storage.get('malbitStoryV1')).episodes['route-001-airport-myeongdong'];
   for(const direction of pathToInteraction(engine,transport,state.exploration,transport.portals[1],'arrival'))runtime.malbitTravelStep(direction);
@@ -236,8 +262,8 @@ test('Travel runtime layers exploration over the existing event flow and saves o
   for(const direction of pathToInteraction(engine,rail,state.exploration,boardingSign,'arrival'))runtime.malbitTravelStep(direction);
   runtime.malbitTravelInteract();assert.match(screen.innerHTML,/승차 방향 표지/);assert.match(screen.innerHTML,/\+200원/);
   state=JSON.parse(storage.get('malbitStoryV1')).episodes['route-001-airport-myeongdong'];
-  assert.equal(state.wallet,79600);assert.ok(state.exploration.discoveries.includes('icn-t1-airport-rail-concourse:boarding-direction-sign'));
-  runtime.malbitTravelInteract();assert.equal(JSON.parse(storage.get('malbitStoryV1')).episodes['route-001-airport-myeongdong'].wallet,79600);
+  assert.equal(state.wallet,79800);assert.ok(state.exploration.discoveries.includes('icn-t1-airport-rail-concourse:boarding-direction-sign'));
+  runtime.malbitTravelInteract();assert.equal(JSON.parse(storage.get('malbitStoryV1')).episodes['route-001-airport-myeongdong'].wallet,79800);
   runtime.malbitTravelCloseDiscovery();
   state=JSON.parse(storage.get('malbitStoryV1')).episodes['route-001-airport-myeongdong'];
   for(const direction of pathToInteraction(engine,rail,state.exploration,rail.portals[0],'arrival'))runtime.malbitTravelStep(direction);
@@ -282,6 +308,8 @@ test('Travel styles expose separate light and dark theme tokens without forcing 
   assert.match(runtime,/class="travelRpgPlayer has-sprite idle/);assert.match(runtime,/data-walk-fps=/);
   assert.match(runtime,/rpgForegroundMarkup/);assert.match(runtime,/data-depth-y=/);assert.match(runtime,/rpgEnvironmentMarkup/);assert.match(runtime,/data-effect-contract="bounded-light"/);assert.match(runtime,/rpgShadowMarkup/);assert.match(runtime,/class="travelRpgShadow/);
   assert.match(runtime,/rpgGroundMarkup/);assert.match(runtime,/data-tile-id=/);assert.match(runtime,/data-tile-x=/);assert.match(runtime,/data-walkable=/);
+  assert.match(runtime,/travelRpgPoi \$\{visual\?'has-prop'/);assert.match(runtime,/--travel-rpg-prop-width/);
+  assert.match(css,/\.travelRpgPoi\.has-prop\{/);assert.match(css,/\.travelRpgPoi\.has-prop img\{/);
   assert.match(runtime,/malbitTravelHoldStart/);assert.match(runtime,/onpointerdown=/);assert.match(runtime,/rpgArrowIcon/);assert.match(runtime,/rpgActionIcon/);
   assert.doesNotMatch(runtime,/그쪽은 지나갈 수 없어요/);
   assert.match(runtime,/MALBIT_TRAVEL_RPG_CUES/);assert.match(runtime,/MALBIT_TRAVEL_CUE_HOOKS/);assert.match(runtime,/malbit:travel-cue/);

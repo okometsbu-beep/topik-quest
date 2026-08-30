@@ -4,7 +4,11 @@
 
   const t=(ko,ja,en,zh)=>Object.freeze({ko,ja,en,zh});
   const scene=(sceneId,x,y,kind,label,action)=>Object.freeze({sceneId,x,y,kind,label,action});
-  const poi=(id,x,y,kind,title,korean,detail,reward=0)=>Object.freeze({id,x,y,kind,title,korean,detail,reward});
+  const poi=(id,x,y,kind,title,korean,detail,reward=0,visual=null)=>Object.freeze({id,x,y,kind,title,korean,detail,reward,visual});
+  const prop=(asset,widthTiles,heightTiles,collision)=>Object.freeze({
+    asset,widthTiles,heightTiles,
+    collision:Object.freeze(collision.map(([x,y])=>Object.freeze({x,y})))
+  });
   const foreground=(id,depthY,polygon,collision)=>Object.freeze({
     id,
     depthY,
@@ -34,6 +38,15 @@
     y:Number(point.y)*TILE_SCALE+Math.floor(index/TILE_SCALE)
   }))));
   const tileAnchor=item=>Object.freeze({...item,x:tilePoint(item.x),y:tilePoint(item.y)});
+  const tilePoi=item=>{
+    const anchored=tileAnchor(item),visual=item.visual;
+    if(!visual)return anchored;
+    return Object.freeze({
+      ...anchored,
+      visual:Object.freeze({asset:visual.asset,widthTiles:visual.widthTiles,heightTiles:visual.heightTiles}),
+      collision:Object.freeze(visual.collision.map(offset=>Object.freeze({x:anchored.x+offset.x,y:anchored.y+offset.y})))
+    });
+  };
   function scaleZone(base){
     const width=base.width*TILE_SCALE,height=base.height*TILE_SCALE,grid=tileGrid(base.grid);
     const scenes=Object.freeze(Object.fromEntries(Object.entries(base.scenes||{}).map(([id,item])=>[id,tileAnchor(item)])));
@@ -71,7 +84,7 @@
       ...base,version:2,width,height,grid,tilemap,
       spawn:Object.freeze({...base.spawn,x:tilePoint(base.spawn.x),y:tilePoint(base.spawn.y)}),
       scenes,
-      pois:Object.freeze((base.pois||[]).map(tileAnchor)),
+      pois:Object.freeze((base.pois||[]).map(tilePoi)),
       foregrounds,
       lights,
       portals:Object.freeze((base.portals||[]).map(item=>Object.freeze({
@@ -111,7 +124,8 @@
     pois:Object.freeze([
       poi('baggage-carousel',2,5,'inspect',t('수하물 벨트','手荷物受取レーン','Baggage carousel','行李转盘'),'수하물 찾는 곳',t('짐을 찾는 곳입니다. 한국어 표지에서 “수하물”을 기억해 두세요.','荷物を受け取る場所です。韓国語表示の「수하물」を覚えておこう。','This is where passengers collect luggage. Remember 수하물 on Korean signs.','这是领取行李的地方。记住韩文标牌上的“수하물”。'),200),
       poi('information-board',3,3,'inspect',t('공항 안내판','空港案内板','Airport information board','机场信息牌'),'안내',t('“안내”는 information 또는 guidance라는 뜻입니다.','「안내」は information や guidance という意味です。','안내 means information or guidance.','“안내”表示信息或指引。'),200),
-      poi('terminal-window',7,1,'inspect',t('공항 전망창','空港の展望窓','Terminal window','航站楼观景窗'),'인천공항',t('창밖으로 인천공항의 활주로와 관제탑이 보입니다.','窓の外に仁川空港の滑走路と管制塔が見えます。','The runway and control tower of Incheon Airport are visible outside.','窗外可以看到仁川机场的跑道和管制塔。'),0)
+      poi('terminal-window',7,1,'inspect',t('공항 전망창','空港の展望窓','Terminal window','航站楼观景窗'),'인천공항',t('창밖으로 인천공항의 활주로와 관제탑이 보입니다.','窓の外に仁川空港の滑走路と管制塔が見えます。','The runway and control tower of Incheon Airport are visible outside.','窗外可以看到仁川机场的跑道和管制塔。'),0),
+      poi('cheongsachorong-welcome',7,5,'inspect',t('청사초롱 환영 장식','チョンサチョロンの歓迎飾り','Cheongsachorong welcome lanterns','青纱灯笼欢迎装饰'),'어서 오세요',t('“어서 오세요”는 가게나 시설에서 온 사람을 반갑게 맞을 때 쓰는 높임말입니다. 여기서 “어서”는 빨리 오라는 명령이 아니라 환영의 느낌을 더해요.','「어서 오세요」は、店や施設などで相手を歓迎するときの丁寧な表現です。ここでの「어서」は急いで来るよう命じる言葉ではなく、歓迎の気持ちを添えます。','어서 오세요 is a polite welcome used when receiving someone at a shop or facility. Here, 어서 adds a welcoming tone rather than ordering someone to hurry.','“어서 오세요”是在商店或设施迎接来客时使用的礼貌欢迎语。这里的“어서”增添欢迎的语气，并不是催促对方快点。'),200,prop('assets/art/travel/rpg/cheongsachorong-welcome-prop-v1.webp',3,4,[[-1,0],[0,0]]))
     ]),
     foregrounds:Object.freeze([
       foreground('information-desk',3.98,[[.46,2.5],[3.67,2.5],[3.67,3.98],[.46,3.98]],[[1,3],[2,3],[3,3]]),
@@ -216,6 +230,16 @@
     id:'seoul-world-v1',
     version:1,
     title:t('서울 여행 월드','ソウル旅行ワールド','Seoul Travel World','首尔旅行世界'),
+    performanceBudget:Object.freeze({
+      version:1,
+      maxGroundTilesPerZone:1728,
+      maxUpperTilesPerZone:256,
+      maxBoardDomNodes:2048,
+      targetFrameMs:16.7,
+      maxP95FrameMs:34,
+      longFrameMs:50,
+      maxLongFrameRatio:.15
+    }),
     routeIds:Object.freeze(['route-001-airport-myeongdong']),
     districts:Object.freeze([
       Object.freeze({
