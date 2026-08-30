@@ -80,6 +80,7 @@
   const loadSeries=async files=>{for(const file of files)await load(file)};
   window.__MALBIT_RUNTIME__=Object.freeze({version:VERSION,files:RUNTIME_FILES});
   preloadImage('assets/art/travel/rpg/traveler-blue-4dir-v1.png');
+  preloadImage('assets/art/travel/rpg/travel-stamina-game-over-v1.webp');
   RUNTIME_FILES.forEach(preload);
   (async()=>{
     await loadSeries(RUNTIME_FILES);

@@ -63,6 +63,9 @@ test('Seoul travel world has a valid extensible district, zone, collision, POI, 
   assert.ok(fs.existsSync(transportArt));assert.ok(fs.statSync(transportArt).size>80000);
   const railArt=path.join(root,rail.background);
   assert.ok(fs.existsSync(railArt));assert.ok(fs.statSync(railArt).size>80000);
+  const gameOverArt=path.join(root,'assets/art/travel/rpg/travel-stamina-game-over-v1.webp');
+  assert.ok(fs.existsSync(gameOverArt),'the exhausted-traveler screen needs a production image');
+  assert.ok(fs.statSync(gameOverArt).size>100000,'the game-over image must not be a tiny placeholder');
   assert.deepEqual(Array.from(zone.foregrounds,item=>item.id),['information-desk','rail-wayfinding-sign','arrival-flower-planter']);
   assert.deepEqual(Array.from(transport.foregrounds,item=>item.id),['center-map-kiosk','south-left-planter','south-right-planter']);
   assert.deepEqual(Array.from(rail.foregrounds,item=>item.id),['left-ticket-gates','right-ticket-gates','left-ticket-machine','right-ticket-machine','south-left-planter','south-right-planter']);
@@ -134,6 +137,29 @@ test('movement blocks scenery, preserves direction and discoveries, and prioriti
   assert.equal(interaction.type,'scene');assert.equal(interaction.target.sceneId,'arrival');
 });
 
+test('successful steps spend the saved 10,000-step stamina budget while collisions stay free',()=>{
+  const runtime=loadWorld(),engine=runtime.MALBIT_TRAVEL_RPG,zone=runtime.MALBIT_TRAVEL_WORLDS[0].zones[0];
+  let progress=engine.normalizeProgress('route-001-airport-myeongdong',null,'arrival');
+  assert.deepEqual(JSON.parse(JSON.stringify(progress.stamina)),{version:1,maxSteps:10000,usedSteps:0,remainingSteps:10000,percent:100,exhausted:false});
+
+  const blockedStart={...progress,x:1,y:1,direction:'down'};
+  const blocked=engine.step(zone,blockedStart,'up','arrival');
+  assert.equal(blocked.moved,false);assert.equal(blocked.blocked,true);
+  assert.equal(blocked.progress.stamina.usedSteps,0,'a blocked tile must not consume stamina');
+
+  const direction=pathToInteraction(engine,zone,progress,zone.scenes.arrival,'arrival')[0];
+  progress=engine.normalizeProgress('route-001-airport-myeongdong',{...progress,stamina:{version:1,usedSteps:9999}},'arrival');
+  const finalStep=engine.step(zone,progress,direction,'arrival');
+  assert.equal(finalStep.moved,true);assert.equal(finalStep.exhausted,true);
+  assert.deepEqual(JSON.parse(JSON.stringify(finalStep.progress.stamina)),{version:1,maxSteps:10000,usedSteps:10000,remainingSteps:0,percent:0,exhausted:true});
+  assert.equal(engine.step(zone,finalStep.progress,direction,'arrival').moved,false,'exhausted travelers cannot take an extra step');
+
+  const rested=engine.restAtZone(zone,finalStep.progress);
+  assert.equal(rested.stamina.usedSteps,0);assert.equal(rested.stamina.percent,100);assert.equal(rested.stamina.exhausted,false);
+  assert.equal(rested.steps,finalStep.progress.steps,'resting must preserve the lifetime step record');
+  assert.deepEqual({x:rested.x,y:rested.y,direction:rested.direction},{x:zone.spawn.x,y:zone.spawn.y,direction:zone.spawn.direction});
+});
+
 test('Travel runtime layers exploration over the existing event flow and saves one-time investigations',()=>{
   const storage=new Map(),screen={className:'screen',innerHTML:''},classes=new Set(),cueSounds=[],cueVibrations=[];
   const runtime={
@@ -148,12 +174,25 @@ test('Travel runtime layers exploration over the existing event flow and saves o
   runtime.malbitTravelStart('route-001-airport-myeongdong',false);
   assert.match(screen.innerHTML,/travelRpgCard/);assert.match(screen.innerHTML,/airport-arrivals-map-v1\.webp/);assert.match(screen.innerHTML,/한국 여행이 시작됐다/);
   assert.match(screen.innerHTML,/travelRpgGroundLayer/);assert.match(screen.innerHTML,/travelRpgEnvironmentLayer/);assert.match(screen.innerHTML,/travelRpgShadowLayer/);assert.match(screen.innerHTML,/travelRpgActorLayer/);assert.match(screen.innerHTML,/travelRpgUpperLayer/);
+  assert.match(screen.innerHTML,/travelRpgStaminaHud/);assert.match(screen.innerHTML,/data-rpg-stamina-percent>100%/);
   assert.match(screen.innerHTML,/data-effect-contract="bounded-light"/);assert.match(screen.innerHTML,/data-light-id="west-pillar-lamp"/);
   assert.match(screen.innerHTML,/travelRpgLight kind-screen/);assert.doesNotMatch(screen.innerHTML,/travelRpgLight screen/);
   assert.match(screen.innerHTML,/travelRpgShadow npc/);assert.match(screen.innerHTML,/travelRpgShadow player/);
   assert.match(screen.innerHTML,/data-depth-contract="foot-y"/);assert.match(screen.innerHTML,/data-foreground-id="rail-wayfinding-sign"/);
   let state=JSON.parse(storage.get('malbitStoryV1')).episodes['route-001-airport-myeongdong'];
   const startZone=runtime.MALBIT_TRAVEL_WORLDS[0].zones[0],startEngine=runtime.MALBIT_TRAVEL_RPG,baggage=startZone.pois[0];
+  const clockBeforeRest=state.clockMinutes,finalDirection=pathToInteraction(startEngine,startZone,state.exploration,baggage,'arrival')[0];
+  state.exploration.stamina={version:1,usedSteps:9999};
+  const nearEmptyStore=JSON.parse(storage.get('malbitStoryV1'));nearEmptyStore.episodes[state.packId]=state;storage.set('malbitStoryV1',JSON.stringify(nearEmptyStore));runtime.render();
+  assert.match(screen.innerHTML,/data-rpg-stamina-percent>1%/);
+  runtime.malbitTravelStep(finalDirection);
+  assert.match(screen.innerHTML,/GAME OVER/);assert.match(screen.innerHTML,/travel-stamina-game-over-v1\.webp/);assert.match(screen.innerHTML,/10,000보를 걸었습니다/);
+  state=JSON.parse(storage.get('malbitStoryV1')).episodes['route-001-airport-myeongdong'];
+  assert.equal(state.exploration.stamina.usedSteps,10000);assert.equal(state.exploration.stamina.exhausted,true);
+  runtime.malbitTravelRest();
+  state=JSON.parse(storage.get('malbitStoryV1')).episodes['route-001-airport-myeongdong'];
+  assert.equal(state.exploration.stamina.usedSteps,0);assert.equal(state.exploration.stamina.percent,100);assert.equal(state.clockMinutes,clockBeforeRest+60);
+  assert.deepEqual({x:state.exploration.x,y:state.exploration.y},{x:startZone.spawn.x,y:startZone.spawn.y});assert.match(screen.innerHTML,/travelRpgStaminaHud/);
   for(const direction of pathToInteraction(startEngine,startZone,state.exploration,baggage,'arrival'))runtime.malbitTravelStep(direction);
   runtime.malbitTravelInteract();
   assert.match(screen.innerHTML,/수하물 찾는 곳/);assert.match(screen.innerHTML,/\+200원/);
