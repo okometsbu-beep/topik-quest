@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v80 · Travel airport NPC dialogue lesson
-- Current candidate: v80 · Travel airport NPC dialogue lesson
+- Production release: v81 · Travel Korean investigation and performance budget
+- Current candidate: v81 · Travel Korean investigation and performance budget
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
@@ -81,10 +81,14 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
   answers, discoveries, rewards, wallet, inventory, and lifetime exploration steps.
 - The first airport NPC now holds a five-turn Korean exchange before a keyword choice. Translation is
   requested-only, wrong choices reveal two saved hint stages, and re-entry resumes the same conversation.
+- Arrivals has a separate 3×4-tile cheongsachorong welcome prop with a declared two-cell collision
+  footprint. Investigation teaches `어서 오세요` with a reviewed beginner note and grants 200 travel won once.
+- Every airport zone is capped at 1,728 ground tiles, 256 upper tiles, and 2,048 live board DOM nodes.
+  Mobile movement must keep p95 frame time at or below 34ms and frames above 50ms to at most 15%.
 
 ## 다음 우선순위
 
-1. 한국적 조사 오브젝트와 재사용 서울 타일셋, 모바일 성능 예산을 확장한다.
+1. 재사용 서울 거리 타일셋을 작은 아틀라스 단위로 확장한다.
 2. 실제 오답 근거를 모아 TOPIK I·II와 Shorts 문항·강사형 해설을 유형별로 확장한다.
 
 ## 이번 운영 변경
@@ -98,22 +102,24 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-입국장에 한국적인 조사 오브젝트 하나를 타일·충돌·학습 보상 계약으로 추가하고, 기존 세 구역
-DOM/frame 성능 예산을 수치로 고정한다. 새 구역·스태미너 조정·TOPIK 문항 확장은 넣지 않는다.
+재사용 가능한 한국 거리 타일셋의 첫 기본 타일(보도·차도·경계·횡단보도)을 별도
+아틀라스·카탈로그로 만들고, 기존 공항 구역은 바꾸지 않은 채 독립 검증 픽스처를 추가한다.
+새 구역·스태미너 조정·TOPIK/NPC 대화 확장은 넣지 않는다.
 
-## v80 후보 검증 및 배포
+## v81 후보 검증 및 배포
 
-- 공항 직원과 한국어 다섯 턴을 이어 간 뒤 `교통`을 직접 고른다. 선택지 번역은 제출 전
-  숨기고, 번역은 학습자가 요청한 현재 대화와 단서에만 표시한다.
-- 첫 오답은 뜻 범주, 두 번째 오답은 복합어 분해 단서를 제공한다. 대화 턴·오답 횟수·번역
-  요청은 기존 `malbitStoryV1` 에피소드 안에 저장되어 재접속·재진입 뒤 이어진다.
-- 정답 해설은 근거·세 오답의 뜻과 함정·복합 표지어 풀이법을 한국어·일본어로 검증했다.
+- 입국장에 원화와 분리된 청사초롱 환영 장식을 3×4 타일 크기로 추가했다. 두 칸 충돌 영역과
+  발 기준 깊이를 함께 선언해 통과하거나 캐릭터를 덮지 않는다.
+- 조사는 `어서 오세요`를 가르치고 일본어로 `어서`가 재촉 명령이 아니라 환영의 느낌을
+  더한다고 설명한다. 최초 조사만 200 여행 원을 주며 재조사 보상은 없다.
+- 세 구역은 각각 지면 1,728개, 상단 전경 154/106/226개다. 구역당 상단 전경 256개,
+  보드 DOM 2,048개, 이동 p95 34ms, 50ms 초과 프레임 비율 15%를 CI 상한으로 고정했다.
 - 전체 검사 66개와 Travel 집중 검사 20개를 통과했다. 실제 Chrome에서 320·375·390·430px,
-  밝은·어두운 테마, 58개 화면, 375×667 첫 선택지 노출을 확인했고 콘솔 오류는 0건이다.
+  밝은·어두운 테마와 일본어 조사·일회 보상을 확인했고 콘솔 오류는 0건이다.
 - 기존 답안·지갑·수집품·스태미너·탐험 기록과 저장 키를 유지했다. 결제 UI·API 키·개인정보
   전송은 추가하지 않았다.
-- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (모바일 CI와 병합 뒤 v80 확인)
-- 되돌리기 기준: v79 main `a2dbf083a158989e6943cbad09dcb385a8ba6146`
+- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (모바일 CI와 병합 뒤 v81 확인)
+- 되돌리기 기준: v80 main `b65cfebf162695822f705b0346fe5568fc6e6d8f`
 
 ## 알려진 위험
 
@@ -127,6 +133,8 @@ DOM/frame 성능 예산을 수치로 고정한다. 새 구역·스태미너 조�
 - P3 레이어 기반은 완료됐지만 광원은 현재 정적 하이라이트뿐이며 날씨·시간대 변화는 아직 없다.
 - v77 연출 계약은 공항 탐험 흐름부터 적용한다. 명동 NPC·보상 화면 연결과 실제 음원 선택 UI는 아직 없다.
 - 현재 공항 3개 구역은 기존 원화를 마이그레이션 아틀라스로 쓰되 런타임은 타일 ID별로만
-  그린다. 서울 구역을 늘리기 전 반복 가능한 한국 거리 타일셋과 DOM/frame 성능 예산이 필요하다.
-- 첫 공항 NPC만 장문 대화·단어 퀴즈 계약에 편입됐다. 다른 NPC와 추가 한국 조사물은 후속이다.
+  그린다. DOM/frame 성능 상한은 고정됐지만 서울 구역을 늘리기 전 반복 가능한 한국 거리
+  타일셋이 필요하다.
+- 첫 공항 NPC만 장문 대화·단어 퀴즈 계약에 편입됐다. 한국 조사물도 첫 청사초롱 한 개뿐이며
+  다른 NPC와 조사물은 후속이다.
 - 기존 Plus·가격·결제 암시 UI가 새 화면에 재사용되지 않도록 계속 검사해야 한다.
