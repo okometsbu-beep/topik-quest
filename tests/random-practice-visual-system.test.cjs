@@ -16,6 +16,9 @@ test('Random Practice has one final visual owner for TOPIK I and II',()=>{
   assert.match(visual,/storedSession\(\)\?\.mode==='random'/);
   assert.match(visual,/new MutationObserver\(sync\)/);
   for(const token of ['--ui-space-2','--ui-touch','--ui-radius-card','--ui-surface','--ui-border','--ui-ink'])assert.match(visual,new RegExp(`var\\(${token}\\)`));
+  assert.match(visual,/--random-canvas:var\(--ui-canvas\)/);
+  assert.match(visual,/html\[data-theme="light"\] body\.tq-random-practice-active/);
+  assert.match(visual,/\.choice\{[^}]*background:var\(--random-surface-raised\)/);
 });
 
 test('Random Practice contract keeps readable learning surfaces and coaching',()=>{

@@ -14,6 +14,9 @@ test('Home has one final visual owner built on semantic UI tokens',()=>{
   for(const token of ['--ui-space-2','--ui-touch','--ui-radius-card','--ui-surface','--ui-border','--ui-ink'])assert.match(visual,new RegExp(`var\\(${token}\\)`));
   assert.match(visual,/\.tqV9Mode\{[^}]*background:var\(--home-surface\)/);
   assert.match(visual,/\.tqV9Week\{[^}]*background:var\(--home-surface\)/);
+  assert.match(visual,/--home-canvas:var\(--ui-canvas\)/);
+  assert.match(visual,/html\[data-theme="light"\] body\.tq-home-active/);
+  assert.match(visual,/\.bottom\{[^}]*background:color-mix\(in srgb,var\(--home-canvas\) 96%,transparent\)/);
 });
 
 test('Home visual contract keeps readable copy and a fixed compatibility bridge',()=>{

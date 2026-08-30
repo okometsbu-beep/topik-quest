@@ -17,9 +17,12 @@ test('Review has one final visual owner for queue and retry surfaces',()=>{
   assert.match(features,/let reviewFilter='all'/);
   assert.match(features,/class="tqReviewFilters"/);
   for(const token of ['--ui-space-2','--ui-touch','--ui-radius-card','--ui-surface','--ui-border','--ui-ink'])assert.match(visual,new RegExp(`var\\(${token}\\)`));
+  assert.match(visual,/--review-canvas:var\(--ui-canvas\)/);
+  assert.match(visual,/html\[data-theme="light"\] body\.tq-review-active/);
+  assert.match(visual,/\.tqReviewChoices \.choice\{[^}]*background:var\(--review-surface-raised\)/);
 });
 
-test('Review contract keeps readable bright surfaces and a fixed compatibility bridge',()=>{
+test('Review contract keeps readable theme-aware surfaces and a fixed compatibility bridge',()=>{
   const visual=read('review-visual-system.js');
   const sizes=[...visual.matchAll(/font-size:(\d+)px/g)].map(match=>Number(match[1]));
   assert.ok(sizes.length>0);
