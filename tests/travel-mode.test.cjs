@@ -335,14 +335,14 @@ test('the travel runtime can complete, resume, replay, and record a wrong answer
   assert.match(screen.innerHTML, /NPC TALK/);
   assert.match(screen.innerHTML, /data-dialogue-step="1"/);
   assert.doesNotMatch(screen.innerHTML, /こんにちは。ソウルへ行かれますか/,'translation stays hidden until requested');
-  runtime.malbitTravelDialogueNext();
-  runtime.malbitTravelDialogueNext();
+  runtime.malbitTravelLessonNext();
+  runtime.malbitTravelLessonNext();
   runtime.malbitTravelDialogueTranslation();
   runtime.S.lang='ja';runtime.render();
   assert.match(screen.innerHTML, /お荷物は受け取りましたか/,'requested support is shown for visible turns');
   runtime.S.lang='ko';runtime.malbitTravelDialogueTranslation();
-  runtime.malbitTravelDialogueNext();
-  runtime.malbitTravelDialogueNext();
+  runtime.malbitTravelLessonNext();
+  runtime.malbitTravelLessonNext();
   assert.match(screen.innerHTML, /서울로 가려면 ______센터로 내려가세요/);
 
   const pack = runtime.MALBIT_TRAVEL_PACKS[0];
@@ -481,7 +481,7 @@ test('the travel runtime can complete, resume, replay, and record a wrong answer
   const firstScene = pack.scenes.find(item => item.id === replay.sceneId);
   const firstQuestion = firstScene.question;
   const beforeWrongClock=replay.clockMinutes;
-  for(let turn=1;turn<firstScene.dialogueLesson.turns.length;turn++)runtime.malbitTravelDialogueNext();
+  for(let turn=1;turn<firstScene.dialogueLesson.turns.length;turn++)runtime.malbitTravelLessonNext();
   runtime.malbitTravelSelect((firstQuestion.answerIndex + 1) % 4);
   runtime.malbitTravelSubmit();
   const afterHint=JSON.parse(runtimeStorage.get('malbitStoryV1')).episodes[pack.id];
