@@ -50,6 +50,11 @@ these facts from conversation history or the large TOPIK source bundle.
 - Travel movement keeps the live tile and sprite DOM in place for a 110ms player step and 160ms camera
   follow. Pointer-held SVG direction controls repeat until release, blocked movement stops silently, and
   reduced-motion devices settle immediately without map opacity, filter, or brightness changes.
+- Travel exploration stores a versioned 10,000-step stamina record inside the existing episode
+  `exploration` field. Only successful movement spends stamina; blocked input is free and exhausted input
+  is ignored. At 0%, a separate unfiltered 4:3 rest-lounge image owns the full-height game-over screen.
+  One-hour rest resets only stamina and position to the current zone spawn while retaining discoveries,
+  rewards, route answers, wallet, inventory, and lifetime exploration steps.
 - The default `traveler-blue` skin owns one optimized transparent 8×4 sprite sheet. Rows are
   down/left/right/up; columns 0–3 are a 4fps idle loop and 4–7 are a 12fps walk loop. Every frame uses
   the same `.5,.9375` foot anchor and one preloaded image URL, so movement must not swap `src`, opacity,
@@ -122,8 +127,8 @@ these facts from conversation history or the large TOPIK source bundle.
   still need to adopt the same states; no audio files or persistent sound/vibration controls ship yet.
 - Current airport tile catalogs migrate the existing three backgrounds into explicit per-cell atlas entries.
   Before adding many Seoul districts, replace repeated migration entries with a reusable Korean streetscape
-  tileset and enforce a DOM/frame-time budget. Stamina, game-over, and long keyword-learning NPC dialogue
-  are planned follow-up slices and are not implemented by the tile/input foundation.
+  tileset and enforce a DOM/frame-time budget. Long keyword-learning NPC dialogue and additional Korean
+  investigation objects are planned follow-up slices.
 
 ## Execution defaults
 

@@ -1,8 +1,8 @@
-// MALBIT bootstrap v78
+// MALBIT bootstrap v79
 // Load the shared core, reviewed data, TOPIK I engine, then learning interactions.
 (function(){
   'use strict';
-  const VERSION='78';
+  const VERSION='79';
   const RUNTIME_FILES=Object.freeze([
     'site-patch-core.js',
     'storage-guard.js',
@@ -80,6 +80,7 @@
   const loadSeries=async files=>{for(const file of files)await load(file)};
   window.__MALBIT_RUNTIME__=Object.freeze({version:VERSION,files:RUNTIME_FILES});
   preloadImage('assets/art/travel/rpg/traveler-blue-4dir-v1.png');
+  preloadImage('assets/art/travel/rpg/travel-stamina-game-over-v1.webp');
   RUNTIME_FILES.forEach(preload);
   (async()=>{
     await loadSeries(RUNTIME_FILES);

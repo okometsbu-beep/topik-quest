@@ -9,6 +9,7 @@
     left:Object.freeze({x:-1,y:0}),
     right:Object.freeze({x:1,y:0})
   });
+  const STAMINA_MAX_STEPS=10000;
   const CUE_PLANS=Object.freeze({
     portal:Object.freeze({
       enter:Object.freeze({kind:'portal',phase:'enter',duration:110,sound:'portal-enter',vibration:Object.freeze([10])}),
@@ -28,6 +29,18 @@
     })
   });
   const direction=value=>Object.hasOwn(DIRECTIONS,value)?value:'down';
+  function normalizeStamina(value){
+    const usedSteps=Math.min(STAMINA_MAX_STEPS,Math.max(0,Math.floor(Number(value?.usedSteps)||0)));
+    const remainingSteps=STAMINA_MAX_STEPS-usedSteps;
+    return{
+      version:1,
+      maxSteps:STAMINA_MAX_STEPS,
+      usedSteps,
+      remainingSteps,
+      percent:remainingSteps?Math.max(1,Math.ceil(remainingSteps/STAMINA_MAX_STEPS*100)):0,
+      exhausted:remainingSteps===0
+    };
+  }
   const point=(value,fallback)=>({
     x:Number.isInteger(Number(value?.x))?Number(value.x):fallback.x,
     y:Number.isInteger(Number(value?.y))?Number(value.y):fallback.y
@@ -74,13 +87,27 @@
       y:position.y,
       direction:direction(value?.direction||zone.spawn?.direction),
       steps:Math.max(0,Number(value?.steps)||0),
+      stamina:normalizeStamina(value?.stamina),
       discoveries:Array.from(new Set(Array.isArray(value?.discoveries)?value.discoveries.filter(id=>typeof id==='string'):[]))
     };
   }
   function step(zone,progress,nextDirection,sceneId){
-    const facing=direction(nextDirection),delta=DIRECTIONS[facing],x=progress.x+delta.x,y=progress.y+delta.y;
-    if(!isWalkable(zone,x,y,sceneId))return{moved:false,blocked:true,progress:{...progress,direction:facing}};
-    return{moved:true,blocked:false,progress:{...progress,x,y,direction:facing,steps:progress.steps+1}};
+    const facing=direction(nextDirection),stamina=normalizeStamina(progress?.stamina);
+    if(stamina.exhausted)return{moved:false,blocked:false,exhausted:true,progress:{...progress,direction:facing,stamina}};
+    const delta=DIRECTIONS[facing],x=progress.x+delta.x,y=progress.y+delta.y;
+    if(!isWalkable(zone,x,y,sceneId))return{moved:false,blocked:true,exhausted:false,progress:{...progress,direction:facing,stamina}};
+    const nextStamina=normalizeStamina({usedSteps:stamina.usedSteps+1});
+    return{moved:true,blocked:false,exhausted:nextStamina.exhausted,progress:{...progress,x,y,direction:facing,steps:progress.steps+1,stamina:nextStamina}};
+  }
+  function restAtZone(zone,progress){
+    const spawn=point(zone?.spawn,{x:0,y:0});
+    return{
+      ...progress,
+      x:spawn.x,
+      y:spawn.y,
+      direction:direction(zone?.spawn?.direction),
+      stamina:normalizeStamina(null)
+    };
   }
   const distance=(a,b)=>Math.abs(Number(a.x)-Number(b.x))+Math.abs(Number(a.y)-Number(b.y));
   const interactionRange=zone=>Math.max(1,(Number(zone?.tilemap?.coordinateScale)||1)-1);
@@ -170,14 +197,17 @@
     version:1,
     worlds:WORLDS,
     directions:DIRECTIONS,
+    staminaMaxSteps:STAMINA_MAX_STEPS,
     worldByRoute,
     zoneById,
     zoneForScene,
     contextForProgress,
     zoneScene,
     normalizeProgress,
+    normalizeStamina,
     isWalkable,
     step,
+    restAtZone,
     interactionRange,
     interactionAt,
     enterPortal,

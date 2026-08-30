@@ -227,6 +227,7 @@ test('Travel Mode is independent from Full Mock and wired into the ordered runti
   assert.ok(bootstrap.indexOf("'data/travel-map-seoul-v1.js'") < bootstrap.indexOf("'travel-rpg-engine.js'"));
   assert.ok(bootstrap.indexOf("'travel-rpg-engine.js'") < bootstrap.indexOf("'travel-mode.js'"));
   assert.match(bootstrap,/preloadImage\('assets\/art\/travel\/rpg\/traveler-blue-4dir-v1\.png'\)/);
+  assert.match(bootstrap,/preloadImage\('assets\/art\/travel\/rpg\/travel-stamina-game-over-v1\.webp'\)/);
   assert.ok(bootstrap.indexOf("'question-bank-engine.js'") < bootstrap.indexOf("'travel-mode.js'"));
   assert.ok(bootstrap.indexOf("'topik1.js'") < bootstrap.indexOf("'travel-mode.js'"));
   assert.match(runtime, /const STORAGE_KEY='malbitStoryV1'/);
@@ -237,6 +238,9 @@ test('Travel Mode is independent from Full Mock and wired into the ordered runti
   assert.match(runtime, /function normalizeMetrics/);
   assert.match(runtime, /window\.malbitTravelMetrics/);
   assert.match(runtime, /window\.malbitTravelStep/);
+  assert.match(runtime, /window\.malbitTravelRest/);
+  assert.match(runtime, /travelRpgStaminaHud/);
+  assert.match(runtime, /travelRpgGameOver/);
   assert.match(runtime, /window\.malbitTravelInteract/);
   assert.match(runtime, /state\.exploration=RPG\.normalizeProgress/);
   assert.doesNotMatch(runtime, /document\.documentElement\.style\.colorScheme='dark'/);
