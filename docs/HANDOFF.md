@@ -32,6 +32,9 @@ these facts from conversation history or the large TOPIK source bundle.
 - The first airport NPC lesson saves a five-turn Korean exchange, requested-only translation, the first
   wrong keyword, and two progressive hint stages inside the existing route episode. Re-entry resumes the
   same turn; a hinted resolution remains an honest missed first attempt for score and review.
+- Arrivals owns one independent 3×4-tile cheongsachorong welcome prop. Its two collision cells are declared
+  with the visual, its investigation teaches `어서 오세요` without treating `어서` as a hurry command,
+  and its 200-travel-won reward is idempotent under the existing discovery contract.
 - Bank, Game, and Travel explanations follow evidence → distractor/selected-choice analysis → reusable
   type-solving tip. TOPIK II writing uses separate short-fill, expository-fill, graph-summary, and essay
   plans. Game battle rendering must not force `scrollIntoView` or smooth page scrolling.
@@ -79,6 +82,9 @@ these facts from conversation history or the large TOPIK source bundle.
   and strength. They render in a separate environment layer between ground and contact shadows;
   validation rejects out-of-bounds effects, opacity above 0.65, and mobile coverage large enough to
   become a scene-wide tint. The original map, actors, and foreground remain unfiltered.
+- Travel world data owns the mobile performance budget: at most 1,728 ground tiles, 256 upper tiles,
+  and 2,048 live board DOM nodes per zone. The real-Chrome movement probe samples 47 animation frames
+  and rejects p95 above 34ms or more than 15% of frames above 50ms.
 - Travel exploration exposes one reusable cue plan for portal enter/arrive, investigation discovery,
   first reward, NPC entry, and return. Each 70–220ms state animates only the active control, marker,
   reward text, or location HUD; the map and viewport never receive opacity, brightness, or filter
@@ -129,9 +135,9 @@ these facts from conversation history or the large TOPIK source bundle.
 - The cue contract currently owns airport exploration interactions. Myeongdong dialogue/reward screens
   still need to adopt the same states; no audio files or persistent sound/vibration controls ship yet.
 - Current airport tile catalogs migrate the existing three backgrounds into explicit per-cell atlas entries.
-  Before adding many Seoul districts, replace repeated migration entries with a reusable Korean streetscape
-  tileset and enforce a DOM/frame-time budget. Other NPCs still need the keyword-learning contract, and
-  additional Korean investigation objects are planned follow-up slices.
+  The DOM/frame-time budget is now enforced; before adding many Seoul districts, replace repeated migration
+  entries with a reusable Korean streetscape tileset. Other NPCs still need the keyword-learning contract,
+  and the cheongsachorong is only the first Korean investigation object.
 
 ## Execution defaults
 

@@ -65,7 +65,7 @@
   function occupied(zone,x,y,sceneId){
     const anchor=zoneScene(zone,sceneId);
     if(anchor?.x===x&&anchor?.y===y)return true;
-    if(zone?.pois?.some(item=>item.x===x&&item.y===y))return true;
+    if(zone?.pois?.some(item=>(item.collision?.length?item.collision:[item]).some(point=>point.x===x&&point.y===y)))return true;
     return !!zone?.foregrounds?.some(item=>item.collision?.some(point=>point.x===x&&point.y===y));
   }
   function isWalkable(zone,x,y,sceneId){return cell(zone,x,y)!=='#'&&!occupied(zone,x,y,sceneId)}
@@ -142,8 +142,20 @@
       settle:Object.freeze({kind:'reward',phase:'reward',duration:220,sound:'reward-earned',vibration:Object.freeze([12,32,18])})
     });
   }
+  function performanceEstimate(zone){
+    const upperTiles=(zone?.foregrounds||[]).reduce((total,item)=>{
+      const xs=item.polygon?.map(point=>Number(point.x))||[],ys=item.polygon?.map(point=>Number(point.y))||[];
+      if(!xs.length||!ys.length)return total;
+      const minX=Math.max(0,Math.floor(Math.min(...xs))),maxX=Math.min(zone.width-1,Math.ceil(Math.max(...xs))-1);
+      const minY=Math.max(0,Math.floor(Math.min(...ys))),maxY=Math.min(zone.height-1,Math.ceil(Math.max(...ys))-1);
+      return total+Math.max(0,maxX-minX+1)*Math.max(0,maxY-minY+1);
+    },0);
+    return{groundTiles:Math.max(0,Number(zone?.width)||0)*Math.max(0,Number(zone?.height)||0),upperTiles};
+  }
   function validateWorld(world){
-    const errors=[],districtZones=new Set(world?.districts?.flatMap(item=>item.zoneIds||[])||[]),connections=new Map();
+    const errors=[],districtZones=new Set(world?.districts?.flatMap(item=>item.zoneIds||[])||[]),connections=new Map(),budget=world?.performanceBudget;
+    if(!budget||budget.version!==1)errors.push(`${world?.id||'world'}: missing performance budget`);
+    else for(const key of ['maxGroundTilesPerZone','maxUpperTilesPerZone','maxBoardDomNodes','targetFrameMs','maxP95FrameMs','longFrameMs','maxLongFrameRatio'])if(!(Number(budget[key])>0))errors.push(`${world.id}: invalid performance budget ${key}`);
     for(const zone of world?.zones||[]){
       if(zone.grid?.length!==zone.height)errors.push(`${zone.id}: height mismatch`);
       if(zone.grid?.some(row=>String(row).length!==zone.width))errors.push(`${zone.id}: width mismatch`);
@@ -162,6 +174,17 @@
       if(cell(zone,zone.spawn?.x,zone.spawn?.y)==='#')errors.push(`${zone.id}: blocked spawn`);
       const ids=(zone.pois||[]).map(item=>item.id);
       if(new Set(ids).size!==ids.length)errors.push(`${zone.id}: duplicate POI`);
+      for(const item of zone.pois||[]){
+        if(item.visual){
+          if(!/\.webp$/i.test(String(item.visual.asset||'')))errors.push(`${zone.id}:${item.id}: invalid prop asset`);
+          if(!(Number(item.visual.widthTiles)>0&&Number(item.visual.widthTiles)<=6&&Number(item.visual.heightTiles)>0&&Number(item.visual.heightTiles)<=8))errors.push(`${zone.id}:${item.id}: invalid prop size`);
+          if(!Array.isArray(item.collision)||!item.collision.length)errors.push(`${zone.id}:${item.id}: missing prop collision`);
+          else if(item.collision.some(point=>!Number.isInteger(Number(point.x))||!Number.isInteger(Number(point.y))||point.x<0||point.y<0||point.x>=zone.width||point.y>=zone.height))errors.push(`${zone.id}:${item.id}: prop collision out of bounds`);
+        }
+      }
+      const estimate=performanceEstimate(zone);
+      if(budget&&estimate.groundTiles>Number(budget.maxGroundTilesPerZone))errors.push(`${zone.id}: ground tile budget exceeded`);
+      if(budget&&estimate.upperTiles>Number(budget.maxUpperTilesPerZone))errors.push(`${zone.id}: upper tile budget exceeded`);
       const foregroundIds=(zone.foregrounds||[]).map(item=>item.id);
       if(new Set(foregroundIds).size!==foregroundIds.length)errors.push(`${zone.id}: duplicate foreground`);
       for(const foreground of zone.foregrounds||[]){
@@ -212,6 +235,7 @@
     interactionAt,
     enterPortal,
     cuePlan,
+    performanceEstimate,
     validateWorld
   });
 })();
