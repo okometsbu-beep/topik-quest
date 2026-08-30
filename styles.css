@@ -220,7 +220,7 @@ body.travel-active,body.travel-active .app{background:radial-gradient(circle at 
 .travelRpgCard{width:100%;overflow:hidden;border:0;border-radius:0;background:var(--travel-canvas);color:var(--travel-text);box-shadow:none}
 .travelRpgShell{position:relative;height:100vh;height:100dvh;min-height:560px;isolation:isolate}
 .travelRpgViewport{position:absolute;inset:0;width:100%;height:100%;overflow:hidden;background:#dbe7e5;isolation:isolate;touch-action:manipulation}
-.travelRpgBoard{position:absolute;height:120%;width:auto;max-width:none;aspect-ratio:4/3;transition:left .16s linear,top .16s linear;will-change:left,top;background:#dbe7e5}
+.travelRpgBoard{position:absolute;z-index:0;height:120%;width:auto;max-width:none;aspect-ratio:4/3;isolation:isolate;transition:left .16s linear,top .16s linear;will-change:left,top;background:#dbe7e5}
 .travelRpgGroundLayer{position:absolute;z-index:0;inset:0;overflow:hidden;background:#dbe7e5}.travelRpgEnvironmentLayer,.travelRpgShadowLayer,.travelRpgActorLayer,.travelRpgUpperLayer{display:contents}
 .travelRpgMap{display:contents;opacity:1;filter:none}
 .travelRpgTile{position:absolute;display:block;margin:0;padding:0;border:0;background-repeat:no-repeat;image-rendering:pixelated;pointer-events:none;user-select:none;-webkit-user-drag:none;backface-visibility:hidden}.travelRpgTile.layer-upper{z-index:inherit}
