@@ -19,7 +19,68 @@
     action:t('이동','移動','Travel','移动')
   });
 
-  const airportArrivals=Object.freeze({
+  // RPG Maker-style coordinate contract. Existing 12x9 art is treated as a migration atlas and each
+  // legacy cell becomes a 4x4 group of independent 25px tiles. Every map cell references an explicit
+  // catalog entry with atlas coordinates and terrain properties, so future districts can reuse tile IDs
+  // without changing movement, collision, layering, or rendering.
+  const TILE_SCALE=4;
+  const tilePoint=value=>Number(value)*TILE_SCALE+Math.floor(TILE_SCALE/2);
+  const tileGrid=rows=>Object.freeze(rows.flatMap(row=>{
+    const expanded=Array.from(String(row),cell=>cell.repeat(TILE_SCALE)).join('');
+    return Array.from({length:TILE_SCALE},()=>expanded);
+  }));
+  const tileCollision=points=>Object.freeze(points.flatMap(point=>Array.from({length:TILE_SCALE*TILE_SCALE},(_,index)=>Object.freeze({
+    x:Number(point.x)*TILE_SCALE+(index%TILE_SCALE),
+    y:Number(point.y)*TILE_SCALE+Math.floor(index/TILE_SCALE)
+  }))));
+  const tileAnchor=item=>Object.freeze({...item,x:tilePoint(item.x),y:tilePoint(item.y)});
+  function scaleZone(base){
+    const width=base.width*TILE_SCALE,height=base.height*TILE_SCALE,grid=tileGrid(base.grid);
+    const scenes=Object.freeze(Object.fromEntries(Object.entries(base.scenes||{}).map(([id,item])=>[id,tileAnchor(item)])));
+    const foregrounds=Object.freeze((base.foregrounds||[]).map(item=>Object.freeze({
+      ...item,
+      depthY:Number(item.depthY)*TILE_SCALE,
+      polygon:Object.freeze(item.polygon.map(point=>Object.freeze({x:Number(point.x)*TILE_SCALE,y:Number(point.y)*TILE_SCALE}))),
+      collision:tileCollision(item.collision)
+    })));
+    const lights=Object.freeze((base.lights||[]).map(item=>Object.freeze({
+      ...item,x:Number(item.x)*TILE_SCALE,y:Number(item.y)*TILE_SCALE,
+      width:Number(item.width)*TILE_SCALE,height:Number(item.height)*TILE_SCALE
+    })));
+    const palette=Object.freeze(Array.from({length:width*height},(_,index)=>{
+      const x=index%width,y=Math.floor(index/width),blocked=String(grid[y]||'').charAt(x)==='#';
+      return Object.freeze({
+        id:`migration-${String(index).padStart(4,'0')}`,
+        atlasX:x,
+        atlasY:y,
+        terrain:blocked?'blocked':'walkable',
+        walkable:!blocked,
+        layer:'ground'
+      });
+    }));
+    const ground=Object.freeze(Array.from({length:height},(_,y)=>Object.freeze(Array.from({length:width},(_,x)=>y*width+x))));
+    const tilemap=Object.freeze({
+      version:1,
+      coordinateScale:TILE_SCALE,
+      tileSize:25,
+      atlas:Object.freeze({image:base.background,width:1200,height:900,columns:width,rows:height}),
+      palette,
+      layers:Object.freeze({ground})
+    });
+    return Object.freeze({
+      ...base,version:2,width,height,grid,tilemap,
+      spawn:Object.freeze({...base.spawn,x:tilePoint(base.spawn.x),y:tilePoint(base.spawn.y)}),
+      scenes,
+      pois:Object.freeze((base.pois||[]).map(tileAnchor)),
+      foregrounds,
+      lights,
+      portals:Object.freeze((base.portals||[]).map(item=>Object.freeze({
+        ...item,x:tilePoint(item.x),y:tilePoint(item.y),targetX:tilePoint(item.targetX),targetY:tilePoint(item.targetY)
+      })))
+    });
+  }
+
+  const airportArrivals=scaleZone({
     id:'icn-t1-arrivals',
     districtId:'incheon-airport',
     version:1,
@@ -67,7 +128,7 @@
     ])
   });
 
-  const airportTransportCenter=Object.freeze({
+  const airportTransportCenter=scaleZone({
     id:'icn-t1-transport-center',
     districtId:'incheon-airport',
     version:1,
@@ -108,7 +169,7 @@
     ])
   });
 
-  const airportRailConcourse=Object.freeze({
+  const airportRailConcourse=scaleZone({
     id:'icn-t1-airport-rail-concourse',
     districtId:'incheon-airport',
     version:1,

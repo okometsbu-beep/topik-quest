@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v76 · bounded Travel environment-light layer
-- Current candidate: v77 · reusable Travel interaction-cue contract
+- Production release: v78 · Travel semantic tilemap and held-control foundation
+- Current candidate: v78 · Travel semantic tilemap and held-control foundation
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
@@ -45,11 +45,11 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
   the same light/dark semantic surfaces with resolution/re-entry four-width gates
 - Travel exploration separates Seoul world/district/zone/collision/POI/portal data from route learning events
 - Incheon Airport T1 arrivals supports tile movement, collision, camera tracking, investigations, and event entry
-- Incheon Airport T1 transport center is a separate 12×9 zone connected to Arrivals by one bidirectional portal
-- Incheon Airport T1 Airport Railroad concourse is a third 12×9 zone connected to the transport center
+- Incheon Airport T1 transport center is a separate 48×36 tile zone connected to Arrivals by one bidirectional portal
+- Incheon Airport T1 Airport Railroad concourse is a third 48×36 tile zone connected to the transport center
 - Travel respects system/light/dark appearance; map art is unfiltered and actors remain separate layers
-- Travel movement keeps the map DOM alive for a 190ms player step, 280ms camera follow, ordered rapid
-  input, directional collision response, and reduced-motion fallback
+- Travel movement keeps the map DOM alive for a 110ms player step, 160ms camera follow, ordered rapid
+  input, pointer-held repetition, silent collision stopping, and reduced-motion fallback
 - Travel exploration uses a full-height map surface with aspect-correct world art, horizontal camera
   tracking, overlaid location/objective/status HUD, and bottom-corner movement/action controls
 - The default traveler uses one preloaded 8×4 transparent sprite sheet: down/left/right/up rows,
@@ -69,12 +69,18 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - Travel portal, investigation, NPC entry, reward, and return actions share a short cue plan. The
   current map DOM stays visible, cue animation touches only the active marker/card/HUD element,
   reduced-motion resolves immediately, and sound/vibration adapters run only after explicit opt-in.
+- Travel zones use a 48×36 semantic tile layer. Each cell resolves through a catalog entry owning its
+  atlas coordinates, terrain, walkability, and layer; no full-map image element is painted at runtime.
+- Player and visible NPCs share a near-one-tile scale, NPCs have idle motion, world markers scale from
+  tile variables, and the world stacking context cannot cover the HUD.
+- D-pad and investigation controls are translucent, text-free SVG controls. Direction buttons keep moving
+  while held, release cleanly, and movement never rebuilds the ground or sprite DOM.
 
 ## 다음 우선순위
 
-1. 같은 연출 계약을 명동 NPC 대화·퀘스트 보상·거리 복귀 흐름에 연결한다.
-2. 대규모 서울 구역 제작 도구와 모바일 성능 예산을 만든다.
-3. 실제 학습자가 자주 틀리는 유형 근거를 정리한 뒤 TOPIK·Shorts 문항을 추가한다.
+1. 10,000보 기준 스태미너 감소와 전용 게임오버 이미지·복귀 화면을 만든다.
+2. 여러 차례 오가는 NPC 대화와 핵심 단어 선택 퀴즈, 단계적 힌트·번역 계약을 만든다.
+3. 한국적 조사 오브젝트와 재사용 서울 타일셋, 모바일 성능 예산을 확장한다.
 
 ## 이번 운영 변경
 
@@ -87,20 +93,22 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-이번 연출 계약을 명동 NPC 대화 진입·퀘스트 보상·거리 복귀에 연결한다. 새 연출 종류,
-새 구역, 새 문항, 실제 음원은 같은 작업에 넣지 않는다.
+10,000보에서 0이 되는 스태미너 계산·저장·HUD와 전용 게임오버 이미지·복귀 화면을 만든다.
+새 NPC 대화, 새 구역, 새 문항, 조사 오브젝트 확장은 같은 작업에 넣지 않는다.
 
-## v77 후보 검증 및 배포
+## v78 후보 검증 및 배포
 
-- 포털·조사·NPC 진입과 보상·복귀가 70~220ms의 재사용 가능한 상태 계획을 사용한다.
-- 활성 표식·보상 문구·위치 HUD만 짧게 반응하고 원본 맵·뷰포트에는 opacity·filter·밝기
-  애니메이션을 적용하지 않아 이동 중 화면 번쩍임을 만들지 않는다.
-- 소리와 진동은 이름·패턴만 제공하며, 명시적으로 활성화한 외부 훅이 있을 때만 호출한다.
+- 기존 12×9 이동 좌표를 저장 호환 가능한 48×36 타일 좌표로 이관하고, 각 칸을 명시적
+  타일 ID·아틀라스 좌표·지형·통행·레이어 속성으로 렌더한다.
+- 기본 캐릭터를 기존 약 1/4 크기로 줄이고 NPC와 같은 발 기준 크기를 사용한다. NPC idle,
+  타일 비례 월드 표식, HUD 아래 Y-depth 격리를 함께 검증한다.
+- 텍스트 없는 반투명 SVG 방향·조사 키, 누르고 이동·놓고 정지, 막힌 길 무팝업을 적용한다.
+- 이동 중 맵·스프라이트 DOM 교체와 원본 맵 opacity·filter·밝기 변경이 없다.
 - 전체 검사 65개와 Travel 집중 검사 6개를 통과했다. 실제 Chrome에서 320·375·390·430px,
-  밝은·어두운 테마와 포털·조사 보상·NPC 진입을 확인했고 콘솔 오류는 0건이다.
+  밝은·어두운 테마, 51개 화면, 12fps 보행·조사·포털·깊이를 확인했고 콘솔 오류는 0건이다.
 - 문제·정답·해설·번역·저장 키·결제 UI·API 키·개인정보 전송은 바꾸지 않았다.
-- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (모바일 CI와 병합 뒤 v77 확인)
-- 되돌리기 기준: v76 main `6d54e50ce19447171159c932bee2eb9747e929ab`
+- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (모바일 CI와 병합 뒤 v78 확인)
+- 되돌리기 기준: v77 main `d0d482863125f90a168081da7262b4ddac7fc711`
 
 ## 알려진 위험
 
@@ -113,4 +121,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 새 구역은 키 큰 오브젝트의 실루엣·기준선·충돌 셀을 함께 선언하지 않으면 검증을 통과할 수 없다.
 - P3 레이어 기반은 완료됐지만 광원은 현재 정적 하이라이트뿐이며 날씨·시간대 변화는 아직 없다.
 - v77 연출 계약은 공항 탐험 흐름부터 적용한다. 명동 NPC·보상 화면 연결과 실제 음원 선택 UI는 아직 없다.
+- 현재 공항 3개 구역은 기존 원화를 마이그레이션 아틀라스로 쓰되 런타임은 타일 ID별로만
+  그린다. 서울 구역을 늘리기 전 반복 가능한 한국 거리 타일셋과 DOM/frame 성능 예산이 필요하다.
+- 스태미너·게임오버·장문 NPC 대화·단어 퀴즈·추가 한국 조사물은 후속 작업이며 아직 없다.
 - 기존 Plus·가격·결제 암시 UI가 새 화면에 재사용되지 않도록 계속 검사해야 한다.

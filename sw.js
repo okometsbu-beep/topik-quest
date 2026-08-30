@@ -1,4 +1,4 @@
-const VERSION='77',CACHE_PREFIX='malbit-v',CACHE=CACHE_PREFIX+VERSION,NEURAL_CACHE='malbit-neural-tts-v1';
+const VERSION='78',CACHE_PREFIX='malbit-v',CACHE=CACHE_PREFIX+VERSION,NEURAL_CACHE='malbit-neural-tts-v1';
 const SHELL=Object.freeze(['./','./index.html','./styles.css','./legacy-data.js','./legacy-core.js','./site-patch.js','./manifest.webmanifest','./icon.svg','./assets/art/malbit-home-hero.webp','./assets/art/travel/rpg/traveler-blue-4dir-v1.png']);
 self.addEventListener('message',event=>{if(event.data==='SKIP_WAITING')self.skipWaiting()});
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting())));

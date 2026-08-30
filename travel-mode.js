@@ -13,9 +13,10 @@
   const RPG_EVENT_OPEN=Object.create(null);
   const RPG_NOTICE=Object.create(null);
   const RPG_MOTION={busy:false,queue:[],timer:null,token:0,pendingInteraction:false};
+  const RPG_HOLD={timer:null,direction:null,pointerId:null};
   const RPG_CUE={timer:null,token:0,active:null};
-  const RPG_STEP_MS=190;
-  const RPG_SETTLE_MS=90;
+  const RPG_STEP_MS=110;
+  const RPG_SETTLE_MS=0;
   const RPG_CAMERA_SCALE=1.2;
   let RPG_CAMERA_FRAME=0;
   const HUB_ORDER=Object.create(null);
@@ -72,6 +73,12 @@
     RPG_MOTION.pendingInteraction=false;
     if(RPG_MOTION.timer&&typeof clearTimeout==='function')clearTimeout(RPG_MOTION.timer);
     RPG_MOTION.timer=null;
+    stopRpgHold();
+  }
+  function stopRpgHold(){
+    RPG_HOLD.direction=null;RPG_HOLD.pointerId=null;
+    if(RPG_HOLD.timer&&typeof clearInterval==='function')clearInterval(RPG_HOLD.timer);
+    RPG_HOLD.timer=null;
   }
   function clearRpgCue(){
     RPG_CUE.token+=1;
@@ -580,10 +587,30 @@
   const rpgActorPoint=(zone,item)=>{const point=rpgPointValues(zone,item);return`left:${point.left};top:${point.top};z-index:${point.depth}`};
   const rpgShadowPoint=(zone,item)=>{const point=rpgPointValues(zone,item);return`left:${point.left};top:${point.top};z-index:${point.depth}`};
   const rpgForegroundDepth=item=>2+Math.max(0,Math.floor((Number(item.depthY)||0)*2));
+  function rpgTileMarkup(zone,x,y,layer='ground'){
+    const atlas=zone.tilemap?.atlas||{},rows=zone.tilemap?.layers?.ground||zone.grid||[];
+    const row=rows[y]||[],tileId=Array.isArray(row)?row[x]:String(row).charAt(x),entry=zone.tilemap?.palette?.[tileId]||{};
+    const atlasX=Number.isInteger(Number(entry.atlasX))?Number(entry.atlasX):x,atlasY=Number.isInteger(Number(entry.atlasY))?Number(entry.atlasY):y;
+    const left=(x/zone.width*100).toFixed(4),top=(y/zone.height*100).toFixed(4);
+    const width=(100/zone.width).toFixed(4),height=(100/zone.height).toFixed(4);
+    const positionX=Number(atlas.columns)>1?(atlasX/(Number(atlas.columns)-1)*100).toFixed(5):0;
+    const positionY=Number(atlas.rows)>1?(atlasY/(Number(atlas.rows)-1)*100).toFixed(5):0;
+    return`<i class="travelRpgTile terrain-${h(entry.terrain||'blocked')} layer-${h(layer)}" data-tile-id="${h(entry.id??tileId)}" data-tile-x="${x}" data-tile-y="${y}" data-terrain="${h(entry.terrain||'blocked')}" data-walkable="${entry.walkable===true?'true':'false'}" style="left:${left}%;top:${top}%;width:${width}%;height:${height}%;background-image:url('${h(atlas.image||zone.background)}');background-size:${Number(atlas.columns||zone.width)*100}% ${Number(atlas.rows||zone.height)*100}%;background-position:${positionX}% ${positionY}%"></i>`;
+  }
+  function rpgGroundMarkup(zone){
+    let output='';
+    for(let y=0;y<zone.height;y+=1)for(let x=0;x<zone.width;x+=1)output+=rpgTileMarkup(zone,x,y);
+    return output;
+  }
   function rpgForegroundMarkup(zone){
     return(zone.foregrounds||[]).map(item=>{
       const clip=item.polygon.map(point=>`${(Number(point.x)/zone.width*100).toFixed(3)}% ${(Number(point.y)/zone.height*100).toFixed(3)}%`).join(',');
-      return`<img class="travelRpgForeground" src="${h(zone.background)}" alt="" width="1200" height="900" loading="eager" data-foreground-id="${h(item.id)}" data-depth-y="${h(item.depthY)}" style="z-index:${rpgForegroundDepth(item)};clip-path:polygon(${clip})">`;
+      const xs=item.polygon.map(point=>Number(point.x)),ys=item.polygon.map(point=>Number(point.y));
+      const minX=Math.max(0,Math.floor(Math.min(...xs))),maxX=Math.min(zone.width-1,Math.ceil(Math.max(...xs))-1);
+      const minY=Math.max(0,Math.floor(Math.min(...ys))),maxY=Math.min(zone.height-1,Math.ceil(Math.max(...ys))-1);
+      let tiles='';
+      for(let y=minY;y<=maxY;y+=1)for(let x=minX;x<=maxX;x+=1)tiles+=rpgTileMarkup(zone,x,y,'upper');
+      return`<span class="travelRpgForeground" src="${h(zone.tilemap?.atlas?.image||zone.background)}" aria-hidden="true" data-foreground-id="${h(item.id)}" data-depth-y="${h(item.depthY)}" style="z-index:${rpgForegroundDepth(item)};clip-path:polygon(${clip})">${tiles}</span>`;
     }).join('');
   }
   function rpgEnvironmentMarkup(zone){
@@ -622,6 +649,15 @@
     };
   }
   function rpgCamera(zone,progress){const camera=rpgCameraValues(zone,progress);return`left:${camera.left};top:${camera.top}`}
+  function rpgBoardScale(zone){
+    const tileWidth=100/zone.width,tileHeight=100/zone.height,actorWidth=tileWidth*.88,actorHeight=actorWidth*(4/3)/(192/272);
+    return`--travel-rpg-tile-width:${tileWidth.toFixed(4)}%;--travel-rpg-tile-height:${tileHeight.toFixed(4)}%;--travel-rpg-actor-width:${actorWidth.toFixed(4)}%;--travel-rpg-actor-height:${actorHeight.toFixed(4)}%;--travel-rpg-target-size:${(tileWidth*1.4).toFixed(4)}%;--travel-rpg-poi-size:${(tileWidth*.82).toFixed(4)}%;--travel-rpg-portal-size:${(tileWidth*1.6).toFixed(4)}%;--travel-rpg-shadow-width:${(actorWidth*.86).toFixed(4)}%;--travel-rpg-shadow-height:${(tileHeight*.22).toFixed(4)}%;--travel-rpg-npc-shadow-width:${(actorWidth*.9).toFixed(4)}%;--travel-rpg-npc-shadow-height:${(tileHeight*.23).toFixed(4)}%`;
+  }
+  const rpgArrowIcon=direction=>{
+    const path={up:'M12 19V5m0 0-5 5m5-5 5 5',down:'M12 5v14m0 0-5-5m5 5 5-5',left:'M19 12H5m0 0 5-5m-5 5 5 5',right:'M5 12h14m0 0-5-5m5 5-5 5'}[direction];
+    return`<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="${path}"></path></svg>`;
+  };
+  const rpgActionIcon=()=>'<svg viewBox="0 0 32 32" aria-hidden="true" focusable="false"><circle cx="13" cy="13" r="7"></circle><path d="m18 18 7 7"></path><path d="M10 13h6M13 10v6"></path></svg>';
   function syncRpgCamera(){
     RPG_CAMERA_FRAME=0;
     const context=activeRpgContext(),board=document.querySelector?.('.travelRpgBoard');
@@ -637,9 +673,9 @@
     RPG_CAMERA_FRAME=requestAnimationFrame(syncRpgCamera);
   }
   function animateRpgStep(zone,progress,blocked){
-    if(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return false;
     const card=document.querySelector?.('.travelRpgCard'),viewport=card?.querySelector?.('.travelRpgViewport'),board=card?.querySelector?.('.travelRpgBoard'),player=card?.querySelector?.('.travelRpgPlayer'),shadow=card?.querySelector?.('.travelRpgShadow.player');
     if(!card||!viewport||!board||!player||!shadow||typeof setTimeout!=='function')return false;
+    const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
     const point=rpgPointValues(zone,progress),camera=rpgCameraValues(zone,progress),direction=String(progress.direction||'down');
     const spriteClass=player.classList.contains('has-sprite')?' has-sprite':'';
     player.className=`travelRpgPlayer${spriteClass} ${h(direction)} ${blocked?`blocked bump-${h(direction)}`:'walking'}`;
@@ -647,8 +683,29 @@
     player.style.zIndex=String(point.depth);
     shadow.style.left=point.left;shadow.style.top=point.top;
     shadow.style.zIndex=String(point.depth);
+    if(reduced){player.style.transition='none';shadow.style.transition='none';board.style.transition='none'}
     board.style.left=camera.left;board.style.top=camera.top;
     card.classList.add('is-moving');viewport.setAttribute('aria-busy','true');
+    return true;
+  }
+  function syncRpgExplorationDom(context,progress){
+    const card=document.querySelector?.('.travelRpgCard'),viewport=card?.querySelector?.('.travelRpgViewport'),player=card?.querySelector?.('.travelRpgPlayer');
+    if(!card||!viewport||!player)return false;
+    const interaction=RPG.interactionAt(context.zone,progress,context.scene.id),direction=String(progress.direction||'down');
+    const spriteClass=player.classList.contains('has-sprite')?' has-sprite':'';
+    player.className=`travelRpgPlayer${spriteClass} idle ${h(direction)}`;
+    for(const node of card.querySelectorAll?.('.travelRpgTarget,.travelRpgPoi,.travelRpgPortal')||[])node.classList.remove('near');
+    if(interaction?.type==='scene')card.querySelector?.('.travelRpgTarget')?.classList.add('near');
+    if(interaction?.type==='poi')card.querySelector?.(`[data-poi-id="${h(interaction.target.id)}"]`)?.classList.add('near');
+    if(interaction?.type==='portal')card.querySelector?.(`[data-portal-id="${h(interaction.target.id)}"]`)?.classList.add('near');
+    const action=card.querySelector?.('.travelRpgAction');
+    if(action){
+      action.disabled=!interaction;
+      const target=interaction?l(interaction.target.title||interaction.target.label):l({ko:'주변 조사',ja:'周辺を調べる',en:'Inspect nearby',zh:'调查周围'});
+      action.setAttribute('aria-label',target);
+    }
+    const step=card.querySelector?.('[data-rpg-step]');if(step)step.textContent=String(progress.steps);
+    card.classList.remove('is-moving');viewport.removeAttribute('aria-busy');
     return true;
   }
   function finishRpgMotion(sceneId,moved,token){
@@ -664,7 +721,8 @@
       if(token!==RPG_MOTION.token)return;
       const interact=RPG_MOTION.pendingInteraction;
       RPG_MOTION.busy=false;RPG_MOTION.timer=null;RPG_MOTION.pendingInteraction=false;
-      render();
+      const context=activeRpgContext();
+      if(context)syncRpgExplorationDom(context,RPG.normalizeProgress(context.pack.id,context.state.exploration,context.scene.id));
       if(interact)requestAnimationFrame?.(()=>window.malbitTravelInteract());
     },settle);
   }
@@ -676,7 +734,7 @@
   }
   function rpgNoticeMarkup(scene,notice){
     if(!notice)return'';
-    if(notice.type==='blocked')return`<p class="travelRpgToast" role="status">${h(l({ko:'그쪽은 지나갈 수 없어요. 다른 길을 찾아보세요.',ja:'そちらは通れません。別の道を探そう。',en:'That way is blocked. Try another path.',zh:'那里无法通行，请寻找其他路线。'}))}</p>`;
+    if(notice.type==='blocked')return'';
     if(notice.type==='portal')return`<p class="travelRpgToast" role="status">${h(l({ko:`${l(notice.target.title)} 도착`,ja:`${l(notice.target.title)}に到着`,en:`Arrived: ${l(notice.target.title)}`,zh:`已到达：${l(notice.target.title)}`}))}</p>`;
     if(notice.type!=='poi')return'';
     const target=notice.target,reward=Number(notice.reward)||0;
@@ -690,16 +748,30 @@
     const actionLabel=interaction?(interaction.type==='scene'||interaction.type==='portal')?l(interaction.target.action):l({ko:'조사하기',ja:'調べる',en:'Inspect',zh:'调查'}):l({ko:'대상 가까이 가기',ja:'対象に近づく',en:'Move closer',zh:'靠近目标'});
     const targetTitle=interaction?l(interaction.target.title||interaction.target.label):'';
     const discovered=new Set(progress.discoveries||[]);
-    const pois=(zone.pois||[]).map(item=>`<span class="travelRpgPoi ${discovered.has(`${zone.id}:${item.id}`)?'found':''} ${interaction?.type==='poi'&&interaction.target.id===item.id?'near':''}" style="${rpgPoint(zone,item)}" aria-hidden="true"><i></i></span>`).join('');
+    const pois=(zone.pois||[]).map(item=>`<span class="travelRpgPoi ${discovered.has(`${zone.id}:${item.id}`)?'found':''} ${interaction?.type==='poi'&&interaction.target.id===item.id?'near':''}" data-poi-id="${h(item.id)}" style="${rpgPoint(zone,item)}" aria-hidden="true"><i></i></span>`).join('');
     const targetIsActor=Boolean(anchor&&targetAsset&&anchor.kind==='npc');
-    const target=anchor?(targetAsset?`<span class="travelRpgTarget character ${near?'near':''}" style="${rpgActorPoint(zone,anchor)}"><img src="${h(targetAsset)}" alt=""><b>${h(l(anchor.label))}</b></span>`:`<span class="travelRpgTarget marker ${near?'near':''}" style="${rpgPoint(zone,anchor)}"><i></i><b>${h(l(anchor.label))}</b></span>`):'';
+    const target=anchor?(targetAsset?`<span class="travelRpgTarget character idle ${near?'near':''}" style="${rpgActorPoint(zone,anchor)}"><img src="${h(targetAsset)}" alt=""><b>${h(l(anchor.label))}</b></span>`:`<span class="travelRpgTarget marker ${near?'near':''}" style="${rpgPoint(zone,anchor)}"><i></i><b>${h(l(anchor.label))}</b></span>`):'';
     const playerFoot=skin?.sprite?.footAnchor?`${Number(skin.sprite.footAnchor.x)||.5},${Number(skin.sprite.footAnchor.y)||.9375}`:'.5,.7';
     const shadows=`${targetIsActor?rpgShadowMarkup(zone,anchor,'npc','.5,.7'):''}${rpgShadowMarkup(zone,progress,'player',playerFoot)}`;
-    const portals=(zone.portals||[]).map(item=>`<span class="travelRpgPortal ${interaction?.type==='portal'&&interaction.target.id===item.id?'near':''}" style="${rpgPoint(zone,item)}" aria-hidden="true"><i></i></span>`).join('');
+    const portals=(zone.portals||[]).map(item=>`<span class="travelRpgPortal ${interaction?.type==='portal'&&interaction.target.id===item.id?'near':''}" data-portal-id="${h(item.id)}" style="${rpgPoint(zone,item)}" aria-hidden="true"><i></i></span>`).join('');
     const notice=RPG_NOTICE[scene.id];
     const discoveryCount=progress.discoveries.filter(id=>id.startsWith(`${zone.id}:`)).length;
     const backLabel=l({ko:'여행 지도',ja:'旅マップ',en:'Travel map',zh:'旅行地图'});
-    sc.innerHTML=`<div class="travelPlay travelRpgScreen"><article class="travelRpgCard travelRpgShell ${notice?.type==='poi'?'has-discovery':''}"><div class="travelRpgViewport" role="img" aria-label="${h(l(zone.title))}"><div class="travelRpgBoard" style="${rpgCamera(zone,progress)}"><div class="travelRpgGroundLayer"><img class="travelRpgMap" src="${h(zone.background)}" alt="" width="1200" height="900" loading="eager"></div><div class="travelRpgEnvironmentLayer" data-effect-contract="bounded-light" aria-hidden="true">${rpgEnvironmentMarkup(zone)}</div><div class="travelRpgShadowLayer" data-depth-contract="foot-y" aria-hidden="true">${shadows}</div><div class="travelRpgActorLayer" data-depth-contract="foot-y">${pois}${portals}${target}${rpgPlayerMarkup(skin,zone,progress)}</div><div class="travelRpgUpperLayer" aria-hidden="true">${rpgForegroundMarkup(zone)}</div></div><header class="travelRpgTopHud"><button class="travelRpgBack" onclick="malbitTravelBack()" aria-label="${h(backLabel)}">‹</button><div class="travelRpgLocationHud"><small>SEOUL WORLD · ${h(progress.steps)} STEP</small><b>${h(l(zone.title))}</b></div><button class="travelRpgLang" onclick="event.stopPropagation();flagMenu()" aria-label="${h(l({ko:'설명 언어 바꾸기',ja:'説明言語を変更',en:'Change explanation language',zh:'切换解析语言'}))}">${flag()}</button></header><div class="travelRpgStatusHud" aria-label="${h(l({ko:'여행 상태',ja:'旅のステータス',en:'Travel status',zh:'旅行状态'}))}"><span><small>${h(l({ko:'여행 원',ja:'旅ウォン',en:'TRAVEL WON',zh:'旅行韩元'}))}</small><b>${h(won(state.wallet))}</b></span><span><small>${h(l({ko:'여행 시각',ja:'旅の時刻',en:'TRIP TIME',zh:'旅行时间'}))}</small><b>${h(clock(state.clockMinutes))}</b></span><span><small>${h(l({ko:'조사',ja:'調査',en:'FOUND',zh:'调查'}))}</small><b>${h(discoveryCount)}/${h(zone.pois.length)}</b></span></div><div class="travelRpgObjectiveHud"><small>${h(l({ko:'현재 목표',ja:'現在の目標',en:'CURRENT OBJECTIVE',zh:'当前目标'}))}</small><b>${h(l(scene.title))}</b></div>${rpgNoticeMarkup(scene,notice)}<div class="travelRpgControls"><div class="travelRpgDpad" aria-label="${h(l({ko:'이동 방향',ja:'移動方向',en:'Movement controls',zh:'移动方向'}))}"><button onclick="malbitTravelStep('up')" aria-label="${h(l({ko:'위로 이동',ja:'上へ移動',en:'Move up',zh:'向上移动'}))}">↑</button><button onclick="malbitTravelStep('left')" aria-label="${h(l({ko:'왼쪽으로 이동',ja:'左へ移動',en:'Move left',zh:'向左移动'}))}">←</button><button onclick="malbitTravelStep('down')" aria-label="${h(l({ko:'아래로 이동',ja:'下へ移動',en:'Move down',zh:'向下移动'}))}">↓</button><button onclick="malbitTravelStep('right')" aria-label="${h(l({ko:'오른쪽으로 이동',ja:'右へ移動',en:'Move right',zh:'向右移动'}))}">→</button></div><button class="travelRpgAction" onclick="malbitTravelInteract()" ${interaction?'':'disabled'}><small>${interaction?`${h(targetTitle)} · `:''}${h(l({ko:'상호작용',ja:'インタラクト',en:'INTERACT',zh:'互动'}))}</small><b>${h(actionLabel)}</b></button></div><p class="travelRpgSaveStatus">${h(l({ko:'이동과 조사는 이 기기에 자동 저장됩니다.',ja:'移動と調査はこの端末に自動保存されます。',en:'Movement and discoveries save on this device.',zh:'移动与调查会自动保存在此设备。'}))}</p></div></article></div>`;
+    sc.innerHTML=`<div class="travelPlay travelRpgScreen"><article class="travelRpgCard travelRpgShell ${notice?.type==='poi'?'has-discovery':''}"><div class="travelRpgViewport" role="img" aria-label="${h(l(zone.title))}"><div class="travelRpgBoard" style="${rpgCamera(zone,progress)}"><div class="travelRpgGroundLayer"><span class="travelRpgMap" src="${h(zone.tilemap?.atlas?.image||zone.background)}" aria-hidden="true"></span>${rpgGroundMarkup(zone)}</div><div class="travelRpgEnvironmentLayer" data-effect-contract="bounded-light" aria-hidden="true">${rpgEnvironmentMarkup(zone)}</div><div class="travelRpgShadowLayer" data-depth-contract="foot-y" aria-hidden="true">${shadows}</div><div class="travelRpgActorLayer" data-depth-contract="foot-y">${pois}${portals}${target}${rpgPlayerMarkup(skin,zone,progress)}</div><div class="travelRpgUpperLayer" aria-hidden="true">${rpgForegroundMarkup(zone)}</div></div><header class="travelRpgTopHud"><button class="travelRpgBack" onclick="malbitTravelBack()" aria-label="${h(backLabel)}">‹</button><div class="travelRpgLocationHud"><small>SEOUL WORLD · ${h(progress.steps)} STEP</small><b>${h(l(zone.title))}</b></div><button class="travelRpgLang" onclick="event.stopPropagation();flagMenu()" aria-label="${h(l({ko:'설명 언어 바꾸기',ja:'説明言語を変更',en:'Change explanation language',zh:'切换解析语言'}))}">${flag()}</button></header><div class="travelRpgStatusHud" aria-label="${h(l({ko:'여행 상태',ja:'旅のステータス',en:'Travel status',zh:'旅行状态'}))}"><span><small>${h(l({ko:'여행 원',ja:'旅ウォン',en:'TRAVEL WON',zh:'旅行韩元'}))}</small><b>${h(won(state.wallet))}</b></span><span><small>${h(l({ko:'여행 시각',ja:'旅の時刻',en:'TRIP TIME',zh:'旅行时间'}))}</small><b>${h(clock(state.clockMinutes))}</b></span><span><small>${h(l({ko:'조사',ja:'調査',en:'FOUND',zh:'调查'}))}</small><b>${h(discoveryCount)}/${h(zone.pois.length)}</b></span></div><div class="travelRpgObjectiveHud"><small>${h(l({ko:'현재 목표',ja:'現在の目標',en:'CURRENT OBJECTIVE',zh:'当前目标'}))}</small><b>${h(l(scene.title))}</b></div>${rpgNoticeMarkup(scene,notice)}<div class="travelRpgControls"></div><p class="travelRpgSaveStatus">${h(l({ko:'이동과 조사는 이 기기에 자동 저장됩니다.',ja:'移動と調査はこの端末に自動保存されます。',en:'Movement and discoveries save on this device.',zh:'移动与调查会自动保存在此设备。'}))}</p></div></article></div>`;
+    const board=sc.querySelector?.('.travelRpgBoard'),ground=sc.querySelector?.('.travelRpgGroundLayer');
+    if(board){board.style.cssText+=`;${rpgBoardScale(zone)}`;board.dataset.tilemapVersion=String(zone.tilemap?.version||0)}
+    if(ground)ground.dataset.tileCount=String(zone.width*zone.height);
+    const stepLabel=sc.querySelector?.('.travelRpgLocationHud small');
+    if(stepLabel)stepLabel.innerHTML=`SEOUL WORLD · <span data-rpg-step>${h(progress.steps)}</span> STEP`;
+    const controls=sc.querySelector?.('.travelRpgControls');
+    if(controls){
+      const moveLabel=l({ko:'이동 방향',ja:'移動方向',en:'Movement controls',zh:'移动方向'});
+      const directions=['up','left','down','right'];
+      const labels={up:l({ko:'위로 이동',ja:'上へ移動',en:'Move up',zh:'向上移动'}),left:l({ko:'왼쪽으로 이동',ja:'左へ移動',en:'Move left',zh:'向左移动'}),down:l({ko:'아래로 이동',ja:'下へ移動',en:'Move down',zh:'向下移动'}),right:l({ko:'오른쪽으로 이동',ja:'右へ移動',en:'Move right',zh:'向右移动'})};
+      const buttons=directions.map(direction=>`<button data-direction="${direction}" onpointerdown="malbitTravelHoldStart(event,'${direction}')" onpointerup="malbitTravelHoldStop(event)" onpointercancel="malbitTravelHoldStop(event)" oncontextmenu="return false" aria-label="${h(labels[direction])}">${rpgArrowIcon(direction)}</button>`).join('');
+      const actionAria=interaction?targetTitle:l({ko:'주변 조사',ja:'周辺を調べる',en:'Inspect nearby',zh:'调查周围'});
+      controls.innerHTML=`<div class="travelRpgDpad" aria-label="${h(moveLabel)}">${buttons}</div><button class="travelRpgAction" onclick="malbitTravelInteract()" aria-label="${h(actionAria)}" ${interaction?'':'disabled'}>${rpgActionIcon()}</button>`;
+    }
   }
   function renderPlay(sc){
     const {pack,state,scene}=current();
@@ -754,13 +826,29 @@
     const progress=RPG.normalizeProgress(context.pack.id,context.state.exploration,context.scene.id);
     const result=RPG.step(context.zone,progress,direction,context.scene.id);
     context.state.exploration=result.progress;context.state.updatedAt=now();
-    if(result.blocked)RPG_NOTICE[context.scene.id]={type:'blocked'};else delete RPG_NOTICE[context.scene.id];
+    delete RPG_NOTICE[context.scene.id];
     writeState(context.state);
     const animated=animateRpgStep(context.zone,result.progress,result.blocked);
-    if(!animated){render();return}
+    if(!animated){syncRpgExplorationDom(context,result.progress);return}
     RPG_MOTION.busy=true;
     const token=RPG_MOTION.token;
-    RPG_MOTION.timer=setTimeout(()=>finishRpgMotion(context.scene.id,result.moved,token),result.blocked?130:RPG_STEP_MS);
+    const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    RPG_MOTION.timer=setTimeout(()=>finishRpgMotion(context.scene.id,result.moved,token),reduced?0:result.blocked?80:RPG_STEP_MS);
+  };
+  window.malbitTravelHoldStart=(event,direction)=>{
+    event?.preventDefault?.();
+    if(!RPG.directions?.[direction]||RPG_CUE.active)return;
+    stopRpgHold();RPG_HOLD.direction=direction;RPG_HOLD.pointerId=event?.pointerId??null;
+    try{event?.currentTarget?.setPointerCapture?.(event.pointerId)}catch(error){}
+    window.malbitTravelStep(direction);
+    if(typeof setInterval==='function')RPG_HOLD.timer=setInterval(()=>{
+      if(RPG_HOLD.direction===direction&&!RPG_MOTION.busy&&!RPG_CUE.active)window.malbitTravelStep(direction);
+    },24);
+  };
+  window.malbitTravelHoldStop=event=>{
+    event?.preventDefault?.();
+    try{if(event?.currentTarget?.hasPointerCapture?.(event.pointerId))event.currentTarget.releasePointerCapture(event.pointerId)}catch(error){}
+    stopRpgHold();
   };
   window.malbitTravelInteract=()=>{
     if(RPG_CUE.active)return;
@@ -768,7 +856,7 @@
     const context=activeRpgContext();
     if(!context||RPG_EVENT_OPEN[context.scene.id])return;
     const progress=RPG.normalizeProgress(context.pack.id,context.state.exploration,context.scene.id),interaction=RPG.interactionAt(context.zone,progress,context.scene.id);
-    if(!interaction){RPG_NOTICE[context.scene.id]={type:'blocked'};render();return}
+    if(!interaction)return;
     if(interaction.type==='scene'){
       cancelRpgMotion();
       playRpgCue('scene',{},()=>{delete RPG_NOTICE[context.scene.id];RPG_EVENT_OPEN[context.scene.id]=true;cancelAudio();render();resetViewport()});return;
@@ -785,7 +873,7 @@
     if(interaction.type==='portal'){
       cancelRpgMotion();
       const next=RPG.enterPortal(context.world,progress,interaction.target);
-      if(!next){RPG_NOTICE[context.scene.id]={type:'blocked'};render();return}
+      if(!next)return;
       playRpgCue('portal',{},()=>{
         context.state.exploration=next;context.state.updatedAt=now();writeState(context.state);
         const targetZone=RPG.zoneById(context.world,next.zoneId);
@@ -997,6 +1085,8 @@
     if(event.key==='Enter'||event.key===' '||event.key==='e'||event.key==='E'){event.preventDefault();window.malbitTravelInteract()}
   });
   window.addEventListener?.('resize',scheduleRpgCameraSync,{passive:true});
+  window.addEventListener?.('blur',stopRpgHold,{passive:true});
+  document.addEventListener?.('visibilitychange',()=>{if(document.hidden)stopRpgHold()},{passive:true});
 
   // A returning tab may still hold the old view name. Migrate it without touching any progress.
   if(S.view==='story'||S.view==='storyPlay'){
