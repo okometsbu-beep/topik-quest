@@ -55,7 +55,9 @@ these facts from conversation history or the large TOPIK source bundle.
   a full-map `<img>`. Legacy 12×9 saved coordinates migrate once to version 2 without changing the storage key.
 - Travel movement keeps the live tile and sprite DOM in place for a 110ms player step and 160ms camera
   follow. Pointer-held SVG direction controls repeat until release, blocked movement stops silently, and
-  reduced-motion devices settle immediately without map opacity, filter, or brightness changes.
+  reduced-motion devices settle immediately without map opacity, filter, or brightness changes. The five
+  map controls and their SVG children suppress iOS callout, selection, and drag while ordinary learning
+  copy remains selectable.
 - Travel exploration stores a versioned 10,000-step stamina record inside the existing episode
   `exploration` field. Only successful movement spends stamina; blocked input is free and exhausted input
   is ignored. At 0%, a separate unfiltered 4:3 rest-lounge image owns the full-height game-over screen.
