@@ -374,7 +374,9 @@ try{
     assert.equal(await evaluate(`document.querySelectorAll('.travelDialogueFlow span').length`),3,'requested translation must cover only visible turns');
     if(captureRpgVisuals){
       await shot('00u-airport-dialogue-requested-translation.png');
-      await send('Page.reload',{ignoreCache:true});await ready();await evaluate(`malbitTravelStart('route-001-airport-myeongdong',false)`);await sleep(100);await openRpgScene();
+      await send('Page.reload',{ignoreCache:true});await ready();
+      for(let wait=0;wait<100&&await evaluate(`typeof window.malbitTravelStart!=='function'`);wait++)await sleep(50);
+      await evaluate(`window.malbitTravelStart('route-001-airport-myeongdong',false)`);await sleep(100);await openRpgScene();
       assert.deepEqual(await evaluate(`(()=>({step:document.querySelector('.travelDialogueLesson')?.dataset.dialogueStep,support:document.querySelectorAll('.travelDialogueFlow span').length}))()`),{step:'3',support:3},'dialogue step and requested translation must survive reload');
     }
     await tap('.travelDialogueTools .travelTextButton');
