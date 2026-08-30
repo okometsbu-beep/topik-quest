@@ -66,6 +66,11 @@ these facts from conversation history or the large TOPIK source bundle.
   and strength. They render in a separate environment layer between ground and contact shadows;
   validation rejects out-of-bounds effects, opacity above 0.65, and mobile coverage large enough to
   become a scene-wide tint. The original map, actors, and foreground remain unfiltered.
+- Travel exploration exposes one reusable cue plan for portal enter/arrive, investigation discovery,
+  first reward, NPC entry, and return. Each 70–220ms state animates only the active control, marker,
+  reward text, or location HUD; the map and viewport never receive opacity, brightness, or filter
+  animation. `MALBIT_TRAVEL_CUE_HOOKS` is an opt-in adapter boundary: sound and vibration callbacks are
+  ignored unless their individual booleans are explicitly enabled, and reduced-motion settles at once.
 - Game Mode now uses semantic spacing, type, surface, border, and accent tokens through the purpose-named
   `game-visual-system.js` final owner. Equipment, rarity, stage, run-slot, and map-node tiles follow the
   saved system/light/dark preference and must stay readable rather than near-black. CI checks both themes
@@ -108,6 +113,8 @@ these facts from conversation history or the large TOPIK source bundle.
   closing and reopening the tab completes the update without deleting progress.
 - Travel has static bounded highlights but no weather or time-varying environment effects yet. Future
   effects must reuse the independent environment layer and must never simulate night with a black scene overlay.
+- The cue contract currently owns airport exploration interactions. Myeongdong dialogue/reward screens
+  still need to adopt the same states; no audio files or persistent sound/vibration controls ship yet.
 
 ## Execution defaults
 

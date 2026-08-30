@@ -201,6 +201,8 @@ try{
   };
   const rpgPath=async(kind='scene',targetId='')=>evaluate(`(()=>{const store=JSON.parse(localStorage.getItem('malbitStoryV1')),state=store.episodes['route-001-airport-myeongdong'],match=MALBIT_TRAVEL_RPG.contextForProgress(state.packId,state.exploration,state.sceneId);if(!match)return null;const target=${JSON.stringify(kind)}==='scene'?match.anchor:${JSON.stringify(kind)}==='portal'?match.zone.portals.find(item=>item.id===${JSON.stringify(targetId)}):match.zone.pois.find(item=>item.id===${JSON.stringify(targetId)});if(!target)return null;const queue=[{x:state.exploration.x,y:state.exploration.y,path:[]}],seen=new Set([state.exploration.x+','+state.exploration.y]);while(queue.length){const current=queue.shift();if(Math.abs(current.x-target.x)+Math.abs(current.y-target.y)<=1)return current.path;for(const [direction,delta] of Object.entries(MALBIT_TRAVEL_RPG.directions)){const x=current.x+delta.x,y=current.y+delta.y,key=x+','+y;if(seen.has(key)||!MALBIT_TRAVEL_RPG.isWalkable(match.zone,x,y,state.sceneId))continue;seen.add(key);queue.push({x,y,path:[...current.path,direction]})}}return null})()`);
   const moveRpgTo=async(kind='scene',targetId='')=>{
+    for(let wait=0;wait<30;wait++){if(!await evaluate(`MALBIT_TRAVEL_RPG_CUES?.active`))break;await sleep(20)}
+    assert.equal(await evaluate(`MALBIT_TRAVEL_RPG_CUES?.active`),false,'previous interaction cue did not release movement controls');
     const path=await rpgPath(kind,targetId);assert.ok(Array.isArray(path),`RPG target unreachable: ${kind} ${targetId}`);
     const index={up:0,left:1,down:2,right:3};
     for(const direction of path)await tap('.travelRpgDpad button',index[direction],35);
@@ -275,12 +277,16 @@ try{
       await evaluate(`malbitSetTheme('light')`);await sleep(120);
       for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertRpgFits(`Travel RPG light ${width}px`,'light');await assertFits(`Travel RPG light ${width}px`)}
       await setViewport(390,844);await shot('00m-travel-rpg-light.png');
+      await evaluate(`window.__travelCueLog=[];window.MALBIT_TRAVEL_CUE_HOOKS={sound:true,vibration:true,playSound:(name,detail)=>window.__travelCueLog.push({channel:'sound',name,kind:detail.kind,phase:detail.phase}),vibrate:(pattern,detail)=>window.__travelCueLog.push({channel:'vibration',pattern,kind:detail.kind,phase:detail.phase})}`);
       await moveRpgTo('poi','baggage-carousel');await tap('.travelRpgAction',0,120);
       assert.match(await evaluate(`document.querySelector('.travelRpgDiscovery')?.innerText`),/수하물 찾는 곳/);
-      assert.equal((await state()).wallet,79200);await shot('00n-travel-rpg-investigation.png');await tap('.travelRpgDiscovery button',0,90);
+      const discoveryCue=await evaluate(`(()=>{const shell=document.querySelector('.travelRpgShell'),map=document.querySelector('.travelRpgMap'),viewport=document.querySelector('.travelRpgViewport');return{active:MALBIT_TRAVEL_RPG_CUES.active,kind:shell?.dataset.cueKind,phase:shell?.dataset.cuePhase,busy:viewport?.getAttribute('aria-busy'),mapOpacity:getComputedStyle(map).opacity,mapFilter:getComputedStyle(map).filter,viewportOpacity:getComputedStyle(viewport).opacity,viewportFilter:getComputedStyle(viewport).filter,log:window.__travelCueLog}})()`);
+      assert.deepEqual([discoveryCue.active,discoveryCue.kind,discoveryCue.phase,discoveryCue.busy],[true,'reward','reward','true']);assert.deepEqual([discoveryCue.mapOpacity,discoveryCue.mapFilter,discoveryCue.viewportOpacity,discoveryCue.viewportFilter],['1','none','1','none'],'cue must not flash or filter the scene');assert.ok(discoveryCue.log.some(item=>item.name==='investigation-open'));assert.ok(discoveryCue.log.some(item=>item.name==='reward-earned'));
+      assert.equal((await state()).wallet,79200);await shot('00n-travel-rpg-investigation.png');await tap('.travelRpgDiscovery button',0,90);assert.equal(await evaluate(`MALBIT_TRAVEL_RPG_CUES.active`),false,'return cue must release controls');
       await moveRpgTo('portal','arrivals-to-transport');await tap('.travelRpgAction',0,140);
       assert.equal((await state()).exploration.zoneId,'icn-t1-transport-center');
       assert.match(await evaluate(`document.querySelector('.travelRpgMap')?.getAttribute('src')`),/airport-transport-center-map-v1\.webp/);
+      assert.deepEqual(await evaluate(`(()=>({active:MALBIT_TRAVEL_RPG_CUES.active,kind:document.querySelector('.travelRpgShell')?.dataset.cueKind,phase:document.querySelector('.travelRpgShell')?.dataset.cuePhase,portalSounds:window.__travelCueLog.filter(item=>item.channel==='sound'&&item.kind==='portal').map(item=>item.name)}))()`),{active:true,kind:'portal',phase:'arrive',portalSounds:['portal-enter','portal-arrive']});
       for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertRpgFits(`Transport center light ${width}px`,'light','airport-transport-center-map-v1.webp');await assertFits(`Transport center light ${width}px`)}
       await setViewport(390,844);
       await evaluate(`(()=>{const store=JSON.parse(localStorage.getItem('malbitStoryV1')),state=store.episodes['route-001-airport-myeongdong'];state.exploration={...state.exploration,x:5,y:6,direction:'up'};localStorage.setItem('malbitStoryV1',JSON.stringify(store));render()})()`);await sleep(80);
