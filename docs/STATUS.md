@@ -96,7 +96,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 활성 표식·보상 문구·위치 HUD만 짧게 반응하고 원본 맵·뷰포트에는 opacity·filter·밝기
   애니메이션을 적용하지 않아 이동 중 화면 번쩍임을 만들지 않는다.
 - 소리와 진동은 이름·패턴만 제공하며, 명시적으로 활성화한 외부 훅이 있을 때만 호출한다.
-- 로컬 빠른 검사 60개와 Travel 집중 검사 6개를 통과했다. 전체·모바일 검사는 PR 전 실행한다.
+- 전체 검사 65개와 Travel 집중 검사 6개를 통과했다. 실제 Chrome에서 320·375·390·430px,
+  밝은·어두운 테마와 포털·조사 보상·NPC 진입을 확인했고 콘솔 오류는 0건이다.
 - 문제·정답·해설·번역·저장 키·결제 UI·API 키·개인정보 전송은 바꾸지 않았다.
 - 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (모바일 CI와 병합 뒤 v77 확인)
 - 되돌리기 기준: v76 main `6d54e50ce19447171159c932bee2eb9747e929ab`
