@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v75 · app-wide light/dark semantic surfaces restored
-- Current candidate: v76 · bounded Travel environment-light layer
+- Production release: v76 · bounded Travel environment-light layer
+- Current candidate: v77 · reusable Travel interaction-cue contract
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
@@ -66,10 +66,13 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - Travel zones declare bounded lamp and screen highlights as data. They render in an independent
   environment layer between ground and contact shadows, cover less than 8% of the map in total,
   and never filter, tint, or darken the original map art.
+- Travel portal, investigation, NPC entry, reward, and return actions share a short cue plan. The
+  current map DOM stays visible, cue animation touches only the active marker/card/HUD element,
+  reduced-motion resolves immediately, and sound/vibration adapters run only after explicit opt-in.
 
 ## 다음 우선순위
 
-1. 포털·조사·NPC·보상의 짧은 진입·발견·복귀 연출 훅을 만든다.
+1. 같은 연출 계약을 명동 NPC 대화·퀘스트 보상·거리 복귀 흐름에 연결한다.
 2. 대규모 서울 구역 제작 도구와 모바일 성능 예산을 만든다.
 3. 실제 학습자가 자주 틀리는 유형 근거를 정리한 뒤 TOPIK·Shorts 문항을 추가한다.
 
@@ -84,19 +87,19 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-포털·조사·NPC·보상에 재사용할 수 있는 짧은 진입·발견·복귀 연출 상태와 선택 가능한
-소리·진동 훅의 첫 계약을 만든다. 새 구역·새 문항·날씨 효과는 같은 작업에 넣지 않는다.
+이번 연출 계약을 명동 NPC 대화 진입·퀘스트 보상·거리 복귀에 연결한다. 새 연출 종류,
+새 구역, 새 문항, 실제 음원은 같은 작업에 넣지 않는다.
 
-## v76 후보 검증 및 배포
+## v77 후보 검증 및 배포
 
-- 3개 Travel 구역이 작은 램프·안내 화면 하이라이트의 위치·크기·색·세기를 데이터로 선언한다.
-- 지면과 접지 그림자 사이의 독립 환경 레이어에서만 합성하며, 개별 효과 4%·전체 8% 미만의
-  맵 면적과 최대 세기 0.65를 자동 검사해 전체 화면 도색으로 변하는 것을 막는다.
-- 원본 맵·플레이어·NPC·전경의 opacity·filter와 기존 밝은/어두운 테마 선택을 바꾸지 않는다.
-- 로컬 전체 64개 자동검사와 v76 런타임 34개 파일·문제은행 해시 검증을 통과했다.
+- 포털·조사·NPC 진입과 보상·복귀가 70~220ms의 재사용 가능한 상태 계획을 사용한다.
+- 활성 표식·보상 문구·위치 HUD만 짧게 반응하고 원본 맵·뷰포트에는 opacity·filter·밝기
+  애니메이션을 적용하지 않아 이동 중 화면 번쩍임을 만들지 않는다.
+- 소리와 진동은 이름·패턴만 제공하며, 명시적으로 활성화한 외부 훅이 있을 때만 호출한다.
+- 로컬 빠른 검사 60개와 Travel 집중 검사 6개를 통과했다. 전체·모바일 검사는 PR 전 실행한다.
 - 문제·정답·해설·번역·저장 키·결제 UI·API 키·개인정보 전송은 바꾸지 않았다.
-- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (모바일 CI와 병합 뒤 v76 확인)
-- 되돌리기 기준: v75 main `2595dcb6b335897af31f210e9a9d2271ccf17082`
+- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (모바일 CI와 병합 뒤 v77 확인)
+- 되돌리기 기준: v76 main `6d54e50ce19447171159c932bee2eb9747e929ab`
 
 ## 알려진 위험
 
@@ -108,4 +111,5 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 기본 여행자만 4방향 애니메이션이며 해금 의상은 기존 정적 이미지로 안전하게 대체한다.
 - 새 구역은 키 큰 오브젝트의 실루엣·기준선·충돌 셀을 함께 선언하지 않으면 검증을 통과할 수 없다.
 - P3 레이어 기반은 완료됐지만 광원은 현재 정적 하이라이트뿐이며 날씨·시간대 변화는 아직 없다.
+- v77 연출 계약은 공항 탐험 흐름부터 적용한다. 명동 NPC·보상 화면 연결과 실제 음원 선택 UI는 아직 없다.
 - 기존 Plus·가격·결제 암시 UI가 새 화면에 재사용되지 않도록 계속 검사해야 한다.

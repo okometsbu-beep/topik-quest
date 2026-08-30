@@ -1,976 +1,97 @@
-// MALBIT Travel Mode Â· data-driven Seoul route runtime
-(function(){
-  'use strict';
-
-  // Keep the legacy key permanently: existing Story progress becomes Seoul route progress.
-  const STORAGE_KEY='malbitStoryV1';
-  const DEFAULT_SKIN='traveler-blue';
-  const PACKS=Array.isArray(window.MALBIT_TRAVEL_PACKS)?window.MALBIT_TRAVEL_PACKS:[];
-  const HUBS=Array.isArray(window.MALBIT_TRAVEL_HUBS)?window.MALBIT_TRAVEL_HUBS:[];
-  const RPG=window.MALBIT_TRAVEL_RPG||null;
-  const SELECTED=Object.create(null);
-  const TRANSCRIPTS=Object.create(null);
-  const RPG_EVENT_OPEN=Object.create(null);
-  const RPG_NOTICE=Object.create(null);
-  const RPG_MOTION={busy:false,queue:[],timer:null,token:0,pendingInteraction:false};
-  const RPG_STEP_MS=190;
-  const RPG_SETTLE_MS=90;
-  const RPG_CAMERA_SCALE=1.2;
-  let RPG_CAMERA_FRAME=0;
-  const HUB_ORDER=Object.create(null);
-  const HUB_BUDGET=Object.create(null);
-  const HUB_DIALOGUE_STEP=Object.create(null);
-  const HUB_COMPOSE_RESULT=Object.create(null);
-  const METRIC_KEYS=Object.freeze({
-    routeStarted:'routeStarts',
-    routeCompleted:'routeCompletions',
-    myeongdongEntered:'myeongdongEntries',
-    exchangeSession:'exchangeSessions',
-    priceQuestStarted:'priceQuestStarts',
-    priceQuestCompleted:'priceQuestCompletions'
-  });
-
-  if(!PACKS.length){console.error('[MALBIT travel] travel pack missing');return}
-
-  const h=value=>String(value??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  const lang=()=>['ko','ja','en','zh'].includes(S.lang)?S.lang:'ko';
-  const l=value=>typeof value==='string'?value:(value?.[lang()]||value?.ko||'');
-  const flag=()=>window.LANGS?.[lang()]?.flag||({ko:'ğŸ‡°ğŸ‡·',ja:'ğŸ‡¯ğŸ‡µ',en:'ğŸ‡ºğŸ‡¸',zh:'ğŸ‡¨ğŸ‡³'})[lang()]||'ğŸŒ';
-  const now=()=>new Date().toISOString();
-  const packById=id=>PACKS.find(pack=>pack.id===id)||null;
-  const hubByRoute=id=>HUBS.find(hub=>hub.routeId===id)||null;
-  const sceneById=(pack,id)=>pack?.scenes?.find(scene=>scene.id===id)||null;
-  const routeScene=(scene,state)=>{
-    const variant=scene?.routeVariants?.[state?.route];
-    return variant?{...scene,...variant}:scene;
-  };
-  const questionScenes=pack=>pack.scenes.filter(scene=>scene.type==='question');
-  const correctCount=state=>Object.values(state?.answers||{}).filter(answer=>answer?.correct).length;
-  const answeredCount=state=>Object.keys(state?.answers||{}).length;
-  const won=value=>{
-    const amount=Math.max(0,Number(value)||0).toLocaleString('ko-KR');
-    return lang()==='ja'?`${amount}æ—…ã‚¦ã‚©ãƒ³`:lang()==='en'?`${amount} travel won`:lang()==='zh'?`${amount}æ—…è¡ŒéŸ©å…ƒ`:`${amount}ì›`;
-  };
-  const clock=value=>{const minutes=((Number(value)||0)%1440+1440)%1440;return`${String(Math.floor(minutes/60)).padStart(2,'0')}:${String(minutes%60).padStart(2,'0')}`};
-
-  function notify(message){
-    if(typeof toast==='function')return toast(message);
-    console.info('[MALBIT travel]',message);
-  }
-  function cancelAudio(){
-    try{if(window.MALBIT_TTS)window.MALBIT_TTS.cancel();else speechSynthesis.cancel()}catch(error){}
-  }
-  function resetViewport(){
-    const reset=()=>{try{window.scrollTo?.({top:0,left:0,behavior:'auto'})}catch(error){try{window.scrollTo?.(0,0)}catch(innerError){}}};
-    try{requestAnimationFrame(reset)}catch(error){reset()}
-  }
-  function cancelRpgMotion(){
-    RPG_MOTION.token+=1;
-    RPG_MOTION.busy=false;
-    RPG_MOTION.queue.length=0;
-    RPG_MOTION.pendingInteraction=false;
-    if(RPG_MOTION.timer&&typeof clearTimeout==='function')clearTimeout(RPG_MOTION.timer);
-    RPG_MOTION.timer=null;
-  }
-  function revealFeedback(){
-    const reveal=()=>{try{document.querySelector('.travelFeedback')?.scrollIntoView({block:'nearest',behavior:'auto'})}catch(error){}};
-    try{requestAnimationFrame(reveal)}catch(error){reveal()}
-  }
-  function resetTransient(pack){
-    cancelRpgMotion();
-    for(const scene of pack.scenes){delete SELECTED[scene.id];delete TRANSCRIPTS[scene.id];delete RPG_EVENT_OPEN[scene.id];delete RPG_NOTICE[scene.id]}
-  }
-  function normalizeMetrics(value){
-    const raw=value&&typeof value==='object'?value:{};
-    return{
-      version:2,
-      routeStarts:Math.max(0,Number(raw.routeStarts)||0),
-      routeCompletions:Math.max(0,Number(raw.routeCompletions)||0),
-      myeongdongEntries:Math.max(0,Number(raw.myeongdongEntries)||0),
-      exchangeSessions:Math.max(0,Number(raw.exchangeSessions)||0),
-      priceQuestStarts:Math.max(0,Number(raw.priceQuestStarts)||0),
-      priceQuestCompletions:Math.max(0,Number(raw.priceQuestCompletions)||0),
-      priceQuestWrongSubmissions:Math.max(0,Number(raw.priceQuestWrongSubmissions)||0),
-      priceQuestWalletTotal:Math.max(0,Number(raw.priceQuestWalletTotal)||0)
-    };
-  }
-  function normalizeMeasurement(value){
-    const raw=value&&typeof value==='object'?value:{};
-    return{
-      routeStarted:!!raw.routeStarted,
-      routeCompleted:!!raw.routeCompleted,
-      myeongdongEntered:!!raw.myeongdongEntered,
-      exchangeSession:!!raw.exchangeSession,
-      priceQuestStarted:!!raw.priceQuestStarted,
-      priceQuestCompleted:!!raw.priceQuestCompleted
-    };
-  }
-  function recordMilestones(store,state,names){
-    store.metrics=normalizeMetrics(store.metrics);
-    state.measurement=normalizeMeasurement(state.measurement);
-    for(const name of names){
-      const key=METRIC_KEYS[name];
-      if(!key||state.measurement[name])continue;
-      state.measurement[name]=true;
-      store.metrics[key]+=1;
-    }
-  }
-  function recordMetricAggregates(store,aggregates){
-    store.metrics=normalizeMetrics(store.metrics);
-    const wrong=Math.max(0,Number(aggregates?.priceQuestWrongSubmissions)||0);
-    store.metrics.priceQuestWrongSubmissions+=wrong;
-    if(Number.isFinite(Number(aggregates?.priceQuestWalletAfterCompletion))){
-      store.metrics.priceQuestWalletTotal+=Math.max(0,Number(aggregates.priceQuestWalletAfterCompletion));
-    }
-  }
-  const metricRate=(part,total)=>total?Math.round(part/total*100):null;
-  function metricsSnapshot(store=readStore()){
-    const metrics=normalizeMetrics(store.metrics);
-    return Object.freeze({
-      ...metrics,
-      completionRate:metricRate(metrics.routeCompletions,metrics.routeStarts),
-      myeongdongEntryRate:metricRate(metrics.myeongdongEntries,metrics.routeCompletions),
-      collectibleExchangeRate:metricRate(metrics.exchangeSessions,metrics.myeongdongEntries),
-      priceQuestCompletionRate:metricRate(metrics.priceQuestCompletions,metrics.priceQuestStarts),
-      priceQuestAverageWallet:metrics.priceQuestCompletions?Math.round(metrics.priceQuestWalletTotal/metrics.priceQuestCompletions):null,
-      localOnly:true
-    });
-  }
-  const metricPercent=value=>value===null?'â€”':`${value}%`;
-  function priceQuestFeedback(metrics){
-    const rate=metricPercent(metrics.priceQuestCompletionRate);
-    const wrong=metrics.priceQuestWrongSubmissions;
-    const wallet=metrics.priceQuestAverageWallet===null?'â€”':won(metrics.priceQuestAverageWallet);
-    if(!metrics.priceQuestStarts)return{
-      title:l({ko:'ê¸°ë¡ì´ ìŒ“ì´ë©´ ì—¬ê¸°ì„œ ì—°ìŠµ ìš”ë ¹ì„ ì•Œë ¤ë“œë ¤ìš”',ja:'è¨˜éŒ²ãŒãŸã¾ã‚‹ã¨ã€ã“ã“ã«ç·´ç¿’ã®ã‚³ãƒ„ãŒå‡ºã¾ã™',en:'Practice guidance will appear after your first try',zh:'å®Œæˆé¦–æ¬¡å°è¯•åï¼Œè¿™é‡Œä¼šæ˜¾ç¤ºç»ƒä¹ å»ºè®®'}),
-      body:l({ko:'ê°€ê²©í‘œë¥¼ ì½ê³  ê°€ê²© Ã— ê°œìˆ˜ â†’ ì˜ˆì‚° âˆ’ í•©ê³„ ìˆœì„œë¡œ ê³„ì‚°í•´ ë³´ì„¸ìš”.',ja:'å€¤æœ­ã‚’èª­ã¿ã€ã€Œå€¤æ®µÃ—å€‹æ•° â†’ äºˆç®—âˆ’åˆè¨ˆã€ã®é †ã§è¨ˆç®—ã—ã¦ã¿ã‚ˆã†ã€‚',en:'Read the price board, then calculate price Ã— quantity â†’ budget âˆ’ total.',zh:'è¯»å–ä»·ç›®è¡¨åï¼ŒæŒ‰ä»·æ ¼Ã—æ•°é‡â†’é¢„ç®—âˆ’åˆè®¡çš„é¡ºåºè®¡ç®—ã€‚'})
-    };
-    if(!metrics.priceQuestCompletions)return{
-      title:l({ko:'ì•„ì§ ì§„í–‰ ì¤‘ì´ì—ìš”. í•©ê³„ë¥¼ ë¨¼ì € ë§Œë“œì„¸ìš”',ja:'ã¾ã é€”ä¸­ã§ã™ã€‚ã¾ãšåˆè¨ˆã‚’ä½œã‚ã†',en:'Still in progress: find the total first',zh:'ä»åœ¨è¿›è¡Œä¸­ï¼šå…ˆç®—å‡ºåˆè®¡'}),
-      body:l({ko:`ì™„ë£Œìœ¨ ${rate} Â· ì™„ë£Œ ì „ ì˜¤ë‹µ ${wrong}íšŒ. ê°€ê²© Ã— ê°œìˆ˜ë¥¼ êµ¬í•œ ë’¤ ì˜ˆì‚°ì—ì„œ ë¹¼ì„¸ìš”.`,ja:`å®Œäº†ç‡${rate}ãƒ»å®Œäº†å‰ã®èª¤ç­”${wrong}å›ã€‚å€¤æ®µÃ—å€‹æ•°ã‚’å‡ºã—ã¦ã‹ã‚‰ã€äºˆç®—ã‹ã‚‰å¼•ã“ã†ã€‚`,en:`Completion ${rate} Â· ${wrong} wrong tries before clear. Multiply price by quantity, then subtract from the budget.`,zh:`å®Œæˆç‡${rate} Â· å®Œæˆå‰é”™ç­”${wrong}æ¬¡ã€‚å…ˆè®¡ç®—ä»·æ ¼Ã—æ•°é‡ï¼Œå†ä»é¢„ç®—ä¸­å‡å»ã€‚`})
-    };
-    if(wrong>0)return{
-      title:l({ko:'ê³„ì‚°ì„ ë‘ ë‹¨ê³„ë¡œ ë‚˜ëˆ„ë©´ ì‹¤ìˆ˜ë¥¼ ì¤„ì¼ ìˆ˜ ìˆì–´ìš”',ja:'è¨ˆç®—ã‚’2æ®µéšã«åˆ†ã‘ã‚‹ã¨ã€ãƒŸã‚¹ã‚’æ¸›ã‚‰ã›ã¾ã™',en:'Split the calculation into two steps',zh:'æŠŠè®¡ç®—åˆ†æˆä¸¤æ­¥å¯å‡å°‘å¤±è¯¯'}),
-      body:l({ko:`ì™„ë£Œìœ¨ ${rate} Â· ì˜¤ë‹µ ${wrong}íšŒ Â· ì™„ë£Œ í›„ í‰ê·  ${wallet}. ê°€ê²© Ã— ê°œìˆ˜, ê·¸ë‹¤ìŒ ì˜ˆì‚° âˆ’ í•©ê³„ ìˆœì„œë¡œ í™•ì¸í•˜ì„¸ìš”.`,ja:`å®Œäº†ç‡${rate}ãƒ»èª¤ç­”${wrong}å›ãƒ»å®Œäº†å¾Œã®å¹³å‡${wallet}ã€‚å€¤æ®µÃ—å€‹æ•°ã€ãã®ã‚ã¨äºˆç®—âˆ’åˆè¨ˆã®é †ã§ç¢ºèªã—ã‚ˆã†ã€‚`,en:`Completion ${rate} Â· ${wrong} wrong tries Â· average after clear ${wallet}. Check price Ã— quantity, then budget âˆ’ total.`,zh:`å®Œæˆç‡${rate} Â· é”™ç­”${wrong}æ¬¡ Â· å®Œæˆåå¹³å‡${wallet}ã€‚å…ˆæ£€æŸ¥ä»·æ ¼Ã—æ•°é‡ï¼Œå†æ£€æŸ¥é¢„ç®—âˆ’åˆè®¡ã€‚`})
-    };
-    if(metrics.priceQuestCompletionRate===100)return{
-      title:l({ko:'ê³„ì‚° ìˆœì„œë¥¼ ì•ˆì •ì ìœ¼ë¡œ ì§€ì¼°ì–´ìš”',ja:'è¨ˆç®—ã®é †ç•ªã‚’å®‰å®šã—ã¦å®ˆã‚Œã¦ã„ã¾ã™',en:'Your calculation order is consistent',zh:'è®¡ç®—é¡ºåºä¿æŒå¾—å¾ˆç¨³å®š'}),
-      body:l({ko:`ì™„ë£Œìœ¨ ${rate} Â· ì˜¤ë‹µ 0íšŒ Â· ì™„ë£Œ í›„ í‰ê·  ${wallet}. ë‹¤ìŒì—ëŠ” ë¨¼ì € ë‚¨ê¸¸ ì—¬í–‰ ì›ì„ ì •í•´ ë³´ì„¸ìš”.`,ja:`å®Œäº†ç‡${rate}ãƒ»èª¤ç­”0å›ãƒ»å®Œäº†å¾Œã®å¹³å‡${wallet}ã€‚æ¬¡ã¯ã€æ®‹ã—ãŸã„æ—…ã‚¦ã‚©ãƒ³ã‚’å…ˆã«æ±ºã‚ã¦ã¿ã‚ˆã†ã€‚`,en:`Completion ${rate} Â· 0 wrong tries Â· average after clear ${wallet}. Next, decide how much travel won to keep first.`,zh:`å®Œæˆç‡${rate} Â· é”™ç­”0æ¬¡ Â· å®Œæˆåå¹³å‡${wallet}ã€‚ä¸‹æ¬¡å…ˆå†³å®šè¦ä¿ç•™å¤šå°‘æ—…è¡ŒéŸ©å…ƒã€‚`})
-    };
-    return{
-      title:l({ko:'ì‹œì‘í•œ ë¬¸ì œë¥¼ ëê¹Œì§€ ë§ˆë¬´ë¦¬í•´ ë³´ì„¸ìš”',ja:'å§‹ã‚ãŸå•é¡Œã‚’æœ€å¾Œã¾ã§ä»•ä¸Šã’ã‚ˆã†',en:'Finish each attempt you start',zh:'æŠŠå·²å¼€å§‹çš„é¢˜ç›®å®Œæˆåˆ°åº•'}),
-      body:l({ko:`ì™„ë£Œìœ¨ ${rate} Â· ì˜¤ë‹µ 0íšŒ Â· ì™„ë£Œ í›„ í‰ê·  ${wallet}. ê°œìˆ˜ë¥¼ ì •í•œ ë’¤ í•©ê³„ì™€ ì”ì•¡ì„ ì°¨ë¡€ë¡œ í™•ì¸í•˜ì„¸ìš”.`,ja:`å®Œäº†ç‡${rate}ãƒ»èª¤ç­”0å›ãƒ»å®Œäº†å¾Œã®å¹³å‡${wallet}ã€‚å€‹æ•°ã‚’æ±ºã‚ãŸã‚‰ã€åˆè¨ˆã¨æ®‹é«˜ã‚’é †ã«ç¢ºèªã—ã‚ˆã†ã€‚`,en:`Completion ${rate} Â· 0 wrong tries Â· average after clear ${wallet}. After choosing a quantity, check the total and balance in order.`,zh:`å®Œæˆç‡${rate} Â· é”™ç­”0æ¬¡ Â· å®Œæˆåå¹³å‡${wallet}ã€‚å†³å®šæ•°é‡åï¼Œä¾æ¬¡æ£€æŸ¥åˆè®¡å’Œä½™é¢ã€‚`})
-    };
-  }
-  function metricsMarkup(store){
-    const metrics=metricsSnapshot(store);
-    const routeLabels=[
-      [l({ko:'ì½”ìŠ¤ ì‹œì‘',ja:'ã‚³ãƒ¼ã‚¹é–‹å§‹',en:'Route starts',zh:'è·¯çº¿å¼€å§‹'}),String(metrics.routeStarts)],
-      [l({ko:'ì™„ì£¼ìœ¨',ja:'å®Œèµ°ç‡',en:'Completion',zh:'å®Œæˆç‡'}),metricPercent(metrics.completionRate)],
-      [l({ko:'ëª…ë™ ì§„ì…ë¥ ',ja:'æ˜æ´åˆ°é”ç‡',en:'Myeongdong entry',zh:'æ˜æ´è¿›å…¥ç‡'}),metricPercent(metrics.myeongdongEntryRate)],
-      [l({ko:'êµí™˜ ê²½í—˜ë¥ ',ja:'äº¤æ›ä½“é¨“ç‡',en:'Exchange use',zh:'å…‘æ¢ä½“éªŒç‡'}),metricPercent(metrics.collectibleExchangeRate)]
-    ];
-    const priceLabels=[
-      [l({ko:'ê°€ê²© í€˜ìŠ¤íŠ¸ ì™„ë£Œìœ¨',ja:'å€¤æ®µã‚¯ã‚¨ã‚¹ãƒˆå®Œäº†ç‡',en:'Price quest completion',zh:'ä»·æ ¼ä»»åŠ¡å®Œæˆç‡'}),metricPercent(metrics.priceQuestCompletionRate)],
-      [l({ko:'ì™„ë£Œ ì „ ì˜¤ë‹µ ì œì¶œ',ja:'å®Œäº†å‰ã®èª¤ç­”',en:'Wrong tries before clear',zh:'å®Œæˆå‰é”™ç­”'}),String(metrics.priceQuestWrongSubmissions)],
-      [l({ko:'ì™„ë£Œ í›„ í‰ê·  ì”ì•¡',ja:'å®Œäº†å¾Œã®å¹³å‡æ®‹é«˜',en:'Average wallet after clear',zh:'å®Œæˆåå¹³å‡ä½™é¢'}),metrics.priceQuestAverageWallet===null?'â€”':won(metrics.priceQuestAverageWallet)]
-    ];
-    const feedback=priceQuestFeedback(metrics);
-    const grid=(labels,kind='')=>`<div class="travelMetricsGrid ${kind}"${kind?' aria-label="'+h(l({ko:'ëª…ë™ ê°€ê²© í€˜ìŠ¤íŠ¸ ê¸°ë¡',ja:'æ˜æ´ã®å€¤æ®µã‚¯ã‚¨ã‚¹ãƒˆè¨˜éŒ²',en:'Myeongdong price quest record',zh:'æ˜æ´ä»·æ ¼ä»»åŠ¡è®°å½•'}))+'"':''}>${labels.map(([label,value])=>`<div class="travelMetric"><b>${h(value)}</b><small>${h(label)}</small></div>`).join('')}</div>`;
-    return`<section class="travelMetrics" aria-labelledby="travel-metrics-title"><div class="travelMetricsHead"><div><small>LOCAL LEARNING SIGNALS</small><h2 id="travel-metrics-title">${h(l({ko:'ì´ ê¸°ê¸°ì˜ ì—¬í–‰ ê¸°ë¡',ja:'ã“ã®ç«¯æœ«ã®æ—…è¨˜éŒ²',en:'Travel record on this device',zh:'æ­¤è®¾å¤‡çš„æ—…è¡Œè®°å½•'}))}</h2></div><span>LOCAL</span></div>${grid(routeLabels)}<div class="travelMetricsSubhead">${h(l({ko:'ëª…ë™ ê°€ê²© í€˜ìŠ¤íŠ¸',ja:'æ˜æ´ã®å€¤æ®µã‚¯ã‚¨ã‚¹ãƒˆ',en:'Myeongdong price quest',zh:'æ˜æ´ä»·æ ¼ä»»åŠ¡'}))}</div>${grid(priceLabels,'price')}<div class="travelMetricFeedback" role="note"><small>${h(l({ko:'ì´ ê¸°ë¡ìœ¼ë¡œ ë³´ëŠ” í•™ìŠµ í•œë§ˆë””',ja:'ã“ã®è¨˜éŒ²ã‹ã‚‰ã®å­¦ç¿’ãƒ’ãƒ³ãƒˆ',en:'Learning tip from this record',zh:'æ ¹æ®æ­¤è®°å½•çš„å­¦ä¹ æç¤º'}))}</small><b>${h(feedback.title)}</b><p>${h(feedback.body)}</p></div><p>${h(l({ko:'ì´ ê¸°ê¸°ì—ë§Œ ìˆ«ìë¡œ ì €ì¥í•˜ë©° ì™¸ë¶€ë¡œ ì „ì†¡í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.',ja:'ã“ã®ç«¯æœ«å†…ã«æ•°å€¤ã ã‘ã‚’ä¿å­˜ã—ã€å¤–éƒ¨ã¸é€ä¿¡ã—ã¾ã›ã‚“ã€‚',en:'Only numeric totals are stored on this device and never sent outside.',zh:'ä»…ä»¥æ•°å­—ä¿å­˜åœ¨æœ¬è®¾å¤‡ï¼Œä¸ä¼šå‘é€åˆ°å¤–éƒ¨ã€‚'}))}</p></section>`;
-  }
-  function readStore(){
-    try{
-      const parsed=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');
-      if(parsed&&parsed.version===1&&parsed.episodes&&typeof parsed.episodes==='object')return normalizeStore(parsed);
-    }catch(error){}
-    return normalizeStore({version:1,activePackId:PACKS[0].id,episodes:{}});
-  }
-  function normalizeStore(store){
-    const unlocked=new Set(Array.isArray(store.avatar?.unlocked)?store.avatar.unlocked:[DEFAULT_SKIN]);
-    unlocked.add(DEFAULT_SKIN);
-    for(const pack of PACKS){
-      const state=store.episodes?.[pack.id];
-      if(!state?.completed)continue;
-      if(pack.rewardSkin)unlocked.add(pack.rewardSkin);
-      if(pack.perfectSkin&&Math.max(Number(state.bestScore)||0,correctCount(state))===pack.questionCount)unlocked.add(pack.perfectSkin);
-    }
-    const equipped=unlocked.has(store.avatar?.equipped)?store.avatar.equipped:DEFAULT_SKIN;
-    store.avatar={equipped,unlocked:[...unlocked]};
-    store.metrics=normalizeMetrics(store.metrics);
-    return store;
-  }
-  function writeStore(store){
-    try{
-      localStorage.setItem(STORAGE_KEY,JSON.stringify(normalizeStore(store)));
-      window.MALBIT_STORAGE_GUARD?.capture?.('travel');
-    }catch(error){}
-  }
-  function normalizeHubState(value){
-    const raw=value&&typeof value==='object'?value:{};
-    const quests=raw.quests&&typeof raw.quests==='object'?raw.quests:{};
-    return{
-      screen:['hub','dialogue','order','result'].includes(raw.screen)?raw.screen:'ending',
-      activeEvent:typeof raw.activeEvent==='string'?raw.activeEvent:null,
-      quests,
-      attempts:Math.max(0,Number(raw.attempts)||0),
-      lastAttemptCorrect:raw.lastAttemptCorrect===false?false:null,
-      lastPurchase:typeof raw.lastPurchase==='string'?raw.lastPurchase:null
-    };
-  }
-  function normalizeState(pack,value){
-    if(!value||value.packId!==pack.id||!sceneById(pack,value.sceneId))return null;
-    value.answers=value.answers&&typeof value.answers==='object'?value.answers:{};
-    value.orders=value.orders&&typeof value.orders==='object'?value.orders:{};
-    value.evidence=Array.isArray(value.evidence)?value.evidence.filter(id=>sceneById(pack,id)||String(id).startsWith('hub:')):[];
-    value.visited=Array.isArray(value.visited)?value.visited.filter(id=>sceneById(pack,id)):[];
-    value.wallet=Math.max(0,Number(value.wallet??pack.startWallet)||0);
-    value.clockMinutes=Number.isFinite(Number(value.clockMinutes))?Number(value.clockMinutes):new Date().getHours()*60+new Date().getMinutes();
-    value.inventory=Array.isArray(value.inventory)?value.inventory:[];
-    value.myeongdong=normalizeHubState(value.myeongdong);
-    value.measurement=normalizeMeasurement(value.measurement);
-    if(RPG)value.exploration=RPG.normalizeProgress(pack.id,value.exploration,value.sceneId);
-    return value;
-  }
-  function readState(pack){return normalizeState(pack,readStore().episodes[pack.id])}
-  function writeState(state,milestones=[],aggregates=null){
-    const store=readStore();
-    recordMilestones(store,state,milestones);
-    recordMetricAggregates(store,aggregates);
-    store.activePackId=state.packId;
-    store.episodes[state.packId]=state;
-    writeStore(store);
-  }
-  function activePack(){
-    const store=readStore();
-    return packById(store.activePackId)||PACKS[0];
-  }
-  function newState(pack,previous){
-    const state={
-      version:1,packId:pack.id,sceneId:pack.scenes[0].id,route:null,
-      answers:{},orders:{},evidence:[],visited:[pack.scenes[0].id],
-      wallet:Number(pack.startWallet)||0,clockMinutes:new Date().getHours()*60+new Date().getMinutes(),inventory:Array.from(new Set(Array.isArray(previous?.inventory)?previous.inventory:[])),spent:[],
-      completed:false,startedAt:now(),updatedAt:now(),completedAt:null,
-      bestScore:Math.max(Number(previous?.bestScore)||0,previous?.completed?correctCount(previous):0),
-      clears:Number(previous?.clears)||0,perfectBonusClaimed:!!previous?.perfectBonusClaimed,
-      measurement:normalizeMeasurement(null)
-    };
-    if(RPG){
-      const discoveries=Array.isArray(previous?.exploration?.discoveries)?previous.exploration.discoveries:[];
-      state.exploration=RPG.normalizeProgress(pack.id,{discoveries},state.sceneId);
-    }
-    state.myeongdong=normalizeHubState(previous?.myeongdong);
-    state.myeongdong.screen='ending';
-    return state;
-  }
-  function current(){
-    const pack=activePack();
-    let state=readState(pack);
-    if(!state){state=newState(pack);writeState(state)}
-    return{pack,state,scene:routeScene(sceneById(pack,state.sceneId),state)};
-  }
-  function move(state,pack,next){
-    if(!sceneById(pack,next))return false;
-    delete RPG_EVENT_OPEN[state.sceneId];delete RPG_NOTICE[state.sceneId];
-    state.sceneId=next;
-    if(RPG)state.exploration=RPG.normalizeProgress(pack.id,state.exploration,next);
-    if(!state.visited.includes(next))state.visited.push(next);
-    state.updatedAt=now();
-    writeState(state);
-    cancelAudio();
-    render();
-    resetViewport();
-    return true;
-  }
-  function traveler(pack,state){
-    const choice=sceneById(pack,'approach')?.choices?.find(item=>item.id===state.route);
-    return choice?l(choice.title):l({ko:'ì²« ì„œìš¸ ì—¬í–‰ì',ja:'ã¯ã˜ã‚ã¦ã®ã‚½ã‚¦ãƒ«æ—…äºº',en:'First-time Seoul Traveler',zh:'é¦–å°”åˆæ¸¸è€…'});
-  }
-  function questionNumber(pack,scene){return questionScenes(pack).findIndex(item=>item.id===scene.id)+1}
-  function cleanScript(value){
-    return String(value||'').replace(/(^|\n)[^:\n]{1,45}:\s*/gu,'$1').replace(/\n{3,}/g,'\n\n').trim();
-  }
-  const ATTACHED_TOKENS=new Set(['ì€','ëŠ”','ì´','ê°€','ì„','ë¥¼','ì—','ì—ì„œ','ë„','ì™€','ê³¼','ìœ¼ë¡œ','ë¡œ','ë¶€í„°','ê¹Œì§€',',','.','?','!']);
-  function composedSentence(tokens){
-    let sentence='';
-    for(const raw of tokens){
-      const token=String(raw||'').trim();if(!token)continue;
-      if(sentence&&(ATTACHED_TOKENS.has(token)||/^[,.?!]/u.test(token)))sentence+=token;
-      else sentence+=`${sentence?' ':''}${token}`;
-    }
-    return sentence.replace(/\s+([,.?!])/gu,'$1').replace(/\s+/g,' ').trim();
-  }
-  function compactSentence(value){return String(value||'').replace(/[\sâ€œâ€"']/gu,'').trim()}
-  function compositionResult(event,tokens){
-    const phrase=composedSentence(tokens),canonical=composedSentence(event.answer||[]);
-    if(compactSentence(phrase)===compactSentence(canonical))return{grade:'full',phrase,response:event.success};
-    for(const accepted of event.accepted||[]){
-      try{if(new RegExp(accepted.pattern,'u').test(phrase))return{grade:'partial',phrase,response:accepted.response}}catch(error){}
-    }
-    return{grade:'invalid',phrase,response:event.explanation};
-  }
-  function tokenKind(token){
-    if(ATTACHED_TOKENS.has(token))return'particle';
-    if(/(?:ìš”[?.!]?|ë‹ˆë‹¤[?.!]?|ì„¸ìš”[?.!]?|ì‹¶ì–´ìš”[?.!]?|ì™”ì–´ìš”[?.!]?|ê°ì‚¬í•©ë‹ˆë‹¤[.!]?|ì•ˆë…•í•˜ì„¸ìš”[!]?)$/u.test(token))return'ending';
-    return'word';
-  }
-  function travelSolveTip(scene,q){
-    const interaction=scene.interaction||'quiz';
-    if(interaction==='dialogue')return l({ko:'ëŒ€í™” ë¬¸ì œëŠ” ë§ˆì§€ë§‰ ë§ì´ ì¸ì‚¬Â·ì§ˆë¬¸Â·ìš”ì²­ ì¤‘ ë¬´ì—‡ì¸ì§€ ë¨¼ì € íŒë³„í•˜ê³ , ê·¸ ê¸°ëŠ¥ì— ì§ì ‘ ë‹µí•˜ëŠ” í‘œí˜„ë§Œ ë‚¨ê¸°ì„¸ìš”.',ja:'ä¼šè©±å•é¡Œã¯ã€æœ€å¾Œã®ç™ºè©±ãŒã€Œã‚ã„ã•ã¤ãƒ»è³ªå•ãƒ»ä¾é ¼ã€ã®ã©ã‚Œã‹ã‚’å…ˆã«åˆ¤æ–­ã—ã€ãã®åƒãã«ç›´æ¥ç­”ãˆã‚‹è¡¨ç¾ã ã‘ã‚’æ®‹ã—ã¾ã™ã€‚',en:'First identify whether the last line is a greeting, question, or request, then keep only the response that directly serves that function.',zh:'å…ˆåˆ¤æ–­æœ€åä¸€å¥å±äºé—®å€™ã€æé—®è¿˜æ˜¯è¯·æ±‚ï¼Œå†ä¿ç•™èƒ½ç›´æ¥å›åº”å…¶åŠŸèƒ½çš„è¡¨è¾¾ã€‚'});
-    if(interaction==='hotspot')return l({ko:'ë¬¸ì¥ ì „ì²´ë¥¼ ë²ˆì—­í•˜ì§€ ë§ê³  â€˜ì§€í•˜ì² ì—­â€™ì²˜ëŸ¼ ì¥ì†Œë¥¼ ê²°ì •í•˜ëŠ” í•µì‹¬ ëª…ì‚¬ë¥¼ ê·¸ë¦¼Â·í‘œì§€ì™€ ì—°ê²°í•˜ì„¸ìš”.',ja:'æ–‡å…¨ä½“ã‚’è¨³ã™å‰ã«ã€ã€Œì§€í•˜ì² ì—­ã€ã®ã‚ˆã†ã«å ´æ‰€ã‚’æ±ºã‚ã‚‹æ ¸å¿ƒèªã‚’çµµã‚„æ¨™è­˜ã¨çµã³ä»˜ã‘ã¾ã™ã€‚',en:'Before translating everything, connect the location keyword, such as ì§€í•˜ì² ì—­, to the matching sign or picture.',zh:'ä¸è¦å…ˆç¿»è¯‘æ•´å¥ï¼Œå…ˆæŠŠâ€œì§€í•˜ì² ì—­â€ç­‰å†³å®šåœ°ç‚¹çš„å…³é”®è¯ä¸å›¾æ ‡æˆ–æ ‡ç‰Œå¯¹åº”ã€‚'});
-    if(interaction==='machine')return l({ko:'ê¸°ê³„ í™”ë©´ì—ì„œëŠ” í–‰ë™ ë™ì‚¬ì™€ ëª©í‘œ ëª…ì‚¬ë¥¼ ë¨¼ì € ì°¾ìœ¼ì„¸ìš”. ì´ë²ˆì—ëŠ” â€˜ì°ë‹¤/ì„ íƒí•˜ë‹¤â€™ì™€ â€˜êµí†µì¹´ë“œ/ëª…ë™â€™ì´ ë‹¨ì„œì…ë‹ˆë‹¤.',ja:'æ©Ÿæ¢°ç”»é¢ã§ã¯ã€å‹•ä½œã‚’è¡¨ã™èªã¨ç›®çš„ã®åè©ã‚’å…ˆã«æ¢ã—ã¾ã™ã€‚ä»Šå›ã¯ã€Œì°ë‹¤ï¼ì„ íƒí•˜ë‹¤ã€ã¨ã€Œêµí†µì¹´ë“œï¼ëª…ë™ã€ãŒæ‰‹æ›ã‹ã‚Šã§ã™ã€‚',en:'On a machine screen, find the action verb and target noun first; here ì°ë‹¤/ì„ íƒí•˜ë‹¤ and êµí†µì¹´ë“œ/ëª…ë™ are the clues.',zh:'åœ¨æœºå™¨ç•Œé¢å…ˆæ‰¾åŠ¨ä½œåŠ¨è¯å’Œç›®æ ‡åè¯ï¼›æœ¬é¢˜çº¿ç´¢æ˜¯â€œì°ë‹¤/ì„ íƒí•˜ë‹¤â€å’Œâ€œêµí†µì¹´ë“œ/ëª…ë™â€ã€‚'});
-    return l({ko:'ì§ˆë¬¸ì´ ìš”êµ¬í•˜ëŠ” í–‰ë™Â·ì¥ì†ŒÂ·ëŒ€ìƒì„ í•˜ë‚˜ì”© í‘œì‹œí•œ ë’¤, ëª¨ë‘ ë§Œì¡±í•˜ëŠ” ë³´ê¸°ë§Œ ë‚¨ê¸°ì„¸ìš”.',ja:'è¨­å•ãŒæ±‚ã‚ã‚‹è¡Œå‹•ãƒ»å ´æ‰€ãƒ»å¯¾è±¡ã‚’ä¸€ã¤ãšã¤ç¢ºèªã—ã€ã™ã¹ã¦æº€ãŸã™é¸æŠè‚¢ã ã‘ã‚’æ®‹ã—ã¾ã™ã€‚',en:'Mark the required action, place, and target, then keep only the option satisfying all three.',zh:'é€ä¸€ç¡®è®¤é¢˜ç›®è¦æ±‚çš„åŠ¨ä½œã€åœ°ç‚¹å’Œå¯¹è±¡ï¼Œåªä¿ç•™å…¨éƒ¨ç¬¦åˆçš„é€‰é¡¹ã€‚'});
-  }
-  function travelCoachMarkup(scene,q,answer,explanation){
-    const correct=String(q.choices?.[q.answerIndex]?.ko||l(q.choices?.[q.answerIndex])||'').replace(/^[â‘ â‘¡â‘¢â‘£]\s*/u,''),selected=String(q.choices?.[answer.selected]?.ko||l(q.choices?.[answer.selected])||'').replace(/^[â‘ â‘¡â‘¢â‘£]\s*/u,'');
-    const contrast=answer.correct?l({ko:`â€˜${correct}â€™ì´ ìƒí™©ì˜ ì§ˆë¬¸ì´ë‚˜ í–‰ë™ì— ë°”ë¡œ ì´ì–´ì§€ëŠ”ì§€ í™•ì¸í•˜ë©´ ë©ë‹ˆë‹¤.`,ja:`ã€Œ${correct}ã€ãŒå ´é¢ã®è³ªå•ã‚„è¡Œå‹•ã«ãã®ã¾ã¾ç¶šãã‹ã‚’ç¢ºèªã—ã¾ã™ã€‚`,en:`Check that â€œ${correct}â€ directly continues the situationâ€™s question or action.`,zh:`ç¡®è®¤â€œ${correct}â€èƒ½å¦ç›´æ¥æ‰¿æ¥æƒ…å¢ƒä¸­çš„æé—®æˆ–åŠ¨ä½œã€‚`}):l({ko:`ê³ ë¥¸ â€˜${selected}â€™ì€(ëŠ”) ì´ ìƒí™©ì˜ ìš”êµ¬ì™€ ë‹¤ë¦…ë‹ˆë‹¤. ì •ë‹µ â€˜${correct}â€™ì´(ê°€) ì§ˆë¬¸ì˜ í•µì‹¬ í–‰ë™ì— ì§ì ‘ ëŒ€ì‘í•©ë‹ˆë‹¤.`,ja:`é¸ã‚“ã ã€Œ${selected}ã€ã¯ã“ã®å ´é¢ã®è¦æ±‚ã¨ãšã‚Œã¾ã™ã€‚æ­£è§£ã®ã€Œ${correct}ã€ãŒè³ªå•ã®æ ¸å¿ƒã¨ãªã‚‹è¡Œå‹•ã«ç›´æ¥å¯¾å¿œã—ã¾ã™ã€‚`,en:`â€œ${selected}â€ does not fit this situation. â€œ${correct}â€ directly answers the key action in the prompt.`,zh:`æ‰€é€‰â€œ${selected}â€ä¸ç¬¦åˆæƒ…å¢ƒè¦æ±‚ï¼›æ­£ç¡®ç­”æ¡ˆâ€œ${correct}â€ç›´æ¥å›åº”äº†é¢˜ç›®çš„æ ¸å¿ƒåŠ¨ä½œã€‚`});
-    return`<section class="travelTutor"><div><small>${h(l({ko:'â‘  ì •ë‹µ ê·¼ê±°',ja:'â‘  æ­£è§£ã®æ ¹æ‹ ',en:'â‘  WHY IT WORKS',zh:'â‘  æ­£ç¡®ä¾æ®'}))}</small><p>${h(explanation)}</p></div><div><small>${h(l({ko:'â‘¡ í•¨ì • êµ¬ë³„',ja:'â‘¡ ã²ã£ã‹ã‘ã®è¦‹åˆ†ã‘æ–¹',en:'â‘¡ DISTRACTOR CHECK',zh:'â‘¡ å¹²æ‰°é¡¹è¾¨æ'}))}</small><p>${h(contrast)}</p></div><div><small>${h(l({ko:'â‘¢ ìª½ì§‘ê²Œ í’€ì´ ìš”ë ¹',ja:'â‘¢ è§£ãæ–¹ã®ã‚³ãƒ„',en:'â‘¢ SOLVING TIP',zh:'â‘¢ è§£é¢˜æŠ€å·§'}))}</small><p>${h(travelSolveTip(scene,q))}</p></div></section>`;
-  }
-  function assetPath(pack,group,key){
-    if(!key)return'';
-    return pack.assets?.[group]?.[key]||hubByRoute(pack.id)?.assets?.[group]?.[key]||'';
-  }
-  function propImage(pack,key,className=''){
-    const src=assetPath(pack,'props',key);
-    return src?`<img class="${h(className)}" src="${h(src)}" alt="" loading="eager">`:'';
-  }
-  function mapMarkup(pack,state,compact=false){
-    const allStops=Array.isArray(pack.map?.stops)?pack.map.stops:[];
-    const stops=state?.route==='taxi'?allStops.filter(stop=>stop.id!=='seoul-station'):allStops;
-    const activeScene=state?routeScene(sceneById(pack,state.sceneId),state):null;
-    const matched=stops.findIndex(stop=>stop.id===activeScene?.stop);
-    const active=state?.completed?Math.max(0,stops.length-1):Math.max(0,matched);
-    return `<section class="travelMap ${compact?'compact':''}" style="--travel-stops:${stops.length}" aria-label="${h(l({ko:'ì„œìš¸ ì—¬í–‰ ì§€ë„',ja:'ã‚½ã‚¦ãƒ«æ—…è¡Œãƒãƒƒãƒ—',en:'Seoul travel map',zh:'é¦–å°”æ—…è¡Œåœ°å›¾'}))}"><div class="travelMapLine"><i style="width:${stops.length>1?Math.round(active/(stops.length-1)*100):100}%"></i></div>${stops.map((stop,index)=>{const open=index<=active,done=index<active||state?.completed,current=index===active&&!state?.completed,src=assetPath(pack,'props',stop.asset);return `<div class="travelStop ${open?'open':'locked'} ${done?'done':''} ${current?'current':''}"><span>${src?`<img src="${h(src)}" alt="">`:`<b>${h(stop.id)}</b>`}</span><b>${h(l(stop.name))}</b><small>${done?'DONE':current?h(l({ko:'í˜„ì¬',ja:'ã„ã¾',en:'NOW',zh:'å½“å‰'})):h(l({ko:'ì ê¹€',ja:'æœªé–‹æ”¾',en:'LOCKED',zh:'æœªè§£é”'}))}</small></div>`}).join('')}</section>`;
-  }
-  function skinById(pack,id){return pack.skins?.find(skin=>skin.id===id)||pack.skins?.[0]}
-  function worldMarkup(pack,state,scene,answer){
-    const world=scene.world;if(!world)return'';
-    const store=readStore(),skin=skinById(pack,store.avatar.equipped),background=assetPath(pack,'backgrounds',world.background),npc=assetPath(pack,'npcs',world.npc);
-    const props=(world.props||[]).map((key,index)=>propImage(pack,key,`travelWorldProp prop-${String(key).replace(/[^a-z0-9-]/gi,'').toLowerCase()} prop-${index}`)).join('');
-    const reaction=answer?l(answer.correct?scene.success:scene.recovery):'';
-    const reward=answer?.correct&&answer.earned?`<div class="travelWorldReward">${propImage(pack,'travelWon','')}<b>+${h(won(answer.earned))}</b></div>`:'';
-    const item=answer?.correct&&answer.itemReward?`<div class="travelWorldItem">${propImage(pack,answer.itemReward,'')}<small>${h(l({ko:'ìˆ˜ì§‘í’ˆ íšë“',ja:'ã‚³ãƒ¬ã‚¯ã‚·ãƒ§ãƒ³ç²å¾—',en:'COLLECTED',zh:'è·å¾—æ”¶è—å“'}))}</small></div>`:'';
-    return `<div class="travelWorld ${answer?answer.correct?'is-success':'is-recovery':''}" data-background="${h(world.background||'')}">${background?`<img class="travelWorldBg" src="${h(background)}" alt="">`:''}${props}${npc?`<img class="travelWorldNpc" src="${h(npc)}" alt="">`:''}${skin?.image?`<img class="travelWorldPlayer" src="${h(skin.image)}" alt="">`:''}<div class="travelWorldFloor"></div>${reward}${item}${reaction?`<p class="travelWorldReaction">${h(reaction)}</p>`:''}</div>`;
-  }
-  function avatarMarkup(pack,store){
-    const equipped=skinById(pack,store.avatar.equipped),unlocked=new Set(store.avatar.unlocked);
-    return `<section class="travelAvatar"><div class="travelAvatarHead"><div><small>MY TRAVELER</small><h2>${h(l({ko:'ë‚´ ì—¬í–‰ì',ja:'ã‚ãŸã—ã®æ—…äºº',en:'My Traveler',zh:'æˆ‘çš„æ—…è¡Œè€…'}))}</h2></div><span>${unlocked.size}/${pack.skins.length}</span></div><div class="travelAvatarStage" style="--avatar-accent:${h(equipped.accent)}"><img src="${h(equipped.image)}" alt=""><b>${h(l(equipped.name))}</b></div><div class="travelSkinGrid">${pack.skins.map(skin=>{const open=unlocked.has(skin.id),on=skin.id===equipped.id;return `<button class="${on?'on':''}" ${open?'':'disabled'} onclick="malbitTravelEquip('${h(skin.id)}')"><i style="--skin:${h(skin.accent)}"><img src="${h(skin.image)}" alt=""></i><span>${h(l(skin.name))}</span><small>${open?(on?h(l({ko:'ì°©ìš© ì¤‘',ja:'ç€ç”¨ä¸­',en:'Equipped',zh:'å·²è£…å¤‡'})):h(l({ko:'ê°ˆì•„ì…ê¸°',ja:'ç€æ›¿ãˆã‚‹',en:'Wear',zh:'æ¢è£…'}))):h(skin.unlock==='perfect'?l({ko:'ì „ë¶€ ì •ë‹µ ë³´ìƒ',ja:'å…¨å•æ­£è§£å ±é…¬',en:'All-correct reward',zh:'å…¨å¯¹å¥–åŠ±'}):l({ko:'ì½”ìŠ¤ ì™„ë£Œ ë³´ìƒ',ja:'ã‚³ãƒ¼ã‚¹å®Œäº†å ±é…¬',en:'Route-clear reward',zh:'è·¯çº¿å®Œæˆå¥–åŠ±'}))}</small></button>`}).join('')}</div></section>`;
-  }
-  function ensureQuestion(pack,state,scene){
-    if(scene.question){
-      const q=scene.question;
-      return{source:q,display:{...q,choiceOrder:q.choices.map((_,index)=>index)}};
-    }
-    const source=window.MALBIT_BANK?.byId(scene.bankId);
-    if(!source)return null;
-    let order=state.orders[scene.id];
-    if(!Array.isArray(order)||order.length!==source.options.length){
-      order=window.MALBIT_BANK.freshOrder(source.id);
-      state.orders[scene.id]=Array.from(order);
-      state.updatedAt=now();
-      writeState(state);
-    }
-    return{source,display:window.MALBIT_BANK.present(source,order)};
-  }
-  function commonTop(pack,state,scene){
-    const total=pack.questionCount,answered=answeredCount(state),score=correctCount(state);
-    const eventOpen=!!RPG_EVENT_OPEN[scene?.id],back=eventOpen?'malbitTravelCloseEvent()':'malbitTravelBack()';
-    const backLabel=eventOpen?l({ko:'êµ¬ì—­ ì§€ë„ë¡œ',ja:'ã‚¨ãƒªã‚¢ãƒãƒƒãƒ—ã¸',en:'Back to area map',zh:'è¿”å›åŒºåŸŸåœ°å›¾'}):l({ko:'ì—¬í–‰ ì§€ë„',ja:'æ—…ãƒãƒƒãƒ—',en:'Travel map',zh:'æ—…è¡Œåœ°å›¾'});
-    return`<header class="travelTop"><button class="travelBack" onclick="${back}" aria-label="${h(backLabel)}">â€¹</button><div><small>${h(pack.badge)} Â· BEGINNER</small><b>${h(l(pack.title))}</b></div><button class="travelLang" onclick="event.stopPropagation();flagMenu()" aria-label="${h(l({ko:'ì„¤ëª… ì–¸ì–´ ë°”ê¾¸ê¸°',ja:'èª¬æ˜è¨€èªã‚’å¤‰æ›´',en:'Change explanation language',zh:'åˆ‡æ¢è§£æè¯­è¨€'}))}">${flag()}</button></header><div class="travelCaseMeta"><span>${h(traveler(pack,state))}</span><b>${score}/${total} ${h(l({ko:'ì •ë‹µ',ja:'æ­£è§£',en:'correct',zh:'ç­”å¯¹'}))}</b></div><div class="travelWallet"><span><small>${h(l({ko:'ê²Œì„ ì¬í™”',ja:'ã‚²ãƒ¼ãƒ å†…é€šè²¨',en:'GAME CURRENCY',zh:'æ¸¸æˆè´§å¸'}))}</small><b>${h(won(state.wallet))}</b></span><span><small>${h(l({ko:'ì—¬í–‰ ì‹œê°',ja:'æ—…ã®æ™‚åˆ»',en:'TRIP TIME',zh:'æ—…è¡Œæ—¶é—´'}))}</small><b>${h(clock(state.clockMinutes))}</b></span></div><div class="travelProgress" aria-label="${answered}/${total}"><i style="width:${Math.min(100,answered/total*100)}%"></i></div>${scene?.location?`<div class="travelLocation">â— ${h(l(scene.location))}</div>`:''}`;
-  }
-  function koreanCopy(scene){
-    return`<blockquote class="travelKorean" lang="ko">${h(scene.korean)}</blockquote>${scene.support?`<p class="travelSupport ${lang()==='ko'?'ko':''}">${h(l(scene.support))}</p>`:''}`;
-  }
-  function clueMarkup(scene,answer){
-    if(!scene.clue)return'';
-    return`<div class="travelClue ${answer?.correct?'found':'missed'}"><div><small>${answer?.correct?h(l({ko:'ìŠ¤íƒ¬í”„ íšë“',ja:'ã‚¹ã‚¿ãƒ³ãƒ—ç²å¾—',en:'Stamp earned',zh:'è·å¾—å°ç« '})):h(l({ko:'ì—¬í–‰ ê¸°ë¡ì— ì €ì¥',ja:'æ—…ã®è¨˜éŒ²ã«ä¿å­˜',en:'Saved to journey',zh:'å·²ä¿å­˜åˆ°æ—…è¡Œè®°å½•'}))}</small><b>${h(l(scene.clue.label))}</b><p>${h(l(scene.clue.detail))}</p></div></div>`;
-  }
-  function notebook(pack,state){
-    const items=state.inventory.filter(key=>assetPath(pack,'props',key));
-    if(!items.length)return'';
-    const hub=hubByRoute(pack.id);
-    const labels={
-      airportMap:{ko:'ì¸ì²œê³µí•­ ì•ˆë‚´ ì§€ë„',ja:'ä»å·ç©ºæ¸¯ã‚¬ã‚¤ãƒ‰ãƒãƒƒãƒ—',en:'Incheon Airport map',zh:'ä»å·æœºåœºæŒ‡å—åœ°å›¾'},
-      transitCard:{ko:'ëª…ë™í–‰ êµí†µì¹´ë“œ',ja:'æ˜æ´è¡Œãäº¤é€šã‚«ãƒ¼ãƒ‰',en:'Myeongdong transit card',zh:'æ˜æ´æ–¹å‘äº¤é€šå¡'},
-      'myeongdong-first-stamp':{ko:'ëª…ë™ ì²« ì—¬í–‰ ìŠ¤íƒ¬í”„',ja:'æ˜æ´ã¯ã˜ã‚ã¦æ—…ã‚¹ã‚¿ãƒ³ãƒ—',en:'First Myeongdong stamp',zh:'æ˜æ´é¦–æ¬¡æ—…è¡Œå°ç« '}
-    };
-    for(const item of hub?.exchange||[])labels[item.id]=item.name;
-    return`<details class="travelNotebook"><summary><b>${h(l({ko:'ì—¬í–‰ ê°€ë°©',ja:'æ—…ã®ãƒãƒƒã‚°',en:'Travel bag',zh:'æ—…è¡ŒèƒŒåŒ…'}))}</b><em>${items.length} ITEM</em></summary><div>${items.map(key=>`<p>${propImage(pack,key,'')}<b>${h(l(labels[key]||{ko:key,ja:key,en:key,zh:key}))}</b><small>COLLECTED</small></p>`).join('')}</div></details>`;
-  }
-  function renderHub(sc){
-    navActive('home');
-    const store=readStore(),focus=PACKS[0],focusState=readState(focus);
-    const cards=PACKS.map(pack=>{
-      const state=readState(pack),answered=answeredCount(state),score=correctCount(state),complete=!!state?.completed,hub=hubByRoute(pack.id);
-      const hasNextQuest=complete&&hub&&Object.values(hub.events).some(event=>!hubQuestDone(state,event.id));
-      const action=!state?l({ko:'ì„œìš¸ ì—¬í–‰ ì‹œì‘',ja:'ã‚½ã‚¦ãƒ«æ—…ã‚’å§‹ã‚ã‚‹',en:'Start Seoul journey',zh:'å¼€å§‹é¦–å°”æ—…è¡Œ'}):hasNextQuest?l({ko:'ëª…ë™ ë‹¤ìŒ í€˜ìŠ¤íŠ¸',ja:'æ˜æ´ã®æ¬¡ã®ã‚¯ã‚¨ã‚¹ãƒˆã¸',en:'Next Myeongdong quest',zh:'å‰å¾€æ˜æ´ä¸‹ä¸ªä»»åŠ¡'}):complete?l({ko:'ì™„ì£¼ ê¸°ë¡ ë³´ê¸°',ja:'å®Œèµ°è¨˜éŒ²ã‚’è¦‹ã‚‹',en:'View journey record',zh:'æŸ¥çœ‹æ—…è¡Œè®°å½•'}):l({ko:'ì—¬í–‰ ì´ì–´ê°€ê¸°',ja:'æ—…ã‚’ç¶šã‘ã‚‹',en:'Continue journey',zh:'ç»§ç»­æ—…è¡Œ'});
-      const primaryAction=hasNextQuest?`malbitTravelContinue('${h(pack.id)}')`:`malbitTravelStart('${h(pack.id)}',false)`;
-      return`<article class="travelEpisodeCard" style="--travel-accent:${h(pack.cover.accent)}"><div class="travelEpisodeArt pixel"><img src="${h(pack.cover.image)}" alt="" width="960" height="640"><i>${h(pack.badge)}</i></div><div class="travelEpisodeBody"><div class="travelEpisodeFlags"><span>BEGINNER</span><span>${h(l(pack.duration))}</span>${complete?`<span class="clear">ROUTE CLEAR</span>`:''}</div><h2>${h(l(pack.title))}</h2><p>${h(l(pack.description))}</p>${state?`<div class="travelEpisodeStats"><span>${h(l({ko:'ë¯¸ì…˜',ja:'ãƒŸãƒƒã‚·ãƒ§ãƒ³',en:'Missions',zh:'ä»»åŠ¡'}))} ${answered}/${pack.questionCount}</span><span>${h(won(state.wallet))}</span></div>`:''}<button class="travelPrimary" onclick="${primaryAction}">${action} <b>â†’</b></button>${state?`<button class="travelTextButton" onclick="malbitTravelRestart('${h(pack.id)}')">${h(l({ko:'ì½”ìŠ¤ ì²˜ìŒë¶€í„°',ja:'ã‚³ãƒ¼ã‚¹ã‚’æœ€åˆã‹ã‚‰',en:'Restart route',zh:'é‡æ–°å¼€å§‹è·¯çº¿'}))}</button>`:''}</div></article>`;
-    }).join('');
-    sc.innerHTML=`<div class="travelHub"><header class="travelHubHead"><button onclick="setView('home')">â€¹</button><div><small>LEARN Â· TRAVEL Â· COLLECT</small><h1>${h(l({ko:'ì—¬í–‰ëª¨ë“œ',ja:'æ—…è¡Œãƒ¢ãƒ¼ãƒ‰',en:'Travel Mode',zh:'æ—…è¡Œæ¨¡å¼'}))}</h1><p>${h(l({ko:'ë§í•˜ê³ , í‘œì§€ë¥¼ ì°¾ê³ , ë°œê¶Œí•˜ë©° ì„œìš¸ì„ ì§ì ‘ ì—¬í–‰í•˜ì„¸ìš”.',ja:'è©±ã—ã¦ã€æ¨™è­˜ã‚’æ¢ã—ã¦ã€ç™ºåˆ¸ã—ãªãŒã‚‰ã‚½ã‚¦ãƒ«ã‚’æ—…ã—ã‚ˆã†ã€‚',en:'Speak, find signs, and use the ticket machine as you travel Seoul.',zh:'é€šè¿‡å¯¹è¯ã€æ‰¾æ ‡å¿—å’Œè´­ç¥¨ï¼Œäº²è‡ªæ¸¸è§ˆé¦–å°”ã€‚'}))}</p></div><button class="travelLang" onclick="event.stopPropagation();flagMenu()" aria-label="${h(l({ko:'ì„¤ëª… ì–¸ì–´ ë°”ê¾¸ê¸°',ja:'èª¬æ˜è¨€èªã‚’å¤‰æ›´',en:'Change explanation language',zh:'åˆ‡æ¢è§£æè¯­è¨€'}))}">${flag()}</button></header><section class="travelHubBanner"><div><small>KOREA ROUTE 001</small><b>${h(l({ko:'ì¸ì²œê³µí•­ T1 â†’ ëª…ë™',ja:'ä»å·ç©ºæ¸¯ T1 â†’ æ˜æ´',en:'Incheon Airport T1 â†’ Myeongdong',zh:'ä»å·æœºåœº T1 â†’ æ˜æ´'}))}</b><p>${h(l({ko:'6ê°œ í˜„ì¥ ë¯¸ì…˜ Â· ì´ë™ ì„ íƒ Â· ìˆ˜ì§‘í’ˆ Â· ë¬´ë£Œ ì˜ìƒ',ja:'ç¾åœ°6ãƒŸãƒƒã‚·ãƒ§ãƒ³ãƒ»ç§»å‹•é¸æŠãƒ»ã‚³ãƒ¬ã‚¯ã‚·ãƒ§ãƒ³ãƒ»ç„¡æ–™è¡£è£…',en:'6 field missions Â· route choice Â· collectibles Â· free outfit',zh:'6ä¸ªç°åœºä»»åŠ¡ Â· è·¯çº¿é€‰æ‹© Â· æ”¶è—å“ Â· å…è´¹æœè£…'}))}</p></div></section>${mapMarkup(focus,focusState)}<div class="travelSectionTitle"><b>${h(l({ko:'ì²« ë²ˆì§¸ ì—¬í–‰ ì½”ìŠ¤',ja:'æœ€åˆã®æ—…è¡Œã‚³ãƒ¼ã‚¹',en:'First travel route',zh:'ç¬¬ä¸€æ¡æ—…è¡Œè·¯çº¿'}))}</b><span>${PACKS.length} ROUTE</span></div>${cards}${metricsMarkup(store)}${avatarMarkup(focus,store)}<article class="travelComingSoon"><span>02</span><div><b>${h(l({ko:'ë‹¤ìŒ ì„œìš¸ ì§€ì—­',ja:'æ¬¡ã®ã‚½ã‚¦ãƒ«ã‚¨ãƒªã‚¢',en:'Next Seoul area',zh:'ä¸‹ä¸€ä¸ªé¦–å°”åŒºåŸŸ'}))}</b><p>${h(l({ko:'ë‚¨ì€ ì—¬í–‰ ì›Â·ì‹œê°„Â·ìˆ˜ì§‘í’ˆì„ ê·¸ëŒ€ë¡œ ë“¤ê³  ë‹¤ìŒ ì—­ìœ¼ë¡œ ì´ì–´ì§‘ë‹ˆë‹¤.',ja:'æ®‹ã£ãŸæ—…ã‚¦ã‚©ãƒ³ãƒ»æ™‚é–“ãƒ»ã‚³ãƒ¬ã‚¯ã‚·ãƒ§ãƒ³ã‚’æŒã£ã¦æ¬¡ã®é§…ã¸é€²ã¿ã¾ã™ã€‚',en:'Carry your travel won, time, and collection to the next station.',zh:'æºå¸¦å‰©ä½™æ—…è¡ŒéŸ©å…ƒã€æ—¶é—´å’Œæ”¶è—å‰å¾€ä¸‹ä¸€ç«™ã€‚'}))}</p></div><em>LOCKED</em></article></div>`;
-  }
-  function renderNarrative(sc,pack,state,scene){
-    sc.innerHTML=`<div class="travelPlay">${commonTop(pack,state,scene)}<article class="travelSceneCard"><div class="travelChapter">AREA ${scene.chapter}</div><h1>${h(l(scene.title))}</h1>${worldMarkup(pack,state,scene)}${koreanCopy(scene)}<button class="travelPrimary" onclick="malbitTravelNext()">${h(l({ko:'ì—¬í–‰ ê³„ì†',ja:'æ—…ã‚’ç¶šã‘ã‚‹',en:'Continue journey',zh:'ç»§ç»­æ—…è¡Œ'}))} <b>â†’</b></button></article>${notebook(pack,state)}</div>`;
-  }
-  function renderChoice(sc,pack,state,scene){
-    sc.innerHTML=`<div class="travelPlay">${commonTop(pack,state,scene)}<article class="travelSceneCard"><div class="travelChapter">CHOOSE YOUR ROUTE</div><h1>${h(l(scene.title))}</h1>${worldMarkup(pack,state,scene)}${koreanCopy(scene)}<div class="travelRoutes">${scene.choices.map(choice=>{const locked=Number(choice.cost)>state.wallet,src=assetPath(pack,'props',choice.asset);return`<button onclick="malbitTravelChoose('${h(choice.id)}')" ${locked?'disabled':''}>${src?`<img src="${h(src)}" alt="">`:`<span>${h(choice.code||choice.id)}</span>`}<div><b>${h(l(choice.label))}</b><small>${h(l(choice.detail))}</small><strong>${h(won(choice.cost))} Â· ${h(choice.durationMinutes)} MIN</strong>${locked?`<small class="need">${h(l({ko:`${won(choice.cost-state.wallet)} ë” í•„ìš”`,ja:`ã‚ã¨${won(choice.cost-state.wallet)}å¿…è¦`,en:`Need ${won(choice.cost-state.wallet)} more`,zh:`è¿˜éœ€${won(choice.cost-state.wallet)}`}))}</small>`:''}</div><em>${locked?'LOCK':'â€º'}</em></button>`}).join('')}</div><details class="travelFacts"><summary>${h(l({ko:'ì‹¤ì œ êµí†µ ì •ë³´ ì¶œì²˜',ja:'å®Ÿéš›ã®äº¤é€šæƒ…å ±ã®å‡ºå…¸',en:'Real transport sources',zh:'çœŸå®äº¤é€šä¿¡æ¯æ¥æº'}))}</summary>${pack.sources.map(source=>`<a href="${h(source.url)}" target="_blank" rel="noopener">${h(source.label)}</a>`).join('')}</details></article></div>`;
-  }
-  function renderQuestion(sc,pack,state,scene){
-    const payload=ensureQuestion(pack,state,scene);
-    if(!payload){sc.innerHTML=`<div class="travelFatal">${h(l({ko:'ë¬¸í•­ì„ ë¶ˆëŸ¬ì˜¤ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.',ja:'å•é¡Œã‚’èª­ã¿è¾¼ã‚ã¾ã›ã‚“ã§ã—ãŸã€‚',en:'Could not load this question.',zh:'æ— æ³•åŠ è½½é¢˜ç›®ã€‚'}))}<button onclick="malbitTravelBack()">BACK</button></div>`;return}
-    const q=payload.display,answer=state.answers[scene.id],picked=answer?answer.selected:SELECTED[scene.id],listening=q.section==='listening',script=cleanScript(q.script),showTranscript=!!TRANSCRIPTS[scene.id],interaction=scene.interaction||'quiz';
-    const explanation=answer?(q.explanationI18n?.[lang()]||q.explanationI18n?.ko||''):'';
-    const choices=q.choices.map((choice,index)=>{
-      const selected=picked===index,correct=!!answer&&index===q.answerIndex,wrong=!!answer&&selected&&!answer.correct,asset=scene.choiceAssets?.[index],src=assetPath(pack,'props',asset),ko=String(choice?.ko||l(choice)).replace(/^[â‘ â‘¡â‘¢â‘£]\s*/u,''),revealTranslation=!!answer&&lang()!=='ko'&&(selected||correct),translation=revealTranslation?String(l(choice)).replace(/^[â‘ â‘¡â‘¢â‘£]\s*/u,''):'';
-      return`<button class="travelAnswer ${selected?'selected':''} ${correct?'correct':''} ${wrong?'wrong':''}" onclick="malbitTravelSelect(${index})" ${answer?'disabled':''}>${src?`<img src="${h(src)}" alt="">`:`<span>${index+1}</span>`}<span class="travelAnswerCopy"><b lang="ko">${h(ko)}</b>${translation?`<small>${h(translation)}</small>`:''}</span></button>`;
-    }).join('');
-    const material=listening?`<div class="travelListen"><button onclick="malbitTravelSpeak()"><span>â–¶</span><b>${h(l({ko:'í•œêµ­ì–´ ë“£ê¸°',ja:'éŸ“å›½èªã‚’èã',en:'Play Korean audio',zh:'æ’­æ”¾éŸ©è¯­'}))}</b></button><button class="transcript" onclick="malbitTravelToggleTranscript()">${showTranscript?h(l({ko:'ëŒ€ë³¸ ë‹«ê¸°',ja:'ã‚¹ã‚¯ãƒªãƒ—ãƒˆã‚’é–‰ã˜ã‚‹',en:'Hide transcript',zh:'éšè—æ–‡æœ¬'})):h(l({ko:'ëŒ€ë³¸ ë³´ê¸°',ja:'ã‚¹ã‚¯ãƒªãƒ—ãƒˆã‚’è¦‹ã‚‹',en:'Show transcript',zh:'æŸ¥çœ‹æ–‡æœ¬'}))}</button>${showTranscript?`<p lang="ko">${h(script)}</p>`:''}</div>`:`${q.passage?`<div class="travelPassage" lang="ko">${h(q.passage)}</div>`:''}`;
-    const feedback=answer?`<div class="travelFeedback ${answer.correct?'good':'bad'}" role="status"><div><b>${h(answer.correct?l({ko:`ì„±ê³µ Â· +${won(answer.earned)}`,ja:`æˆåŠŸãƒ»+${won(answer.earned)}`,en:`Success Â· +${won(answer.earned)}`,zh:`æˆåŠŸ Â· +${won(answer.earned)}`}):l({ko:`ë‹¤ì‹œ ê¸¸ì„ ì°¾ì•˜ì–´ìš” Â· ${answer.delayMinutes}ë¶„ ê²½ê³¼`,ja:`ãƒ«ãƒ¼ãƒˆå¾©å¸°ãƒ»${answer.delayMinutes}åˆ†çµŒé`,en:`Back on route Â· ${answer.delayMinutes} min passed`,zh:`å·²è¿”å›è·¯çº¿ Â· ç»è¿‡${answer.delayMinutes}åˆ†é’Ÿ`}))}</b>${travelCoachMarkup(scene,q,answer,explanation)}</div></div>${clueMarkup(scene,answer)}<button class="travelPrimary" onclick="malbitTravelNext()">${scene.next==='ending'?h(l({ko:'ëª…ë™ì— ë„ì°©í•˜ê¸°',ja:'æ˜æ´ã«åˆ°ç€',en:'Reach Myeongdong',zh:'æŠµè¾¾æ˜æ´'})):h(l({ko:'ë‹¤ìŒ í–‰ë™',ja:'æ¬¡ã®è¡Œå‹•',en:'Next action',zh:'ä¸‹ä¸€æ­¥è¡ŒåŠ¨'}))} <b>â†’</b></button>`:`<button class="travelPrimary ${Number.isInteger(picked)?'ready':''}" onclick="malbitTravelSubmit()">${h(l({ko:'ì´ëŒ€ë¡œ í–‰ë™í•˜ê¸°',ja:'ã“ã®è¡Œå‹•ã«æ±ºã‚ã‚‹',en:'Do this',zh:'æ‰§è¡Œæ­¤æ“ä½œ'}))}</button>`;
-    sc.innerHTML=`<div class="travelPlay travelQuestionPlay">${commonTop(pack,state,scene)}<article class="travelQuestionCard"><div class="travelQuestionNo"><span>MISSION ${questionNumber(pack,scene)} / ${pack.questionCount}</span><em>${h(interaction.toUpperCase())}</em></div><h1>${h(l(scene.title))}</h1>${worldMarkup(pack,state,scene,answer)}<p class="travelContext">${h(l(scene.context))}</p>${material}<div class="travelPrompt"><small>${h(l(scene.instruction||q.instruction))}</small><b>${h(l(q.prompt))}</b></div><div class="travelAnswers ${h(interaction)} ${answer?'answered':''}">${choices}</div>${feedback}</article>${notebook(pack,state)}</div>`;
-  }
-  function activeHubEvent(hub,state){
-    const minute=((Number(state.clockMinutes)||0)%1440+1440)%1440;
-    const timed=minute>=hub.events.daytime.from&&minute<hub.events.daytime.to?hub.events.daytime:hub.events.evening;
-    const followup=Object.values(hub.events).find(event=>event.followup&&!hubQuestDone(state,event.id));
-    return hubQuestDone(state,timed.id)&&followup?followup:timed;
-  }
-  function hubQuestDone(state,eventId){return !!state.myeongdong?.quests?.[eventId]?.completed}
-  function anyHubQuestDone(state){return Object.values(state.myeongdong?.quests||{}).some(quest=>quest?.completed)}
-  function hubWorld(pack,state,hub,event,answer){
-    const scene={world:{...hub.world,npc:event.npc},success:event.success,recovery:event.explanation};
-    const sign=event.signLabel?`<div class="travelWorldSign ${answer?.correct?'lit':''}"><small>EXIT 6</small><b lang="ko">${answer?.correct?h(event.signLabel.ko):'ï¼¿ ï¼¿ ï¼¿'}</b></div>`:'';
-    return `<div class="travelMyeongdongWorld">${worldMarkup(pack,state,scene,answer)}${sign}</div>`;
-  }
-  function exchangeAvailability(item,event,state){
-    if(state.inventory.includes(item.id))return{disabled:true,status:l({ko:'ìˆ˜ì§‘ ì™„ë£Œ',ja:'åé›†æ¸ˆã¿',en:'COLLECTED',zh:'å·²æ”¶è—'}),kind:'owned'};
-    if(item.unlock==='evening'&&event.id!=='vendor-order')return{disabled:true,status:l({ko:'ì €ë… ì´ë²¤íŠ¸',ja:'å¤œã‚¤ãƒ™ãƒ³ãƒˆ',en:'EVENING EVENT',zh:'å¤œé—´æ´»åŠ¨'}),kind:'locked'};
-    if(item.unlock==='sign'&&!hubQuestDone(state,'myeongdong-station-sign'))return{disabled:true,status:l({ko:'í‘œì§€íŒ ë¯¸ì…˜ í•„ìš”',ja:'æ¨™è­˜ãƒŸãƒƒã‚·ãƒ§ãƒ³ãŒå¿…è¦',en:'SIGN MISSION REQUIRED',zh:'éœ€å®Œæˆæ ‡ç‰Œä»»åŠ¡'}),kind:'locked'};
-    if(item.unlock==='quest'&&!anyHubQuestDone(state))return{disabled:true,status:l({ko:'NPC í€˜ìŠ¤íŠ¸ í•„ìš”',ja:'NPCã‚¯ã‚¨ã‚¹ãƒˆãŒå¿…è¦',en:'NPC QUEST REQUIRED',zh:'éœ€å®ŒæˆNPCä»»åŠ¡'}),kind:'locked'};
-    if(Number(item.cost)>state.wallet)return{disabled:true,status:l({ko:'ì—¬í–‰ ì› ë¶€ì¡±',ja:'æ—…ã‚¦ã‚©ãƒ³ä¸è¶³',en:'NOT ENOUGH',zh:'æ—…è¡ŒéŸ©å…ƒä¸è¶³'}),kind:'locked'};
-    return{disabled:false,status:l({ko:'êµí™˜í•˜ê¸°',ja:'äº¤æ›ã™ã‚‹',en:'EXCHANGE',zh:'å…‘æ¢'}),kind:'open'};
-  }
-  function exchangeMarkup(pack,state,hub,event){
-    return `<section class="travelExchange" aria-labelledby="travel-exchange-title"><div class="travelSectionTitle"><div><small>${h(l({ko:'ê²Œì„ ì¬í™” ì „ìš© Â· ê²°ì œ ì—†ìŒ',ja:'ã‚²ãƒ¼ãƒ å†…é€šè²¨ã®ã¿ãƒ»æ±ºæ¸ˆãªã—',en:'GAME CURRENCY ONLY Â· NO PAYMENT',zh:'ä»…é™æ¸¸æˆè´§å¸ Â· æ— æ”¯ä»˜'}))}</small><b id="travel-exchange-title">${h(l({ko:'ëª…ë™ ì—¬í–‰ ì› êµí™˜ì†Œ',ja:'æ˜æ´ æ—…ã‚¦ã‚©ãƒ³äº¤æ›æ‰€',en:'Myeongdong travel exchange',zh:'æ˜æ´æ—…è¡ŒéŸ©å…ƒå…‘æ¢å¤„'}))}</b></div><span>${hub.exchange.filter(item=>state.inventory.includes(item.id)).length}/${hub.exchange.length}</span></div><div class="travelExchangeGrid">${hub.exchange.map(item=>{const availability=exchangeAvailability(item,event,state);return `<button class="travelExchangeCard ${availability.kind}" onclick="malbitTravelBuy('${h(item.id)}')" ${availability.disabled?'disabled':''}><img src="${h(assetPath(pack,'props',item.asset))}" alt=""><span><small>${h(availability.status)}</small><b>${h(l(item.name))}</b><p>${h(l(item.detail))}</p><strong>${h(won(item.cost))}</strong></span></button>`}).join('')}</div></section>`;
-  }
-  function renderMyeongdongHub(sc,pack,state,hub){
-    const event=activeHubEvent(hub,state),done=hubQuestDone(state,event.id),last=state.myeongdong.lastPurchase;
-    const eventStatus=done?l({ko:'ì˜¤ëŠ˜ì˜ ëŒ€í™” ì™„ë£Œ',ja:'ä»Šæ—¥ã®ä¼šè©±ã‚¯ãƒªã‚¢',en:'TODAYâ€™S TALK CLEARED',zh:'ä»Šæ—¥å¯¹è¯å·²å®Œæˆ'}):l(event.badge);
-    sc.innerHTML=`<div class="travelPlay travelMyeongdong">${commonTop(pack,state,{location:hub.location})}<article class="travelMyeongdongCard"><header class="travelMyeongdongHead"><button onclick="malbitTravelMyeongdongClose()" aria-label="Back">â€¹</button><div><small>AREA 01 Â· MYEONGDONG</small><h1>${h(l(hub.title))}</h1><p>${h(l(hub.subtitle))}</p></div></header>${hubWorld(pack,state,hub,event)}<section class="travelEventCard ${done?'complete':''}"><div><small>${h(eventStatus)}</small><h2>${h(l(event.title))}</h2><p>${h(l(event.dialogue))}</p></div><button class="travelPrimary" onclick="malbitTravelTalk()">${h(done?l({ko:'ëŒ€í™” ë‹¤ì‹œ ë³´ê¸°',ja:'ä¼šè©±ã‚’ã‚‚ã†ä¸€åº¦',en:'Replay dialogue',zh:'é‡çœ‹å¯¹è¯'}):l({ko:'NPCì—ê²Œ ë§ ê±¸ê¸°',ja:'NPCã«è©±ã—ã‹ã‘ã‚‹',en:'Talk to NPC',zh:'ä¸NPCäº¤è°ˆ'}))} <b>â†’</b></button></section>${last?`<div class="travelPurchaseBurst" role="status">${propImage(pack,last,'')}<span><small>${h(l({ko:'ì—¬í–‰ ê°€ë°©ì— ì €ì¥',ja:'æ—…ãƒãƒƒã‚°ã«ä¿å­˜',en:'SAVED TO TRAVEL BAG',zh:'å·²å­˜å…¥æ—…è¡ŒåŒ…'}))}</small><b>${h(l(hub.exchange.find(item=>item.id===last)?.name||last))}</b></span></div>`:''}${exchangeMarkup(pack,state,hub,event)}${notebook(pack,state)}<details class="travelFacts"><summary>${h(l({ko:'ëª…ë™ í˜„ì§€ ì •ë³´ ì¶œì²˜',ja:'æ˜æ´ã®ç¾åœ°æƒ…å ±ã‚½ãƒ¼ã‚¹',en:'Myeongdong fact sources',zh:'æ˜æ´å®åœ°ä¿¡æ¯æ¥æº'}))}</summary>${hub.sources.map(source=>`<a href="${h(source.url)}" target="_blank" rel="noopener">${h(source.label)}</a>`).join('')}</details></article></div>`;
-  }
-  function renderHubDialogue(sc,pack,state,hub,event){
-    const sign=event.interaction==='sign-build',budget=event.interaction==='price-budget';
-    const action=sign?l({ko:'í‘œì§€íŒ ê¸€ì ì¡°ë¦½í•˜ê¸°',ja:'æ¨™è­˜ã®æ–‡å­—ã‚’çµ„ã¿ç«‹ã¦ã‚‹',en:'Build the station sign',zh:'æ‹¼å‡ºè½¦ç«™æ ‡ç‰Œ'}):budget?l({ko:'ê°€ê²©í‘œ ì½ê³  ìˆ˜ëŸ‰ ì •í•˜ê¸°',ja:'å€¤æœ­ã‚’èª­ã‚“ã§æ•°é‡ã‚’æ±ºã‚ã‚‹',en:'Read prices and choose quantity',zh:'é˜…è¯»ä»·æ ¼å¹¶å†³å®šæ•°é‡'}):l({ko:'ë‚´ ë§ë¡œ ë¬¸ì¥ ë§Œë“¤ê¸°',ja:'è‡ªåˆ†ã®è¨€è‘‰ã§æ–‡ã‚’ä½œã‚‹',en:'Build my own sentence',zh:'ç”¨è‡ªå·±çš„è¯é€ å¥'});
-    const turns=Array.isArray(event.conversation)&&event.conversation.length?event.conversation:[{role:'npc',korean:event.dialogue?.ko||'',support:event.dialogue},{role:'player',korean:'',support:event.prompt}];
-    const step=Math.max(0,Math.min(turns.length-1,Number(HUB_DIALOGUE_STEP[event.id])||0)),finished=step>=turns.length-1;
-    const conversation=turns.slice(0,step+1).map((turn,index)=>{const player=turn.role==='player';return`<div class="${player?'player':'npc'} ${index===step?'current':''}"><small>${h(player?l({ko:'ë‚˜',ja:'ã‚ãªãŸ',en:'YOU',zh:'ä½ '}):l(event.speaker))}</small>${turn.korean?`<p lang="ko">${h(turn.korean)}</p>`:''}${lang()!=='ko'&&turn.support?`<span>${h(l(turn.support))}</span>`:''}</div>`}).join('');
-    const nextAction=finished?'malbitTravelOrderStart()':'malbitTravelDialogueNext()';
-    const nextLabel=finished?action:l({ko:'ëŒ€í™” ê³„ì†í•˜ê¸°',ja:'ä¼šè©±ã‚’ç¶šã‘ã‚‹',en:'Continue the conversation',zh:'ç»§ç»­å¯¹è¯'});
-    sc.innerHTML=`<div class="travelPlay travelMyeongdong">${commonTop(pack,state,{location:hub.location})}<article class="travelMyeongdongCard"><div class="travelQuestionNo"><span>NPC TALK Â· ${step+1}/${turns.length}</span><em>${h(clock(state.clockMinutes))}</em></div><h1>${h(l(event.title))}</h1>${hubWorld(pack,state,hub,event)}<div class="travelDialogueFlow" aria-live="polite">${conversation}</div><button class="travelPrimary" onclick="${nextAction}">${h(nextLabel)} <b>â†’</b></button><button class="travelTextButton" onclick="malbitTravelMyeongdongOpen()">${h(l({ko:'ê±°ë¦¬ë¡œ ëŒì•„ê°€ê¸°',ja:'é€šã‚Šã¸æˆ»ã‚‹',en:'Back to the street',zh:'è¿”å›è¡—é“'}))}</button></article></div>`;
-  }
-  function renderHubBudget(sc,pack,state,hub,event){
-  const item=event.menu.find(entry=>entry.id===event.targetItem)||event.menu[0];
-  const quantity=Math.max(0,Math.min(Number(event.maxQuantity)||3,Number(HUB_BUDGET[event.id])||1));
-  const total=item.price*quantity,remaining=event.budget-total,over=remaining<0,wrong=state.myeongdong.lastAttemptCorrect===false;
-  const rows=event.menu.map(entry=>`<div class="${entry.id===item.id?'target':''}" role="row"><b lang="ko">${h(entry.name)}</b><span>${h(won(entry.price))}</span></div>`).join('');
-  const hint=quantity<event.targetQuantity?l({ko:'ì˜ˆì‚° ì•ˆì—ì„œ í•œ ê°œ ë” ì‚´ ìˆ˜ ìˆì–´ìš”.',ja:'äºˆç®—å†…ã§ã‚‚ã†1å€‹è²·ãˆã¾ã™ã€‚',en:'You can still afford one more.',zh:'é¢„ç®—å†…è¿˜å¯ä»¥ä¹°ä¸€ä¸ªã€‚'}):l({ko:'í•©ê³„ê°€ ì—°ìŠµ ì˜ˆì‚°ì„ ë„˜ì—ˆì–´ìš”.',ja:'åˆè¨ˆãŒç·´ç¿’äºˆç®—ã‚’è¶…ãˆã¦ã„ã¾ã™ã€‚',en:'The total exceeds the practice budget.',zh:'æ€»é¢è¶…è¿‡ç»ƒä¹ é¢„ç®—ã€‚'});
-  sc.innerHTML=`<div class="travelPlay travelMyeongdong">${commonTop(pack,state,{location:hub.location})}<article class="travelMyeongdongCard travelBudgetCard"><div class="travelQuestionNo"><span>PRICE READING Â· BUDGET</span><em>${h(l({ko:'ê°€ê²©í‘œ ê³„ì‚°',ja:'å€¤æœ­ã‚’è¨ˆç®—',en:'PRICE MATH',zh:'ä»·æ ¼è®¡ç®—'}))}</em></div><h1>${h(l(event.title))}</h1>${hubWorld(pack,state,hub,event)}<div class="travelPrompt"><small>${h(l(event.instruction))}</small><b>${h(l(event.prompt))}</b></div><section class="travelMenuBoard" aria-label="${h(l({ko:'ëª…ë™ ê°„ì‹ ê°€ê²©í‘œ',ja:'æ˜æ´ãŠã‚„ã¤ã®å€¤æœ­',en:'Myeongdong snack prices',zh:'æ˜æ´å°åƒä»·ç›®è¡¨'}))}"><header><span>MENU Â· ëª…ë™</span><small>${h(l({ko:'ê°€ê²Œë§ˆë‹¤ ê°€ê²©ì´ ë‹¬ë¼ì§ˆ ìˆ˜ ìˆì–´ìš”',ja:'åº—ã«ã‚ˆã£ã¦ä¾¡æ ¼ã¯ç•°ãªã‚Šã¾ã™',en:'Prices vary by stall',zh:'å„æ‘Šä½ä»·æ ¼å¯èƒ½ä¸åŒ'}))}</small></header><div role="table">${rows}</div></section><section class="travelBudgetMeter"><div><small>${h(l({ko:'ì˜¤ëŠ˜ì˜ ì—°ìŠµ ì˜ˆì‚°',ja:'ä»Šæ—¥ã®ç·´ç¿’äºˆç®—',en:'PRACTICE BUDGET',zh:'ä»Šæ—¥ç»ƒä¹ é¢„ç®—'}))}</small><b>${h(won(event.budget))}</b></div><div><small>${h(l({ko:'ë‚¨ê¸¸ ì—¬í–‰ ì›',ja:'æ®‹ã‚‹æ—…ã‚¦ã‚©ãƒ³',en:'TRAVEL WON LEFT',zh:'å‰©ä½™æ—…è¡ŒéŸ©å…ƒ'}))}</small><b class="${over?'over':''}">${h(won(remaining))}</b></div></section><section class="travelQuantityPicker"><p><b lang="ko">${h(item.name)}</b><span>${h(won(item.price))} Ã— ${quantity}</span></p><div><button onclick="malbitTravelBudgetChange(-1)" aria-label="${h(l({ko:'ìˆ˜ëŸ‰ ì¤„ì´ê¸°',ja:'æ•°é‡ã‚’æ¸›ã‚‰ã™',en:'Decrease quantity',zh:'å‡å°‘æ•°é‡'}))}">âˆ’</button><strong aria-live="polite">${quantity}</strong><button onclick="malbitTravelBudgetChange(1)" aria-label="${h(l({ko:'ìˆ˜ëŸ‰ ëŠ˜ë¦¬ê¸°',ja:'æ•°é‡ã‚’å¢—ã‚„ã™',en:'Increase quantity',zh:'å¢åŠ æ•°é‡'}))}">ï¼‹</button></div><output>${h(l({ko:'í•©ê³„',ja:'åˆè¨ˆ',en:'TOTAL',zh:'åˆè®¡'}))} <b>${h(won(total))}</b></output></section>${wrong?`<div class="travelFeedback bad" role="status"><div><b>${h(hint)}</b><p>${h(l(event.explanation))}</p></div></div>`:''}<div class="travelBudgetActions"><button class="travelTextButton" onclick="malbitTravelMyeongdongOpen()">${h(l({ko:'ê±°ë¦¬ë¡œ ëŒì•„ê°€ê¸°',ja:'é€šã‚Šã¸æˆ»ã‚‹',en:'Back to street',zh:'è¿”å›è¡—é“'}))}</button><button class="travelPrimary ${!over&&quantity>0?'ready':''}" onclick="malbitTravelBudgetSubmit()">${h(l({ko:'ì´ ìˆ˜ëŸ‰ìœ¼ë¡œ ì£¼ë¬¸í•˜ê¸°',ja:'ã“ã®æ•°é‡ã§æ³¨æ–‡ã™ã‚‹',en:'Order this quantity',zh:'æŒ‰æ­¤æ•°é‡ä¸‹å•'}))}</button></div><p class="travelCurrencyNote">${h(l({ko:'ê²Œì„ ì† ì—¬í–‰ ì›ë§Œ ì‚¬ìš©í•˜ë©° ì‹¤ì œ ê²°ì œëŠ” ì—†ìŠµë‹ˆë‹¤.',ja:'ã‚²ãƒ¼ãƒ å†…ã®æ—…ã‚¦ã‚©ãƒ³ã®ã¿ä½¿ç”¨ã—ã€å®Ÿéš›ã®æ±ºæ¸ˆã¯ã‚ã‚Šã¾ã›ã‚“ã€‚',en:'Uses game travel won only; no real payment.',zh:'ä»…ä½¿ç”¨æ¸¸æˆå†…æ—…è¡ŒéŸ©å…ƒï¼Œä¸æ¶‰åŠçœŸå®æ”¯ä»˜ã€‚'}))}</p></article></div>`;
-}
-  function renderHubOrder(sc,pack,state,hub,event){
-    const selected=Array.isArray(HUB_ORDER[event.id])?HUB_ORDER[event.id]:[];
-    const built=selected.map(index=>event.tokens[index]);
-    const remaining=event.tokens.map((token,index)=>({token,index})).filter(item=>!selected.includes(item.index));
-    const wrong=state.myeongdong.lastAttemptCorrect===false;
-    const sign=event.interaction==='sign-build',free=event.interaction==='free-compose',required=sign?event.answer.length:event.tokens.length,result=HUB_COMPOSE_RESULT[event.id]||null;
-    const modeLabel=sign?'SIGN BUILD Â· HANGUL':free?'FREE COMPOSE Â· NPC TALK':'WORD ORDER Â· NPC TALK';
-    const modeName=sign?l({ko:'ê¸€ì ì¡°ë¦½',ja:'æ–‡å­—çµ„ã¿ç«‹ã¦',en:'SIGN BUILD',zh:'æ–‡å­—æ‹¼åˆ'}):free?l({ko:'ììœ  ì‘ë¬¸',ja:'è‡ªç”±ä½œæ–‡',en:'FREE COMPOSE',zh:'è‡ªç”±é€ å¥'}):l({ko:'ìˆœì„œ ë§ì¶”ê¸°',ja:'ä¸¦ã¹æ›¿ãˆ',en:'WORD ORDER',zh:'è¯­åºæ’åˆ—'});
-    const empty=sign?l({ko:'í•„ìš”í•œ ê¸€ìë§Œ ê³¨ë¼ ì£¼ì„¸ìš”.',ja:'å¿…è¦ãªæ–‡å­—ã ã‘ã‚’é¸ã¼ã†',en:'Choose only the needed letters',zh:'åªé€‰æ‹©éœ€è¦çš„æ–‡å­—'}):free?l({ko:'ë‹¨ì–´ì™€ ì¡°ì‚¬ë¥¼ ììœ ë¡­ê²Œ ê³¨ë¼ ë§ì„ ë§Œë“¤ì–´ ë³´ì„¸ìš”.',ja:'å˜èªã¨åŠ©è©ã‚’è‡ªç”±ã«é¸ã‚“ã§ã€è¨€ã„ãŸã„ã“ã¨ã‚’ä½œã‚ã†ã€‚',en:'Choose words and particles freely to say what you mean.',zh:'è‡ªç”±é€‰æ‹©å•è¯å’ŒåŠ©è¯ï¼Œç»„åˆä½ æƒ³è¯´çš„è¯ã€‚'}):l({ko:'ì•„ë˜ ë‹¨ì–´ë¥¼ ìˆœì„œëŒ€ë¡œ ëˆŒëŸ¬ ì£¼ì„¸ìš”.',ja:'ä¸‹ã®å˜èªã‚’é †ç•ªã«ã‚¿ãƒƒãƒ—',en:'Tap the words in order',zh:'æŒ‰é¡ºåºç‚¹å‡»ä¸‹æ–¹è¯è¯­'});
-    const wrongTitle=sign?l({ko:'ë‹¤ë¥¸ ê¸€ìê°€ ì„ì˜€ì–´ìš” Â· 2ë¶„ ê²½ê³¼',ja:'åˆ¥ã®æ–‡å­—ãŒæ··ã–ã£ã¦ã„ã¾ã™ãƒ»2åˆ†çµŒé',en:'A decoy slipped in Â· 2 min passed',zh:'æ··å…¥äº†å¹²æ‰°å­— Â· ç»è¿‡2åˆ†é’Ÿ'}):l({ko:'ìˆœì„œê°€ ì¡°ê¸ˆ ë‹¬ë¼ìš” Â· 2ë¶„ ê²½ê³¼',ja:'é †ç•ªãŒå°‘ã—é•ã„ã¾ã™ãƒ»2åˆ†çµŒé',en:'Not quite the order Â· 2 min passed',zh:'é¡ºåºä¸å¤ªå¯¹ Â· ç»è¿‡2åˆ†é’Ÿ'});
-    const submit=sign?l({ko:'ì´ í‘œì§€íŒ ì™„ì„±í•˜ê¸°',ja:'ã“ã®æ¨™è­˜ã‚’å®Œæˆã™ã‚‹',en:'Complete this sign',zh:'å®Œæˆè¿™ä¸ªæ ‡ç‰Œ'}):free?l({ko:'NPCì—ê²Œ ì´ëŒ€ë¡œ ë§í•˜ê¸°',ja:'ã“ã®æ–‡ã‚’NPCã«è©±ã™',en:'Say this to the NPC',zh:'å°±è¿™æ ·å¯¹NPCè¯´'}):l({ko:'ì´ ë¬¸ì¥ìœ¼ë¡œ ë§í•˜ê¸°',ja:'ã“ã®æ–‡ã§è©±ã™',en:'Say this sentence',zh:'ç”¨è¿™å¥è¯è¯´'});
-    const slots=Array.from({length:event.answer.length},(_,index)=>`<span class="${built[index]?'filled':''}" lang="ko">${h(built[index]||'ï¼¿')}</span>`).join('');
-    const phrase=free&&built.length?composedSentence(built):'';
-    const compositionFeedback=result?`<div class="travelFeedback ${result.grade==='partial'?'good':'bad'} travelCompositionFeedback" role="status"><div><b>${h(result.grade==='partial'?result.earned>0?l({ko:`ë§ì´ í†µí•´ì„œ +${won(result.earned)}`,ja:`è¨€è‘‰ãŒé€šã˜ãŸãƒ»+${won(result.earned)}`,en:`They understood you Â· +${won(result.earned)}`,zh:`è¡¨è¾¾è¢«ç†è§£ Â· +${won(result.earned)}`}):l({ko:'ì¢‹ì€ ë¬¸ì¥ì´ì—ìš” Â· ì´ë¯¸ ë°›ì€ ì°½ì˜ ë³´ìƒ',ja:'è‡ªç„¶ãªæ–‡ã§ã™ãƒ»å‰µä½œå ±é…¬ã¯å—å–æ¸ˆã¿',en:'Good sentence Â· creative reward already claimed',zh:'å¥å­é€šé¡º Â· åˆ›æ„å¥–åŠ±å·²é¢†å–'}):l({ko:'ëœ»ì„ ë” ë¶„ëª…í•˜ê²Œ ë§Œë“¤ì–´ ë³´ì„¸ìš” Â· 1ë¶„ ê²½ê³¼',ja:'æ„å‘³ã‚’ã‚‚ã†å°‘ã—æ˜ç¢ºã«ã—ã‚ˆã†ãƒ»1åˆ†çµŒé',en:'Make the meaning a little clearer Â· 1 min passed',zh:'è¯·è®©æ„æ€æ›´æ˜ç¡® Â· ç»è¿‡1åˆ†é’Ÿ'}))}</b><p lang="ko">${h(result.phrase)}</p><span>${h(l(result.response))}</span></div></div>`:'';
-    sc.innerHTML=`<div class="travelPlay travelMyeongdong">${commonTop(pack,state,{location:hub.location})}<article class="travelMyeongdongCard travelOrderCard ${sign?'travelSignCard':''} ${free?'travelComposeCard':''}"><div class="travelQuestionNo"><span>${modeLabel}</span><em>${h(modeName)}</em></div><h1>${h(l(event.title))}</h1>${hubWorld(pack,state,hub,event)}<div class="travelPrompt"><small>${h(l(event.instruction))}</small><b>${h(l(event.prompt))}</b></div>${sign?`<div class="travelSignPreview" aria-label="Built station sign"><small>EXIT 6 Â· LINE 4</small><b>${slots}</b></div>`:''}${free&&phrase?`<div class="travelCompositionPreview"><small>${h(l({ko:'ì§€ê¸ˆ ë§Œë“  ë§',ja:'ä»Šä½œã£ãŸæ–‡',en:'YOUR SENTENCE',zh:'å½“å‰å¥å­'}))}</small><b lang="ko">${h(phrase)}</b></div>`:''}<div class="travelSentence" aria-label="Built sentence">${built.length?selected.map((index,position)=>`<button class="${tokenKind(event.tokens[index])}" onclick="malbitTravelOrderRemove(${position})" lang="ko">${h(event.tokens[index])}</button>`).join(''):`<p>${h(empty)}</p>`}</div><div class="travelWordBank ${free?'free':''}">${remaining.map(item=>`<button class="${tokenKind(item.token)}" onclick="malbitTravelOrderAdd(${item.index})" lang="ko">${h(item.token)}</button>`).join('')}</div>${compositionFeedback}${wrong&&!free?`<div class="travelFeedback bad" role="status"><div><b>${h(wrongTitle)}</b><p>${h(l(event.explanation))}</p></div></div>`:''}<div class="travelOrderActions"><button class="travelTextButton" onclick="malbitTravelOrderReset()">${h(free?l({ko:'ìƒˆ ë¬¸ì¥ ë§Œë“¤ê¸°',ja:'æ–°ã—ã„æ–‡ã‚’ä½œã‚‹',en:'New sentence',zh:'åˆ›å»ºæ–°å¥å­'}):l({ko:'ë‹¤ì‹œ ë†“ê¸°',ja:'ã‚„ã‚Šç›´ã™',en:'Reset',zh:'é‡ç½®'}))}</button><button class="travelPrimary ${(free?selected.length>=2:selected.length===required)?'ready':''}" onclick="malbitTravelOrderSubmit()">${h(submit)}</button></div></article></div>`;
-  }
-  function renderHubBudgetResult(sc,pack,state,hub,event){
-  const quest=state.myeongdong.quests[event.id]||{},quantity=Math.max(0,Number(quest.quantity)||0),cost=Math.max(0,Number(quest.cost)||0),unitPrice=quantity?Math.round(cost/quantity):0;
-  sc.innerHTML=`<div class="travelPlay travelMyeongdong">${commonTop(pack,state,{location:hub.location})}<article class="travelMyeongdongCard travelHubResult travelBudgetResult"><div class="travelQuestionNo"><span>MENU READING CLEAR</span><em>âˆ’${h(won(cost))}</em></div><h1>${h(l({ko:'ê°€ê²©ì„ ì½ê³  ì˜ˆì‚° ì•ˆì—ì„œ ì£¼ë¬¸í–ˆë‹¤!',ja:'å€¤æ®µã‚’èª­ã‚“ã§äºˆç®—å†…ã§æ³¨æ–‡ã§ããŸï¼',en:'You read the price and ordered within budget!',zh:'è¯»æ‡‚ä»·æ ¼å¹¶åœ¨é¢„ç®—å†…å®Œæˆç‚¹å•ï¼'}))}</h1>${hubWorld(pack,state,hub,event,{correct:true,earned:0})}<blockquote class="travelKorean" lang="ko">í˜¸ë–¡ ë‘ ê°œ ì£¼ì„¸ìš”.</blockquote><p class="travelSupport">${h(l(event.success))}</p><div class="travelBudgetReceipt"><div><small>${h(l({ko:'ë‹¨ê°€',ja:'å˜ä¾¡',en:'UNIT PRICE',zh:'å•ä»·'}))}</small><b>${h(won(unitPrice))}</b></div><div><small>${h(l({ko:'ìˆ˜ëŸ‰',ja:'æ•°é‡',en:'QUANTITY',zh:'æ•°é‡'}))}</small><b>${quantity}</b></div><div><small>${h(l({ko:'ì“´ ì—¬í–‰ ì›',ja:'ä½¿ã£ãŸæ—…ã‚¦ã‚©ãƒ³',en:'SPENT',zh:'å·²èŠ±è´¹'}))}</small><b>âˆ’${h(won(cost))}</b></div><div><small>${h(l({ko:'í˜„ì¬ ì”ì•¡',ja:'ç¾åœ¨ã®æ®‹é«˜',en:'CURRENT WALLET',zh:'å½“å‰ä½™é¢'}))}</small><b>${h(won(state.wallet))}</b></div></div><div class="travelTeacherTip"><b>${h(l({ko:'ë‹¤ìŒì—ë„ ì“°ëŠ” ê³„ì‚° ìš”ë ¹',ja:'æ¬¡ã«ã‚‚ä½¿ãˆã‚‹è¨ˆç®—ã®ã‚³ãƒ„',en:'REUSABLE SOLVING TIP',zh:'å¯å¤ç”¨çš„è®¡ç®—æŠ€å·§'}))}</b><p>${h(l(event.explanation))}</p></div><button class="travelPrimary" onclick="malbitTravelMyeongdongOpen()">${h(l({ko:'ëª…ë™ ê±°ë¦¬ë¡œ ëŒì•„ê°€ê¸°',ja:'æ˜æ´ã®é€šã‚Šã¸æˆ»ã‚‹',en:'Return to Myeongdong street',zh:'è¿”å›æ˜æ´è¡—é“'}))} <b>â†’</b></button></article></div>`;
-}
-  function renderHubResult(sc,pack,state,hub,event){
-    if(event.interaction==='price-budget')return renderHubBudgetResult(sc,pack,state,hub,event);
-    const quest=state.myeongdong.quests[event.id];
-    const earned=Number.isFinite(Number(quest?.earned))?Number(quest.earned):Number(event.reward)||0;
-    const sign=event.interaction==='sign-build',clearLabel=sign?'SIGN QUEST CLEAR':'NPC QUEST CLEAR';
-    const title=sign?l({ko:'í•œê¸€ í‘œì§€íŒì´ ì¼œì§€ê³  ê¸¸ì´ ì—´ë ¸ë‹¤!',ja:'ãƒãƒ³ã‚°ãƒ«ã®æ¨™è­˜ãŒç‚¹ç¯ã—ã€é“ãŒé–‹ã„ãŸï¼',en:'The Hangul sign lit up and opened the way!',zh:'éŸ©æ–‡æ ‡ç‰Œäº®èµ·ï¼Œé“è·¯å¼€å¯äº†ï¼'}):l({ko:'í•œêµ­ì–´ê°€ ì‹¤ì œ ì—¬í–‰ì„ ì›€ì§ì˜€ë‹¤!',ja:'éŸ“å›½èªã§æ—…ãŒå‹•ã„ãŸï¼',en:'Your Korean moved the journey forward!',zh:'éŸ©è¯­æ¨åŠ¨äº†çœŸå®æ—…ç¨‹ï¼'});
-    const rewardLabel=sign?l({ko:'í‘œì§€íŒ ë¯¸ì…˜ ë³´ìƒ',ja:'æ¨™è­˜ãƒŸãƒƒã‚·ãƒ§ãƒ³å ±é…¬',en:'SIGN MISSION REWARD',zh:'æ ‡ç‰Œä»»åŠ¡å¥–åŠ±'}):l({ko:'NPC ëŒ€í™” ë³´ìƒ',ja:'NPCä¼šè©±å ±é…¬',en:'NPC TALK REWARD',zh:'NPCå¯¹è¯å¥–åŠ±'});
-    sc.innerHTML=`<div class="travelPlay travelMyeongdong">${commonTop(pack,state,{location:hub.location})}<article class="travelMyeongdongCard travelHubResult"><div class="travelQuestionNo"><span>${clearLabel}</span><em>+${h(won(earned))}</em></div><h1>${h(title)}</h1>${hubWorld(pack,state,hub,event,{correct:true,earned,itemReward:event.itemReward})}<blockquote class="travelKorean" lang="ko">${h(sign?event.answer.join(''):composedSentence(event.answer))}</blockquote><p class="travelSupport">${h(l(event.success))}</p><div class="travelReward travelHubReward">${propImage(pack,event.itemReward,'')}<div><small>${h(rewardLabel)}</small><b>${h(l(hub.exchange.find(item=>item.id===event.itemReward)?.name||event.itemReward))}</b><p>+${h(won(earned))}</p></div></div><button class="travelPrimary" onclick="malbitTravelMyeongdongOpen()">${h(l({ko:'ê±°ë¦¬ì—ì„œ ë‹¤ìŒ ì¶”ì–µ ì°¾ê¸°',ja:'é€šã‚Šã§æ¬¡ã®æ€ã„å‡ºã‚’æ¢ã™',en:'Find the next street memory',zh:'åœ¨è¡—ä¸Šå¯»æ‰¾ä¸‹ä¸€æ®µå›å¿†'}))} <b>â†’</b></button></article></div>`;
-  }
-  function renderMyeongdong(sc,pack,state,hub){
-    const event=Object.values(hub.events).find(item=>item.id===state.myeongdong.activeEvent)||activeHubEvent(hub,state);
-    if(state.myeongdong.screen==='dialogue')return renderHubDialogue(sc,pack,state,hub,event);
-    if(state.myeongdong.screen==='order')return event.interaction==='price-budget'?renderHubBudget(sc,pack,state,hub,event):renderHubOrder(sc,pack,state,hub,event);
-    if(state.myeongdong.screen==='result')return renderHubResult(sc,pack,state,hub,event);
-    return renderMyeongdongHub(sc,pack,state,hub);
-  }
-  function endingType(pack,state){const score=correctCount(state);return score===pack.questionCount?'perfect':score>=Math.ceil(pack.questionCount*.67)?'clear':'close'}
-  function renderEnding(sc,pack,state,scene){
-    if(!state.completed){
-      const perfect=correctCount(state)===pack.questionCount;
-      state.completed=true;state.completedAt=now();state.updatedAt=now();state.clears=(Number(state.clears)||0)+1;state.bestScore=Math.max(Number(state.bestScore)||0,correctCount(state));
-      if(perfect&&!state.perfectBonusClaimed){state.wallet+=Number(pack.perfectBonus)||0;state.perfectBonusClaimed=true}
-      if(!state.inventory.includes('myeongdong-first-stamp'))state.inventory.push('myeongdong-first-stamp');
-      writeState(state,['routeStarted','routeCompleted']);
-    }
-    const result=pack.endings[endingType(pack,state)],score=correctCount(state);
-    const reward=skinById(pack,score===pack.questionCount?pack.perfectSkin:pack.rewardSkin);
-    const hub=hubByRoute(pack.id);
-    sc.innerHTML=`<div class="travelPlay travelEnding">${commonTop(pack,state,scene)}<article class="travelEndingCard"><div class="travelEndingGlow"></div>${worldMarkup(pack,state,scene)}<div class="travelEndingBody"><span class="travelEndingIcon">${h(result.icon)}</span><small>ROUTE CLEAR Â· ${h(pack.badge)}</small><h1>${h(l(result.title))}</h1><p>${h(l(result.detail))}</p><div class="travelScore"><b>${score}</b><span>/ ${pack.questionCount}</span><small>${h(l({ko:'ì •ë‹µ ë¯¸ì…˜',ja:'æ­£è§£ãƒŸãƒƒã‚·ãƒ§ãƒ³',en:'correct missions',zh:'ç­”å¯¹ä»»åŠ¡'}))}</small></div><div class="travelReward" style="--reward:${h(reward.accent)}"><img src="${h(reward.image)}" alt=""><div><small>${h(l({ko:'ë¬´ë£Œ ì—¬í–‰ ë³´ìƒ',ja:'ç„¡æ–™ã®æ—…å ±é…¬',en:'Free journey reward',zh:'å…è´¹æ—…è¡Œå¥–åŠ±'}))}</small><b>${h(l(reward.name))}</b><p>${h(won(state.wallet))} Â· ${h(clock(state.clockMinutes))}</p></div></div>${koreanCopy(scene)}${notebook(pack,state)}${hub?`<button class="travelPrimary" onclick="malbitTravelMyeongdongOpen()">${h(l({ko:'ëª…ë™ ê±°ë¦¬ë¥¼ íƒí—˜í•˜ê¸°',ja:'æ˜æ´ã®è¡—ã‚’æ¢ç´¢ã™ã‚‹',en:'Explore Myeongdong',zh:'æ¢ç´¢æ˜æ´è¡—é“'}))} <b>â†’</b></button>`:''}<button class="travelSecondary" onclick="malbitTravelBack()">${h(l({ko:'ì—¬í–‰ ì§€ë„ë¡œ',ja:'æ—…ãƒãƒƒãƒ—ã¸',en:'Back to travel map',zh:'è¿”å›æ—…è¡Œåœ°å›¾'}))}</button><button class="travelTextButton" onclick="malbitTravelRestart('${h(pack.id)}')">${h(l({ko:'ë‹¤ë¥¸ ì´ë™ ìˆ˜ë‹¨ìœ¼ë¡œ ë‹¤ì‹œ',ja:'åˆ¥ã®ç§»å‹•æ‰‹æ®µã§å†æŒ‘æˆ¦',en:'Replay with another route',zh:'æ¢è·¯çº¿é‡ç©'}))}</button></div></article></div>`;
-  }
-  const rpgPointValues=(zone,item)=>({
-    left:`${((Number(item.x)+.5)/zone.width*100).toFixed(3)}%`,
-    top:`${((Number(item.y)+.5)/zone.height*100).toFixed(3)}%`,
-    depth:3+Math.max(0,Math.floor(Number(item.y)||0))*2
-  });
-  const rpgPoint=(zone,item)=>{const point=rpgPointValues(zone,item);return`left:${point.left};top:${point.top}`};
-  const rpgActorPoint=(zone,item)=>{const point=rpgPointValues(zone,item);return`left:${point.left};top:${point.top};z-index:${point.depth}`};
-  const rpgShadowPoint=(zone,item)=>{const point=rpgPointValues(zone,item);return`left:${point.left};top:${point.top};z-index:${point.depth}`};
-  const rpgForegroundDepth=item=>2+Math.max(0,Math.floor((Number(item.depthY)||0)*2));
-  function rpgForegroundMarkup(zone){
-    return(zone.foregrounds||[]).map(item=>{
-      const clip=item.polygon.map(point=>`${(Number(point.x)/zone.width*100).toFixed(3)}% ${(Number(point.y)/zone.height*100).toFixed(3)}%`).join(',');
-      return`<img class="travelRpgForeground" src="${h(zone.background)}" alt="" width="1200" height="900" loading="eager" data-foreground-id="${h(item.id)}" data-depth-y="${h(item.depthY)}" style="z-index:${rpgForegroundDepth(item)};clip-path:polygon(${clip})">`;
-    }).join('');
-  }
-  function rpgEnvironmentMarkup(zone){
-    return(zone.lights||[]).map(item=>{
-      const left=(Number(item.x)/zone.width*100).toFixed(3),top=(Number(item.y)/zone.height*100).toFixed(3);
-      const width=(Number(item.width)/zone.width*100).toFixed(3),height=(Number(item.height)/zone.height*100).toFixed(3);
-      return`<span class="travelRpgLight kind-${h(item.kind)}" data-light-id="${h(item.id)}" data-light-kind="${h(item.kind)}" style="left:${left}%;top:${top}%;width:${width}%;height:${height}%;--travel-rpg-light-color:${h(item.color)};--travel-rpg-light-strength:${h(item.strength)}"></span>`;
-    }).join('');
-  }
-  function rpgPlayerMarkup(skin,zone,progress){
-    if(!skin)return'';
-    const direction=String(progress.direction||'down'),sprite=skin.sprite;
-    if(sprite?.image){
-      const footX=Math.max(0,Math.min(1,Number(sprite.footAnchor?.x)||.5));
-      const footY=Math.max(0,Math.min(1,Number(sprite.footAnchor?.y)||.9375));
-      const walkFps=Math.max(1,Number(sprite.states?.walk?.fps)||12);
-      return`<span class="travelRpgPlayer has-sprite idle ${h(direction)}" role="img" aria-label="${h(l(skin.name))}" data-sprite-columns="${h(sprite.layout?.columns||8)}" data-sprite-rows="${h(sprite.layout?.rows||4)}" data-walk-fps="${h(walkFps)}" data-foot-anchor="${h(`${footX},${footY}`)}" style="${rpgActorPoint(zone,progress)};--travel-rpg-anchor-x:${h((-footX*100).toFixed(3))}%;--travel-rpg-anchor-y:${h((-footY*100).toFixed(3))}%"><i class="travelRpgSprite" aria-hidden="true" style="--travel-rpg-sprite:url('${h(sprite.image)}')"></i></span>`;
-    }
-    if(!skin.image)return'';
-    return`<span class="travelRpgPlayer idle ${h(direction)}" role="img" aria-label="${h(l(skin.name))}" style="${rpgActorPoint(zone,progress)}"><img src="${h(skin.image)}" alt=""></span>`;
-  }
-  function rpgShadowMarkup(zone,item,kind,footAnchor='.5,.9375'){
-    if(!item)return'';
-    return`<span class="travelRpgShadow ${h(kind)}" aria-hidden="true" data-foot-anchor="${h(footAnchor)}" style="${rpgShadowPoint(zone,item)}"></span>`;
-  }
-  function rpgCameraValues(zone,progress){
-    const viewport=document.querySelector?.('.travelRpgViewport');
-    const viewportWidth=Math.max(1,Number(viewport?.clientWidth)||Math.min(Number(window.innerWidth)||390,720));
-    const viewportHeight=Math.max(1,Number(viewport?.clientHeight)||Number(window.innerHeight)||700);
-    const boardHeight=viewportHeight*RPG_CAMERA_SCALE,boardWidth=boardHeight*4/3;
-    const x=(Number(progress.x)+.5)/zone.width,y=(Number(progress.y)+.5)/zone.height;
-    const clamp=(value,min)=>Math.max(min,Math.min(0,value));
-    return{
-      left:`${clamp(viewportWidth/2-x*boardWidth,viewportWidth-boardWidth).toFixed(2)}px`,
-      top:`${clamp(viewportHeight/2-y*boardHeight,viewportHeight-boardHeight).toFixed(2)}px`
-    };
-  }
-  function rpgCamera(zone,progress){const camera=rpgCameraValues(zone,progress);return`left:${camera.left};top:${camera.top}`}
-  function syncRpgCamera(){
-    RPG_CAMERA_FRAME=0;
-    const context=activeRpgContext(),board=document.querySelector?.('.travelRpgBoard');
-    if(!context||!board||RPG_EVENT_OPEN[context.scene.id])return;
-    const progress=RPG.normalizeProgress(context.pack.id,context.state.exploration,context.scene.id),camera=rpgCameraValues(context.zone,progress);
-    board.style.transition='none';
-    board.style.left=camera.left;board.style.top=camera.top;
-    void board.offsetWidth;
-    requestAnimationFrame(()=>{if(board.isConnected)board.style.removeProperty('transition')});
-  }
-  function scheduleRpgCameraSync(){
-    if(RPG_CAMERA_FRAME||typeof requestAnimationFrame!=='function')return;
-    RPG_CAMERA_FRAME=requestAnimationFrame(syncRpgCamera);
-  }
-  function animateRpgStep(zone,progress,blocked){
-    if(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return false;
-    const card=document.querySelector?.('.travelRpgCard'),viewport=card?.querySelector?.('.travelRpgViewport'),board=card?.querySelector?.('.travelRpgBoard'),player=card?.querySelector?.('.travelRpgPlayer'),shadow=card?.querySelector?.('.travelRpgShadow.player');
-    if(!card||!viewport||!board||!player||!shadow||typeof setTimeout!=='function')return false;
-    const point=rpgPointValues(zone,progress),camera=rpgCameraValues(zone,progress),direction=String(progress.direction||'down');
-    const spriteClass=player.classList.contains('has-sprite')?' has-sprite':'';
-    player.className=`travelRpgPlayer${spriteClass} ${h(direction)} ${blocked?`blocked bump-${h(direction)}`:'walking'}`;
-    player.style.left=point.left;player.style.top=point.top;
-    player.style.zIndex=String(point.depth);
-    shadow.style.left=point.left;shadow.style.top=point.top;
-    shadow.style.zIndex=String(point.depth);
-    board.style.left=camera.left;board.style.top=camera.top;
-    card.classList.add('is-moving');viewport.setAttribute('aria-busy','true');
-    return true;
-  }
-  function finishRpgMotion(sceneId,moved,token){
-    if(token!==RPG_MOTION.token)return;
-    const next=RPG_MOTION.queue.shift();
-    if(next){
-      RPG_MOTION.busy=false;
-      window.malbitTravelStep(next);
-      return;
-    }
-    const settle=moved?RPG_SETTLE_MS:0;
-    RPG_MOTION.timer=setTimeout(()=>{
-      if(token!==RPG_MOTION.token)return;
-      const interact=RPG_MOTION.pendingInteraction;
-      RPG_MOTION.busy=false;RPG_MOTION.timer=null;RPG_MOTION.pendingInteraction=false;
-      render();
-      if(interact)requestAnimationFrame?.(()=>window.malbitTravelInteract());
-    },settle);
-  }
-  function rpgTargetAsset(pack,scene,anchor){
-    if(!anchor)return'';
-    if(anchor.kind==='npc')return assetPath(pack,'npcs',scene.world?.npc);
-    if(anchor.kind==='sign')return assetPath(pack,'props','railSign');
-    return'';
-  }
-  function rpgNoticeMarkup(scene,notice){
-    if(!notice)return'';
-    if(notice.type==='blocked')return`<p class="travelRpgToast" role="status">${h(l({ko:'ê·¸ìª½ì€ ì§€ë‚˜ê°ˆ ìˆ˜ ì—†ì–´ìš”. ë‹¤ë¥¸ ê¸¸ì„ ì°¾ì•„ë³´ì„¸ìš”.',ja:'ãã¡ã‚‰ã¯é€šã‚Œã¾ã›ã‚“ã€‚åˆ¥ã®é“ã‚’æ¢ãã†ã€‚',en:'That way is blocked. Try another path.',zh:'é‚£é‡Œæ— æ³•é€šè¡Œï¼Œè¯·å¯»æ‰¾å…¶ä»–è·¯çº¿ã€‚'}))}</p>`;
-    if(notice.type==='portal')return`<p class="travelRpgToast" role="status">${h(l({ko:`${l(notice.target.title)} ë„ì°©`,ja:`${l(notice.target.title)}ã«åˆ°ç€`,en:`Arrived: ${l(notice.target.title)}`,zh:`å·²åˆ°è¾¾ï¼š${l(notice.target.title)}`}))}</p>`;
-    if(notice.type!=='poi')return'';
-    const target=notice.target,reward=Number(notice.reward)||0;
-    return`<section class="travelRpgDiscovery" role="dialog" aria-live="polite"><div><small>${notice.found?'DISCOVERY COMPLETE':'DISCOVERY RECORD'}</small><h2>${h(l(target.title))}</h2></div><blockquote lang="ko">${h(target.korean)}</blockquote><p>${h(l(target.detail))}</p>${reward?`<strong>+${h(won(reward))}</strong>`:`<strong>${h(l({ko:'ì—¬í–‰ ê¸°ë¡ì— ì €ì¥ë¨',ja:'æ—…ã®è¨˜éŒ²ã«ä¿å­˜æ¸ˆã¿',en:'Saved to journey record',zh:'å·²ä¿å­˜åˆ°æ—…è¡Œè®°å½•'}))}</strong>`}<button onclick="malbitTravelCloseDiscovery()">${h(l({ko:'ì§€ë„ë¡œ ëŒì•„ê°€ê¸°',ja:'ãƒãƒƒãƒ—ã«æˆ»ã‚‹',en:'Back to map',zh:'è¿”å›åœ°å›¾'}))}</button></section>`;
-  }
-  function renderExploration(sc,pack,state,scene,match){
-    document.body.classList.toggle('travel-rpg-active',true);
-    const {world,zone,anchor}=match,progress=RPG.normalizeProgress(pack.id,state.exploration,scene.id),interaction=RPG.interactionAt(zone,progress,scene.id);
-    state.exploration=progress;
-    const store=readStore(),skin=skinById(pack,store.avatar.equipped),targetAsset=rpgTargetAsset(pack,scene,anchor),near=interaction?.type==='scene';
-    const actionLabel=interaction?(interaction.type==='scene'||interaction.type==='portal')?l(interaction.target.action):l({ko:'ì¡°ì‚¬í•˜ê¸°',ja:'èª¿ã¹ã‚‹',en:'Inspect',zh:'è°ƒæŸ¥'}):l({ko:'ëŒ€ìƒ ê°€ê¹Œì´ ê°€ê¸°',ja:'å¯¾è±¡ã«è¿‘ã¥ã',en:'Move closer',zh:'é è¿‘ç›®æ ‡'});
-    const targetTitle=interaction?l(interaction.target.title||interaction.target.label):'';
-    const discovered=new Set(progress.discoveries||[]);
-    const pois=(zone.pois||[]).map(item=>`<span class="travelRpgPoi ${discovered.has(`${zone.id}:${item.id}`)?'found':''}" style="${rpgPoint(zone,item)}" aria-hidden="true"><i></i></span>`).join('');
-    const targetIsActor=Boolean(anchor&&targetAsset&&anchor.kind==='npc');
-    const target=anchor?(targetAsset?`<span class="travelRpgTarget character ${near?'near':''}" style="${rpgActorPoint(zone,anchor)}"><img src="${h(targetAsset)}" alt=""><b>${h(l(anchor.label))}</b></span>`:`<span class="travelRpgTarget marker ${near?'near':''}" style="${rpgPoint(zone,anchor)}"><i></i><b>${h(l(anchor.label))}</b></span>`):'';
-    const playerFoot=skin?.sprite?.footAnchor?`${Number(skin.sprite.footAnchor.x)||.5},${Number(skin.sprite.footAnchor.y)||.9375}`:'.5,.7';
-    const shadows=`${targetIsActor?rpgShadowMarkup(zone,anchor,'npc','.5,.7'):''}${rpgShadowMarkup(zone,progress,'player',playerFoot)}`;
-    const portals=(zone.portals||[]).map(item=>`<span class="travelRpgPortal ${interaction?.type==='portal'&&interaction.target.id===item.id?'near':''}" style="${rpgPoint(zone,item)}" aria-hidden="true"><i></i></span>`).join('');
-    const notice=RPG_NOTICE[scene.id];
-    const discoveryCount=progress.discoveries.filter(id=>id.startsWith(`${zone.id}:`)).length;
-    const backLabel=l({ko:'ì—¬í–‰ ì§€ë„',ja:'æ—…ãƒãƒƒãƒ—',en:'Travel map',zh:'æ—…è¡Œåœ°å›¾'});
-    sc.innerHTML=`<div class="travelPlay travelRpgScreen"><article class="travelRpgCard travelRpgShell ${notice?.type==='poi'?'has-discovery':''}"><div class="travelRpgViewport" role="img" aria-label="${h(l(zone.title))}"><div class="travelRpgBoard" style="${rpgCamera(zone,progress)}"><div class="travelRpgGroundLayer"><img class="travelRpgMap" src="${h(zone.background)}" alt="" width="1200" height="900" loading="eager"></div><div class="travelRpgEnvironmentLayer" data-effect-contract="bounded-light" aria-hidden="true">${rpgEnvironmentMarkup(zone)}</div><div class="travelRpgShadowLayer" data-depth-contract="foot-y" aria-hidden="true">${shadows}</div><div class="travelRpgActorLayer" data-depth-contract="foot-y">${pois}${portals}${target}${rpgPlayerMarkup(skin,zone,progress)}</div><div class="travelRpgUpperLayer" aria-hidden="true">${rpgForegroundMarkup(zone)}</div></div><header class="travelRpgTopHud"><button class="travelRpgBack" onclick="malbitTravelBack()" aria-label="${h(backLabel)}">â€¹</button><div class="travelRpgLocationHud"><small>SEOUL WORLD Â· ${h(progress.steps)} STEP</small><b>${h(l(zone.title))}</b></div><button class="travelRpgLang" onclick="event.stopPropagation();flagMenu()" aria-label="${h(l({ko:'ì„¤ëª… ì–¸ì–´ ë°”ê¾¸ê¸°',ja:'èª¬æ˜è¨€èªã‚’å¤‰æ›´',en:'Change explanation language',zh:'åˆ‡æ¢è§£æè¯­è¨€'}))}">${flag()}</button></header><div class="travelRpgStatusHud" aria-label="${h(l({ko:'ì—¬í–‰ ìƒíƒœ',ja:'æ—…ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹',en:'Travel status',zh:'æ—…è¡ŒçŠ¶æ€'}))}"><span><small>${h(l({ko:'ì—¬í–‰ ì›',ja:'æ—…ã‚¦ã‚©ãƒ³',en:'TRAVEL WON',zh:'æ—…è¡ŒéŸ©å…ƒ'}))}</small><b>${h(won(state.wallet))}</b></span><span><small>${h(l({ko:'ì—¬í–‰ ì‹œê°',ja:'æ—…ã®æ™‚åˆ»',en:'TRIP TIME',zh:'æ—…è¡Œæ—¶é—´'}))}</small><b>${h(clock(state.clockMinutes))}</b></span><span><small>${h(l({ko:'ì¡°ì‚¬',ja:'èª¿æŸ»',en:'FOUND',zh:'è°ƒæŸ¥'}))}</small><b>${h(discoveryCount)}/${h(zone.pois.length)}</b></span></div><div class="travelRpgObjectiveHud"><small>${h(l({ko:'í˜„ì¬ ëª©í‘œ',ja:'ç¾åœ¨ã®ç›®æ¨™',en:'CURRENT OBJECTIVE',zh:'å½“å‰ç›®æ ‡'}))}</small><b>${h(l(scene.title))}</b></div>${rpgNoticeMarkup(scene,notice)}<div class="travelRpgControls"><div class="travelRpgDpad" aria-label="${h(l({ko:'ì´ë™ ë°©í–¥',ja:'ç§»å‹•æ–¹å‘',en:'Movement controls',zh:'ç§»åŠ¨æ–¹å‘'}))}"><button onclick="malbitTravelStep('up')" aria-label="${h(l({ko:'ìœ„ë¡œ ì´ë™',ja:'ä¸Šã¸ç§»å‹•',en:'Move up',zh:'å‘ä¸Šç§»åŠ¨'}))}">â†‘</button><button onclick="malbitTravelStep('left')" aria-label="${h(l({ko:'ì™¼ìª½ìœ¼ë¡œ ì´ë™',ja:'å·¦ã¸ç§»å‹•',en:'Move left',zh:'å‘å·¦ç§»åŠ¨'}))}">â†</button><button onclick="malbitTravelStep('down')" aria-label="${h(l({ko:'ì•„ë˜ë¡œ ì´ë™',ja:'ä¸‹ã¸ç§»å‹•',en:'Move down',zh:'å‘ä¸‹ç§»åŠ¨'}))}">â†“</button><button onclick="malbitTravelStep('right')" aria-label="${h(l({ko:'ì˜¤ë¥¸ìª½ìœ¼ë¡œ ì´ë™',ja:'å³ã¸ç§»å‹•',en:'Move right',zh:'å‘å³ç§»åŠ¨'}))}">â†’</button></div><button class="travelRpgAction" onclick="malbitTravelInteract()" ${interaction?'':'disabled'}><small>${interaction?`${h(targetTitle)} Â· `:''}${h(l({ko:'ìƒí˜¸ì‘ìš©',ja:'ã‚¤ãƒ³ã‚¿ãƒ©ã‚¯ãƒˆ',en:'INTERACT',zh:'äº’åŠ¨'}))}</small><b>${h(actionLabel)}</b></button></div><p class="travelRpgSaveStatus">${h(l({ko:'ì´ë™ê³¼ ì¡°ì‚¬ëŠ” ì´ ê¸°ê¸°ì— ìë™ ì €ì¥ë©ë‹ˆë‹¤.',ja:'ç§»å‹•ã¨èª¿æŸ»ã¯ã“ã®ç«¯æœ«ã«è‡ªå‹•ä¿å­˜ã•ã‚Œã¾ã™ã€‚',en:'Movement and discoveries save on this device.',zh:'ç§»åŠ¨ä¸è°ƒæŸ¥ä¼šè‡ªåŠ¨ä¿å­˜åœ¨æ­¤è®¾å¤‡ã€‚'}))}</p></div></article></div>`;
-  }
-  function renderPlay(sc){
-    const {pack,state,scene}=current();
-    if(!scene)return setView('travel');
-    const hub=hubByRoute(pack.id);
-    if(scene.type==='ending'&&state.completed&&hub&&state.myeongdong.screen!=='ending')return renderMyeongdong(sc,pack,state,hub);
-    const sceneMatch=RPG?.zoneForScene(pack.id,scene.id),match=sceneMatch?RPG.contextForProgress(pack.id,state.exploration,scene.id):null;
-    if(match&&!RPG_EVENT_OPEN[scene.id])return renderExploration(sc,pack,state,scene,match);
-    if(scene.type==='narrative')return renderNarrative(sc,pack,state,scene);
-    if(scene.type==='choice')return renderChoice(sc,pack,state,scene);
-    if(scene.type==='question')return renderQuestion(sc,pack,state,scene);
-    return renderEnding(sc,pack,state,scene);
-  }
-
-  window.malbitTravelOpen=()=>setView('travel');
-  window.malbitTravelStart=(packId,fresh)=>{
-    cancelRpgMotion();
-    const pack=packById(packId)||PACKS[0],store=readStore(),previous=normalizeState(pack,store.episodes[pack.id]);
-    let state=previous;
-    store.activePackId=pack.id;
-    if(fresh||!previous){resetTransient(pack);state=newState(pack,previous)}
-    else if(previous.completed)state.myeongdong.screen='ending';
-    recordMilestones(store,state,['routeStarted']);
-    if(state.completed)recordMilestones(store,state,['routeCompleted']);
-    store.episodes[pack.id]=state;
-    writeStore(store);
-    setView('travelPlay');
-    resetViewport();
-  };
-  window.malbitTravelContinue=packId=>{
-    window.malbitTravelStart(packId,false);
-    window.malbitTravelMyeongdongOpen();
-  };
-  window.malbitTravelRestart=packId=>{
-    const message=l({ko:'ì´ ì—¬í–‰ ì½”ìŠ¤ë¥¼ ì²˜ìŒë¶€í„° ë‹¤ì‹œ ì‹œì‘í• ê¹Œìš”? ìµœê³  ê¸°ë¡ê³¼ ì˜ìƒì€ ë‚¨ìŠµë‹ˆë‹¤.',ja:'ã“ã®æ—…è¡Œã‚³ãƒ¼ã‚¹ã‚’æœ€åˆã‹ã‚‰ã‚„ã‚Šç›´ã—ã¾ã™ã‹ï¼Ÿãƒ™ã‚¹ãƒˆè¨˜éŒ²ã¨è¡£è£…ã¯æ®‹ã‚Šã¾ã™ã€‚',en:'Restart this route? Your best score and outfits stay.',zh:'è¦ä»å¤´å¼€å§‹è¿™æ¡è·¯çº¿å—ï¼Ÿæœ€é«˜çºªå½•å’Œæœè£…ä¼šä¿ç•™ã€‚'});
-    if(!confirm(message))return;
-    window.malbitTravelStart(packId,true);
-  };
-  window.malbitTravelBack=()=>{cancelRpgMotion();cancelAudio();setView('travel');resetViewport()};
-  function activeRpgContext(){
-    const {pack,state,scene}=current(),sceneMatch=RPG?.zoneForScene(pack.id,scene?.id),match=sceneMatch?RPG.contextForProgress(pack.id,state.exploration,scene?.id):null;
-    return match?{pack,state,scene,...match}:null;
-  }
-  window.malbitTravelStep=direction=>{
-    if(!RPG.directions?.[direction])return;
-    if(RPG_MOTION.busy){
-      if(RPG_MOTION.queue.length<32)RPG_MOTION.queue.push(direction);
-      return;
-    }
-    const context=activeRpgContext();
-    if(!context||RPG_EVENT_OPEN[context.scene.id])return;
-    const progress=RPG.normalizeProgress(context.pack.id,context.state.exploration,context.scene.id);
-    const result=RPG.step(context.zone,progress,direction,context.scene.id);
-    context.state.exploration=result.progress;context.state.updatedAt=now();
-    if(result.blocked)RPG_NOTICE[context.scene.id]={type:'blocked'};else delete RPG_NOTICE[context.scene.id];
-    writeState(context.state);
-    const animated=animateRpgStep(context.zone,result.progress,result.blocked);
-    if(!animated){render();return}
-    RPG_MOTION.busy=true;
-    const token=RPG_MOTION.token;
-    RPG_MOTION.timer=setTimeout(()=>finishRpgMotion(context.scene.id,result.moved,token),result.blocked?130:RPG_STEP_MS);
-  };
-  window.malbitTravelInteract=()=>{
-    if(RPG_MOTION.busy){RPG_MOTION.pendingInteraction=true;return}
-    const context=activeRpgContext();
-    if(!context||RPG_EVENT_OPEN[context.scene.id])return;
-    const progress=RPG.normalizeProgress(context.pack.id,context.state.exploration,context.scene.id),interaction=RPG.interactionAt(context.zone,progress,context.scene.id);
-    if(!interaction){RPG_NOTICE[context.scene.id]={type:'blocked'};render();return}
-    if(interaction.type==='scene'){
-      cancelRpgMotion();
-      delete RPG_NOTICE[context.scene.id];RPG_EVENT_OPEN[context.scene.id]=true;cancelAudio();render();resetViewport();return;
-    }
-    if(interaction.type==='poi'){
-      const key=`${context.zone.id}:${interaction.target.id}`,discoveries=new Set(progress.discoveries||[]),found=!discoveries.has(key),reward=found?Math.max(0,Number(interaction.target.reward)||0):0;
-      if(found){
-        discoveries.add(key);progress.discoveries=[...discoveries];context.state.exploration=progress;context.state.wallet+=reward;context.state.clockMinutes+=1;context.state.updatedAt=now();writeState(context.state);
-      }
-      RPG_NOTICE[context.scene.id]={type:'poi',target:interaction.target,found,reward};render();return;
-    }
-    if(interaction.type==='portal'){
-      cancelRpgMotion();
-      const next=RPG.enterPortal(context.world,progress,interaction.target);
-      if(!next){RPG_NOTICE[context.scene.id]={type:'blocked'};render();return}
-      context.state.exploration=next;context.state.updatedAt=now();writeState(context.state);
-      const targetZone=RPG.zoneById(context.world,next.zoneId);
-      RPG_NOTICE[context.scene.id]={type:'portal',target:targetZone};render();return;
-    }
-    RPG_NOTICE[context.scene.id]={type:'blocked'};render();
-  };
-  window.malbitTravelCloseDiscovery=()=>{const context=activeRpgContext();if(!context)return;delete RPG_NOTICE[context.scene.id];render()};
-  window.malbitTravelCloseEvent=()=>{const context=activeRpgContext();if(!context)return;cancelRpgMotion();delete RPG_EVENT_OPEN[context.scene.id];cancelAudio();render();resetViewport()};
-  window.malbitTravelEquip=skinId=>{
-    const store=readStore(),pack=activePack();
-    if(!store.avatar.unlocked.includes(skinId)||!skinById(pack,skinId))return;
-    store.avatar.equipped=skinId;writeStore(store);
-    notify(l({ko:'ì—¬í–‰ì ì˜ìƒì„ ê°ˆì•„ì…ì—ˆì–´ìš”.',ja:'æ—…äººã®è¡£è£…ã‚’ç€æ›¿ãˆã¾ã—ãŸã€‚',en:'Traveler outfit changed.',zh:'æ—…è¡Œè€…æœè£…å·²æ›´æ¢ã€‚'}));
-    render();
-  };
-  window.malbitTravelMyeongdongOpen=()=>{
-    const {pack,state,scene}=current(),hub=hubByRoute(pack.id);
-    if(!hub||!state.completed||scene.type!=='ending')return;
-    const event=activeHubEvent(hub,state);
-    state.myeongdong.screen='hub';state.myeongdong.activeEvent=event.id;state.myeongdong.lastAttemptCorrect=null;
-    writeState(state,['routeStarted','routeCompleted','myeongdongEntered']);cancelAudio();render();resetViewport();
-  };
-  window.malbitTravelMyeongdongClose=()=>{
-    const {state}=current();
-    state.myeongdong.screen='ending';state.myeongdong.activeEvent=null;state.myeongdong.lastPurchase=null;
-    writeState(state);cancelAudio();render();resetViewport();
-  };
-  window.malbitTravelTalk=()=>{
-    const {pack,state}=current(),hub=hubByRoute(pack.id);
-    if(!hub||!state.completed)return;
-    const event=activeHubEvent(hub,state);
-    HUB_DIALOGUE_STEP[event.id]=0;delete HUB_COMPOSE_RESULT[event.id];
-    state.myeongdong.screen='dialogue';state.myeongdong.activeEvent=event.id;state.myeongdong.lastAttemptCorrect=null;state.myeongdong.lastPurchase=null;
-    writeState(state);render();resetViewport();
-  };
-  window.malbitTravelDialogueNext=()=>{
-    const {pack,state}=current(),hub=hubByRoute(pack.id);if(!hub||state.myeongdong.screen!=='dialogue')return;
-    const event=Object.values(hub.events).find(item=>item.id===state.myeongdong.activeEvent)||activeHubEvent(hub,state),turns=Array.isArray(event.conversation)?event.conversation:[];
-    HUB_DIALOGUE_STEP[event.id]=Math.min(Math.max(0,turns.length-1),(Number(HUB_DIALOGUE_STEP[event.id])||0)+1);render();
-  };
-  window.malbitTravelOrderStart=()=>{
-    const {pack,state}=current(),hub=hubByRoute(pack.id);
-    if(!hub)return;
-    const event=Object.values(hub.events).find(item=>item.id===state.myeongdong.activeEvent)||activeHubEvent(hub,state);
-    HUB_ORDER[event.id]=[];HUB_BUDGET[event.id]=1;delete HUB_COMPOSE_RESULT[event.id];state.myeongdong.screen='order';state.myeongdong.lastAttemptCorrect=null;
-    writeState(state,event.interaction==='price-budget'&&!hubQuestDone(state,event.id)?['priceQuestStarted']:[]);render();resetViewport();
-  };
-  function changeHubBudget(delta){
-  const {pack,state}=current(),hub=hubByRoute(pack.id);if(!hub||state.myeongdong.screen!=='order')return;
-  const event=Object.values(hub.events).find(item=>item.id===state.myeongdong.activeEvent)||activeHubEvent(hub,state);if(event.interaction!=='price-budget')return;
-  const currentQuantity=Math.max(0,Number(HUB_BUDGET[event.id])||1),maximum=Math.max(1,Number(event.maxQuantity)||3);
-  HUB_BUDGET[event.id]=Math.max(0,Math.min(maximum,currentQuantity+Number(delta||0)));state.myeongdong.lastAttemptCorrect=null;render();
-}
-  function submitHubBudget(){
-  const {pack,state}=current(),hub=hubByRoute(pack.id);if(!hub||state.myeongdong.screen!=='order')return;
-  const event=Object.values(hub.events).find(item=>item.id===state.myeongdong.activeEvent)||activeHubEvent(hub,state);if(event.interaction!=='price-budget')return;
-  const item=event.menu.find(entry=>entry.id===event.targetItem)||event.menu[0],quantity=Math.max(0,Number(HUB_BUDGET[event.id])||0),cost=item.price*quantity;
-  if(quantity!==Number(event.targetQuantity)||cost>Number(event.budget)){
-    const tracking=!hubQuestDone(state,event.id);
-    state.myeongdong.attempts+=1;state.myeongdong.lastAttemptCorrect=false;state.clockMinutes+=1;state.updatedAt=now();
-    writeState(state,tracking?['priceQuestStarted']:[],tracking?{priceQuestWrongSubmissions:1}:null);render();revealFeedback();return;
-  }
-  if(cost>state.wallet)return notify(l({ko:'ì—¬í–‰ ì›ì´ ë¶€ì¡±í•©ë‹ˆë‹¤. ë‹¤ë¥¸ í€˜ìŠ¤íŠ¸ì—ì„œ ì¡°ê¸ˆ ë” ëª¨ì•„ ì£¼ì„¸ìš”.',ja:'æ—…ã‚¦ã‚©ãƒ³ãŒè¶³ã‚Šã¾ã›ã‚“ã€‚ã»ã‹ã®ã‚¯ã‚¨ã‚¹ãƒˆã§ã‚‚ã†å°‘ã—é›†ã‚ã‚ˆã†ã€‚',en:'Not enough travel won. Earn a little more in another quest.',zh:'æ—…è¡ŒéŸ©å…ƒä¸è¶³ï¼Œè¯·å…ˆåœ¨å…¶ä»–ä»»åŠ¡ä¸­èµšå–ã€‚'}));
-  const already=hubQuestDone(state,event.id),previous=state.myeongdong.quests[event.id]&&typeof state.myeongdong.quests[event.id]==='object'?state.myeongdong.quests[event.id]:{};
-  if(!already){state.wallet-=cost;state.spent=Array.isArray(state.spent)?state.spent:[];state.spent.push({kind:'street-food',id:event.id,item:item.id,quantity,cost,currency:'travel-won',at:now()});}
-  state.myeongdong.quests[event.id]={...previous,completed:true,earned:0,quantity,cost,completedAt:previous.completedAt||now()};
-  state.myeongdong.lastAttemptCorrect=null;state.myeongdong.screen='result';state.clockMinutes+=3;state.updatedAt=now();
-  if(!state.evidence.includes(`hub:${event.id}`))state.evidence.push(`hub:${event.id}`);
-  writeState(state,already?[]:['priceQuestStarted','priceQuestCompleted'],already?null:{priceQuestWalletAfterCompletion:state.wallet});render();resetViewport();
-}
-  window.malbitTravelBudgetChange=changeHubBudget;
-  window.malbitTravelBudgetSubmit=submitHubBudget;
-  window.malbitTravelOrderAdd=index=>{
-    const {pack,state}=current(),hub=hubByRoute(pack.id);if(!hub||state.myeongdong.screen!=='order')return;
-    const event=Object.values(hub.events).find(item=>item.id===state.myeongdong.activeEvent)||activeHubEvent(hub,state);
-    const order=Array.isArray(HUB_ORDER[event.id])?HUB_ORDER[event.id]:[];
-    index=Number(index);if(!Number.isInteger(index)||index<0||index>=event.tokens.length||order.includes(index))return;
-    const required=event.interaction==='sign-build'?event.answer.length:event.interaction==='free-compose'?Math.min(10,event.tokens.length):event.tokens.length;if(order.length>=required)return;
-    order.push(index);HUB_ORDER[event.id]=order;delete HUB_COMPOSE_RESULT[event.id];state.myeongdong.lastAttemptCorrect=null;render();
-  };
-  window.malbitTravelOrderRemove=position=>{
-    const {pack,state}=current(),hub=hubByRoute(pack.id);if(!hub||state.myeongdong.screen!=='order')return;
-    const event=Object.values(hub.events).find(item=>item.id===state.myeongdong.activeEvent)||activeHubEvent(hub,state);
-    const order=Array.isArray(HUB_ORDER[event.id])?HUB_ORDER[event.id]:[];
-    position=Number(position);if(!Number.isInteger(position)||position<0||position>=order.length)return;
-    order.splice(position,1);delete HUB_COMPOSE_RESULT[event.id];state.myeongdong.lastAttemptCorrect=null;render();
-  };
-  window.malbitTravelOrderReset=()=>{
-    const {pack,state}=current(),hub=hubByRoute(pack.id);if(!hub)return;
-    const event=Object.values(hub.events).find(item=>item.id===state.myeongdong.activeEvent)||activeHubEvent(hub,state);
-    HUB_ORDER[event.id]=[];delete HUB_COMPOSE_RESULT[event.id];state.myeongdong.lastAttemptCorrect=null;render();
-  };
-  window.malbitTravelOrderSubmit=()=>{
-    const {pack,state}=current(),hub=hubByRoute(pack.id);if(!hub||state.myeongdong.screen!=='order')return;
-    const event=Object.values(hub.events).find(item=>item.id===state.myeongdong.activeEvent)||activeHubEvent(hub,state);
-    const order=Array.isArray(HUB_ORDER[event.id])?HUB_ORDER[event.id]:[];
-    const sign=event.interaction==='sign-build',free=event.interaction==='free-compose',required=sign?event.answer.length:event.tokens.length;
-    if((free&&order.length<2)||(!free&&order.length!==required))return notify(sign?l({ko:'í•„ìš”í•œ ì„¸ ê¸€ìë¥¼ í‘œì§€íŒì— ë†“ì•„ ì£¼ì„¸ìš”.',ja:'å¿…è¦ãª3æ–‡å­—ã‚’æ¨™è­˜ã«ç½®ã„ã¦ãã ã•ã„ã€‚',en:'Place the three needed letters on the sign.',zh:'è¯·æŠŠéœ€è¦çš„ä¸‰ä¸ªå­—æ”¾åˆ°æ ‡ç‰Œä¸Šã€‚'}):free?l({ko:'ë‘ ê°œ ì´ìƒì˜ ë‹¨ì–´ë¥¼ ê³¨ë¼ ë§ì„ ë§Œë“¤ì–´ ì£¼ì„¸ìš”.',ja:'2ã¤ä»¥ä¸Šã®å˜èªã‚’é¸ã‚“ã§æ–‡ã‚’ä½œã£ã¦ãã ã•ã„ã€‚',en:'Choose at least two words to build a sentence.',zh:'è¯·é€‰æ‹©è‡³å°‘ä¸¤ä¸ªè¯æ¥é€ å¥ã€‚'}):l({ko:'ëª¨ë“  ë‹¨ì–´ë¥¼ ë¬¸ì¥ ì¹¸ì— ë†“ì•„ ì£¼ì„¸ìš”.',ja:'ã™ã¹ã¦ã®å˜èªã‚’æ–‡ã®æ¬„ã«ç½®ã„ã¦ãã ã•ã„ã€‚',en:'Place every word in the sentence.',zh:'è¯·æŠŠæ‰€æœ‰è¯æ”¾å…¥å¥å­æ ã€‚'}));
-    const built=order.map(index=>event.tokens[index]);
-    const evaluated=free?compositionResult(event,built):null,correct=free?evaluated.grade==='full':built.every((token,index)=>token===event.answer[index]);
-    if(free&&!correct){
-      const previous=state.myeongdong.quests[event.id]&&typeof state.myeongdong.quests[event.id]==='object'?state.myeongdong.quests[event.id]:{},attempted=Array.isArray(previous.attemptedPhrases)?previous.attemptedPhrases:[],key=compactSentence(evaluated.phrase),unique=!attempted.includes(key),limit=Math.max(0,Number(event.maxPartialRewards)||3),claimed=Math.max(0,Number(previous.partialRewards)||0),reward=evaluated.grade==='partial'&&unique&&claimed<limit?Math.max(0,Number(event.partialReward)||0):0;
-      if(unique)attempted.push(key);
-      if(reward)state.wallet+=reward;
-      state.myeongdong.quests[event.id]={...previous,attemptedPhrases:attempted.slice(-20),partialRewards:claimed+(reward?1:0),partialEarned:Math.max(0,Number(previous.partialEarned)||0)+reward};
-      state.myeongdong.attempts+=1;state.clockMinutes+=1;state.updatedAt=now();state.myeongdong.lastAttemptCorrect=null;
-      HUB_COMPOSE_RESULT[event.id]={...evaluated,earned:reward};writeState(state);render();revealFeedback();return;
-    }
-    if(!correct){
-      state.myeongdong.attempts+=1;state.myeongdong.lastAttemptCorrect=false;state.clockMinutes+=2;state.updatedAt=now();HUB_ORDER[event.id]=[];
-      writeState(state);render();revealFeedback();return;
-    }
-    const already=hubQuestDone(state,event.id),earned=already?0:Number(event.reward)||0;
-    const previous=state.myeongdong.quests[event.id]&&typeof state.myeongdong.quests[event.id]==='object'?state.myeongdong.quests[event.id]:{};
-    state.myeongdong.quests[event.id]={...previous,completed:true,earned,answer:Array.from(event.answer),completedAt:now()};
-    state.myeongdong.lastAttemptCorrect=null;state.myeongdong.screen='result';state.wallet+=earned;state.clockMinutes+=3;state.updatedAt=now();
-    if(event.itemReward&&!state.inventory.includes(event.itemReward))state.inventory.push(event.itemReward);
-    if(!state.evidence.includes(`hub:${event.id}`))state.evidence.push(`hub:${event.id}`);
-    HUB_ORDER[event.id]=[];delete HUB_COMPOSE_RESULT[event.id];writeState(state);render();resetViewport();
-  };
-  window.malbitTravelBuy=itemId=>{
-    const {pack,state,scene}=current(),hub=hubByRoute(pack.id);if(!hub||!state.completed||scene.type!=='ending')return;
-    const event=activeHubEvent(hub,state),item=hub.exchange.find(entry=>entry.id===itemId);if(!item)return;
-    const availability=exchangeAvailability(item,event,state);if(availability.disabled)return notify(availability.status);
-    const cost=Math.max(0,Number(item.cost)||0);
-    state.wallet-=cost;state.clockMinutes+=2;state.inventory.push(item.id);state.myeongdong.lastPurchase=item.id;state.myeongdong.screen='hub';state.updatedAt=now();
-    state.spent=Array.isArray(state.spent)?state.spent:[];state.spent.push({kind:'collectible',id:item.id,cost,currency:'travel-won',at:now()});
-    writeState(state,['routeStarted','routeCompleted','myeongdongEntered','exchangeSession']);render();
-  };
-  window.malbitTravelNext=()=>{
-    const {pack,state,scene}=current();
-    if(scene.type==='question'&&!state.answers[scene.id])return notify(l({ko:'ë¨¼ì € ë¬¸ì œë¥¼ í’€ì–´ ì£¼ì„¸ìš”.',ja:'å…ˆã«å•é¡Œã‚’è§£ã„ã¦ãã ã•ã„ã€‚',en:'Answer the question first.',zh:'è¯·å…ˆç­”é¢˜ã€‚'}));
-    if(scene.type==='ending')return setView('travel');
-    move(state,pack,scene.next);
-  };
-  window.malbitTravelChoose=choiceId=>{
-    const {pack,state,scene}=current(),choice=scene?.choices?.find(item=>item.id===choiceId);
-    if(!choice)return;
-    const cost=Math.max(0,Number(choice.cost)||0);
-    if(cost>state.wallet)return notify(l({ko:'ì—¬í–‰ ì›ì´ ë¶€ì¡±í•©ë‹ˆë‹¤. ë¬¸ì œë¥¼ ë” ë§í˜€ ë³´ì„¸ìš”.',ja:'æ—…ã‚¦ã‚©ãƒ³ãŒè¶³ã‚Šã¾ã›ã‚“ã€‚å•é¡Œã«æ­£è§£ã—ã¦å¢—ã‚„ãã†ã€‚',en:'Not enough travel won. Earn more from correct answers.',zh:'æ—…è¡ŒéŸ©å…ƒä¸è¶³ï¼Œè¯·é€šè¿‡ç­”é¢˜èµšå–ã€‚'}));
-    state.route=choice.id;
-    state.wallet-=cost;state.clockMinutes+=Math.max(0,Number(choice.durationMinutes)||0);
-    state.spent=Array.isArray(state.spent)?state.spent:[];state.spent.push({kind:'transport',id:choice.id,cost,at:now()});
-    move(state,pack,choice.next||scene.next);
-  };
-  window.malbitTravelSelect=index=>{
-    const {state,scene}=current();
-    if(scene.type!=='question'||state.answers[scene.id])return;
-    SELECTED[scene.id]=Number(index);
-    render();
-  };
-  window.malbitTravelSubmit=()=>{
-    const {pack,state,scene}=current();
-    if(scene.type!=='question'||state.answers[scene.id])return;
-    const selected=SELECTED[scene.id];
-    if(!Number.isInteger(selected))return notify(l({ko:'ë‹µì„ ë¨¼ì € ì„ íƒí•´ ì£¼ì„¸ìš”.',ja:'å…ˆã«ç­”ãˆã‚’é¸ã‚“ã§ãã ã•ã„ã€‚',en:'Select an answer first.',zh:'è¯·å…ˆé€‰æ‹©ç­”æ¡ˆã€‚'}));
-    const payload=ensureQuestion(pack,state,scene);
-    if(!payload)return;
-    const q=payload.display,correct=selected===q.answerIndex;
-    const earned=correct?Number(scene.reward??pack.questionReward)||0:0;
-    const delayMinutes=correct?2:4,itemReward=correct&&scene.itemReward?scene.itemReward:null;
-    state.answers[scene.id]={selected,correct,earned,delayMinutes,itemReward,bankId:q.bankId,choiceOrder:Array.from(q.choiceOrder),answeredAt:now()};
-    delete SELECTED[scene.id];
-    state.wallet+=earned;state.clockMinutes+=delayMinutes;
-    if(itemReward&&!state.inventory.includes(itemReward))state.inventory.push(itemReward);
-    if(!state.evidence.includes(scene.id))state.evidence.push(scene.id);
-    state.updatedAt=now();
-    if(!correct){
-      try{window.MALBIT_REVIEW?.record(payload.source.level,q.section==='listening'?'listen':'read',q.bankId,selected,'travel',{choiceOrder:q.choiceOrder})}catch(error){}
-    }
-    writeState(state);
-    render();
-    revealFeedback();
-  };
-  window.malbitTravelToggleTranscript=()=>{const {scene}=current();TRANSCRIPTS[scene.id]=!TRANSCRIPTS[scene.id];render()};
-  window.malbitTravelSpeak=()=>{
-    const {pack,state,scene}=current(),payload=ensureQuestion(pack,state,scene),script=cleanScript(payload?.display?.script);
-    if(!script||(!window.MALBIT_TTS&&(typeof speechSynthesis==='undefined'||typeof SpeechSynthesisUtterance==='undefined')))return notify(l({ko:'ì´ ê¸°ê¸°ì—ì„œëŠ” ìŒì„± ì¬ìƒì„ ì‚¬ìš©í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.',ja:'ã“ã®ç«¯æœ«ã§ã¯éŸ³å£°å†ç”Ÿã‚’åˆ©ç”¨ã§ãã¾ã›ã‚“ã€‚',en:'Audio playback is unavailable on this device.',zh:'æ­¤è®¾å¤‡æ— æ³•æ’­æ”¾è¯­éŸ³ã€‚'}));
-    try{
-      if(window.MALBIT_TTS){window.MALBIT_TTS.play(script);return}
-      speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(script);utterance.lang='ko-KR';utterance.rate=.82;speechSynthesis.speak(utterance);
-    }catch(error){notify(l({ko:'ìŒì„± ì¬ìƒì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.',ja:'éŸ³å£°ã®å†ç”Ÿã«å¤±æ•—ã—ã¾ã—ãŸã€‚',en:'Could not play audio.',zh:'è¯­éŸ³æ’­æ”¾å¤±è´¥ã€‚'}))}
-  };
-
-  window.malbitTravelMetrics=()=>metricsSnapshot();
-  window.MALBIT_TRAVEL_RPG_MOTION=Object.freeze({
-    get busy(){return RPG_MOTION.busy},
-    get queued(){return RPG_MOTION.queue.length},
-    durationMs:RPG_STEP_MS,
-    cameraScale:RPG_CAMERA_SCALE
-  });
-
-  document.addEventListener?.('keydown',event=>{
-    if(S.view!=='travelPlay'||event.defaultPrevented||event.metaKey||event.ctrlKey||event.altKey)return;
-    const target=event.target,tag=String(target?.tagName||'').toLowerCase();
-    if(tag==='input'||tag==='textarea'||tag==='select'||target?.isContentEditable)return;
-    const context=activeRpgContext();if(!context||RPG_EVENT_OPEN[context.scene.id])return;
-    const direction={ArrowUp:'up',w:'up',W:'up',ArrowDown:'down',s:'down',S:'down',ArrowLeft:'left',a:'left',A:'left',ArrowRight:'right',d:'right',D:'right'}[event.key];
-    if(direction){event.preventDefault();window.malbitTravelStep(direction);return}
-    if(event.key==='Enter'||event.key===' '||event.key==='e'||event.key==='E'){event.preventDefault();window.malbitTravelInteract()}
-  });
-  window.addEventListener?.('resize',scheduleRpgCameraSync,{passive:true});
-
-  // A returning tab may still hold the old view name. Migrate it without touching any progress.
-  if(S.view==='story'||S.view==='storyPlay'){
-    S.view=S.view==='storyPlay'?'travelPlay':'travel';
-    try{save()}catch(error){}
-  }
-  // Compatibility aliases keep already-cached buttons functional during the service-worker swap.
-  window.malbitStoryOpen=window.malbitTravelOpen;
-  window.malbitStoryStart=window.malbitTravelStart;
-  window.malbitStoryRestart=window.malbitTravelRestart;
-  window.malbitStoryBack=window.malbitTravelBack;
-  window.malbitStoryNext=window.malbitTravelNext;
-  window.malbitStoryChoose=window.malbitTravelChoose;
-  window.malbitStorySelect=window.malbitTravelSelect;
-  window.malbitStorySubmit=window.malbitTravelSubmit;
-  window.malbitStoryToggleTranscript=window.malbitTravelToggleTranscript;
-  window.malbitStorySpeak=window.malbitTravelSpeak;
-
-  const baseRender=window.render;
-  window.render=function(){
-    const travelView=S.view==='travel'||S.view==='travelPlay';
-    document.body.classList.toggle('travel-active',travelView);
-    document.body.classList.remove('travel-rpg-active');
-    if(!travelView)return baseRender.apply(this,arguments);
-    document.body.classList.remove('tq-home-active','tq-shorts-active','tq-stats-active','tq-game-active');
-    try{hideSelection()}catch(error){}try{renderShell()}catch(error){}
-    const sc=document.getElementById('screen');sc.className='screen travelScreen';sc.innerHTML='';
-    if(S.view==='travel')return renderHub(sc);
-    navActive('home');
-    return renderPlay(sc);
-  };
-
-  window.MALBIT_TRAVEL=Object.freeze({storageKey:STORAGE_KEY,packs:PACKS,hubs:HUBS,rpg:RPG,open:window.malbitTravelOpen,metrics:window.malbitTravelMetrics});
-  window.MALBIT_STORY=window.MALBIT_TRAVEL;
-})();
+YªçŠx-®éÜj×¢ëiºÚ+Š§j[h‘éÜ¢éíß­4Ñ:-jZ.¶›­–)Ş³RòòÔÄ$•BG&fVÂÖöFR+rFFÖG&—fVâ6V÷VÂ&÷WFR'VçF–ÖP¢†gVæ7F–öâ‚—°¢wW6R7G&–7Bs° ¢òò¶VWF†RÆVv7’¶W’W&ÖæVçFÇ“¢W†—7F–ær7F÷'’&öw&W72&V6öÖW26V÷VÂ&÷WFR&öw&W72à¢6öç7B5Dõ$tUô´U“ÒvÖÆ&—E7F÷'•cs°¢6öç7BDTdTÅEõ4´”ãÒwG&fVÆW"Ö&ÇVRs°¢6öç7B4µ3Ô'&’æ—4'&’‡v–æF÷räÔÄ$•EõE$dTÅõ4µ2“÷v–æF÷räÔÄ$•EõE$dTÅõ4µ3¥µÓ°¢6öç7B…T%3Ô'&’æ—4'&’‡v–æF÷räÔÄ$•EõE$dTÅô…T%2“÷v–æF÷räÔÄ$•EõE$dTÅô…T%3¥µÓ°¢6öç7B%s×v–æF÷räÔÄ$•EõE$dTÅõ%wÇÆçVÆÃ°¢6öç7B4TÄT5DTCÔö&¦V7Bæ7&VFR†çVÆÂ“°¢6öç7BE$å45$•E3Ôö&¦V7Bæ7&VFR†çVÆÂ“°¢6öç7B%uôUdTåEôõTãÔö&¦V7Bæ7&VFR†çVÆÂ“°¢6öç7B%uôäõD”4SÔö&¦V7Bæ7&VFR†çVÆÂ“°¢6öç7B%uôÔõD”ôã×¶'W7“¦fÇ6RÇVWVS¥µÒÇF–ÖW#¦çVÆÂÇFö¶Vã£ÇVæF–æt–çFW&7F–öã¦fÇ6WÓ°¢6öç7B%uô5TS×·F–ÖW#¦çVÆÂÇFö¶Vã£Æ7F—fS¦çVÆÇÓ°¢6öç7B%uõ5DUôÕ3Ó“°¢6öç7B%uõ4UEDÄUôÕ3Ó“°¢6öç7B%uô4ÔU$õ44ÄSÓã#°¢ÆWB%uô4ÔU$ôe$ÔSÓ°¢6öç7B…T%ôõ$DU#Ôö&¦V7Bæ7&VFR†çVÆÂ“°¢6öç7B…T%ô%TDtUCÔö&¦V7Bæ7&VFR†çVÆÂ“°¢6öç7B…T%ôD”ÄôuTUõ5DUÔö&¦V7Bæ7&VFR†çVÆÂ“°¢6öç7B…T%ô4ôÕõ4Uõ$U5TÅCÔö&¦V7Bæ7&VFR†çVÆÂ“°¢6öç7BÔUE$”5ô´U•3Ôö&¦V7Bæg&VW¦R‡°¢&÷WFU7F'FVC¢w&÷WFU7F'G2rÀ¢&÷WFT6ö×ÆWFVC¢w&÷WFT6ö×ÆWF–öç2rÀ¢×–VöævFöætVçFW&VC¢v×–VöævFöætVçG&–W2rÀ¢W†6†ævU6W76–öã¢vW†6†ævU6W76–öç2rÀ¢&–6UVW7E7F'FVC¢w&–6UVW7E7F'G2rÀ¢&–6UVW7D6ö×ÆWFVC¢w&–6UVW7D6ö×ÆWF–öç2p¢Ò“° ¢–b‚4µ2æÆVæwF‚—¶6öç6öÆRæW'&÷"‚u´ÔÄ$•BG&fVÅÒG&fVÂ6²Ö—76–ærr“·&WGW&çĞ ¢6öç7Bƒ×fÇVSÓå7G&–ær‡fÇVSóòrr’ç&WÆ6R‚òbörÂrf×²r’ç&WÆ6R‚óÂörÂrfÇC²r’ç&WÆ6R‚óâörÂrfwC²r’ç&WÆ6R‚ò"örÂrgV÷C²r“°¢6öç7BÆæsÒ‚“Óå²v¶òrÂv¦rÂvVârÂw¦‚uÒæ–æ6ÇVFW2…2æÆær“õ2æÆæs¢v¶òs°¢6öç7BÃ×fÇVSÓçG—VöbfÇVSÓÓÒw7G&–ærs÷fÇVS¢‡fÇVSòå¶Æær‚•×ÇÇfÇVSòæ¶÷ÇÂrr“°¢6öç7BfÆsÒ‚“Óçv–æF÷räÄäu3òå¶Æær‚•ÓòæfÆwÇÂ‡¶¶ó¢	ø{	ø{rrÆ¦¢	øzÿ	ø{RrÆVã¢	ø{¯	ø{‚rÇ¦ƒ¢	øz	ø{2wÒ•¶Æær‚•×ÇÂ	øÉs°¢6öç7Bæ÷sÒ‚“ÓææWrFFR‚’çFô•4õ7G&–ær‚“°¢6öç7B6´'”–CÖ–CÓå4µ2æf–æB‡6³Óç6²æ–CÓÓÖ–B—ÇÆçVÆÃ°¢6öç7B‡V$'•&÷WFSÖ–CÓä…T%2æf–æB†‡V#Óæ‡V"ç&÷WFT–CÓÓÖ–B—ÇÆçVÆÃ°¢6öç7B66VæT'”–CÒ‡6²Æ–B“Óç6³òç66VæW3òæf–æB‡66VæSÓç66VæRæ–CÓÓÖ–B—ÇÆçVÆÃ°¢6öç7B&÷WFU66VæSÒ‡66VæRÇ7FFR“Óç°¢6öç7Bf&–çC×66VæSòç&÷WFUf&–çG3òå·7FFSòç&÷WFUÓ°¢&WGW&âf&–çC÷²ââç66VæRÂââçf&–çGÓ§66VæS°¢Ó°¢6öç7BVW7F–öå66VæW3×6³Óç6²ç66VæW2æf–ÇFW"‡66VæSÓç66VæRçG—SÓÓÒwVW7F–öâr“°¢6öç7B6÷'&V7D6÷VçC×7FFSÓäö&¦V7BçfÇVW2‡7FFSòæç7vW'7ÇÇ·Ò’æf–ÇFW"†ç7vW#Óæç7vW#òæ6÷'&V7B’æÆVæwFƒ°¢6öç7Bç7vW&VD6÷VçC×7FFSÓäö&¦V7Bæ¶W—2‡7FFSòæç7vW'7ÇÇ·Ò’æÆVæwFƒ°¢6öç7Bvöã×fÇVSÓç°¢6öç7BÖ÷VçCÔÖF‚æÖ‚ƒÄçVÖ&W"‡fÇVR—ÇÃ’çFôÆö6ÆU7G&–ær‚v¶òÔµ"r“°¢&WGW&âÆær‚“ÓÓÒv¦söG¶Ö÷VçGŞix^8*n8*8;6¦Æær‚“ÓÓÒvVâsöG¶Ö÷VçGÒG&fVÂvöæ¦Æær‚“ÓÓÒw¦‚söG¶Ö÷VçGŞix^ŠÎ™úXX6¦G¶Ö÷VçGŞÉ¹°¢Ó°¢6öç7B6Æö6³×fÇVSÓç¶6öç7BÖ–çWFW3Ò‚„çVÖ&W"‡fÇVR—ÇÃ’SCC³CC’SCC·&WGW&æGµ7G&–ær„ÖF‚æfÆö÷"†Ö–çWFW2óc’’çE7F'Bƒ"Âsr—Ó¢Gµ7G&–ær†Ö–çWFW2Sc’çE7F'Bƒ"Âsr—ÖÓ° ¢gVæ7F–öâæ÷F–g’†ÖW76vR—°¢–b‡G—VöbFö7CÓÓÒvgVæ7F–öâr—&WGW&âFö7B†ÖW76vR“°¢6öç6öÆRæ–æfò‚u´ÔÄ$•BG&fVÅÒrÆÖW76vR“°¢Ğ¢gVæ7F–öâ6æ6VÄVF–ò‚—°¢G'—¶–b‡v–æF÷räÔÄ$•EõEE2—v–æF÷räÔÄ$•EõEE2æ6æ6VÂ‚“¶VÇ6R7VV6…7–çF†W6—2æ6æ6VÂ‚—Ö6F6‚†W'&÷"—·Ğ¢Ğ¢gVæ7F–öâ&W6WEf–Ww÷'B‚—°¢6öç7B&W6WCÒ‚“Óç·G'—·v–æF÷rç67&öÆÅFóòâ‡·F÷£ÆÆVgC£Æ&V†f–÷#¢vWFòwÒ—Ö6F6‚†W'&÷"—·G'—·v–æF÷rç67&öÆÅFóòâƒÃ—Ö6F6‚†–ææW$W'&÷"—·××Ó°¢G'—·&WVW7Dæ–ÖF–öäg&ÖR‡&W6WB—Ö6F6‚†W'&÷"—·&W6WB‚—Ğ¢Ğ¢gVæ7F–öâ6æ6VÅ'tÖ÷F–öâ‚—°¢%uôÔõD”ôâçFö¶Vâ³Ó°¢%uôÔõD”ôâæ'W7“ÖfÇ6S°¢%uôÔõD”ôâçVWVRæÆVæwFƒÓ°¢%uôÔõD”ôâçVæF–æt–çFW&7F–öãÖfÇ6S°¢–b…%uôÔõD”ôâçF–ÖW"bgG—Vöb6ÆV%F–ÖV÷WCÓÓÒvgVæ7F–öâr–6ÆV%F–ÖV÷WB…%uôÔõD”ôâçF–ÖW"“°¢%uôÔõD”ôâçF–ÖW#ÖçVÆÃ°¢Ğ¢gVæ7F–öâ6ÆV%'t7VR‚—°¢%uô5TRçFö¶Vâ³Ó°¢–b…%uô5TRçF–ÖW"bgG—Vöb6ÆV%F–ÖV÷WCÓÓÒvgVæ7F–öâr–6ÆV%F–ÖV÷WB…%uô5TRçF–ÖW"“°¢%uô5TRçF–ÖW#ÖçVÆÃµ%uô5TRæ7F—fSÖçVÆÃ°¢6öç7B6†VÆÃÖFö7VÖVçBçVW'•6VÆV7F÷#òâ‚rçG&fVÅ'u6†VÆÂr“°¢–b‡6†VÆÂ—¶FVÆWFR6†VÆÂæFF6WBæ7VT¶–æC¶FVÆWFR6†VÆÂæFF6WBæ7VU†6S·6†VÆÂæ6Æ74Æ—7Bç&VÖ÷fR‚v—2Ö7VRÖ7F—fRr—Ğ¢Fö7VÖVçBçVW'•6VÆV7F÷#òâ‚rçG&fVÅ'uf–Ww÷'Br“òç&VÖ÷fTGG&–'WFSòâ‚v&–Ö'W7’r“°¢Ğ¢gVæ7F–öâVÖ—E't7VR‡7FvR—°¢–b‚7FvR—&WGW&ã°¢6öç7BFWF–ÃÔö&¦V7Bæg&VW¦R‡¶¶–æC§7FvRæ¶–æBÇ†6S§7FvRç†6RÇ6÷VæC§7FvRç6÷VæBÇf–'&F–öã¤ö&¦V7Bæg&VW¦R…²âââ‡7FvRçf–'&F–öçÇÅµÒ•Ò—Ò“°¢6öç7B†öö·3×v–æF÷räÔÄ$•EõE$dTÅô5TUô„ôôµ3°¢G'—¶–b††öö·3òç6÷VæCÓÓ×G'VRbgG—Vöb†öö·2çÆ•6÷VæCÓÓÒvgVæ7F–öâr–†öö·2çÆ•6÷VæB†FWF–Âç6÷VæBÆFWF–Â—Ö6F6‚†W'&÷"—·Ğ¢G'—¶–b††öö·3òçf–'&F–öãÓÓ×G'VRbgG—Vöb†öö·2çf–'&FSÓÓÒvgVæ7F–öâr–†öö·2çf–'&FR…²ââæFWF–Âçf–'&F–öåÒÆFWF–Â—Ö6F6‚†W'&÷"—·Ğ¢G'—¶–b‡G—Vöbv–æF÷ræF—7F6„WfVçCÓÓÒvgVæ7F–öârbgG—Vöbv–æF÷rä7W7FöÔWfVçCÓÓÒvgVæ7F–öâr—v–æF÷ræF—7F6„WfVçB†æWr7W7FöÔWfVçB‚vÖÆ&—C§G&fVÂÖ7VRrÇ¶FWF–ÇÒ’—Ö6F6‚†W'&÷"—·Ğ¢Ğ¢gVæ7F–öâÇ•'t7VR‡7FvR—°¢–b‚7FvR—&WGW&ã°¢%uô5TRæ7F—fS×7FvS°¢6öç7B6†VÆÃÖFö7VÖVçBçVW'•6VÆV7F÷#òâ‚rçG&fVÅ'u6†VÆÂr’Çf–Ww÷'C×6†VÆÃòçVW'•6VÆV7F÷#òâ‚rçG&fVÅ'uf–Ww÷'Br“°¢–b‡6†VÆÂ—·6†VÆÂæFF6WBæ7VT¶–æC×7FvRæ¶–æC·6†VÆÂæFF6WBæ7VU†6S×7FvRç†6S·6†VÆÂæ6Æ74Æ—7BæFB‚v—2Ö7VRÖ7F—fRr—Ğ¢f–Ww÷'Còç6WDGG&–'WFSòâ‚v&–Ö'W7’rÂwG'VRr“°¢VÖ—E't7VR‡7FvR“°¢Ğ¢gVæ7F–öâÆ•'t7VR‡G—RÆFWF–ÂÆ6öÖÖ—B—°¢6öç7BÆãÕ%sòæ7VUÆãòâ‡G—RÆFWF–Â—ÇÆçVÆÃ°¢6ÆV%'t7VR‚“°¢–b‚Æâ—¶6öÖÖ—B‚“·&WGW&çĞ¢6öç7BFö¶VãÕ%uô5TRçFö¶Vã°¢6öç7B6WGFÆSÒ‚“Óç°¢–b‡Fö¶VâÓÕ%uô5TRçFö¶Vâ—&WGW&ã°¢6öÖÖ—B‚“°¢–b‚Æâç6WGFÆR—&WGW&â6ÆV%'t7VR‚“°¢6öç7B6†÷sÒ‚“Óç°¢–b‡Fö¶VâÓÕ%uô5TRçFö¶Vâ—&WGW&ã°¢Ç•'t7VR‡Æâç6WGFÆR“°¢–b‡G—Vöb6WEF–ÖV÷WBÓÒvgVæ7F–öâwÇÇv–æF÷ræÖF6„ÖVF–òâ‚r‡&VfW'2×&VGV6VBÖÖ÷F–öã¢&VGV6R’r’æÖF6†W2—&WGW&â6ÆV%'t7VR‚“°¢%uô5TRçF–ÖW#×6WEF–ÖV÷WB‚‚“Óç¶–b‡Fö¶VãÓÓÕ%uô5TRçFö¶Vâ–6ÆV%'t7VR‚—ÒÇÆâç6WGFÆRæGW&F–öâ“°¢Ó°¢–b‡G—Vöb&WVW7Dæ–ÖF–öäg&ÖSÓÓÒvgVæ7F–öâr—&WVW7Dæ–ÖF–öäg&ÖR‡6†÷r“¶VÇ6R6†÷r‚“°¢Ó°¢Ç•'t7VR‡ÆâæVçFW"“°¢–b‡G—Vöb6WEF–ÖV÷WBÓÒvgVæ7F–öâwÇÇv–æF÷ræÖF6„ÖVF–òâ‚r‡&VfW'2×&VGV6VBÖÖ÷F–öã¢&VGV6R’r’æÖF6†W2—&WGW&â6WGFÆR‚“°¢%uô5TRçF–ÖW#×6WEF–ÖV÷WB‡6WGFÆRÇÆâæVçFW"æGW&F–öâ“°¢Ğ¢gVæ7F–öâ&WfVÄfVVF&6²‚—°¢6öç7B&WfVÃÒ‚“Óç·G'—¶Fö7VÖVçBçVW'•6VÆV7F÷"‚rçG&fVÄfVVF&6²r“òç67&öÆÄ–çFõf–Wr‡¶&Æö6³¢væV&W7BrÆ&V†f–÷#¢vWFòwÒ—Ö6F6‚†W'&÷"—·×Ó°¢G'—·&WVW7Dæ–ÖF–öäg&ÖR‡&WfVÂ—Ö6F6‚†W'&÷"—·&WfVÂ‚—Ğ¢Ğ¢gVæ7F–öâ&W6WEG&ç6–VçB‡6²—°¢6æ6VÅ'tÖ÷F–öâ‚“¶6ÆV%'t7VR‚“°¢f÷"†6öç7B66VæRöb6²ç66VæW2—¶FVÆWFR4TÄT5DTE·66VæRæ–EÓ¶FVÆWFRE$å45$•E5·66VæRæ–EÓ¶FVÆWFR%uôUdTåEôõTå·66VæRæ–EÓ¶FVÆWFR%uôäõD”4U·66VæRæ–E×Ğ¢Ğ¢gVæ7F–öâæ÷&ÖÆ—¦TÖWG&–72‡fÇVR—°¢6öç7B&s×fÇVRbgG—VöbfÇVSÓÓÒvö&¦V7Bs÷fÇVS§·Ó°¢&WGW&ç°¢fW'6–öã£"À¢&÷WFU7F'G3¤ÖF‚æÖ‚ƒÄçVÖ&W"‡&rç&÷WFU7F'G2—ÇÃ’À¢&÷WFT6ö×ÆWF–öç3¤ÖF‚æÖ‚ƒÄçVÖ&W"‡&rç&÷WFT6ö×ÆWF–öç2—ÇÃ’À¢×–VöævFöætVçG&–W3¤ÖF‚æÖ‚ƒÄçVÖ&W"‡&ræ×–VöævFöætVçG&–W2—ÇÃ’À¢W†6†ævU6W76–öç3¤ÖF‚æÖ‚ƒÄçVÖ&W"‡&ræW†6†ævU6W76–öç2—ÇÃ’À¢&–6UVW7E7F'G3¤ÖF‚æÖ‚ƒÄçVÖ&W"‡&rç&–6UVW7E7F'G2—ÇÃ’À¢&–6UVW7D6ö×ÆWF–öç3¤ÖF‚æÖ‚ƒÄçVÖ&W"‡&rç&–6UVW7D6ö×ÆWF–öç2—ÇÃ’À¢&–6UVW7Ew&öæu7V&Ö—76–öç3¤ÖF‚æÖ‚ƒÄçVÖ&W"‡&rç&–6UVW7Ew&öæu7V&Ö—76–öç2—ÇÃ’À¢&–6UVW7EvÆÆWEF÷FÃ¤ÖF‚æÖ‚ƒÄçVÖ&W"‡&rç&–6UVW7EvÆÆWEF÷FÂ—ÇÃ¢Ó°¢Ğ¢gVæ7F–öâæ÷&ÖÆ—¦TÖV7W&VÖVçB‡fÇVR—°¢6öç7B&s×fÇVRbgG—VöbfÇVSÓÓÒvö&¦V7Bs÷fÇVS§·Ó°¢&WGW&ç°¢&÷WFU7F'FVC¢&rç&÷WFU7F'FVBÀ¢&÷WFT6ö×ÆWFVC¢&rç&÷WFT6ö×ÆWFVBÀ¢×–VöævFöætVçFW&VC¢&ræ×–VöævFöætVçFW&VBÀ¢W†6†ævU6W76–öã¢&ræW†6†ævU6W76–öâÀ¢&–6UVW7E7F'FVC¢&rç&–6UVW7E7F'FVBÀ¢&–6UVW7D6ö×ÆWFVC¢&rç&–6UVW7D6ö×ÆWFV@¢Ó°¢Ğ¢gVæ7F–öâ&V6÷&DÖ–ÆW7FöæW2‡7F÷&RÇ7FFRÆæÖW2—°¢7F÷&RæÖWG&–73Öæ÷&ÖÆ—¦TÖWG&–72‡7F÷&RæÖWG&–72“°¢7FFRæÖV7W&VÖVçCÖæ÷&ÖÆ—¦TÖV7W&VÖVçB‡7FFRæÖV7W&VÖVçB“°¢f÷"†6öç7BæÖRöbæÖW2—°¢6öç7B¶W“ÔÔUE$”5ô´U•5¶æÖUÓ°¢–b‚¶W—ÇÇ7FFRæÖV7W&VÖVçE¶æÖUÒ–6öçF–çVS°¢7FFRæÖV7W&VÖVçE¶æÖUÓ×G'VS°¢7F÷&RæÖWG&–75¶¶W•Ò³Ó°¢Ğ¢Ğ¢gVæ7F–öâ&V6÷&DÖWG&–4vw&VvFW2‡7F÷&RÆvw&VvFW2—°¢7F÷&RæÖWG&–73Öæ÷&ÖÆ—¦TÖWG&–72‡7F÷&RæÖWG&–72“°¢6öç7Bw&öæsÔÖF‚æÖ‚ƒÄçVÖ&W"†vw&VvFW3òç&–6UVW7Ew&öæu7V&Ö—76–öç2—ÇÃ“°¢7F÷&RæÖWG&–72ç&–6UVW7Ew&öæu7V&Ö—76–öç2³×w&öæs°¢–b„çVÖ&W"æ—4f–æ—FR„çVÖ&W"†vw&VvFW3òç&–6UVW7EvÆÆWDgFW$6ö×ÆWF–öâ’’—°¢7F÷&RæÖWG&–72ç&–6UVW7EvÆÆWEF÷FÂ³ÔÖF‚æÖ‚ƒÄçVÖ&W"†vw&VvFW2ç&–6UVW7EvÆÆWDgFW$6ö×ÆWF–öâ’“°¢Ğ¢Ğ¢6öç7BÖWG&–5&FSÒ‡'BÇF÷FÂ“ÓçF÷FÃôÖF‚ç&÷VæB‡'B÷F÷FÂ£“¦çVÆÃ°¢gVæ7F–öâÖWG&–756æ6†÷B‡7F÷&S×&VE7F÷&R‚’—°¢6öç7BÖWG&–73Öæ÷&ÖÆ—¦TÖWG&–72‡7F÷&RæÖWG&–72“°¢&WGW&âö&¦V7Bæg&VW¦R‡°¢ââæÖWG&–72À¢6ö×ÆWF–öå&FS¦ÖWG&–5&FR†ÖWG&–72ç&÷WFT6ö×ÆWF–öç2ÆÖWG&–72ç&÷WFU7F'G2’À¢×–VöævFöætVçG'•&FS¦ÖWG&–5&FR†ÖWG&–72æ×–VöævFöætVçG&–W2ÆÖWG&–72ç&÷WFT6ö×ÆWF–öç2’À¢6öÆÆV7F–&ÆTW†6†ævU&FS¦ÖWG&–5&FR†ÖWG&–72æW†6†ævU6W76–öç2ÆÖWG&–72æ×–VöævFöætVçG&–W2’À¢&–6UVW7D6ö×ÆWF–öå&FS¦ÖWG&–5&FR†ÖWG&–72ç&–6UVW7D6ö×ÆWF–öç2ÆÖWG&–72ç&–6UVW7E7F'G2’À¢&–6UVW7DfW&vUvÆÆWC¦ÖWG&–72ç&–6UVW7D6ö×ÆWF–öç3ôÖF‚ç&÷VæB†ÖWG&–72ç&–6UVW7EvÆÆWEF÷FÂöÖWG&–72ç&–6UVW7D6ö×ÆWF–öç2“¦çVÆÂÀ¢Æö6ÄöæÇ“§G'VP¢Ò“°¢Ğ¢6öç7BÖWG&–5W&6VçC×fÇVSÓçfÇVSÓÓÖçVÆÃò~(	Bs¦G·fÇVWÒV°¢gVæ7F–öâ&–6UVW7DfVVF&6²†ÖWG&–72—°¢6öç7B&FSÖÖWG&–5W&6VçB†ÖWG&–72ç&–6UVW7D6ö×ÆWF–öå&FR“°¢6öç7Bw&öæsÖÖWG&–72ç&–6UVW7Ew&öæu7V&Ö—76–öç3°¢6öç7BvÆÆWCÖÖWG&–72ç&–6UVW7DfW&vUvÆÆWCÓÓÖçVÆÃò~(	Bs§vöâ†ÖWG&–72ç&–6UVW7DfW&vUvÆÆWB“°¢–b‚ÖWG&–72ç&–6UVW7E7F'G2—&WGW&ç°¢F—FÆS¦Â‡¶¶ó¢~«‹ºŞÉÛBÈÉ>ÉÛNº›BÉzÎ«‹ÈIÂÉ{È«RÉ©NºÉØBÉXÎº
+N¹9Îº
+NÉ©BrÆ¦¢~Š‰˜Ë.8Î8ş8î8(¾888>8>8¾{{N{ù.8î8+>88N8ÎX{®8î8’rÆVã¢u&7F–6RwV–Fæ6Rv–ÆÂV"gFW"–÷W"f—'7BG'’rÇ¦ƒ¢~ZèÎh‰šinjÊ[	ŞŠù^YîûÈÎ‹ù˜xÎKÉ®i‹îzK®{¸>Kš[»®ŠêâwÒ’À¢&öG“¦Â‡¶¶ó¢~««*ÙÎº[ÂÉÛŞ«:««*’9r«	ÎÈ‰‚(i"ÉˆÈ+(‰"ÙZ«8BÈ‰ÎÈIÎºÂ«8NÈ+Ù[B»;NÈKÉ©BârÆ¦¢~X
+NiÊŞ8).ŠªŞ8ş88ÎX
+Një\9~X¾i[(i"K¨zé~(‰.YŠˆ8Ş8îšn8~Šˆzé~8~8n8ş8(8n8"rÆVã¢u&VBF†R&–6R&ö&BÂF†Vâ6Æ7VÆFR&–6R9rVçF—G’(i"'VFvWB(‰"F÷FÂârÇ¦ƒ¢~Šû¾XùnK»~yºîŠYîûÈÎhÈK»~jÌ9~i[˜xş(i.š(Nzé~(‰.YŠêy¨Nš®[¨şŠêzé~8"wÒ¢Ó°¢–b‚ÖWG&–72ç&–6UVW7D6ö×ÆWF–öç2—&WGW&ç°¢F—FÆS¦Â‡¶¶ó¢~ÉXNÊxÊxNÙh’ÊIÉÛNÉyÉ©BâÙZ«8Nº[Âº‹ÎÊºxÎ¹9ÎÈKÉ©BrÆ¦¢~8î8˜	NKŠŞ8~88.8î8®YŠˆ8).KÙÎ8(Ş8brÆVã¢u7F–ÆÂ–â&öw&W73¢f–æBF†RF÷FÂf—'7BrÇ¦ƒ¢~K¸ŞYÊ‹ù¾ŠÎKŠŞûÉ®XXzé~X{®YŠêwÒ’À¢&öG“¦Â‡¶¶ó¦É˜Nº8ÎÉÊ‚G·&FWÒ+rÉ˜Nº8ÂÊBÉŠN¸»RG·w&öæwŞÙ¨Ââ««*’9r«	ÎÈ‰º[Â«ZÎÙYÂ¹*BÉˆÈ+ÉyÈIÂ»›ÎÈKÉ©BæÆ¦¦ZèÎK¨nxèrG·&FWŞ8;¾ZèÎK¨nX˜Ş8îŠªNzÙBG·w&öæwŞY¹î8.X
+Një\9~X¾i[8).X{®8~8n8¾8(8K¨zé~8¾8([É^8>8n8&ÆVã¦6ö×ÆWF–öâG·&FWÒ+rG·w&öæwÒw&öærG&–W2&Vf÷&R6ÆV"â×VÇF—Ç’&–6R'’VçF—G’ÂF†Vâ7V'G&7Bg&öÒF†R'VFvWBæÇ¦ƒ¦ZèÎh‰xèrG·&FWÒ+rZèÎh‰X˜Ş™IzÙBG·w&öæwŞjÊ8.XXŠêzé~K»~jÌ9~i[˜xşûÈÎXhŞK¸îš(Nzé~KŠŞXxşXë¾8&Ò¢Ó°¢–b‡w&öæsã—&WGW&ç°¢F—FÆS¦Â‡¶¶ó¢~«8NÈ+ÉØB¹¸º«8NºÂ¸)¸ˆNº›BÈºNÈ‰º[ÂÊHNÉÛÂÈ‰‚ÉèÉkNÉ©BrÆ¦¢~Šˆzé~8)#.jë^™¨î8¾Xˆn88(¾8889ş8+8).k‰¾8(8¾8î8’rÆVã¢u7Æ—BF†R6Æ7VÆF–öâ–çFòGvò7FW2rÇ¦ƒ¢~h¨®Šêzé~Xˆnh‰KŠNjÚ^XúşXxş[	ZKŠúòwÒ’À¢&öG“¦Â‡¶¶ó¦É˜Nº8ÎÉÊ‚G·&FWÒ+rÉŠN¸»RG·w&öæwŞÙ¨Â+rÉ˜Nº8ÂÙ¸BØø«zG·vÆÆWGÒâ««*’9r«	ÎÈ‰‚Â«{¸ºNÉØÂÉˆÈ+(‰"ÙZ«8BÈ‰ÎÈIÎºÂÙ™^ÉÛÙYÈKÉ©BæÆ¦¦ZèÎK¨nxèrG·&FWŞ8;¾ŠªNzÙBG·w&öæwŞY¹î8;¾ZèÎK¨n[èÎ8î[›>YØrG·vÆÆWGŞ8.X
+Një\9~X¾i[88Ş8î8.8K¨zé~(‰.YŠˆ8îšn8~z+®Š¨Ş8~8(8n8&ÆVã¦6ö×ÆWF–öâG·&FWÒ+rG·w&öæwÒw&öærG&–W2+rfW&vRgFW"6ÆV"G·vÆÆWGÒâ6†V6²&–6R9rVçF—G’ÂF†Vâ'VFvWB(‰"F÷FÂæÇ¦ƒ¦ZèÎh‰xèrG·&FWÒ+r™IzÙBG·w&öæwŞjÊ+rZèÎh‰Yî[›>YØrG·vÆÆWGŞ8.XXj8iú^K»~jÌ9~i[˜xşûÈÎXhŞj8iú^š(Nzé~(‰.YŠê8&Ò¢Ó°¢–b†ÖWG&–72ç&–6UVW7D6ö×ÆWF–öå&FSÓÓÓ—&WGW&ç°¢F—FÆS¦Â‡¶¶ó¢~«8NÈ+È‰ÎÈIÎº[ÂÉXÊ	^ÊÉËÎºÂÊxËËÉkNÉ©BrÆ¦¢~Šˆzé~8îšnyZ®8).ZèZé®8~8nZè8(Î8n8N8î8’rÆVã¢u–÷W"6Æ7VÆF–öâ÷&FW"—26öç6—7FVçBrÇ¦ƒ¢~Šêzé~š®[¨şKùŞhÈ[é~[èz‹>Zé¢wÒ’À¢&öG“¦Â‡¶¶ó¦É˜Nº8ÎÉÊ‚G·&FWÒ+rÉŠN¸»RÙ¨Â+rÉ˜Nº8ÂÙ¸BØø«zG·vÆÆWGÒâ¸ºNÉØÎÉy¸©Bº‹ÎÊ¸*«‹‚ÉzÎÙh’É¹ÉØBÊ	^Ù[B»;NÈKÉ©BæÆ¦¦ZèÎK¨nxèrG·&FWŞ8;¾ŠªNzÙCY¹î8;¾ZèÎK¨n[èÎ8î[›>YØrG·vÆÆWGŞ8.jÊ8ş8jè¾8~8ş8Nix^8*n8*8;>8).XX8¾k®8(8n8ş8(8n8&ÆVã¦6ö×ÆWF–öâG·&FWÒ+rw&öærG&–W2+rfW&vRgFW"6ÆV"G·vÆÆWGÒâæW‡BÂFV6–FR†÷r×V6‚G&fVÂvöâFò¶VWf—'7BæÇ¦ƒ¦ZèÎh‰xèrG·&FWÒ+r™IzÙCjÊ+rZèÎh‰Yî[›>YØrG·vÆÆWGŞ8.Kˆ¾jÊXXXk>Zé®ŠhKùŞyYZI®[	ix^ŠÎ™úXX>8&Ò¢Ó°¢&WGW&ç°¢F—FÆS¦Â‡¶¶ó¢~È¹ÎÉéÙYÂºËÊ	Îº[Â¸Ş«˜ÎÊxºxºËNºjÎÙ[B»;NÈKÉ©BrÆ¦¢~Zx¾8(8şYXşšÎ8).iÈ[èÎ8î8~K¹^Kˆ®8.8(8brÆVã¢tf–æ—6‚V6‚GFV×B–÷R7F'BrÇ¦ƒ¢~h¨®[{.[ÈZx¾y¨Nš)yºîZèÎh‰X‹[©RwÒ’À¢&öG“¦Â‡¶¶ó¦É˜Nº8ÎÉÊ‚G·&FWÒ+rÉŠN¸»RÙ¨Â+rÉ˜Nº8ÂÙ¸BØø«zG·vÆÆWGÒâ«	ÎÈ‰º[ÂÊ	^ÙYÂ¹*BÙZ«8NÉ˜ÉéNÉZÉØBË
+ººÂÙ™^ÉÛÙYÈKÉ©BæÆ¦¦ZèÎK¨nxèrG·&FWŞ8;¾ŠªNzÙCY¹î8;¾ZèÎK¨n[èÎ8î[›>YØrG·vÆÆWGŞ8.X¾i[8).k®8(8ş8(8YŠˆ8jè¾š¹8).šn8¾z+®Š¨Ş8~8(8n8&ÆVã¦6ö×ÆWF–öâG·&FWÒ+rw&öærG&–W2+rfW&vRgFW"6ÆV"G·vÆÆWGÒâgFW"6†ö÷6–ærVçF—G’Â6†V6²F†RF÷FÂæB&Ææ6R–â÷&FW"æÇ¦ƒ¦ZèÎh‰xèrG·&FWÒ+r™IzÙCjÊ+rZèÎh‰Yî[›>YØrG·vÆÆWGŞ8.Xk>Zé®i[˜xşYîûÈÎKéŞjÊj8iú^YŠêY(ÎKÙš)Ş8&Ò¢Ó°¢Ğ¢gVæ7F–öâÖWG&–74Ö&·W‡7F÷&R—°¢6öç7BÖWG&–73ÖÖWG&–756æ6†÷B‡7F÷&R“°¢6öç7B&÷WFTÆ&VÇ3Õ°¢¶Â‡¶¶ó¢~ËÙNÈªBÈ¹ÎÉérÆ¦¢~8+>8;Î8+™h¾Zx²rÆVã¢u&÷WFR7F'G2rÇ¦ƒ¢~‹zş{«ş[ÈZx²wÒ’Å7G&–ær†ÖWG&–72ç&÷WFU7F'G2•ÒÀ¢¶Â‡¶¶ó¢~É˜NÊ;ÎÉÊ‚rÆ¦¢~ZèÎ‹[xèrrÆVã¢t6ö×ÆWF–öârÇ¦ƒ¢~ZèÎh‰xèrwÒ’ÆÖWG&–5W&6VçB†ÖWG&–72æ6ö×ÆWF–öå&FR•ÒÀ¢¶Â‡¶¶ó¢~º¨^¸ù’ÊxNÉè^ºZrÆ¦¢~iˆîkIîX‹˜NxèrrÆVã¢t×–VöævFöærVçG'’rÇ¦ƒ¢~iˆîkIî‹ù¾XZ^xèrwÒ’ÆÖWG&–5W&6VçB†ÖWG&–72æ×–VöævFöætVçG'•&FR•ÒÀ¢¶Â‡¶¶ó¢~«YÙ™‚«+ŞÙyºZrÆ¦¢~KªNhù¾KÙ>š‰>xèrrÆVã¢tW†6†ævRW6RrÇ¦ƒ¢~XYhÚ.KÙ>š¨ÎxèrwÒ’ÆÖWG&–5W&6VçB†ÖWG&–72æ6öÆÆV7F–&ÆTW†6†ævU&FR•Ğ¢Ó°¢6öç7B&–6TÆ&VÇ3Õ°¢¶Â‡¶¶ó¢~««*’Ø	ÈªNØ«‚É˜Nº8ÎÉÊ‚rÆ¦¢~X
+Një^8*ş8*8+88ZèÎK¨nxèrrÆVã¢u&–6RVW7B6ö×ÆWF–öârÇ¦ƒ¢~K»~jÎK»¾XªZèÎh‰xèrwÒ’ÆÖWG&–5W&6VçB†ÖWG&–72ç&–6UVW7D6ö×ÆWF–öå&FR•ÒÀ¢¶Â‡¶¶ó¢~É˜Nº8ÂÊBÉŠN¸»RÊ	ÎËiÂrÆ¦¢~ZèÎK¨nX˜Ş8îŠªNzÙBrÆVã¢uw&öærG&–W2&Vf÷&R6ÆV"rÇ¦ƒ¢~ZèÎh‰X˜Ş™IzÙBwÒ’Å7G&–ær†ÖWG&–72ç&–6UVW7Ew&öæu7V&Ö—76–öç2•ÒÀ¢¶Â‡¶¶ó¢~É˜Nº8ÂÙ¸BØø«zÉéNÉZrÆ¦¢~ZèÎK¨n[èÎ8î[›>YØ~jè¾š¹‚rÆVã¢tfW&vRvÆÆWBgFW"6ÆV"rÇ¦ƒ¢~ZèÎh‰Yî[›>YØ~KÙš)ÒwÒ’ÆÖWG&–72ç&–6UVW7DfW&vUvÆÆWCÓÓÖçVÆÃò~(	Bs§vöâ†ÖWG&–72ç&–6UVW7DfW&vUvÆÆWB•Ğ¢Ó°¢6öç7BfVVF&6³×&–6UVW7DfVVF&6²†ÖWG&–72“°¢6öç7Bw&–CÒ†Æ&VÇ2Æ¶–æCÒrr“ÓæÆF—b6Æ73Ò'G&fVÄÖWG&–74w&–BG¶¶–æGÒ"G¶¶–æCòr&–ÖÆ&VÃÒ"r¶‚†Â‡¶¶ó¢~º¨^¸ù’««*’Ø	ÈªNØ«‚«‹ºÒrÆ¦¢~iˆîkIî8îX
+Një^8*ş8*8+88Š‰˜Ë"rÆVã¢t×–VöævFöær&–6RVW7B&V6÷&BrÇ¦ƒ¢~iˆîkIîK»~jÎK»¾XªŠë[ÙRwÒ’’²r"s¢rwÓâG¶Æ&VÇ2æÖ‚…¶Æ&VÂÇfÇVUÒ“ÓæÆF—b6Æ73Ò'G&fVÄÖWG&–2#ãÆ#âG¶‚‡fÇVR—ÓÂö#ãÇ6ÖÆÃâG¶‚†Æ&VÂ—ÓÂ÷6ÖÆÃãÂöF—cæ’æ¦ö–â‚rr—ÓÂöF—cæ°¢&WGW&æÇ6V7F–öâ6Æ73Ò'G&fVÄÖWG&–72"&–ÖÆ&VÆÆVF'“Ò'G&fVÂÖÖWG&–72×F—FÆR#ãÆF—b6Æ73Ò'G&fVÄÖWG&–74†VB#ãÆF—cãÇ6ÖÆÃäÄô4ÂÄT$ä”är4”täÅ3Â÷6ÖÆÃãÆƒ"–CÒ'G&fVÂÖÖWG&–72×F—FÆR#âG¶‚†Â‡¶¶ó¢~ÉÛB«‹«‹ÉÙ‚ÉzÎÙh’«‹ºÒrÆ¦¢~8>8îzºşiÊ¾8îix^Š‰˜Ë"rÆVã¢uG&fVÂ&V6÷&BöâF†—2FWf–6RrÇ¦ƒ¢~jÚNŠëîZH~y¨Nix^ŠÎŠë[ÙRwÒ’—ÓÂöƒ#ãÂöF—cãÇ7ãäÄô4ÃÂ÷7ããÂöF—câG¶w&–B‡&÷WFTÆ&VÇ2—ÓÆF—b6Æ73Ò'G&fVÄÖWG&–757V&†VB#âG¶‚†Â‡¶¶ó¢~º¨^¸ù’««*’Ø	ÈªNØ«‚rÆ¦¢~iˆîkIî8îX
+Një^8*ş8*8+88‚rÆVã¢t×–VöævFöær&–6RVW7BrÇ¦ƒ¢~iˆîkIîK»~jÎK»¾XªwÒ’—ÓÂöF—câG¶w&–B‡&–6TÆ&VÇ2Âw&–6Rr—ÓÆF—b6Æ73Ò'G&fVÄÖWG&–4fVVF&6²"&öÆSÒ&æ÷FR#ãÇ6ÖÆÃâG¶‚†Â‡¶¶ó¢~ÉÛB«‹ºŞÉËÎºÂ»;N¸©BÙYÈ«RÙYÎºx¹IBrÆ¦¢~8>8îŠ‰˜Ë.8¾8(8îZÚn{ù.89.8;>88‚rÆVã¢tÆV&æ–ærF—g&öÒF†—2&V6÷&BrÇ¦ƒ¢~jhÚîjÚNŠë[Ù^y¨NZÚnKšhùzK¢wÒ’—ÓÂ÷6ÖÆÃãÆ#âG¶‚†fVVF&6²çF—FÆR—ÓÂö#ãÇâG¶‚†fVVF&6²æ&öG’—ÓÂ÷ãÂöF—cãÇâG¶‚†Â‡¶¶ó¢~ÉÛB«‹«‹ÉyºxÂÈŠ¾ÉéºÂÊÉê^ÙYº›É›»hºÂÊNÈjÙYÊxÉX®È«^¸¸¸ºBârÆ¦¢~8>8îzºşiÊ¾Xh^8¾i[X
+N888).KùŞZÙ8~8ZIn˜:8˜Kú8~8î8¾8)>8"rÆVã¢töæÇ’çVÖW&–2F÷FÇ2&R7F÷&VBöâF†—2FWf–6RæBæWfW"6VçB÷WG6–FRârÇ¦ƒ¢~K¸^Kº^i[ZÙ~KùŞZÙYÊiÊÎŠëîZH~ûÈÎKˆŞKÉ®Xù˜X‹ZIn˜:8"wÒ’—ÓÂ÷ãÂ÷6V7F–öãæ°¢Ğ¢gVæ7F–öâ&VE7F÷&R‚—°¢G'—°¢6öç7B'6VCÔ¥4ôâç'6R†Æö6Å7F÷&vRævWD—FVÒ…5Dõ$tUô´U’—ÇÂvçVÆÂr“°¢–b‡'6VBbg'6VBçfW'6–öãÓÓÓbg'6VBæW—6öFW2bgG—Vöb'6VBæW—6öFW3ÓÓÒvö&¦V7Br—&WGW&âæ÷&ÖÆ—¦U7F÷&R‡'6VB“°¢Ö6F6‚†W'&÷"—·Ğ¢&WGW&âæ÷&ÖÆ—¦U7F÷&R‡·fW'6–öã£Æ7F—fU6´–C¥4µ5³Òæ–BÆW—6öFW3§·×Ò“°¢Ğ¢gVæ7F–öâæ÷&ÖÆ—¦U7F÷&R‡7F÷&R—°¢6öç7BVæÆö6¶VCÖæWr6WB„'&’æ—4'&’‡7F÷&RæfF#òçVæÆö6¶VB“÷7F÷&RæfF"çVæÆö6¶VC¥´DTdTÅEõ4´”åÒ“°¢VæÆö6¶VBæFB„DTdTÅEõ4´”â“°¢f÷"†6öç7B6²öb4µ2—°¢6öç7B7FFS×7F÷&RæW—6öFW3òå·6²æ–EÓ°¢–b‚7FFSòæ6ö×ÆWFVB–6öçF–çVS°¢–b‡6²ç&Wv&E6¶–â—VæÆö6¶VBæFB‡6²ç&Wv&E6¶–â“°¢–b‡6²çW&fV7E6¶–âbdÖF‚æÖ‚„çVÖ&W"‡7FFRæ&W7E66÷&R—ÇÃÆ6÷'&V7D6÷VçB‡7FFR’“ÓÓ×6²çVW7F–öä6÷VçB—VæÆö6¶VBæFB‡6²çW&fV7E6¶–â“°¢Ğ¢6öç7BWV—VC×VæÆö6¶VBæ†2‡7F÷&RæfF#òæWV—VB“÷7F÷&RæfF"æWV—VC¤DTdTÅEõ4´”ã°¢7F÷&RæfF#×¶WV—VBÇVæÆö6¶VC¥²ââçVæÆö6¶VE×Ó°¢7F÷&RæÖWG&–73Öæ÷&ÖÆ—¦TÖWG&–72‡7F÷&RæÖWG&–72“°¢&WGW&â7F÷&S°¢Ğ¢gVæ7F–öâw&—FU7F÷&R‡7F÷&R—°¢G'—°¢Æö6Å7F÷&vRç6WD—FVÒ…5Dõ$tUô´U’Ä¥4ôâç7G&–æv–g’†æ÷&ÖÆ—¦U7F÷&R‡7F÷&R’’“°¢v–æF÷räÔÄ$•Eõ5Dõ$tUôuT$Còæ6GW&Sòâ‚wG&fVÂr“°¢Ö6F6‚†W'&÷"—·Ğ¢Ğ¢gVæ7F–öâæ÷&ÖÆ—¦T‡V%7FFR‡fÇVR—°¢6öç7B&s×fÇVRbgG—VöbfÇVSÓÓÒvö&¦V7Bs÷fÇVS§·Ó°¢6öç7BVW7G3×&rçVW7G2bgG—Vöb&rçVW7G3ÓÓÒvö&¦V7Bs÷&rçVW7G3§·Ó°¢&WGW&ç°¢67&VVã¥²v‡V"rÂvF–ÆöwVRrÂv÷&FW"rÂw&W7VÇBuÒæ–æ6ÇVFW2‡&rç67&VVâ“÷&rç67&VVã¢vVæF–ærrÀ¢7F—fTWfVçC§G—Vöb&ræ7F—fTWfVçCÓÓÒw7G&–ærs÷&ræ7F—fTWfVçC¦çVÆÂÀ¢VW7G2À¢GFV×G3¤ÖF‚æÖ‚ƒÄçVÖ&W"‡&ræGFV×G2—ÇÃ’À¢Æ7DGFV×D6÷'&V7C§&ræÆ7DGFV×D6÷'&V7CÓÓÖfÇ6SöfÇ6S¦çVÆÂÀ¢Æ7EW&6†6S§G—Vöb&ræÆ7EW&6†6SÓÓÒw7G&–ærs÷&ræÆ7EW&6†6S¦çVÆÀ¢Ó°¢Ğ¢gVæ7F–öâæ÷&ÖÆ—¦U7FFR‡6²ÇfÇVR—°¢–b‚fÇVWÇÇfÇVRç6´–BÓ×6²æ–GÇÂ66VæT'”–B‡6²ÇfÇVRç66VæT–B’—&WGW&âçVÆÃ°¢fÇVRæç7vW'3×fÇVRæç7vW'2bgG—VöbfÇVRæç7vW'3ÓÓÒvö&¦V7Bs÷fÇVRæç7vW'3§·Ó°¢fÇVRæ÷&FW'3×fÇVRæ÷&FW'2bgG—VöbfÇVRæ÷&FW'3ÓÓÒvö&¦V7Bs÷fÇVRæ÷&FW'3§·Ó°¢fÇVRæWf–FVæ6SÔ'&’æ—4'&’‡fÇVRæWf–FVæ6R“÷fÇVRæWf–FVæ6Ræf–ÇFW"†–CÓç66VæT'”–B‡6²Æ–B—ÇÅ7G&–ær†–B’ç7F'G5v—F‚‚v‡V#¢r’“¥µÓ°¢fÇVRçf—6—FVCÔ'&’æ—4'&’‡fÇVRçf—6—FVB“÷fÇVRçf—6—FVBæf–ÇFW"†–CÓç66VæT'”–B‡6²Æ–B’“¥µÓ°¢fÇVRçvÆÆWCÔÖF‚æÖ‚ƒÄçVÖ&W"‡fÇVRçvÆÆWCó÷6²ç7F'EvÆÆWB—ÇÃ“°¢fÇVRæ6Æö6´Ö–çWFW3ÔçVÖ&W"æ—4f–æ—FR„çVÖ&W"‡fÇVRæ6Æö6´Ö–çWFW2’“ôçVÖ&W"‡fÇVRæ6Æö6´Ö–çWFW2“¦æWrFFR‚’ævWD†÷W'2‚’£c¶æWrFFR‚’ævWDÖ–çWFW2‚“°¢fÇVRæ–çfVçF÷'“Ô'&’æ—4'&’‡fÇVRæ–çfVçF÷'’“÷fÇVRæ–çfVçF÷'“¥µÓ°¢fÇVRæ×–VöævFöæsÖæ÷&ÖÆ—¦T‡V%7FFR‡fÇVRæ×–VöævFöær“°¢fÇVRæÖV7W&VÖVçCÖæ÷&ÖÆ—¦TÖV7W&VÖVçB‡fÇVRæÖV7W&VÖVçB“°¢–b…%r—fÇVRæW‡Æ÷&F–öãÕ%rææ÷&ÖÆ—¦U&öw&W72‡6²æ–BÇfÇVRæW‡Æ÷&F–öâÇfÇVRç66VæT–B“°¢&WGW&âfÇVS°¢Ğ¢gVæ7F–öâ&VE7FFR‡6²—·&WGW&âæ÷&ÖÆ—¦U7FFR‡6²Ç&VE7F÷&R‚’æW—6öFW5·6²æ–EÒ—Ğ¢gVæ7F–öâw&—FU7FFR‡7FFRÆÖ–ÆW7FöæW3ÕµÒÆvw&VvFW3ÖçVÆÂ—°¢6öç7B7F÷&S×&VE7F÷&R‚“°¢&V6÷&DÖ–ÆW7FöæW2‡7F÷&RÇ7FFRÆÖ–ÆW7FöæW2“°¢&V6÷&DÖWG&–4vw&VvFW2‡7F÷&RÆvw&VvFW2“°¢7F÷&Ræ7F—fU6´–C×7FFRç6´–C°¢7F÷&RæW—6öFW5·7FFRç6´–EÓ×7FFS°¢w&—FU7F÷&R‡7F÷&R“°¢Ğ¢gVæ7F–öâ7F—fU6²‚—°¢6öç7B7F÷&S×&VE7F÷&R‚“°¢&WGW&â6´'”–B‡7F÷&Ræ7F—fU6´–B—ÇÅ4µ5³Ó°¢Ğ¢gVæ7F–öâæWu7FFR‡6²Ç&Wf–÷W2—°¢6öç7B7FFS×°¢fW'6–öã£Ç6´–C§6²æ–BÇ66VæT–C§6²ç66VæW5³Òæ–BÇ&÷WFS¦çVÆÂÀ¢ç7vW'3§·ÒÆ÷&FW'3§·ÒÆWf–FVæ6S¥µÒÇf—6—FVC¥·6²ç66VæW5³Òæ–EÒÀ¢vÆÆWC¤çVÖ&W"‡6²ç7F'EvÆÆWB—ÇÃÆ6Æö6´Ö–çWFW3¦æWrFFR‚’ævWD†÷W'2‚’£c¶æWrFFR‚’ævWDÖ–çWFW2‚’Æ–çfVçF÷'“¤'&’æg&öÒ†æWr6WB„'&’æ—4'&’‡&Wf–÷W3òæ–çfVçF÷'’“÷&Wf–÷W2æ–çfVçF÷'“¥µÒ’’Ç7VçC¥µÒÀ¢6ö×ÆWFVC¦fÇ6RÇ7F'FVDC¦æ÷r‚’ÇWFFVDC¦æ÷r‚’Æ6ö×ÆWFVDC¦çVÆÂÀ¢&W7E66÷&S¤ÖF‚æÖ‚„çVÖ&W"‡&Wf–÷W3òæ&W7E66÷&R—ÇÃÇ&Wf–÷W3òæ6ö×ÆWFVCö6÷'&V7D6÷VçB‡&Wf–÷W2“£’À¢6ÆV'3¤çVÖ&W"‡&Wf–÷W3òæ6ÆV'2—ÇÃÇW&fV7D&öçW46Æ–ÖVC¢&Wf–÷W3òçW&fV7D&öçW46Æ–ÖVBÀ¢ÖV7W&VÖVçC¦æ÷&ÖÆ—¦TÖV7W&VÖVçB†çVÆÂ¢Ó°¢–b…%r—°¢6öç7BF—66÷fW&–W3Ô'&’æ—4'&’‡&Wf–÷W3òæW‡Æ÷&F–öãòæF—66÷fW&–W2“÷&Wf–÷W2æW‡Æ÷&F–öâæF—66÷fW&–W3¥µÓ°¢7FFRæW‡Æ÷&F–öãÕ%rææ÷&ÖÆ—¦U&öw&W72‡6²æ–BÇ¶F—66÷fW&–W7ÒÇ7FFRç66VæT–B“°¢Ğ¢7FFRæ×–VöævFöæsÖæ÷&ÖÆ—¦T‡V%7FFR‡&Wf–÷W3òæ×–VöævFöær“°¢7FFRæ×–VöævFöærç67&VVãÒvVæF–ærs°¢&WGW&â7FFS°¢Ğ¢gVæ7F–öâ7W'&VçB‚—°¢6öç7B6³Ö7F—fU6²‚“°¢ÆWB7FFS×&VE7FFR‡6²“°¢–b‚7FFR—·7FFSÖæWu7FFR‡6²“·w&—FU7FFR‡7FFR—Ğ¢&WGW&ç·6²Ç7FFRÇ66VæS§&÷WFU66VæR‡66VæT'”–B‡6²Ç7FFRç66VæT–B’Ç7FFR—Ó°¢Ğ¢gVæ7F–öâÖ÷fR‡7FFRÇ6²ÆæW‡B—°¢–b‚66VæT'”–B‡6²ÆæW‡B’—&WGW&âfÇ6S°¢FVÆWFR%uôUdTåEôõTå·7FFRç66VæT–EÓ¶FVÆWFR%uôäõD”4U·7FFRç66VæT–EÓ°¢7FFRç66VæT–CÖæW‡C°¢–b…%r—7FFRæW‡Æ÷&F–öãÕ%rææ÷&ÖÆ—¦U&öw&W72‡6²æ–BÇ7FFRæW‡Æ÷&F–öâÆæW‡B“°¢–b‚7FFRçf—6—FVBæ–æ6ÇVFW2†æW‡B’—7FFRçf—6—FVBçW6‚†æW‡B“°¢7FFRçWFFVDCÖæ÷r‚“°¢w&—FU7FFR‡7FFR“°¢6æ6VÄVF–ò‚“°¢&VæFW"‚“°¢&W6WEf–Ww÷'B‚“°¢&WGW&âG'VS°¢Ğ¢gVæ7F–öâG&fVÆW"‡6²Ç7FFR—°¢6öç7B6†ö–6S×66VæT'”–B‡6²Âv&ö6‚r“òæ6†ö–6W3òæf–æB†—FVÓÓæ—FVÒæ–CÓÓ×7FFRç&÷WFR“°¢&WGW&â6†ö–6SöÂ†6†ö–6RçF—FÆR“¦Â‡¶¶ó¢~Ë*²ÈIÎÉ«‚ÉzÎÙhÉérÆ¦¢~8ş88(8n8î8+Ş8*n8:¾ix^K«¢rÆVã¢tf—'7B×F–ÖR6V÷VÂG&fVÆW"rÇ¦ƒ¢~šin[	NX‰Şk‹ˆRwÒ“°¢Ğ¢gVæ7F–öâVW7F–öäçVÖ&W"‡6²Ç66VæR—·&WGW&âVW7F–öå66VæW2‡6²’æf–æD–æFW‚†—FVÓÓæ—FVÒæ–CÓÓ×66VæRæ–B’³Ğ¢gVæ7F–öâ6ÆVå67&—B‡fÇVR—°¢&WGW&â7G&–ær‡fÇVWÇÂrr’ç&WÆ6R‚ò…çÅÆâ•µã¥Æå×³ÃCWÓ¥Ç2¢öwRÂrCr’ç&WÆ6R‚õÆç³2ÇÒörÂuÆåÆâr’çG&–Ò‚“°¢Ğ¢6öç7BED4„TEõDô´Tå3ÖæWr6WB…²~ÉØrÂ~¸©BrÂ~ÉÛBrÂ~«rÂ~ÉØBrÂ~º[ÂrÂ~ÉyrÂ~ÉyÈIÂrÂ~¸øBrÂ~É˜rÂ~«;ÂrÂ~ÉËÎºÂrÂ~ºÂrÂ~»hØKrÂ~«˜ÎÊxrÂrÂrÂrârÂsòrÂruÒ“°¢gVæ7F–öâ6ö×÷6VE6VçFVæ6R‡Fö¶Vç2—°¢ÆWB6VçFVæ6SÒrs°¢f÷"†6öç7B&röbFö¶Vç2—°¢6öç7BFö¶VãÕ7G&–ær‡&wÇÂrr’çG&–Ò‚“¶–b‚Fö¶Vâ–6öçF–çVS°¢–b‡6VçFVæ6Rbb„ED4„TEõDô´Tå2æ†2‡Fö¶Vâ—ÇÂõå²ÂãòÒ÷RçFW7B‡Fö¶Vâ’’—6VçFVæ6R³×Fö¶Vã°¢VÇ6R6VçFVæ6R³ÖG·6VçFVæ6Sòrs¢rwÒG·Fö¶VçÖ°¢Ğ¢&WGW&â6VçFVæ6Rç&WÆ6R‚õÇ2²…²ÂãòÒ’öwRÂrCr’ç&WÆ6R‚õÇ2²örÂrr’çG&–Ò‚“°¢Ğ¢gVæ7F–öâ6ö×7E6VçFVæ6R‡fÇVR—·&WGW&â7G&–ær‡fÇVWÇÂrr’ç&WÆ6R‚õµÇ>(	Î(	Ò"uÒöwRÂrr’çG&–Ò‚—Ğ¢gVæ7F–öâ6ö×÷6—F–öå&W7VÇB†WfVçBÇFö¶Vç2—°¢6öç7B‡&6SÖ6ö×÷6VE6VçFVæ6R‡Fö¶Vç2’Æ6æöæ–6ÃÖ6ö×÷6VE6VçFVæ6R†WfVçBæç7vW'ÇÅµÒ“°¢–b†6ö×7E6VçFVæ6R‡‡&6R“ÓÓÖ6ö×7E6VçFVæ6R†6æöæ–6Â’—&WGW&ç¶w&FS¢vgVÆÂrÇ‡&6RÇ&W7öç6S¦WfVçBç7V66W77Ó°¢f÷"†6öç7B66WFVBöbWfVçBæ66WFVGÇÅµÒ—°¢G'—¶–b†æWr&VtW‡†66WFVBçGFW&âÂwRr’çFW7B‡‡&6R’—&WGW&ç¶w&FS¢w'F–ÂrÇ‡&6RÇ&W7öç6S¦66WFVBç&W7öç6W×Ö6F6‚†W'&÷"—·Ğ¢Ğ¢&WGW&ç¶w&FS¢v–çfÆ–BrÇ‡&6RÇ&W7öç6S¦WfVçBæW‡ÆæF–öçÓ°¢Ğ¢gVæ7F–öâFö¶Vä¶–æB‡Fö¶Vâ—°¢–b„ED4„TEõDô´Tå2æ†2‡Fö¶Vâ’—&WGW&âw'F–6ÆRs°¢–b‚òƒó®É©E³òâÓ÷Î¸¸¸ºE³òâÓ÷ÎÈKÉ©E³òâÓ÷ÎÈ»nÉkNÉ©E³òâÓ÷ÎÉ™NÉkNÉ©E³òâÓ÷Î«	È*ÎÙZ¸¸¸ºE²âÓ÷ÎÉX¸Y^ÙYÈKÉ©E²Óò’B÷RçFW7B‡Fö¶Vâ’—&WGW&âvVæF–ærs°¢&WGW&âwv÷&Bs°¢Ğ¢gVæ7F–öâG&fVÅ6öÇfUF—‡66VæRÇ—°¢6öç7B–çFW&7F–öã×66VæRæ–çFW&7F–öçÇÂwV—¢s°¢–b†–çFW&7F–öãÓÓÒvF–ÆöwVRr—&WGW&âÂ‡¶¶ó¢~¸ÈÙ™BºËÊ	Î¸©BºxÊxºx’ºyÉÛBÉÛÈ*Ì+~ÊxºËŒ+~É©NË*ÒÊIºËNÉx~ÉÛÊxº‹ÎÊØÉ»8NÙY«:Â«{‚«‹¸ª^ÉyÊxÊ	¸»^ÙY¸©BÙÎÙˆNºxÂ¸*«‹ÈKÉ©BârÆ¦¢~KÉ®Š›YXşšÎ8ş8iÈ[èÎ8îy›®Š›8Î8Î8.8N8^8N8;¾‹:®YXş8;¾KéŞšÎ8Ş8î88(Î8¾8).XX8¾XŠNijŞ8~88Ş8îX8Ş8Ş8¾y»Nhê^zÙN88(¾Šxûî888).jè¾8~8î88"rÆVã¢tf—'7B–FVçF–g’v†WF†W"F†RÆ7BÆ–æR—2w&VWF–ærÂVW7F–öâÂ÷"&WVW7BÂF†Vâ¶VWöæÇ’F†R&W7öç6RF†BF—&V7FÇ’6W'fW2F†BgVæ7F–öâârÇ¦ƒ¢~XXXŠNijŞiÈYîKˆXú^[îK¨î™zîX	8hù™zî‹ùiŠşŠû~k.ûÈÎXhŞKùŞyYˆ;Şy»Nhê^Y¹î[©NX[nX©şˆ;Şy¨NŠ‹ëî8"wÒ“°¢–b†–çFW&7F–öãÓÓÒv†÷G7÷Br—&WGW&âÂ‡¶¶ó¢~ºËÉêRÊNË+Nº[Â»(ÉzŞÙYÊxºy«:(	ÊxÙYË*ÉzŞ(	Ë)¹ûÂÉê^ÈhÎº[Â«+Ê	^ÙY¸©BÙ[^ÈºÂº¨^È*Îº[Â«{ºkÌ+~ÙÎÊxÉ˜É{«+ÙYÈKÉ©BârÆ¦¢~ih~XZKÙ>8).Š‹>8X˜Ş8¾88ÎÊxÙYË*ÉzŞ8Ş8î8(8n8¾ZNh˜8).k®8(8(¾j[ø>Š©î8).{[^8(Nj‰ŠÙ8{Y8>K¹88î88"rÆVã¢t&Vf÷&RG&ç6ÆF–ærWfW'—F†–ærÂ6öææV7BF†RÆö6F–öâ¶W—v÷&BÂ7V6‚2ÊxÙYË*ÉzÒÂFòF†RÖF6†–ær6–vâ÷"–7GW&RârÇ¦ƒ¢~KˆŞŠhXX{û¾Šùi[NXú^ûÈÎXXh¨®(	ÎÊxÙYË*ÉzŞ(	ŞzØXk>Zé®YËx+y¨NX[>™JîŠøŞKˆîY»îj~h‰nj~x˜ÎZû[©N8"wÒ“°¢–b†–çFW&7F–öãÓÓÒvÖ6†–æRr—&WGW&âÂ‡¶¶ó¢~«‹«8BÙ™Nº›NÉyÈIÎ¸©BÙh¸ù’¸ùÈ*ÎÉ˜ºªÙÂº¨^È*Îº[Âº‹ÎÊËîÉËÎÈKÉ©BâÉÛN»(Éy¸©B(	ËŞ¸ºBşÈJØ9ŞÙY¸ºN(	É˜(	«YØk^Ë›N¹9Âşº¨^¸ù(	ÉÛB¸ºÈIÎÉè^¸¸¸ºBârÆ¦¢~j™şj+yK¾™Ú.8~8ş8X¹^KÙÎ8).Š8Š©î8yºîy¨N8îYŞŠ™î8).XX8¾hê.8~8î88.K¸®Y¹î8ş8ÎËŞ¸ºNûÈşÈJØ9ŞÙY¸ºN8Ş88Î«YØk^Ë›N¹9ÎûÈşº¨^¸ù8Ş8Îh˜¾hé¾8¾8(®8~88"rÆVã¢töâÖ6†–æR67&VVâÂf–æBF†R7F–öâfW&"æBF&vWBæ÷Vâf—'7C²†W&RËŞ¸ºBşÈJØ9ŞÙY¸ºBæB«YØk^Ë›N¹9Âşº¨^¸ù’&RF†R6ÇVW2ârÇ¦ƒ¢~YÊiË®YšyXÎ™Ú.XXh›îXªKÙÎXªŠøŞY(Îyºîj~YŞŠøŞûÉ¾iÊÎš){«ş{J.iŠş(	ÎËŞ¸ºBşÈJØ9ŞÙY¸ºN(	ŞY(Î(	Î«YØk^Ë›N¹9Âşº¨^¸ù(	Ş8"wÒ“°¢&WGW&âÂ‡¶¶ó¢~ÊxºËÉÛBÉ©N«ZÎÙY¸©BÙh¸ùœ+~Éê^ÈhÌ+~¸ÈÈ8ÉØBÙY¸)ÉJ’ÙÎÈ¹ÎÙYÂ¹*BÂºª¹ºxÎÊÙY¸©B»;N«‹ºxÂ¸*«‹ÈKÉ©BârÆ¦¢~ŠŠŞYXş8Îk.8(8(¾ŠÎX¹^8;¾ZNh˜8;¾Zûî‹8).Kˆ8N8®8Nz+®Š¨Ş8~8888nk¨8ş8˜h©îˆ*.888).jè¾8~8î88"rÆVã¢tÖ&²F†R&WV—&VB7F–öâÂÆ6RÂæBF&vWBÂF†Vâ¶VWöæÇ’F†R÷F–öâ6F—6g––ærÆÂF‡&VRârÇ¦ƒ¢~˜	KˆzîŠêNš)yºîŠhk.y¨NXªKÙÎ8YËx+Y(ÎZû‹ûÈÎXú®KùŞyYXZ˜:zÊnYy¨N˜š8"wÒ“°¢Ğ¢gVæ7F–öâG&fVÄ6ö6„Ö&·W‡66VæRÇÆç7vW"ÆW‡ÆæF–öâ—°¢6öç7B6÷'&V7CÕ7G&–ær‡æ6†ö–6W3òå·æç7vW$–æFW…Óòæ¶÷ÇÆÂ‡æ6†ö–6W3òå·æç7vW$–æFW…Ò—ÇÂrr’ç&WÆ6R‚õå¾))).)5ÕÇ2¢÷RÂrr’Ç6VÆV7FVCÕ7G&–ær‡æ6†ö–6W3òå¶ç7vW"ç6VÆV7FVEÓòæ¶÷ÇÆÂ‡æ6†ö–6W3òå¶ç7vW"ç6VÆV7FVEÒ—ÇÂrr’ç&WÆ6R‚õå¾))).)5ÕÇ2¢÷RÂrr“°¢6öç7B6öçG&7CÖç7vW"æ6÷'&V7CöÂ‡¶¶ó¦(	‚G¶6÷'&V7GŞ(	ÉÛBÈ8ÙšÉÙ‚ÊxºËÉÛN¸)‚Ùh¸ùÉy»	NºÂÉÛNÉkNÊx¸©NÊxÙ™^ÉÛÙYº›B¹
+¸¸¸ºBæÆ¦¦8ÂG¶6÷'&V7GŞ8Ş8ÎZN™Ú.8î‹:®YXş8(NŠÎX¹^8¾8Ş8î8î8î{i®8ş8¾8).z+®Š¨Ş8~8î88&ÆVã¦6†V6²F†B(	ÂG¶6÷'&V7GŞ(	ÒF—&V7FÇ’6öçF–çVW2F†R6—GVF–öî(	—2VW7F–öâ÷"7F–öâæÇ¦ƒ¦zîŠêN(	ÂG¶6÷'&V7GŞ(	Şˆ;ŞY
+ny»Nhê^h›şhê^h8^Z(>KŠŞy¨Nhù™zîh‰nXªKÙÎ8&Ò“¦Â‡¶¶ó¦«:º[‚(	‚G·6VÆV7FVGŞ(	ÉØ¸©B’ÉÛBÈ8ÙšÉÙ‚É©N«ZÎÉ˜¸ºNºh^¸¸¸ºBâÊ	^¸»R(	‚G¶6÷'&V7GŞ(	ÉÛB«’ÊxºËÉÙ‚Ù[^ÈºÂÙh¸ùÉyÊxÊ	¸ÈÉÙÙZ¸¸¸ºBæÆ¦¦˜8)>88ÂG·6VÆV7FVGŞ8Ş8ş8>8îZN™Ú.8îŠhk.88®8(Î8î88.jÚ>Šz>8î8ÂG¶6÷'&V7GŞ8Ş8Î‹:®YXş8îj[ø>88®8(¾ŠÎX¹^8¾y»Nhê^Zûî[ùÎ8~8î88&ÆVã¦(	ÂG·6VÆV7FVGŞ(	ÒFöW2æ÷Bf—BF†—26—GVF–öââ(	ÂG¶6÷'&V7GŞ(	ÒF—&V7FÇ’ç7vW'2F†R¶W’7F–öâ–âF†R&ö×BæÇ¦ƒ¦h˜˜(	ÂG·6VÆV7FVGŞ(	ŞKˆŞzÊnYh8^Z(>Šhk.ûÉ¾jÚ>zîzÙNj(	ÂG¶6÷'&V7GŞ(	Şy»Nhê^Y¹î[©NK¨nš)yºîy¨Nj[ø>XªKÙÎ8&Ò“°¢&WGW&æÇ6V7F–öâ6Æ73Ò'G&fVÅGWF÷"#ãÆF—cãÇ6ÖÆÃâG¶‚†Â‡¶¶ó¢~)Ê	^¸»R«{Î«rÆ¦¢~)jÚ>Šz>8îjhºrÆVã¢~)t…’•Btõ$µ2rÇ¦ƒ¢~)jÚ>zîKéŞhÚâwÒ’—ÓÂ÷6ÖÆÃãÇâG¶‚†W‡ÆæF–öâ—ÓÂ÷ãÂöF—cãÆF—cãÇ6ÖÆÃâG¶‚†Â‡¶¶ó¢~)ÙZÊ	R«ZÎ»8BrÆ¦¢~)8.8>8¾88îŠh¾Xˆn8ik’rÆVã¢~)D•5E$5Dõ"4„T4²rÇ¦ƒ¢~)[›.h›š‹êiéwÒ’—ÓÂ÷6ÖÆÃãÇâG¶‚†6öçG&7B—ÓÂ÷ãÂöF—cãÆF—cãÇ6ÖÆÃâG¶‚†Â‡¶¶ó¢~)"Ê«ŞÊy«(ÂÙ(ÉÛBÉ©Nº’rÆ¦¢~)"Šz>8Şik8î8+>88BrÆVã¢~)"4ôÅd”ärD•rÇ¦ƒ¢~)"Šz>š)h¨[zrwÒ’—ÓÂ÷6ÖÆÃãÇâG¶‚‡G&fVÅ6öÇfUF—‡66VæRÇ’—ÓÂ÷ãÂöF—cãÂ÷6V7F–öãæ°¢Ğ¢gVæ7F–öâ76WEF‚‡6²Æw&÷WÆ¶W’—°¢–b‚¶W’—&WGW&ârs°¢&WGW&â6²æ76WG3òå¶w&÷WÓòå¶¶W•×ÇÆ‡V$'•&÷WFR‡6²æ–B“òæ76WG3òå¶w&÷WÓòå¶¶W•×ÇÂrs°¢Ğ¢gVæ7F–öâ&÷–ÖvR‡6²Æ¶W’Æ6Æ74æÖSÒrr—°¢6öç7B7&3Ö76WEF‚‡6²Âw&÷2rÆ¶W’“°¢&WGW&â7&3öÆ–Ör6Æ73Ò"G¶‚†6Æ74æÖR—Ò"7&3Ò"G¶‚‡7&2—Ò"ÇCÒ""ÆöF–æsÒ&VvW"#æ¢rs°¢Ğ¢gVæ7F–öâÖÖ&·W‡6²Ç7FFRÆ6ö×7CÖfÇ6R—°¢6öç7BÆÅ7F÷3Ô'&’æ—4'&’‡6²æÖòç7F÷2“÷6²æÖç7F÷3¥µÓ°¢6öç7B7F÷3×7FFSòç&÷WFSÓÓÒwF†’söÆÅ7F÷2æf–ÇFW"‡7F÷Óç7F÷æ–BÓÒw6V÷VÂ×7FF–öâr“¦ÆÅ7F÷3°¢6öç7B7F—fU66VæS×7FFS÷&÷WFU66VæR‡66VæT'”–B‡6²Ç7FFRç66VæT–B’Ç7FFR“¦çVÆÃ°¢6öç7BÖF6†VC×7F÷2æf–æD–æFW‚‡7F÷Óç7F÷æ–CÓÓÖ7F—fU66VæSòç7F÷“°¢6öç7B7F—fS×7FFSòæ6ö×ÆWFVCôÖF‚æÖ‚ƒÇ7F÷2æÆVæwF‚Ó“¤ÖF‚æÖ‚ƒÆÖF6†VB“°¢&WGW&âÇ6V7F–öâ6Æ73Ò'G&fVÄÖG¶6ö×7Còv6ö×7Bs¢rwÒ"7G–ÆSÒ"Ò×G&fVÂ×7F÷3¢G·7F÷2æÆVæwF‡Ò"&–ÖÆ&VÃÒ"G¶‚†Â‡¶¶ó¢~ÈIÎÉ«‚ÉzÎÙh’Êx¸øBrÆ¦¢~8+Ş8*n8:¾ix^ŠÎ89î88>89rrÆVã¢u6V÷VÂG&fVÂÖrÇ¦ƒ¢~šin[	Nix^ŠÎYËY»âwÒ’—Ò#ãÆF—b6Æ73Ò'G&fVÄÖÆ–æR#ãÆ’7G–ÆSÒ'v–GFƒ¢G·7F÷2æÆVæwFƒãôÖF‚ç&÷VæB†7F—fRò‡7F÷2æÆVæwF‚Ó’£“£ÒR#ãÂö“ãÂöF—câG·7F÷2æÖ‚‡7F÷Æ–æFW‚“Óç¶6öç7B÷VãÖ–æFWƒÃÖ7F—fRÆFöæSÖ–æFWƒÆ7F—fWÇÇ7FFSòæ6ö×ÆWFVBÆ7W'&VçCÖ–æFWƒÓÓÖ7F—fRbb7FFSòæ6ö×ÆWFVBÇ7&3Ö76WEF‚‡6²Âw&÷2rÇ7F÷æ76WB“·&WGW&âÆF—b6Æ73Ò'G&fVÅ7F÷G¶÷Vãòv÷Vâs¢vÆö6¶VBwÒG¶FöæSòvFöæRs¢rwÒG¶7W'&VçCòv7W'&VçBs¢rwÒ#ãÇ7ãâG·7&3öÆ–Ör7&3Ò"G¶‚‡7&2—Ò"ÇCÒ"#æ¦Æ#âG¶‚‡7F÷æ–B—ÓÂö#æÓÂ÷7ããÆ#âG¶‚†Â‡7F÷ææÖR’—ÓÂö#ãÇ6ÖÆÃâG¶FöæSòtDôäRs¦7W'&VçCö‚†Â‡¶¶ó¢~ÙˆNÉêÂrÆ¦¢~8N8ârÆVã¢täõrrÇ¦ƒ¢~[Ù>X˜ÒwÒ’“¦‚†Â‡¶¶ó¢~Éê«˜rÆ¦¢~iÊ®™h¾iKârÆVã¢tÄô4´TBrÇ¦ƒ¢~iÊ®Šz>™HwÒ’—ÓÂ÷6ÖÆÃãÂöF—cæÒ’æ¦ö–â‚rr—ÓÂ÷6V7F–öãæ°¢Ğ¢gVæ7F–öâ6¶–ä'”–B‡6²Æ–B—·&WGW&â6²ç6¶–ç3òæf–æB‡6¶–ãÓç6¶–âæ–CÓÓÖ–B—ÇÇ6²ç6¶–ç3òå³×Ğ¢gVæ7F–öâv÷&ÆDÖ&·W‡6²Ç7FFRÇ66VæRÆç7vW"—°¢6öç7Bv÷&ÆC×66VæRçv÷&ÆC¶–b‚v÷&ÆB—&WGW&ârs°¢6öç7B7F÷&S×&VE7F÷&R‚’Ç6¶–ã×6¶–ä'”–B‡6²Ç7F÷&RæfF"æWV—VB’Æ&6¶w&÷VæCÖ76WEF‚‡6²Âv&6¶w&÷VæG2rÇv÷&ÆBæ&6¶w&÷VæB’Æç3Ö76WEF‚‡6²Âvç72rÇv÷&ÆBæç2“°¢6öç7B&÷3Ò‡v÷&ÆBç&÷7ÇÅµÒ’æÖ‚†¶W’Æ–æFW‚“Óç&÷–ÖvR‡6²Æ¶W’ÆG&fVÅv÷&ÆE&÷&÷ÒGµ7G&–ær†¶W’’ç&WÆ6R‚õµæ×£Ó’ÕÒöv’Ârr’çFôÆ÷vW$66R‚—Ò&÷ÒG¶–æFW‡Ö’’æ¦ö–â‚rr“°¢6öç7B&V7F–öãÖç7vW#öÂ†ç7vW"æ6÷'&V7C÷66VæRç7V66W73§66VæRç&V6÷fW'’“¢rs°¢6öç7B&Wv&CÖç7vW#òæ6÷'&V7Bbfç7vW"æV&æVCöÆF—b6Æ73Ò'G&fVÅv÷&ÆE&Wv&B#âG·&÷–ÖvR‡6²ÂwG&fVÅvöârÂrr—ÓÆ#â²G¶‚‡vöâ†ç7vW"æV&æVB’—ÓÂö#ãÂöF—cæ¢rs°¢6öç7B—FVÓÖç7vW#òæ6÷'&V7Bbfç7vW"æ—FVÕ&Wv&CöÆF—b6Æ73Ò'G&fVÅv÷&ÆD—FVÒ#âG·&÷–ÖvR‡6²Æç7vW"æ—FVÕ&Wv&BÂrr—ÓÇ6ÖÆÃâG¶‚†Â‡¶¶ó¢~È‰ÊyÙ(‚Ù¨Ş¹9ÒrÆ¦¢~8+>8:Î8*ş8+~8:~8;>xÛ.[érrÆVã¢t4ôÄÄT5DTBrÇ¦ƒ¢~ˆë~[é~iKn‰xşY8wÒ’—ÓÂ÷6ÖÆÃãÂöF—cæ¢rs°¢&WGW&âÆF—b6Æ73Ò'G&fVÅv÷&ÆBG¶ç7vW#öç7vW"æ6÷'&V7Còv—2×7V66W72s¢v—2×&V6÷fW'’s¢rwÒ"FFÖ&6¶w&÷VæCÒ"G¶‚‡v÷&ÆBæ&6¶w&÷VæGÇÂrr—Ò#âG¶&6¶w&÷VæCöÆ–Ör6Æ73Ò'G&fVÅv÷&ÆD&r"7&3Ò"G¶‚†&6¶w&÷VæB—Ò"ÇCÒ"#æ¢rwÒG·&÷7ÒG¶ç3öÆ–Ör6Æ73Ò'G&fVÅv÷&ÆDç2"7&3Ò"G¶‚†ç2—Ò"ÇCÒ"#æ¢rwÒG·6¶–ãòæ–ÖvSöÆ–Ör6Æ73Ò'G&fVÅv÷&ÆEÆ–W""7&3Ò"G¶‚‡6¶–âæ–ÖvR—Ò"ÇCÒ"#æ¢rwÓÆF—b6Æ73Ò'G&fVÅv÷&ÆDfÆö÷"#ãÂöF—câG·&Wv&GÒG¶—FV×ÒG·&V7F–öãöÇ6Æ73Ò'G&fVÅv÷&ÆE&V7F–öâ#âG¶‚‡&V7F–öâ—ÓÂ÷æ¢rwÓÂöF—cæ°¢Ğ¢gVæ7F–öâfF$Ö&·W‡6²Ç7F÷&R—°¢6öç7BWV—VC×6¶–ä'”–B‡6²Ç7F÷&RæfF"æWV—VB’ÇVæÆö6¶VCÖæWr6WB‡7F÷&RæfF"çVæÆö6¶VB“°¢&WGW&âÇ6V7F–öâ6Æ73Ò'G&fVÄfF"#ãÆF—b6Æ73Ò'G&fVÄfF$†VB#ãÆF—cãÇ6ÖÆÃäÕ’E$dTÄU#Â÷6ÖÆÃãÆƒ#âG¶‚†Â‡¶¶ó¢~¸+BÉzÎÙhÉérÆ¦¢~8(ş8ş8~8îix^K«¢rÆVã¢t×’G&fVÆW"rÇ¦ƒ¢~h‰y¨Nix^ŠÎˆRwÒ’—ÓÂöƒ#ãÂöF—cãÇ7ãâG·VæÆö6¶VBç6—¦WÒòG·6²ç6¶–ç2æÆVæwF‡ÓÂ÷7ããÂöF—cãÆF—b6Æ73Ò'G&fVÄfF%7FvR"7G–ÆSÒ"ÒÖfF"Ö66VçC¢G¶‚†WV—VBæ66VçB—Ò#ãÆ–Ör7&3Ò"G¶‚†WV—VBæ–ÖvR—Ò"ÇCÒ"#ãÆ#âG¶‚†Â†WV—VBææÖR’—ÓÂö#ãÂöF—cãÆF—b6Æ73Ò'G&fVÅ6¶–äw&–B#âG·6²ç6¶–ç2æÖ‡6¶–ãÓç¶6öç7B÷Vã×VæÆö6¶VBæ†2‡6¶–âæ–B’Æöã×6¶–âæ–CÓÓÖWV—VBæ–C·&WGW&âÆ'WGFöâ6Æ73Ò"G¶öãòvöâs¢rwÒ"G¶÷Vãòrs¢vF—6&ÆVBwÒöæ6Æ–6³Ò&ÖÆ&—EG&fVÄWV—‚rG¶‚‡6¶–âæ–B—Òr’#ãÆ’7G–ÆSÒ"Ò×6¶–ã¢G¶‚‡6¶–âæ66VçB—Ò#ãÆ–Ör7&3Ò"G¶‚‡6¶–âæ–ÖvR—Ò"ÇCÒ"#ãÂö“ãÇ7ãâG¶‚†Â‡6¶–âææÖR’—ÓÂ÷7ããÇ6ÖÆÃâG¶÷Vãò†öãö‚†Â‡¶¶ó¢~Ë
+Éª’ÊIrÆ¦¢~yØyJKŠÒrÆVã¢tWV—VBrÇ¦ƒ¢~[{.Š8^ZHrwÒ’“¦‚†Â‡¶¶ó¢~«ÉXNÉè^«‹rÆ¦¢~yØi»ş88(²rÆVã¢uvV"rÇ¦ƒ¢~hÚ.Š8RwÒ’’“¦‚‡6¶–âçVæÆö6³ÓÓÒwW&fV7BsöÂ‡¶¶ó¢~ÊN»hÊ	^¸»R»;NÈ8rÆ¦¢~XZYXşjÚ>Šz>Z˜ZÂrÆVã¢tÆÂÖ6÷'&V7B&Wv&BrÇ¦ƒ¢~XZZûZYnX«wÒ“¦Â‡¶¶ó¢~ËÙNÈªBÉ˜Nº8Â»;NÈ8rÆ¦¢~8+>8;Î8+ZèÎK¨nZ˜ZÂrÆVã¢u&÷WFRÖ6ÆV"&Wv&BrÇ¦ƒ¢~‹zş{«şZèÎh‰ZYnX«wÒ’—ÓÂ÷6ÖÆÃãÂö'WGFöãæÒ’æ¦ö–â‚rr—ÓÂöF—cãÂ÷6V7F–öãæ°¢Ğ¢gVæ7F–öâVç7W&UVW7F–öâ‡6²Ç7FFRÇ66VæR—°¢–b‡66VæRçVW7F–öâ—°¢6öç7B×66VæRçVW7F–öã°¢&WGW&ç·6÷W&6S§ÆF—7Æ“§²ââçÆ6†ö–6T÷&FW#§æ6†ö–6W2æÖ‚…òÆ–æFW‚“Óæ–æFW‚—×Ó°¢Ğ¢6öç7B6÷W&6S×v–æF÷räÔÄ$•Eô$ä³òæ'”–B‡66VæRæ&æ´–B“°¢–b‚6÷W&6R—&WGW&âçVÆÃ°¢ÆWB÷&FW#×7FFRæ÷&FW'5·66VæRæ–EÓ°¢–b‚'&’æ—4'&’†÷&FW"—ÇÆ÷&FW"æÆVæwF‚Ó×6÷W&6Ræ÷F–öç2æÆVæwF‚—°¢÷&FW#×v–æF÷räÔÄ$•Eô$ä²æg&W6„÷&FW"‡6÷W&6Ræ–B“°¢7FFRæ÷&FW'5·66VæRæ–EÓÔ'&’æg&öÒ†÷&FW"“°¢7FFRçWFFVDCÖæ÷r‚“°¢w&—FU7FFR‡7FFR“°¢Ğ¢&WGW&ç·6÷W&6RÆF—7Æ“§v–æF÷räÔÄ$•Eô$ä²ç&W6VçB‡6÷W&6RÆ÷&FW"—Ó°¢Ğ¢gVæ7F–öâ6öÖÖöåF÷‡6²Ç7FFRÇ66VæR—°¢6öç7BF÷FÃ×6²çVW7F–öä6÷VçBÆç7vW&VCÖç7vW&VD6÷VçB‡7FFR’Ç66÷&SÖ6÷'&V7D6÷VçB‡7FFR“°¢6öç7BWfVçD÷VãÒ%uôUdTåEôõTå·66VæSòæ–EÒÆ&6³ÖWfVçD÷VãòvÖÆ&—EG&fVÄ6Æ÷6TWfVçB‚’s¢vÖÆ&—EG&fVÄ&6²‚’s°¢6öç7B&6´Æ&VÃÖWfVçD÷VãöÂ‡¶¶ó¢~«ZÎÉzÒÊx¸øNºÂrÆ¦¢~8*8:®8*.89î88>89~8‚rÆVã¢t&6²Fò&VÖrÇ¦ƒ¢~‹ùNY¹îXË®YùşYËY»âwÒ“¦Â‡¶¶ó¢~ÉzÎÙh’Êx¸øBrÆ¦¢~ix^89î88>89rrÆVã¢uG&fVÂÖrÇ¦ƒ¢~ix^ŠÎYËY»âwÒ“°¢&WGW&æÆ†VFW"6Æ73Ò'G&fVÅF÷#ãÆ'WGFöâ6Æ73Ò'G&fVÄ&6²"öæ6Æ–6³Ò"G¶&6·Ò"&–ÖÆ&VÃÒ"G¶‚†&6´Æ&VÂ—Ò#î(“Âö'WGFöããÆF—cãÇ6ÖÆÃâG¶‚‡6²æ&FvR—Ò+r$Tt”ääU#Â÷6ÖÆÃãÆ#âG¶‚†Â‡6²çF—FÆR’—ÓÂö#ãÂöF—cãÆ'WGFöâ6Æ73Ò'G&fVÄÆær"öæ6Æ–6³Ò&WfVçBç7F÷&÷vF–öâ‚“¶fÆtÖVçR‚’"&–ÖÆ&VÃÒ"G¶‚†Â‡¶¶ó¢~ÈJNº¨RÉkÉkB»	N«ë«‹rÆ¦¢~ŠªÎiˆîŠˆŠ©î8).ZHi»BrÆVã¢t6†ævRW‡ÆæF–öâÆæwVvRrÇ¦ƒ¢~Xˆ~hÚ.Šz>iéŠúŞŠˆwÒ’—Ò#âG¶fÆr‚—ÓÂö'WGFöããÂö†VFW#ãÆF—b6Æ73Ò'G&fVÄ66TÖWF#ãÇ7ãâG¶‚‡G&fVÆW"‡6²Ç7FFR’—ÓÂ÷7ããÆ#âG·66÷&WÒòG·F÷FÇÒG¶‚†Â‡¶¶ó¢~Ê	^¸»RrÆ¦¢~jÚ>Šz2rÆVã¢v6÷'&V7BrÇ¦ƒ¢~zÙNZû’wÒ’—ÓÂö#ãÂöF—cãÆF—b6Æ73Ò'G&fVÅvÆÆWB#ãÇ7ããÇ6ÖÆÃâG¶‚†Â‡¶¶ó¢~«(ÎÉèBÉêÎÙ™BrÆ¦¢~8+.8;Î8:Xh^˜	®‹*‚rÆVã¢ttÔR5U%$Tä5’rÇ¦ƒ¢~k‹hˆş‹J~[ˆwÒ’—ÓÂ÷6ÖÆÃãÆ#âG¶‚‡vöâ‡7FFRçvÆÆWB’—ÓÂö#ãÂ÷7ããÇ7ããÇ6ÖÆÃâG¶‚†Â‡¶¶ó¢~ÉzÎÙh’È¹Î«rÆ¦¢~ix^8îi˜.X‹²rÆVã¢uE$•D”ÔRrÇ¦ƒ¢~ix^ŠÎi{n™{BwÒ’—ÓÂ÷6ÖÆÃãÆ#âG¶‚†6Æö6²‡7FFRæ6Æö6´Ö–çWFW2’—ÓÂö#ãÂ÷7ããÂöF—cãÆF—b6Æ73Ò'G&fVÅ&öw&W72"&–ÖÆ&VÃÒ"G¶ç7vW&VGÒòG·F÷FÇÒ#ãÆ’7G–ÆSÒ'v–GFƒ¢G´ÖF‚æÖ–âƒÆç7vW&VB÷F÷FÂ£—ÒR#ãÂö“ãÂöF—câG·66VæSòæÆö6F–öãöÆF—b6Æ73Ò'G&fVÄÆö6F–öâ#î)xòG¶‚†Â‡66VæRæÆö6F–öâ’—ÓÂöF—cæ¢rwÖ°¢Ğ¢gVæ7F–öâ¶÷&Vä6÷’‡66VæR—°¢&WGW&æÆ&Æö6·V÷FR6Æ73Ò'G&fVÄ¶÷&Vâ"ÆæsÒ&¶ò#âG¶‚‡66VæRæ¶÷&Vâ—ÓÂö&Æö6·V÷FSâG·66VæRç7W÷'CöÇ6Æ73Ò'G&fVÅ7W÷'BG¶Æær‚“ÓÓÒv¶òsòv¶òs¢rwÒ#âG¶‚†Â‡66VæRç7W÷'B’—ÓÂ÷æ¢rwÖ°¢Ğ¢gVæ7F–öâ6ÇVTÖ&·W‡66VæRÆç7vW"—°¢–b‚66VæRæ6ÇVR—&WGW&ârs°¢&WGW&æÆF—b6Æ73Ò'G&fVÄ6ÇVRG¶ç7vW#òæ6÷'&V7Còvf÷VæBs¢vÖ—76VBwÒ#ãÆF—cãÇ6ÖÆÃâG¶ç7vW#òæ6÷'&V7Cö‚†Â‡¶¶ó¢~ÈªNØ:ÎÙHBÙ¨Ş¹9ÒrÆ¦¢~8+8+ş8;>89~xÛ.[érrÆVã¢u7F×V&æVBrÇ¦ƒ¢~ˆë~[é~XÛzºwÒ’“¦‚†Â‡¶¶ó¢~ÉzÎÙh’«‹ºŞÉyÊÉêRrÆ¦¢~ix^8îŠ‰˜Ë.8¾KùŞZÙ‚rÆVã¢u6fVBFò¦÷W&æW’rÇ¦ƒ¢~[{.KùŞZÙX‹ix^ŠÎŠë[ÙRwÒ’—ÓÂ÷6ÖÆÃãÆ#âG¶‚†Â‡66VæRæ6ÇVRæÆ&VÂ’—ÓÂö#ãÇâG¶‚†Â‡66VæRæ6ÇVRæFWF–Â’—ÓÂ÷ãÂöF—cãÂöF—cæ°¢Ğ¢gVæ7F–öâæ÷FV&öö²‡6²Ç7FFR—°¢6öç7B—FV×3×7FFRæ–çfVçF÷'’æf–ÇFW"†¶W“Óæ76WEF‚‡6²Âw&÷2rÆ¶W’’“°¢–b‚—FV×2æÆVæwF‚—&WGW&ârs°¢6öç7B‡V#Ö‡V$'•&÷WFR‡6²æ–B“°¢6öç7BÆ&VÇ3×°¢—'÷'DÖ§¶¶ó¢~ÉÛË)Î«;^ÙZÒÉX¸+BÊx¸øBrÆ¦¢~K¸[yŞz›®kŠş8*Î8*N8889î88>89rrÆVã¢t–æ6†Vöâ—'÷'BÖrÇ¦ƒ¢~K¸[yŞiË®YË®hÈ~XÙ~YËY»âwÒÀ¢G&ç6—D6&C§¶¶ó¢~º¨^¸ùÙh’«YØk^Ë›N¹9ÂrÆ¦¢~iˆîkIîŠÎ8ŞKªN˜	®8*¾8;Î88’rÆVã¢t×–VöævFöærG&ç6—B6&BrÇ¦ƒ¢~iˆîkIîikY	KªN˜	®XÚwÒÀ¢v×–VöævFöærÖf—'7B×7F×s§¶¶ó¢~º¨^¸ù’Ë*²ÉzÎÙh’ÈªNØ:ÎÙHBrÆ¦¢~iˆîkIî8ş88(8nix^8+8+ş8;>89rrÆVã¢tf—'7B×–VöævFöær7F×rÇ¦ƒ¢~iˆîkIîšinjÊix^ŠÎXÛzºwĞ¢Ó°¢f÷"†6öç7B—FVÒöb‡V#òæW†6†ævWÇÅµÒ–Æ&VÇ5¶—FVÒæ–EÓÖ—FVÒææÖS°¢&WGW&æÆFWF–Ç26Æ73Ò'G&fVÄæ÷FV&öö²#ãÇ7VÖÖ'“ãÆ#âG¶‚†Â‡¶¶ó¢~ÉzÎÙh’«»
+’rÆ¦¢~ix^8î8988>8+rÆVã¢uG&fVÂ&rrÇ¦ƒ¢~ix^ŠÎˆ8ÎXÈRwÒ’—ÓÂö#ãÆVÓâG¶—FV×2æÆVæwF‡Ò•DTÓÂöVÓãÂ÷7VÖÖ'“ãÆF—câG¶—FV×2æÖ†¶W“ÓæÇâG·&÷–ÖvR‡6²Æ¶W’Ârr—ÓÆ#âG¶‚†Â†Æ&VÇ5¶¶W•×ÇÇ¶¶ó¦¶W’Æ¦¦¶W’ÆVã¦¶W’Ç¦ƒ¦¶W—Ò’—ÓÂö#ãÇ6ÖÆÃä4ôÄÄT5DTCÂ÷6ÖÆÃãÂ÷æ’æ¦ö–â‚rr—ÓÂöF—cãÂöFWF–Ç3æ°¢Ğ¢gVæ7F–öâ&VæFW$‡V"‡62—°¢æd7F—fR‚v†öÖRr“°¢6öç7B7F÷&S×&VE7F÷&R‚’Æfö7W3Õ4µ5³ÒÆfö7W57FFS×&VE7FFR†fö7W2“°¢6öç7B6&G3Õ4µ2æÖ‡6³Óç°¢6öç7B7FFS×&VE7FFR‡6²’Æç7vW&VCÖç7vW&VD6÷VçB‡7FFR’Ç66÷&SÖ6÷'&V7D6÷VçB‡7FFR’Æ6ö×ÆWFSÒ7FFSòæ6ö×ÆWFVBÆ‡V#Ö‡V$'•&÷WFR‡6²æ–B“°¢6öç7B†4æW‡EVW7CÖ6ö×ÆWFRbf‡V"bdö&¦V7BçfÇVW2†‡V"æWfVçG2’ç6öÖR†WfVçCÓâ‡V%VW7DFöæR‡7FFRÆWfVçBæ–B’“°¢6öç7B7F–öãÒ7FFSöÂ‡¶¶ó¢~ÈIÎÉ«‚ÉzÎÙh’È¹ÎÉérÆ¦¢~8+Ş8*n8:¾ix^8).Zx¾8(8(²rÆVã¢u7F'B6V÷VÂ¦÷W&æW’rÇ¦ƒ¢~[ÈZx¾šin[	Nix^ŠÂwÒ“¦†4æW‡EVW7CöÂ‡¶¶ó¢~º¨^¸ù’¸ºNÉØÂØ	ÈªNØ«‚rÆ¦¢~iˆîkIî8îjÊ8î8*ş8*8+888‚rÆVã¢tæW‡B×–VöævFöærVW7BrÇ¦ƒ¢~X˜Ş[èiˆîkIîKˆ¾KŠ®K»¾XªwÒ“¦6ö×ÆWFSöÂ‡¶¶ó¢~É˜NÊ;Â«‹ºÒ»;N«‹rÆ¦¢~ZèÎ‹[Š‰˜Ë.8).Šh¾8(²rÆVã¢uf–Wr¦÷W&æW’&V6÷&BrÇ¦ƒ¢~iú^yÈ¾ix^ŠÎŠë[ÙRwÒ“¦Â‡¶¶ó¢~ÉzÎÙh’ÉÛNÉkN««‹rÆ¦¢~ix^8).{i®88(²rÆVã¢t6öçF–çVR¦÷W&æW’rÇ¦ƒ¢~{º~{ºŞix^ŠÂwÒ“°¢6öç7B&–Ö'”7F–öãÖ†4æW‡EVW7CöÖÆ&—EG&fVÄ6öçF–çVR‚rG¶‚‡6²æ–B—Òr–¦ÖÆ&—EG&fVÅ7F'B‚rG¶‚‡6²æ–B—ÒrÆfÇ6R–°¢&WGW&æÆ'F–6ÆR6Æ73Ò'G&fVÄW—6öFT6&B"7G–ÆSÒ"Ò×G&fVÂÖ66VçC¢G¶‚‡6²æ6÷fW"æ66VçB—Ò#ãÆF—b6Æ73Ò'G&fVÄW—6öFT'B—†VÂ#ãÆ–Ör7&3Ò"G¶‚‡6²æ6÷fW"æ–ÖvR—Ò"ÇCÒ""v–GFƒÒ#“c"†V–v‡CÒ#cC#ãÆ“âG¶‚‡6²æ&FvR—ÓÂö“ãÂöF—cãÆF—b6Æ73Ò'G&fVÄW—6öFT&öG’#ãÆF—b6Æ73Ò'G&fVÄW—6öFTfÆw2#ãÇ7ãä$Tt”ääU#Â÷7ããÇ7ãâG¶‚†Â‡6²æGW&F–öâ’—ÓÂ÷7ãâG¶6ö×ÆWFSöÇ7â6Æ73Ò&6ÆV"#å$õUDR4ÄT#Â÷7ãæ¢rwÓÂöF—cãÆƒ#âG¶‚†Â‡6²çF—FÆR’—ÓÂöƒ#ãÇâG¶‚†Â‡6²æFW67&—F–öâ’—ÓÂ÷âG·7FFSöÆF—b6Æ73Ò'G&fVÄW—6öFU7FG2#ãÇ7ãâG¶‚†Â‡¶¶ó¢~ºûÈY‚rÆ¦¢~89ş88>8+~8:~8;2rÆVã¢tÖ—76–öç2rÇ¦ƒ¢~K»¾XªwÒ’—ÒG¶ç7vW&VGÒòG·6²çVW7F–öä6÷VçGÓÂ÷7ããÇ7ãâG¶‚‡vöâ‡7FFRçvÆÆWB’—ÓÂ÷7ããÂöF—cæ¢rwÓÆ'WGFöâ6Æ73Ò'G&fVÅ&–Ö'’"öæ6Æ–6³Ò"G·&–Ö'”7F–öçÒ#âG¶7F–öçÒÆ#î(i#Âö#ãÂö'WGFöãâG·7FFSöÆ'WGFöâ6Æ73Ò'G&fVÅFW‡D'WGFöâ"öæ6Æ–6³Ò&ÖÆ&—EG&fVÅ&W7F'B‚rG¶‚‡6²æ–B—Òr’#âG¶‚†Â‡¶¶ó¢~ËÙNÈªBË)ÉØÎ»hØKrÆ¦¢~8+>8;Î8+8).iÈX‰Ş8¾8(’rÆVã¢u&W7F'B&÷WFRrÇ¦ƒ¢~˜xŞik[ÈZx¾‹zş{«òwÒ’—ÓÂö'WGFöãæ¢rwÓÂöF—cãÂö'F–6ÆSæ°¢Ò’æ¦ö–â‚rr“°¢62æ–ææW$…DÔÃÖÆF—b6Æ73Ò'G&fVÄ‡V"#ãÆ†VFW"6Æ73Ò'G&fVÄ‡V$†VB#ãÆ'WGFöâöæ6Æ–6³Ò'6WEf–Wr‚v†öÖRr’#î(“Âö'WGFöããÆF—cãÇ6ÖÆÃäÄT$â+rE$dTÂ+r4ôÄÄT5CÂ÷6ÖÆÃãÆƒâG¶‚†Â‡¶¶ó¢~ÉzÎÙhºª¹9ÂrÆ¦¢~ix^ŠÎ8:.8;Î88’rÆVã¢uG&fVÂÖöFRrÇ¦ƒ¢~ix^ŠÎjŠ[ÈòwÒ’—ÓÂöƒãÇâG¶‚†Â‡¶¶ó¢~ºyÙY«:ÂÙÎÊxº[ÂËî«:Â»	Î«hÎÙYº›ÈIÎÉ«ÉØBÊxÊ	ÉzÎÙhÙYÈKÉ©BârÆ¦¢~Š›8~8n8j‰ŠÙ8).hê.8~8n8y›®X‹8~8®8Î8(8+Ş8*n8:¾8).ix^8~8(8n8"rÆVã¢u7V²Âf–æB6–vç2ÂæBW6RF†RF–6¶WBÖ6†–æR2–÷RG&fVÂ6V÷VÂârÇ¦ƒ¢~˜	®‹ø~ZûŠùŞ8h›îj~[ù~Y(Î‹JŞzZûÈÎK«.ˆz®k‹Šxšin[	N8"wÒ’—ÓÂ÷ãÂöF—cãÆ'WGFöâ6Æ73Ò'G&fVÄÆær"öæ6Æ–6³Ò&WfVçBç7F÷&÷vF–öâ‚“¶fÆtÖVçR‚’"&–ÖÆ&VÃÒ"G¶‚†Â‡¶¶ó¢~ÈJNº¨RÉkÉkB»	N«ë«‹rÆ¦¢~ŠªÎiˆîŠˆŠ©î8).ZHi»BrÆVã¢t6†ævRW‡ÆæF–öâÆæwVvRrÇ¦ƒ¢~Xˆ~hÚ.Šz>iéŠúŞŠˆwÒ’—Ò#âG¶fÆr‚—ÓÂö'WGFöããÂö†VFW#ãÇ6V7F–öâ6Æ73Ò'G&fVÄ‡V$&ææW"#ãÆF—cãÇ6ÖÆÃä´õ$T$õUDRÂ÷6ÖÆÃãÆ#âG¶‚†Â‡¶¶ó¢~ÉÛË)Î«;^ÙZÒC(i"º¨^¸ù’rÆ¦¢~K¸[yŞz›®kŠòC(i"iˆîkIârÆVã¢t–æ6†Vöâ—'÷'BC(i"×–VöævFöærrÇ¦ƒ¢~K¸[yŞiË®YË¢C(i"iˆîkIâwÒ’—ÓÂö#ãÇâG¶‚†Â‡¶¶ó¢sn«	ÂÙˆNÉêRºûÈY‚+rÉÛN¸ù’ÈJØ9Ò+rÈ‰ÊyÙ(‚+rºËNº8ÂÉÙÈ8rÆ¦¢~xûîYËn89ş88>8+~8:~8;>8;¾z{¾X¹^˜h©î8;¾8+>8:Î8*ş8+~8:~8;>8;¾xJiiŠ>Š8RrÆVã¢sbf–VÆBÖ—76–öç2+r&÷WFR6†ö–6R+r6öÆÆV7F–&ÆW2+rg&VR÷WFf—BrÇ¦ƒ¢snKŠ®xëYË®K»¾Xª+r‹zş{«ş˜hº’+riKn‰xşY8+rXXŞ‹KiÈŞŠ8RwÒ’—ÓÂ÷ãÂöF—cãÂ÷6V7F–öãâG¶ÖÖ&·W†fö7W2Æfö7W57FFR—ÓÆF—b6Æ73Ò'G&fVÅ6V7F–öåF—FÆR#ãÆ#âG¶‚†Â‡¶¶ó¢~Ë*²»(Ê{‚ÉzÎÙh’ËÙNÈªBrÆ¦¢~iÈX‰Ş8îix^ŠÎ8+>8;Î8+’rÆVã¢tf—'7BG&fVÂ&÷WFRrÇ¦ƒ¢~zÊÎKˆiÚix^ŠÎ‹zş{«òwÒ’—ÓÂö#ãÇ7ãâGµ4µ2æÆVæwF‡Ò$õUDSÂ÷7ããÂöF—câG¶6&G7ÒG¶ÖWG&–74Ö&·W‡7F÷&R—ÒG¶fF$Ö&·W†fö7W2Ç7F÷&R—ÓÆ'F–6ÆR6Æ73Ò'G&fVÄ6öÖ–æu6ööâ#ãÇ7ãã#Â÷7ããÆF—cãÆ#âG¶‚†Â‡¶¶ó¢~¸ºNÉØÂÈIÎÉ«‚ÊxÉzÒrÆ¦¢~jÊ8î8+Ş8*n8:¾8*8:®8*"rÆVã¢tæW‡B6V÷VÂ&VrÇ¦ƒ¢~Kˆ¾KˆKŠ®šin[	NXË®YùòwÒ’—ÓÂö#ãÇâG¶‚†Â‡¶¶ó¢~¸*ÉØÉzÎÙh’É¹+~È¹Î«L+~È‰ÊyÙ(ÉØB«{¸ÈºÂ¹:N«:¸ºNÉØÂÉzŞÉËÎºÂÉÛNÉkNÊy¸¸¸ºBârÆ¦¢~jè¾8>8şix^8*n8*8;>8;¾i˜.™i>8;¾8+>8:Î8*ş8+~8:~8;>8).hÈ8>8njÊ8îšx^8˜.8ş8î88"rÆVã¢t6''’–÷W"G&fVÂvöâÂF–ÖRÂæB6öÆÆV7F–öâFòF†RæW‡B7FF–öâârÇ¦ƒ¢~i®[ŠnXšKÙix^ŠÎ™úXX>8i{n™{NY(ÎiKn‰xşX˜Ş[èKˆ¾Kˆz¹8"wÒ’—ÓÂ÷ãÂöF—cãÆVÓäÄô4´TCÂöVÓãÂö'F–6ÆSãÂöF—cæ°¢Ğ¢gVæ7F–öâ&VæFW$æ'&F—fR‡62Ç6²Ç7FFRÇ66VæR—°¢62æ–ææW$…DÔÃÖÆF—b6Æ73Ò'G&fVÅÆ’#âG¶6öÖÖöåF÷‡6²Ç7FFRÇ66VæR—ÓÆ'F–6ÆR6Æ73Ò'G&fVÅ66VæT6&B#ãÆF—b6Æ73Ò'G&fVÄ6†FW"#ä$TG·66VæRæ6†FW'ÓÂöF—cãÆƒâG¶‚†Â‡66VæRçF—FÆR’—ÓÂöƒâG·v÷&ÆDÖ&·W‡6²Ç7FFRÇ66VæR—ÒG¶¶÷&Vä6÷’‡66VæR—ÓÆ'WGFöâ6Æ73Ò'G&fVÅ&–Ö'’"öæ6Æ–6³Ò&ÖÆ&—EG&fVÄæW‡B‚’#âG¶‚†Â‡¶¶ó¢~ÉzÎÙh’«8NÈhÒrÆ¦¢~ix^8).{i®88(²rÆVã¢t6öçF–çVR¦÷W&æW’rÇ¦ƒ¢~{º~{ºŞix^ŠÂwÒ’—ÒÆ#î(i#Âö#ãÂö'WGFöããÂö'F–6ÆSâG¶æ÷FV&öö²‡6²Ç7FFR—ÓÂöF—cæ°¢Ğ¢gVæ7F–öâ&VæFW$6†ö–6R‡62Ç6²Ç7FFRÇ66VæR—°¢62æ–ææW$…DÔÃÖÆF—b6Æ73Ò'G&fVÅÆ’#âG¶6öÖÖöåF÷‡6²Ç7FFRÇ66VæR—ÓÆ'F–6ÆR6Æ73Ò'G&fVÅ66VæT6&B#ãÆF—b6Æ73Ò'G&fVÄ6†FW"#ä4„ôõ4R”õU"$õUDSÂöF—cãÆƒâG¶‚†Â‡66VæRçF—FÆR’—ÓÂöƒâG·v÷&ÆDÖ&·W‡6²Ç7FFRÇ66VæR—ÒG¶¶÷&Vä6÷’‡66VæR—ÓÆF—b6Æ73Ò'G&fVÅ&÷WFW2#âG·66VæRæ6†ö–6W2æÖ†6†ö–6SÓç¶6öç7BÆö6¶VCÔçVÖ&W"†6†ö–6Ræ6÷7B“ç7FFRçvÆÆWBÇ7&3Ö76WEF‚‡6²Âw&÷2rÆ6†ö–6Ræ76WB“·&WGW&æÆ'WGFöâöæ6Æ–6³Ò&ÖÆ&—EG&fVÄ6†ö÷6R‚rG¶‚†6†ö–6Ræ–B—Òr’"G¶Æö6¶VCòvF—6&ÆVBs¢rwÓâG·7&3öÆ–Ör7&3Ò"G¶‚‡7&2—Ò"ÇCÒ"#æ¦Ç7ãâG¶‚†6†ö–6Ræ6öFWÇÆ6†ö–6Ræ–B—ÓÂ÷7ãæÓÆF—cãÆ#âG¶‚†Â†6†ö–6RæÆ&VÂ’—ÓÂö#ãÇ6ÖÆÃâG¶‚†Â†6†ö–6RæFWF–Â’—ÓÂ÷6ÖÆÃãÇ7G&öæsâG¶‚‡vöâ†6†ö–6Ræ6÷7B’—Ò+rG¶‚†6†ö–6RæGW&F–öäÖ–çWFW2—ÒÔ”ãÂ÷7G&öæsâG¶Æö6¶VCöÇ6ÖÆÂ6Æ73Ò&æVVB#âG¶‚†Â‡¶¶ó¦G·vöâ†6†ö–6Ræ6÷7B×7FFRçvÆÆWB—Ò¸ÙBÙXNÉ©FÆ¦¦8.8‚G·vöâ†6†ö–6Ræ6÷7B×7FFRçvÆÆWB—Ş[ø^ŠhÆVã¦æVVBG·vöâ†6†ö–6Ræ6÷7B×7FFRçvÆÆWB—ÒÖ÷&VÇ¦ƒ¦‹ù™ÈG·vöâ†6†ö–6Ræ6÷7B×7FFRçvÆÆWB—ÖÒ’—ÓÂ÷6ÖÆÃæ¢rwÓÂöF—cãÆVÓâG¶Æö6¶VCòtÄô4²s¢~(¢wÓÂöVÓãÂö'WGFöãæÒ’æ¦ö–â‚rr—ÓÂöF—cãÆFWF–Ç26Æ73Ò'G&fVÄf7G2#ãÇ7VÖÖ'“âG¶‚†Â‡¶¶ó¢~ÈºNÊ	Â«YØkRÊ	^»;BËiÎË)‚rÆ¦¢~Zéş™©¾8îKªN˜	®h8^Z8îX{®X[‚rÆVã¢u&VÂG&ç7÷'B6÷W&6W2rÇ¦ƒ¢~yÉşZéîKªN˜	®KúhşiÚ^k©wÒ’—ÓÂ÷7VÖÖ'“âG·6²ç6÷W&6W2æÖ‡6÷W&6SÓæÆ‡&VcÒ"G¶‚‡6÷W&6RçW&Â—Ò"F&vWCÒ%ö&Ææ²"&VÃÒ&æö÷VæW"#âG¶‚‡6÷W&6RæÆ&VÂ—ÓÂöæ’æ¦ö–â‚rr—ÓÂöFWF–Ç3ãÂö'F–6ÆSãÂöF—cæ°¢Ğ¢gVæ7F–öâ&VæFW%VW7F–öâ‡62Ç6²Ç7FFRÇ66VæR—°¢6öç7B–ÆöCÖVç7W&UVW7F–öâ‡6²Ç7FFRÇ66VæR“°¢–b‚–ÆöB—·62æ–ææW$…DÔÃÖÆF—b6Æ73Ò'G&fVÄfFÂ#âG¶‚†Â‡¶¶ó¢~ºËÙZŞÉØB»h¹úÎÉŠNÊxº«¾ÙhÈ«^¸¸¸ºBârÆ¦¢~YXşšÎ8).ŠªŞ8ş‹ëÎ8(8î8¾8)>8~8~8ş8"rÆVã¢t6÷VÆBæ÷BÆöBF†—2VW7F–öâârÇ¦ƒ¢~izk9^Xª‹ÛŞš)yºî8"wÒ’—ÓÆ'WGFöâöæ6Æ–6³Ò&ÖÆ&—EG&fVÄ&6²‚’#ä$4³Âö'WGFöããÂöF—cæ·&WGW&çĞ¢6öç7B×–ÆöBæF—7Æ’Æç7vW#×7FFRæç7vW'5·66VæRæ–EÒÇ–6¶VCÖç7vW#öç7vW"ç6VÆV7FVC¥4TÄT5DTE·66VæRæ–EÒÆÆ—7FVæ–æs×ç6V7F–öãÓÓÒvÆ—7FVæ–ærrÇ67&—CÖ6ÆVå67&—B‡ç67&—B’Ç6†÷uG&ç67&—CÒE$å45$•E5·66VæRæ–EÒÆ–çFW&7F–öã×66VæRæ–çFW&7F–öçÇÂwV—¢s°¢6öç7BW‡ÆæF–öãÖç7vW#ò‡æW‡ÆæF–öä“†ãòå¶Æær‚•×ÇÇæW‡ÆæF–öä“†ãòæ¶÷ÇÂrr“¢rs°¢6öç7B6†ö–6W3×æ6†ö–6W2æÖ‚†6†ö–6RÆ–æFW‚“Óç°¢6öç7B6VÆV7FVC×–6¶VCÓÓÖ–æFW‚Æ6÷'&V7CÒç7vW"bf–æFWƒÓÓ×æç7vW$–æFW‚Çw&öæsÒç7vW"bg6VÆV7FVBbbç7vW"æ6÷'&V7BÆ76WC×66VæRæ6†ö–6T76WG3òå¶–æFW…ÒÇ7&3Ö76WEF‚‡6²Âw&÷2rÆ76WB’Æ¶óÕ7G&–ær†6†ö–6Sòæ¶÷ÇÆÂ†6†ö–6R’’ç&WÆ6R‚õå¾))).)5ÕÇ2¢÷RÂrr’Ç&WfVÅG&ç6ÆF–öãÒç7vW"bfÆær‚’ÓÒv¶òrbb‡6VÆV7FVGÇÆ6÷'&V7B’ÇG&ç6ÆF–öã×&WfVÅG&ç6ÆF–öãõ7G&–ær†Â†6†ö–6R’’ç&WÆ6R‚õå¾))).)5ÕÇ2¢÷RÂrr“¢rs°¢&WGW&æÆ'WGFöâ6Æ73Ò'G&fVÄç7vW"G·6VÆV7FVCòw6VÆV7FVBs¢rwÒG¶6÷'&V7Còv6÷'&V7Bs¢rwÒG·w&öæsòww&öærs¢rwÒ"öæ6Æ–6³Ò&ÖÆ&—EG&fVÅ6VÆV7B‚G¶–æFW‡Ò’"G¶ç7vW#òvF—6&ÆVBs¢rwÓâG·7&3öÆ–Ör7&3Ò"G¶‚‡7&2—Ò"ÇCÒ"#æ¦Ç7ãâG¶–æFW‚³ÓÂ÷7ãæÓÇ7â6Æ73Ò'G&fVÄç7vW$6÷’#ãÆ"ÆæsÒ&¶ò#âG¶‚†¶ò—ÓÂö#âG·G&ç6ÆF–öãöÇ6ÖÆÃâG¶‚‡G&ç6ÆF–öâ—ÓÂ÷6ÖÆÃæ¢rwÓÂ÷7ããÂö'WGFöãæ°¢Ò’æ¦ö–â‚rr“°¢6öç7BÖFW&–ÃÖÆ—7FVæ–æsöÆF—b6Æ73Ò'G&fVÄÆ—7FVâ#ãÆ'WGFöâöæ6Æ–6³Ò&ÖÆ&—EG&fVÅ7V²‚’#ãÇ7ãî)kcÂ÷7ããÆ#âG¶‚†Â‡¶¶ó¢~ÙYÎ«ZŞÉkB¹:>«‹rÆ¦¢~™ù>Y»ŞŠ©î8).ˆî8òrÆVã¢uÆ’¶÷&VâVF–òrÇ¦ƒ¢~i*ŞiKî™úŠúÒwÒ’—ÓÂö#ãÂö'WGFöããÆ'WGFöâ6Æ73Ò'G&ç67&—B"öæ6Æ–6³Ò&ÖÆ&—EG&fVÅFövvÆUG&ç67&—B‚’#âG·6†÷uG&ç67&—Cö‚†Â‡¶¶ó¢~¸È»;‚¸º¾«‹rÆ¦¢~8+8*ş8:®89~888).™h88(²rÆVã¢t†–FRG&ç67&—BrÇ¦ƒ¢~™©‰xşih~iÊÂwÒ’“¦‚†Â‡¶¶ó¢~¸È»;‚»;N«‹rÆ¦¢~8+8*ş8:®89~888).Šh¾8(²rÆVã¢u6†÷rG&ç67&—BrÇ¦ƒ¢~iú^yÈ¾ih~iÊÂwÒ’—ÓÂö'WGFöãâG·6†÷uG&ç67&—CöÇÆæsÒ&¶ò#âG¶‚‡67&—B—ÓÂ÷æ¢rwÓÂöF—cæ¦G·ç76vSöÆF—b6Æ73Ò'G&fVÅ76vR"ÆæsÒ&¶ò#âG¶‚‡ç76vR—ÓÂöF—cæ¢rwÖ°¢6öç7BfVVF&6³Öç7vW#öÆF—b6Æ73Ò'G&fVÄfVVF&6²G¶ç7vW"æ6÷'&V7CòvvööBs¢v&BwÒ"&öÆSÒ'7FGW2#ãÆF—cãÆ#âG¶‚†ç7vW"æ6÷'&V7CöÂ‡¶¶ó¦ÈK«;R+r²G·vöâ†ç7vW"æV&æVB—ÖÆ¦¦h‰X©ş8;²²G·vöâ†ç7vW"æV&æVB—ÖÆVã¦7V66W72+r²G·vöâ†ç7vW"æV&æVB—ÖÇ¦ƒ¦h‰X©ò+r²G·vöâ†ç7vW"æV&æVB—ÖÒ“¦Â‡¶¶ó¦¸ºNÈ¹Â«‹ÉØBËîÉYÉkNÉ©B+rG¶ç7vW"æFVÆ”Ö–çWFW7Ş»hB«+Ş«;ÆÆ¦¦8:¾8;Î88[ê[‹8;²G¶ç7vW"æFVÆ”Ö–çWFW7ŞXˆn{XÎ˜æÆVã¦&6²öâ&÷WFR+rG¶ç7vW"æFVÆ”Ö–çWFW7ÒÖ–â76VFÇ¦ƒ¦[{.‹ùNY¹î‹zş{«ò+r{¸ş‹ørG¶ç7vW"æFVÆ”Ö–çWFW7ŞXˆn™)öÒ’—ÓÂö#âG·G&fVÄ6ö6„Ö&·W‡66VæRÇÆç7vW"ÆW‡ÆæF–öâ—ÓÂöF—cãÂöF—câG¶6ÇVTÖ&·W‡66VæRÆç7vW"—ÓÆ'WGFöâ6Æ73Ò'G&fVÅ&–Ö'’"öæ6Æ–6³Ò&ÖÆ&—EG&fVÄæW‡B‚’#âG·66VæRææW‡CÓÓÒvVæF–ærsö‚†Â‡¶¶ó¢~º¨^¸ùÉy¸øNË
+ÙY«‹rÆ¦¢~iˆîkIî8¾X‹yØrÆVã¢u&V6‚×–VöævFöærrÇ¦ƒ¢~h«^‹ëîiˆîkIâwÒ’“¦‚†Â‡¶¶ó¢~¸ºNÉØÂÙh¸ù’rÆ¦¢~jÊ8îŠÎX¹RrÆVã¢tæW‡B7F–öârÇ¦ƒ¢~Kˆ¾KˆjÚ^ŠÎXª‚wÒ’—ÒÆ#î(i#Âö#ãÂö'WGFöãæ¦Æ'WGFöâ6Æ73Ò'G&fVÅ&–Ö'’G´çVÖ&W"æ—4–çFVvW"‡–6¶VB“òw&VG’s¢rwÒ"öæ6Æ–6³Ò&ÖÆ&—EG&fVÅ7V&Ö—B‚’#âG¶‚†Â‡¶¶ó¢~ÉÛN¸È´ÓKh‘éì¶»§q«^w²V#²^C²pƒ²ó®²ã¶Z#®.„œ±©„èŸ–“šº×
+K¢ª·
+OŸ’ê#º_–ŸšÎ£šZŸ7¾òœ±•¸èe½ÔÉ•…Ñ¡”ÁÉ¥”…¹½É‘•É•İ¥Ñ¡¥¸‰Õ‘•Ğ„œ±é èŸ¢¾ïš’îßš‚ó–æÛ–r£¦Šº_––º3š"C
+ç–6W¾òô¤¥ôğ½ Äø‘í¡Õ‰]½É±¡Á…¬±ÍÑ…Ñ”±¡Õˆ±•Ù•¹Ğ±í½ÉÉ•ĞéÑÉÕ”±•…É¹•èÁô¥ôñ‰±½­ÅÕ½Ñ”±…ÍÌô‰ÑÉ…Ù•±-½É•…¸ˆ±…¹œô‰­¼ˆû¶bã®Z„ƒ®F@ƒªÂpƒ²ó²ã²jP¸ğ½‰±½­ÅÕ½Ñ”øñÀ±…ÍÌô‰ÑÉ…Ù•±MÕÁÁ½ÉĞˆø‘í ¡°¡•Ù•¹Ğ¹ÍÕ•ÍÌ¤¥ôğ½Àøñ‘¥Ø±…ÍÌô‰ÑÉ…Ù•±	Õ‘•ÑI••¥ÁĞˆøñ‘¥ØøñÍµ…±°ø‘í ¡°¡í­¼èŸ®.£ªÂ œ±©„èŸ–6c’ú„œ±•¸èU9%PAI%œ±é èŸ–6W’îÜô¤¥ôğ½Íµ…±°øñˆø‘í ¡İ½¸¡Õ¹¥ÑAÉ¥”¤¥ôğ½ˆøğ½‘¥Øøñ‘¥ØøñÍµ…±°ø‘í ¡°¡í­¼èŸ²"c®~$œ±©„èŸšVÃ¦<œ±•¸èEU9Q%Qdœ±é èŸšVÃ¦<ô¤¥ôğ½Íµ…±°øñˆø‘íÅÕ…¹Ñ¥Ñåôğ½ˆøğ½‘¥Øøñ‘¥ØøñÍµ…±°ø‘í ¡°¡í­¼èŸ²NĞƒ²^³¶Z$ƒ²n@œ±©„èŸ’öÿš^
+›
+§Ìœ±•¸èMA9Pœ±é èŸ–ŞË¢*Ç¢Òäô¤¥ôğ½Íµ…±°øñˆûŠ"H‘í ¡İ½¸¡½ÍĞ¤¥ôğ½ˆøğ½‘¥Øøñ‘¥ØøñÍµ…±°ø‘í ¡°¡í­¼èŸ¶b²z°ƒ²zS²V„œ±©„èŸ>û–r£»šº/¦®`œ±•¸èUII9P]11Pœ±é èŸ–öO–&7’ög¦Štô¤¥ôğ½Íµ…±°øñˆø‘í ¡İ½¸¡ÍÑ…Ñ”¹İ…±±•Ğ¤¥ôğ½ˆøğ½‘¥Øøğ½‘¥Øøñ‘¥Ø±…ÍÌô‰ÑÉ…Ù•±Q•…¡•ÉQ¥Àˆøñˆø‘í ¡°¡í­¼èŸ®.“²v3²^C®>ƒ²NÃ®*PƒªÎ²
+Àƒ²jS®‚äœ±©„èŸš²‡¯
+’öÿ#
+/¢¢#º_»
+Ïœ±•¸èIUM	1M=1Y%9Q%@œ±é èŸ–>¿–’7R£j¢º‡º_š*–Şœô¤¥ôğ½ˆøñÀø‘í ¡°¡•Ù•¹Ğ¹•áÁ±…¹…Ñ¥½¸¤¥ôğ½Àøğ½‘¥Øøñ‰ÕÑÑ½¸±…ÍÌô‰ÑÉ…Ù•±AÉ¥µ…Éäˆ½¹±¥¬ô‰µ…±‰¥ÑQÉ…Ù•±5å•½¹‘½¹=Á•¸ ¤ˆø‘í ¡°¡í­¼èŸ®ª®>dƒªÆÃ®š³®†pƒ®>3²VªÂªâÀœ±©„èŸšb;šÒ{»¦k
++ãš"ï
+,œ±•¸èI•ÑÕÉ¸Ñ¼5å•½¹‘½¹œÍÑÉ••Ğœ±é èŸ¢şS–n{šb;šÒ{¢†_¦Lô¤¥ô€ñˆûŠHğ½ˆøğ½‰ÕÑÑ½¸øğ½…ÉÑ¥±”øğ½‘¥Øù€ì)ô(€™Õ¹Ñ¥½¸É•¹‘•É!Õ‰I•ÍÕ±Ğ¡ÍŒ±Á…¬±ÍÑ…Ñ”±¡Õˆ±•Ù•¹Ğ¥ì(€€€¥˜¡•Ù•¹Ğ¹¥¹Ñ•É…Ñ¥½¸ôôôÁÉ¥”µ‰Õ‘•Ğœ¥É•ÑÕÉ¸É•¹‘•É!Õ‰	Õ‘•ÑI•ÍÕ±Ğ¡ÍŒ±Á…¬±ÍÑ…Ñ”±¡Õˆ±•Ù•¹Ğ¤ì(€€€½¹ÍĞÅÕ•ÍĞõÍÑ…Ñ”¹µå•½¹‘½¹œ¹ÅÕ•ÍÑÍm•Ù•¹Ğ¹¥‘tì(€€€½¹ÍĞ•…É¹•õ9Õµ‰•È¹¥Í¥¹¥Ñ”¡9Õµ‰•È¡ÅÕ•ÍĞü¹•…É¹•¤¤ı9Õµ‰•È¡ÅÕ•ÍĞ¹•…É¹•¤é9Õµ‰•È¡•Ù•¹Ğ¹É•İ…É¥ñğÀì(€€€½¹ÍĞÍ¥¸õ•Ù•¹Ğ¹¥¹Ñ•É…Ñ¥½¸ôôôÍ¥¸µ‰Õ¥±œ±±•…É1…‰•°õÍ¥¸üM%8EUMP1Hœè9AEUMP1Hœì(€€€½¹ÍĞÑ¥Ñ±”õÍ¥¸ı°¡í­¼èŸ¶Vsªâ ƒ¶Fs²¶2C²vĞƒ²òs²ªÎ€ƒªâã²vĞƒ²^Ó®‚ã®.„œ±©„èŸ?Ï
+Ã¯»š¢g¢¶c3
+ç¿_¦O3¦Z/¾òœ±•¸èQ¡”!…¹Õ°Í¥¸±¥ĞÕÀ…¹½Á•¹•Ñ¡”İ…ä„œ±é èŸ¦~§šZš‚&3’ê»¢Öß¾ò3¦O¢Ş¿–ò–B¿’ê¾òô¤é°¡í­¼èŸ¶VsªÖ·²ZÓªÂ ƒ².“²‚pƒ²^³¶Z'²vƒ²n²²b®.„œ±©„èŸ¦~O–n÷¢ª{Ÿš^3–.W¾òœ±•¸èe½ÕÈ-½É•…¸µ½Ù•Ñ¡”©½ÕÉ¹•ä™½Éİ…É„œ±é èŸ¦~§¢¾·š:£–*£’êr–º{š^¢/¾òô¤ì(€€€½¹ÍĞÉ•İ…É‘1…‰•°õÍ¥¸ı°¡í­¼èŸ¶Fs²¶2@ƒ®¾ã²`ƒ®ÎÓ²œ±©„èŸš¢g¢¶c
+ßŸÏ–‚Ç¦°œ±•¸èM%85%MM%=8I]Iœ±é èŸš‚&3’îï–*‡––[–*Äô¤é°¡í­¼è9Aƒ®2¶fPƒ®ÎÓ²œ±©„è9A’òk¢¦Ç–‚Ç¦°œ±•¸è9AQ1,I]Iœ±é è9A–¾ç¢¾w––[–*Äô¤ì(€€€ÍŒ¹¥¹¹•É!Q50õ€ñ‘¥Ø±…ÍÌô‰ÑÉ…Ù•±A±…äÑÉ…Ù•±5å•½¹‘½¹œˆø‘í½µµ½¹Q½À¡Á…¬±ÍÑ…Ñ”±í±½…Ñ¥½¸é¡Õˆ¹±½…Ñ¥½¹ô¥ôñ…ÉÑ¥±”±…ÍÌô‰ÑÉ…Ù•±5å•½¹‘½¹…ÉÑÉ…Ù•±!Õ‰I•ÍÕ±Ğˆøñ‘¥Ø±…ÍÌô‰ÑÉ…Ù•±EÕ•ÍÑ¥½¹9¼ˆøñÍÁ…¸ø‘í±•…É1…‰•±ôğ½ÍÁ…¸øñ•´ø¬‘í ¡İ½¸¡•…É¹•¤¥ôğ½•´øğ½‘¥Øøñ Äø‘í ¡Ñ¥Ñ±”¥ôğ½ Äø‘í¡Õ‰]½É±¡Á…¬±ÍÑ…Ñ”±¡Õˆ±•Ù•¹Ğ±í½ÉÉ•ĞéÑÉÕ”±•…É¹•±¥Ñ•µI•İ…Éé•Ù•¹Ğ¹¥Ñ•µI•İ…É‘ô¥ôñ‰±½­ÅÕ½Ñ”±…ÍÌô‰ÑÉ…Ù•±-½É•…¸ˆ±…¹œô‰­¼ˆø‘í ¡Í¥¸ı•Ù•¹Ğ¹…¹Íİ•È¹©½¥¸ œœ¤é½µÁ½Í•‘M•¹Ñ•¹”¡•Ù•¹Ğ¹…¹Íİ•È¤¥ôğ½‰±½­ÅÕ½Ñ”øñÀ±…ÍÌô‰ÑÉ…Ù•±MÕÁÁ½ÉĞˆø‘í ¡°¡•Ù•¹Ğ¹ÍÕ•ÍÌ¤¥ôğ½Àøñ‘¥Ø±…ÍÌô‰ÑÉ…Ù•±I•İ…ÉÑÉ…Ù•±!Õ‰I•İ…Éˆø‘íÁÉ½Á%µ…”¡Á…¬±•Ù•¹Ğ¹¥Ñ•µI•İ…É°œœ¥ôñ‘¥ØøñÍµ…±°ø‘í ¡É•İ…É‘1…‰•°¥ôğ½Íµ…±°øñˆø‘í ¡°¡¡Õˆ¹•á¡…¹”¹™¥¹¡¥Ñ•´ôù¥Ñ•´¹¥ôôõ•Ù•¹Ğ¹¥Ñ•µI•İ…É¤ü¹¹…µ•ññ•Ù•¹Ğ¹¥Ñ•µI•İ…É¤¥ôğ½ˆøñÀø¬‘í ¡İ½¸¡•…É¹•¤¥ôğ½Àøğ½‘¥Øøğ½‘¥Øøñ‰ÕÑÑ½¸±…ÍÌô‰ÑÉ…Ù•±AÉ¥µ…Éäˆ½¹±¥¬ô‰µ…±‰¥ÑQÉ…Ù•±5å•½¹‘½¹=Á•¸ ¤ˆø‘í ¡°¡í­¼èŸªÆÃ®š³²^C²pƒ®.“²v0ƒ²ÚS²ZÔƒ²ÂûªâÀœ±©„èŸ¦k
++Ÿš²‡»šw–ë
+Kš:‹dœ±•¸è¥¹Ñ¡”¹•áĞÍÑÉ••Ğµ•µ½Éäœ±é èŸ–r£¢†_’â+–¾ïš&û’â/’âšº×–n{–şô¤¥ô€ñˆûŠHğ½ˆøğ½‰ÕÑÑ½¸øğ½…ÉÑ¥±”øğ½‘¥Øù€ì(€ô(€™Õ¹Ñ¥½¸É•¹‘•É5å•½¹‘½¹œ¡ÍŒ±Á…¬±ÍÑ…Ñ”±¡Õˆ¥ì(€€€½¹ÍĞ•Ù•¹Ğõ=‰©•Ğ¹Ù…±Õ•Ì¡¡Õˆ¹•Ù•¹ÑÌ¤¹™¥¹¡¥Ñ•´ôù¥Ñ•´¹¥ôôõÍÑ…Ñ”¹µå•½¹‘½¹œ¹…Ñ¥Ù•Ù•¹Ğ¥ññ…Ñ¥Ù•!Õ‰Ù•¹Ğ¡¡Õˆ±ÍÑ…Ñ”¤ì(€€€¥˜¡ÍÑ…Ñ”¹µå•½¹‘½¹œ¹ÍÉ••¸ôôô‘¥…±½Õ”œ¥É•ÑÕÉ¸É•¹‘•É!Õ‰¥…±½Õ”¡ÍŒ±Á…¬±ÍÑ…Ñ”±¡Õˆ±•Ù•¹Ğ¤ì(€€€¥˜¡ÍÑ…Ñ”¹µå•½¹‘½¹œ¹ÍÉ••¸ôôô½É‘•Èœ¥É•ÑÕÉ¸•Ù•¹Ğ¹¥¹Ñ•É…Ñ¥½¸ôôôÁÉ¥”µ‰Õ‘•ĞœıÉ•¹‘•É!Õ‰	Õ‘•Ğ¡ÍŒ±Á…¬±ÍÑ…Ñ”±¡Õˆ±•Ù•¹Ğ¤éÉ•¹‘•É!Õ‰=É‘•È¡ÍŒ±Á…¬±ÍÑ…Ñ”±¡Õˆ±•Ù•¹Ğ¤ì(€€€¥˜¡ÍÑ…Ñ”¹µå•½¹‘½¹œ¹ÍÉ••¸ôôôÉ•ÍÕ±Ğœ¥É•ÑÕÉ¸É•¹‘•É!Õ‰I•ÍÕ±Ğ¡ÍŒ±Á…¬±ÍÑ…Ñ”±¡Õˆ±•Ù•¹Ğ¤ì(€€€É•ÑÕÉ¸É•¹‘•É5å•½¹‘½¹!Õˆ¡ÍŒ±Á…¬±ÍÑ…Ñ”±¡Õˆ¤ì(€ô(€™Õ¹Ñ¥½¸•¹‘¥¹QåÁ”¡Á…¬±ÍÑ…Ñ”¥í½¹ÍĞÍ½É”õ½ÉÉ•Ñ½Õ¹Ğ¡ÍÑ…Ñ”¤íÉ•ÑÕÉ¸Í½É”ôôõÁ…¬¹ÅÕ•ÍÑ¥½¹½Õ¹ĞüÁ•É™•ĞœéÍ½É”øõ5…Ñ ¹•¥°¡Á…¬¹ÅÕ•ÍÑ¥½¹½Õ¹Ğ¨¸ØÜ¤ü±•…Èœè±½Í”ô(€™Õ¹Ñ¥½¸É•¹‘•É¹‘¥¹œ¡ÍŒ±Á…¬±ÍÑ…Ñ”±Í•¹”¥ì(€€€¥˜ …ÍÑ…Ñ”¹½µÁ±•Ñ•¥ì(€€€€€½¹ÍĞÁ•É™•Ğõ½ÉÉ•Ñ½Õ¹Ğ¡ÍÑ…Ñ”¤ôôõÁ…¬¹ÅÕ•ÍÑ¥½¹½Õ¹Ğì(€€€€€ÍÑ…Ñ”¹½µÁ±•Ñ•õÑÉÕ”íÍÑ…Ñ”¹½µÁ±•Ñ•‘Ğõ¹½Ü ¤íÍÑ…Ñ”¹ÕÁ‘…Ñ•‘Ğõ¹½Ü ¤íÍÑ…Ñ”¹±•…ÉÌô¡9Õµ‰•È¡ÍÑ…Ñ”¹±•…ÉÌ¥ñğÀ¤¬ÄíÍÑ…Ñ”¹‰•ÍÑM½É”õ5…Ñ ¹µ…à¡9Õµ‰•È¡ÍÑ…Ñ”¹‰•ÍÑM½É”¥ñğÀ±½ÉÉ•Ñ½Õ¹Ğ¡ÍÑ…Ñ”¤¤ì(€€€€€¥˜¡Á•É™•Ğ˜˜…ÍÑ…Ñ”¹Á•É™•Ñ	½¹ÕÍ±…¥µ•¥íÍÑ…Ñ”¹İ…±±•Ğ¬õ9Õµ‰•È¡Á…¬¹Á•É™•Ñ	½¹ÕÌ¥ñğÀíÍÑ…Ñ”¹Á•É™•Ñ	½¹ÕÍ±…¥µ•õÑÉÕ•ô(€€€€€¥˜ …ÍÑ…Ñ”¹¥¹Ù•¹Ñ½Éä¹¥¹±Õ‘•Ì µå•½¹‘½¹œµ™¥ÉÍĞµÍÑ…µÀœ¤¥ÍÑ…Ñ”¹¥¹Ù•¹Ñ½Éä¹ÁÕÍ  µå•½¹‘½¹œµ™¥ÉÍĞµÍÑ…µÀœ¤ì(€€€€€İÉ¥Ñ•MÑ…Ñ”¡ÍÑ…Ñ”±lÉ½ÕÑ•MÑ…ÉÑ•œ°É½ÕÑ•½µÁ±•Ñ•t¤ì(€€€ô(€€€½¹ÍĞÉ•ÍÕ±ĞõÁ…¬¹•¹‘¥¹Ím•¹‘¥¹QåÁ”¡Á…¬±ÍÑ…Ñ”¥t±Í½É”õ½ÉÉ•Ñ½Õ¹Ğ¡ÍÑ…Ñ”¤ì(€€€½¹ÍĞÉ•İ…ÉõÍ­¥¹	å%¡Á…¬±Í½É”ôôõÁ…¬¹ÅÕ•ÍÑ¥½¹½Õ¹ĞıÁ…¬¹Á•É™•ÑM­¥¸éÁ…¬¹É•İ…É‘M­¥¸¤ì(€€€½¹ÍĞ¡Õˆõ¡Õ‰	åI½ÕÑ”¡Á…¬¹¥¤ì(€€€ÍŒ¹¥¹¹•É!Q50õ€ñ‘¥Ø±…ÍÌô‰ÑÉ…Ù•±A±…äÑÉ…Ù•±¹‘¥¹œˆø‘í½µµ½¹Q½À¡Á…¬±ÍÑ…Ñ”±Í•¹”¥ôñ…ÉÑ¥±”±…ÍÌô‰ÑÉ…Ù•±¹‘¥¹…Éˆøñ‘¥Ø±…ÍÌô‰ÑÉ…Ù•±¹‘¥¹±½Üˆøğ½‘¥Øø‘íİ½É±‘5…É­ÕÀ¡Á…¬±ÍÑ…Ñ”±Í•¹”¥ôñ‘¥Ø±…ÍÌô‰ÑÉ…Ù•±¹‘¥¹	½‘äˆøñÍÁ…¸±…ÍÌô‰ÑÉ…Ù•±¹‘¥¹%½¸ˆø‘í ¡É•ÍÕ±Ğ¹¥½¸¥ôğ½ÍÁ…¸øñÍµ…±°ùI=UQ1Hƒ
+Ü€‘í ¡Á…¬¹‰…‘”¥ôğ½Íµ…±°øñ Äø‘í ¡°¡É•ÍÕ±Ğ¹Ñ¥Ñ±”¤¥ôğ½ ÄøñÀø‘í ¡°¡É•ÍÕ±Ğ¹‘•Ñ…¥°¤¥ôğ½Àøñ‘¥Ø±…ÍÌô‰ÑÉ…Ù•±M½É”ˆøñˆø‘íÍ½É•ôğ½ˆøñÍÁ…¸ø¼€‘íÁ…¬¹ÅÕ•ÍÑ¥½¹½Õ¹Ñôğ½ÍÁ…¸øñÍµ…±°ø‘í ¡°¡í­¼èŸ²‚W®.Ôƒ®¾ã²`œ±©„èŸš¶¢
+ßŸÌœ±•¸è½ÉÉ•Ğµ¥ÍÍ¥½¹Ìœ±é èŸ¶S–¾ç’îï–*„ô¤¥ôğ½Íµ…±°øğ½‘¥Øøñ‘¥Ø±…ÍÌô‰ÑÉ…Ù•±I•İ…ÉˆÍÑå±”ôˆ´µÉ•İ…Éè‘í ¡É•İ…É¹…•¹Ğ¥ôˆøñ¥µœÍÉŒôˆ‘í ¡É•İ…É¹¥µ…”¥ôˆ…±Ğôˆˆøñ‘¥ØøñÍµ…±°ø‘í ¡°¡í­¼èŸ®²Ó®0ƒ²^³¶Z$ƒ®ÎÓ²œ±©„èŸ‡šZg»š^–‚Ç¦°œ±•¸èÉ•”©½ÕÉ¹•äÉ•İ…Éœ±é èŸ–7¢Òçš^¢†3––[–*Äô¤¥ôğ½Íµ…±°øñˆø‘í ¡°¡É•İ…É¹¹…µ”¤¥ôğ½ˆøñÀø‘í ¡İ½¸¡ÍÑ…Ñ”¹İ…±±•Ğ¤¥ôƒ
+Ü€‘í ¡±½¬¡ÍÑ…Ñ”¹±½­5¥¹ÕÑ•Ì¤¥ôğ½Àøğ½‘¥Øøğ½‘¥Øø‘í­½É•…¹½Áä¡Í•¹”¥ô‘í¹½Ñ•‰½½¬¡Á…¬±ÍÑ…Ñ”¥ô‘í¡Õˆı€ñ‰ÕÑÑ½¸±…ÍÌô‰ÑÉ…Ù•±AÉ¥µ…Éäˆ½¹±¥¬ô‰µ…±‰¥ÑQÉ…Ù•±5å•½¹‘½¹=Á•¸ ¤ˆø‘í ¡°¡í­¼èŸ®ª®>dƒªÆÃ®š³®–ğƒ¶C¶^c¶VcªâÀœ±©„èŸšb;šÒ{»¢†_
+Kš:‹Ò‹g
+,œ±•¸èáÁ±½É”5å•½¹‘½¹œœ±é èŸš:‹Ò‹šb;šÒ{¢†_¦Lô¤¥ô€ñˆûŠHğ½ˆøğ½‰ÕÑÑ½¸ù€èœôñ‰ÕÑÑ½¸±…ÍÌô‰ÑÉ…Ù•±M•½¹‘…Éäˆ½¹±¥¬ô‰µ…±‰¥ÑQÉ…Ù•±	…¬ ¤ˆø‘í ¡°¡í­¼èŸ²^³¶Z$ƒ²®>®†pœ±©„èŸš^{_àœ±•¸è	…¬Ñ¼ÑÉ…Ù•°µ…Àœ±é èŸ¢şS–n{š^¢†3–rÃ–nøô¤¥ôğ½‰ÕÑÑ½¸øñ‰ÕÑÑ½¸±…ÍÌô‰ÑÉ…Ù•±Q•áÑ	ÕÑÑ½¸ˆ½¹±¥¬ô‰µ…±‰¥ÑQÉ…Ù•±I•ÍÑ…ÉĞ œ‘í ¡Á…¬¹¥¥ôœ¤ˆø‘í ¡°¡í­¼èŸ®.“®–àƒ²vÓ®>dƒ²"c®.£²ró®†pƒ®.“².pœ±©„èŸ–"—»ï–.Wš&/šº×Ÿ–7š2Gš"˜œ±•¸èI•Á±…äİ¥Ñ …¹½Ñ¡•ÈÉ½ÕÑ”œ±é èŸš6‹¢Ş¿êÿ¦7:¤ô¤¥ôğ½‰ÕÑÑ½¸øğ½‘¥Øøğ½…ÉÑ¥±”øğ½‘¥Øù€ì(€ô(€½¹ÍĞÉÁA½¥¹ÑY…±Õ•Ìô¡é½¹”±¥Ñ•´¤ôø¡ì(€€€±•™Ğé€‘ì ¡9Õµ‰•È¡¥Ñ•´¹à¤¬¸Ô¤½é½¹”¹İ¥‘Ñ ¨ÄÀÀ¤¹Ñ½¥á• Ì¥ô•€°(€€€Ñ½Àé€‘ì ¡9Õµ‰•È¡¥Ñ•´¹ä¤¬¸Ô¤½é½¹”¹¡•¥¡Ğ¨ÄÀÀ¤¹Ñ½¥á• Ì¥ô•€°(€€€‘•ÁÑ èÌ­5…Ñ ¹µ…à À±5…Ñ ¹™±½½È¡9Õµ‰•È¡¥Ñ•´¹ä¥ñğÀ¤¤¨È(€ô¤ì(€½¹ÍĞÉÁA½¥¹Ğô¡é½¹”±¥Ñ•´¤ôùí½¹ÍĞÁ½¥¹ĞõÉÁA½¥¹ÑY…±Õ•Ì¡é½¹”±¥Ñ•´¤íÉ•ÑÕÉ¹±•™Ğè‘íÁ½¥¹Ğ¹±•™ÑôíÑ½Àè‘íÁ½¥¹Ğ¹Ñ½Áõôì(€½¹ÍĞÉÁÑ½ÉA½¥¹Ğô¡é½¹”±¥Ñ•´¤ôùí½¹ÍĞÁ½¥¹ĞõÉÁA½¥¹ÑY…±Õ•Ì¡é½¹”±¥Ñ•´¤íÉ•ÑÕÉ¹±•™Ğè‘íÁ½¥¹Ğ¹±•™ÑôíÑ½Àè‘íÁ½¥¹Ğ¹Ñ½Áôíèµ¥¹‘•àè‘íÁ½¥¹Ğ¹‘•ÁÑ¡õôì(€½¹ÍĞÉÁM¡…‘½İA½¥¹Ğô¡é½¹”±¥Ñ•´¤ôùí½¹ÍĞÁ½¥¹ĞõÉÁA½¥¹ÑY…±Õ•Ì¡é½¹”±¥Ñ•´¤íÉ•ÑÕÉ¹±•™Ğè‘íÁ½¥¹Ğ¹±•™ÑôíÑ½Àè‘íÁ½¥¹Ğ¹Ñ½Áôíèµ¥¹‘•àè‘íÁ½¥¹Ğ¹‘•ÁÑ¡õôì(€½¹ÍĞÉÁ½É•É½Õ¹‘•ÁÑ õ¥Ñ•´ôøÈ­5…Ñ ¹µ…à À±5…Ñ ¹™±½½È ¡9Õµ‰•È¡¥Ñ•´¹‘•ÁÑ¡d¥ñğÀ¤¨È¤¤ì(€™Õ¹Ñ¥½¸ÉÁ½É•É½Õ¹‘5…É­ÕÀ¡é½¹”¥ì(€€€É•ÑÕÉ¸¡é½¹”¹™½É•É½Õ¹‘Íññmt¤¹µ…À¡¥Ñ•´ôùì(€€€€€½¹ÍĞ±¥Àõ¥Ñ•´¹Á½±å½¸¹µ…À¡Á½¥¹Ğôù€‘ì¡9Õµ‰•È¡Á½¥¹Ğ¹à¤½é½¹”¹İ¥‘Ñ ¨ÄÀÀ¤¹Ñ½¥á• Ì¥ô”€‘ì¡9Õµ‰•È¡Á½¥¹Ğ¹ä¤½é½¹”¹¡•¥¡Ğ¨ÄÀÀ¤¹Ñ½¥á• Ì¥ô•€¤¹©½¥¸ œ°œ¤ì(€€€€€É•ÑÕÉ¹€ñ¥µœ±…ÍÌô‰ÑÉ…Ù•±IÁ½É•É½Õ¹ˆÍÉŒôˆ‘í ¡é½¹”¹‰…­É½Õ¹¥ôˆ…±Ğôˆˆİ¥‘Ñ ôˆÄÈÀÀˆ¡•¥¡ĞôˆäÀÀˆ±½…‘¥¹œô‰•…•Èˆ‘…Ñ„µ™½É•É½Õ¹µ¥ôˆ‘í ¡¥Ñ•´¹¥¥ôˆ‘…Ñ„µ‘•ÁÑ µäôˆ‘í ¡¥Ñ•´¹‘•ÁÑ¡d¥ôˆÍÑå±”ô‰èµ¥¹‘•àè‘íÉÁ½É•É½Õ¹‘•ÁÑ ¡¥Ñ•´¥ôí±¥ÀµÁ…Ñ éÁ½±å½¸ ‘í±¥Áô¤ˆù€ì(€€€ô¤¹©½¥¸ œœ¤ì(€ô(€™Õ¹Ñ¥½¸ÉÁ¹Ù¥É½¹µ•¹Ñ5…É­ÕÀ¡é½¹”¥ì(€€€É•ÑÕÉ¸¡é½¹”¹±¥¡ÑÍññmt¤¹µ…À¡¥Ñ•´ôùì(€€€€€½¹ÍĞ±•™Ğô¡9Õµ‰•È¡¥Ñ•´¹à¤½é½¹”¹İ¥‘Ñ ¨ÄÀÀ¤¹Ñ½¥á• Ì¤±Ñ½Àô¡9Õµ‰•È¡¥Ñ•´¹ä¤½é½¹”¹¡•¥¡Ğ¨ÄÀÀ¤¹Ñ½¥á• Ì¤ì(€€€€€½¹ÍĞİ¥‘Ñ ô¡9Õµ‰•È¡¥Ñ•´¹İ¥‘Ñ ¤½é½¹”¹İ¥‘Ñ ¨ÄÀÀ¤¹Ñ½¥á• Ì¤±¡•¥¡Ğô¡9Õµ‰•È¡¥Ñ•´¹¡•¥¡Ğ¤½é½¹”¹¡•¥¡Ğ¨ÄÀÀ¤¹Ñ½¥á• Ì¤ì(€€€€€É•ÑÕÉ¹€ñÍÁ…¸±…ÍÌô‰ÑÉ…Ù•±IÁ1¥¡Ğ­¥¹´‘í ¡¥Ñ•´¹­¥¹¥ôˆ‘…Ñ„µ±¥¡Ğµ¥ôˆ‘í ¡¥Ñ•´¹¥¥ôˆ‘…Ñ„µ±¥¡Ğµ­¥¹ôˆ‘í ¡¥Ñ•´¹­¥¹¥ôˆÍÑå±”ô‰±•™Ğè‘í±•™Ñô”íÑ½Àè‘íÑ½Áô”íİ¥‘Ñ è‘íİ¥‘Ñ¡ô”í¡•¥¡Ğè‘í¡•¥¡Ñô”ì´µÑÉ…Ù•°µÉÁœµ±¥¡Ğµ½±½Èè‘í ¡¥Ñ•´¹½±½È¥ôì´µÑÉ…Ù•°µÉÁœµ±¥¡ĞµÍÑÉ•¹Ñ è‘í ¡¥Ñ•´¹ÍÑÉ•¹Ñ ¥ôˆøğ½ÍÁ…¸ù€ì(€€€ô¤¹©½¥¸ œœ¤ì(€ô(€™Õ¹Ñ¥½¸ÉÁA±…å•É5…É­ÕÀ¡Í­¥¸±é½¹”±ÁÉ½É•ÍÌ¥ì(€€€¥˜ …Í­¥¸¥É•ÑÕÉ¸œœì(€€€½¹ÍĞ‘¥É•Ñ¥½¸õMÑÉ¥¹œ¡ÁÉ½É•ÍÌ¹‘¥É•Ñ¥½¹ñğ‘½İ¸œ¤±ÍÁÉ¥Ñ”õÍ­¥¸¹ÍÁÉ¥Ñ”ì(€€€¥˜¡ÍÁÉ¥Ñ”ü¹¥µ…”¥ì(€€€€€½¹ÍĞ™½½Ñ`õ5…Ñ ¹µ…à À±5…Ñ ¹µ¥¸ Ä±9Õµ‰•È¡ÍÁÉ¥Ñ”¹™½½Ñ¹¡½Èü¹à¥ñğ¸Ô¤¤ì(€€€€€½¹ÍĞ™½½Ñdõ5…Ñ ¹µ…à À±5…Ñ ¹µ¥¸ Ä±9Õµ‰•È¡ÍÁÉ¥Ñ”¹™½½Ñ¹¡½Èü¹ä¥ñğ¸äÌÜÔ¤¤ì(€€€€€½¹ÍĞİ…±­ÁÌõ5…Ñ ¹µ…à Ä±9Õµ‰•È¡ÍÁÉ¥Ñ”¹ÍÑ…Ñ•Ìü¹İ…±¬ü¹™ÁÌ¥ñğÄÈ¤ì(€€€€€É•ÑÕÉ¹€ñÍÁ…¸±…ÍÌô‰ÑÉ…Ù•±IÁA±…å•È¡…ÌµÍÁÉ¥Ñ”¥‘±”€‘í ¡‘¥É•Ñ¥½¸¥ôˆÉ½±”ô‰¥µœˆ…É¥„µ±…‰•°ôˆ‘í ¡°¡Í­¥¸¹¹…µ”¤¥ôˆ‘…Ñ„µÍÁÉ¥Ñ”µ½±Õµ¹Ìôˆ‘í ¡ÍÁÉ¥Ñ”¹±…å½ÕĞü¹½±Õµ¹Íñğà¥ôˆ‘…Ñ„µÍÁÉ¥Ñ”µÉ½İÌôˆ‘í ¡ÍÁÉ¥Ñ”¹±…å½ÕĞü¹É½İÍñğĞ¥ôˆ‘…Ñ„µİ…±¬µ™ÁÌôˆ‘í ¡İ…±­ÁÌ¥ôˆ‘…Ñ„µ™½½Ğµ…¹¡½Èôˆ‘í ¡€‘í™½½Ñaô°‘í™½½Ñeõ€¥ôˆÍÑå±”ôˆ‘íÉÁÑ½ÉA½¥¹Ğ¡é½¹”±ÁÉ½É•ÍÌ¥ôì´µÑÉ…Ù•°µÉÁœµ…¹¡½Èµàè‘í   µ™½½Ñ`¨ÄÀÀ¤¹Ñ½¥á• Ì¤¥ô”ì´µÑÉ…Ù•°µÉÁœµ…¹¡½Èµäè‘í   µ™½½Ñd¨ÄÀÀ¤¹Ñ½¥á• Ì¤¥ô”ˆøñ¤±…ÍÌô‰ÑÉ…Ù•±IÁMÁÉ¥Ñ”ˆ…É¥„µ¡¥‘‘•¸ô‰ÑÉÕ”ˆÍÑå±”ôˆ´µÑÉ…Ù•°µÉÁœµÍÁÉ¥Ñ”éÕÉ° œ‘í ¡ÍÁÉ¥Ñ”¹¥µ…”¥ôœ¤ˆøğ½¤øğ½ÍÁ…¸ù€ì(€€€ô(€€€¥˜ …Í­¥¸¹¥µ…”¥É•ÑÕÉ¸œœì(€€€É•ÑÕÉ¹€ñÍÁ…¸±…ÍÌô‰ÑÉ…Ù•±IÁA±…å•È¥‘±”€‘í ¡‘¥É•Ñ¥½¸¥ôˆÉ½±”ô‰¥µœˆ…É¥„µ±…‰•°ôˆ‘í ¡°¡Í­¥¸¹¹…µ”¤¥ôˆÍÑå±”ôˆ‘íÉÁÑ½ÉA½¥¹Ğ¡é½¹”±ÁÉ½É•ÍÌ¥ôˆøñ¥µœÍÉŒôˆ‘í ¡Í­¥¸¹¥µ…”¥ôˆ…±Ğôˆˆøğ½ÍÁ…¸ù€ì(€ô(€™Õ¹Ñ¥½¸ÉÁM¡…‘½İ5…É­ÕÀ¡é½¹”±¥Ñ•´±­¥¹±™½½Ñ¹¡½Èôœ¸Ô°¸äÌÜÔœ¥ì(€€€¥˜ …¥Ñ•´¥É•ÑÕÉ¸œœì(€€€É•ÑÕÉ¹€ñÍÁ…¸±…ÍÌô‰ÑÉ…Ù•±IÁM¡…‘½Ü€‘í ¡­¥¹¥ôˆ…É¥„µ¡¥‘‘•¸ô‰ÑÉÕ”ˆ‘…Ñ„µ™½½Ğµ…¹¡½Èôˆ‘í ¡™½½Ñ¹¡½È¥ôˆÍÑå±”ôˆ‘íÉÁM¡…‘½İA½¥¹Ğ¡é½¹”±¥Ñ•´¥ôˆøğ½ÍÁ…¸ù€ì(€ô(€™Õ¹Ñ¥½¸ÉÁ…µ•É…Y…±Õ•Ì¡é½¹”±ÁÉ½É•ÍÌ¥ì(€€€½¹ÍĞÙ¥•İÁ½ÉĞõ‘½Õµ•¹Ğ¹ÅÕ•ÉåM•±•Ñ½Èü¸ œ¹ÑÉ…Ù•±IÁY¥•İÁ½ÉĞœ¤ì(€€€½¹ÍĞÙ¥•İÁ½ÉÑ]¥‘Ñ õ5…Ñ ¹µ…à Ä±9Õµ‰•È¡Ù¥•İÁ½ÉĞü¹±¥•¹Ñ]¥‘Ñ ¥ññ5…Ñ ¹µ¥¸¡9Õµ‰•È¡İ¥¹‘½Ü¹¥¹¹•É]¥‘Ñ ¥ñğÌäÀ°ÜÈÀ¤¤ì(€€€½¹ÍĞÙ¥•İÁ½ÉÑ!•¥¡Ğõ5…Ñ ¹µ…à Ä±9Õµ‰•È¡Ù¥•İÁ½ÉĞü¹±¥•¹Ñ!•¥¡Ğ¥ññ9Õµ‰•È¡İ¥¹‘½Ü¹¥¹¹•É!•¥¡Ğ¥ñğÜÀÀ¤ì(€€€½¹ÍĞ‰½…É‘!•¥¡ĞõÙ¥•İÁ½ÉÑ!•¥¡Ğ©IA}5I}M1±‰½…É‘]¥‘Ñ õ‰½…É‘!•¥¡Ğ¨Ğ¼Ìì(€€€½¹ÍĞàô¡9Õµ‰•È¡ÁÉ½É•ÍÌ¹à¤¬¸Ô¤½é½¹”¹İ¥‘Ñ ±äô¡9Õµ‰•È¡ÁÉ½É•ÍÌ¹ä¤¬¸Ô¤½é½¹”¹¡•¥¡Ğì(€€€½¹ÍĞ±…µÀô¡Ù…±Õ”±µ¥¸¤ôù5…Ñ ¹µ…à¡µ¥¸±5…Ñ ¹µ¥¸ À±Ù…±Õ”¤¤ì(€€€É•ÑÕÉ¹ì(€€€€€±•™Ğé€‘í±…µÀ¡Ù¥•İÁ½ÉÑ]¥‘Ñ ¼Èµà©‰½…É‘]¥‘Ñ ±Ù¥•İÁ½ÉÑ]¥‘Ñ µ‰½…É‘]¥‘Ñ ¤¹Ñ½¥á• È¥õÁá€°(€€€€€Ñ½Àé€‘í±…µÀ¡Ù¥•İÁ½ÉÑ!•¥¡Ğ¼Èµä©‰½…É‘!•¥¡Ğ±Ù¥•İÁ½ÉÑ!•¥¡Ğµ‰½…É‘!•¥¡Ğ¤¹Ñ½¥á• È¥õÁá€(€€€ôì(€ô(€™Õ¹Ñ¥½¸ÉÁ…µ•É„¡é½¹”±ÁÉ½É•ÍÌ¥í½¹ÍĞ…µ•É„õÉÁ…µ•É…Y…±Õ•Ì¡é½¹”±ÁÉ½É•ÍÌ¤íÉ•ÑÕÉ¹±•™Ğè‘í…µ•É„¹±•™ÑôíÑ½Àè‘í…µ•É„¹Ñ½Áõô(€™Õ¹Ñ¥½¸Íå¹IÁ…µ•É„ ¥ì(€€€IA}5I}I5ôÀì(€€€½¹ÍĞ½¹Ñ•áĞõ…Ñ¥Ù•IÁ½¹Ñ•áĞ ¤±‰½…Éõ‘½Õµ•¹Ğ¹ÅÕ•ÉåM•±•Ñ½Èü¸ œ¹ÑÉ…Ù•±IÁ	½…Éœ¤ì(€€€¥˜ …½¹Ñ•áÑñğ…‰½…É‘ññIA}Y9Q}=A9m½¹Ñ•áĞ¹Í•¹”¹¥‘t¥É•ÑÕÉ¸ì(€€€½¹ÍĞÁÉ½É•ÍÌõIA¹¹½Éµ…±¥é•AÉ½É•ÍÌ¡½¹Ñ•áĞ¹Á…¬¹¥±½¹Ñ•áĞ¹ÍÑ…Ñ”¹•áÁ±½É…Ñ¥½¸±½¹Ñ•áĞ¹Í•¹”¹¥¤±…µ•É„õÉÁ…µ•É…Y…±Õ•Ì¡½¹Ñ•áĞ¹é½¹”±ÁÉ½É•ÍÌ¤ì(€€€‰½…É¹ÍÑå±”¹ÑÉ…¹Í¥Ñ¥½¸ô¹½¹”œì(€€€‰½…É¹ÍÑå±”¹±•™Ğõ…µ•É„¹±•™Ğí‰½…É¹ÍÑå±”¹Ñ½Àõ…µ•É„¹Ñ½Àì(€€€Ù½¥‰½…É¹½™™Í•Ñ]¥‘Ñ ì(€€€É•ÅÕ•ÍÑ¹¥µ…Ñ¥½¹É…µ”  ¤ôùí¥˜¡‰½…É¹¥Í½¹¹•Ñ•¥‰½…É¹ÍÑå±”¹É•µ½Ù•AÉ½Á•ÉÑä ÑÉ…¹Í¥Ñ¥½¸œ¥ô¤ì(€ô(€™Õ¹Ñ¥½¸Í¡•‘Õ±•IÁ…µ•É…Må¹Œ ¥ì(€€€¥˜¡IA}5I}I5ññÑåÁ•½˜É•ÅÕ•ÍÑ¹¥µ…Ñ¥½¹É…µ”„ôô™Õ¹Ñ¥½¸œ¥É•ÑÕÉ¸ì(€€€IA}5I}I5õÉ•ÅÕ•ÍÑ¹¥µ…Ñ¥½¹É…µ”¡Íå¹IÁ…µ•É„¤ì(€ô(€™Õ¹Ñ¥½¸…¹¥µ…Ñ•IÁMÑ•À¡é½¹”±ÁÉ½É•ÍÌ±‰±½­•¥ì(€€€¥˜¡İ¥¹‘½Ü¹µ…Ñ¡5•‘¥„ü¸ œ¡ÁÉ•™•ÉÌµÉ•‘Õ•µµ½Ñ¥½¸èÉ•‘Õ”¤œ¤¹µ…Ñ¡•Ì¥É•ÑÕÉ¸™…±Í”ì(€€€½¹ÍĞ…Éõ‘½Õµ•¹Ğ¹ÅÕ•ÉåM•±•Ñ½Èü¸ œ¹ÑÉ…Ù•±IÁ…Éœ¤±Ù¥•İÁ½ÉĞõ…Éü¹ÅÕ•ÉåM•±•Ñ½Èü¸ œ¹ÑÉ…Ù•±IÁY¥•İÁ½ÉĞœ¤±‰½…Éõ…Éü¹ÅÕ•ÉåM•±•Ñ½Èü¸ œ¹ÑÉ…Ù•±IÁ	½…Éœ¤±Á±…å•Èõ…Éü¹ÅÕ•ÉåM•±•Ñ½Èü¸ œ¹ÑÉ…Ù•±IÁA±…å•Èœ¤±Í¡…‘½Üõ…Éü¹ÅÕ•ÉåM•±•Ñ½Èü¸ œ¹ÑÉ…Ù•±IÁM¡…‘½Ü¹Á±…å•Èœ¤ì(€€€¥˜ ……É‘ñğ…Ù¥•İÁ½ÉÑñğ…‰½…É‘ñğ…Á±…å•Éñğ…Í¡…‘½İññÑåÁ•½˜Í•ÑQ¥µ•½ÕĞ„ôô™Õ¹Ñ¥½¸œ¥É•ÑÕÉ¸™…±Í”ì(€€€½¹ÍĞÁ½¥¹ĞõÉÁA½¥¹ÑY…±Õ•Ì¡é½¹”±ÁÉ½É•ÍÌ¤±…µ•É„õÉÁ…µ•É…Y…±Õ•Ì¡é½¹”±ÁÉ½É•ÍÌ¤±‘¥É•Ñ¥½¸õMÑÉ¥¹œ¡ÁÉ½É•ÍÌ¹‘¥É•Ñ¥½¹ñğ‘½İ¸œ¤ì(€€€½¹ÍĞÍÁÉ¥Ñ•±…ÍÌõÁ±…å•È¹±…ÍÍ1¥ÍĞ¹½¹Ñ…¥¹Ì ¡…ÌµÍÁÉ¥Ñ”œ¤üœ¡…ÌµÍÁÉ¥Ñ”œèœœì(€€€Á±…å•È¹±…ÍÍ9…µ”õÑÉ…Ù•±IÁA±…å•È‘íÍÁÉ¥Ñ•±…ÍÍô€‘í ¡‘¥É•Ñ¥½¸¥ô€‘í‰±½­•ı‰±½­•‰ÕµÀ´‘í ¡‘¥É•Ñ¥½¸¥õ€èİ…±­¥¹œõ€ì(€€€Á±…å•È¹ÍÑå±”¹±•™ĞõÁ½¥¹Ğ¹±•™ĞíÁ±…å•È¹ÍÑå±”¹Ñ½ÀõÁ½¥¹Ğ¹Ñ½Àì(€€€Á±…å•È¹ÍÑå±”¹é%¹‘•àõMÑÉ¥¹œ¡Á½¥¹Ğ¹‘•ÁÑ ¤ì(€€€Í¡…‘½Ü¹ÍÑå±”¹±•™ĞõÁ½¥¹Ğ¹±•™ĞíÍ¡…‘½Ü¹ÍÑå±”¹Ñ½ÀõÁ½¥¹Ğ¹Ñ½Àì(€€€Í¡…‘½Ü¹ÍÑå±”¹é%¹‘•àõMÑÉ¥¹œ¡Á½¥¹Ğ¹‘•ÁÑ ¤ì(€€€‰½…É¹ÍÑå±”¹±•™Ğõ…µ•É„¹±•™Ğí‰½…É¹ÍÑå±”¹Ñ½Àõ…µ•É„¹Ñ½Àì(€€€…É¹±…ÍÍ1¥ÍĞ¹…‘ ¥Ìµµ½Ù¥¹œœ¤íÙ¥•İÁ½ÉĞ¹Í•ÑÑÑÉ¥‰ÕÑ” …É¥„µ‰ÕÍäœ°ÑÉÕ”œ¤ì(€€€É•ÑÕÉ¸ÑÉÕ”ì(€ô(€™Õ¹Ñ¥½¸™¥¹¥Í¡IÁ5½Ñ¥½¸¡Í•¹•%±µ½Ù•±Ñ½­•¸¥ì(€€€¥˜¡Ñ½­•¸„ôõIA}5=Q%=8¹Ñ½­•¸¥É•ÑÕÉ¸ì(€€€½¹ÍĞ¹•áĞõIA}5=Q%=8¹ÅÕ•Õ”¹Í¡¥™Ğ ¤ì(€€€¥˜¡¹•áĞ¥ì(€€€€€IA}5=Q%=8¹‰ÕÍäõ™…±Í”ì(€€€€€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±MÑ•À¡¹•áĞ¤ì(€€€€€É•ÑÕÉ¸ì(€€€ô(€€€½¹ÍĞÍ•ÑÑ±”õµ½Ù•ıIA}MQQ1}5LèÀì(€€€IA}5=Q%=8¹Ñ¥µ•ÈõÍ•ÑQ¥µ•½ÕĞ  ¤ôùì(€€€€€¥˜¡Ñ½­•¸„ôõIA}5=Q%=8¹Ñ½­•¸¥É•ÑÕÉ¸ì(€€€€€½¹ÍĞ¥¹Ñ•É…ĞõIA}5=Q%=8¹Á•¹‘¥¹%¹Ñ•É…Ñ¥½¸ì(€€€€€IA}5=Q%=8¹‰ÕÍäõ™…±Í”íIA}5=Q%=8¹Ñ¥µ•Èõ¹Õ±°íIA}5=Q%=8¹Á•¹‘¥¹%¹Ñ•É…Ñ¥½¸õ™…±Í”ì(€€€€€É•¹‘•È ¤ì(€€€€€¥˜¡¥¹Ñ•É…Ğ¥É•ÅÕ•ÍÑ¹¥µ…Ñ¥½¹É…µ”ü¸  ¤ôùİ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±%¹Ñ•É…Ğ ¤¤ì(€€€ô±Í•ÑÑ±”¤ì(€ô(€™Õ¹Ñ¥½¸ÉÁQ…É•ÑÍÍ•Ğ¡Á…¬±Í•¹”±…¹¡½È¥ì(€€€¥˜ ……¹¡½È¥É•ÑÕÉ¸œœì(€€€¥˜¡…¹¡½È¹­¥¹ôôô¹ÁŒœ¥É•ÑÕÉ¸…ÍÍ•ÑA…Ñ ¡Á…¬°¹ÁÌœ±Í•¹”¹İ½É±ü¹¹ÁŒ¤ì(€€€¥˜¡…¹¡½È¹­¥¹ôôôÍ¥¸œ¥É•ÑÕÉ¸…ÍÍ•ÑA…Ñ ¡Á…¬°ÁÉ½ÁÌœ°É…¥±M¥¸œ¤ì(€€€É•ÑÕÉ¸œœì(€ô(€™Õ¹Ñ¥½¸ÉÁ9½Ñ¥•5…É­ÕÀ¡Í•¹”±¹½Ñ¥”¥ì(€€€¥˜ …¹½Ñ¥”¥É•ÑÕÉ¸œœì(€€€¥˜¡¹½Ñ¥”¹ÑåÁ”ôôô‰±½­•œ¥É•ÑÕÉ¹€ñÀ±…ÍÌô‰ÑÉ…Ù•±IÁQ½…ÍĞˆÉ½±”ô‰ÍÑ…ÑÕÌˆø‘í ¡°¡í­¼èŸªŞã²ª÷²v ƒ²®
+cªÂ ƒ²"`ƒ²^²ZÓ²jP¸ƒ®.“®–àƒªâã²vƒ²Âû²V®ÎÓ²ã²jP¸œ±©„èŸw‡
+'¿¦k
+3ûo
+O–"—»¦O
+Kš:‹wœ±•¸èQ¡…Ğİ…ä¥Ì‰±½­•¸QÉä…¹½Ñ¡•ÈÁ…Ñ ¸œ±é èŸ¦
+¦3š^ƒšÎW¦k¢†3¾ò3¢¾ß–¾ïš&û–Û’î[¢Ş¿êÿô¤¥ôğ½Àù€ì(€€€¥˜¡¹½Ñ¥”¹ÑåÁ”ôôôÁ½ÉÑ…°œ¥É•ÑÕÉ¹€ñÀ±…ÍÌô‰ÑÉ…Ù•±IÁQ½…ÍĞˆÉ½±”ô‰ÍÑ…ÑÕÌˆø‘í ¡°¡í­¼é€‘í°¡¹½Ñ¥”¹Ñ…É•Ğ¹Ñ¥Ñ±”¥ôƒ®>²Â¥€±©„é€‘í°¡¹½Ñ¥”¹Ñ…É•Ğ¹Ñ¥Ñ±”¥÷¯–"Ãv€±•¸éÉÉ¥Ù•è€‘í°¡¹½Ñ¥”¹Ñ…É•Ğ¹Ñ¥Ñ±”¥õ€±é éƒ–ŞË–"Ã¢úû¾òh‘í°¡¹½Ñ¥”¹Ñ…É•Ğ¹Ñ¥Ñ±”¥õô¤¥ôğ½Àù€ì(€€€¥˜¡¹½Ñ¥”¹ÑåÁ”„ôôÁ½¤œ¥É•ÑÕÉ¸œœì(€€€½¹ÍĞÑ…É•Ğõ¹½Ñ¥”¹Ñ…É•Ğ±É•İ…Éõ9Õµ‰•È¡¹½Ñ¥”¹É•İ…É¥ñğÀì(€€€É•ÑÕÉ¹€ñÍ•Ñ¥½¸±…ÍÌô‰ÑÉ…Ù•±IÁ¥Í½Ù•ÉäˆÉ½±”ô‰‘¥…±½œˆ…É¥„µ±¥Ù”ô‰Á½±¥Ñ”ˆøñ‘¥ØøñÍµ…±°ø‘í¹½Ñ¥”¹™½Õ¹ü%M=YId=5A1Qœè%M=YIdI=Iôğ½Íµ…±°øñ Èø‘í ¡°¡Ñ…É•Ğ¹Ñ¥Ñ±”¤¥ôğ½ Èøğ½‘¥Øøñ‰±½­ÅÕ½Ñ”±…¹œô‰­¼ˆø‘í ¡Ñ…É•Ğ¹­½É•…¸¥ôğ½‰±½­ÅÕ½Ñ”øñÀø‘í ¡°¡Ñ…É•Ğ¹‘•Ñ…¥°¤¥ôğ½Àø‘íÉ•İ…Éı€ñÍÑÉ½¹œø¬‘í ¡İ½¸¡É•İ…É¤¥ôğ½ÍÑÉ½¹œù€é€ñÍÑÉ½¹œø‘í ¡°¡í­¼èŸ²^³¶Z$ƒªâÃ®†w²^@ƒ²‚²z—®B œ±©„èŸš^»¢¢c¦2Ë¯’şw–¶cšâ#üœ±•¸èM…Ù•Ñ¼©½ÕÉ¹•äÉ•½Éœ±é èŸ–ŞË’şw–¶c–"Ãš^¢†3¢ºÃ–öTô¤¥ôğ½ÍÑÉ½¹œùôñ‰ÕÑÑ½¸½¹±¥¬ô‰µ…±‰¥ÑQÉ…Ù•±±½Í•¥Í½Ù•Éä ¤ˆø‘í ¡°¡í­¼èŸ²®>®†pƒ®>3²VªÂªâÀœ±©„èŸ{_¯š"ï
+,œ±•¸è	…¬Ñ¼µ…Àœ±é èŸ¢şS–n{–rÃ–nøô¤¥ôğ½‰ÕÑÑ½¸øğ½Í•Ñ¥½¸ù€ì(€ô(€™Õ¹Ñ¥½¸É•¹‘•ÉáÁ±½É…Ñ¥½¸¡ÍŒ±Á…¬±ÍÑ…Ñ”±Í•¹”±µ…Ñ ¥ì(€€€‘½Õµ•¹Ğ¹‰½‘ä¹±…ÍÍ1¥ÍĞ¹Ñ½±” ÑÉ…Ù•°µÉÁœµ…Ñ¥Ù”œ±ÑÉÕ”¤ì(€€€½¹ÍĞíİ½É±±é½¹”±…¹¡½Éôõµ…Ñ ±ÁÉ½É•ÍÌõIA¹¹½Éµ…±¥é•AÉ½É•ÍÌ¡Á…¬¹¥±ÍÑ…Ñ”¹•áÁ±½É…Ñ¥½¸±Í•¹”¹¥¤±¥¹Ñ•É…Ñ¥½¸õIA¹¥¹Ñ•É…Ñ¥½¹Ğ¡é½¹”±ÁÉ½É•ÍÌ±Í•¹”¹¥¤ì(€€€ÍÑ…Ñ”¹•áÁ±½É…Ñ¥½¸õÁÉ½É•ÍÌì(€€€½¹ÍĞÍÑ½É”õÉ•…‘MÑ½É” ¤±Í­¥¸õÍ­¥¹	å%¡Á…¬±ÍÑ½É”¹…Ù…Ñ…È¹•ÅÕ¥ÁÁ•¤±Ñ…É•ÑÍÍ•ĞõÉÁQ…É•ÑÍÍ•Ğ¡Á…¬±Í•¹”±…¹¡½È¤±¹•…Èõ¥¹Ñ•É…Ñ¥½¸ü¹ÑåÁ”ôôôÍ•¹”œì(€€€½¹ÍĞ…Ñ¥½¹1…‰•°õ¥¹Ñ•É…Ñ¥½¸ü¡¥¹Ñ•É…Ñ¥½¸¹ÑåÁ”ôôôÍ•¹”ññ¥¹Ñ•É…Ñ¥½¸¹ÑåÁ”ôôôÁ½ÉÑ…°œ¤ı°¡¥¹Ñ•É…Ñ¥½¸¹Ñ…É•Ğ¹…Ñ¥½¸¤é°¡í­¼èŸ²†Ã²
+³¶VcªâÀœ±©„èŸ¢ªÿç
+,œ±•¸è%¹ÍÁ•Ğœ±é èŸ¢Âš~”ô¤é°¡í­¼èŸ®2²ƒªÂªæ3²vĞƒªÂªâÀœ±©„èŸ–¾û¢Æ‡¯¢şG—<œ±•¸è5½Ù”±½Í•Èœ±é èŸ¦vƒ¢şGn»š‚ô¤ì(€€€½¹ÍĞÑ…É•ÑQ¥Ñ±”õ¥¹Ñ•É…Ñ¥½¸ı°¡¥¹Ñ•É…Ñ¥½¸¹Ñ…É•Ğ¹Ñ¥Ñ±•ññ¥¹Ñ•É…Ñ¥½¸¹Ñ…É•Ğ¹±…‰•°¤èœœì(€€€½¹ÍĞ‘¥Í½Ù•É•õ¹•ÜM•Ğ¡ÁÉ½É•ÍÌ¹‘¥Í½Ù•É¥•Íññmt¤ì(€€€½¹ÍĞÁ½¥Ìô¡é½¹”¹Á½¥Íññmt¤¹µ…À¡¥Ñ•´ôù€ñÍÁ…¸±…ÍÌô‰ÑÉ…Ù•±IÁA½¤€‘í‘¥Í½Ù•É•¹¡…Ì¡€‘íé½¹”¹¥‘ôè‘í¥Ñ•´¹¥‘õ€¤ü™½Õ¹œèœô€‘í¥¹Ñ•É…Ñ¥½¸ü¹ÑåÁ”ôôôÁ½¤œ˜™¥¹Ñ•É…Ñ¥½¸¹Ñ…É•Ğ¹¥ôôõ¥Ñ•´¹¥ü¹•…ÈœèœôˆÍÑå±”ôˆ‘íÉÁA½¥¹Ğ¡é½¹”±¥Ñ•´¥ôˆ…É¥„µ¡¥‘‘•¸ô‰ÑÉÕ”ˆøñ¤øğ½¤øğ½ÍÁ…¸ù€¤¹©½¥¸ œœ¤ì(€€€½¹ÍĞÑ…É•Ñ%ÍÑ½Èõ	½½±•…¸¡…¹¡½È˜™Ñ…É•ÑÍÍ•Ğ˜™…¹¡½È¹­¥¹ôôô¹ÁŒœ¤ì(€€€½¹ÍĞÑ…É•Ğõ…¹¡½Èü¡Ñ…É•ÑÍÍ•Ğı€ñÍÁ…¸±…ÍÌô‰ÑÉ…Ù•±IÁQ…É•Ğ¡…É…Ñ•È€‘í¹•…Èü¹•…ÈœèœôˆÍÑå±”ôˆ‘íÉÁÑ½ÉA½¥¹Ğ¡é½¹”±…¹¡½È¥ôˆøñ¥µœÍÉŒôˆ‘í ¡Ñ…É•ÑÍÍ•Ğ¥ôˆ…±Ğôˆˆøñˆø‘í ¡°¡…¹¡½È¹±…‰•°¤¥ôğ½ˆøğ½ÍÁ…¸ù€é€ñÍÁ…¸±…ÍÌô‰ÑÉ…Ù•±IÁQ…É•Ğµ…É­•È€‘í¹•…Èü¹•…ÈœèœôˆÍÑå±”ôˆ‘íÉÁA½¥¹Ğ¡é½¹”±…¹¡½È¥ôˆøñ¤øğ½¤øñˆø‘í ¡°¡…¹¡½È¹±…‰•°¤¥ôğ½ˆøğ½ÍÁ…¸ù€¤èœœì(€€€½¹ÍĞÁ±…å•É½½ĞõÍ­¥¸ü¹ÍÁÉ¥Ñ”ü¹™½½Ñ¹¡½Èı€‘í9Õµ‰•È¡Í­¥¸¹ÍÁÉ¥Ñ”¹™½½Ñ¹¡½È¹à¥ñğ¸Õô°‘í9Õµ‰•È¡Í­¥¸¹ÍÁÉ¥Ñ”¹™½½Ñ¹¡½È¹ä¥ñğ¸äÌÜÕõ€èœ¸Ô°¸Üœì(€€€½¹ÍĞÍ¡…‘½İÌõ€‘íÑ…É•Ñ%ÍÑ½ÈıÉÁM¡…‘½İ5…É­ÕÀ¡é½¹”±…¹¡½È°¹ÁŒœ°œ¸Ô°¸Üœ¤èœô‘íÉÁM¡…‘½İ5…É­ÕÀ¡é½¹”±ÁÉ½É•ÍÌ°Á±…å•Èœ±Á±…å•É½½Ğ¥õ€ì(€€€½¹ÍĞÁ½ÉÑ…±Ìô¡é½¹”¹Á½ÉÑ…±Íññmt¤¹µ…À¡¥Ñ•´ôù€ñÍÁ…¸±…ÍÌô‰ÑÉ…Ù•±IÁA½ÉÑ…°€‘í¥¹Ñ•É…Ñ¥½¸ü¹ÑåÁ”ôôôÁ½ÉÑ…°œ˜™¥¹Ñ•É…Ñ¥½¸¹Ñ…É•Ğ¹¥ôôõ¥Ñ•´¹¥ü¹•…ÈœèœôˆÍÑå±”ôˆ‘íÉÁA½¥¹Ğ¡é½¹”±¥Ñ•´¥ôˆ…É¥„µ¡¥‘‘•¸ô‰ÑÉÕ”ˆøñ¤øğ½¤øğ½ÍÁ…¸ù€¤¹©½¥¸ œœ¤ì(€€€½¹ÍĞ¹½Ñ¥”õIA}9=Q%mÍ•¹”¹¥‘tì(€€€½¹ÍĞ‘¥Í½Ù•Éå½Õ¹ĞõÁÉ½É•ÍÌ¹‘¥Í½Ù•É¥•Ì¹™¥±Ñ•È¡¥ôù¥¹ÍÑ…ÉÑÍ]¥Ñ ¡€‘íé½¹”¹¥‘ôé€¤¤¹±•¹Ñ ì(€€€½¹ÍĞ‰…­1…‰•°õ°¡í­¼èŸ²^³¶Z$ƒ²®>œ±©„èŸš^{\œ±•¸èQÉ…Ù•°µ…Àœ±é èŸš^¢†3–rÃ–nøô¤ì(€€€ÍŒ¹¥¹¹•É!Q50õ€ñ‘¥Ø±…ÍÌô‰ÑÉ…Ù•±A±…äÑÉ…Ù•±IÁMÉ••¸ˆøñ…ÉÑ¥±”±…ÍÌô‰ÑÉ…Ù•±IÁ…ÉÑÉ…Ù•±IÁM¡•±°€‘í¹½Ñ¥”ü¹ÑåÁ”ôôôÁ½¤œü¡…Ìµ‘¥Í½Ù•Éäœèœôˆøñ‘¥Ø±…ÍÌô‰ÑÉ…Ù•±IÁY¥•İÁ½ÉĞˆÉ½±”ô‰¥µœˆ…É¥„µ±…‰•°ôˆ‘í ¡°¡é½¹”¹Ñ¥Ñ±”¤¥ôˆøñ‘¥Ø±…ÍÌô‰ÑÉ…Ù•±IÁ	½…ÉˆÍÑå±”ôˆ‘íÉÁ…µ•É„¡é½¹”±ÁÉ½É•ÍÌ¥ôˆøñ‘¥Ø±…ÍÌô‰ÑÉ…Ù•±IÁÉ½Õ¹‘1…å•Èˆøñ¥µœ±…ÍÌô‰ÑÉ…Ù•±IÁ5…ÀˆÍÉŒôˆ‘í ¡é½¹”¹‰…­É½Õ¹¥ôˆ…±Ğôˆˆİ¥‘Ñ ôˆÄÈÀÀˆ¡•¥¡ĞôˆäÀÀˆ±½…‘¥¹œô‰•…•Èˆøğ½‘¥Øøñ‘¥Ø±…ÍÌô‰ÑÉ…Ù•±IÁ¹Ù¥É½¹µ•¹Ñ1…å•Èˆ‘…Ñ„µ•™™•Ğµ½¹ÑÉ…Ğô‰‰½Õ¹‘•µ±¥¡Ğˆ…É¥„µ¡¥‘‘•¸ô‰ÑÉÕ”ˆø‘íÉÁ¹Ù¥É½¹µ•¹Ñ5…É­ÕÀ¡é½¹”¥ôğ½‘¥Øøñ‘¥Ø±…ÍÌô‰ÑÉ…Ù•±IÁM¡…‘½İ1…å•Èˆ‘…Ñ„µ‘•ÁÑ µ½¹ÑÉ…Ğô‰™½½Ğµäˆ…É¥„µ¡¥‘‘•¸ô‰ÑÉÕ”ˆø‘íÍ¡…‘½İÍôğ½‘¥Øøñ‘¥Ø±…ÍÌô‰ÑÉ…Ù•±IÁÑ½É1…å•Èˆ‘…Ñ„µ‘•ÁÑ µ½¹ÑÉ…Ğô‰™½½Ğµäˆø‘íÁ½¥Íô‘íÁ½ÉÑ…±Íô‘íÑ…É•Ñô‘íÉÁA±…å•É5…É­ÕÀ¡Í­¥¸±é½¹”±ÁÉ½É•ÍÌ¥ôğ½‘¥Øøñ‘¥Ø±…ÍÌô‰ÑÉ…Ù•±IÁUÁÁ•É1…å•Èˆ…É¥„µ¡¥‘‘•¸ô‰ÑÉÕ”ˆø‘íÉÁ½É•É½Õ¹‘5…É­ÕÀ¡é½¹”¥ôğ½‘¥Øøğ½‘¥Øøñ¡•…‘•È±…ÍÌô‰ÑÉ…Ù•±IÁQ½Á!Õˆøñ‰ÕÑÑ½¸±…ÍÌô‰ÑÉ…Ù•±IÁ	…¬ˆ½¹±¥¬ô‰µ…±‰¥ÑQÉ…Ù•±	…¬ ¤ˆ…É¥„µ±…‰•°ôˆ‘í ¡‰…­1…‰•°¥ôˆûŠäğ½‰ÕÑÑ½¸øñ‘¥Ø±…ÍÌô‰ÑÉ…Ù•±IÁ1½…Ñ¥½¹!ÕˆøñÍµ…±°ùM=U0]=I1ƒ
+Ü€‘í ¡ÁÉ½É•ÍÌ¹ÍÑ•ÁÌ¥ôMQ@ğ½Íµ…±°øñˆø‘í ¡°¡é½¹”¹Ñ¥Ñ±”¤¥ôğ½ˆøğ½‘¥Øøñ‰ÕÑÑ½¸±…ÍÌô‰ÑÉ…Ù•±IÁ1…¹œˆ½¹±¥¬ô‰•Ù•¹Ğ¹ÍÑ½ÁAÉ½Á……Ñ¥½¸ ¤í™±…5•¹Ô ¤ˆ…É¥„µ±…‰•°ôˆ‘í ¡°¡í­¼èŸ²“®ªƒ²Zã²ZĞƒ®ÂSªúãªâÀœ±©„èŸ¢ª³šb;¢¢¢ª{
+K–’'šnĞœ±•¸è¡…¹”•áÁ±…¹…Ñ¥½¸±…¹Õ…”œ±é èŸ–"š6‹¢šzC¢¾·¢¢ ô¤¥ôˆø‘í™±…œ ¥ôğ½‰ÕÑÑ½¸øğ½¡•…‘•Èøñ‘¥Ø±…ÍÌô‰ÑÉ…Ù•±IÁMÑ…ÑÕÍ!Õˆ…É¥„µ±…‰•°ôˆ‘í ¡°¡í­¼èŸ²^³¶Z$ƒ²¶pœ±©„èŸš^»
+çó
+ÿ
+äœ±•¸èQÉ…Ù•°ÍÑ…ÑÕÌœ±é èŸš^¢†3*Ûšô¤¥ôˆøñÍÁ…¸øñÍµ…±°ø‘í ¡°¡í­¼èŸ²^³¶Z$ƒ²n@œ±©„èŸš^
+›
+§Ìœ±•¸èQIY0]=8œ±é èŸš^¢†3¦~§–ô¤¥ôğ½Íµ…±°øñˆø‘í ¡İ½¸¡ÍÑ…Ñ”¹İ…±±•Ğ¤¥ôğ½ˆøğ½ÍÁ…¸øñÍÁ…¸øñÍµ…±°ø‘í ¡°¡í­¼èŸ²^³¶Z$ƒ².sªÂœ±©„èŸš^»šf–"ìœ±•¸èQI%@Q%5œ±é èŸš^¢†3š^Û¦^Ğô¤¥ôğ½Íµ…±°øñˆø‘í ¡±½¬¡ÍÑ…Ñ”¹±½­5¥¹ÕÑ•Ì¤¥ôğ½ˆøğ½ÍÁ…¸øñÍÁ…¸øñÍµ…±°ø‘í ¡°¡í­¼èŸ²†Ã²
+°œ±©„èŸ¢ªÿš~ìœ±•¸è=U9œ±é èŸ¢Âš~”ô¤¥ôğ½Íµ…±°øñˆø‘í ¡‘¥Í½Ù•Éå½Õ¹Ğ¥ô¼‘í ¡é½¹”¹Á½¥Ì¹±•¹Ñ ¥ôğ½ˆøğ½ÍÁ…¸øğ½‘¥Øøñ‘¥Ø±…ÍÌô‰ÑÉ…Ù•±IÁ=‰©•Ñ¥Ù•!ÕˆøñÍµ…±°ø‘í ¡°¡í­¼èŸ¶b²z°ƒ®ª§¶Fpœ±©„èŸ>û–r£»n»š¢dœ±•¸èUII9P=	)Q%Yœ±é èŸ–öO–&7n»š‚ô¤¥ôğ½Íµ…±°øñˆø‘í ¡°¡Í•¹”¹Ñ¥Ñ±”¤¥ôğ½ˆøğ½‘¥Øø‘íÉÁ9½Ñ¥•5…É­ÕÀ¡Í•¹”±¹½Ñ¥”¥ôñ‘¥Ø±…ÍÌô‰ÑÉ…Ù•±IÁ½¹ÑÉ½±Ìˆøñ‘¥Ø±…ÍÌô‰ÑÉ…Ù•±IÁÁ…ˆ…É¥„µ±…‰•°ôˆ‘í ¡°¡í­¼èŸ²vÓ®>dƒ®Â§¶Z”œ±©„èŸï–.WšZç–BDœ±•¸è5½Ù•µ•¹Ğ½¹ÑÉ½±Ìœ±é èŸï–*£šZç–BDô¤¥ôˆøñ‰ÕÑÑ½¸½¹±¥¬ô‰µ…±‰¥ÑQÉ…Ù•±MÑ•À ÕÀœ¤ˆ…É¥„µ±…‰•°ôˆ‘í ¡°¡í­¼èŸ²r®†pƒ²vÓ®>dœ±©„èŸ’â+ãï–.Tœ±•¸è5½Ù”ÕÀœ±é èŸ–BG’â+ï–* ô¤¥ôˆûŠDğ½‰ÕÑÑ½¸øñ‰ÕÑÑ½¸½¹±¥¬ô‰µ…±‰¥ÑQÉ…Ù•±MÑ•À ±•™Ğœ¤ˆ…É¥„µ±…‰•°ôˆ‘í ¡°¡í­¼èŸ²fó²ª÷²ró®†pƒ²vÓ®>dœ±©„èŸ–Ş›ãï–.Tœ±•¸è5½Ù”±•™Ğœ±é èŸ–BG–Ş›ï–* ô¤¥ôˆûŠ@ğ½‰ÕÑÑ½¸øñ‰ÕÑÑ½¸½¹±¥¬ô‰µ…±‰¥ÑQÉ…Ù•±MÑ•À ‘½İ¸œ¤ˆ…É¥„µ±…‰•°ôˆ‘í ¡°¡í­¼èŸ²V®zc®†pƒ²vÓ®>dœ±©„èŸ’â/ãï–.Tœ±•¸è5½Ù”‘½İ¸œ±é èŸ–BG’â/ï–* ô¤¥ôˆûŠLğ½‰ÕÑÑ½¸øñ‰ÕÑÑ½¸½¹±¥¬ô‰µ…±‰¥ÑQÉ…Ù•±MÑ•À É¥¡Ğœ¤ˆ…É¥„µ±…‰•°ôˆ‘í ¡°¡í­¼èŸ²b“®–ã²ª÷²ró®†pƒ²vÓ®>dœ±©„èŸ–>Ïãï–.Tœ±•¸è5½Ù”É¥¡Ğœ±é èŸ–BG–>Ïï–* ô¤¥ôˆûŠHğ½‰ÕÑÑ½¸øğ½‘¥Øøñ‰ÕÑÑ½¸±…ÍÌô‰ÑÉ…Ù•±IÁÑ¥½¸ˆ½¹±¥¬ô‰µ…±‰¥ÑQÉ…Ù•±%¹Ñ•É…Ğ ¤ˆ€‘í¥¹Ñ•É…Ñ¥½¸üœœè‘¥Í…‰±•ôøñÍµ…±°ø‘í¥¹Ñ•É…Ñ¥½¸ı€‘í ¡Ñ…É•ÑQ¥Ñ±”¥ôƒ
+Ü€èœô‘í ¡°¡í­¼èŸ²¶bã²zG²j¤œ±©„èŸ
+“Ï
+ÿ§
+¿ œ±•¸è%9QIPœ±é èŸ’êK–* ô¤¥ôğ½Íµ…±°øñˆø‘í ¡…Ñ¥½¹1…‰•°¥ôğ½ˆøğ½‰ÕÑÑ½¸øğ½‘¥ØøñÀ±…ÍÌô‰ÑÉ…Ù•±IÁM…Ù•MÑ…ÑÕÌˆø‘í ¡°¡í­¼èŸ²vÓ®>gªÎğƒ²†Ã²
+³®*Pƒ²vĞƒªâÃªâÃ²^@ƒ²zC®>dƒ²‚²z—®B§®.#®.¸œ±©„èŸï–.W£¢ªÿš~ï¿O»®¿šr¯¯¢«–.W’şw–¶cW
+3ûgœ±•¸è5½Ù•µ•¹Ğ…¹‘¥Í½Ù•É¥•ÌÍ…Ù”½¸Ñ¡¥Ì‘•Ù¥”¸œ±é èŸï–*£’â;¢Âš~—’òk¢«–*£’şw–¶c–r£š¶“¢ºû–’ô¤¥ôğ½Àøğ½‘¥Øøğ½…ÉÑ¥±”øğ½‘¥Øù€ì(€ô(€™Õ¹Ñ¥½¸É•¹‘•ÉA±…ä¡ÍŒ¥ì(€€€½¹ÍĞíÁ…¬±ÍÑ…Ñ”±Í•¹•ôõÕÉÉ•¹Ğ ¤ì(€€€¥˜ …Í•¹”¥É•ÑÕÉ¸Í•ÑY¥•Ü ÑÉ…Ù•°œ¤ì(€€€½¹ÍĞ¡Õˆõ¡Õ‰	åI½ÕÑ”¡Á…¬¹¥¤ì(€€€¥˜¡Í•¹”¹ÑåÁ”ôôô•¹‘¥¹œœ˜™ÍÑ…Ñ”¹½µÁ±•Ñ•˜™¡Õˆ˜™ÍÑ…Ñ”¹µå•½¹‘½¹œ¹ÍÉ••¸„ôô•¹‘¥¹œœ¥É•ÑÕÉ¸É•¹‘•É5å•½¹‘½¹œ¡ÍŒ±Á…¬±ÍÑ…Ñ”±¡Õˆ¤ì(€€€½¹ÍĞÍ•¹•5…Ñ õIAü¹é½¹•½ÉM•¹”¡Á…¬¹¥±Í•¹”¹¥¤±µ…Ñ õÍ•¹•5…Ñ ıIA¹½¹Ñ•áÑ½ÉAÉ½É•ÍÌ¡Á…¬¹¥±ÍÑ…Ñ”¹•áÁ±½É…Ñ¥½¸±Í•¹”¹¥¤é¹Õ±°ì(€€€¥˜¡µ…Ñ ˜˜…IA}Y9Q}=A9mÍ•¹”¹¥‘t¥É•ÑÕÉ¸É•¹‘•ÉáÁ±½É…Ñ¥½¸¡ÍŒ±Á…¬±ÍÑ…Ñ”±Í•¹”±µ…Ñ ¤ì(€€€¥˜¡Í•¹”¹ÑåÁ”ôôô¹…ÉÉ…Ñ¥Ù”œ¥É•ÑÕÉ¸É•¹‘•É9…ÉÉ…Ñ¥Ù”¡ÍŒ±Á…¬±ÍÑ…Ñ”±Í•¹”¤ì(€€€¥˜¡Í•¹”¹ÑåÁ”ôôô¡½¥”œ¥É•ÑÕÉ¸É•¹‘•É¡½¥”¡ÍŒ±Á…¬±ÍÑ…Ñ”±Í•¹”¤ì(€€€¥˜¡Í•¹”¹ÑåÁ”ôôôÅÕ•ÍÑ¥½¸œ¥É•ÑÕÉ¸É•¹‘•ÉEÕ•ÍÑ¥½¸¡ÍŒ±Á…¬±ÍÑ…Ñ”±Í•¹”¤ì(€€€É•ÑÕÉ¸É•¹‘•É¹‘¥¹œ¡ÍŒ±Á…¬±ÍÑ…Ñ”±Í•¹”¤ì(€ô((€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±=Á•¸ô ¤ôùÍ•ÑY¥•Ü ÑÉ…Ù•°œ¤ì(€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±MÑ…ÉĞô¡Á…­%±™É•Í ¤ôùì(€€€…¹•±IÁ5½Ñ¥½¸ ¤í±•…ÉIÁÕ” ¤ì(€€€½¹ÍĞÁ…¬õÁ…­	å%¡Á…­%¥ññA-MlÁt±ÍÑ½É”õÉ•…‘MÑ½É” ¤±ÁÉ•Ù¥½ÕÌõ¹½Éµ…±¥é•MÑ…Ñ”¡Á…¬±ÍÑ½É”¹•Á¥Í½‘•ÍmÁ…¬¹¥‘t¤ì(€€€±•ĞÍÑ…Ñ”õÁÉ•Ù¥½ÕÌì(€€€ÍÑ½É”¹…Ñ¥Ù•A…­%õÁ…¬¹¥ì(€€€¥˜¡™É•Í¡ñğ…ÁÉ•Ù¥½ÕÌ¥íÉ•Í•ÑQÉ…¹Í¥•¹Ğ¡Á…¬¤íÍÑ…Ñ”õ¹•İMÑ…Ñ”¡Á…¬±ÁÉ•Ù¥½ÕÌ¥ô(€€€•±Í”¥˜¡ÁÉ•Ù¥½ÕÌ¹½µÁ±•Ñ•¥ÍÑ…Ñ”¹µå•½¹‘½¹œ¹ÍÉ••¸ô•¹‘¥¹œœì(€€€É•½É‘5¥±•ÍÑ½¹•Ì¡ÍÑ½É”±ÍÑ…Ñ”±lÉ½ÕÑ•MÑ…ÉÑ•t¤ì(€€€¥˜¡ÍÑ…Ñ”¹½µÁ±•Ñ•¥É•½É‘5¥±•ÍÑ½¹•Ì¡ÍÑ½É”±ÍÑ…Ñ”±lÉ½ÕÑ•½µÁ±•Ñ•t¤ì(€€€ÍÑ½É”¹•Á¥Í½‘•ÍmÁ…¬¹¥‘tõÍÑ…Ñ”ì(€€€İÉ¥Ñ•MÑ½É”¡ÍÑ½É”¤ì(€€€Í•ÑY¥•Ü ÑÉ…Ù•±A±…äœ¤ì(€€€É•Í•ÑY¥•İÁ½ÉĞ ¤ì(€ôì(€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±½¹Ñ¥¹Õ”õÁ…­%ôùì(€€€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±MÑ…ÉĞ¡Á…­%±™…±Í”¤ì(€€€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±5å•½¹‘½¹=Á•¸ ¤ì(€ôì(€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±I•ÍÑ…ÉĞõÁ…­%ôùì(€€€½¹ÍĞµ•ÍÍ…”õ°¡í­¼èŸ²vĞƒ²^³¶Z$ƒ²öS²*“®–ğƒ²Êc²v3®Ú¶Àƒ®.“².pƒ².s²zG¶Vƒªæ3²jPüƒ²ÖsªÎ€ƒªâÃ®†wªÎğƒ²vc²²v ƒ®
+£²*×®.#®.¸œ±©„èŸO»š^¢†3
+Ïó
+ç
+Kšr–"w/
+'
+
++nÓ_ûg/¾òg
+ç#¢¢c¦2Ë£¢†¢¿šº/
++ûgœ±•¸èI•ÍÑ…ÉĞÑ¡¥ÌÉ½ÕÑ”üe½ÕÈ‰•ÍĞÍ½É”…¹½ÕÑ™¥ÑÌÍÑ…ä¸œ±é èŸ¢š’î;–’Ó–ò–/¢şgšv‡¢Ş¿êÿ–B_¾òšr¦®cê«–öW–J3šr7¢’òk’şwVgô¤ì(€€€¥˜ …½¹™¥É´¡µ•ÍÍ…”¤¥É•ÑÕÉ¸ì(€€€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±MÑ…ÉĞ¡Á…­%±ÑÉÕ”¤ì(€ôì(€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±	…¬ô ¤ôùí…¹•±IÁ5½Ñ¥½¸ ¤í±•…ÉIÁÕ” ¤í…¹•±Õ‘¥¼ ¤íÍ•ÑY¥•Ü ÑÉ…Ù•°œ¤íÉ•Í•ÑY¥•İÁ½ÉĞ ¥ôì(€™Õ¹Ñ¥½¸…Ñ¥Ù•IÁ½¹Ñ•áĞ ¥ì(€€€½¹ÍĞíÁ…¬±ÍÑ…Ñ”±Í•¹•ôõÕÉÉ•¹Ğ ¤±Í•¹•5…Ñ õIAü¹é½¹•½ÉM•¹”¡Á…¬¹¥±Í•¹”ü¹¥¤±µ…Ñ õÍ•¹•5…Ñ ıIA¹½¹Ñ•áÑ½ÉAÉ½É•ÍÌ¡Á…¬¹¥±ÍÑ…Ñ”¹•áÁ±½É…Ñ¥½¸±Í•¹”ü¹¥¤é¹Õ±°ì(€€€É•ÑÕÉ¸µ…Ñ ıíÁ…¬±ÍÑ…Ñ”±Í•¹”°¸¸¹µ…Ñ¡ôé¹Õ±°ì(€ô(€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±MÑ•Àõ‘¥É•Ñ¥½¸ôùì(€€€¥˜ …IA¹‘¥É•Ñ¥½¹Ìü¹m‘¥É•Ñ¥½¹uññIA}U¹…Ñ¥Ù”¥É•ÑÕÉ¸ì(€€€¥˜¡IA}5=Q%=8¹‰ÕÍä¥ì(€€€€€¥˜¡IA}5=Q%=8¹ÅÕ•Õ”¹±•¹Ñ ğÌÈ¥IA}5=Q%=8¹ÅÕ•Õ”¹ÁÕÍ ¡‘¥É•Ñ¥½¸¤ì(€€€€€É•ÑÕÉ¸ì(€€€ô(€€€½¹ÍĞ½¹Ñ•áĞõ…Ñ¥Ù•IÁ½¹Ñ•áĞ ¤ì(€€€¥˜ …½¹Ñ•áÑññIA}Y9Q}=A9m½¹Ñ•áĞ¹Í•¹”¹¥‘t¥É•ÑÕÉ¸ì(€€€½¹ÍĞÁÉ½É•ÍÌõIA¹¹½Éµ…±¥é•AÉ½É•ÍÌ¡½¹Ñ•áĞ¹Á…¬¹¥±½¹Ñ•áĞ¹ÍÑ…Ñ”¹•áÁ±½É…Ñ¥½¸±½¹Ñ•áĞ¹Í•¹”¹¥¤ì(€€€½¹ÍĞÉ•ÍÕ±ĞõIA¹ÍÑ•À¡½¹Ñ•áĞ¹é½¹”±ÁÉ½É•ÍÌ±‘¥É•Ñ¥½¸±½¹Ñ•áĞ¹Í•¹”¹¥¤ì(€€€½¹Ñ•áĞ¹ÍÑ…Ñ”¹•áÁ±½É…Ñ¥½¸õÉ•ÍÕ±Ğ¹ÁÉ½É•ÍÌí½¹Ñ•áĞ¹ÍÑ…Ñ”¹ÕÁ‘…Ñ•‘Ğõ¹½Ü ¤ì(€€€¥˜¡É•ÍÕ±Ğ¹‰±½­•¥IA}9=Q%m½¹Ñ•áĞ¹Í•¹”¹¥‘tõíÑåÁ”è‰±½­•ôí•±Í”‘•±•Ñ”IA}9=Q%m½¹Ñ•áĞ¹Í•¹”¹¥‘tì(€€€İÉ¥Ñ•MÑ…Ñ”¡½¹Ñ•áĞ¹ÍÑ…Ñ”¤ì(€€€½¹ÍĞ…¹¥µ…Ñ•õ…¹¥µ…Ñ•IÁMÑ•À¡½¹Ñ•áĞ¹é½¹”±É•ÍÕ±Ğ¹ÁÉ½É•ÍÌ±É•ÍÕ±Ğ¹‰±½­•¤ì(€€€¥˜ ……¹¥µ…Ñ•¥íÉ•¹‘•È ¤íÉ•ÑÕÉ¹ô(€€€IA}5=Q%=8¹‰ÕÍäõÑÉÕ”ì(€€€½¹ÍĞÑ½­•¸õIA}5=Q%=8¹Ñ½­•¸ì(€€€IA}5=Q%=8¹Ñ¥µ•ÈõÍ•ÑQ¥µ•½ÕĞ  ¤ôù™¥¹¥Í¡IÁ5½Ñ¥½¸¡½¹Ñ•áĞ¹Í•¹”¹¥±É•ÍÕ±Ğ¹µ½Ù•±Ñ½­•¸¤±É•ÍÕ±Ğ¹‰±½­•üÄÌÀéIA}MQA}5L¤ì(€ôì(€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±%¹Ñ•É…Ğô ¤ôùì(€€€¥˜¡IA}U¹…Ñ¥Ù”¥É•ÑÕÉ¸ì(€€€¥˜¡IA}5=Q%=8¹‰ÕÍä¥íIA}5=Q%=8¹Á•¹‘¥¹%¹Ñ•É…Ñ¥½¸õÑÉÕ”íÉ•ÑÕÉ¹ô(€€€½¹ÍĞ½¹Ñ•áĞõ…Ñ¥Ù•IÁ½¹Ñ•áĞ ¤ì(€€€¥˜ …½¹Ñ•áÑññIA}Y9Q}=A9m½¹Ñ•áĞ¹Í•¹”¹¥‘t¥É•ÑÕÉ¸ì(€€€½¹ÍĞÁÉ½É•ÍÌõIA¹¹½Éµ…±¥é•AÉ½É•ÍÌ¡½¹Ñ•áĞ¹Á…¬¹¥±½¹Ñ•áĞ¹ÍÑ…Ñ”¹•áÁ±½É…Ñ¥½¸±½¹Ñ•áĞ¹Í•¹”¹¥¤±¥¹Ñ•É…Ñ¥½¸õIA¹¥¹Ñ•É…Ñ¥½¹Ğ¡½¹Ñ•áĞ¹é½¹”±ÁÉ½É•ÍÌ±½¹Ñ•áĞ¹Í•¹”¹¥¤ì(€€€¥˜ …¥¹Ñ•É…Ñ¥½¸¥íIA}9=Q%m½¹Ñ•áĞ¹Í•¹”¹¥‘tõíÑåÁ”è‰±½­•ôíÉ•¹‘•È ¤íÉ•ÑÕÉ¹ô(€€€¥˜¡¥¹Ñ•É…Ñ¥½¸¹ÑåÁ”ôôôÍ•¹”œ¥ì(€€€€€…¹•±IÁ5½Ñ¥½¸ ¤ì(€€€€€Á±…åIÁÕ” Í•¹”œ±íô° ¤ôùí‘•±•Ñ”IA}9=Q%m½¹Ñ•áĞ¹Í•¹”¹¥‘tíIA}Y9Q}=A9m½¹Ñ•áĞ¹Í•¹”¹¥‘tõÑÉÕ”í…¹•±Õ‘¥¼ ¤íÉ•¹‘•È ¤íÉ•Í•ÑY¥•İÁ½ÉĞ ¥ô¤íÉ•ÑÕÉ¸ì(€€€ô(€€€¥˜¡¥¹Ñ•É…Ñ¥½¸¹ÑåÁ”ôôôÁ½¤œ¥ì(€€€€€½¹ÍĞ­•äõ€‘í½¹Ñ•áĞ¹é½¹”¹¥‘ôè‘í¥¹Ñ•É…Ñ¥½¸¹Ñ…É•Ğ¹¥‘õ€±‘¥Í½Ù•É¥•Ìõ¹•ÜM•Ğ¡ÁÉ½É•ÍÌ¹‘¥Í½Ù•É¥•Íññmt¤±™½Õ¹ô…‘¥Í½Ù•É¥•Ì¹¡…Ì¡­•ä¤±É•İ…Éõ™½Õ¹ı5…Ñ ¹µ…à À±9Õµ‰•È¡¥¹Ñ•É…Ñ¥½¸¹Ñ…É•Ğ¹É•İ…É¥ñğÀ¤èÀì(€€€€€Á±…åIÁÕ” Á½¤œ±í™½Õ¹±É•İ…É‘ô° ¤ôùì(€€€€€€€¥˜¡™½Õ¹¥ì(€€€€€€€€€‘¥Í½Ù•É¥•Ì¹…‘¡­•ä¤íÁÉ½É•ÍÌ¹‘¥Í½Ù•É¥•Ìõl¸¸¹‘¥Í½Ù•É¥•Ítí½¹Ñ•áĞ¹ÍÑ…Ñ”¹•áÁ±½É…Ñ¥½¸õÁÉ½É•ÍÌí½¹Ñ•áĞ¹ÍÑ…Ñ”¹İ…±±•Ğ¬õÉ•İ…Éí½¹Ñ•áĞ¹ÍÑ…Ñ”¹±½­5¥¹ÕÑ•Ì¬ôÄí½¹Ñ•áĞ¹ÍÑ…Ñ”¹ÕÁ‘…Ñ•‘Ğõ¹½Ü ¤íİÉ¥Ñ•MÑ…Ñ”¡½¹Ñ•áĞ¹ÍÑ…Ñ”¤ì(€€€€€€€ô(€€€€€€€IA}9=Q%m½¹Ñ•áĞ¹Í•¹”¹¥‘tõíÑåÁ”èÁ½¤œ±Ñ…É•Ğé¥¹Ñ•É…Ñ¥½¸¹Ñ…É•Ğ±™½Õ¹±É•İ…É‘ôíÉ•¹‘•È ¤ì(€€€€€ô¤íÉ•ÑÕÉ¸ì(€€€ô(€€€¥˜¡¥¹Ñ•É…Ñ¥½¸¹ÑåÁ”ôôôÁ½ÉÑ…°œ¥ì(€€€€€…¹•±IÁ5½Ñ¥½¸ ¤ì(€€€€€½¹ÍĞ¹•áĞõIA¹•¹Ñ•ÉA½ÉÑ…°¡½¹Ñ•áĞ¹İ½É±±ÁÉ½É•ÍÌ±¥¹Ñ•É…Ñ¥½¸¹Ñ…É•Ğ¤ì(€€€€€¥˜ …¹•áĞ¥íIA}9=Q%m½¹Ñ•áĞ¹Í•¹”¹¥‘tõíÑåÁ”è‰±½­•ôíÉ•¹‘•È ¤íÉ•ÑÕÉ¹ô(€€€€€Á±…åIÁÕ” Á½ÉÑ…°œ±íô° ¤ôùì(€€€€€€€½¹Ñ•áĞ¹ÍÑ…Ñ”¹•áÁ±½É…Ñ¥½¸õ¹•áĞí½¹Ñ•áĞ¹ÍÑ…Ñ”¹ÕÁ‘…Ñ•‘Ğõ¹½Ü ¤íİÉ¥Ñ•MÑ…Ñ”¡½¹Ñ•áĞ¹ÍÑ…Ñ”¤ì(€€€€€€€½¹ÍĞÑ…É•Ñi½¹”õIA¹é½¹•	å%¡½¹Ñ•áĞ¹İ½É±±¹•áĞ¹é½¹•%¤ì(€€€€€€€IA}9=Q%m½¹Ñ•áĞ¹Í•¹”¹¥‘tõíÑåÁ”èÁ½ÉÑ…°œ±Ñ…É•ĞéÑ…É•Ñi½¹•ôíÉ•¹‘•È ¤ì(€€€€€ô¤íÉ•ÑÕÉ¸ì(€€€ô(€€€IA}9=Q%m½¹Ñ•áĞ¹Í•¹”¹¥‘tõíÑåÁ”è‰±½­•ôíÉ•¹‘•È ¤ì(€ôì(€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±±½Í•¥Í½Ù•Éäô ¤ôùí½¹ÍĞ½¹Ñ•áĞõ…Ñ¥Ù•IÁ½¹Ñ•áĞ ¤í¥˜ …½¹Ñ•áĞ¥É•ÑÕÉ¸íÁ±…åIÁÕ” É•ÑÕÉ¸œ±íô° ¤ôùí‘•±•Ñ”IA}9=Q%m½¹Ñ•áĞ¹Í•¹”¹¥‘tíÉ•¹‘•È ¥ô¥ôì(€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±±½Í•Ù•¹Ğô ¤ôùí½¹ÍĞ½¹Ñ•áĞõ…Ñ¥Ù•IÁ½¹Ñ•áĞ ¤í¥˜ …½¹Ñ•áĞ¥É•ÑÕÉ¸í…¹•±IÁ5½Ñ¥½¸ ¤í‘•±•Ñ”IA}Y9Q}=A9m½¹Ñ•áĞ¹Í•¹”¹¥‘tí…¹•±Õ‘¥¼ ¤íÉ•¹‘•È ¤íÉ•Í•ÑY¥•İÁ½ÉĞ ¤íÉ•ÅÕ•ÍÑ¹¥µ…Ñ¥½¹É…µ”ü¸  ¤ôùÁ±…åIÁÕ” É•ÑÕÉ¸œ±íô° ¤ôùíô¤¥ôì(€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±ÅÕ¥ÀõÍ­¥¹%ôùì(€€€½¹ÍĞÍÑ½É”õÉ•…‘MÑ½É” ¤±Á…¬õ…Ñ¥Ù•A…¬ ¤ì(€€€¥˜ …ÍÑ½É”¹…Ù…Ñ…È¹Õ¹±½­•¹¥¹±Õ‘•Ì¡Í­¥¹%¥ñğ…Í­¥¹	å%¡Á…¬±Í­¥¹%¤¥É•ÑÕÉ¸ì(€€€ÍÑ½É”¹…Ù…Ñ…È¹•ÅÕ¥ÁÁ•õÍ­¥¹%íİÉ¥Ñ•MÑ½É”¡ÍÑ½É”¤ì(€€€¹½Ñ¥™ä¡°¡í­¼èŸ²^³¶Z'²z@ƒ²vc²²vƒªÂ#²V²z²^#²ZÓ²jP¸œ±©„èŸš^’êë»¢†¢
+Kvšnÿ#û_œ±•¸èQÉ…Ù•±•È½ÕÑ™¥Ğ¡…¹•¸œ±é èŸš^¢†3¢šr7¢–ŞËšnÓš6‹ô¤¤ì(€€€É•¹‘•È ¤ì(€ôì(€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±5å•½¹‘½¹=Á•¸ô ¤ôùì(€€€½¹ÍĞíÁ…¬±ÍÑ…Ñ”±Í•¹•ôõÕÉÉ•¹Ğ ¤±¡Õˆõ¡Õ‰	åI½ÕÑ”¡Á…¬¹¥¤ì(€€€¥˜ …¡Õ‰ñğ…ÍÑ…Ñ”¹½µÁ±•Ñ•‘ññÍ•¹”¹ÑåÁ”„ôô•¹‘¥¹œœ¥É•ÑÕÉ¸ì(€€€½¹ÍĞ•Ù•¹Ğõ…Ñ¥Ù•!Õ‰Ù•¹Ğ¡¡Õˆ±ÍÑ…Ñ”¤ì(€€€ÍÑ…Ñ”¹µå•½¹‘½¹œ¹ÍÉ••¸ô¡ÕˆœíÍÑ…Ñ”¹µå•½¹‘½¹œ¹…Ñ¥Ù•Ù•¹Ğõ•Ù•¹Ğ¹¥íÍÑ…Ñ”¹µå•½¹‘½¹œ¹±…ÍÑÑÑ•µÁÑ½ÉÉ•Ğõ¹Õ±°ì(€€€İÉ¥Ñ•MÑ…Ñ”¡ÍÑ…Ñ”±lÉ½ÕÑ•MÑ…ÉÑ•œ°É½ÕÑ•½µÁ±•Ñ•œ°µå•½¹‘½¹¹Ñ•É•t¤í…¹•±Õ‘¥¼ ¤íÉ•¹‘•È ¤íÉ•Í•ÑY¥•İÁ½ÉĞ ¤ì(€ôì(€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±5å•½¹‘½¹±½Í”ô ¤ôùì(€€€½¹ÍĞíÍÑ…Ñ•ôõÕÉÉ•¹Ğ ¤ì(€€€ÍÑ…Ñ”¹µå•½¹‘½¹œ¹ÍÉ••¸ô•¹‘¥¹œœíÍÑ…Ñ”¹µå•½¹‘½¹œ¹…Ñ¥Ù•Ù•¹Ğõ¹Õ±°íÍÑ…Ñ”¹µå•½¹‘½¹œ¹±…ÍÑAÕÉ¡…Í”õ¹Õ±°ì(€€€İÉ¥Ñ•MÑ…Ñ”¡ÍÑ…Ñ”¤í…¹•±Õ‘¥¼ ¤íÉ•¹‘•È ¤íÉ•Í•ÑY¥•İÁ½ÉĞ ¤ì(€ôì(€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±Q…±¬ô ¤ôùì(€€€½¹ÍĞíÁ…¬±ÍÑ…Ñ•ôõÕÉÉ•¹Ğ ¤±¡Õˆõ¡Õ‰	åI½ÕÑ”¡Á…¬¹¥¤ì(€€€¥˜ …¡Õ‰ñğ…ÍÑ…Ñ”¹½µÁ±•Ñ•¥É•ÑÕÉ¸ì(€€€½¹ÍĞ•Ù•¹Ğõ…Ñ¥Ù•!Õ‰Ù•¹Ğ¡¡Õˆ±ÍÑ…Ñ”¤ì(€€€!U	}%1=U}MQAm•Ù•¹Ğ¹¥‘tôÀí‘•±•Ñ”!U	}=5A=M}IMU1Qm•Ù•¹Ğ¹¥‘tì(€€€ÍÑ…Ñ”¹µå•½¹‘½¹œ¹ÍÉ••¸ô‘¥…±½Õ”œíÍÑ…Ñ”¹µå•½¹‘½¹œ¹…Ñ¥Ù•Ù•¹Ğõ•Ù•¹Ğ¹¥íÍÑ…Ñ”¹µå•½¹‘½¹œ¹±…ÍÑÑÑ•µÁÑ½ÉÉ•Ğõ¹Õ±°íÍÑ…Ñ”¹µå•½¹‘½¹œ¹±…ÍÑAÕÉ¡…Í”õ¹Õ±°ì(€€€İÉ¥Ñ•MÑ…Ñ”¡ÍÑ…Ñ”¤íÉ•¹‘•È ¤íÉ•Í•ÑY¥•İÁ½ÉĞ ¤ì(€ôì(€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±¥…±½Õ•9•áĞô ¤ôùì(€€€½¹ÍĞíÁ…¬±ÍÑ…Ñ•ôõÕÉÉ•¹Ğ ¤±¡Õˆõ¡Õ‰	åI½ÕÑ”¡Á…¬¹¥¤í¥˜ …¡Õ‰ññÍÑ…Ñ”¹µå•½¹‘½¹œ¹ÍÉ••¸„ôô‘¥…±½Õ”œ¥É•ÑÕÉ¸ì(€€€½¹ÍĞ•Ù•¹Ğõ=‰©•Ğ¹Ù…±Õ•Ì¡¡Õˆ¹•Ù•¹ÑÌ¤¹™¥¹¡¥Ñ•´ôù¥Ñ•´¹¥ôôõÍÑ…Ñ”¹µå•½¹‘½¹œ¹…Ñ¥Ù•Ù•¹Ğ¥ññ…Ñ¥Ù•!Õ‰Ù•¹Ğ¡¡Õˆ±ÍÑ…Ñ”¤±ÑÕÉ¹ÌõÉÉ…ä¹¥ÍÉÉ…ä¡•Ù•¹Ğ¹½¹Ù•ÉÍ…Ñ¥½¸¤ı•Ù•¹Ğ¹½¹Ù•ÉÍ…Ñ¥½¸émtì(€€€!U	}%1=U}MQAm•Ù•¹Ğ¹¥‘tõ5…Ñ ¹µ¥¸¡5…Ñ ¹µ…à À±ÑÕÉ¹Ì¹±•¹Ñ ´Ä¤°¡9Õµ‰•È¡!U	}%1=U}MQAm•Ù•¹Ğ¹¥‘t¥ñğÀ¤¬Ä¤íÉ•¹‘•È ¤ì(€ôì(€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±=É‘•ÉMÑ…ÉĞô ¤ôùì(€€€½¹ÍĞíÁ…¬±ÍÑ…Ñ•ôõÕÉÉ•¹Ğ ¤±¡Õˆõ¡Õ‰	åI½ÕÑ”¡Á…¬¹¥¤ì(€€€¥˜ …¡Õˆ¥É•ÑÕÉ¸ì(€€€½¹ÍĞ•Ù•¹Ğõ=‰©•Ğ¹Ù…±Õ•Ì¡¡Õˆ¹•Ù•¹ÑÌ¤¹™¥¹¡¥Ñ•´ôù¥Ñ•´¹¥ôôõÍÑ…Ñ”¹µå•½¹‘½¹œ¹…Ñ¥Ù•Ù•¹Ğ¥ññ…Ñ¥Ù•!Õ‰Ù•¹Ğ¡¡Õˆ±ÍÑ…Ñ”¤ì(€€€!U	}=IIm•Ù•¹Ğ¹¥‘tõmtí!U	}	UQm•Ù•¹Ğ¹¥‘tôÄí‘•±•Ñ”!U	}=5A=M}IMU1Qm•Ù•¹Ğ¹¥‘tíÍÑ…Ñ”¹µå•½¹‘½¹œ¹ÍÉ••¸ô½É‘•ÈœíÍÑ…Ñ”¹µå•½¹‘½¹œ¹±…ÍÑÑÑ•µÁÑ½ÉÉ•Ğõ¹Õ±°ì(€€€İÉ¥Ñ•MÑ…Ñ”¡ÍÑ…Ñ”±•Ù•¹Ğ¹¥¹Ñ•É…Ñ¥½¸ôôôÁÉ¥”µ‰Õ‘•Ğœ˜˜…¡Õ‰EÕ•ÍÑ½¹”¡ÍÑ…Ñ”±•Ù•¹Ğ¹¥¤ılÁÉ¥•EÕ•ÍÑMÑ…ÉÑ•témt¤íÉ•¹‘•È ¤íÉ•Í•ÑY¥•İÁ½ÉĞ ¤ì(€ôì(€™Õ¹Ñ¥½¸¡…¹•!Õ‰	Õ‘•Ğ¡‘•±Ñ„¥ì(€½¹ÍĞíÁ…¬±ÍÑ…Ñ•ôõÕÉÉ•¹Ğ ¤±¡Õˆõ¡Õ‰	åI½ÕÑ”¡Á…¬¹¥¤í¥˜ …¡Õ‰ññÍÑ…Ñ”¹µå•½¹‘½¹œ¹ÍÉ••¸„ôô½É‘•Èœ¥É•ÑÕÉ¸ì(€½¹ÍĞ•Ù•¹Ğõ=‰©•Ğ¹Ù…±Õ•Ì¡¡Õˆ¹•Ù•¹ÑÌ¤¹™¥¹¡¥Ñ•´ôù¥Ñ•´¹¥ôôõÍÑ…Ñ”¹µå•½¹‘½¹œ¹…Ñ¥Ù•Ù•¹Ğ¥ññ…Ñ¥Ù•!Õ‰Ù•¹Ğ¡¡Õˆ±ÍÑ…Ñ”¤í¥˜¡•Ù•¹Ğ¹¥¹Ñ•É…Ñ¥½¸„ôôÁÉ¥”µ‰Õ‘•Ğœ¥É•ÑÕÉ¸ì(€½¹ÍĞÕÉÉ•¹ÑEÕ…¹Ñ¥Ñäõ5…Ñ ¹µ…à À±9Õµ‰•È¡!U	}	UQm•Ù•¹Ğ¹¥‘t¥ñğÄ¤±µ…á¥µÕ´õ5…Ñ ¹µ…à Ä±9Õµ‰•È¡•Ù•¹Ğ¹µ…áEÕ…¹Ñ¥Ñä¥ñğÌ¤ì(€!U	}	UQm•Ù•¹Ğ¹¥‘tõ5…Ñ ¹µ…à À±5…Ñ ¹µ¥¸¡µ…á¥µÕ´±ÕÉÉ•¹ÑEÕ…¹Ñ¥Ñä­9Õµ‰•È¡‘•±Ñ…ñğÀ¤¤¤íÍÑ…Ñ”¹µå•½¹‘½¹œ¹±…ÍÑÑÑ•µÁÑ½ÉÉ•Ğõ¹Õ±°íÉ•¹‘•È ¤ì)ô(€™Õ¹Ñ¥½¸ÍÕ‰µ¥Ñ!Õ‰	Õ‘•Ğ ¥ì(€½¹ÍĞíÁ…¬±ÍÑ…Ñ•ôõÕÉÉ•¹Ğ ¤±¡Õˆõ¡Õ‰	åI½ÕÑ”¡Á…¬¹¥¤í¥˜ …¡Õ‰ññÍÑ…Ñ”¹µå•½¹‘½¹œ¹ÍÉ••¸„ôô½É‘•Èœ¥É•ÑÕÉ¸ì(€½¹ÍĞ•Ù•¹Ğõ=‰©•Ğ¹Ù…±Õ•Ì¡¡Õˆ¹•Ù•¹ÑÌ¤¹™¥¹¡¥Ñ•´ôù¥Ñ•´¹¥ôôõÍÑ…Ñ”¹µå•½¹‘½¹œ¹…Ñ¥Ù•Ù•¹Ğ¥ññ…Ñ¥Ù•!Õ‰Ù•¹Ğ¡¡Õˆ±ÍÑ…Ñ”¤í¥˜¡•Ù•¹Ğ¹¥¹Ñ•É…Ñ¥½¸„ôôÁÉ¥”µ‰Õ‘•Ğœ¥É•ÑÕÉ¸ì(€½¹ÍĞ¥Ñ•´õ•Ù•¹Ğ¹µ•¹Ô¹™¥¹¡•¹ÑÉäôù•¹ÑÉä¹¥ôôõ•Ù•¹Ğ¹Ñ…É•Ñ%Ñ•´¥ññ•Ù•¹Ğ¹µ•¹ÕlÁt±ÅÕ…¹Ñ¥Ñäõ5…Ñ ¹µ…à À±9Õµ‰•È¡!U	}	UQm•Ù•¹Ğ¹¥‘t¥ñğÀ¤±½ÍĞõ¥Ñ•´¹ÁÉ¥”©ÅÕ…¹Ñ¥Ñäì(€¥˜¡ÅÕ…¹Ñ¥Ñä„ôõ9Õµ‰•È¡•Ù•¹Ğ¹Ñ…É•ÑEÕ…¹Ñ¥Ñä¥ññ½ÍĞù9Õµ‰•È¡•Ù•¹Ğ¹‰Õ‘•Ğ¤¥ì(€€€½¹ÍĞÑÉ…­¥¹œô…¡Õ‰EÕ•ÍÑ½¹”¡ÍÑ…Ñ”±•Ù•¹Ğ¹¥¤ì(€€€ÍÑ…Ñ”¹µå•½¹‘½¹œ¹…ÑÑ•µÁÑÌ¬ôÄíÍÑ…Ñ”¹µå•½¹‘½¹œ¹±…ÍÑÑÑ•µÁÑ½ÉÉ•Ğõ™…±Í”íÍÑ…Ñ”¹±½­5¥¹ÕÑ•Ì¬ôÄíÍÑ…Ñ”¹ÕÁ‘…Ñ•‘Ğõ¹½Ü ¤ì(€€€İÉ¥Ñ•MÑ…Ñ”¡ÍÑ…Ñ”±ÑÉ…­¥¹œılÁÉ¥•EÕ•ÍÑMÑ…ÉÑ•témt±ÑÉ…­¥¹œıíÁÉ¥•EÕ•ÍÑ]É½¹MÕ‰µ¥ÍÍ¥½¹ÌèÅôé¹Õ±°¤íÉ•¹‘•È ¤íÉ•Ù•…±••‘‰…¬ ¤íÉ•ÑÕÉ¸ì(€ô(€¥˜¡½ÍĞùÍÑ…Ñ”¹İ…±±•Ğ¥É•ÑÕÉ¸¹½Ñ¥™ä¡°¡í­¼èŸ²^³¶Z$ƒ²nC²vĞƒ®Ú²†Ç¶V§®.#®.¸ƒ®.“®–àƒ¶c²*“¶*ã²^C²pƒ²†Ãªâ ƒ®6Pƒ®ª£²Vƒ²ó²ã²jP¸œ±©„èŸš^
+›
+§Ï3¢ÚÏ
++ûo
+Oï/»
+¿
+£
+ç#Ÿ
+–ÂG_¦n
+
+#œ±•¸è9½Ğ•¹½Õ ÑÉ…Ù•°İ½¸¸…É¸„±¥ÑÑ±”µ½É”¥¸…¹½Ñ¡•ÈÅÕ•ÍĞ¸œ±é èŸš^¢†3¦~§–’â7¢ÚÏ¾ò3¢¾ß–#–r£–Û’î[’îï–*‡’â·¢Ök–>[ô¤¤ì(€½¹ÍĞ…±É•…‘äõ¡Õ‰EÕ•ÍÑ½¹”¡ÍÑ…Ñ”±•Ù•¹Ğ¹¥¤±ÁÉ•Ù¥½ÕÌõÍÑ…Ñ”¹µå•½¹‘½¹œ¹ÅÕ•ÍÑÍm•Ù•¹Ğ¹¥‘t˜™ÑåÁ•½˜ÍÑ…Ñ”¹µå•½¹‘½¹œ¹ÅÕ•ÍÑÍm•Ù•¹Ğ¹¥‘tôôô½‰©•ĞœıÍÑ…Ñ”¹µå•½¹‘½¹œ¹ÅÕ•ÍÑÍm•Ù•¹Ğ¹¥‘téíôì(€¥˜ ……±É•…‘ä¥íÍÑ…Ñ”¹İ…±±•Ğ´õ½ÍĞíÍÑ…Ñ”¹ÍÁ•¹ĞõÉÉ…ä¹¥ÍÉÉ…ä¡ÍÑ…Ñ”¹ÍÁ•¹Ğ¤ıÍÑ…Ñ”¹ÍÁ•¹ĞémtíÍÑ…Ñ”¹ÍÁ•¹Ğ¹ÁÕÍ ¡í­¥¹èÍÑÉ••Ğµ™½½œ±¥é•Ù•¹Ğ¹¥±¥Ñ•´é¥Ñ•´¹¥±ÅÕ…¹Ñ¥Ñä±½ÍĞ±ÕÉÉ•¹äèÑÉ…Ù•°µİ½¸œ±…Ğé¹½Ü ¥ô¤íô(€ÍÑ…Ñ”¹µå•½¹‘½¹œ¹ÅÕ•ÍÑÍm•Ù•¹Ğ¹¥‘tõì¸¸¹ÁÉ•Ù¥½ÕÌ±½µÁ±•Ñ•éÑÉÕ”±•…É¹•èÀ±ÅÕ…¹Ñ¥Ñä±½ÍĞ±½µÁ±•Ñ•‘ĞéÁÉ•Ù¥½ÕÌ¹½µÁ±•Ñ•‘Ñññ¹½Ü ¥ôì(€ÍÑ…Ñ”¹µå•½¹‘½¹œ¹±…ÍÑÑÑ•µÁÑ½ÉÉ•Ğõ¹Õ±°íÍÑ…Ñ”¹µå•½¹‘½¹œ¹ÍÉ••¸ôÉ•ÍÕ±ĞœíÍÑ…Ñ”¹±½­5¥¹ÕÑ•Ì¬ôÌíÍÑ…Ñ”¹ÕÁ‘…Ñ•‘Ğõ¹½Ü ¤ì(€¥˜ …ÍÑ…Ñ”¹•Ù¥‘•¹”¹¥¹±Õ‘•Ì¡¡Õˆè‘í•Ù•¹Ğ¹¥‘õ€¤¥ÍÑ…Ñ”¹•Ù¥‘•¹”¹ÁÕÍ ¡¡Õˆè‘í•Ù•¹Ğ¹¥‘õ€¤ì(€İÉ¥Ñ•MÑ…Ñ”¡ÍÑ…Ñ”±…±É•…‘äımtélÁÉ¥•EÕ•ÍÑMÑ…ÉÑ•œ°ÁÉ¥•EÕ•ÍÑ½µÁ±•Ñ•t±…±É•…‘äı¹Õ±°éíÁÉ¥•EÕ•ÍÑ]…±±•Ñ™Ñ•É½µÁ±•Ñ¥½¸éÍÑ…Ñ”¹İ…±±•Ñô¤íÉ•¹‘•È ¤íÉ•Í•ÑY¥•İÁ½ÉĞ ¤ì)ô(€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±	Õ‘•Ñ¡…¹”õ¡…¹•!Õ‰	Õ‘•Ğì(€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±	Õ‘•ÑMÕ‰µ¥ĞõÍÕ‰µ¥Ñ!Õ‰	Õ‘•Ğì(€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±=É‘•É‘õ¥¹‘•àôùì(€€€½¹ÍĞíÁ…¬±ÍÑ…Ñ•ôõÕÉÉ•¹Ğ ¤±¡Õˆõ¡Õ‰	åI½ÕÑ”¡Á…¬¹¥¤í¥˜ …¡Õ‰ññÍÑ…Ñ”¹µå•½¹‘½¹œ¹ÍÉ••¸„ôô½É‘•Èœ¥É•ÑÕÉ¸ì(€€€½¹ÍĞ•Ù•¹Ğõ=‰©•Ğ¹Ù…±Õ•Ì¡¡Õˆ¹•Ù•¹ÑÌ¤¹™¥¹¡¥Ñ•´ôù¥Ñ•´¹¥ôôõÍÑ…Ñ”¹µå•½¹‘½¹œ¹…Ñ¥Ù•Ù•¹Ğ¥ññ…Ñ¥Ù•!Õ‰Ù•¹Ğ¡¡Õˆ±ÍÑ…Ñ”¤ì(€€€½¹ÍĞ½É‘•ÈõÉÉ…ä¹¥ÍÉÉ…ä¡!U	}=IIm•Ù•¹Ğ¹¥‘t¤ı!U	}=IIm•Ù•¹Ğ¹¥‘témtì(€€€¥¹‘•àõ9Õµ‰•È¡¥¹‘•à¤í¥˜ …9Õµ‰•È¹¥Í%¹Ñ••È¡¥¹‘•à¥ññ¥¹‘•àğÁññ¥¹‘•àøõ•Ù•¹Ğ¹Ñ½­•¹Ì¹±•¹Ñ¡ññ½É‘•È¹¥¹±Õ‘•Ì¡¥¹‘•à¤¥É•ÑÕÉ¸ì(€€€½¹ÍĞÉ•ÅÕ¥É•õ•Ù•¹Ğ¹¥¹Ñ•É…Ñ¥½¸ôôôÍ¥¸µ‰Õ¥±œı•Ù•¹Ğ¹…¹Íİ•È¹±•¹Ñ é•Ù•¹Ğ¹¥¹Ñ•É…Ñ¥½¸ôôô™É•”µ½µÁ½Í”œı5…Ñ ¹µ¥¸ ÄÀ±•Ù•¹Ğ¹Ñ½­•¹Ì¹±•¹Ñ ¤é•Ù•¹Ğ¹Ñ½­•¹Ì¹±•¹Ñ í¥˜¡½É‘•È¹±•¹Ñ øõÉ•ÅÕ¥É•¥É•ÑÕÉ¸ì(€€€½É‘•È¹ÁÕÍ ¡¥¹‘•à¤í!U	}=IIm•Ù•¹Ğ¹¥‘tõ½É‘•Èí‘•±•Ñ”!U	}=5A=M}IMU1Qm•Ù•¹Ğ¹¥‘tíÍÑ…Ñ”¹µå•½¹‘½¹œ¹±…ÍÑÑÑ•µÁÑ½ÉÉ•Ğõ¹Õ±°íÉ•¹‘•È ¤ì(€ôì(€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±=É‘•ÉI•µ½Ù”õÁ½Í¥Ñ¥½¸ôùì(€€€½¹ÍĞíÁ…¬±ÍÑ…Ñ•ôõÕÉÉ•¹Ğ ¤±¡Õˆõ¡Õ‰	åI½ÕÑ”¡Á…¬¹¥¤í¥˜ …¡Õ‰ññÍÑ…Ñ”¹µå•½¹‘½¹œ¹ÍÉ••¸„ôô½É‘•Èœ¥É•ÑÕÉ¸ì(€€€½¹ÍĞ•Ù•¹Ğõ=‰©•Ğ¹Ù…±Õ•Ì¡¡Õˆ¹•Ù•¹ÑÌ¤¹™¥¹¡¥Ñ•´ôù¥Ñ•´¹¥ôôõÍÑ…Ñ”¹µå•½¹‘½¹œ¹…Ñ¥Ù•Ù•¹Ğ¥ññ…Ñ¥Ù•!Õ‰Ù•¹Ğ¡¡Õˆ±ÍÑ…Ñ”¤ì(€€€½¹ÍĞ½É‘•ÈõÉÉ…ä¹¥ÍÉÉ…ä¡!U	}=IIm•Ù•¹Ğ¹¥‘t¤ı!U	}=IIm•Ù•¹Ğ¹¥‘témtì(€€€Á½Í¥Ñ¥½¸õ9Õµ‰•È¡Á½Í¥Ñ¥½¸¤í¥˜ …9Õµ‰•È¹¥Í%¹Ñ••È¡Á½Í¥Ñ¥½¸¥ññÁ½Í¥Ñ¥½¸ğÁññÁ½Í¥Ñ¥½¸øõ½É‘•È¹±•¹Ñ ¥É•ÑÕÉ¸ì(€€€½É‘•È¹ÍÁ±¥”¡Á½Í¥Ñ¥½¸°Ä¤í‘•±•Ñ”!U	}=5A=M}IMU1Qm•Ù•¹Ğ¹¥‘tíÍÑ…Ñ”¹µå•½¹‘½¹œ¹±…ÍÑÑÑ•µÁÑ½ÉÉ•Ğõ¹Õ±°íÉ•¹‘•È ¤ì(€ôì(€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±=É‘•ÉI•Í•Ğô ¤ôùì(€€€½¹ÍĞíÁ…¬±ÍÑ…Ñ•ôõÕÉÉ•¹Ğ ¤±¡Õˆõ¡Õ‰	åI½ÕÑ”¡Á…¬¹¥¤í¥˜ …¡Õˆ¥É•ÑÕÉ¸ì(€€€½¹ÍĞ•Ù•¹Ğõ=‰©•Ğ¹Ù…±Õ•Ì¡¡Õˆ¹•Ù•¹ÑÌ¤¹™¥¹¡¥Ñ•´ôù¥Ñ•´¹¥ôôõÍÑ…Ñ”¹µå•½¹‘½¹œ¹…Ñ¥Ù•Ù•¹Ğ¥ññ…Ñ¥Ù•!Õ‰Ù•¹Ğ¡¡Õˆ±ÍÑ…Ñ”¤ì(€€€!U	}=IIm•Ù•¹Ğ¹¥‘tõmtí‘•±•Ñ”!U	}=5A=M}IMU1Qm•Ù•¹Ğ¹¥‘tíÍÑ…Ñ”¹µå•½¹‘½¹œ¹±…ÍÑÑÑ•µÁÑ½ÉÉ•Ğõ¹Õ±°íÉ•¹‘•È ¤ì(€ôì(€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±=É‘•ÉMÕ‰µ¥Ğô ¤ôùì(€€€½¹ÍĞíÁ…¬±ÍÑ…Ñ•ôõÕÉÉ•¹Ğ ¤±¡Õˆõ¡Õ‰	åI½ÕÑ”¡Á…¬¹¥¤í¥˜ …¡Õ‰ññÍÑ…Ñ”¹µå•½¹‘½¹œ¹ÍÉ••¸„ôô½É‘•Èœ¥É•ÑÕÉ¸ì(€€€½¹ÍĞ•Ù•¹Ğõ=‰©•Ğ¹Ù…±Õ•Ì¡¡Õˆ¹•Ù•¹ÑÌ¤¹™¥¹¡¥Ñ•´ôù¥Ñ•´¹¥ôôõÍÑ…Ñ”¹µå•½¹‘½¹œ¹…Ñ¥Ù•Ù•¹Ğ¥ññ…Ñ¥Ù•!Õ‰Ù•¹Ğ¡¡Õˆ±ÍÑ…Ñ”¤ì(€€€½¹ÍĞ½É‘•ÈõÉÉ…ä¹¥ÍÉÉ…ä¡!U	}=IIm•Ù•¹Ğ¹¥‘t¤ı!U	}=IIm•Ù•¹Ğ¹¥‘témtì(€€€½¹ÍĞÍ¥¸õ•Ù•¹Ğ¹¥¹Ñ•É…Ñ¥½¸ôôôÍ¥¸µ‰Õ¥±œ±™É•”õ•Ù•¹Ğ¹¥¹Ñ•É…Ñ¥½¸ôôô™É•”µ½µÁ½Í”œ±É•ÅÕ¥É•õÍ¥¸ı•Ù•¹Ğ¹…¹Íİ•È¹±•¹Ñ é•Ù•¹Ğ¹Ñ½­•¹Ì¹±•¹Ñ ì(€€€¥˜ ¡™É•”˜™½É‘•È¹±•¹Ñ ğÈ¥ñğ …™É•”˜™½É‘•È¹±•¹Ñ „ôõÉ•ÅÕ¥É•¤¥É•ÑÕÉ¸¹½Ñ¥™ä¡Í¥¸ı°¡í­¼èŸ¶V²jS¶Vpƒ²àƒªâ²zC®–ğƒ¶Fs²¶2C²^@ƒ®O²Vƒ²ó²ã²jP¸œ±©„èŸ–ş¢š¨ÏšZ–¶_
+Kš¢g¢¶c¯ö»›?ƒWœ±•¸èA±…”Ñ¡”Ñ¡É•”¹••‘•±•ÑÑ•ÉÌ½¸Ñ¡”Í¥¸¸œ±é èŸ¢¾ßš*+¦r¢šj’â'’â«–¶_šRû–"Ãš‚&3’â+ô¤é™É•”ı°¡í­¼èŸ®F@ƒªÂpƒ²vÓ²²v`ƒ®.£²ZÓ®–ğƒªÎ£®vğƒ®C²vƒ®3®N“²ZĞƒ²ó²ã²jP¸œ±©„èœË“’î—’â+»–6c¢ª{
+K¦ã
+OŸšZ
+K’ös›?ƒWœ±•¸è¡½½Í”…Ğ±•…ÍĞÑİ¼İ½É‘ÌÑ¼‰Õ¥±„Í•¹Ñ•¹”¸œ±é èŸ¢¾ß¦'š.§¢Ï–ÂG’â“’â«¢¾7šv—¦ƒ–>—ô¤é°¡í­¼èŸ®ª£®N€ƒ®.£²ZÓ®–ğƒ®²ã²z”ƒ²æã²^@ƒ®O²Vƒ²ó²ã²jP¸œ±©„èŸgç›»–6c¢ª{
+KšZ»š²¯ö»›?ƒWœ±•¸èA±…”•Ù•Éäİ½É¥¸Ñ¡”Í•¹Ñ•¹”¸œ±é èŸ¢¾ßš*+š&šr'¢¾7šRû–—–>—–¶Cš‚?ô¤¤ì(€€€½¹ÍĞ‰Õ¥±Ğõ½É‘•È¹µ…À¡¥¹‘•àôù•Ù•¹Ğ¹Ñ½­•¹Ím¥¹‘•át¤ì(€€€½¹ÍĞ•Ù…±Õ…Ñ•õ™É•”ı½µÁ½Í¥Ñ¥½¹I•ÍÕ±Ğ¡•Ù•¹Ğ±‰Õ¥±Ğ¤é¹Õ±°±½ÉÉ•Ğõ™É•”ı•Ù…±Õ…Ñ•¹É…‘”ôôô™Õ±°œé‰Õ¥±Ğ¹•Ù•Éä ¡Ñ½­•¸±¥¹‘•à¤ôùÑ½­•¸ôôõ•Ù•¹Ğ¹…¹Íİ•Ém¥¹‘•át¤ì(€€€¥˜¡™É•”˜˜…½ÉÉ•Ğ¥ì(€€€€€½¹ÍĞÁÉ•Ù¥½ÕÌõÍÑ…Ñ”¹µå•½¹‘½¹œ¹ÅÕ•ÍÑÍm•Ù•¹Ğ¹¥‘t˜™ÑåÁ•½˜ÍÑ…Ñ”¹µå•½¹‘½¹œ¹ÅÕ•ÍÑÍm•Ù•¹Ğ¹¥‘tôôô½‰©•ĞœıÍÑ…Ñ”¹µå•½¹‘½¹œ¹ÅÕ•ÍÑÍm•Ù•¹Ğ¹¥‘téíô±…ÑÑ•µÁÑ•õÉÉ…ä¹¥ÍÉÉ…ä¡ÁÉ•Ù¥½ÕÌ¹…ÑÑ•µÁÑ•‘A¡É…Í•Ì¤ıÁÉ•Ù¥½ÕÌ¹…ÑÑ•µÁÑ•‘A¡É…Í•Ìémt±­•äõ½µÁ…ÑM•¹Ñ•¹”¡•Ù…±Õ…Ñ•¹Á¡É…Í”¤±Õ¹¥ÅÕ”ô……ÑÑ•µÁÑ•¹¥¹±Õ‘•Ì¡­•ä¤±±¥µ¥Ğõ5…Ñ ¹µ…à À±9Õµ‰•È¡•Ù•¹Ğ¹µ…áA…ÉÑ¥…±I•İ…É‘Ì¥ñğÌ¤±±…¥µ•õ5…Ñ ¹µ…à À±9Õµ‰•È¡ÁÉ•Ù¥½ÕÌ¹Á…ÉÑ¥…±I•İ…É‘Ì¥ñğÀ¤±É•İ…Éõ•Ù…±Õ…Ñ•¹É…‘”ôôôÁ…ÉÑ¥…°œ˜™Õ¹¥ÅÕ”˜™±…¥µ•ñ±¥µ¥Ğı5…Ñ ¹µ…à À±9Õµ‰•È¡•Ù•¹Ğ¹Á…ÉÑ¥…±I•İ…É¥ñğÀ¤èÀì(€€€€€¥˜¡Õ¹¥ÅÕ”¥…ÑÑ•µÁÑ•¹ÁÕÍ ¡­•ä¤ì(€€€€€¥˜¡É•İ…É¥ÍÑ…Ñ”¹İ…±±•Ğ¬õÉ•İ…Éì(€€€€€ÍÑ…Ñ”¹µå•½¹‘½¹œ¹ÅÕ•ÍÑÍm•Ù•¹Ğ¹¥‘tõì¸¸¹ÁÉ•Ù¥½ÕÌ±…ÑÑ•µÁÑ•‘A¡É…Í•Ìé…ÑÑ•µÁÑ•¹Í±¥” ´ÈÀ¤±Á…ÉÑ¥…±I•İ…É‘Ìé±…¥µ•¬¡É•İ…ÉüÄèÀ¤±Á…ÉÑ¥…±…É¹•é5…Ñ ¹µ…à À±9Õµ‰•È¡ÁÉ•Ù¥½ÕÌ¹Á…ÉÑ¥…±…É¹•¥ñğÀ¤­É•İ…É‘ôì(€€€€€ÍÑ…Ñ”¹µå•½¹‘½¹œ¹…ÑÑ•µÁÑÌ¬ôÄíÍÑ…Ñ”¹±½­5¥¹ÕÑ•Ì¬ôÄíÍÑ…Ñ”¹ÕÁ‘…Ñ•‘Ğõ¹½Ü ¤íÍÑ…Ñ”¹µå•½¹‘½¹œ¹±…ÍÑÑÑ•µÁÑ½ÉÉ•Ğõ¹Õ±°ì(€€€€€!U	}=5A=M}IMU1Qm•Ù•¹Ğ¹¥‘tõì¸¸¹•Ù…±Õ…Ñ•±•…É¹•éÉ•İ…É‘ôíİÉ¥Ñ•MÑ…Ñ”¡ÍÑ…Ñ”¤íÉ•¹‘•È ¤íÉ•Ù•…±••‘‰…¬ ¤íÉ•ÑÕÉ¸ì(€€€ô(€€€¥˜ …½ÉÉ•Ğ¥ì(€€€€€ÍÑ…Ñ”¹µå•½¹‘½¹œ¹…ÑÑ•µÁÑÌ¬ôÄíÍÑ…Ñ”¹µå•½¹‘½¹œ¹±…ÍÑÑÑ•µÁÑ½ÉÉ•Ğõ™…±Í”íÍÑ…Ñ”¹±½­5¥¹ÕÑ•Ì¬ôÈíÍÑ…Ñ”¹ÕÁ‘…Ñ•‘Ğõ¹½Ü ¤í!U	}=IIm•Ù•¹Ğ¹¥‘tõmtì(€€€€€İÉ¥Ñ•MÑ…Ñ”¡ÍÑ…Ñ”¤íÉ•¹‘•È ¤íÉ•Ù•…±••‘‰…¬ ¤íÉ•ÑÕÉ¸ì(€€€ô(€€€½¹ÍĞ…±É•…‘äõ¡Õ‰EÕ•ÍÑ½¹”¡ÍÑ…Ñ”±•Ù•¹Ğ¹¥¤±•…É¹•õ…±É•…‘äüÀé9Õµ‰•È¡•Ù•¹Ğ¹É•İ…É¥ñğÀì(€€€½¹ÍĞÁÉ•Ù¥½ÕÌõÍÑ…Ñ”¹µå•½¹‘½¹œ¹ÅÕ•ÍÑÍm•Ù•¹Ğ¹¥‘t˜™ÑåÁ•½˜ÍÑ…Ñ”¹µå•½¹‘½¹œ¹ÅÕ•ÍÑÍm•Ù•¹Ğ¹¥‘tôôô½‰©•ĞœıÍÑ…Ñ”¹µå•½¹‘½¹œ¹ÅÕ•ÍÑÍm•Ù•¹Ğ¹¥‘téíôì(€€€ÍÑ…Ñ”¹µå•½¹‘½¹œ¹ÅÕ•ÍÑÍm•Ù•¹Ğ¹¥‘tõì¸¸¹ÁÉ•Ù¥½ÕÌ±½µÁ±•Ñ•éÑÉÕ”±•…É¹•±…¹Íİ•ÈéÉÉ…ä¹™É½´¡•Ù•¹Ğ¹…¹Íİ•È¤±½µÁ±•Ñ•‘Ğé¹½Ü ¥ôì(€€€ÍÑ…Ñ”¹µå•½¹‘½¹œ¹±…ÍÑÑÑ•µÁÑ½ÉÉ•Ğõ¹Õ±°íÍÑ…Ñ”¹µå•½¹‘½¹œ¹ÍÉ••¸ôÉ•ÍÕ±ĞœíÍÑ…Ñ”¹İ…±±•Ğ¬õ•…É¹•íÍÑ…Ñ”¹±½­5¥¹ÕÑ•Ì¬ôÌíÍÑ…Ñ”¹ÕÁ‘…Ñ•‘Ğõ¹½Ü ¤ì(€€€¥˜¡•Ù•¹Ğ¹¥Ñ•µI•İ…É˜˜…ÍÑ…Ñ”¹¥¹Ù•¹Ñ½Éä¹¥¹±Õ‘•Ì¡•Ù•¹Ğ¹¥Ñ•µI•İ…É¤¥ÍÑ…Ñ”¹¥¹Ù•¹Ñ½Éä¹ÁÕÍ ¡•Ù•¹Ğ¹¥Ñ•µI•İ…É¤ì(€€€¥˜ …ÍÑ…Ñ”¹•Ù¥‘•¹”¹¥¹±Õ‘•Ì¡¡Õˆè‘í•Ù•¹Ğ¹¥‘õ€¤¥ÍÑ…Ñ”¹•Ù¥‘•¹”¹ÁÕÍ ¡¡Õˆè‘í•Ù•¹Ğ¹¥‘õ€¤ì(€€€!U	}=IIm•Ù•¹Ğ¹¥‘tõmtí‘•±•Ñ”!U	}=5A=M}IMU1Qm•Ù•¹Ğ¹¥‘tíİÉ¥Ñ•MÑ…Ñ”¡ÍÑ…Ñ”¤íÉ•¹‘•È ¤íÉ•Í•ÑY¥•İÁ½ÉĞ ¤ì(€ôì(€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±	Õäõ¥Ñ•µ%ôùì(€€€½¹ÍĞíÁ…¬±ÍÑ…Ñ”±Í•¹•ôõÕÉÉ•¹Ğ ¤±¡Õˆõ¡Õ‰	åI½ÕÑ”¡Á…¬¹¥¤í¥˜ …¡Õ‰ñğ…ÍÑ…Ñ”¹½µÁ±•Ñ•‘ññÍ•¹”¹ÑåÁ”„ôô•¹‘¥¹œœ¥É•ÑÕÉ¸ì(€€€½¹ÍĞ•Ù•¹Ğõ…Ñ¥Ù•!Õ‰Ù•¹Ğ¡¡Õˆ±ÍÑ…Ñ”¤±¥Ñ•´õ¡Õˆ¹•á¡…¹”¹™¥¹¡•¹ÑÉäôù•¹ÑÉä¹¥ôôõ¥Ñ•µ%¤í¥˜ …¥Ñ•´¥É•ÑÕÉ¸ì(€€€½¹ÍĞ…Ù…¥±…‰¥±¥Ñäõ•á¡…¹•Ù…¥±…‰¥±¥Ñä¡¥Ñ•´±•Ù•¹Ğ±ÍÑ…Ñ”¤í¥˜¡…Ù…¥±…‰¥±¥Ñä¹‘¥Í…‰±•¥É•ÑÕÉ¸¹½Ñ¥™ä¡…Ù…¥±…‰¥±¥Ñä¹ÍÑ…ÑÕÌ¤ì(€€€½¹ÍĞ½ÍĞõ5…Ñ ¹µ…à À±9Õµ‰•È¡¥Ñ•´¹½ÍĞ¥ñğÀ¤ì(€€€ÍÑ…Ñ”¹İ…±±•Ğ´õ½ÍĞíÍÑ…Ñ”¹±½­5¥¹ÕÑ•Ì¬ôÈíÍÑ…Ñ”¹¥¹Ù•¹Ñ½Éä¹ÁÕÍ ¡¥Ñ•´¹¥¤íÍÑ…Ñ”¹µå•½¹‘½¹œ¹±…ÍÑAÕÉ¡…Í”õ¥Ñ•´¹¥íÍÑ…Ñ”¹µå•½¹‘½¹œ¹ÍÉ••¸ô¡ÕˆœíÍÑ…Ñ”¹ÕÁ‘…Ñ•‘Ğõ¹½Ü ¤ì(€€€ÍÑ…Ñ”¹ÍÁ•¹ĞõÉÉ…ä¹¥ÍÉÉ…ä¡ÍÑ…Ñ”¹ÍÁ•¹Ğ¤ıÍÑ…Ñ”¹ÍÁ•¹ĞémtíÍÑ…Ñ”¹ÍÁ•¹Ğ¹ÁÕÍ ¡í­¥¹è½±±•Ñ¥‰±”œ±¥é¥Ñ•´¹¥±½ÍĞ±ÕÉÉ•¹äèÑÉ…Ù•°µİ½¸œ±…Ğé¹½Ü ¥ô¤ì(€€€İÉ¥Ñ•MÑ…Ñ”¡ÍÑ…Ñ”±lÉ½ÕÑ•MÑ…ÉÑ•œ°É½ÕÑ•½µÁ±•Ñ•œ°µå•½¹‘½¹¹Ñ•É•œ°•á¡…¹•M•ÍÍ¥½¸t¤íÉ•¹‘•È ¤ì(€ôì(€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±9•áĞô ¤ôùì(€€€½¹ÍĞíÁ…¬±ÍÑ…Ñ”±Í•¹•ôõÕÉÉ•¹Ğ ¤ì(€€€¥˜¡Í•¹”¹ÑåÁ”ôôôÅÕ•ÍÑ¥½¸œ˜˜…ÍÑ…Ñ”¹…¹Íİ•ÉÍmÍ•¹”¹¥‘t¥É•ÑÕÉ¸¹½Ñ¥™ä¡°¡í­¼èŸ®¢ó²‚ ƒ®²ã²‚s®–ğƒ¶J²ZĞƒ²ó²ã²jP¸œ±©„èŸ–#¯–V?¦†3
+K¢›?ƒWœ±•¸è¹Íİ•ÈÑ¡”ÅÕ•ÍÑ¥½¸™¥ÉÍĞ¸œ±é èŸ¢¾ß–#¶S¦Šcô¤¤ì(€€€¥˜¡Í•¹”¹ÑåÁ”ôôô•¹‘¥¹œœ¥É•ÑÕÉ¸Í•ÑY¥•Ü ÑÉ…Ù•°œ¤ì(€€€µ½Ù”¡ÍÑ…Ñ”±Á…¬±Í•¹”¹¹•áĞ¤ì(€ôì(€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±¡½½Í”õ¡½¥•%ôùì(€€€½¹ÍĞíÁ…¬±ÍÑ…Ñ”±Í•¹•ôõÕÉÉ•¹Ğ ¤±¡½¥”õÍ•¹”ü¹¡½¥•Ìü¹™¥¹¡¥Ñ•´ôù¥Ñ•´¹¥ôôõ¡½¥•%¤ì(€€€¥˜ …¡½¥”¥É•ÑÕÉ¸ì(€€€½¹ÍĞ½ÍĞõ5…Ñ ¹µ…à À±9Õµ‰•È¡¡½¥”¹½ÍĞ¥ñğÀ¤ì(€€€¥˜¡½ÍĞùÍÑ…Ñ”¹İ…±±•Ğ¥É•ÑÕÉ¸¹½Ñ¥™ä¡°¡í­¼èŸ²^³¶Z$ƒ²nC²vĞƒ®Ú²†Ç¶V§®.#®.¸ƒ®²ã²‚s®–ğƒ®6Pƒ®{¶b ƒ®ÎÓ²ã²jP¸œ±©„èŸš^
+›
+§Ï3¢ÚÏ
++ûo
+O–V?¦†3¯š¶¢_›–Š_
+wœ±•¸è9½Ğ•¹½Õ ÑÉ…Ù•°İ½¸¸…É¸µ½É”™É½´½ÉÉ•Ğ…¹Íİ•ÉÌ¸œ±é èŸš^¢†3¦~§–’â7¢ÚÏ¾ò3¢¾ß¦k¢ş¶S¦Šc¢Ök–>[ô¤¤ì(€€€ÍÑ…Ñ”¹É½ÕÑ”õ¡½¥”¹¥ì(€€€ÍÑ…Ñ”¹İ…±±•Ğ´õ½ÍĞíÍÑ…Ñ”¹±½­5¥¹ÕÑ•Ì¬õ5…Ñ ¹µ…à À±9Õµ‰•È¡¡½¥”¹‘ÕÉ…Ñ¥½¹5¥¹ÕÑ•Ì¥ñğÀ¤ì(€€€ÍÑ…Ñ”¹ÍÁ•¹ĞõÉÉ…ä¹¥ÍÉÉ…ä¡ÍÑ…Ñ”¹ÍÁ•¹Ğ¤ıÍÑ…Ñ”¹ÍÁ•¹ĞémtíÍÑ…Ñ”¹ÍÁ•¹Ğ¹ÁÕÍ ¡í­¥¹èÑÉ…¹ÍÁ½ÉĞœ±¥é¡½¥”¹¥±½ÍĞ±…Ğé¹½Ü ¥ô¤ì(€€€µ½Ù”¡ÍÑ…Ñ”±Á…¬±¡½¥”¹¹•áÑññÍ•¹”¹¹•áĞ¤ì(€ôì(€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±M•±•Ğõ¥¹‘•àôùì(€€€½¹ÍĞíÍÑ…Ñ”±Í•¹•ôõÕÉÉ•¹Ğ ¤ì(€€€¥˜¡Í•¹”¹ÑåÁ”„ôôÅÕ•ÍÑ¥½¸ññÍÑ…Ñ”¹…¹Íİ•ÉÍmÍ•¹”¹¥‘t¥É•ÑÕÉ¸ì(€€€M1QmÍ•¹”¹¥‘tõ9Õµ‰•È¡¥¹‘•à¤ì(€€€É•¹‘•È ¤ì(€ôì(€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±MÕ‰µ¥Ğô ¤ôùì(€€€½¹ÍĞíÁ…¬±ÍÑ…Ñ”±Í•¹•ôõÕÉÉ•¹Ğ ¤ì(€€€¥˜¡Í•¹”¹ÑåÁ”„ôôÅÕ•ÍÑ¥½¸ññÍÑ…Ñ”¹…¹Íİ•ÉÍmÍ•¹”¹¥‘t¥É•ÑÕÉ¸ì(€€€½¹ÍĞÍ•±•Ñ•õM1QmÍ•¹”¹¥‘tì(€€€¥˜ …9Õµ‰•È¹¥Í%¹Ñ••È¡Í•±•Ñ•¤¥É•ÑÕÉ¸¹½Ñ¥™ä¡°¡í­¼èŸ®.×²vƒ®¢ó²‚ ƒ²ƒ¶w¶VĞƒ²ó²ã²jP¸œ±©„èŸ–#¯¶S#
+K¦ã
+OŸ?ƒWœ±•¸èM•±•Ğ…¸…¹Íİ•È™¥ÉÍĞ¸œ±é èŸ¢¾ß–#¦'š.§¶Sš†#ô¤¤ì(€€€½¹ÍĞÁ…å±½…õ•¹ÍÕÉ•EÕ•ÍÑ¥½¸¡Á…¬±ÍÑ…Ñ”±Í•¹”¤ì(€€€¥˜ …Á…å±½…¥É•ÑÕÉ¸ì(€€€½¹ÍĞÄõÁ…å±½…¹‘¥ÍÁ±…ä±½ÉÉ•ĞõÍ•±•Ñ•ôôõÄ¹…¹Íİ•É%¹‘•àì(€€€½¹ÍĞ•…É¹•õ½ÉÉ•Ğı9Õµ‰•È¡Í•¹”¹É•İ…ÉüıÁ…¬¹ÅÕ•ÍÑ¥½¹I•İ…É¥ñğÀèÀì(€€€½¹ÍĞ‘•±…å5¥¹ÕÑ•Ìõ½ÉÉ•ĞüÈèĞ±¥Ñ•µI•İ…Éõ½ÉÉ•Ğ˜™Í•¹”¹¥Ñ•µI•İ…ÉıÍ•¹”¹¥Ñ•µI•İ…Éé¹Õ±°ì(€€€ÍÑ…Ñ”¹…¹Íİ•ÉÍmÍ•¹”¹¥‘tõíÍ•±•Ñ•±½ÉÉ•Ğ±•…É¹•±‘•±…å5¥¹ÕÑ•Ì±¥Ñ•µI•İ…É±‰…¹­%éÄ¹‰…¹­%±¡½¥•=É‘•ÈéÉÉ…ä¹™É½´¡Ä¹¡½¥•=É‘•È¤±…¹Íİ•É•‘Ğé¹½Ü ¥ôì(€€€‘•±•Ñ”M1QmÍ•¹”¹¥‘tì(€€€ÍÑ…Ñ”¹İ…±±•Ğ¬õ•…É¹•íÍÑ…Ñ”¹±½­5¥¹ÕÑ•Ì¬õ‘•±…å5¥¹ÕÑ•Ìì(€€€¥˜¡¥Ñ•µI•İ…É˜˜…ÍÑ…Ñ”¹¥¹Ù•¹Ñ½Éä¹¥¹±Õ‘•Ì¡¥Ñ•µI•İ…É¤¥ÍÑ…Ñ”¹¥¹Ù•¹Ñ½Éä¹ÁÕÍ ¡¥Ñ•µI•İ…É¤ì(€€€¥˜ …ÍÑ…Ñ”¹•Ù¥‘•¹”¹¥¹±Õ‘•Ì¡Í•¹”¹¥¤¥ÍÑ…Ñ”¹•Ù¥‘•¹”¹ÁÕÍ ¡Í•¹”¹¥¤ì(€€€ÍÑ…Ñ”¹ÕÁ‘…Ñ•‘Ğõ¹½Ü ¤ì(€€€¥˜ …½ÉÉ•Ğ¥ì(€€€€€ÑÉåíİ¥¹‘½Ü¹51	%Q}IY%\ü¹É•½É¡Á…å±½…¹Í½ÕÉ”¹±•Ù•°±Ä¹Í•Ñ¥½¸ôôô±¥ÍÑ•¹¥¹œœü±¥ÍÑ•¸œèÉ•…œ±Ä¹‰…¹­%±Í•±•Ñ•°ÑÉ…Ù•°œ±í¡½¥•=É‘•ÈéÄ¹¡½¥•=É‘•Éô¥õ…Ñ ¡•ÉÉ½È¥íô(€€€ô(€€€İÉ¥Ñ•MÑ…Ñ”¡ÍÑ…Ñ”¤ì(€€€É•¹‘•È ¤ì(€€€É•Ù•…±••‘‰…¬ ¤ì(€ôì(€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±Q½±•QÉ…¹ÍÉ¥ÁĞô ¤ôùí½¹ÍĞíÍ•¹•ôõÕÉÉ•¹Ğ ¤íQI9MI%AQMmÍ•¹”¹¥‘tô…QI9MI%AQMmÍ•¹”¹¥‘tíÉ•¹‘•È ¥ôì(€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±MÁ•…¬ô ¤ôùì(€€€½¹ÍĞíÁ…¬±ÍÑ…Ñ”±Í•¹•ôõÕÉÉ•¹Ğ ¤±Á…å±½…õ•¹ÍÕÉ•EÕ•ÍÑ¥½¸¡Á…¬±ÍÑ…Ñ”±Í•¹”¤±ÍÉ¥ÁĞõ±•…¹MÉ¥ÁĞ¡Á…å±½…ü¹‘¥ÍÁ±…äü¹ÍÉ¥ÁĞ¤ì(€€€¥˜ …ÍÉ¥ÁÑñğ …İ¥¹‘½Ü¹51	%Q}QQL˜˜¡ÑåÁ•½˜ÍÁ••¡Må¹Ñ¡•Í¥ÌôôôÕ¹‘•™¥¹•ññÑåÁ•½˜MÁ••¡Må¹Ñ¡•Í¥ÍUÑÑ•É…¹”ôôôÕ¹‘•™¥¹•œ¤¤¥É•ÑÕÉ¸¹½Ñ¥™ä¡°¡í­¼èŸ²vĞƒªâÃªâÃ²^C²s®*Pƒ²v3²Äƒ²z³²w²vƒ²
+³²j§¶V€ƒ²"`ƒ²^²*×®.#®.¸œ±©„èŸO»®¿šr¯Ÿ¿¦~Ï–Ã–7R
+K–"§R£Ÿ7ûo
+Oœ±•¸èÕ‘¥¼Á±…å‰…¬¥ÌÕ¹…Ù…¥±…‰±”½¸Ñ¡¥Ì‘•Ù¥”¸œ±é èŸš¶“¢ºû–’š^ƒšÎWšJ·šRû¢¾·¦~Ïô¤¤ì(€€€ÑÉåì(€€€€€¥˜¡İ¥¹‘½Ü¹51	%Q}QQL¥íİ¥¹‘½Ü¹51	%Q}QQL¹Á±…ä¡ÍÉ¥ÁĞ¤íÉ•ÑÕÉ¹ô(€€€€€ÍÁ••¡Må¹Ñ¡•Í¥Ì¹…¹•° ¤í½¹ÍĞÕÑÑ•É…¹”õ¹•ÜMÁ••¡Må¹Ñ¡•Í¥ÍUÑÑ•É…¹”¡ÍÉ¥ÁĞ¤íÕÑÑ•É…¹”¹±…¹œô­¼µ-HœíÕÑÑ•É…¹”¹É…Ñ”ô¸àÈíÍÁ••¡Må¹Ñ¡•Í¥Ì¹ÍÁ•…¬¡ÕÑÑ•É…¹”¤ì(€€€õ…Ñ ¡•ÉÉ½È¥í¹½Ñ¥™ä¡°¡í­¼èŸ²v3²Äƒ²z³²w²^@ƒ².“¶2£¶Z#²*×®.#®.¸œ±©„èŸ¦~Ï–Ã»–7R¯–’ÇšV__û_œ±•¸è½Õ±¹½ĞÁ±…ä…Õ‘¥¼¸œ±é èŸ¢¾·¦~ÏšJ·šRû–’Ç¢Ò—ô¤¥ô(€ôì((€İ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±5•ÑÉ¥Ìô ¤ôùµ•ÑÉ¥ÍM¹…ÁÍ¡½Ğ ¤ì(€İ¥¹‘½Ü¹51	%Q}QIY1}IA}5=Q%=8õ=‰©•Ğ¹™É••é”¡ì(€€€•Ğ‰ÕÍä ¥íÉ•ÑÕÉ¸IA}5=Q%=8¹‰ÕÍåô°(€€€•ĞÅÕ•Õ• ¥íÉ•ÑÕÉ¸IA}5=Q%=8¹ÅÕ•Õ”¹±•¹Ñ¡ô°(€€€‘ÕÉ…Ñ¥½¹5ÌéIA}MQA}5L°(€€€…µ•É…M…±”éIA}5I}M1(€ô¤ì(€İ¥¹‘½Ü¹51	%Q}QIY1}IA}ULõ=‰©•Ğ¹™É••é”¡ì(€€€•Ğ…Ñ¥Ù” ¥íÉ•ÑÕÉ¸	½½±•…¸¡IA}U¹…Ñ¥Ù”¥ô°(€€€•Ğ­¥¹ ¥íÉ•ÑÕÉ¸IA}U¹…Ñ¥Ù”ü¹­¥¹‘ññ¹Õ±±ô°(€€€•ĞÁ¡…Í” ¥íÉ•ÑÕÉ¸IA}U¹…Ñ¥Ù”ü¹Á¡…Í•ññ¹Õ±±ô°(€€€•Ù•¹Ñ9…µ”èµ…±‰¥ĞéÑÉ…Ù•°µÕ”œ°(€€€¡½½­-•äè51	%Q}QIY1}U}!==-Lœ(€ô¤ì((€‘½Õµ•¹Ğ¹…‘‘Ù•¹Ñ1¥ÍÑ•¹•Èü¸ ­•å‘½İ¸œ±•Ù•¹Ğôùì(€€€¥˜¡L¹Ù¥•Ü„ôôÑÉ…Ù•±A±…äññ•Ù•¹Ğ¹‘•™…Õ±ÑAÉ•Ù•¹Ñ•‘ññ•Ù•¹Ğ¹µ•Ñ…-•åññ•Ù•¹Ğ¹ÑÉ±-•åññ•Ù•¹Ğ¹…±Ñ-•ä¥É•ÑÕÉ¸ì(€€€½¹ÍĞÑ…É•Ğõ•Ù•¹Ğ¹Ñ…É•Ğ±Ñ…œõMÑÉ¥¹œ¡Ñ…É•Ğü¹Ñ…9…µ•ñğœœ¤¹Ñ½1½İ•É…Í” ¤ì(€€€¥˜¡Ñ…œôôô¥¹ÁÕĞññÑ…œôôôÑ•áÑ…É•„ññÑ…œôôôÍ•±•ĞññÑ…É•Ğü¹¥Í½¹Ñ•¹Ñ‘¥Ñ…‰±”¥É•ÑÕÉ¸ì(€€€½¹ÍĞ½¹Ñ•áĞõ…Ñ¥Ù•IÁ½¹Ñ•áĞ ¤í¥˜ …½¹Ñ•áÑññIA}Y9Q}=A9m½¹Ñ•áĞ¹Í•¹”¹¥‘uññIA}U¹…Ñ¥Ù”¥É•ÑÕÉ¸ì(€€€½¹ÍĞ‘¥É•Ñ¥½¸õíÉÉ½İUÀèÕÀœ±ÜèÕÀœ±\èÕÀœ±ÉÉ½İ½İ¸è‘½İ¸œ±Ìè‘½İ¸œ±Lè‘½İ¸œ±ÉÉ½İ1•™Ğè±•™Ğœ±„è±•™Ğœ±è±•™Ğœ±ÉÉ½İI¥¡ĞèÉ¥¡Ğœ±èÉ¥¡Ğœ±èÉ¥¡Ğõm•Ù•¹Ğ¹­•åtì(€€€¥˜¡‘¥É•Ñ¥½¸¥í•Ù•¹Ğ¹ÁÉ•Ù•¹Ñ•™…Õ±Ğ ¤íİ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±MÑ•À¡‘¥É•Ñ¥½¸¤íÉ•ÑÕÉ¹ô(€€€¥˜¡•Ù•¹Ğ¹­•äôôô¹Ñ•Èññ•Ù•¹Ğ¹­•äôôôœ€ññ•Ù•¹Ğ¹­•äôôô”ññ•Ù•¹Ğ¹­•äôôôœ¥í•Ù•¹Ğ¹ÁÉ•Ù•¹Ñ•™…Õ±Ğ ¤íİ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±%¹Ñ•É…Ğ ¥ô(€ô¤ì(€İ¥¹‘½Ü¹…‘‘Ù•¹Ñ1¥ÍÑ•¹•Èü¸ É•Í¥é”œ±Í¡•‘Õ±•IÁ…µ•É…Må¹Œ±íÁ…ÍÍ¥Ù”éÑÉÕ•ô¤ì((€€¼¼É•ÑÕÉ¹¥¹œÑ…ˆµ…äÍÑ¥±°¡½±Ñ¡”½±Ù¥•Ü¹…µ”¸5¥É…Ñ”¥Ğİ¥Ñ¡½ÕĞÑ½Õ¡¥¹œ…¹äÁÉ½É•ÍÌ¸(€¥˜¡L¹Ù¥•ÜôôôÍÑ½ÉäññL¹Ù¥•ÜôôôÍÑ½ÉåA±…äœ¥ì(€€€L¹Ù¥•ÜõL¹Ù¥•ÜôôôÍÑ½ÉåA±…äœüÑÉ…Ù•±A±…äœèÑÉ…Ù•°œì(€€€ÑÉåíÍ…Ù” ¥õ…Ñ ¡•ÉÉ½È¥íô(€ô(€€¼¼½µÁ…Ñ¥‰¥±¥Ñä…±¥…Í•Ì­••À…±É•…‘äµ…¡•‰ÕÑÑ½¹Ì™Õ¹Ñ¥½¹…°‘ÕÉ¥¹œÑ¡”Í•ÉÙ¥”µİ½É­•ÈÍİ…À¸(€İ¥¹‘½Ü¹µ…±‰¥ÑMÑ½Éå=Á•¸õİ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±=Á•¸ì(€İ¥¹‘½Ü¹µ…±‰¥ÑMÑ½ÉåMÑ…ÉĞõİ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±MÑ…ÉĞì(€İ¥¹‘½Ü¹µ…±‰¥ÑMÑ½ÉåI•ÍÑ…ÉĞõİ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±I•ÍÑ…ÉĞì(€İ¥¹‘½Ü¹µ…±‰¥ÑMÑ½Éå	…¬õİ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±	…¬ì(€İ¥¹‘½Ü¹µ…±‰¥ÑMÑ½Éå9•áĞõİ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±9•áĞì(€İ¥¹‘½Ü¹µ…±‰¥ÑMÑ½Éå¡½½Í”õİ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±¡½½Í”ì(€İ¥¹‘½Ü¹µ…±‰¥ÑMÑ½ÉåM•±•Ğõİ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±M•±•Ğì(€İ¥¹‘½Ü¹µ…±‰¥ÑMÑ½ÉåMÕ‰µ¥Ğõİ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±MÕ‰µ¥Ğì(€İ¥¹‘½Ü¹µ…±‰¥ÑMÑ½ÉåQ½±•QÉ…¹ÍÉ¥ÁĞõİ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±Q½±•QÉ…¹ÍÉ¥ÁĞì(€İ¥¹‘½Ü¹µ…±‰¥ÑMÑ½ÉåMÁ•…¬õİ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±MÁ•…¬ì((€½¹ÍĞ‰…Í•I•¹‘•Èõİ¥¹‘½Ü¹É•¹‘•Èì(€İ¥¹‘½Ü¹É•¹‘•Èõ™Õ¹Ñ¥½¸ ¥ì(€€€½¹ÍĞÑÉ…Ù•±Y¥•ÜõL¹Ù¥•ÜôôôÑÉ…Ù•°ññL¹Ù¥•ÜôôôÑÉ…Ù•±A±…äœì(€€€‘½Õµ•¹Ğ¹‰½‘ä¹±…ÍÍ1¥ÍĞ¹Ñ½±” ÑÉ…Ù•°µ…Ñ¥Ù”œ±ÑÉ…Ù•±Y¥•Ü¤ì(€€€‘½Õµ•¹Ğ¹‰½‘ä¹±…ÍÍ1¥ÍĞ¹É•µ½Ù” ÑÉ…Ù•°µÉÁœµ…Ñ¥Ù”œ¤ì(€€€¥˜ …ÑÉ…Ù•±Y¥•Ü¥É•ÑÕÉ¸‰…Í•I•¹‘•È¹…ÁÁ±ä¡Ñ¡¥Ì±…ÉÕµ•¹ÑÌ¤ì(€€€‘½Õµ•¹Ğ¹‰½‘ä¹±…ÍÍ1¥ÍĞ¹É•µ½Ù” ÑÄµ¡½µ”µ…Ñ¥Ù”œ°ÑÄµÍ¡½ÉÑÌµ…Ñ¥Ù”œ°ÑÄµÍÑ…ÑÌµ…Ñ¥Ù”œ°ÑÄµ…µ”µ…Ñ¥Ù”œ¤ì(€€€ÑÉåí¡¥‘•M•±•Ñ¥½¸ ¥õ…Ñ ¡•ÉÉ½È¥íõÑÉåíÉ•¹‘•ÉM¡•±° ¥õ…Ñ ¡•ÉÉ½È¥íô(€€€½¹ÍĞÍŒõ‘½Õµ•¹Ğ¹•Ñ±•µ•¹Ñ	å% ÍÉ••¸œ¤íÍŒ¹±…ÍÍ9…µ”ôÍÉ••¸ÑÉ…Ù•±MÉ••¸œíÍŒ¹¥¹¹•É!Q50ôœœì(€€€¥˜¡L¹Ù¥•ÜôôôÑÉ…Ù•°œ¥É•ÑÕÉ¸É•¹‘•É!Õˆ¡ÍŒ¤ì(€€€¹…ÙÑ¥Ù” ¡½µ”œ¤ì(€€€É•ÑÕÉ¸É•¹‘•ÉA±…ä¡ÍŒ¤ì(€ôì((€İ¥¹‘½Ü¹51	%Q}QIY0õ=‰©•Ğ¹™É••é”¡íÍÑ½É…•-•äéMQ=I}-d±Á…­ÌéA-L±¡Õ‰Ìé!U	L±ÉÁœéIA±½Á•¸éİ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±=Á•¸±µ•ÑÉ¥Ìéİ¥¹‘½Ü¹µ…±‰¥ÑQÉ…Ù•±5•ÑÉ¥Íô¤ì(€İ¥¹‘½Ü¹51	%Q}MQ=Idõİ¥¹‘½Ü¹51	%Q}QIY0ì)ô¤ ¤ì(

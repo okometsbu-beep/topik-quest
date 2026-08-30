@@ -9,6 +9,24 @@
     left:Object.freeze({x:-1,y:0}),
     right:Object.freeze({x:1,y:0})
   });
+  const CUE_PLANS=Object.freeze({
+    portal:Object.freeze({
+      enter:Object.freeze({kind:'portal',phase:'enter',duration:110,sound:'portal-enter',vibration:Object.freeze([10])}),
+      settle:Object.freeze({kind:'portal',phase:'arrive',duration:180,sound:'portal-arrive',vibration:Object.freeze([8,35,12])})
+    }),
+    poi:Object.freeze({
+      enter:Object.freeze({kind:'investigation',phase:'discover',duration:80,sound:'investigation-open',vibration:Object.freeze([8])}),
+      settle:Object.freeze({kind:'investigation',phase:'discover',duration:180,sound:'investigation-found',vibration:Object.freeze([10,28,10])})
+    }),
+    scene:Object.freeze({
+      enter:Object.freeze({kind:'npc',phase:'enter',duration:100,sound:'npc-enter',vibration:Object.freeze([8])}),
+      settle:null
+    }),
+    return:Object.freeze({
+      enter:Object.freeze({kind:'return',phase:'return',duration:70,sound:'interaction-return',vibration:Object.freeze([6])}),
+      settle:null
+    })
+  });
   const direction=value=>Object.hasOwn(DIRECTIONS,value)?value:'down';
   const point=(value,fallback)=>({
     x:Number.isInteger(Number(value?.x))?Number(value.x):fallback.x,
@@ -85,6 +103,14 @@
       direction:direction(portal.direction||zone.spawn?.direction)
     };
   }
+  function cuePlan(type,detail={}){
+    const base=CUE_PLANS[type]||CUE_PLANS.return;
+    if(type!=='poi'||!detail.found||!(Number(detail.reward)>0))return base;
+    return Object.freeze({
+      enter:base.enter,
+      settle:Object.freeze({kind:'reward',phase:'reward',duration:220,sound:'reward-earned',vibration:Object.freeze([12,32,18])})
+    });
+  }
   function validateWorld(world){
     const errors=[],districtZones=new Set(world?.districts?.flatMap(item=>item.zoneIds||[])||[]),connections=new Map();
     for(const zone of world?.zones||[]){
@@ -139,6 +165,7 @@
     step,
     interactionAt,
     enterPortal,
+    cuePlan,
     validateWorld
   });
 })();
