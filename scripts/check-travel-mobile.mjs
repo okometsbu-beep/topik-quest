@@ -349,7 +349,8 @@ try{
       await tap('.travelRpgGameOverPanel .travelPrimary',0,140);
       const rested=await state();
       assert.equal(rested.exploration.stamina.percent,100);assert.equal(rested.exploration.stamina.exhausted,false);assert.equal(rested.clockMinutes,exhaustionStart.clockMinutes+60);assert.equal(rested.exploration.steps,exhausted.exploration.steps);assert.deepEqual(rested.exploration.discoveries,retainedDiscoveries);
-      assert.equal(rested.exploration.zoneId,'icn-t1-arrivals');assert.deepEqual({x:rested.exploration.x,y:rested.exploration.y},{x:14,y:18});
+      const restedSpawn=await evaluate(`(()=>{const world=MALBIT_TRAVEL_RPG.worldByRoute('route-001-airport-myeongdong'),zone=MALBIT_TRAVEL_RPG.zoneById(world,'icn-t1-arrivals');return zone.spawn})()`);
+      assert.equal(rested.exploration.zoneId,'icn-t1-arrivals');assert.deepEqual({x:rested.exploration.x,y:rested.exploration.y},restedSpawn);
       await assertRpgFits('Travel stamina rested dark 390px','dark');await shot('00s-stamina-restored-dark.png');
       await evaluate(`malbitSetTheme('light')`);await sleep(80);
     }
