@@ -63,22 +63,22 @@ these facts from conversation history or the large TOPIK source bundle.
   shadow shares the actor's foot coordinate and depth, stays the same DOM node through movement, and
   uses a small bounded pixel oval instead of a baked image filter or scene-wide dark paint.
 - Game Mode now uses semantic spacing, type, surface, border, and accent tokens through the purpose-named
-  `game-visual-system.js` final owner. Equipment, rarity, stage, run-slot, and map-node tiles must stay
-  readable rather than near-black. CI checks 320/375/390/430px symmetry, overflow, 44px enabled controls,
-  10px minimum support copy, tile brightness, console errors, and screenshot evidence.
+  `game-visual-system.js` final owner. Equipment, rarity, stage, run-slot, and map-node tiles follow the
+  saved system/light/dark preference and must stay readable rather than near-black. CI checks both themes
+  at 320/375/390/430px for symmetry, overflow, 44px controls, 10px copy, contrast, and screenshot evidence.
 - Home uses the same semantic contract through `home-visual-system.js`. The hero remains scenic, while
-  level controls, Quick Practice, full mock, speaking, weekly-goal, and bottom-navigation surfaces use
-  readable light cards. CI applies the same four-width geometry, 44px, 10px, brightness, and evidence gate.
+  level controls, Quick Practice, full mock, speaking, weekly-goal, and bottom-navigation surfaces resolve
+  to white cards only in light mode and navy surfaces in dark mode. CI rejects a mixed light/dark shell.
 - Shorts uses `shorts-visual-system.js` as the final visual owner for question, choice, graded feedback,
-  instructor coaching, and save-proposal surfaces. CI checks unanswered and graded cards at all four widths
-  while preserving Japanese coaching structure and the existing Shorts progress root.
+  instructor coaching, and save-proposal surfaces. All use the shared theme tokens; CI checks light and dark
+  unanswered/graded cards at all four widths while preserving coaching and the existing progress root.
 - Random Practice uses `random-practice-visual-system.js` as the final visual owner for both TOPIK I and II
-  headers, stats, questions, choices, graded states, translations, and expandable coaching. CI checks the
-  unanswered and graded flows at all four widths while preserving each engine, stored session, and Japanese
-  evidence → distractor → type-solving structure.
+  headers, stats, questions, choices, graded states, translations, and expandable coaching. These resolve
+  through the same light/dark surface and state tokens; CI checks both themes without changing stored sessions
+  or the Japanese evidence → distractor → type-solving structure.
 - Review uses `review-visual-system.js` as the final visual owner for its TOPIK I/II filter, queue, retry sheet,
-  requested translation, graded state, and detailed option elimination. CI checks all four widths, resolution,
-  and list re-entry while preserving the `malbitWrongReviewV3` root and existing explanation text.
+  requested translation, graded state, and detailed option elimination. Queue and sheet surfaces follow the
+  selected theme; CI checks both themes, resolution, and re-entry while preserving `malbitWrongReviewV3`.
 - The old Story Mode is retired from product UI. Travel Mode deliberately keeps the legacy
   `malbitStoryV1` root and scene IDs so saved answers, clears, and best scores migrate in place.
 - `storage-guard.js` keeps a last-known-good `malbitRecoverySnapshotV1` of durable learner roots.

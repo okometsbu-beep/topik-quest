@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v73 · foot-anchored foreground occlusion and matching collision
-- Current candidate: v74 · independent player and NPC foot-contact shadows
+- Production release: v74 · independent player and NPC foot-contact shadows
+- Current candidate: v75 · app-wide light/dark semantic surfaces restored
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
@@ -33,16 +33,16 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - token-minimal repository handoff, focused verification lanes, GitHub CI and Pages deployment
 - payment-free Seoul learning-RPG and avatar-reward north star
 - semantic spacing, type, surface, border, and touch tokens with Game Mode as the first reference screen
-- Game hub and trail checks for 44px controls, 10px support copy, symmetry, overflow, tile brightness,
-  and direct 320/375/390/430px screenshot review
+- Game hub and trail checks for 44px controls, 10px support copy, symmetry, overflow, theme consistency,
+  contrast, and direct 320/375/390/430px screenshot review
 - Home hero, level controls, learning cards, weekly goal, and bottom navigation use the same semantic
-  surfaces and four-width visual gate
-- Shorts question, choice, graded feedback, instructor coaching, and save proposal use one bright
+  light/dark surfaces and four-width visual gate without a mixed-theme shell
+- Shorts question, choice, graded feedback, instructor coaching, and save proposal use one theme-aware
   semantic visual owner with unanswered/graded four-width gates
 - Random Practice TOPIK I·II questions, choices, grading, translation, and instructor coaching use
-  the same bright semantic surfaces with unanswered/graded four-width gates
+  the same light/dark semantic surfaces with unanswered/graded four-width gates
 - Review TOPIK I·II filters, queue, retry, requested translation, grading, and option elimination use
-  the same bright semantic surfaces with resolution/re-entry four-width gates
+  the same light/dark semantic surfaces with resolution/re-entry four-width gates
 - Travel exploration separates Seoul world/district/zone/collision/POI/portal data from route learning events
 - Incheon Airport T1 arrivals supports tile movement, collision, camera tracking, investigations, and event entry
 - Incheon Airport T1 transport center is a separate 12×9 zone connected to Arrivals by one bidirectional portal
@@ -85,18 +85,16 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 창빛이나 안내 설비의 빛만 제한된 영역에 합성하고, 화면 전체의 검은 도색·날씨·새 구역·학습
 문항은 같은 작업에 넣지 않는다.
 
-## v74 후보 검증 및 배포
+## v75 후보 검증 및 배포
 
-- 지면과 배우 사이에 독립 `travelRpgShadowLayer`를 두고 플레이어와 현재 NPC의 그림자를 분리한다.
-- 그림자는 배우와 같은 left/top/z-depth·발 접지점을 쓰며 190ms 이동 중 같은 DOM으로 함께 보간한다.
-- 기존 캐릭터·NPC `drop-shadow` 필터를 제거하고 작은 불투명도 도트 타원만 제한된 영역에 그린다.
-- 전체 63개 자동검사와 실제 Chrome 320·375·390·430px 밝은/어두운 검사를 통과했다.
-  idle/walk·방향 전환, 그림자 DOM 유지·발 좌표·z-depth, 12fps 보행·재진입·저장 보존·콘솔 오류 0개를 확인했다.
-- 맵·캐릭터 원화에 필터나 검은 덧칠을 추가하지 않았고 문제·해설·정답·결제 UI·API 키·개인정보 전송을 바꾸지 않았다.
-- 상위권 품질 지시: https://github.com/okometsbu-beep/topik-quest/issues/76
-- 모바일 검증: https://github.com/okometsbu-beep/topik-quest/actions/runs/33275585908
-- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (병합 뒤 v74 확인 예정)
-- 되돌리기 기준: v73 main `766389cca8dd513b90702cd2aa9c1f85128c7d93`
+- 공통 UI 표면을 기기 설정·밝게·어둡게 선택에 따라 한 번에 바꾸는 의미 토큰으로 복구한다.
+- Home·Game·Shorts·Random Practice·Review와 공용 문제 카드·시트·결과·단어장 표면이
+  어두운 테마에서 흰색으로 남거나 밝은 테마와 섞이지 않게 한다.
+- 모바일 검사는 320·375·390·430px에서 두 테마의 캔버스·표면 밝기, 텍스트 대비 3.5 이상,
+  44px 조작부, 10px 문구, 대칭·돌출·콘솔 오류를 함께 확인한다.
+- 로컬 전체 64개 자동검사를 통과했고 문제·정답·해설·저장 키·결제 UI·API 키·개인정보 전송은 바꾸지 않았다.
+- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (모바일 CI와 병합 뒤 v75 확인)
+- 되돌리기 기준: v74 main `d5876deb775eeecb08260482484022bf0ce24ba6`
 
 ## 알려진 위험
 

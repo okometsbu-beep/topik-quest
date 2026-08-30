@@ -15,6 +15,9 @@ test('Shorts has one final visual owner built on semantic UI tokens',()=>{
   assert.match(visual,/\.shortsCard\{[^}]*background:var\(--shorts-surface\)/);
   assert.match(visual,/\.shortsChoice\{[^}]*min-height:52px/);
   assert.match(visual,/\.shortsFeedback small\{[^}]*font-size:11px/);
+  assert.match(visual,/--shorts-canvas:var\(--ui-canvas\)/);
+  assert.match(visual,/html\[data-theme="light"\] body\.tq-shorts-active/);
+  assert.match(visual,/\.shortsChoice\{[^}]*background:var\(--shorts-surface-raised\)/);
 });
 
 test('Shorts visual contract keeps readable copy and a fixed compatibility bridge',()=>{
