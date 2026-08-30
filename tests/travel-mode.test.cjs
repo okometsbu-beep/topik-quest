@@ -93,6 +93,18 @@ test('travel Korean and Japanese guidance stays faithful to the real route conte
   assert.match(destination.question.explanationI18n.ja, /서울역.*途中駅/);
   assert.equal(thanks.question.choices.find(choice => choice.ko === '미안합니다.').ja, 'すみません。');
 
+  const airportDialogue=scenes['q-hello'].dialogueLesson;
+  assert.ok(airportDialogue.turns.length>=3,'airport NPC lesson needs a real multi-turn exchange');
+  assert.deepEqual(Array.from(airportDialogue.turns,turn=>turn.role),['npc','player','npc','player','npc']);
+  assert.equal(airportDialogue.turns.at(-1).korean,'서울로 가려면 교통센터로 내려가세요. 공항철도 표지를 따라가면 돼요.');
+  assert.equal(airportDialogue.turns.at(-1).support.ja,'ソウルへ行くには交通センターへ下りてください。空港鉄道の案内表示に従えば大丈夫です。');
+  assert.equal(airportDialogue.hints.length,2);
+  assert.match(airportDialogue.hints[0].ko,/이동/);
+  assert.match(airportDialogue.hints[1].ko,/교통 \+ 센터/);
+  assert.deepEqual(Array.from(scenes['q-hello'].question.choices,choice=>choice.ko),['교통','수하물','출국','환전']);
+  assert.match(scenes['q-hello'].question.explanationI18n.ja,/正解の根拠/);
+  assert.match(scenes['q-hello'].question.explanationI18n.ja,/誤答の罠/);
+
   const hub = hubs[0];
   assert.match(hub.events.daytime.explanation.ko, /명동 관광안내소가 어디에 있어요\?/);
   assert.match(hub.events.daytime.explanation.ja, /「가」/);
@@ -320,8 +332,18 @@ test('the travel runtime can complete, resume, replay, and record a wrong answer
   assert.equal(runtime.malbitTravelMetrics().completionRate,0);
   runtime.malbitTravelNext();
   assert.match(screen.innerHTML, /MISSION 1 \/ 6/);
-  runtime.malbitTravelToggleTranscript();
-  assert.match(screen.innerHTML, /안녕하세요/);
+  assert.match(screen.innerHTML, /NPC TALK/);
+  assert.match(screen.innerHTML, /data-dialogue-step="1"/);
+  assert.doesNotMatch(screen.innerHTML, /こんにちは。ソウルへ行かれますか/,'translation stays hidden until requested');
+  runtime.malbitTravelLessonNext();
+  runtime.malbitTravelLessonNext();
+  runtime.malbitTravelDialogueTranslation();
+  runtime.S.lang='ja';runtime.render();
+  assert.match(screen.innerHTML, /お荷物は受け取りましたか/,'requested support is shown for visible turns');
+  runtime.S.lang='ko';runtime.malbitTravelDialogueTranslation();
+  runtime.malbitTravelLessonNext();
+  runtime.malbitTravelLessonNext();
+  assert.match(screen.innerHTML, /서울로 가려면 ______센터로 내려가세요/);
 
   const pack = runtime.MALBIT_TRAVEL_PACKS[0];
   let guard = 0;
@@ -459,7 +481,18 @@ test('the travel runtime can complete, resume, replay, and record a wrong answer
   const firstScene = pack.scenes.find(item => item.id === replay.sceneId);
   const firstQuestion = firstScene.question;
   const beforeWrongClock=replay.clockMinutes;
+  for(let turn=1;turn<firstScene.dialogueLesson.turns.length;turn++)runtime.malbitTravelLessonNext();
   runtime.malbitTravelSelect((firstQuestion.answerIndex + 1) % 4);
+  runtime.malbitTravelSubmit();
+  const afterHint=JSON.parse(runtimeStorage.get('malbitStoryV1')).episodes[pack.id];
+  assert.equal(afterHint.answers[firstScene.id],undefined,'a wrong keyword opens a hint instead of ending the conversation');
+  assert.equal(afterHint.dialogues[firstScene.id].attempts,1);
+  assert.match(screen.innerHTML,/단서 1단계/);
+  assert.match(screen.innerHTML,/사람이나 짐이 아니라 이동과 관련된 두 글자/);
+  runtime.malbitTravelBack();
+  runtime.malbitTravelStart(pack.id,false);
+  assert.match(screen.innerHTML,/단서 1단계/,'dialogue hint survives leaving and re-entering the route');
+  runtime.malbitTravelSelect(firstQuestion.answerIndex);
   runtime.malbitTravelSubmit();
   const afterWrong=JSON.parse(runtimeStorage.get('malbitStoryV1')).episodes[pack.id];
   assert.equal(afterWrong.clockMinutes-beforeWrongClock,4,'a wrong action is recoverable but costs four minutes');
