@@ -650,7 +650,7 @@
   function rpgCamera(zone,progress){const camera=rpgCameraValues(zone,progress);return`left:${camera.left};top:${camera.top}`}
   function rpgBoardScale(zone){
     const tileWidth=100/zone.width,tileHeight=100/zone.height,actorWidth=tileWidth*.88,actorHeight=actorWidth*(4/3)/(192/272);
-    return`--travel-rpg-tile-width:${tileWidth.toFixed(4)}%;--travel-rpg-tile-height:${tileHeight.toFixed(4)}%;--travel-rpg-actor-width:${actorWidth.toFixed(4)}%;--travel-rpg-actor-height:${actorHeight.toFixed(4)}%;--travel-rpg-shadow-width:${(actorWidth*.86).toFixed(4)}%;--travel-rpg-shadow-height:${(tileHeight*.22).toFixed(4)}%;--travel-rpg-npc-shadow-width:${(actorWidth*.9).toFixed(4)}%;--travel-rpg-npc-shadow-height:${(tileHeight*.23).toFixed(4)}%`;
+    return`--travel-rpg-tile-width:${tileWidth.toFixed(4)}%;--travel-rpg-tile-height:${tileHeight.toFixed(4)}%;--travel-rpg-actor-width:${actorWidth.toFixed(4)}%;--travel-rpg-actor-height:${actorHeight.toFixed(4)}%;--travel-rpg-target-size:${(tileWidth*1.4).toFixed(4)}%;--travel-rpg-poi-size:${(tileWidth*.82).toFixed(4)}%;--travel-rpg-portal-size:${(tileWidth*1.6).toFixed(4)}%;--travel-rpg-shadow-width:${(actorWidth*.86).toFixed(4)}%;--travel-rpg-shadow-height:${(tileHeight*.22).toFixed(4)}%;--travel-rpg-npc-shadow-width:${(actorWidth*.9).toFixed(4)}%;--travel-rpg-npc-shadow-height:${(tileHeight*.23).toFixed(4)}%`;
   }
   const rpgArrowIcon=direction=>{
     const path={up:'M12 19V5m0 0-5 5m5-5 5 5',down:'M12 5v14m0 0-5-5m5 5 5-5',left:'M19 12H5m0 0 5-5m-5 5 5 5',right:'M5 12h14m0 0-5-5m5 5-5 5'}[direction];
