@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v85 · Reusable Korean street corner tiles
-- Current candidate: v86 · Reusable Korean street junction tiles
+- Production release: v86 · Reusable Korean street junction tiles
+- Current candidate: v87 · Reusable Korean building entrance tiles (draft; direct mobile screenshot review pending)
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
@@ -116,22 +116,25 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-거리에서 건물로 자연스럽게 진입할 수 있도록 보도-문턱·계단·경사로 진입 경계 타일을 별도
-sibling 아틀라스·카탈로그로 추가하고, 독립 건물 입구 픽스처에서 보행 접속면·통행성·상단
-레이어 기준선을 검증한다. 새 구역·공항 구역 변경·NPC·TOPIK 확장은 넣지 않는다.
+PR #99의 CI 모바일 증거를 직접 열어 320·375·390·430px 밝은·어두운 화면의 문턱·계단·경사로,
+투명 상단 파사드와 40px 기준선을 눈으로 확인한다. 화면이 합격하면 같은 PR을 ready로 전환하고
+전체 CI 뒤 병합·Pages 배포·라이브 smoke를 수행한다. 확인할 수 없으면 초안 상태를 유지하고 새
+작업을 시작하지 않는다.
 
-## v86 후보 검증 및 배포
+## v87 후보 검증 상태
 
-- 256×256 sibling WebP 하나에 64px 원본 셀 16개를 배치하고 T자 4방향, 십자 중심 4변형,
-  방향별 진입로 4개, 도로·차선·보도 4개를 기존 직선·모서리 타일셋과 분리했다.
-- 교차로 카탈로그는 종류·방향·통행성·진입 방향·네 접속면을 소유한다. 20×12 독립 픽스처는
-  T자 네 방향의 열린 길과 닫힌 보도, 십자의 네 진입을 조합하지만 공항 월드에는 포함하지 않았다.
-- 전체 검사와 GitHub Actions 실제 Chrome에서 기존 Travel 흐름 및 세 거리 픽스처를
-  320·375·390·430px, 밝은·어두운 테마로 검증한다. 검증 전에는 병합하지 않는다.
-- 기존 답안·지갑·수집품·스태미너·탐험 기록과 저장 키를 유지했다. 결제 UI·API 키·개인정보
-  전송은 추가하지 않았다.
-- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (모바일 CI와 병합 뒤 v86 확인)
-- 되돌리기 기준: v85 main `42bdd139bc550afb13db7586922b5dc22f8bd217`
+- 기존 직선·모서리·교차로와 분리된 256×256 sibling WebP에 64px 원본 셀 16개를 배치했다.
+  문턱·계단·경사로 지면 타일 각 4개와 투명 하단을 가진 상단 파사드 4개로 구성했다.
+- 지면 카탈로그는 건물/보도 접속면, level/stairs/ramp 통행 방식과 무단차 여부를 소유한다.
+  상단 카탈로그는 40px 발 깊이 기준선과 기준선 위 가림 계약을 별도로 소유한다.
+- Travel 집중 검사 11/11과 빠른 검사 69/69가 통과했고, PR GitHub Actions Verify도 성공했다:
+  https://github.com/okometsbu-beep/topik-quest/actions/runs/33409747374
+- Actions가 320·375·390·430px 밝은·어두운 증거를 생성했지만, 현재 작업 컨테이너 연결 오류로
+  증거 ZIP을 직접 열어 볼 수 없었다. UI 변경은 직접 시각 확인 없이는 합격할 수 없어 PR #99를
+  초안으로 유지하며 병합·배포하지 않았다.
+- 초안 PR: https://github.com/okometsbu-beep/topik-quest/pull/99
+- 현재 라이브: https://okometsbu-beep.github.io/topik-quest/ (v86 유지)
+- 되돌리기 기준: v86 main `1e1ee411e1af86846b17160df5e9cf5dfd77e722`
 
 ## 알려진 위험
 
