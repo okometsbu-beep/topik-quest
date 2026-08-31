@@ -6,7 +6,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 - Production: GitHub Pages static PWA
 - Production release: v87 · Reusable Korean building entrance tiles
-- Current candidate: none
+- Current candidate: v88 · Reusable Korean street upper decorations
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
@@ -92,6 +92,9 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - A building-entrance sibling atlas adds four thresholds, four stair variants, four step-free ramps,
   and four transparent upper facades. Ground entries own sidewalk/building edges and accessibility;
   upper entries own a 40px actor baseline, proven in an isolated fixture without changing airport zones.
+- A decoration sibling atlas adds blank projecting signs, awnings, planters, and street details as
+  16 transparent upper entries. Every prop owns an actor baseline and explicit collision footprint;
+  only seven floor-standing props block one cell, proven without changing playable zones.
 - Travel stamina starts at 10,000 steps and is saved inside the existing exploration record. Only a
   successful tile move spends one step; collisions are free, and 0 opens a dedicated full-screen rest scene.
 - One-hour rest returns the traveler to the current zone spawn with full stamina while preserving route
@@ -119,24 +122,22 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-거리와 건물의 깊이를 확장할 수 있도록 간판·차양·화분 같은 장식 상단 레이어를 작은 sibling
-아틀라스와 카탈로그로 추가하고, 보행 기준선·충돌 면적·전경 가림을 독립 픽스처에서 검증한다.
-새 플레이 구역·공항 변경·NPC·TOPIK 확장은 넣지 않는다.
+기존 지면·모서리·교차로·건물 진입·장식 카탈로그 ID만 조합하는 작은 비플레이 서울 거리 블록
+스키마와 픽스처를 만든다. 접속면·통행·상단 기준선·충돌 발자국을 조합 검증하되, 실제 구역·포털·
+NPC·TOPIK 문항은 아직 추가하지 않는다.
 
-## v87 배포 결과
+## v88 후보 검증 상태
 
-- 기존 직선·모서리·교차로와 분리된 256×256 sibling WebP에 64px 원본 셀 16개를 배치했다.
-  문턱·계단·경사로 지면 타일 각 4개와 투명 하단을 가진 상단 파사드 4개로 구성했다.
-- 지면 카탈로그는 건물/보도 접속면, level/stairs/ramp 통행 방식과 무단차 여부를 소유한다.
-  상단 카탈로그는 40px 발 깊이 기준선과 기준선 위 가림 계약을 별도로 소유한다.
-- Travel 집중 검사 11/11, 빠른 검사 69/69, 전체 검사 77/77이 통과했다. PR #100 CI와
-  main Verify도 성공했다: https://github.com/okometsbu-beep/topik-quest/actions/runs/33440451231
-- Actions의 320·375·390·430px 밝은·어두운 기하 검사를 통과했고, 390×962 밝은·어두운 증거를
-  직접 열어 문턱·계단·경사로 이음새, 투명 상단 파사드, 기준선, 가로 돌출과 명암을 확인했다.
-- PR: https://github.com/okometsbu-beep/topik-quest/pull/100
-- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (v87 · 3 base + 40 runtime 확인)
-- Pages: https://github.com/okometsbu-beep/topik-quest/actions/runs/33440450366
-- 되돌리기 기준: v86 main `1e1ee411e1af86846b17160df5e9cf5dfd77e722`
+- 256×256 투명 sibling WebP에 글자 없는 간판·차양·화분·거리 소품 16종을 64px 셀로 배치했다.
+- 벽 부착물 9종은 빈 충돌 발자국, 바닥 소품 7종은 한 칸 발자국을 소유하며 모두 upper 레이어,
+  42–56px actor baseline, 기준선 위 가림 계약을 명시한다.
+- 빠른 검사 70/70, 런타임·Travel 집중 검사 18/18, PR 전체 CI가 통과했다:
+  https://github.com/okometsbu-beep/topik-quest/actions/runs/33443868949
+- Actions의 320·375·390·430px 밝은·어두운 검사를 통과했고, 390px 양쪽 테마 화면을 직접 열어
+  투명 배경·기준선·충돌 표시·대비·가로 돌출·필터 없음과 16종의 분리를 확인했다.
+- 초안 PR: https://github.com/okometsbu-beep/topik-quest/pull/102
+- 현재 라이브: https://okometsbu-beep.github.io/topik-quest/ (v87 유지)
+- 되돌리기 기준: v87 main `b2d02bee7c2749a79eb9768c41cbd95d77a9a566`
 
 ## 알려진 위험
 
@@ -151,7 +152,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - v77 연출 계약은 공항 탐험 흐름부터 적용한다. 명동 NPC·보상 화면 연결과 실제 음원 선택 UI는 아직 없다.
 - 현재 공항 3개 구역은 기존 원화를 마이그레이션 아틀라스로 쓰되 런타임은 타일 ID별로만
   그린다. 한국 거리 아틀라스는 직선·모서리·T자·십자 교차로까지 제공하지만 실제 서울 구역을
-  만들기 전에 건물 진입 경계와 장식 상단 레이어를 작은 sibling 아틀라스로 확장해야 한다.
+  만들기 전에 독립 카탈로그 조합을 검증하는 작은 비플레이 거리 블록 스키마가 필요하다.
 - 첫 공항 NPC만 장문 대화·단어 퀴즈 계약에 편입됐다. 한국 조사물도 첫 청사초롱 한 개뿐이며
   다른 NPC와 조사물은 후속이다.
 - 기존 Plus·가격·결제 암시 UI가 새 화면에 재사용되지 않도록 계속 검사해야 한다.
