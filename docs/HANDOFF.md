@@ -69,6 +69,10 @@ these facts from conversation history or the large TOPIK source bundle.
   world. The corner sheet owns four inner and four outer turns; the junction sheet owns four oriented T
   centers, four cross variants, approaches, and a 20×12 all-entry fixture. T centers expose three road
   exits plus one closed sidewalk edge, while cross centers expose four traversable exits.
+- The building-entrance sibling catalog owns thresholds, stairs, step-free ramps, and transparent upper
+  facades. A separate decoration sibling catalog owns 16 text-free signs, awnings, planters, and street
+  details. Every decoration declares its actor baseline, upper occlusion, and collision footprint; only
+  seven floor-standing props block one cell. Both catalogs remain isolated from playable airport zones.
 - Travel movement keeps the live tile and sprite DOM in place for a 110ms player step and 160ms camera
   follow. Pointer-held SVG direction controls repeat until release, blocked movement stops silently, and
   reduced-motion devices settle immediately without map opacity, filter, or brightness changes. The five
@@ -153,10 +157,10 @@ these facts from conversation history or the large TOPIK source bundle.
 - The cue contract currently owns airport exploration interactions. Myeongdong dialogue/reward screens
   still need to adopt the same states; no audio files or persistent sound/vibration controls ship yet.
 - Current airport tile catalogs migrate the existing three backgrounds into explicit per-cell atlas entries.
-  The reusable Korean street foundation covers straight segments, typed inner and outer curb corners, and
-  T/cross junction centers; building thresholds and decorative upper layers must still be added as small
-  sibling atlases before a playable Seoul street zone. Other NPCs still need the keyword-learning contract,
-  and the cheongsachorong is only the first Korean investigation object.
+  The reusable Korean street foundation now covers straight segments, typed inner and outer curb corners,
+  T/cross junctions, building entrances, and decorative upper layers. Before a playable Seoul street zone,
+  these independent IDs still need one small non-playable block composition schema and fixture. Other NPCs
+  still need the keyword-learning contract, and the cheongsachorong is only the first Korean investigation object.
 
 ## Execution defaults
 

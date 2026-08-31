@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v87 · Reusable Korean building entrance tiles
-- Current candidate: v88 · Reusable Korean street upper decorations
+- Production release: v88 · Reusable Korean street upper decorations
+- Current candidate: none
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
@@ -126,7 +126,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 스키마와 픽스처를 만든다. 접속면·통행·상단 기준선·충돌 발자국을 조합 검증하되, 실제 구역·포털·
 NPC·TOPIK 문항은 아직 추가하지 않는다.
 
-## v88 후보 검증 상태
+## v88 배포 결과
 
 - 256×256 투명 sibling WebP에 글자 없는 간판·차양·화분·거리 소품 16종을 64px 셀로 배치했다.
 - 벽 부착물 9종은 빈 충돌 발자국, 바닥 소품 7종은 한 칸 발자국을 소유하며 모두 upper 레이어,
@@ -135,8 +135,11 @@ NPC·TOPIK 문항은 아직 추가하지 않는다.
   https://github.com/okometsbu-beep/topik-quest/actions/runs/33443868949
 - Actions의 320·375·390·430px 밝은·어두운 검사를 통과했고, 390px 양쪽 테마 화면을 직접 열어
   투명 배경·기준선·충돌 표시·대비·가로 돌출·필터 없음과 16종의 분리를 확인했다.
-- 초안 PR: https://github.com/okometsbu-beep/topik-quest/pull/102
-- 현재 라이브: https://okometsbu-beep.github.io/topik-quest/ (v87 유지)
+- 릴리스 PR: https://github.com/okometsbu-beep/topik-quest/pull/103 (squash merge `fa39db1b9468d2071535b7648b57494c8f779883`)
+- main Verify: https://github.com/okometsbu-beep/topik-quest/actions/runs/33445784136
+- Pages: https://github.com/okometsbu-beep/topik-quest/actions/runs/33445783479
+- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (v88 · 3 base + 41 runtime 확인)
+- 새 WebP SHA-256: `5a5da48a6664fa6c0d5e3c1b72c116145e7c1ba7d0a24e211c3d706a608b1428` (저장소/라이브 일치)
 - 되돌리기 기준: v87 main `b2d02bee7c2749a79eb9768c41cbd95d77a9a566`
 
 ## 알려진 위험
@@ -152,7 +155,8 @@ NPC·TOPIK 문항은 아직 추가하지 않는다.
 - v77 연출 계약은 공항 탐험 흐름부터 적용한다. 명동 NPC·보상 화면 연결과 실제 음원 선택 UI는 아직 없다.
 - 현재 공항 3개 구역은 기존 원화를 마이그레이션 아틀라스로 쓰되 런타임은 타일 ID별로만
   그린다. 한국 거리 아틀라스는 직선·모서리·T자·십자 교차로까지 제공하지만 실제 서울 구역을
-  만들기 전에 독립 카탈로그 조합을 검증하는 작은 비플레이 거리 블록 스키마가 필요하다.
+  독립 카탈로그는 장식 상단 레이어까지 준비됐다. 실제 구역을 만들기 전에 작은 비플레이 거리
+  블록 스키마로 지면·진입·장식 조합을 함께 검증해야 한다.
 - 첫 공항 NPC만 장문 대화·단어 퀴즈 계약에 편입됐다. 한국 조사물도 첫 청사초롱 한 개뿐이며
   다른 NPC와 조사물은 후속이다.
 - 기존 Plus·가격·결제 암시 UI가 새 화면에 재사용되지 않도록 계속 검사해야 한다.
