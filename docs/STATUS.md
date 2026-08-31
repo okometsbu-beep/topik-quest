@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v86 · Reusable Korean street junction tiles
-- Current candidate: v87 · Reusable Korean building entrance tiles (draft; direct mobile screenshot review pending)
+- Production release: v87 · Reusable Korean building entrance tiles
+- Current candidate: none
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
@@ -89,6 +89,9 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - A second sibling atlas adds four oriented T junctions, four cross-center variants, four approaches,
   and reusable road surfaces. A 20×12 fixture proves all T closed sides and every T/cross entry direction
   without adding a playable zone.
+- A building-entrance sibling atlas adds four thresholds, four stair variants, four step-free ramps,
+  and four transparent upper facades. Ground entries own sidewalk/building edges and accessibility;
+  upper entries own a 40px actor baseline, proven in an isolated fixture without changing airport zones.
 - Travel stamina starts at 10,000 steps and is saved inside the existing exploration record. Only a
   successful tile move spends one step; collisions are free, and 0 opens a dedicated full-screen rest scene.
 - One-hour rest returns the traveler to the current zone spawn with full stamina while preserving route
@@ -116,24 +119,23 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-PR #99의 CI 모바일 증거를 직접 열어 320·375·390·430px 밝은·어두운 화면의 문턱·계단·경사로,
-투명 상단 파사드와 40px 기준선을 눈으로 확인한다. 화면이 합격하면 같은 PR을 ready로 전환하고
-전체 CI 뒤 병합·Pages 배포·라이브 smoke를 수행한다. 확인할 수 없으면 초안 상태를 유지하고 새
-작업을 시작하지 않는다.
+거리와 건물의 깊이를 확장할 수 있도록 간판·차양·화분 같은 장식 상단 레이어를 작은 sibling
+아틀라스와 카탈로그로 추가하고, 보행 기준선·충돌 면적·전경 가림을 독립 픽스처에서 검증한다.
+새 플레이 구역·공항 변경·NPC·TOPIK 확장은 넣지 않는다.
 
-## v87 후보 검증 상태
+## v87 배포 결과
 
 - 기존 직선·모서리·교차로와 분리된 256×256 sibling WebP에 64px 원본 셀 16개를 배치했다.
   문턱·계단·경사로 지면 타일 각 4개와 투명 하단을 가진 상단 파사드 4개로 구성했다.
 - 지면 카탈로그는 건물/보도 접속면, level/stairs/ramp 통행 방식과 무단차 여부를 소유한다.
   상단 카탈로그는 40px 발 깊이 기준선과 기준선 위 가림 계약을 별도로 소유한다.
-- Travel 집중 검사 11/11과 빠른 검사 69/69가 통과했고, PR GitHub Actions Verify도 성공했다:
-  https://github.com/okometsbu-beep/topik-quest/actions/runs/33409747374
-- Actions가 320·375·390·430px 밝은·어두운 증거를 생성했지만, 현재 작업 컨테이너 연결 오류로
-  증거 ZIP을 직접 열어 볼 수 없었다. UI 변경은 직접 시각 확인 없이는 합격할 수 없어 PR #99를
-  초안으로 유지하며 병합·배포하지 않았다.
-- 초안 PR: https://github.com/okometsbu-beep/topik-quest/pull/99
-- 현재 라이브: https://okometsbu-beep.github.io/topik-quest/ (v86 유지)
+- Travel 집중 검사 11/11, 빠른 검사 69/69, 전체 검사 77/77이 통과했다. PR #100 CI와
+  main Verify도 성공했다: https://github.com/okometsbu-beep/topik-quest/actions/runs/33440451231
+- Actions의 320·375·390·430px 밝은·어두운 기하 검사를 통과했고, 390×962 밝은·어두운 증거를
+  직접 열어 문턱·계단·경사로 이음새, 투명 상단 파사드, 기준선, 가로 돌출과 명암을 확인했다.
+- PR: https://github.com/okometsbu-beep/topik-quest/pull/100
+- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (v87 · 3 base + 40 runtime 확인)
+- Pages: https://github.com/okometsbu-beep/topik-quest/actions/runs/33440450366
 - 되돌리기 기준: v86 main `1e1ee411e1af86846b17160df5e9cf5dfd77e722`
 
 ## 알려진 위험
