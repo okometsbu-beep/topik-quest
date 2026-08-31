@@ -26,6 +26,13 @@ these facts from conversation history or the large TOPIK source bundle.
 - Beginner missions follow situation → action → visible world reaction → reward or recoverable time
   cost. The first route varies the input as dialogue, sign hotspot, and ticket-machine action instead
   of presenting six visually identical worksheets.
+- Hangul Start keeps its existing reading and recognized-handwriting progress in `malbitBeginnerV1` and
+  adds grammar only under the nested `grammarV1` field. `data/beginner-grammar-v1.js` owns a reviewed
+  9-chapter, 64-lesson absolute-beginner course covering word order, particles, tense, speech endings,
+  negation, connective endings, modifiers, 받침-dependent selection, contraction, honorifics, counters,
+  and major irregular conjugations. Every lesson must show the condition and contrasting form branches,
+  original examples, a common trap, a typed transformation drill, and per-Hangul-unit handwriting; both
+  practices are required for completion. Keep Korean/Japanese/English/Chinese coaching in the data owner.
 - Before grading, Travel answer choices expose Korean only; the selected and correct translations are
   revealed afterward. NPC quests use multi-turn dialogue, and free composition accepts a reviewed set
   of meaningful non-canonical sentences for a limited smaller reward.

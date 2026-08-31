@@ -12,7 +12,8 @@ const productionFiles = [
   'app-polish-v24.js',
   'app-polish-v33.js',
   'app-polish-v34.js',
-  'app-polish-v35.js'
+  'app-polish-v35.js',
+  'beginner-grammar.js'
 ];
 const forbidden = [
   /MALBIT PLUS/i,
@@ -34,4 +35,3 @@ test('production UI has no real-money payment or upsell surface', () => {
     }
   }
 });
-
