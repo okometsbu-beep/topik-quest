@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v84 · Beginner Korean grammar course
-- Current candidate: v85 · Reusable Korean street corner tiles
+- Production release: v85 · Reusable Korean street corner tiles
+- Current candidate: v86 · Reusable Korean street junction tiles
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
@@ -86,6 +86,9 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - A purpose-named sibling atlas adds four outer and four inner curb corners plus their straight arms.
   Each corner declares its kind, orientation, two perpendicular curb exits, walkability, and four edge
   materials; a separate 12×8 fixture validates outer and inner 90-degree compositions.
+- A second sibling atlas adds four oriented T junctions, four cross-center variants, four approaches,
+  and reusable road surfaces. A 20×12 fixture proves all T closed sides and every T/cross entry direction
+  without adding a playable zone.
 - Travel stamina starts at 10,000 steps and is saved inside the existing exploration record. Only a
   successful tile move spends one step; collisions are free, and 0 opens a dedicated full-screen rest scene.
 - One-hour rest returns the traveler to the current zone spawn with full stamina while preserving route
@@ -113,22 +116,22 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-서울 블록을 실제로 분기할 수 있도록 T자 4방향과 십자 교차로 중심 타일을 별도 sibling
-아틀라스·카탈로그로 추가하고, 독립 교차로 픽스처에서 모든 진입 방향의 접속면과 통행성을
-검증한다. 새 구역·공항 구역 변경·스태미너·NPC·TOPIK 확장은 넣지 않는다.
+거리에서 건물로 자연스럽게 진입할 수 있도록 보도-문턱·계단·경사로 진입 경계 타일을 별도
+sibling 아틀라스·카탈로그로 추가하고, 독립 건물 입구 픽스처에서 보행 접속면·통행성·상단
+레이어 기준선을 검증한다. 새 구역·공항 구역 변경·NPC·TOPIK 확장은 넣지 않는다.
 
-## v85 후보 검증 및 배포
+## v86 후보 검증 및 배포
 
-- 256×256 sibling WebP 하나에 64px 원본 셀 16개를 배치하고 바깥 모서리 4개, 안쪽 모서리
-  4개, 직선 팔 4개와 표면·차선 4개를 기존 직선 타일셋과 분리했다.
-- 모서리 카탈로그는 종류·방향·통행성·두 직각 접속 방향·네 접속면을 소유한다. 12×8 독립
-  픽스처는 바깥·안쪽 90도 도로를 실제 조합하지만 플레이 가능한 공항 월드에는 포함하지 않았다.
-- 전체 검사와 GitHub Actions 실제 Chrome에서 기존 Travel 흐름 및 두 거리 픽스처를
+- 256×256 sibling WebP 하나에 64px 원본 셀 16개를 배치하고 T자 4방향, 십자 중심 4변형,
+  방향별 진입로 4개, 도로·차선·보도 4개를 기존 직선·모서리 타일셋과 분리했다.
+- 교차로 카탈로그는 종류·방향·통행성·진입 방향·네 접속면을 소유한다. 20×12 독립 픽스처는
+  T자 네 방향의 열린 길과 닫힌 보도, 십자의 네 진입을 조합하지만 공항 월드에는 포함하지 않았다.
+- 전체 검사와 GitHub Actions 실제 Chrome에서 기존 Travel 흐름 및 세 거리 픽스처를
   320·375·390·430px, 밝은·어두운 테마로 검증한다. 검증 전에는 병합하지 않는다.
 - 기존 답안·지갑·수집품·스태미너·탐험 기록과 저장 키를 유지했다. 결제 UI·API 키·개인정보
   전송은 추가하지 않았다.
-- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (모바일 CI와 병합 뒤 v85 확인)
-- 되돌리기 기준: v84 main `173650fd443e4179cf2af481d863e875a95fd8ad`
+- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (모바일 CI와 병합 뒤 v86 확인)
+- 되돌리기 기준: v85 main `42bdd139bc550afb13db7586922b5dc22f8bd217`
 
 ## 알려진 위험
 
@@ -142,8 +145,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - P3 레이어 기반은 완료됐지만 광원은 현재 정적 하이라이트뿐이며 날씨·시간대 변화는 아직 없다.
 - v77 연출 계약은 공항 탐험 흐름부터 적용한다. 명동 NPC·보상 화면 연결과 실제 음원 선택 UI는 아직 없다.
 - 현재 공항 3개 구역은 기존 원화를 마이그레이션 아틀라스로 쓰되 런타임은 타일 ID별로만
-  그린다. 한국 거리 아틀라스는 직선과 안쪽·바깥쪽 모서리까지 제공하지만 실제 서울 구역을
-  만들기 전에 교차로·건물 진입 경계·장식 상단 레이어를 작은 sibling 아틀라스로 확장해야 한다.
+  그린다. 한국 거리 아틀라스는 직선·모서리·T자·십자 교차로까지 제공하지만 실제 서울 구역을
+  만들기 전에 건물 진입 경계와 장식 상단 레이어를 작은 sibling 아틀라스로 확장해야 한다.
 - 첫 공항 NPC만 장문 대화·단어 퀴즈 계약에 편입됐다. 한국 조사물도 첫 청사초롱 한 개뿐이며
   다른 NPC와 조사물은 후속이다.
 - 기존 Plus·가격·결제 암시 UI가 새 화면에 재사용되지 않도록 계속 검사해야 한다.

@@ -18,6 +18,7 @@ function loadWorldWithStreetTiles(){
   const runtime={window:{}};runtime.window=runtime;vm.createContext(runtime);
   vm.runInContext(read('data/travel-tiles-korean-street-v1.js'),runtime);
   vm.runInContext(read('data/travel-tiles-korean-street-corners-v1.js'),runtime);
+  vm.runInContext(read('data/travel-tiles-korean-street-junctions-v1.js'),runtime);
   vm.runInContext(read('data/travel-map-seoul-v1.js'),runtime);
   vm.runInContext(read('travel-rpg-engine.js'),runtime);
   return runtime;
@@ -163,6 +164,43 @@ test('Korean street corner sibling atlas owns eight typed corners and a validate
   const atlasPath=path.join(root,fixture.tilemap.atlas.image),atlas=fs.readFileSync(atlasPath);
   assert.ok(atlas.length>4000,'the corner atlas must not be a tiny placeholder');assert.equal(atlas.subarray(0,4).toString(),'RIFF');assert.equal(atlas.subarray(8,12).toString(),'WEBP');
   const html=read('tests/fixtures/korean-street-corners.html');assert.match(html,/travel-tiles-korean-street-corners-v1\.js/);assert.match(html,/cornerFixtureBoard/);assert.match(html,/cornerFixtureLegend/);
+});
+
+test('Korean street junction sibling atlas validates every T and cross entry direction',()=>{
+  const runtime=loadWorldWithStreetTiles(),engine=runtime.MALBIT_TRAVEL_RPG,tileset=runtime.MALBIT_TRAVEL_TILESETS[2],fixture=runtime.MALBIT_TRAVEL_TILE_FIXTURES[2];
+  assert.equal(tileset.id,'korean-street-junctions-v1');assert.equal(tileset.scope,'future-seoul-zones');
+  assert.equal(fixture.id,'korean-street-junctions-fixture-v1');assert.equal(fixture.purpose,'isolated-all-entry-junction-validation-only');
+  assert.deepEqual({width:fixture.width,height:fixture.height,columns:fixture.tilemap.atlas.columns,rows:fixture.tilemap.atlas.rows,sourceTileSize:fixture.tilemap.atlas.sourceTileSize},{width:20,height:12,columns:4,rows:4,sourceTileSize:64});
+  assert.equal(tileset.catalog.length,16);assert.equal(new Set(Array.from(tileset.catalog,item=>item.id)).size,16);
+  assert.deepEqual(Array.from(tileset.catalog,item=>`${item.atlasX},${item.atlasY}`).sort(),Array.from({length:16},(_,index)=>`${index%4},${Math.floor(index/4)}`).sort());
+  const junctions=Array.from(tileset.catalog,item=>item).filter(item=>item.junctionKind),tJunctions=junctions.filter(item=>item.junctionKind==='t'),crosses=junctions.filter(item=>item.junctionKind==='cross');
+  assert.equal(junctions.length,8);assert.equal(tJunctions.length,4);assert.equal(crosses.length,4);
+  assert.deepEqual(tJunctions.map(item=>item.orientation).sort(),['east','north','south','west']);
+  assert.ok(tJunctions.every(item=>item.roadExits.length===3&&new Set(item.roadExits).size===3),'each T junction needs exactly three unique road entries');
+  assert.ok(crosses.every(item=>item.roadExits.length===4&&new Set(item.roadExits).size===4),'each cross junction needs four road entries');
+  assert.ok(junctions.every(item=>item.terrain==='road'&&item.walkable&&item.layer==='ground'),'junction centers must be traversable ground tiles');
+  assert.deepEqual(Array.from(engine.validateTilemap(fixture.tilemap,fixture)),[]);assert.equal(fixture.specimens.length,5);
+  const delta={north:{x:0,y:-1},east:{x:1,y:0},south:{x:0,y:1},west:{x:-1,y:0}},opposite={north:'south',east:'west',south:'north',west:'east'};
+  assert.deepEqual(Array.from(fixture.specimens,item=>item.kind).sort(),['cross','t','t','t','t']);
+  for(const specimen of fixture.specimens){
+    const center=tileset.catalog[tileset.byId[specimen.centerId]];
+    assert.equal(center.junctionKind,specimen.kind);assert.deepEqual(Array.from(center.roadExits).sort(),Array.from(specimen.arms,item=>item.direction).sort());
+    assert.equal(fixture.tilemap.layers.ground[specimen.y][specimen.x],tileset.byId[specimen.centerId]);
+    for(const arm of specimen.arms){
+      const step=delta[arm.direction],entry=tileset.catalog[tileset.byId[arm.tileId]];
+      assert.equal(fixture.tilemap.layers.ground[specimen.y+step.y][specimen.x+step.x],tileset.byId[arm.tileId]);
+      assert.ok(entry.roadExits.includes(arm.direction)&&entry.roadExits.includes(opposite[arm.direction]),'approach must continue through both ends of its axis');
+    }
+    if(specimen.closedDirection){
+      const step=delta[specimen.closedDirection];assert.equal(center.edges[specimen.closedDirection],'sidewalk');
+      assert.equal(fixture.tilemap.layers.ground[specimen.y+step.y][specimen.x+step.x],tileset.byId['street-junction-sidewalk'],'the closed T side must stay sidewalk');
+    }
+  }
+  assert.deepEqual(Array.from(engine.validateWorld(runtime.MALBIT_TRAVEL_WORLDS[0])),[],'loading junction tiles must not change the airport world');
+  assert.equal(runtime.MALBIT_TRAVEL_WORLDS[0].zones.length,3);assert.ok(!runtime.MALBIT_TRAVEL_WORLDS[0].zones.some(zone=>zone.id===fixture.id),'the junction fixture cannot ship as a playable zone');
+  const atlasPath=path.join(root,fixture.tilemap.atlas.image),atlas=fs.readFileSync(atlasPath);
+  assert.ok(atlas.length>4000,'the junction atlas must not be a tiny placeholder');assert.equal(atlas.subarray(0,4).toString(),'RIFF');assert.equal(atlas.subarray(8,12).toString(),'WEBP');
+  const html=read('tests/fixtures/korean-street-junctions.html');assert.match(html,/travel-tiles-korean-street-junctions-v1\.js/);assert.match(html,/junctionFixtureBoard/);assert.match(html,/junctionFixtureLegend/);
 });
 
 test('the airport portal moves both ways while preserving route progress',()=>{
