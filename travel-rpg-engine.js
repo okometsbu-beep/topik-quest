@@ -152,6 +152,28 @@
     },0);
     return{groundTiles:Math.max(0,Number(zone?.width)||0)*Math.max(0,Number(zone?.height)||0),upperTiles};
   }
+  function validateTilemap(tilemap,owner={}){
+    const errors=[],id=owner.id||'tilemap',width=Number(owner.width),height=Number(owner.height),ground=tilemap?.layers?.ground,atlas=tilemap?.atlas;
+    if(!tilemap||tilemap.version!==1)return[`${id}: missing tilemap contract`];
+    if(!atlas?.image||!Number.isInteger(Number(atlas.columns))||Number(atlas.columns)<=0||!Number.isInteger(Number(atlas.rows))||Number(atlas.rows)<=0)errors.push(`${id}: invalid tile atlas`);
+    if(!Number.isInteger(width)||width<=0||!Number.isInteger(height)||height<=0)errors.push(`${id}: invalid tilemap dimensions`);
+    if(!Array.isArray(ground)||ground.length!==height||ground.some(row=>!Array.isArray(row)||row.length!==width))errors.push(`${id}: invalid ground tile layer`);
+    const palette=Array.isArray(tilemap.palette)?tilemap.palette:[],entryIds=palette.map(entry=>entry?.id).filter(Boolean);
+    if(!palette.length)errors.push(`${id}: missing tile palette`);
+    if(new Set(entryIds).size!==entryIds.length)errors.push(`${id}: duplicate tile palette id`);
+    for(const [tileId,entry] of palette.entries()){
+      if(!entry)errors.push(`${id}: missing tile palette ${tileId}`);
+      else{
+        if(!Number.isInteger(Number(entry.atlasX))||!Number.isInteger(Number(entry.atlasY))||entry.atlasX<0||entry.atlasY<0||entry.atlasX>=Number(atlas?.columns)||entry.atlasY>=Number(atlas?.rows))errors.push(`${id}: invalid tile atlas coordinate ${tileId}`);
+        if(!entry.id||typeof entry.terrain!=='string'||typeof entry.walkable!=='boolean'||entry.layer!=='ground')errors.push(`${id}: invalid tile metadata ${tileId}`);
+      }
+    }
+    for(const tileId of new Set((ground||[]).flat())){
+      const entry=palette[tileId];
+      if(!entry)errors.push(`${id}: missing tile palette ${tileId}`);
+    }
+    return errors;
+  }
   function validateWorld(world){
     const errors=[],districtZones=new Set(world?.districts?.flatMap(item=>item.zoneIds||[])||[]),connections=new Map(),budget=world?.performanceBudget;
     if(!budget||budget.version!==1)errors.push(`${world?.id||'world'}: missing performance budget`);
@@ -159,17 +181,7 @@
     for(const zone of world?.zones||[]){
       if(zone.grid?.length!==zone.height)errors.push(`${zone.id}: height mismatch`);
       if(zone.grid?.some(row=>String(row).length!==zone.width))errors.push(`${zone.id}: width mismatch`);
-      const tilemap=zone.tilemap,ground=tilemap?.layers?.ground;
-      if(!tilemap||tilemap.version!==1)errors.push(`${zone.id}: missing tilemap contract`);
-      else{
-        if(!tilemap.atlas?.image||tilemap.atlas.columns!==zone.width||tilemap.atlas.rows!==zone.height)errors.push(`${zone.id}: invalid tile atlas`);
-        if(!Array.isArray(ground)||ground.length!==zone.height||ground.some(row=>!Array.isArray(row)||row.length!==zone.width))errors.push(`${zone.id}: invalid ground tile layer`);
-        for(const tileId of new Set((ground||[]).flat())){
-          const entry=tilemap.palette?.[tileId];
-          if(!entry)errors.push(`${zone.id}: missing tile palette ${tileId}`);
-          else if(!Number.isInteger(Number(entry.atlasX))||!Number.isInteger(Number(entry.atlasY))||entry.atlasX<0||entry.atlasY<0||entry.atlasX>=tilemap.atlas.columns||entry.atlasY>=tilemap.atlas.rows)errors.push(`${zone.id}: invalid tile atlas coordinate ${tileId}`);
-        }
-      }
+      errors.push(...validateTilemap(zone.tilemap,zone));
       if(!districtZones.has(zone.id))errors.push(`${zone.id}: missing district link`);
       if(cell(zone,zone.spawn?.x,zone.spawn?.y)==='#')errors.push(`${zone.id}: blocked spawn`);
       const ids=(zone.pois||[]).map(item=>item.id);
@@ -236,6 +248,7 @@
     enterPortal,
     cuePlan,
     performanceEstimate,
+    validateTilemap,
     validateWorld
   });
 })();

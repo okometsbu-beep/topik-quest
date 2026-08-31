@@ -14,6 +14,14 @@ function loadWorld(){
   return runtime;
 }
 
+function loadWorldWithStreetTiles(){
+  const runtime={window:{}};runtime.window=runtime;vm.createContext(runtime);
+  vm.runInContext(read('data/travel-tiles-korean-street-v1.js'),runtime);
+  vm.runInContext(read('data/travel-map-seoul-v1.js'),runtime);
+  vm.runInContext(read('travel-rpg-engine.js'),runtime);
+  return runtime;
+}
+
 function pathToInteraction(engine,zone,start,target,sceneId){
   const queue=[{x:start.x,y:start.y,path:[]}],seen=new Set([`${start.x},${start.y}`]);
   const entries=Object.entries(engine.directions);
@@ -104,6 +112,27 @@ test('Seoul travel world has a valid extensible district, zone, collision, POI, 
   assert.equal(engine.isWalkable(rail,22,14,null),false,'the left ticket-gate bank cannot be walked through');
   const migrated=engine.normalizeProgress('route-001-airport-myeongdong',{version:1,zoneId:zone.id,x:5,y:7,direction:'up',steps:9,discoveries:[]},'arrival');
   assert.equal(migrated.version,2);assert.deepEqual({x:migrated.x,y:migrated.y},{x:22,y:30});assert.equal(migrated.steps,9);
+});
+
+test('Korean street foundation is a reusable isolated atlas catalog with a validated fixture',()=>{
+  const runtime=loadWorldWithStreetTiles(),engine=runtime.MALBIT_TRAVEL_RPG,tileset=runtime.MALBIT_TRAVEL_TILESETS[0],fixture=runtime.MALBIT_TRAVEL_TILE_FIXTURES[0];
+  assert.equal(tileset.id,'korean-street-basic-v1');assert.equal(tileset.scope,'future-seoul-zones');
+  assert.equal(fixture.id,'korean-street-basic-fixture-v1');assert.equal(fixture.purpose,'isolated-validation-only');
+  assert.deepEqual({width:fixture.width,height:fixture.height,columns:fixture.tilemap.atlas.columns,rows:fixture.tilemap.atlas.rows,sourceTileSize:fixture.tilemap.atlas.sourceTileSize},{width:12,height:8,columns:4,rows:4,sourceTileSize:64});
+  assert.equal(tileset.catalog.length,16);assert.equal(new Set(Array.from(tileset.catalog,item=>item.id)).size,16);
+  assert.deepEqual(Array.from(new Set(Array.from(tileset.catalog,item=>item.terrain))).sort(),['boundary','crosswalk','road','sidewalk']);
+  assert.deepEqual(Array.from(tileset.catalog,item=>`${item.atlasX},${item.atlasY}`).sort(),Array.from({length:16},(_,index)=>`${index%4},${Math.floor(index/4)}`).sort());
+  assert.ok(tileset.catalog.filter(item=>item.terrain==='boundary').every(item=>item.walkable===false),'curb boundaries must block ordinary walking');
+  assert.ok(tileset.catalog.filter(item=>item.terrain!=='boundary').every(item=>item.walkable===true),'street surfaces must remain traversable');
+  assert.ok(tileset.catalog.every(item=>item.layer==='ground'&&['north','east','south','west'].every(edge=>typeof item.edges[edge]==='string')),'every reusable tile needs layer and edge metadata');
+  assert.deepEqual(Array.from(engine.validateTilemap(fixture.tilemap,fixture)),[]);
+  assert.deepEqual(Array.from(engine.validateWorld(runtime.MALBIT_TRAVEL_WORLDS[0])),[],'loading the independent catalog must not change the airport world');
+  assert.equal(runtime.MALBIT_TRAVEL_WORLDS[0].zones.length,3);assert.ok(!runtime.MALBIT_TRAVEL_WORLDS[0].zones.some(zone=>zone.id===fixture.id),'the validation fixture cannot ship as a playable zone');
+  const broken=JSON.parse(JSON.stringify(fixture));broken.tilemap.palette[0].atlasX=4;
+  assert.ok(engine.validateTilemap(broken.tilemap,broken).includes(`${fixture.id}: invalid tile atlas coordinate 0`),'atlas bounds must reject an invalid catalog entry');
+  const atlasPath=path.join(root,fixture.tilemap.atlas.image),atlas=fs.readFileSync(atlasPath);
+  assert.ok(atlas.length>4000,'the street atlas must not be a tiny placeholder');assert.equal(atlas.subarray(0,4).toString(),'RIFF');assert.equal(atlas.subarray(8,12).toString(),'WEBP');
+  const html=read('tests/fixtures/korean-street-tiles.html');assert.match(html,/travel-tiles-korean-street-v1\.js/);assert.match(html,/streetFixtureBoard/);assert.match(html,/streetFixtureLegend/);
 });
 
 test('the airport portal moves both ways while preserving route progress',()=>{
