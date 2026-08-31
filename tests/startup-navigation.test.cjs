@@ -35,6 +35,8 @@ test('one release version reaches returning mobile users', () => {
   assert.ok(versions.every(Boolean));
   assert.equal(new Set(versions).size, 1);
   assert.match(bootstrap, /'app-polish-v35\.js'/);
+  assert.match(bootstrap, /'data\/beginner-grammar-v1\.js'/);
+  assert.match(bootstrap, /'beginner-grammar\.js'/);
   assert.match(read('index.html'), /swReloadKey=`malbitSwReloadV\$\{appVersion\}`/);
   assert.match(read('index.html'), /register\(`\.\/sw\.js\?v=\$\{appVersion\}`/);
   assert.match(read('index.html'), /if\(!navigator\.serviceWorker\.controller\)/);
@@ -82,6 +84,20 @@ test('v35 unifies beginner level and expands recognized handwriting practice', (
   assert.match(v35, /scoreCurrentPad/);
   assert.match(v35, /playDing/);
   assert.match(v35, /setTimeout\(advanceWriting,720\)/);
+});
+
+test('beginner grammar loads after handwriting and keeps one beginner progress root', () => {
+  const bootstrap = read('site-patch.js');
+  const grammar = read('beginner-grammar.js');
+  const dataIndex = bootstrap.indexOf("'data/beginner-grammar-v1.js'");
+  const handwritingIndex = bootstrap.indexOf("'app-polish-v35.js'");
+  const grammarIndex = bootstrap.indexOf("'beginner-grammar.js'");
+  assert.ok(dataIndex >= 0 && handwritingIndex >= 0 && grammarIndex >= 0);
+  assert.ok(dataIndex < grammarIndex);
+  assert.ok(handwritingIndex < grammarIndex);
+  assert.match(grammar, /BEGINNER_KEY='malbitBeginnerV1'/);
+  assert.match(grammar, /value\.grammarV1=/);
+  assert.doesNotMatch(grammar, /localStorage\.clear/);
 });
 
 test('v33 supplies theme, listening, stable trail, language and beginner affordances', () => {

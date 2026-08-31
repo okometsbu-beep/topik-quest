@@ -201,6 +201,18 @@ try{
     await assertThemeSurfaces(label,theme,'.tqHomeScreen',':scope>.t1level,.tqV9Mode,.tqV9Utility button,.tqV9Week');
     assert.deepEqual(fit.tinyCopy,[],`${label}: Home copy below 10px`);
   };
+  const assertBeginnerGrammarFits=async(label,theme)=>{
+    const fit=await evaluate(`(()=>{const root=document.querySelector('.bgScreen');if(!root)return{missing:true};const visible=el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)!==0&&r.width>0&&r.height>0};const rect=el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),right:Math.round(r.right),width:Math.round(r.width),height:Math.round(r.height)}};const controls=[...root.querySelectorAll('button:not(:disabled)')].filter(visible);const surfaces=[...root.querySelectorAll(':scope>.bgHero,:scope>.bgMethod,:scope>.bgResume,:scope>.bgChapterIntro,:scope>.bgLessonList,:scope>.bgScope,:scope>.bgLessonHero,:scope>.bgFormula,:scope>.bgRuleCard,:scope>.bgExamples,:scope>.bgTrap,:scope>.bgDrill,:scope>.bgWriting,:scope>.bgLessonFinish,:scope>.bgLessonNav')].filter(visible);const copy=[...root.querySelectorAll('small,em,p,.bgMethod span,.bgVariant code')].filter(visible);return{missing:false,theme:document.documentElement.dataset.theme,innerWidth,rootWidth:document.documentElement.scrollWidth,bodyWidth:document.body.scrollWidth,screenOverflow:root.scrollWidth-root.clientWidth,outside:controls.filter(el=>{const r=el.getBoundingClientRect();return r.left<-1||r.right>innerWidth+1}).map(rect),small:controls.filter(el=>{const r=el.getBoundingClientRect();return r.width<43||r.height<43}).map(rect),offCenter:surfaces.filter(el=>{const r=el.getBoundingClientRect();return Math.abs(r.left-(innerWidth-r.right))>2}).map(el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),rightGap:Math.round(innerWidth-r.right)}}),tinyCopy:copy.map(el=>({class:el.className,size:parseFloat(getComputedStyle(el).fontSize),text:el.textContent.trim().slice(0,24)})).filter(row=>row.size<9.9)}})()`);
+    assert.equal(fit.missing,false,`${label}: beginner grammar root missing`);
+    assert.equal(fit.theme,theme,`${label}: expected ${theme} theme`);
+    assert.ok(fit.rootWidth<=fit.innerWidth+1&&fit.bodyWidth<=fit.innerWidth+1,`${label}: horizontal overflow ${fit.rootWidth}/${fit.bodyWidth}/${fit.innerWidth}`);
+    assert.ok(fit.screenOverflow<=1,`${label}: grammar content overflow ${fit.screenOverflow}`);
+    assert.deepEqual(fit.outside,[],`${label}: interactive element leaves viewport`);
+    assert.deepEqual(fit.small,[],`${label}: enabled touch target below 44px`);
+    assert.deepEqual(fit.offCenter,[],`${label}: asymmetric grammar surface`);
+    await assertThemeSurfaces(label,theme,'.bgScreen','.bgMethod,.bgChapterCard,.bgLessonRow,.bgScope,.bgFormula,.bgRuleCard,.bgExamples,.bgVariant,.bgDrill,.bgWriting,.bgLessonFinish');
+    assert.deepEqual(fit.tinyCopy,[],`${label}: grammar copy below 10px`);
+  };
   const openStoredShorts=async index=>{
     await evaluate(`(()=>{S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','2');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:2,activeLevel:2,levels:{1:{index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null},2:{index:${Number(index)},selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null}},daily:{}}))})()`);
     await send('Page.reload',{ignoreCache:true});await ready();
@@ -495,6 +507,38 @@ try{
   await tap('.tqHomeScreen>.t1level button',1,120);
   assert.match(await evaluate(`document.querySelector('.tqHomeScreen>.t1level button.on')?.textContent`),/TOPIK I/);
 
+  await evaluate(`(()=>{localStorage.setItem('malbitBeginnerV1',JSON.stringify({known:['v:ㅏ'],legacyScore:7}));S.lang='ja';S.view='beginner';save();render()})()`);await sleep(220);
+  assert.ok(await evaluate(`!!document.querySelector('.bgLaunch')`),'beginner grammar launch card missing');
+  assert.equal(await evaluate(`MALBIT_BEGINNER_GRAMMAR_INTERNALS.lessonCount`),64);
+  await tap('.bgLaunch',0,180);
+  assert.equal(await evaluate(`document.querySelectorAll('.bgChapterCard').length`),9,'grammar catalog must show nine chapters');
+  assert.equal(await evaluate(`document.querySelectorAll('.bgLessonRow').length`),5,'sentence chapter must show five lessons');
+  await evaluate(`malbitSetTheme('light')`);await sleep(100);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertBeginnerGrammarFits(`Beginner grammar catalog light ${width}px`,'light')}
+  await setViewport(390,844);await shot('00ba-beginner-grammar-catalog-light.png');
+  await evaluate(`malbitSetTheme('dark')`);await sleep(100);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertBeginnerGrammarFits(`Beginner grammar catalog dark ${width}px`,'dark')}
+  await setViewport(390,844);await shot('00bb-beginner-grammar-catalog-dark.png');
+
+  await evaluate(`malbitGrammarLesson('copula')`);await sleep(120);
+  assert.deepEqual(await evaluate(`({variants:document.querySelectorAll('.bgVariant').length,examples:document.querySelectorAll('.bgExample').length,canvas:!!document.querySelector('#malbitGrammarCanvas'),input:!!document.querySelector('#malbitGrammarAnswer')})`),{variants:2,examples:2,canvas:true,input:true},'grammar lesson must show rules, examples, typing, and handwriting');
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertBeginnerGrammarFits(`Beginner grammar lesson dark ${width}px`,'dark')}
+  await setViewport(390,844);await evaluate(`document.querySelector('.bgDrill').scrollIntoView({block:'start',behavior:'auto'})`);await sleep(80);await shot('00bc-beginner-grammar-drill.png');
+  await evaluate(`(()=>{const input=document.querySelector('#malbitGrammarAnswer');input.value='학생예요';malbitGrammarDraft(input.value);malbitGrammarSubmit()})()`);await sleep(80);
+  assert.ok(await evaluate(`document.querySelector('.bgFeedback.wrong')?.innerText.includes('학생이에요')`),'wrong form needs a model answer and coaching');
+  await evaluate(`(()=>{const input=document.querySelector('#malbitGrammarAnswer');input.value='학생이에요';malbitGrammarDraft(input.value);malbitGrammarSubmit()})()`);await sleep(80);
+  assert.ok(await evaluate(`!!document.querySelector('.bgFeedback.correct')`),'correct transformation feedback missing');
+  const grammarUnitCount=await evaluate(`document.querySelectorAll('.bgUnitStrip button').length`);
+  assert.equal(grammarUnitCount,5,'copula handwriting must cover every Hangul unit');
+  for(let unit=0;unit<grammarUnitCount;unit++){
+    const wrote=await evaluate(`(()=>{const canvas=document.querySelector('#malbitGrammarCanvas'),r=canvas.getBoundingClientRect(),point=(type,x,y)=>canvas.dispatchEvent(new PointerEvent(type,{bubbles:true,cancelable:true,pointerId:1,pointerType:'touch',clientX:r.left+x,clientY:r.top+y}));point('pointerdown',r.width*.3,r.height*.3);point('pointermove',r.width*.7,r.height*.7);point('pointerup',r.width*.7,r.height*.7);return malbitGrammarWritingDone()})()`);
+    assert.equal(wrote,true,`handwriting unit ${unit+1} did not save`);await sleep(60);
+  }
+  const beginnerProgress=await evaluate(`(()=>{const value=JSON.parse(localStorage.getItem('malbitBeginnerV1'));return{known:value.known,legacyScore:value.legacyScore,completed:value.grammarV1.completed,quiz:value.grammarV1.quizCorrect.copula,writing:value.grammarV1.writingDone.copula}})()`);
+  assert.deepEqual(beginnerProgress,{known:['v:ㅏ'],legacyScore:7,completed:['copula'],quiz:true,writing:true},'grammar progress must nest without changing old beginner progress');
+  await evaluate(`document.querySelector('.bgWriting').scrollIntoView({block:'start',behavior:'auto'})`);await sleep(80);await shot('00bd-beginner-grammar-handwriting-complete.png');
+  await evaluate(`S.view='home';save();render()`);await sleep(180);
+
   await evaluate(`(()=>{MALBIT_REVIEW.record(1,'read','P01-I-R-09',-1,'random',{choiceOrder:[0,1,2,3]});MALBIT_REVIEW.record(2,'read','P01-II-R-06',-1,'random',{choiceOrder:[0,1,2,3]});S.lang='ja';S.view='review';save();render()})()`);await sleep(300);
   assert.ok(await evaluate(`!!document.querySelector('#malbitReviewVisualSystem')`),'Review visual system must load after compatibility layers');
   assert.equal(await evaluate(`document.querySelectorAll('.tqReviewItem').length`),2,'Review queue must show both seeded TOPIK levels');
@@ -758,7 +802,7 @@ try{
   assert.deepEqual(durableAfter,durableBefore,'travel play must not alter vocabulary, game, or review records');
   assert.deepEqual(errors,[]);
   const screenshotCount=fs.readdirSync(out).filter(file=>file.endsWith('.png')).length;
-  console.log(`mobile QA: 320/375/390/430px Home + Game + Shorts + Random Practice + Review visual contracts, Review queue/filter/retry/translation/type coaching/re-entry, TOPIK I/II random question/answer/type coaching, level re-entry, Shorts question/answer/instructor feedback + hit-tested Travel route + one-tap completed-route re-entry + NPC word order + Hangul sign build with decoys, day/evening events, travel-won exchange, reload/back-resume, durable records, screenshots=${screenshotCount}, errors=0`);
+  console.log(`mobile QA: 320/375/390/430px Home + Beginner Grammar + Game + Shorts + Random Practice + Review visual contracts, 9-chapter/64-lesson grammar catalog, transformation coaching, per-unit handwriting and preserved progress, Review queue/filter/retry/translation/type coaching/re-entry, TOPIK I/II random question/answer/type coaching, level re-entry, Shorts question/answer/instructor feedback + hit-tested Travel route + one-tap completed-route re-entry + NPC word order + Hangul sign build with decoys, day/evening events, travel-won exchange, reload/back-resume, durable records, screenshots=${screenshotCount}, errors=0`);
 }finally{
   try{socket?.close()}catch(error){}
   chrome?.kill('SIGTERM');server.kill('SIGTERM');

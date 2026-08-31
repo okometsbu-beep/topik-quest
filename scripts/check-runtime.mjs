@@ -72,8 +72,10 @@ before(runtime, 'travel-rpg-engine.js', 'travel-mode.js');
 before(runtime, 'question-bank-engine.js', 'travel-mode.js');
 before(runtime, 'learning-features.js', 'travel-mode.js');
 before(runtime, 'travel-mode.js', 'product-polish.js');
+before(runtime, 'data/beginner-grammar-v1.js', 'beginner-grammar.js');
 for (const [first, second] of [['app-polish-v22.js', 'app-polish-v24.js'], ['app-polish-v24.js', 'app-polish-v33.js'], ['app-polish-v33.js', 'app-polish-v34.js'], ['app-polish-v34.js', 'app-polish-v35.js']]) before(runtime, first, second);
-before(runtime, 'app-polish-v35.js', 'vocab-editor.js');
+before(runtime, 'app-polish-v35.js', 'beginner-grammar.js');
+before(runtime, 'beginner-grammar.js', 'vocab-editor.js');
 
 const allowedPatches = new Set(['app-polish-v22.js', 'app-polish-v24.js', 'app-polish-v33.js', 'app-polish-v34.js', 'app-polish-v35.js']);
 const numberedPatches = fs.readdirSync(root).filter((file) => /^app-polish-v\d+\.js$/.test(file));
