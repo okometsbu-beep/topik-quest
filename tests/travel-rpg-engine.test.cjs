@@ -17,6 +17,7 @@ function loadWorld(){
 function loadWorldWithStreetTiles(){
   const runtime={window:{}};runtime.window=runtime;vm.createContext(runtime);
   vm.runInContext(read('data/travel-tiles-korean-street-v1.js'),runtime);
+  vm.runInContext(read('data/travel-tiles-korean-street-corners-v1.js'),runtime);
   vm.runInContext(read('data/travel-map-seoul-v1.js'),runtime);
   vm.runInContext(read('travel-rpg-engine.js'),runtime);
   return runtime;
@@ -133,6 +134,35 @@ test('Korean street foundation is a reusable isolated atlas catalog with a valid
   const atlasPath=path.join(root,fixture.tilemap.atlas.image),atlas=fs.readFileSync(atlasPath);
   assert.ok(atlas.length>4000,'the street atlas must not be a tiny placeholder');assert.equal(atlas.subarray(0,4).toString(),'RIFF');assert.equal(atlas.subarray(8,12).toString(),'WEBP');
   const html=read('tests/fixtures/korean-street-tiles.html');assert.match(html,/travel-tiles-korean-street-v1\.js/);assert.match(html,/streetFixtureBoard/);assert.match(html,/streetFixtureLegend/);
+});
+
+test('Korean street corner sibling atlas owns eight typed corners and a validated 90-degree fixture',()=>{
+  const runtime=loadWorldWithStreetTiles(),engine=runtime.MALBIT_TRAVEL_RPG,tileset=runtime.MALBIT_TRAVEL_TILESETS[1],fixture=runtime.MALBIT_TRAVEL_TILE_FIXTURES[1];
+  assert.equal(tileset.id,'korean-street-corners-v1');assert.equal(tileset.scope,'future-seoul-zones');
+  assert.equal(fixture.id,'korean-street-corners-fixture-v1');assert.equal(fixture.purpose,'isolated-90-degree-validation-only');
+  assert.deepEqual({width:fixture.width,height:fixture.height,columns:fixture.tilemap.atlas.columns,rows:fixture.tilemap.atlas.rows,sourceTileSize:fixture.tilemap.atlas.sourceTileSize},{width:12,height:8,columns:4,rows:4,sourceTileSize:64});
+  assert.equal(tileset.catalog.length,16);assert.equal(new Set(Array.from(tileset.catalog,item=>item.id)).size,16);
+  const corners=Array.from(tileset.catalog,item=>item).filter(item=>item.cornerKind);
+  assert.equal(corners.length,8);assert.deepEqual(Array.from(new Set(corners.map(item=>item.cornerKind))).sort(),['inner','outer']);
+  for(const kind of ['inner','outer'])assert.deepEqual(corners.filter(item=>item.cornerKind===kind).map(item=>item.orientation).sort(),['north-east','north-west','south-east','south-west']);
+  const axis=direction=>['north','south'].includes(direction)?'vertical':'horizontal';
+  assert.ok(corners.every(item=>item.terrain==='boundary'&&!item.walkable&&item.layer==='ground'),'corner curbs must block ordinary walking on the ground layer');
+  assert.ok(corners.every(item=>item.curbExits.length===2&&new Set(item.curbExits).size===2&&axis(item.curbExits[0])!==axis(item.curbExits[1])),'each corner must expose one vertical and one horizontal curb exit');
+  assert.deepEqual(Array.from(engine.validateTilemap(fixture.tilemap,fixture)),[]);
+  for(const specimen of fixture.specimens){
+    const corner=tileset.catalog[tileset.byId[specimen.cornerId]];
+    assert.equal(corner.cornerKind,specimen.kind);assert.deepEqual(Array.from(specimen.arms,d=>d.direction).sort(),Array.from(corner.curbExits).sort());
+    for(const arm of specimen.arms){
+      const straight=tileset.catalog[tileset.byId[arm.tileId]];
+      assert.equal(straight.cornerKind,null);assert.equal(straight.terrain,'boundary');
+      assert.ok(straight.curbExits.every(direction=>axis(direction)===axis(arm.direction)),'straight arm must continue on the corner exit axis');
+    }
+  }
+  assert.deepEqual(Array.from(engine.validateWorld(runtime.MALBIT_TRAVEL_WORLDS[0])),[],'loading corner tiles must not change the airport world');
+  assert.equal(runtime.MALBIT_TRAVEL_WORLDS[0].zones.length,3);assert.ok(!runtime.MALBIT_TRAVEL_WORLDS[0].zones.some(zone=>zone.id===fixture.id),'the 90-degree fixture cannot ship as a playable zone');
+  const atlasPath=path.join(root,fixture.tilemap.atlas.image),atlas=fs.readFileSync(atlasPath);
+  assert.ok(atlas.length>4000,'the corner atlas must not be a tiny placeholder');assert.equal(atlas.subarray(0,4).toString(),'RIFF');assert.equal(atlas.subarray(8,12).toString(),'WEBP');
+  const html=read('tests/fixtures/korean-street-corners.html');assert.match(html,/travel-tiles-korean-street-corners-v1\.js/);assert.match(html,/cornerFixtureBoard/);assert.match(html,/cornerFixtureLegend/);
 });
 
 test('the airport portal moves both ways while preserving route progress',()=>{

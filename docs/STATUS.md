@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v83 · Reusable Korean street tile foundation
-- Current candidate: v83 · Reusable Korean street tile foundation
+- Production release: v84 · Beginner Korean grammar course
+- Current candidate: v85 · Reusable Korean street corner tiles
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
@@ -16,6 +16,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 최근 안정 기능
 
 - TOPIK I·II, Shorts, Random Practice, full mock exams, Review, Vocabulary, Statistics
+- Beginner grammar covers core sentence order and major particle, tense, politeness, negation, connective,
+  modifier, irregular, and speech-level transformations with per-rule writing practice.
 - 172 TOPIK I and 116 TOPIK II quick-practice questions; fixed 12-set mock composition remains intact
 - bank explanations structured as answer evidence → distractor trap → reusable type-solving method,
   with separate TOPIK II writing 51–54 plans
@@ -81,6 +83,9 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
   sidewalks, asphalt roads, four straight curb boundaries, crosswalks, tactile paving, and lane marks.
   Each catalog entry declares atlas coordinates, terrain, walkability, ground layer, orientation, and
   four edge materials; an isolated 12×8 fixture proves composition without changing airport zones.
+- A purpose-named sibling atlas adds four outer and four inner curb corners plus their straight arms.
+  Each corner declares its kind, orientation, two perpendicular curb exits, walkability, and four edge
+  materials; a separate 12×8 fixture validates outer and inner 90-degree compositions.
 - Travel stamina starts at 10,000 steps and is saved inside the existing exploration record. Only a
   successful tile move spends one step; collisions are free, and 0 opens a dedicated full-screen rest scene.
 - One-hour rest returns the traveler to the current zone spawn with full stamina while preserving route
@@ -108,23 +113,22 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-첫 직선 거리 타일을 이어 쓸 수 있도록 보도-차도 안쪽·바깥쪽 모서리 타일을 별도 sibling
-아틀라스·카탈로그로 추가하고, 90도 도로 독립 픽스처에서 접속면과 통행성을 검증한다.
-새 구역·공항 구역 변경·스태미너·NPC·TOPIK 확장은 넣지 않는다.
+서울 블록을 실제로 분기할 수 있도록 T자 4방향과 십자 교차로 중심 타일을 별도 sibling
+아틀라스·카탈로그로 추가하고, 독립 교차로 픽스처에서 모든 진입 방향의 접속면과 통행성을
+검증한다. 새 구역·공항 구역 변경·스태미너·NPC·TOPIK 확장은 넣지 않는다.
 
-## v83 후보 검증 및 배포
+## v85 후보 검증 및 배포
 
-- 256×256 WebP 하나에 64px 원본 셀 16개를 배치하고 보도·차도·직선 경계·횡단보도·점자블록·
-  차선 타일을 지형·통행성·방향·접속면 메타데이터와 분리했다.
-- 12×8 독립 거리 픽스처는 96개 타일을 실제 조합하지만 플레이 가능한 공항 월드에는 포함하지
-  않았다. 기존 공항 3개 구역과 배경·충돌·저장 데이터는 변경하지 않았다.
-- 전체 검사 67개와 빠른 검사 62개를 통과했다. GitHub Actions 실제 Chrome에서 기존 Travel
-  전체 흐름과 새 픽스처를 320·375·390·430px, 밝은·어두운 테마로 검사했고 타일 간격과
-  콘솔 오류는 0건이다.
+- 256×256 sibling WebP 하나에 64px 원본 셀 16개를 배치하고 바깥 모서리 4개, 안쪽 모서리
+  4개, 직선 팔 4개와 표면·차선 4개를 기존 직선 타일셋과 분리했다.
+- 모서리 카탈로그는 종류·방향·통행성·두 직각 접속 방향·네 접속면을 소유한다. 12×8 독립
+  픽스처는 바깥·안쪽 90도 도로를 실제 조합하지만 플레이 가능한 공항 월드에는 포함하지 않았다.
+- 전체 검사와 GitHub Actions 실제 Chrome에서 기존 Travel 흐름 및 두 거리 픽스처를
+  320·375·390·430px, 밝은·어두운 테마로 검증한다. 검증 전에는 병합하지 않는다.
 - 기존 답안·지갑·수집품·스태미너·탐험 기록과 저장 키를 유지했다. 결제 UI·API 키·개인정보
   전송은 추가하지 않았다.
-- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (모바일 CI와 병합 뒤 v83 확인)
-- 되돌리기 기준: v82 main `b087b151c35a60630294b0fc030fad28e47a5dd8`
+- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (모바일 CI와 병합 뒤 v85 확인)
+- 되돌리기 기준: v84 main `173650fd443e4179cf2af481d863e875a95fd8ad`
 
 ## 알려진 위험
 
@@ -138,8 +142,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - P3 레이어 기반은 완료됐지만 광원은 현재 정적 하이라이트뿐이며 날씨·시간대 변화는 아직 없다.
 - v77 연출 계약은 공항 탐험 흐름부터 적용한다. 명동 NPC·보상 화면 연결과 실제 음원 선택 UI는 아직 없다.
 - 현재 공항 3개 구역은 기존 원화를 마이그레이션 아틀라스로 쓰되 런타임은 타일 ID별로만
-  그린다. 첫 한국 거리 아틀라스는 직선 보도·차도·경계·횡단보도만 제공하므로 실제 서울 구역을
-  만들기 전에 모서리·교차로·건물 진입 경계를 작은 sibling 아틀라스로 더 확장해야 한다.
+  그린다. 한국 거리 아틀라스는 직선과 안쪽·바깥쪽 모서리까지 제공하지만 실제 서울 구역을
+  만들기 전에 교차로·건물 진입 경계·장식 상단 레이어를 작은 sibling 아틀라스로 확장해야 한다.
 - 첫 공항 NPC만 장문 대화·단어 퀴즈 계약에 편입됐다. 한국 조사물도 첫 청사초롱 한 개뿐이며
   다른 NPC와 조사물은 후속이다.
 - 기존 Plus·가격·결제 암시 UI가 새 화면에 재사용되지 않도록 계속 검사해야 한다.
