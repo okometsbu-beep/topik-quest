@@ -19,6 +19,7 @@ function loadWorldWithStreetTiles(){
   vm.runInContext(read('data/travel-tiles-korean-street-v1.js'),runtime);
   vm.runInContext(read('data/travel-tiles-korean-street-corners-v1.js'),runtime);
   vm.runInContext(read('data/travel-tiles-korean-street-junctions-v1.js'),runtime);
+  vm.runInContext(read('data/travel-tiles-korean-street-building-entrances-v1.js'),runtime);
   vm.runInContext(read('data/travel-map-seoul-v1.js'),runtime);
   vm.runInContext(read('travel-rpg-engine.js'),runtime);
   return runtime;
@@ -201,6 +202,35 @@ test('Korean street junction sibling atlas validates every T and cross entry dir
   const atlasPath=path.join(root,fixture.tilemap.atlas.image),atlas=fs.readFileSync(atlasPath);
   assert.ok(atlas.length>4000,'the junction atlas must not be a tiny placeholder');assert.equal(atlas.subarray(0,4).toString(),'RIFF');assert.equal(atlas.subarray(8,12).toString(),'WEBP');
   const html=read('tests/fixtures/korean-street-junctions.html');assert.match(html,/travel-tiles-korean-street-junctions-v1\.js/);assert.match(html,/junctionFixtureBoard/);assert.match(html,/junctionFixtureLegend/);
+});
+
+test('Korean building entrance sibling atlas separates walkable transitions from upper baselines',()=>{
+  const runtime=loadWorldWithStreetTiles(),engine=runtime.MALBIT_TRAVEL_RPG,tileset=runtime.MALBIT_TRAVEL_TILESETS[3],fixture=runtime.MALBIT_TRAVEL_TILE_FIXTURES[3];
+  assert.equal(tileset.id,'korean-street-building-entrances-v1');assert.equal(tileset.scope,'future-seoul-zones');
+  assert.equal(fixture.id,'korean-street-building-entrances-fixture-v1');assert.equal(fixture.purpose,'isolated-building-entry-baseline-validation-only');
+  assert.deepEqual({width:fixture.width,height:fixture.height,columns:fixture.tilemap.atlas.columns,rows:fixture.tilemap.atlas.rows,sourceTileSize:fixture.tilemap.atlas.sourceTileSize},{width:4,height:3,columns:4,rows:4,sourceTileSize:64});
+  assert.equal(tileset.catalog.length,12);assert.equal(tileset.upperCatalog.length,4);
+  const entries=[...tileset.catalog,...tileset.upperCatalog];
+  assert.equal(new Set(entries.map(item=>item.id)).size,16);assert.deepEqual(entries.map(item=>`${item.atlasX},${item.atlasY}`).sort(),Array.from({length:16},(_,index)=>`${index%4},${Math.floor(index/4)}`).sort());
+  assert.deepEqual(Array.from(new Set(tileset.catalog.map(item=>item.entranceKind))).sort(),['ramp','steps','threshold']);
+  for(const kind of ['threshold','steps','ramp'])assert.equal(tileset.catalog.filter(item=>item.entranceKind===kind).length,4);
+  assert.ok(tileset.catalog.every(item=>item.terrain==='entrance'&&item.walkable&&item.layer==='ground'&&item.entryDirection==='north'),'entrance ground tiles must connect a walkable north-facing approach');
+  assert.ok(tileset.catalog.every(item=>item.edges.north==='building'&&item.edges.south==='sidewalk'),'every entrance must bridge the building and sidewalk edges');
+  assert.ok(tileset.catalog.filter(item=>item.entranceKind==='steps').every(item=>item.traversal==='stairs'&&!item.stepFree),'steps must declare a non-step-free traversal');
+  assert.ok(tileset.catalog.filter(item=>item.entranceKind==='ramp').every(item=>item.traversal==='ramp'&&item.stepFree),'ramps must remain step-free');
+  assert.ok(tileset.catalog.filter(item=>item.entranceKind==='threshold').every(item=>item.traversal==='level'&&item.stepFree),'thresholds must remain level and step-free');
+  assert.ok(tileset.upperCatalog.every(item=>item.layer==='upper'&&!item.walkable&&item.baselineY===40&&item.occludesAboveBaseline),'upper facade pieces need one explicit foot-depth baseline');
+  assert.deepEqual(Array.from(engine.validateTilemap(fixture.tilemap,fixture)),[]);assert.deepEqual(Array.from(fixture.specimens,item=>item.kind).sort(),['ramp','steps','threshold']);
+  for(const specimen of fixture.specimens){
+    const entry=tileset.catalog[tileset.byId[specimen.tileId]];assert.equal(entry.entranceKind,specimen.kind);assert.equal(entry.traversal,specimen.traversal);assert.equal(entry.stepFree,specimen.stepFree);
+    assert.equal(fixture.tilemap.layers.ground[specimen.y][specimen.x],tileset.byId[specimen.tileId]);
+  }
+  assert.deepEqual(Array.from(fixture.upperSamples,item=>item.baselineY),[40,40,40,40]);
+  assert.deepEqual(Array.from(engine.validateWorld(runtime.MALBIT_TRAVEL_WORLDS[0])),[],'loading entrance tiles must not change the airport world');
+  assert.equal(runtime.MALBIT_TRAVEL_WORLDS[0].zones.length,3);assert.ok(!runtime.MALBIT_TRAVEL_WORLDS[0].zones.some(zone=>zone.id===fixture.id),'the entrance fixture cannot ship as a playable zone');
+  const atlasPath=path.join(root,fixture.tilemap.atlas.image),atlas=fs.readFileSync(atlasPath);
+  assert.ok(atlas.length>4000,'the entrance atlas must not be a tiny placeholder');assert.equal(atlas.subarray(0,4).toString(),'RIFF');assert.equal(atlas.subarray(8,12).toString(),'WEBP');
+  const html=read('tests/fixtures/korean-street-building-entrances.html');assert.match(html,/travel-tiles-korean-street-building-entrances-v1\.js/);assert.match(html,/entranceFixtureBoard/);assert.match(html,/entranceUpperStrip/);assert.match(html,/entranceFixtureLegend/);
 });
 
 test('the airport portal moves both ways while preserving route progress',()=>{

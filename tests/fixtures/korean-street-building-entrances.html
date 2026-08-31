@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>MALBIT Korean building entrance fixture</title>
+  <link rel="icon" href="../../icon.svg" type="image/svg+xml">
+  <style>
+    *{box-sizing:border-box;min-width:0}
+    :root{color-scheme:light;--canvas:#edf2f6;--surface:#fff;--text:#17283b;--line:#cbd7e1;--muted:#64778a;--accent:#0b7f76;--checker:#dbe4eb}
+    :root[data-theme="dark"]{color-scheme:dark;--canvas:#081525;--surface:#14283f;--text:#edf6ff;--line:#36516d;--muted:#a9bfd2;--accent:#69dfcf;--checker:#213a53}
+    body{margin:0;background:var(--canvas);color:var(--text);font-family:system-ui,sans-serif}
+    main{display:grid;gap:14px;width:min(100%,620px);margin:auto;padding:16px 16px 28px}
+    header{display:grid;gap:4px}h1{margin:0;font-size:18px}p{margin:0;color:var(--muted);font-size:12px;line-height:1.45}
+    .entranceFixtureBoard{position:relative;width:100%;aspect-ratio:4/3;overflow:hidden;border:1px solid var(--line);border-radius:14px;background:#282a2c;box-shadow:0 10px 24px rgba(12,29,45,.18)}
+    .entranceFixtureTile,.entranceFixtureSwatch,.entranceUpperSample{display:block;background-repeat:no-repeat;background-size:400% 400%;image-rendering:pixelated;opacity:1;filter:none}
+    .entranceFixtureTile{position:absolute;width:25%;height:33.333334%}
+    .entranceFixtureTile[data-specimen]{outline:2px solid var(--accent);outline-offset:-2px}
+    .entranceUpperStrip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+    .entranceUpperSample{position:relative;aspect-ratio:1;overflow:hidden;border:1px solid var(--line);border-radius:8px;background-color:var(--checker)}
+    .entranceUpperSample::after{content:"";position:absolute;z-index:2;left:0;right:0;top:var(--baseline);border-top:2px solid var(--accent)}
+    .entranceFixtureLegend{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+    .entranceFixtureLegend figure{display:grid;gap:5px;margin:0;padding:7px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+    .entranceFixtureSwatch{width:100%;aspect-ratio:1;border-radius:5px;background-color:var(--checker)}
+    .entranceFixtureLegend figcaption{overflow-wrap:anywhere;color:var(--muted);font-size:9px;line-height:1.2}
+  </style>
+  <script src="../../data/travel-tiles-korean-street-v1.js"></script>
+  <script src="../../data/travel-tiles-korean-street-corners-v1.js"></script>
+  <script src="../../data/travel-tiles-korean-street-junctions-v1.js"></script>
+  <script src="../../data/travel-tiles-korean-street-building-entrances-v1.js"></script>
+</head>
+<body>
+  <main>
+    <header><h1>Korean building entrance boundaries</h1><p>Level thresholds · stairs · step-free ramps · independent upper-layer baseline.</p></header>
+    <section class="entranceFixtureBoard" aria-label="Reusable Korean building entrance ground tiles"></section>
+    <section class="entranceUpperStrip" aria-label="Building upper-layer baseline samples"></section>
+    <section class="entranceFixtureLegend" aria-label="Building entrance tile catalog"></section>
+  </main>
+  <script>
+    (function(){
+      'use strict';
+      const params=new URLSearchParams(location.search),theme=params.get('theme')==='dark'?'dark':'light';
+      document.documentElement.dataset.theme=theme;
+      const tileset=window.MALBIT_TRAVEL_TILESETS?.find(item=>item.id==='korean-street-building-entrances-v1'),fixture=tileset?.fixture,atlas=fixture?.tilemap?.atlas;
+      if(!tileset||!fixture||!atlas)throw new Error('Korean building entrance fixture data missing');
+      const tileStyle=(entry,x,y)=>{
+        const positionX=atlas.columns>1?entry.atlasX/(atlas.columns-1)*100:0,positionY=atlas.rows>1?entry.atlasY/(atlas.rows-1)*100:0;
+        return`background-image:url('../../${atlas.image}');background-position:${positionX}% ${positionY}%${Number.isInteger(x)?`;left:${x/fixture.width*100}%;top:${y/fixture.height*100}%`:''}`;
+      };
+      const specimens=new Map(fixture.specimens.map(item=>[item.tileId,item.kind]));
+      const board=document.querySelector('.entranceFixtureBoard'),upperStrip=document.querySelector('.entranceUpperStrip'),legend=document.querySelector('.entranceFixtureLegend');
+      fixture.tilemap.layers.ground.forEach((row,y)=>row.forEach((tileId,x)=>{
+        const entry=tileset.catalog[tileId],node=document.createElement('i');
+        node.className='entranceFixtureTile';node.dataset.tileId=entry.id;node.dataset.kind=entry.entranceKind;node.dataset.walkable=String(entry.walkable);node.dataset.stepFree=String(entry.stepFree);
+        if(specimens.has(entry.id))node.dataset.specimen=specimens.get(entry.id);
+        node.style.cssText=tileStyle(entry,x,y);board.appendChild(node);
+      }));
+      tileset.upperCatalog.forEach(entry=>{
+        const node=document.createElement('i');node.className='entranceUpperSample';node.dataset.tileId=entry.id;node.dataset.layer=entry.layer;node.dataset.baseline=String(entry.baselineY);
+        node.style.cssText=`${tileStyle(entry)};--baseline:${entry.baselineY/atlas.sourceTileSize*100}%`;upperStrip.appendChild(node);
+      });
+      [...tileset.catalog,...tileset.upperCatalog].forEach(entry=>{
+        const figure=document.createElement('figure'),swatch=document.createElement('i'),caption=document.createElement('figcaption');
+        swatch.className='entranceFixtureSwatch';swatch.dataset.tileId=entry.id;swatch.dataset.layer=entry.layer;swatch.style.cssText=tileStyle(entry);
+        caption.textContent=entry.id.replace('building-entrance-','');figure.append(swatch,caption);legend.appendChild(figure);
+      });
+      window.__MALBIT_STREET_BUILDING_ENTRANCES_READY__=true;
+    })();
+  </script>
+</body>
+</html>
