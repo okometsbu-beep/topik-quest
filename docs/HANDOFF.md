@@ -149,10 +149,10 @@ these facts from conversation history or the large TOPIK source bundle.
 - The cue contract currently owns airport exploration interactions. Myeongdong dialogue/reward screens
   still need to adopt the same states; no audio files or persistent sound/vibration controls ship yet.
 - Current airport tile catalogs migrate the existing three backgrounds into explicit per-cell atlas entries.
-  The reusable Korean street foundation currently covers straight segments only; curb corners, junctions,
-  building thresholds, and decorative upper layers must be added as small sibling atlases before a playable
-  Seoul street zone. Other NPCs still need the keyword-learning contract, and the cheongsachorong is only
-  the first Korean investigation object.
+  The reusable Korean street foundation covers straight segments plus typed inner and outer curb corners;
+  junctions, building thresholds, and decorative upper layers must still be added as small sibling atlases
+  before a playable Seoul street zone. Other NPCs still need the keyword-learning contract, and the
+  cheongsachorong is only the first Korean investigation object.
 
 ## Execution defaults
 
