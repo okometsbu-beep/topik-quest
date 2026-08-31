@@ -95,8 +95,23 @@ try{
     }
     await setViewport(390,844);await shot(theme==='light'?'00zd-korean-building-entrances-light.png':'00ze-korean-building-entrances-dark.png');
   }
+  await send('Page.navigate',{url:`http://127.0.0.1:${serverPort}/tests/fixtures/korean-street-decor-upper.html?theme=light`});
+  for(let i=0;i<100&&!await evaluate(`document.readyState==='complete'&&window.__MALBIT_STREET_DECOR_UPPER_READY__===true`);i++)await sleep(50);
+  assert.equal(await evaluate(`window.__MALBIT_STREET_DECOR_UPPER_READY__===true`),true,'street decoration upper fixture did not become ready');
+  const decorImage=await evaluate(`(()=>new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve({width:image.naturalWidth,height:image.naturalHeight});image.onerror=()=>reject(new Error('street decoration atlas image failed'));image.src='../../assets/art/travel/rpg/korean-street-decor-upper-atlas-v1.webp'}))()`);
+  assert.deepEqual(decorImage,{width:256,height:256},'street decoration atlas must remain a 4x4 sheet of 64px source tiles');
+  for(const theme of ['light','dark']){
+    await evaluate(`document.documentElement.dataset.theme=${JSON.stringify(theme)}`);await sleep(60);
+    for(const width of [320,375,390,430]){
+      await setViewport(width,width===320?700:844);
+      const fit=await evaluate(`(()=>{const board=document.querySelector('.decorFixtureBoard'),cells=[...document.querySelectorAll('.decorFixtureCell')],tiles=[...document.querySelectorAll('.decorFixtureTile')],swatches=[...document.querySelectorAll('.decorFixtureSwatch')],rect=board.getBoundingClientRect(),allArt=[...tiles,...swatches],styleOk=allArt.every(tile=>{const style=getComputedStyle(tile);return style.opacity==='1'&&style.filter==='none'&&style.backgroundImage.includes('korean-street-decor-upper-atlas-v1.webp')&&style.backgroundSize==='400% 400%'}),baselineOk=cells.every(cell=>Number(cell.dataset.baseline)>=40&&Number(cell.dataset.baseline)<=56&&getComputedStyle(cell,'::before').borderTopWidth==='2px');return{theme:document.documentElement.dataset.theme,innerWidth,rootWidth:document.documentElement.scrollWidth,bodyWidth:document.body.scrollWidth,ratio:rect.width/rect.height,cells:cells.length,swatches:swatches.length,unique:new Set(swatches.map(tile=>tile.dataset.tileId)).size,categories:[...new Set(cells.map(cell=>cell.dataset.category))].sort(),blocked:cells.filter(cell=>cell.dataset.blocks==='true').length,clear:cells.filter(cell=>cell.dataset.blocks==='false').length,styleOk,baselineOk,worldLoaded:Boolean(window.MALBIT_TRAVEL_WORLDS),fixturePurpose:window.MALBIT_TRAVEL_TILE_FIXTURES[4].purpose}})()`);
+      assert.equal(fit.theme,theme);assert.ok(fit.rootWidth<=fit.innerWidth+1&&fit.bodyWidth<=fit.innerWidth+1,`${theme} ${width}px: street decoration fixture horizontal overflow`);assert.ok(Math.abs(fit.ratio-1)<.01,`${theme} ${width}px: street decoration fixture ratio changed`);
+      assert.deepEqual([fit.cells,fit.swatches,fit.unique,fit.blocked,fit.clear],[16,16,16,7,9],`${theme} ${width}px: street decoration catalog/footprint cells missing`);assert.deepEqual(fit.categories,['awning','planter','sign','street-detail']);assert.equal(fit.styleOk,true,`${theme} ${width}px: street decoration atlas art was filtered or resized inconsistently`);assert.equal(fit.baselineOk,true,`${theme} ${width}px: decoration baseline marker changed`);assert.equal(fit.worldLoaded,false,'the street decoration fixture must stay independent from playable airport zones');assert.equal(fit.fixturePurpose,'isolated-decor-baseline-collision-validation-only');
+    }
+    await setViewport(390,844);await shot(theme==='light'?'00zf-korean-street-decor-upper-light.png':'00zg-korean-street-decor-upper-dark.png');
+  }
   assert.deepEqual(errors,[]);
-  console.log('street tile QA: basic + corner + junction + building entrance sibling atlases, 64 catalog entries, isolated fixtures, 320/375/390/430px, light/dark, aligned seams, upper baseline, errors=0');
+  console.log('street tile QA: basic + corner + junction + building entrance + decoration upper sibling atlases, 80 catalog entries, isolated fixtures, 320/375/390/430px, light/dark, aligned seams, upper baseline and collision footprint, errors=0');
 }finally{
   try{socket?.close()}catch(error){}
   chrome?.kill('SIGTERM');server.kill('SIGTERM');

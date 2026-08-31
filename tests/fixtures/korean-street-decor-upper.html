@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>MALBIT Korean street decoration upper fixture</title>
+  <link rel="icon" href="../../icon.svg" type="image/svg+xml">
+  <style>
+    *{box-sizing:border-box;min-width:0;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+    :root{color-scheme:light;--canvas:#edf2f6;--surface:#fff;--text:#17283b;--line:#cbd7e1;--muted:#64778a;--accent:#0b7f76;--blocked:#bd3b4b;--wall:#dce6ed;--floor:#c9d6df}
+    :root[data-theme="dark"]{color-scheme:dark;--canvas:#081525;--surface:#14283f;--text:#edf6ff;--line:#36516d;--muted:#a9bfd2;--accent:#69dfcf;--blocked:#ff8b96;--wall:#29425b;--floor:#1b344d}
+    body{margin:0;background:var(--canvas);color:var(--text);font-family:system-ui,sans-serif}
+    main{display:grid;gap:14px;width:min(100%,620px);margin:auto;padding:16px 16px 28px}
+    header{display:grid;gap:4px}h1{margin:0;font-size:18px}p{margin:0;color:var(--muted);font-size:12px;line-height:1.45}
+    .decorFixtureBoard{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:100%;aspect-ratio:1;overflow:hidden;border:1px solid var(--line);border-radius:14px;background:var(--floor);box-shadow:0 10px 24px rgba(12,29,45,.18)}
+    .decorFixtureCell{position:relative;overflow:hidden;background:linear-gradient(var(--wall) 0 49%,var(--floor) 49% 100%)}
+    .decorFixtureCell::before{content:"";position:absolute;left:0;right:0;top:var(--baseline);z-index:2;border-top:2px solid var(--accent)}
+    .decorFixtureCell[data-blocks="true"]::after{content:"";position:absolute;inset:auto 18% 5% 18%;height:22%;z-index:1;border:2px dashed var(--blocked);border-radius:5px;background:color-mix(in srgb,var(--blocked) 12%,transparent)}
+    .decorFixtureTile,.decorFixtureSwatch{display:block;background-repeat:no-repeat;background-size:400% 400%;image-rendering:pixelated;opacity:1;filter:none}
+    .decorFixtureTile{position:absolute;inset:0;z-index:3}
+    .decorFixtureLegend{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+    .decorFixtureLegend figure{display:grid;gap:5px;margin:0;padding:7px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+    .decorFixtureSwatch{width:100%;aspect-ratio:1;border-radius:5px;background-color:var(--floor)}
+    .decorFixtureLegend figcaption{overflow-wrap:anywhere;color:var(--muted);font-size:9px;line-height:1.2}
+  </style>
+  <script src="../../data/travel-tiles-korean-street-v1.js"></script>
+  <script src="../../data/travel-tiles-korean-street-corners-v1.js"></script>
+  <script src="../../data/travel-tiles-korean-street-junctions-v1.js"></script>
+  <script src="../../data/travel-tiles-korean-street-building-entrances-v1.js"></script>
+  <script src="../../data/travel-tiles-korean-street-decor-upper-v1.js"></script>
+</head>
+<body>
+  <main>
+    <header><h1>Korean street decoration depth contract</h1><p>Blank signs · awnings · planters · street details · explicit baseline and collision footprint.</p></header>
+    <section class="decorFixtureBoard" aria-label="Reusable Korean street upper decoration tiles"></section>
+    <section class="decorFixtureLegend" aria-label="Korean street upper decoration catalog"></section>
+  </main>
+  <script>
+    (function(){
+      'use strict';
+      const params=new URLSearchParams(location.search),theme=params.get('theme')==='dark'?'dark':'light';
+      document.documentElement.dataset.theme=theme;
+      const tileset=window.MALBIT_TRAVEL_TILESETS?.find(item=>item.id==='korean-street-decor-upper-v1'),fixture=tileset?.fixture,atlas=fixture?.tilemap?.atlas;
+      if(!tileset||!fixture||!atlas)throw new Error('Korean street decoration fixture data missing');
+      const tileStyle=entry=>{
+        const positionX=entry.atlasX/(atlas.columns-1)*100,positionY=entry.atlasY/(atlas.rows-1)*100;
+        return`background-image:url('../../${atlas.image}');background-position:${positionX}% ${positionY}%`;
+      };
+      const board=document.querySelector('.decorFixtureBoard'),legend=document.querySelector('.decorFixtureLegend');
+      tileset.upperCatalog.forEach(entry=>{
+        const cell=document.createElement('div'),tile=document.createElement('i');
+        cell.className='decorFixtureCell';cell.dataset.tileId=entry.id;cell.dataset.category=entry.category;cell.dataset.blocks=String(entry.blocksMovement);cell.dataset.baseline=String(entry.baselineY);
+        cell.style.setProperty('--baseline',`${entry.baselineY/atlas.sourceTileSize*100}%`);
+        tile.className='decorFixtureTile';tile.dataset.tileId=entry.id;tile.dataset.layer=entry.layer;tile.style.cssText=tileStyle(entry);cell.appendChild(tile);board.appendChild(cell);
+        const figure=document.createElement('figure'),swatch=document.createElement('i'),caption=document.createElement('figcaption');
+        swatch.className='decorFixtureSwatch';swatch.dataset.tileId=entry.id;swatch.dataset.layer=entry.layer;swatch.style.cssText=tileStyle(entry);
+        caption.textContent=entry.id.replace('street-decor-','');figure.append(swatch,caption);legend.appendChild(figure);
+      });
+      window.__MALBIT_STREET_DECOR_UPPER_READY__=true;
+    })();
+  </script>
+</body>
+</html>

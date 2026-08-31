@@ -20,6 +20,7 @@ function loadWorldWithStreetTiles(){
   vm.runInContext(read('data/travel-tiles-korean-street-corners-v1.js'),runtime);
   vm.runInContext(read('data/travel-tiles-korean-street-junctions-v1.js'),runtime);
   vm.runInContext(read('data/travel-tiles-korean-street-building-entrances-v1.js'),runtime);
+  vm.runInContext(read('data/travel-tiles-korean-street-decor-upper-v1.js'),runtime);
   vm.runInContext(read('data/travel-map-seoul-v1.js'),runtime);
   vm.runInContext(read('travel-rpg-engine.js'),runtime);
   return runtime;
@@ -231,6 +232,30 @@ test('Korean building entrance sibling atlas separates walkable transitions from
   const atlasPath=path.join(root,fixture.tilemap.atlas.image),atlas=fs.readFileSync(atlasPath);
   assert.ok(atlas.length>4000,'the entrance atlas must not be a tiny placeholder');assert.equal(atlas.subarray(0,4).toString(),'RIFF');assert.equal(atlas.subarray(8,12).toString(),'WEBP');
   const html=read('tests/fixtures/korean-street-building-entrances.html');assert.match(html,/travel-tiles-korean-street-building-entrances-v1\.js/);assert.match(html,/entranceFixtureBoard/);assert.match(html,/entranceUpperStrip/);assert.match(html,/entranceFixtureLegend/);
+});
+
+test('Korean street decoration upper atlas owns baseline, occlusion, and collision footprints',()=>{
+  const runtime=loadWorldWithStreetTiles(),engine=runtime.MALBIT_TRAVEL_RPG,tileset=runtime.MALBIT_TRAVEL_TILESETS[4],fixture=runtime.MALBIT_TRAVEL_TILE_FIXTURES[4];
+  assert.equal(tileset.id,'korean-street-decor-upper-v1');assert.equal(tileset.scope,'future-seoul-zones');
+  assert.equal(fixture.id,'korean-street-decor-upper-fixture-v1');assert.equal(fixture.purpose,'isolated-decor-baseline-collision-validation-only');
+  assert.deepEqual({width:fixture.width,height:fixture.height,columns:fixture.tilemap.atlas.columns,rows:fixture.tilemap.atlas.rows,sourceTileSize:fixture.tilemap.atlas.sourceTileSize},{width:4,height:4,columns:4,rows:4,sourceTileSize:64});
+  assert.equal(tileset.upperCatalog.length,16);assert.equal(new Set(tileset.upperCatalog.map(item=>item.id)).size,16);
+  assert.deepEqual(Array.from(tileset.upperCatalog,item=>`${item.atlasX},${item.atlasY}`).sort(),Array.from({length:16},(_,index)=>`${index%4},${Math.floor(index/4)}`).sort());
+  for(const category of ['sign','awning','planter','street-detail'])assert.equal(tileset.upperCatalog.filter(item=>item.category===category).length,4);
+  assert.ok(tileset.upperCatalog.every(item=>item.terrain==='decor'&&!item.walkable&&item.layer==='upper'&&item.occludesAboveBaseline),'decorations must remain independent upper-layer entries');
+  assert.ok(tileset.upperCatalog.every(item=>Number.isInteger(item.baselineY)&&item.baselineY>=40&&item.baselineY<=56),'every decoration needs a stable foot-depth baseline');
+  assert.ok(tileset.upperCatalog.every(item=>item.collisionFootprint&&Array.isArray(item.collisionFootprint.cells)),'every decoration must own an explicit collision footprint');
+  const blockers=tileset.upperCatalog.filter(item=>item.blocksMovement),clear=tileset.upperCatalog.filter(item=>!item.blocksMovement);
+  assert.equal(blockers.length,7);assert.equal(clear.length,9);
+  assert.ok(blockers.every(item=>item.collisionFootprint.width===1&&item.collisionFootprint.height===1&&item.collisionFootprint.cells.length===1),'floor-standing props block one cell');
+  assert.ok(clear.every(item=>item.collisionFootprint.width===0&&item.collisionFootprint.height===0&&!item.collisionFootprint.cells.length),'wall-mounted props cannot invent invisible collisions');
+  assert.deepEqual(Array.from(fixture.tilemap.layers.upper,row=>Array.from(row)),[[0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15]]);
+  assert.deepEqual(Array.from(fixture.specimens,item=>item.kind).sort(),['awning','planter','sign','street-detail']);
+  assert.deepEqual(Array.from(engine.validateWorld(runtime.MALBIT_TRAVEL_WORLDS[0])),[],'loading decoration tiles must not change the airport world');
+  assert.equal(runtime.MALBIT_TRAVEL_WORLDS[0].zones.length,3);assert.ok(!runtime.MALBIT_TRAVEL_WORLDS[0].zones.some(zone=>zone.id===fixture.id),'the decoration fixture cannot ship as a playable zone');
+  const atlasPath=path.join(root,fixture.tilemap.atlas.image),atlas=fs.readFileSync(atlasPath);
+  assert.ok(atlas.length>4000,'the decoration atlas must not be a tiny placeholder');assert.equal(atlas.subarray(0,4).toString(),'RIFF');assert.equal(atlas.subarray(8,12).toString(),'WEBP');
+  const html=read('tests/fixtures/korean-street-decor-upper.html');assert.match(html,/travel-tiles-korean-street-decor-upper-v1\.js/);assert.match(html,/decorFixtureBoard/);assert.match(html,/decorFixtureLegend/);assert.match(html,/__MALBIT_STREET_DECOR_UPPER_READY__/);
 });
 
 test('the airport portal moves both ways while preserving route progress',()=>{
