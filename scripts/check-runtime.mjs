@@ -68,6 +68,7 @@ before(runtime, 'topik1.js', 'learning-features.js');
 before(runtime, 'data/travel-pack-seoul-001.js', 'travel-mode.js');
 before(runtime, 'data/travel-tiles-korean-street-v1.js', 'data/travel-map-seoul-v1.js');
 before(runtime, 'data/travel-tiles-korean-street-corners-v1.js', 'data/travel-map-seoul-v1.js');
+before(runtime, 'data/travel-tiles-korean-street-junctions-v1.js', 'data/travel-map-seoul-v1.js');
 before(runtime, 'data/travel-map-seoul-v1.js', 'travel-rpg-engine.js');
 before(runtime, 'travel-rpg-engine.js', 'travel-mode.js');
 before(runtime, 'question-bank-engine.js', 'travel-mode.js');

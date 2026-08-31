@@ -65,8 +65,23 @@ try{
     }
     await setViewport(390,844);await shot(theme==='light'?'00z-korean-street-corners-light.png':'00za-korean-street-corners-dark.png');
   }
+  await send('Page.navigate',{url:`http://127.0.0.1:${serverPort}/tests/fixtures/korean-street-junctions.html?theme=light`});
+  for(let i=0;i<100&&!await evaluate(`document.readyState==='complete'&&window.__MALBIT_STREET_JUNCTIONS_READY__===true`);i++)await sleep(50);
+  assert.equal(await evaluate(`window.__MALBIT_STREET_JUNCTIONS_READY__===true`),true,'street junction fixture did not become ready');
+  const junctionImage=await evaluate(`(()=>new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve({width:image.naturalWidth,height:image.naturalHeight});image.onerror=()=>reject(new Error('junction atlas image failed'));image.src='../../assets/art/travel/rpg/korean-street-junctions-atlas-v1.webp'}))()`);
+  assert.deepEqual(junctionImage,{width:256,height:256},'junction atlas must remain a 4x4 sheet of 64px source tiles');
+  for(const theme of ['light','dark']){
+    await evaluate(`document.documentElement.dataset.theme=${JSON.stringify(theme)}`);await sleep(60);
+    for(const width of [320,375,390,430]){
+      await setViewport(width,width===320?700:844);
+      const fit=await evaluate(`(()=>{const board=document.querySelector('.junctionFixtureBoard'),tiles=[...document.querySelectorAll('.junctionFixtureTile')],swatches=[...document.querySelectorAll('.junctionFixtureSwatch')],specimens=[...document.querySelectorAll('.junctionFixtureTile[data-specimen]')],rect=board.getBoundingClientRect(),tileRects=tiles.map(tile=>tile.getBoundingClientRect()),horizontalGaps=tileRects.flatMap((current,index)=>index%20===19?[]:[Math.abs(current.right-tileRects[index+1].left)]),verticalGaps=tileRects.flatMap((current,index)=>index>=220?[]:[Math.abs(current.bottom-tileRects[index+20].top)]),maxSeam=Math.max(0,...horizontalGaps,...verticalGaps),aligned=maxSeam<.15,styleOk=[...tiles,...swatches].every(tile=>{const style=getComputedStyle(tile);return style.opacity==='1'&&style.filter==='none'&&style.backgroundImage.includes('korean-street-junctions-atlas-v1.webp')&&style.backgroundSize==='400% 400%'});return{theme:document.documentElement.dataset.theme,innerWidth,rootWidth:document.documentElement.scrollWidth,bodyWidth:document.body.scrollWidth,ratio:rect.width/rect.height,tiles:tiles.length,swatches:swatches.length,unique:new Set(swatches.map(tile=>tile.dataset.tileId)).size,specimens:specimens.length,specimenKinds:[...new Set(specimens.map(tile=>tile.dataset.specimen))].sort(),aligned,maxSeam,styleOk,worldLoaded:Boolean(window.MALBIT_TRAVEL_WORLDS),fixturePurpose:window.MALBIT_TRAVEL_TILE_FIXTURES[2].purpose}})()`);
+      assert.equal(fit.theme,theme);assert.ok(fit.rootWidth<=fit.innerWidth+1&&fit.bodyWidth<=fit.innerWidth+1,`${theme} ${width}px: junction fixture horizontal overflow`);assert.ok(Math.abs(fit.ratio-20/12)<.01,`${theme} ${width}px: junction fixture ratio changed`);
+      assert.deepEqual([fit.tiles,fit.swatches,fit.unique],[240,16,16],`${theme} ${width}px: junction catalog/fixture cells missing`);assert.equal(fit.specimens,5);assert.deepEqual(fit.specimenKinds,['cross','t']);assert.equal(fit.aligned,true,`${theme} ${width}px: junction tile seam gap ${fit.maxSeam}px`);assert.equal(fit.styleOk,true,`${theme} ${width}px: junction atlas art was filtered or resized inconsistently`);assert.equal(fit.worldLoaded,false,'the junction fixture must stay independent from playable airport zones');assert.equal(fit.fixturePurpose,'isolated-all-entry-junction-validation-only');
+    }
+    await setViewport(390,844);await shot(theme==='light'?'00zb-korean-street-junctions-light.png':'00zc-korean-street-junctions-dark.png');
+  }
   assert.deepEqual(errors,[]);
-  console.log('street tile QA: basic + corner sibling atlases, 32 catalog entries, isolated 12x8 fixtures, 320/375/390/430px, light/dark, aligned seams, errors=0');
+  console.log('street tile QA: basic + corner + junction sibling atlases, 48 catalog entries, isolated fixtures, 320/375/390/430px, light/dark, aligned seams, errors=0');
 }finally{
   try{socket?.close()}catch(error){}
   chrome?.kill('SIGTERM');server.kill('SIGTERM');
