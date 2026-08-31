@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v82 · Travel iOS hold controls
-- Current candidate: v82 · Travel iOS hold controls
+- Production release: v83 · Reusable Korean street tile foundation
+- Current candidate: v83 · Reusable Korean street tile foundation
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
@@ -77,6 +77,10 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
   while held, release cleanly, and movement never rebuilds the ground or sprite DOM.
 - Travel hold controls suppress iOS callout, text selection, and icon dragging without disabling
   pointer-held movement or selection in ordinary learning copy.
+- The first reusable Korean streetscape atlas owns 16 independent 64px source tiles for granite
+  sidewalks, asphalt roads, four straight curb boundaries, crosswalks, tactile paving, and lane marks.
+  Each catalog entry declares atlas coordinates, terrain, walkability, ground layer, orientation, and
+  four edge materials; an isolated 12×8 fixture proves composition without changing airport zones.
 - Travel stamina starts at 10,000 steps and is saved inside the existing exploration record. Only a
   successful tile move spends one step; collisions are free, and 0 opens a dedicated full-screen rest scene.
 - One-hour rest returns the traveler to the current zone spawn with full stamina while preserving route
@@ -90,7 +94,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 우선순위
 
-1. 재사용 서울 거리 타일셋을 작은 아틀라스 단위로 확장한다.
+1. 재사용 서울 거리 타일셋을 모서리·교차로 단위로 확장한다.
 2. 실제 오답 근거를 모아 TOPIK I·II와 Shorts 문항·강사형 해설을 유형별로 확장한다.
 
 ## 이번 운영 변경
@@ -104,22 +108,23 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-재사용 가능한 한국 거리 타일셋의 첫 기본 타일(보도·차도·경계·횡단보도)을 별도
-아틀라스·카탈로그로 만들고, 기존 공항 구역은 바꾸지 않은 채 독립 검증 픽스처를 추가한다.
-새 구역·스태미너 조정·TOPIK/NPC 대화 확장은 넣지 않는다.
+첫 직선 거리 타일을 이어 쓸 수 있도록 보도-차도 안쪽·바깥쪽 모서리 타일을 별도 sibling
+아틀라스·카탈로그로 추가하고, 90도 도로 독립 픽스처에서 접속면과 통행성을 검증한다.
+새 구역·공항 구역 변경·스태미너·NPC·TOPIK 확장은 넣지 않는다.
 
-## v82 후보 검증 및 배포
+## v83 후보 검증 및 배포
 
-- 방향키 네 개와 조사키의 iOS 길게 누르기 콜아웃·텍스트 선택·SVG 드래그를 막았다.
-  일반 문제·해설·단어 텍스트의 선택 범위는 바꾸지 않았다.
-- 방향키의 pointer capture, 누르고 유지 이동, 손을 뗐을 때 정지하는 계약은 그대로다.
-- 전체 검사 66개와 빠른 검사 61개를 통과했다. 실제 Chrome에서 320·375·390·430px,
-  밝은·어두운 테마, 다섯 버튼의 취소 가능한 세 이벤트와 SVG 포인터 통과를 확인했고
+- 256×256 WebP 하나에 64px 원본 셀 16개를 배치하고 보도·차도·직선 경계·횡단보도·점자블록·
+  차선 타일을 지형·통행성·방향·접속면 메타데이터와 분리했다.
+- 12×8 독립 거리 픽스처는 96개 타일을 실제 조합하지만 플레이 가능한 공항 월드에는 포함하지
+  않았다. 기존 공항 3개 구역과 배경·충돌·저장 데이터는 변경하지 않았다.
+- 전체 검사 67개와 빠른 검사 62개를 통과했다. GitHub Actions 실제 Chrome에서 기존 Travel
+  전체 흐름과 새 픽스처를 320·375·390·430px, 밝은·어두운 테마로 검사했고 타일 간격과
   콘솔 오류는 0건이다.
 - 기존 답안·지갑·수집품·스태미너·탐험 기록과 저장 키를 유지했다. 결제 UI·API 키·개인정보
   전송은 추가하지 않았다.
-- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (모바일 CI와 병합 뒤 v82 확인)
-- 되돌리기 기준: v81 main `1b9502138285927051e833f724c33c4304215a85`
+- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (모바일 CI와 병합 뒤 v83 확인)
+- 되돌리기 기준: v82 main `b087b151c35a60630294b0fc030fad28e47a5dd8`
 
 ## 알려진 위험
 
@@ -133,8 +138,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - P3 레이어 기반은 완료됐지만 광원은 현재 정적 하이라이트뿐이며 날씨·시간대 변화는 아직 없다.
 - v77 연출 계약은 공항 탐험 흐름부터 적용한다. 명동 NPC·보상 화면 연결과 실제 음원 선택 UI는 아직 없다.
 - 현재 공항 3개 구역은 기존 원화를 마이그레이션 아틀라스로 쓰되 런타임은 타일 ID별로만
-  그린다. DOM/frame 성능 상한은 고정됐지만 서울 구역을 늘리기 전 반복 가능한 한국 거리
-  타일셋이 필요하다.
+  그린다. 첫 한국 거리 아틀라스는 직선 보도·차도·경계·횡단보도만 제공하므로 실제 서울 구역을
+  만들기 전에 모서리·교차로·건물 진입 경계를 작은 sibling 아틀라스로 더 확장해야 한다.
 - 첫 공항 NPC만 장문 대화·단어 퀴즈 계약에 편입됐다. 한국 조사물도 첫 청사초롱 한 개뿐이며
   다른 NPC와 조사물은 후속이다.
 - 기존 Plus·가격·결제 암시 UI가 새 화면에 재사용되지 않도록 계속 검사해야 한다.
