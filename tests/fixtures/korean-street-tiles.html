@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>MALBIT Korean street tile fixture</title>
+  <link rel="icon" href="../../icon.svg" type="image/svg+xml">
+  <style>
+    *{box-sizing:border-box;min-width:0}
+    :root{color-scheme:light;--canvas:#edf2f6;--surface:#fff;--text:#17283b;--line:#cbd7e1;--muted:#64778a}
+    :root[data-theme="dark"]{color-scheme:dark;--canvas:#081525;--surface:#14283f;--text:#edf6ff;--line:#36516d;--muted:#a9bfd2}
+    body{margin:0;background:var(--canvas);color:var(--text);font-family:system-ui,sans-serif}
+    main{display:grid;gap:14px;width:min(100%,620px);margin:auto;padding:16px 16px 28px}
+    header{display:grid;gap:4px}h1{margin:0;font-size:18px}p{margin:0;color:var(--muted);font-size:12px;line-height:1.45}
+    .streetFixtureBoard{position:relative;width:100%;aspect-ratio:12/8;overflow:hidden;border:1px solid var(--line);border-radius:14px;background:#272a2c;box-shadow:0 10px 24px rgba(12,29,45,.18)}
+    .streetFixtureTile,.streetFixtureSwatch{display:block;background-repeat:no-repeat;background-size:400% 400%;image-rendering:pixelated;opacity:1;filter:none}
+    .streetFixtureTile{position:absolute;width:8.333334%;height:12.5%}
+    .streetFixtureLegend{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+    .streetFixtureLegend figure{display:grid;gap:5px;margin:0;padding:7px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+    .streetFixtureSwatch{width:100%;aspect-ratio:1;border-radius:5px}
+    .streetFixtureLegend figcaption{overflow-wrap:anywhere;color:var(--muted);font-size:9px;line-height:1.2}
+  </style>
+  <script src="../../data/travel-tiles-korean-street-v1.js"></script>
+</head>
+<body>
+  <main>
+    <header><h1>Korean street foundation</h1><p>Isolated atlas fixture · existing airport zones are not loaded.</p></header>
+    <section class="streetFixtureBoard" aria-label="Reusable Korean street tile scene"></section>
+    <section class="streetFixtureLegend" aria-label="Tile catalog"></section>
+  </main>
+  <script>
+    (function(){
+      'use strict';
+      const params=new URLSearchParams(location.search),theme=params.get('theme')==='dark'?'dark':'light';
+      document.documentElement.dataset.theme=theme;
+      const tileset=window.MALBIT_TRAVEL_TILESETS?.[0],fixture=tileset?.fixture,atlas=fixture?.tilemap?.atlas;
+      if(!tileset||!fixture||!atlas)throw new Error('Korean street fixture data missing');
+      const tileStyle=(entry,x,y)=>{
+        const positionX=atlas.columns>1?entry.atlasX/(atlas.columns-1)*100:0,positionY=atlas.rows>1?entry.atlasY/(atlas.rows-1)*100:0;
+        return`background-image:url('../../${atlas.image}');background-position:${positionX}% ${positionY}%${Number.isInteger(x)?`;left:${x/fixture.width*100}%;top:${y/fixture.height*100}%`:''}`;
+      };
+      const board=document.querySelector('.streetFixtureBoard'),legend=document.querySelector('.streetFixtureLegend');
+      fixture.tilemap.layers.ground.forEach((row,y)=>row.forEach((tileId,x)=>{
+        const entry=tileset.catalog[tileId],node=document.createElement('i');
+        node.className='streetFixtureTile';node.dataset.tileId=entry.id;node.dataset.terrain=entry.terrain;node.dataset.walkable=String(entry.walkable);node.style.cssText=tileStyle(entry,x,y);board.appendChild(node);
+      }));
+      tileset.catalog.forEach(entry=>{
+        const figure=document.createElement('figure'),swatch=document.createElement('i'),caption=document.createElement('figcaption');
+        swatch.className='streetFixtureSwatch';swatch.dataset.tileId=entry.id;swatch.style.cssText=tileStyle(entry);
+        caption.textContent=entry.id.replace('street-','');figure.append(swatch,caption);legend.appendChild(figure);
+      });
+      window.__MALBIT_STREET_FIXTURE_READY__=true;
+    })();
+  </script>
+</body>
+</html>

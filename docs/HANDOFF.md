@@ -53,6 +53,11 @@ these facts from conversation history or the large TOPIK source bundle.
 - Travel zones use a 48×36, 25px tile contract. Every ground cell references an explicit catalog entry
   with atlas coordinates, terrain, walkability, and layer; the browser paints individual tiles and never
   a full-map `<img>`. Legacy 12×9 saved coordinates migrate once to version 2 without changing the storage key.
+- `data/travel-tiles-korean-street-v1.js` owns the first reusable Seoul streetscape catalog independently
+  from the airport migration maps. Its 4×4 WebP atlas contains 16 64px source tiles for sidewalks, roads,
+  straight curb boundaries, crosswalks, tactile paving, and lane marks. Every entry declares terrain,
+  walkability, orientation, ground layer, and four edge materials; a non-playable 12×8 fixture is the
+  mobile seam/theme gate and must not be added to `world.zones` as a shortcut.
 - Travel movement keeps the live tile and sprite DOM in place for a 110ms player step and 160ms camera
   follow. Pointer-held SVG direction controls repeat until release, blocked movement stops silently, and
   reduced-motion devices settle immediately without map opacity, filter, or brightness changes. The five
@@ -137,9 +142,10 @@ these facts from conversation history or the large TOPIK source bundle.
 - The cue contract currently owns airport exploration interactions. Myeongdong dialogue/reward screens
   still need to adopt the same states; no audio files or persistent sound/vibration controls ship yet.
 - Current airport tile catalogs migrate the existing three backgrounds into explicit per-cell atlas entries.
-  The DOM/frame-time budget is now enforced; before adding many Seoul districts, replace repeated migration
-  entries with a reusable Korean streetscape tileset. Other NPCs still need the keyword-learning contract,
-  and the cheongsachorong is only the first Korean investigation object.
+  The reusable Korean street foundation currently covers straight segments only; curb corners, junctions,
+  building thresholds, and decorative upper layers must be added as small sibling atlases before a playable
+  Seoul street zone. Other NPCs still need the keyword-learning contract, and the cheongsachorong is only
+  the first Korean investigation object.
 
 ## Execution defaults
 
