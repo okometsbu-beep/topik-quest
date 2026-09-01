@@ -76,6 +76,9 @@ these facts from conversation history or the large TOPIK source bundle.
 - `data/travel-block-korean-street-v1.js` composes a non-playable 12×10 Seoul block using only IDs from
   the five reusable catalogs. Its validator resolves each catalog-owned edge, walkability, upper baseline,
   and collision footprint; it rejects unknown IDs, broken named routes, invalid ports, and footprint drift.
+- The same owner composes two isolated 12×10 blocks east-to-west. Its adjacency validator rejects
+  overlapping blocks, mismatched full seams, reused or non-adjacent ports, non-opposing directions,
+  different materials, and non-walkable endpoints while keeping the fixture out of playable zones.
 - Travel movement keeps the live tile and sprite DOM in place for a 110ms player step and 160ms camera
   follow. Pointer-held SVG direction controls repeat until release, blocked movement stops silently, and
   reduced-motion devices settle immediately without map opacity, filter, or brightness changes. The five
@@ -161,8 +164,9 @@ these facts from conversation history or the large TOPIK source bundle.
   still need to adopt the same states; no audio files or persistent sound/vibration controls ship yet.
 - Current airport tile catalogs migrate the existing three backgrounds into explicit per-cell atlas entries.
   The reusable Korean street foundation now covers straight segments, typed inner and outer curb corners,
-  T/cross junctions, building entrances, decorative upper layers, and one validated non-playable block.
-  Before a playable Seoul street zone, neighboring blocks still need port-to-port composition validation.
+  T/cross junctions, building entrances, decorative upper layers, one validated block, and east-west
+  neighboring-block composition. Before a playable Seoul street zone, north-south and 2×2 adjacency still
+  need the same port-to-port and full-seam validation.
   Other NPCs still need the keyword-learning contract, and the cheongsachorong is only the first Korean
   investigation object.
 
