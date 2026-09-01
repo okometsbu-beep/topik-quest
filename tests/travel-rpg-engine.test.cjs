@@ -327,6 +327,22 @@ test('north-south Seoul street blocks require opposing walkable ports and a matc
   const html=read('tests/fixtures/korean-street-block-adjacency.html');assert.match(html,/params\.get\('axis'\)/);assert.match(html,/north-south/);
 });
 
+test('four Seoul street blocks validate every internal seam and unique external exit',()=>{
+  const runtime=loadWorldWithStreetTiles(),validator=runtime.MALBIT_TRAVEL_BLOCK_VALIDATOR,composition=runtime.MALBIT_TRAVEL_BLOCK_COMPOSITIONS[2];
+  assert.equal(composition.id,'korean-street-four-block-grid-fixture-v1');assert.equal(composition.purpose,'isolated-four-block-grid-adjacency-validation-only');assert.equal(composition.playable,false);
+  assert.deepEqual({width:composition.width,height:composition.height,instances:composition.instances.length,connections:composition.connections.length},{width:24,height:20,instances:4,connections:4});
+  assert.deepEqual(Array.from(validator.validateComposition(composition)),[]);
+  const external=Array.from(validator.externalPorts(composition));assert.equal(external.length,8);assert.equal(new Set(external.map(port=>port.key)).size,8);
+  assert.equal(new Set(external.map(port=>`${port.x+(port.direction==='east'?1:port.direction==='west'?-1:0)},${port.y+(port.direction==='south'?1:port.direction==='north'?-1:0)}`)).size,8,'every external port needs a unique exit cell');
+  const missingLink=JSON.parse(JSON.stringify(composition));missingLink.connections.pop();missingLink.expectedExternalPorts.push('south-east-block:road-north','north-east-block:road-south');
+  assert.ok(Array.from(validator.validateComposition(missingLink)).some(error=>error.includes('internal port is not connected')),'all four internal seams must be connected');
+  const reusedEndpoint=JSON.parse(JSON.stringify(composition));reusedEndpoint.connections[1].from=reusedEndpoint.connections[0].from;
+  assert.ok(Array.from(validator.validateComposition(reusedEndpoint)).some(error=>error.includes('port endpoint reused')),'one port cannot serve two grid links');
+  const wrongExternalSet=JSON.parse(JSON.stringify(composition));wrongExternalSet.expectedExternalPorts=wrongExternalSet.expectedExternalPorts.slice(1);
+  assert.ok(Array.from(validator.validateComposition(wrongExternalSet)).includes('external port set mismatch'),'all eight boundary ports must remain explicit');
+  const html=read('tests/fixtures/korean-street-block-adjacency.html');assert.match(html,/data-axis="grid"/);assert.match(html,/four-block-grid/);
+});
+
 test('the airport portal moves both ways while preserving route progress',()=>{
   const runtime=loadWorld(),engine=runtime.MALBIT_TRAVEL_RPG,world=runtime.MALBIT_TRAVEL_WORLDS[0];
   const arrivals=engine.zoneById(world,'icn-t1-arrivals'),transport=engine.zoneById(world,'icn-t1-transport-center');

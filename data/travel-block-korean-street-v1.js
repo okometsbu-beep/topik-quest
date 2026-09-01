@@ -135,6 +135,33 @@
     ])
   });
 
+  const gridAdjacency=Object.freeze({
+    id:'korean-street-four-block-grid-fixture-v1',
+    purpose:'isolated-four-block-grid-adjacency-validation-only',
+    scope:'future-seoul-zones',
+    playable:false,
+    width:24,
+    height:20,
+    instances:Object.freeze([
+      Object.freeze({id:'north-west-block',blockId:northSouthNeighbor.id,x:0,y:0}),
+      Object.freeze({id:'north-east-block',blockId:northSouthNeighbor.id,x:12,y:0}),
+      Object.freeze({id:'south-west-block',blockId:northSouthNeighbor.id,x:0,y:10}),
+      Object.freeze({id:'south-east-block',blockId:northSouthNeighbor.id,x:12,y:10})
+    ]),
+    connections:Object.freeze([
+      Object.freeze({id:'north-row-road-link',material:'road',from:Object.freeze({instanceId:'north-west-block',portId:'road-east'}),to:Object.freeze({instanceId:'north-east-block',portId:'road-west'})}),
+      Object.freeze({id:'south-row-road-link',material:'road',from:Object.freeze({instanceId:'south-west-block',portId:'road-east'}),to:Object.freeze({instanceId:'south-east-block',portId:'road-west'})}),
+      Object.freeze({id:'west-column-road-link',material:'road',from:Object.freeze({instanceId:'north-west-block',portId:'road-south'}),to:Object.freeze({instanceId:'south-west-block',portId:'road-north'})}),
+      Object.freeze({id:'east-column-road-link',material:'road',from:Object.freeze({instanceId:'north-east-block',portId:'road-south'}),to:Object.freeze({instanceId:'south-east-block',portId:'road-north'})})
+    ]),
+    expectedExternalPorts:Object.freeze([
+      'north-east-block:road-east','north-east-block:road-north',
+      'north-west-block:road-north','north-west-block:road-west',
+      'south-east-block:road-east','south-east-block:road-south',
+      'south-west-block:road-south','south-west-block:road-west'
+    ])
+  });
+
   const catalogs=()=>Object.fromEntries((window.MALBIT_TRAVEL_TILESETS||[]).map(item=>[item.id,item]));
   const entries=(catalog,layer)=>layer==='upper'?catalog?.upperCatalog:catalog?.catalog;
   const resolve=(reference,layer='ground')=>{
@@ -210,7 +237,7 @@
   };
   const validateComposition=composition=>{
     const errors=[],registry=blocks(),instances=new Map();
-    const allowedPurposes=['isolated-east-west-block-adjacency-validation-only','isolated-north-south-block-adjacency-validation-only'];
+    const allowedPurposes=['isolated-east-west-block-adjacency-validation-only','isolated-north-south-block-adjacency-validation-only','isolated-four-block-grid-adjacency-validation-only'];
     if(!composition||composition.playable!==false||!allowedPurposes.includes(composition.purpose))errors.push('composition must remain an isolated non-playable adjacency fixture');
     for(const instance of composition?.instances||[]){
       if(instances.has(instance.id))errors.push(`${instance.id}: duplicate block instance`);
@@ -260,13 +287,19 @@
       const step=directions[port.direction],outsideX=holder.instance.x+port.x+step.x,outsideY=holder.instance.y+port.y+step.y,insideComposition=outsideX>=0&&outsideY>=0&&outsideX<composition.width&&outsideY<composition.height;
       if(insideComposition&&!used.has(`${holder.instance.id}:${port.id}`))errors.push(`${holder.instance.id}:${port.id}: internal port is not connected`);
     }
-    const actual=externalPorts(composition).map(port=>port.key),expected=[...(composition?.expectedExternalPorts||[])].sort();
+    const external=externalPorts(composition),exitCells=new Set();
+    for(const port of external){
+      const step=directions[port.direction],exitX=port.x+step.x,exitY=port.y+step.y,exitKey=`${exitX},${exitY}`;
+      if(exitX>=0&&exitY>=0&&exitX<composition.width&&exitY<composition.height)errors.push(`${port.key}: external port does not leave composition`);
+      if(exitCells.has(exitKey))errors.push(`${port.key}: external port exit reused`);else exitCells.add(exitKey);
+    }
+    const actual=external.map(port=>port.key),expected=[...(composition?.expectedExternalPorts||[])].sort();
     if(JSON.stringify(actual)!==JSON.stringify(expected))errors.push('external port set mismatch');
     return Object.freeze(errors);
   };
 
   const previous=Array.isArray(window.MALBIT_TRAVEL_BLOCK_SCHEMAS)?window.MALBIT_TRAVEL_BLOCK_SCHEMAS:[];
   window.MALBIT_TRAVEL_BLOCK_SCHEMAS=Object.freeze([...previous,fixture,neighbor,northSouthNeighbor]);
-  window.MALBIT_TRAVEL_BLOCK_COMPOSITIONS=Object.freeze([adjacency,northSouthAdjacency]);
+  window.MALBIT_TRAVEL_BLOCK_COMPOSITIONS=Object.freeze([adjacency,northSouthAdjacency,gridAdjacency]);
   window.MALBIT_TRAVEL_BLOCK_VALIDATOR=Object.freeze({validateBlock,validateComposition,externalPorts,resolve});
 })();
