@@ -59,6 +59,36 @@
     expectedCollisionCells:Object.freeze(['1,2','4,4','10,2'])
   });
 
+  const neighborGround=fixture.layers.ground.map(row=>row.slice());
+  for(let x=0;x<6;x++)neighborGround[9][x]=ref(CORNERS,x%2?'street-corner-road':'street-corner-lane-horizontal');
+  const neighbor=Object.freeze({
+    ...fixture,
+    id:'korean-street-block-neighbor-fixture-v1',
+    layers:Object.freeze({...fixture.layers,ground:Object.freeze(neighborGround.map(row=>Object.freeze(row)))}),
+    routes:Object.freeze([...fixture.routes,route('south-west-lane','road',Array.from({length:7},(_,x)=>[x,9]))]),
+    ports:Object.freeze([...fixture.ports,Object.freeze({id:'corner-west',x:0,y:9,direction:'west',material:'road'})])
+  });
+
+  const adjacency=Object.freeze({
+    id:'korean-street-adjacent-blocks-fixture-v1',
+    purpose:'isolated-east-west-block-adjacency-validation-only',
+    scope:'future-seoul-zones',
+    playable:false,
+    width:24,
+    height:10,
+    instances:Object.freeze([
+      Object.freeze({id:'west-block',blockId:fixture.id,x:0,y:0}),
+      Object.freeze({id:'east-block',blockId:neighbor.id,x:12,y:0})
+    ]),
+    connections:Object.freeze([
+      Object.freeze({id:'main-road-link',material:'road',from:Object.freeze({instanceId:'west-block',portId:'road-east'}),to:Object.freeze({instanceId:'east-block',portId:'road-west'})}),
+      Object.freeze({id:'south-road-link',material:'road',from:Object.freeze({instanceId:'west-block',portId:'corner-east'}),to:Object.freeze({instanceId:'east-block',portId:'corner-west'})})
+    ]),
+    expectedExternalPorts:Object.freeze([
+      'east-block:corner-east','east-block:road-east','east-block:road-north','west-block:road-north','west-block:road-west'
+    ])
+  });
+
   const catalogs=()=>Object.fromEntries((window.MALBIT_TRAVEL_TILESETS||[]).map(item=>[item.id,item]));
   const entries=(catalog,layer)=>layer==='upper'?catalog?.upperCatalog:catalog?.catalog;
   const resolve=(reference,layer='ground')=>{
@@ -118,7 +148,70 @@
     return Object.freeze(errors);
   };
 
+  const blocks=()=>Object.fromEntries((window.MALBIT_TRAVEL_BLOCK_SCHEMAS||[]).map(item=>[item.id,item]));
+  const portById=(block,id)=>(block?.ports||[]).find(port=>port.id===id);
+  const endpointKey=endpoint=>`${endpoint.instanceId}:${endpoint.portId}`;
+  const externalPorts=composition=>{
+    const registry=blocks(),used=new Set((composition?.connections||[]).flatMap(connection=>[endpointKey(connection.from),endpointKey(connection.to)])),result=[];
+    for(const instance of composition?.instances||[]){
+      const block=registry[instance.blockId];
+      for(const port of block?.ports||[]){
+        const key=`${instance.id}:${port.id}`;
+        if(!used.has(key))result.push(Object.freeze({key,instanceId:instance.id,portId:port.id,direction:port.direction,material:port.material,x:instance.x+port.x,y:instance.y+port.y}));
+      }
+    }
+    return Object.freeze(result.sort((a,b)=>a.key.localeCompare(b.key)));
+  };
+  const validateComposition=composition=>{
+    const errors=[],registry=blocks(),instances=new Map();
+    if(!composition||composition.playable!==false||composition.purpose!=='isolated-east-west-block-adjacency-validation-only')errors.push('composition must remain an isolated non-playable adjacency fixture');
+    for(const instance of composition?.instances||[]){
+      if(instances.has(instance.id))errors.push(`${instance.id}: duplicate block instance`);
+      const block=registry[instance.blockId];
+      if(!block)errors.push(`${instance.id}: unknown block ${instance.blockId}`);
+      else{
+        for(const error of validateBlock(block))errors.push(`${instance.id}: ${error}`);
+        if(!Number.isInteger(instance.x)||!Number.isInteger(instance.y)||instance.x<0||instance.y<0||instance.x+block.width>composition.width||instance.y+block.height>composition.height)errors.push(`${instance.id}: invalid composition bounds`);
+      }
+      instances.set(instance.id,Object.freeze({instance,block}));
+    }
+    const placed=[...instances.values()].filter(item=>item.block);
+    for(let i=0;i<placed.length;i++)for(let j=i+1;j<placed.length;j++){
+      const a=placed[i],b=placed[j],overlap=a.instance.x<b.instance.x+b.block.width&&a.instance.x+a.block.width>b.instance.x&&a.instance.y<b.instance.y+b.block.height&&a.instance.y+a.block.height>b.instance.y;
+      if(overlap)errors.push(`${a.instance.id}/${b.instance.id}: block rectangles overlap`);
+      const west=a.instance.x+a.block.width===b.instance.x?a:(b.instance.x+b.block.width===a.instance.x?b:null),east=west===a?b:(west===b?a:null);
+      if(west&&east){
+        const start=Math.max(west.instance.y,east.instance.y),end=Math.min(west.instance.y+west.block.height,east.instance.y+east.block.height);
+        for(let y=start;y<end;y++){
+          const left=groundAt(west.block,west.block.width-1,y-west.instance.y),right=groundAt(east.block,0,y-east.instance.y),from=left?.entry?.edges?.east,to=right?.entry?.edges?.west;
+          if(!from||from!==to)errors.push(`${west.instance.id}/${east.instance.id}: east-west seam ${y} does not match`);
+        }
+      }
+    }
+    const used=new Set();
+    for(const connection of composition?.connections||[]){
+      const fromHolder=instances.get(connection.from?.instanceId),toHolder=instances.get(connection.to?.instanceId),fromPort=portById(fromHolder?.block,connection.from?.portId),toPort=portById(toHolder?.block,connection.to?.portId);
+      if(!fromHolder?.block||!toHolder?.block||!fromPort||!toPort){errors.push(`${connection.id}: unknown connection endpoint`);continue}
+      const fromKey=endpointKey(connection.from),toKey=endpointKey(connection.to);
+      if(used.has(fromKey)||used.has(toKey)||fromKey===toKey)errors.push(`${connection.id}: port endpoint reused`);used.add(fromKey);used.add(toKey);
+      if(opposite[fromPort.direction]!==toPort.direction)errors.push(`${connection.id}: port directions do not oppose`);
+      if(fromPort.material!==toPort.material||connection.material!==fromPort.material)errors.push(`${connection.id}: port materials do not match`);
+      const fromTile=groundAt(fromHolder.block,fromPort.x,fromPort.y),toTile=groundAt(toHolder.block,toPort.x,toPort.y);
+      if(!fromTile?.entry?.walkable||!toTile?.entry?.walkable)errors.push(`${connection.id}: connected ports must be walkable`);
+      const fromGlobal=point(fromHolder.instance.x+fromPort.x,fromHolder.instance.y+fromPort.y),toGlobal=point(toHolder.instance.x+toPort.x,toHolder.instance.y+toPort.y),step=directions[fromPort.direction];
+      if(!step||fromGlobal.x+step.x!==toGlobal.x||fromGlobal.y+step.y!==toGlobal.y)errors.push(`${connection.id}: port cells are not adjacent`);
+    }
+    for(const holder of placed)for(const port of holder.block.ports){
+      const step=directions[port.direction],outsideX=holder.instance.x+port.x+step.x,outsideY=holder.instance.y+port.y+step.y,insideComposition=outsideX>=0&&outsideY>=0&&outsideX<composition.width&&outsideY<composition.height;
+      if(insideComposition&&!used.has(`${holder.instance.id}:${port.id}`))errors.push(`${holder.instance.id}:${port.id}: internal port is not connected`);
+    }
+    const actual=externalPorts(composition).map(port=>port.key),expected=[...(composition?.expectedExternalPorts||[])].sort();
+    if(JSON.stringify(actual)!==JSON.stringify(expected))errors.push('external port set mismatch');
+    return Object.freeze(errors);
+  };
+
   const previous=Array.isArray(window.MALBIT_TRAVEL_BLOCK_SCHEMAS)?window.MALBIT_TRAVEL_BLOCK_SCHEMAS:[];
-  window.MALBIT_TRAVEL_BLOCK_SCHEMAS=Object.freeze([...previous,fixture]);
-  window.MALBIT_TRAVEL_BLOCK_VALIDATOR=Object.freeze({validateBlock,resolve});
+  window.MALBIT_TRAVEL_BLOCK_SCHEMAS=Object.freeze([...previous,fixture,neighbor]);
+  window.MALBIT_TRAVEL_BLOCK_COMPOSITIONS=Object.freeze([adjacency]);
+  window.MALBIT_TRAVEL_BLOCK_VALIDATOR=Object.freeze({validateBlock,validateComposition,externalPorts,resolve});
 })();
