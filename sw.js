@@ -1,4 +1,4 @@
-const VERSION='89',CACHE_PREFIX='malbit-v',CACHE=CACHE_PREFIX+VERSION,NEURAL_CACHE='malbit-neural-tts-v1';
+const VERSION='90',CACHE_PREFIX='malbit-v',CACHE=CACHE_PREFIX+VERSION,NEURAL_CACHE='malbit-neural-tts-v1';
 const SHELL=Object.freeze(['./','./index.html','./styles.css','./legacy-data.js','./legacy-core.js','./site-patch.js','./manifest.webmanifest','./icon.svg','./assets/art/malbit-home-hero.webp','./assets/art/travel/rpg/traveler-blue-4dir-v1.png','./assets/art/travel/rpg/travel-stamina-game-over-v1.webp','./assets/art/travel/rpg/korean-street-basic-atlas-v1.webp','./assets/art/travel/rpg/korean-street-corners-atlas-v1.webp','./assets/art/travel/rpg/korean-street-junctions-atlas-v1.webp','./assets/art/travel/rpg/korean-street-building-entrances-atlas-v1.webp','./assets/art/travel/rpg/korean-street-decor-upper-atlas-v1.webp']);
 self.addEventListener('message',event=>{if(event.data==='SKIP_WAITING')self.skipWaiting()});
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting())));

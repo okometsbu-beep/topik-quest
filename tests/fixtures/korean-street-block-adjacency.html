@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>MALBIT adjacent Seoul street blocks fixture</title>
+  <link rel="icon" href="../../icon.svg" type="image/svg+xml">
+  <style>
+    *{box-sizing:border-box;min-width:0;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+    :root{color-scheme:light;--canvas:#edf2f6;--surface:#fff;--text:#17283b;--line:#cbd7e1;--muted:#64778a;--accent:#0b7f76;--external:#9a6b17;--collision:#bd3b4b;--shadow:rgba(12,29,45,.2)}
+    :root[data-theme="dark"]{color-scheme:dark;--canvas:#081525;--surface:#14283f;--text:#edf6ff;--line:#36516d;--muted:#a9bfd2;--accent:#69dfcf;--external:#ffd16b;--collision:#ff8b96;--shadow:rgba(0,0,0,.38)}
+    body{margin:0;background:var(--canvas);color:var(--text);font-family:system-ui,sans-serif}
+    main{display:grid;gap:14px;width:min(100%,720px);margin:auto;padding:16px 12px 28px}
+    header{display:grid;gap:4px}h1{margin:0;font-size:18px;line-height:1.15}p{margin:0;color:var(--muted);font-size:12px;line-height:1.45}
+    .adjacencyFixtureFrame{position:relative;width:100%;aspect-ratio:12/5;overflow:hidden;border:1px solid var(--line);border-radius:14px;background:#d7d9d5;box-shadow:0 10px 24px var(--shadow);isolation:isolate}
+    .adjacencyFixtureGround,.adjacencyFixtureUpper,.adjacencyFixtureDebug{position:absolute;inset:0}
+    .adjacencyFixtureGround{display:grid;grid-template-columns:repeat(24,minmax(0,1fr));grid-template-rows:repeat(10,minmax(0,1fr));z-index:1}
+    .adjacencyFixtureTile,.adjacencyFixtureUpperTile{display:block;background-repeat:no-repeat;background-size:400% 400%;image-rendering:pixelated;opacity:1;filter:none}
+    .adjacencyFixtureUpper{z-index:3;pointer-events:none}.adjacencyFixtureUpperTile{position:absolute;width:calc(100% / 24);height:10%;z-index:var(--depth)}
+    .adjacencyFixtureUpperTile::after{content:"";position:absolute;left:10%;right:10%;top:var(--baseline);border-top:1px solid color-mix(in srgb,var(--accent) 76%,transparent)}
+    .adjacencyFixtureDebug{z-index:4;pointer-events:none}.adjacencyFixtureDebug::before{content:"";position:absolute;left:50%;top:0;bottom:0;border-left:1px dashed color-mix(in srgb,var(--accent) 58%,transparent)}
+    .adjacencyFixtureCollision{position:absolute;width:calc(100% / 24);height:10%;border:1px dashed var(--collision);background:color-mix(in srgb,var(--collision) 10%,transparent)}
+    .adjacencyFixtureConnection,.adjacencyFixtureExternal{position:absolute;width:8px;height:8px;margin:-4px;border-radius:50%;box-shadow:0 0 0 2px color-mix(in srgb,var(--surface) 86%,transparent)}
+    .adjacencyFixtureConnection{background:var(--accent)}.adjacencyFixtureExternal{background:var(--external)}
+    .adjacencyFixtureSummary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.adjacencyFixtureSummary article{display:grid;gap:3px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+    .adjacencyFixtureSummary small{color:var(--muted);font-size:9px;line-height:1.2;text-transform:uppercase;letter-spacing:.04em}.adjacencyFixtureSummary b{font-size:13px}
+    .adjacencyFixtureLegend{display:flex;flex-wrap:wrap;gap:6px}.adjacencyFixtureLegend span{padding:5px 8px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--muted);font-size:9px}
+  </style>
+  <script src="../../data/travel-tiles-korean-street-v1.js"></script>
+  <script src="../../data/travel-tiles-korean-street-corners-v1.js"></script>
+  <script src="../../data/travel-tiles-korean-street-junctions-v1.js"></script>
+  <script src="../../data/travel-tiles-korean-street-building-entrances-v1.js"></script>
+  <script src="../../data/travel-tiles-korean-street-decor-upper-v1.js"></script>
+  <script src="../../data/travel-block-korean-street-v1.js"></script>
+</head>
+<body>
+  <main>
+    <header><h1>East–west Seoul block adjacency</h1><p>Two isolated blocks · matching seams · opposing walkable road ports · catalog-owned upper depth and collisions.</p></header>
+    <section class="adjacencyFixtureFrame" aria-label="Two non-playable Seoul street blocks joined east to west">
+      <div class="adjacencyFixtureGround"></div><div class="adjacencyFixtureUpper"></div><div class="adjacencyFixtureDebug"></div>
+    </section>
+    <section class="adjacencyFixtureSummary" aria-label="Block adjacency summary">
+      <article><small>Blocks</small><b data-stat="blocks">0</b></article><article><small>Connections</small><b data-stat="connections">0</b></article><article><small>External ports</small><b data-stat="external">0</b></article>
+    </section>
+    <section class="adjacencyFixtureLegend" aria-label="Block connection legend"><span>● connected road</span><span>● external road port</span><span>┆ block seam</span></section>
+  </main>
+  <script>
+    (function(){
+      'use strict';
+      const params=new URLSearchParams(location.search),theme=params.get('theme')==='dark'?'dark':'light';document.documentElement.dataset.theme=theme;
+      const composition=window.MALBIT_TRAVEL_BLOCK_COMPOSITIONS?.find(item=>item.id==='korean-street-adjacent-blocks-fixture-v1'),validator=window.MALBIT_TRAVEL_BLOCK_VALIDATOR,blocks=Object.fromEntries((window.MALBIT_TRAVEL_BLOCK_SCHEMAS||[]).map(item=>[item.id,item]));
+      if(!composition||!validator)throw new Error('Seoul street adjacency fixture data missing');
+      const errors=validator.validateComposition(composition);if(errors.length)throw new Error(errors.join('; '));
+      const artStyle=match=>{const {entry,atlas}=match,positionX=entry.atlasX/(atlas.columns-1)*100,positionY=entry.atlasY/(atlas.rows-1)*100;return`background-image:url('../../${atlas.image}');background-position:${positionX}% ${positionY}%`};
+      const holders=composition.instances.map(instance=>({instance,block:blocks[instance.blockId]})),ground=document.querySelector('.adjacencyFixtureGround'),upper=document.querySelector('.adjacencyFixtureUpper'),debug=document.querySelector('.adjacencyFixtureDebug');
+      for(let y=0;y<composition.height;y++)for(let x=0;x<composition.width;x++){
+        const holder=holders.find(item=>x>=item.instance.x&&y>=item.instance.y&&x<item.instance.x+item.block.width&&y<item.instance.y+item.block.height),reference=holder.block.layers.ground[y-holder.instance.y][x-holder.instance.x],match=validator.resolve(reference,'ground'),tile=document.createElement('i');
+        tile.className='adjacencyFixtureTile';tile.dataset.blockId=holder.instance.id;tile.dataset.catalogId=reference.catalogId;tile.dataset.tileId=reference.tileId;tile.dataset.walkable=String(match.entry.walkable);tile.style.cssText=artStyle(match);ground.appendChild(tile);
+      }
+      for(const {instance,block} of holders)for(const placement of block.layers.upper){
+        const match=validator.resolve(placement.ref,'upper'),x=instance.x+placement.x,y=instance.y+placement.y,tile=document.createElement('i');tile.className='adjacencyFixtureUpperTile';tile.dataset.blockId=instance.id;tile.dataset.catalogId=placement.ref.catalogId;tile.dataset.baseline=String(match.entry.baselineY);tile.style.cssText=`${artStyle(match)};left:${x/composition.width*100}%;top:${y/composition.height*100}%;--baseline:${match.entry.baselineY/match.atlas.sourceTileSize*100}%;--depth:${10+y}`;upper.appendChild(tile);
+        for(const cell of match.entry.collisionFootprint?.cells||[]){const marker=document.createElement('i');marker.className='adjacencyFixtureCollision';marker.style.left=`${(x+cell.x)/composition.width*100}%`;marker.style.top=`${(y+cell.y)/composition.height*100}%`;debug.appendChild(marker)}
+      }
+      for(const connection of composition.connections){const fromHolder=holders.find(item=>item.instance.id===connection.from.instanceId),port=fromHolder.block.ports.find(item=>item.id===connection.from.portId),marker=document.createElement('i');marker.className='adjacencyFixtureConnection';marker.dataset.connectionId=connection.id;marker.dataset.material=connection.material;marker.style.left=`${(fromHolder.instance.x+port.x+1)/composition.width*100}%`;marker.style.top=`${(fromHolder.instance.y+port.y+.5)/composition.height*100}%`;debug.appendChild(marker)}
+      for(const port of validator.externalPorts(composition)){const marker=document.createElement('i');marker.className='adjacencyFixtureExternal';marker.dataset.portKey=port.key;marker.dataset.material=port.material;marker.style.left=`${(port.x+.5)/composition.width*100}%`;marker.style.top=`${(port.y+.5)/composition.height*100}%`;debug.appendChild(marker)}
+      document.querySelector('[data-stat="blocks"]').textContent=String(composition.instances.length);document.querySelector('[data-stat="connections"]').textContent=String(composition.connections.length);document.querySelector('[data-stat="external"]').textContent=String(validator.externalPorts(composition).length);
+      window.__MALBIT_STREET_ADJACENCY_READY__=true;
+    })();
+  </script>
+</body>
+</html>
