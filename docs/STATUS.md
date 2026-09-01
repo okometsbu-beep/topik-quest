@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v90 · East-west reusable Seoul street block adjacency validation
-- Current candidate: v91 · North-south reusable Seoul street block adjacency validation
+- Production release: v91 · North-south reusable Seoul street block adjacency validation
+- Current candidate: v92 · Four-block reusable Seoul street grid validation
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
@@ -102,6 +102,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
   share one material, remain walkable, occupy adjacent cells, and keep every touching seam compatible.
 - Two non-playable blocks also compose north-to-south under the same port, material, walkability,
   adjacency, and full-seam contract; both orientations remain isolated from playable Travel zones.
+- Four non-playable blocks compose as a 2×2 grid only when all four internal links, both full seam
+  axes, and eight unique external exits remain compatible; the grid is still isolated from Travel zones.
 - Travel stamina starts at 10,000 steps and is saved inside the existing exploration record. Only a
   successful tile move spends one step; collisions are free, and 0 opens a dedicated full-screen rest scene.
 - One-hour rest returns the traveler to the current zone spawn with full stamina while preserving route
@@ -129,23 +131,23 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-검증된 비플레이 블록 네 개를 2×2로 조합해 내부 네 접속면과 외부 포트의 방향·재질·통행·
-좌표·유일성이 모두 맞을 때만 통과하는 픽스처를 만든다. 실제 구역·포털·NPC·TOPIK 문항은
-아직 추가하지 않는다.
+검증된 2×2 조합을 사용하는 첫 서울 거리 구역의 지면·상단·충돌 데이터를 만들되 기존 공항
+세계나 포털에는 아직 연결하지 않고 독립 구역 검증만 통과시킨다. NPC·학습 이벤트·TOPIK 문항은
+추가하지 않는다.
 
-## v91 후보 결과
+## v92 후보 결과
 
-- 남쪽 도로 포트를 가진 12×10 비플레이 이웃 블록을 추가하고 두 블록을 12×20으로 조합해
-  남북 도로 포트 한 쌍과 전체 가로 접속면을 검증한다. 연결 뒤 외부 포트는 6개만 남는다.
-- 방향 불일치, 재질 불일치, 비통행 포트, 떨어진 좌표, 재사용 포트, 맞지 않는 전체 접속면을
-  각각 실패시키며 실제 공항 3개 구역에는 두 블록을 추가하지 않는다.
-- 로컬 빠른 검사 73/73, 전체 검사 81/81, 런타임 42개, JS 구문 76개가 통과했다.
-- checkpoint Actions run `33524237238`에서 320·375·390·430px 밝은·어두운 테마와 Travel
-  회귀가 통과했고, 양쪽 390px 화면을 직접 열어 이음새·돌출·필터·기준선·충돌 표시를 확인했다.
+- 검증된 12×10 블록 네 개를 24×20 비플레이 2×2 조합으로 만들고 내부 도로 포트 네 쌍,
+  동서·남북 전체 접속면, 외부 출구 8개의 좌표 유일성을 함께 검증한다.
+- 누락된 내부 연결, 재사용된 포트, 틀린 외부 포트 집합을 각각 실패시키며 실제 공항 3개 구역에는
+  2×2 조합을 추가하지 않는다.
+- 로컬 빠른 검사 74/74, 전체 검사 82/82, 런타임 42개, JS 구문 76개가 통과했다.
+- 최종 checkpoint Actions run `33559269169`에서 320·375·390·430px 밝은·어두운 테마와
+  Travel 회귀가 통과했고, 양쪽 390px 화면을 직접 열어 네 이음새·돌출·필터·기준선·충돌 표시를 확인했다.
 - 기존 저장·공항·NPC·문제·정답·해설·결제 경계는 변경하지 않았다.
-- 배포 주소: `https://okometsbu-beep.github.io/topik-quest/`; main CI와 Pages 성공 뒤 라이브 v91을
+- 배포 주소: `https://okometsbu-beep.github.io/topik-quest/`; main CI와 Pages 성공 뒤 라이브 v92를
   smoke 확인한다.
-- 되돌리기 기준: v90 main `16327e2d5ab313727d4d2628f15bf7afa8a34baf`
+- 되돌리기 기준: v91 main `21d04e3ce00f6f406f6810f72c081e62cb6f20b0`
 
 ## 알려진 위험
 
@@ -160,8 +162,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - v77 연출 계약은 공항 탐험 흐름부터 적용한다. 명동 NPC·보상 화면 연결과 실제 음원 선택 UI는 아직 없다.
 - 현재 공항 3개 구역은 기존 원화를 마이그레이션 아틀라스로 쓰되 런타임은 타일 ID별로만
   그린다. 한국 거리 아틀라스는 직선·모서리·T자·십자 교차로까지 제공하지만 실제 서울 구역을
-  독립 카탈로그는 장식 상단 레이어까지 준비됐고 두 블록의 동서·남북 연결 검증도 끝났다. 실제
-  구역을 만들기 전에 2×2 접속면 검증이 아직 필요하다.
+  독립 카탈로그는 장식 상단 레이어까지 준비됐고 동서·남북·2×2 접속면 검증도 끝났다. 다음은
+  이 조합을 실제 포털에 연결하기 전 독립 서울 거리 구역 데이터로 옮겨 검증해야 한다.
 - 첫 공항 NPC만 장문 대화·단어 퀴즈 계약에 편입됐다. 한국 조사물도 첫 청사초롱 한 개뿐이며
   다른 NPC와 조사물은 후속이다.
 - 기존 Plus·가격·결제 암시 UI가 새 화면에 재사용되지 않도록 계속 검사해야 한다.
