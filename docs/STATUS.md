@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v88 · Reusable Korean street upper decorations
-- Current candidate: v89 · Non-playable reusable Seoul street block composition
+- Production release: v89 · Non-playable reusable Seoul street block composition
+- Current candidate: none
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: finish the first Game or Travel step within ten minutes
@@ -129,17 +129,20 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 일치할 때만 연결되는 인접 블록 검증 픽스처를 만든다. 실제 구역·포털·NPC·TOPIK 문항은 아직
 추가하지 않는다.
 
-## v89 후보 결과
+## v89 배포 결과
 
 - 12×10 지면 120셀, 상단 배치 8개, 도로·보도 통행 경로 5개, 외부 도로 포트 4개를
   기존 다섯 카탈로그의 ID만으로 조합했다.
 - 알 수 없는 ID, 끊긴 도로·보도 접속면, 상단 충돌 발자국 불일치를 실패시키며 실제 공항
   3개 구역에는 블록을 추가하지 않는다.
 - 로컬 전체 검사 79/79, 런타임 42개, JS 구문 76개가 통과했다.
-- Actions run `33465484019`에서 320·375·390·430px 밝은·어두운 테마와 Travel 회귀가 통과했고,
-  390px 양쪽 화면을 직접 열어 이음새·돌출·필터·기준선·충돌 표시를 확인했다.
+- PR #105와 main Verify run `33466108048`에서 320·375·390·430px 밝은·어두운 테마와
+  Travel 회귀가 통과했고, 390px 양쪽 화면을 직접 열어 이음새·돌출·필터·기준선·충돌 표시를
+  확인했다.
 - 기존 저장·공항·NPC·문제·정답·해설·결제 경계는 변경하지 않았다.
-- 현재 라이브는 v88이며, PR·CI·병합·Pages 검증 뒤에만 v89 배포로 기록한다.
+- squash main `e4f6bc42b5bc01adfbf731f45ad9a7dfb02b7c35`의 Pages run `33466107423`이
+  성공했고, 라이브 `https://okometsbu-beep.github.io/topik-quest/`에서 v89와 기본 3개·런타임
+  42개 파일 및 새 블록 모듈 로딩을 확인했다.
 - 되돌리기 기준: v88 main `1efc351f7b003f6f4173a2c72c54bc138dac74f1`
 
 ## 알려진 위험
