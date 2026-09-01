@@ -69,6 +69,32 @@
     ports:Object.freeze([...fixture.ports,Object.freeze({id:'corner-west',x:0,y:9,direction:'west',material:'road'})])
   });
 
+  const northSouthGround=fixture.layers.ground.map(row=>row.slice());
+  for(let x=0;x<width;x++){
+    northSouthGround[0][x]=baseSidewalk(x,0);
+    northSouthGround[height-1][x]=baseSidewalk(x,height-1);
+  }
+  northSouthGround[0][6]=ref(JUNCTIONS,'street-junction-approach-north');
+  northSouthGround[height-1][6]=ref(JUNCTIONS,'street-junction-approach-south');
+  const northSouthNeighbor=Object.freeze({
+    ...fixture,
+    id:'korean-street-block-north-south-neighbor-fixture-v1',
+    layers:Object.freeze({
+      ground:Object.freeze(northSouthGround.map(row=>Object.freeze(row))),
+      upper:Object.freeze(fixture.layers.upper.filter(placement=>placement.y>0))
+    }),
+    routes:Object.freeze([
+      fixture.routes.find(item=>item.id==='east-west-crossing'),
+      route('north-south-crossing','road',Array.from({length:height},(_,y)=>[6,y]))
+    ]),
+    ports:Object.freeze([
+      Object.freeze({id:'road-west',x:0,y:6,direction:'west',material:'road'}),
+      Object.freeze({id:'road-east',x:11,y:6,direction:'east',material:'road'}),
+      Object.freeze({id:'road-north',x:6,y:0,direction:'north',material:'road'}),
+      Object.freeze({id:'road-south',x:6,y:9,direction:'south',material:'road'})
+    ])
+  });
+
   const adjacency=Object.freeze({
     id:'korean-street-adjacent-blocks-fixture-v1',
     purpose:'isolated-east-west-block-adjacency-validation-only',
@@ -86,6 +112,26 @@
     ]),
     expectedExternalPorts:Object.freeze([
       'east-block:corner-east','east-block:road-east','east-block:road-north','west-block:road-north','west-block:road-west'
+    ])
+  });
+
+  const northSouthAdjacency=Object.freeze({
+    id:'korean-street-north-south-adjacent-blocks-fixture-v1',
+    purpose:'isolated-north-south-block-adjacency-validation-only',
+    scope:'future-seoul-zones',
+    playable:false,
+    width:12,
+    height:20,
+    instances:Object.freeze([
+      Object.freeze({id:'north-block',blockId:northSouthNeighbor.id,x:0,y:0}),
+      Object.freeze({id:'south-block',blockId:northSouthNeighbor.id,x:0,y:10})
+    ]),
+    connections:Object.freeze([
+      Object.freeze({id:'north-south-road-link',material:'road',from:Object.freeze({instanceId:'north-block',portId:'road-south'}),to:Object.freeze({instanceId:'south-block',portId:'road-north'})})
+    ]),
+    expectedExternalPorts:Object.freeze([
+      'north-block:road-east','north-block:road-north','north-block:road-west',
+      'south-block:road-east','south-block:road-south','south-block:road-west'
     ])
   });
 
@@ -164,7 +210,8 @@
   };
   const validateComposition=composition=>{
     const errors=[],registry=blocks(),instances=new Map();
-    if(!composition||composition.playable!==false||composition.purpose!=='isolated-east-west-block-adjacency-validation-only')errors.push('composition must remain an isolated non-playable adjacency fixture');
+    const allowedPurposes=['isolated-east-west-block-adjacency-validation-only','isolated-north-south-block-adjacency-validation-only'];
+    if(!composition||composition.playable!==false||!allowedPurposes.includes(composition.purpose))errors.push('composition must remain an isolated non-playable adjacency fixture');
     for(const instance of composition?.instances||[]){
       if(instances.has(instance.id))errors.push(`${instance.id}: duplicate block instance`);
       const block=registry[instance.blockId];
@@ -185,6 +232,14 @@
         for(let y=start;y<end;y++){
           const left=groundAt(west.block,west.block.width-1,y-west.instance.y),right=groundAt(east.block,0,y-east.instance.y),from=left?.entry?.edges?.east,to=right?.entry?.edges?.west;
           if(!from||from!==to)errors.push(`${west.instance.id}/${east.instance.id}: east-west seam ${y} does not match`);
+        }
+      }
+      const north=a.instance.y+a.block.height===b.instance.y?a:(b.instance.y+b.block.height===a.instance.y?b:null),south=north===a?b:(north===b?a:null);
+      if(north&&south){
+        const start=Math.max(north.instance.x,south.instance.x),end=Math.min(north.instance.x+north.block.width,south.instance.x+south.block.width);
+        for(let x=start;x<end;x++){
+          const top=groundAt(north.block,x-north.instance.x,north.block.height-1),bottom=groundAt(south.block,x-south.instance.x,0),from=top?.entry?.edges?.south,to=bottom?.entry?.edges?.north;
+          if(!from||from!==to)errors.push(`${north.instance.id}/${south.instance.id}: north-south seam ${x} does not match`);
         }
       }
     }
@@ -211,7 +266,7 @@
   };
 
   const previous=Array.isArray(window.MALBIT_TRAVEL_BLOCK_SCHEMAS)?window.MALBIT_TRAVEL_BLOCK_SCHEMAS:[];
-  window.MALBIT_TRAVEL_BLOCK_SCHEMAS=Object.freeze([...previous,fixture,neighbor]);
-  window.MALBIT_TRAVEL_BLOCK_COMPOSITIONS=Object.freeze([adjacency]);
+  window.MALBIT_TRAVEL_BLOCK_SCHEMAS=Object.freeze([...previous,fixture,neighbor,northSouthNeighbor]);
+  window.MALBIT_TRAVEL_BLOCK_COMPOSITIONS=Object.freeze([adjacency,northSouthAdjacency]);
   window.MALBIT_TRAVEL_BLOCK_VALIDATOR=Object.freeze({validateBlock,validateComposition,externalPorts,resolve});
 })();

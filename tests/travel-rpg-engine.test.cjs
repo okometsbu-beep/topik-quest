@@ -287,7 +287,7 @@ test('Seoul street block composes catalog IDs with route, baseline, and collisio
 
 test('neighboring Seoul street blocks connect only through aligned walkable ports',()=>{
   const runtime=loadWorldWithStreetTiles(),validator=runtime.MALBIT_TRAVEL_BLOCK_VALIDATOR,blocks=runtime.MALBIT_TRAVEL_BLOCK_SCHEMAS,composition=runtime.MALBIT_TRAVEL_BLOCK_COMPOSITIONS[0];
-  assert.equal(blocks.length,2);assert.equal(blocks[1].id,'korean-street-block-neighbor-fixture-v1');assert.deepEqual(Array.from(validator.validateBlock(blocks[1])),[]);
+  assert.equal(blocks.length,3);assert.equal(blocks[1].id,'korean-street-block-neighbor-fixture-v1');assert.deepEqual(Array.from(validator.validateBlock(blocks[1])),[]);
   assert.equal(composition.id,'korean-street-adjacent-blocks-fixture-v1');assert.equal(composition.purpose,'isolated-east-west-block-adjacency-validation-only');assert.equal(composition.playable,false);
   assert.deepEqual({width:composition.width,height:composition.height,instances:composition.instances.length,connections:composition.connections.length},{width:24,height:10,instances:2,connections:2});
   assert.deepEqual(Array.from(validator.validateComposition(composition)),[]);
@@ -303,6 +303,28 @@ test('neighboring Seoul street blocks connect only through aligned walkable port
   assert.ok(Array.from(validator.validateComposition(composition)).some(error=>error.includes('connected ports must be walkable')),'a non-walkable endpoint must fail even when its position is aligned');
   runtime.MALBIT_TRAVEL_BLOCK_SCHEMAS=blocks;
   const html=read('tests/fixtures/korean-street-block-adjacency.html');assert.match(html,/travel-block-korean-street-v1\.js/);assert.match(html,/adjacencyFixtureGround/);assert.match(html,/adjacencyFixtureConnection/);assert.match(html,/__MALBIT_STREET_ADJACENCY_READY__/);
+});
+
+test('north-south Seoul street blocks require opposing walkable ports and a matching full seam',()=>{
+  const runtime=loadWorldWithStreetTiles(),validator=runtime.MALBIT_TRAVEL_BLOCK_VALIDATOR,blocks=runtime.MALBIT_TRAVEL_BLOCK_SCHEMAS,composition=runtime.MALBIT_TRAVEL_BLOCK_COMPOSITIONS[1],vertical=blocks[2];
+  assert.equal(vertical.id,'korean-street-block-north-south-neighbor-fixture-v1');assert.deepEqual(Array.from(validator.validateBlock(vertical)),[]);
+  assert.deepEqual(Array.from(vertical.ports,port=>`${port.id}:${port.direction}`).sort(),['road-east:east','road-north:north','road-south:south','road-west:west']);
+  assert.equal(composition.id,'korean-street-north-south-adjacent-blocks-fixture-v1');assert.equal(composition.purpose,'isolated-north-south-block-adjacency-validation-only');assert.equal(composition.playable,false);
+  assert.deepEqual({width:composition.width,height:composition.height,instances:composition.instances.length,connections:composition.connections.length},{width:12,height:20,instances:2,connections:1});
+  assert.deepEqual(Array.from(validator.validateComposition(composition)),[]);
+  assert.deepEqual(Array.from(validator.externalPorts(composition),port=>port.key),[
+    'north-block:road-east','north-block:road-north','north-block:road-west',
+    'south-block:road-east','south-block:road-south','south-block:road-west'
+  ]);
+  const wrongDirection=JSON.parse(JSON.stringify(composition));wrongDirection.connections[0].to.portId='road-east';
+  assert.ok(Array.from(validator.validateComposition(wrongDirection)).some(error=>error.includes('port directions do not oppose')),'north-south ports must face one another');
+  const wrongMaterial=JSON.parse(JSON.stringify(composition));wrongMaterial.connections[0].material='sidewalk';
+  assert.ok(Array.from(validator.validateComposition(wrongMaterial)).some(error=>error.includes('port materials do not match')),'vertical link material must match both endpoints');
+  const brokenSeam=JSON.parse(JSON.stringify(vertical));brokenSeam.layers.ground[0][0]={catalogId:'korean-street-corners-v1',tileId:'street-corner-road'};
+  runtime.MALBIT_TRAVEL_BLOCK_SCHEMAS=[blocks[0],blocks[1],brokenSeam];
+  assert.ok(Array.from(validator.validateComposition(composition)).some(error=>error.includes('north-south seam')),'every touching tile edge must match across the vertical seam');
+  runtime.MALBIT_TRAVEL_BLOCK_SCHEMAS=blocks;
+  const html=read('tests/fixtures/korean-street-block-adjacency.html');assert.match(html,/params\.get\('axis'\)/);assert.match(html,/north-south/);
 });
 
 test('the airport portal moves both ways while preserving route progress',()=>{
