@@ -20,6 +20,7 @@
     'data/travel-tiles-korean-street-junctions-v1.js',
     'data/travel-tiles-korean-street-building-entrances-v1.js',
     'data/travel-tiles-korean-street-decor-upper-v1.js',
+    'data/travel-block-korean-street-v1.js',
     'data/travel-map-seoul-v1.js',
     'data/question-bank-v1-part1.js',
     'data/question-bank-v1-part2.js',

@@ -110,8 +110,21 @@ try{
     }
     await setViewport(390,844);await shot(theme==='light'?'00zf-korean-street-decor-upper-light.png':'00zg-korean-street-decor-upper-dark.png');
   }
+  await send('Page.navigate',{url:`http://127.0.0.1:${serverPort}/tests/fixtures/korean-street-block.html?theme=light`});
+  for(let i=0;i<100&&!await evaluate(`document.readyState==='complete'&&window.__MALBIT_STREET_BLOCK_READY__===true`);i++)await sleep(50);
+  assert.equal(await evaluate(`window.__MALBIT_STREET_BLOCK_READY__===true`),true,'Seoul street block fixture did not become ready');
+  for(const theme of ['light','dark']){
+    await evaluate(`document.documentElement.dataset.theme=${JSON.stringify(theme)}`);await sleep(60);
+    for(const width of [320,375,390,430]){
+      await setViewport(width,width===320?700:844);
+      const fit=await evaluate(`(()=>{const frame=document.querySelector('.blockFixtureFrame'),ground=[...document.querySelectorAll('.blockFixtureTile')],upper=[...document.querySelectorAll('.blockFixtureUpperTile')],collisions=[...document.querySelectorAll('.blockFixtureCollision')],ports=[...document.querySelectorAll('.blockFixturePort')],rect=frame.getBoundingClientRect(),tileRects=ground.map(tile=>tile.getBoundingClientRect()),horizontalGaps=tileRects.flatMap((current,index)=>index%12===11?[]:[Math.abs(current.right-tileRects[index+1].left)]),verticalGaps=tileRects.flatMap((current,index)=>index>=108?[]:[Math.abs(current.bottom-tileRects[index+12].top)]),maxSeam=Math.max(0,...horizontalGaps,...verticalGaps),allArt=[...ground,...upper],styleOk=allArt.every(tile=>{const style=getComputedStyle(tile);return style.opacity==='1'&&style.filter==='none'&&style.backgroundSize==='400% 400%'&&style.backgroundImage.includes('korean-street-')}),catalogs=new Set(allArt.map(tile=>tile.dataset.catalogId)),baselineOk=upper.every(tile=>Number(tile.dataset.baseline)>=40&&Number(tile.dataset.baseline)<=56&&getComputedStyle(tile,'::after').borderTopWidth==='1px'),errors=window.MALBIT_TRAVEL_BLOCK_VALIDATOR.validateBlock(window.MALBIT_TRAVEL_BLOCK_SCHEMAS[0]);return{theme:document.documentElement.dataset.theme,innerWidth,rootWidth:document.documentElement.scrollWidth,bodyWidth:document.body.scrollWidth,ratio:rect.width/rect.height,ground:ground.length,upper:upper.length,collisions:collisions.length,ports:ports.length,portMaterials:[...new Set(ports.map(port=>port.dataset.material))],catalogs:catalogs.size,aligned:maxSeam<.15,maxSeam,styleOk,baselineOk,errors:[...errors],worldLoaded:Boolean(window.MALBIT_TRAVEL_WORLDS),purpose:window.MALBIT_TRAVEL_BLOCK_SCHEMAS[0].purpose}})()`);
+      assert.equal(fit.theme,theme);assert.ok(fit.rootWidth<=fit.innerWidth+1&&fit.bodyWidth<=fit.innerWidth+1,`${theme} ${width}px: Seoul street block horizontal overflow`);assert.ok(Math.abs(fit.ratio-6/5)<.01,`${theme} ${width}px: Seoul street block ratio changed`);
+      assert.deepEqual([fit.ground,fit.upper,fit.collisions,fit.ports,fit.catalogs],[120,8,3,4,5],`${theme} ${width}px: composed block layers are incomplete`);assert.deepEqual(fit.portMaterials,['road']);assert.equal(fit.aligned,true,`${theme} ${width}px: composed block seam gap ${fit.maxSeam}px`);assert.equal(fit.styleOk,true,`${theme} ${width}px: composed block art was filtered or resized inconsistently`);assert.equal(fit.baselineOk,true,`${theme} ${width}px: composed upper baseline changed`);assert.deepEqual(fit.errors,[]);assert.equal(fit.worldLoaded,false,'the Seoul street block must stay independent from playable airport zones');assert.equal(fit.purpose,'isolated-catalog-composition-validation-only');
+    }
+    await setViewport(390,844);await shot(theme==='light'?'00zh-korean-street-block-light.png':'00zi-korean-street-block-dark.png');
+  }
   assert.deepEqual(errors,[]);
-  console.log('street tile QA: basic + corner + junction + building entrance + decoration upper sibling atlases, 80 catalog entries, isolated fixtures, 320/375/390/430px, light/dark, aligned seams, upper baseline and collision footprint, errors=0');
+  console.log('street tile QA: five reusable catalogs + non-playable Seoul block composition, 80 catalog entries, 320/375/390/430px, light/dark, aligned seams, walk routes, upper baselines and collision footprints, errors=0');
 }finally{
   try{socket?.close()}catch(error){}
   chrome?.kill('SIGTERM');server.kill('SIGTERM');

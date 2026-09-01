@@ -21,6 +21,7 @@ function loadWorldWithStreetTiles(){
   vm.runInContext(read('data/travel-tiles-korean-street-junctions-v1.js'),runtime);
   vm.runInContext(read('data/travel-tiles-korean-street-building-entrances-v1.js'),runtime);
   vm.runInContext(read('data/travel-tiles-korean-street-decor-upper-v1.js'),runtime);
+  vm.runInContext(read('data/travel-block-korean-street-v1.js'),runtime);
   vm.runInContext(read('data/travel-map-seoul-v1.js'),runtime);
   vm.runInContext(read('travel-rpg-engine.js'),runtime);
   return runtime;
@@ -256,6 +257,32 @@ test('Korean street decoration upper atlas owns baseline, occlusion, and collisi
   const atlasPath=path.join(root,fixture.tilemap.atlas.image),atlas=fs.readFileSync(atlasPath);
   assert.ok(atlas.length>4000,'the decoration atlas must not be a tiny placeholder');assert.equal(atlas.subarray(0,4).toString(),'RIFF');assert.equal(atlas.subarray(8,12).toString(),'WEBP');
   const html=read('tests/fixtures/korean-street-decor-upper.html');assert.match(html,/travel-tiles-korean-street-decor-upper-v1\.js/);assert.match(html,/decorFixtureBoard/);assert.match(html,/decorFixtureLegend/);assert.match(html,/__MALBIT_STREET_DECOR_UPPER_READY__/);
+});
+
+test('Seoul street block composes catalog IDs with route, baseline, and collision validation',()=>{
+  const runtime=loadWorldWithStreetTiles(),validator=runtime.MALBIT_TRAVEL_BLOCK_VALIDATOR,block=runtime.MALBIT_TRAVEL_BLOCK_SCHEMAS[0];
+  assert.equal(block.id,'korean-street-block-fixture-v1');assert.equal(block.purpose,'isolated-catalog-composition-validation-only');assert.equal(block.scope,'future-seoul-zones');assert.equal(block.playable,false);
+  assert.deepEqual({width:block.width,height:block.height,tileSize:block.tileSize},{width:12,height:10,tileSize:25});
+  assert.deepEqual(Array.from(block.requiredCatalogs),[
+    'korean-street-basic-v1','korean-street-corners-v1','korean-street-junctions-v1',
+    'korean-street-building-entrances-v1','korean-street-decor-upper-v1'
+  ]);
+  assert.equal(block.layers.ground.length,10);assert.ok(block.layers.ground.every(row=>row.length===12));assert.equal(block.layers.upper.length,8);
+  assert.ok(block.layers.ground.flat().every(reference=>Object.keys(reference).sort().join(',')==='catalogId,tileId'),'ground composition must use catalog and tile IDs only');
+  assert.ok(block.layers.upper.every(placement=>Object.keys(placement.ref).sort().join(',')==='catalogId,tileId'),'upper composition must use catalog and tile IDs only');
+  assert.deepEqual(Array.from(validator.validateBlock(block)),[]);assert.equal(block.routes.length,5);assert.equal(block.ports.length,4);
+  assert.deepEqual(Array.from(block.expectedCollisionCells),['1,2','4,4','10,2']);
+  const uppers=Array.from(block.layers.upper,placement=>validator.resolve(placement.ref,'upper').entry);
+  assert.ok(uppers.every(entry=>entry.layer==='upper'&&Number.isInteger(entry.baselineY)),'every composed upper tile needs a catalog-owned baseline');
+  assert.equal(uppers.filter(entry=>entry.collisionFootprint?.cells?.length).length,3,'only catalog-declared floor props create collision cells');
+  assert.deepEqual(Array.from(runtime.MALBIT_TRAVEL_RPG.validateWorld(runtime.MALBIT_TRAVEL_WORLDS[0])),[]);assert.equal(runtime.MALBIT_TRAVEL_WORLDS[0].zones.length,3);assert.ok(!runtime.MALBIT_TRAVEL_WORLDS[0].zones.some(zone=>zone.id===block.id),'the street block fixture cannot ship as a playable zone');
+  const brokenId=JSON.parse(JSON.stringify(block));brokenId.layers.ground[6][0].tileId='missing-tile';
+  assert.ok(Array.from(validator.validateBlock(brokenId)).some(error=>error.includes('unknown ground ref')),'unknown cross-catalog IDs must fail');
+  const brokenJoin=JSON.parse(JSON.stringify(block));brokenJoin.layers.ground[6][6]={catalogId:'korean-street-basic-v1',tileId:'street-sidewalk-a'};
+  assert.ok(Array.from(validator.validateBlock(brokenJoin)).some(error=>error.includes('does not join on road')),'broken route surfaces must fail');
+  const brokenCollision=JSON.parse(JSON.stringify(block));brokenCollision.expectedCollisionCells=[];
+  assert.ok(Array.from(validator.validateBlock(brokenCollision)).includes('upper collision footprint mismatch'),'catalog collision footprints must match the composed block');
+  const html=read('tests/fixtures/korean-street-block.html');assert.match(html,/travel-block-korean-street-v1\.js/);assert.match(html,/blockFixtureGround/);assert.match(html,/blockFixtureUpper/);assert.match(html,/blockFixtureCollision/);assert.match(html,/__MALBIT_STREET_BLOCK_READY__/);
 });
 
 test('the airport portal moves both ways while preserving route progress',()=>{
