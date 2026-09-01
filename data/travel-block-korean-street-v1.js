@@ -40,7 +40,7 @@
         upper(DECOR,'street-decor-detail-wall-lamp',8,0),
         upper(DECOR,'street-decor-planter-shrub',1,2),
         upper(DECOR,'street-decor-planter-flower-box',10,2),
-        upper(DECOR,'street-decor-detail-bench',4,4)
+        upper(DECOR,'street-decor-detail-utility-cabinet',4,4)
       ])
     }),
     routes:Object.freeze([
