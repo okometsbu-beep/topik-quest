@@ -164,9 +164,9 @@ these facts from conversation history or the large TOPIK source bundle.
   still need to adopt the same states; no audio files or persistent sound/vibration controls ship yet.
 - Current airport tile catalogs migrate the existing three backgrounds into explicit per-cell atlas entries.
   The reusable Korean street foundation now covers straight segments, typed inner and outer curb corners,
-  T/cross junctions, building entrances, decorative upper layers, one validated block, and east-west
-  neighboring-block composition. Before a playable Seoul street zone, north-south and 2×2 adjacency still
-  need the same port-to-port and full-seam validation.
+  T/cross junctions, building entrances, decorative upper layers, one validated block, and east-west plus
+  north-south neighboring-block compositions. Before a playable Seoul street zone, 2×2 adjacency still
+  needs the same port-to-port and full-seam validation.
   Other NPCs still need the keyword-learning contract, and the cheongsachorong is only the first Korean
   investigation object.
 
