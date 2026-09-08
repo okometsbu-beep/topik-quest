@@ -3,6 +3,31 @@
 This is the short continuity record for future work. Use it with `AGENTS.md`; do not reconstruct
 these facts from conversation history or the large TOPIK source bundle.
 
+## Current release priority · 2026-09-08
+
+- Source of truth: [release blueprint #110](https://github.com/okometsbu-beep/topik-quest/issues/110).
+  It supersedes #76 map expansion until core learning quality gates pass. A01–A12 remain audit findings,
+  not resolved items; existing feature/visual checks do not certify translation or teaching accuracy.
+- Production is v92 at `db1628ce5ef4206c3b1ece160d78e14715427d68` (PR #109).
+  Historical main Verify `33559995292` and Pages `33559993759` succeeded; runtime remains v92 for this docs-only task.
+  Docs rollback is that commit; v92 product rollback is v91 `21d04e3ce00f6f406f6810f72c081e62cb6f20b0`.
+- STATUS/HANDOFF synchronization is complete. Next: reproduce A02 with new/returning/interrupted sessions,
+  beginner/TOPIK I/II selection, and Home learning CTA destinations; then fix one confirmed state-link defect.
+  A new P0 or clear wrong answer takes precedence. Never duplicate an open PR or a resolved finding.
+- Follow start → understand → recall/speak/write → review → next learning for Japanese beginners, and
+  passage evidence → specific distractor traps → reusable solving method for TOPIK I/II.
+- 2026 draft gates: Sep 13 audit/scope/dependencies; Sep 27 core flow/P0/P1/backup; Oct 11 teaching,
+  language, review and one RPG course; Oct 18 freeze/RC; Oct 19–Nov 2 real beta; Nov 2–15 review buffer.
+  Nov 17 is conditional first public release, Dec 1 a fallback review date, not a promised approval.
+- Report evidence and gaps at each weekly gate. #110's 12-person beta targets (10 first-step successes,
+  9 next/review discoveries) are small-sample goals, never QA-seed statistics or industry benchmarks.
+  Actual day-1/day-7 recall, real iPhone/Android evidence, and approved post-release 14-day stability remain open.
+- Autonomous publishing is GitHub Pages only. Store accounts/payment/identity, signing keys, external
+  tester invitations, personal-data collection, store submission and publication need separate owner approval.
+  Stop on PAUSE. Only pause the recurring loop for owner stop, all-work blockage, or completed #110 gates.
+- Current-pass checks, documentation PR/merge and live verification belong in #110's progress comment.
+  Unseen states and unrun tests must remain unverified, including A03–A05 correctness and A06 mobile reproduction.
+
 ## Stable product state
 
 - Production is a dependency-free static PWA in `okometsbu-beep/topik-quest`, hosted on GitHub
@@ -147,7 +172,7 @@ these facts from conversation history or the large TOPIK source bundle.
 - Vocabulary automatic fill preserves manual edits. `MALBIT_AI_ADAPTER` is only a safe integration
   boundary; the current static app has no generative-AI server or provider key.
 
-## Known gaps, not bugs
+## Known gaps and deferred work (audit defects are tracked in #110)
 
 - No account or cloud sync: clearing browser storage or changing devices does not carry progress.
 - Real AI-generated examples and etymology require a server-side endpoint. The current fallback uses
@@ -167,8 +192,8 @@ these facts from conversation history or the large TOPIK source bundle.
 - Current airport tile catalogs migrate the existing three backgrounds into explicit per-cell atlas entries.
   The reusable Korean street foundation now covers straight segments, typed inner and outer curb corners,
   T/cross junctions, building entrances, decorative upper layers, one validated block, and east-west,
-  north-south, plus 2×2 neighboring-block compositions. The next gap is an isolated Seoul street zone
-  data contract built from the validated grid before any portal makes it playable.
+  north-south, plus 2×2 neighboring-block compositions. An isolated Seoul street zone data contract is
+  deferred behind #110 core learning gates; these fixtures are not playable Seoul learning progress.
   Other NPCs still need the keyword-learning contract, and the cheongsachorong is only the first Korean
   investigation object.
 
@@ -176,7 +201,7 @@ these facts from conversation history or the large TOPIK source bundle.
 
 - A request to explain, review, or plan is read-only.
 - A request to modify means implement and verify locally.
-- A request that explicitly includes deployment means: one version bump after the coherent batch,
+- A request that explicitly includes deployment means: one version bump for public asset changes after the coherent batch (none for docs-only changes),
   full check, mobile flow check, branch/PR, CI, merge, and live smoke.
 - The connected GitHub integration can publish without GitHub CLI. Do not ask the user to install
   `gh` merely because it is absent inside a temporary workspace.
