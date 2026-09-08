@@ -9,9 +9,13 @@ these facts from conversation history or the large TOPIK source bundle.
   It supersedes #76 map expansion until core learning quality gates pass. A01–A12 remain audit findings,
   not resolved items; existing feature/visual checks do not certify translation or teaching accuracy.
 - Production is v92 at `db1628ce5ef4206c3b1ece160d78e14715427d68` (PR #109).
-  Historical main Verify `33559995292` and Pages `33559993759` succeeded; runtime remains v92 for this docs-only task.
-  Docs rollback is that commit; v92 product rollback is v91 `21d04e3ce00f6f406f6810f72c081e62cb6f20b0`.
-- STATUS/HANDOFF synchronization is complete. Next: reproduce A02 with new/returning/interrupted sessions,
+  Historical main Verify `33559995292` and Pages `33559993759` succeeded. PR #111 is the v93 candidate:
+  it synchronizes the roadmap and replaces the Review CI retry's network-dependent Japanese translation
+  with one reviewed offline entry while preserving the original question, answer, ID, explanation, and storage.
+  Candidate commit `b0ee3395d4dda4989dd329b33bd98ae3dafc48b1` passed local 83/83 and CI `34208096679`,
+  including headless Chrome mobile-viewport checks; this is not evidence from a physical iPhone or Android device.
+  Candidate rollback is v92; v92 product rollback is v91 `21d04e3ce00f6f406f6810f72c081e62cb6f20b0`.
+- After PR #111 is resolved, next: reproduce A02 with new/returning/interrupted sessions,
   beginner/TOPIK I/II selection, and Home learning CTA destinations; then fix one confirmed state-link defect.
   A new P0 or clear wrong answer takes precedence. Never duplicate an open PR or a resolved finding.
 - Follow start → understand → recall/speak/write → review → next learning for Japanese beginners, and

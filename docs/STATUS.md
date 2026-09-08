@@ -6,7 +6,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 - Production: GitHub Pages static PWA
 - Production release: v92 · Four-block reusable Seoul street grid validation
-- Current candidate: documentation-only release/roadmap handoff; no runtime version bump
+- Current candidate: v93 · reviewed offline Japanese translation for the Review CI retry
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -146,15 +146,20 @@ A02: 신규/재방문/중도 종료 상태에서 입문·TOPIK I·II 선택과 H
 입문 학습 후 Game의 TOPIK II 문항으로 이어졌다는 #110 증거를 확인하고, 원인이 확인된 최소 상태 연결
 하나만 수정한다. 새 P0/명백한 정답 오류가 있으면 앞당긴다. 서울 구역 확장은 핵심 학습 게이트 뒤로 보류한다.
 
-## 이번 작업 · 출시 사실/우선순위 동기화
+## 이번 작업 · 출시 사실 동기화와 Review 번역 게이트 복구
 
-- 2026-09-08 최신 main `db1628ce5ef4206c3b1ece160d78e14715427d68`과 #110을 대조해 STATUS/HANDOFF만 정정했다.
+- 2026-09-08 최신 main `db1628ce5ef4206c3b1ece160d78e14715427d68`과 #110을 대조해 STATUS/HANDOFF를 정정했다.
 - v92는 PR #109로 이미 배포됐다. 당시 main Verify `33559995292`, Pages `33559993759` 성공 기록이 있다.
 - 당시 82/82 검사와 Chrome 320/375/390/430px 양쪽 테마 기록은 과거 배포 증거이며 이번 실기기 검사가 아니다.
 - 이번 로컬 Node v24.19.0 `npm run check`: 런타임/구문 및 82/82 통과. 라이브 HTTP smoke: v92 기본 3개+런타임 42개 통과.
 - Chrome 재방문 세션에서 Travel→Home→설정 v92를 확인했다. PR #111의 최종 CI/병합 여부는 #110에 기록한다.
-- 브랜치 CI `34182400771`은 Review 일본어 번역 표시 검사에서 실패했다. 최종 필수 검사 통과 전 병합 금지.
-- 문서 외 코드·콘텐츠·저장·테마 변경 없음.
+- 브랜치 CI `34182400771`에서 Review 재도전 문항 `P01-II-R-06`의 일본어 전체 번역이 외부 무료 번역 실패 시
+  한국어로 되돌아가는 결함을 재현했다. 정답·원문·ID는 바꾸지 않고 검수한 일본어 번역을 정적 등록해 네트워크 의존을 제거했다.
+- v93 로컬 검사: 콘텐츠 6/6, 빠른 검사 75/75, 전체 검사 83/83, 런타임 v93 42개, 구문 76개 통과.
+- 수정 커밋 `b0ee3395d4dda4989dd329b33bd98ae3dafc48b1`의 CI `34208096679`는 전체 검사와 실제 headless Chrome
+  320/375/390/430px 양쪽 테마 검사를 통과했다. 산출물 `10048705237`에서 Review 재도전·상세 해설 화면을 확인했다.
+- 이번 화면 증거는 데스크톱 Linux의 모바일 뷰포트 에뮬레이션이며 실제 iPhone/Android 검증으로 표시하지 않는다.
+- 문항 정답·한국어 원문·해설·저장 키·학습 기록·테마·모드 변경 없음.
 - 라이브 주소: https://okometsbu-beep.github.io/topik-quest/ (v92 유지).
 - 이번 문서 작업 되돌리기 기준: `db1628ce5ef4206c3b1ece160d78e14715427d68`.
 - v92 제품 되돌리기 기준: v91 `21d04e3ce00f6f406f6810f72c081e62cb6f20b0`.
