@@ -5,11 +5,11 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v91 · North-south reusable Seoul street block adjacency validation
-- Current candidate: v92 · Four-block reusable Seoul street grid validation
+- Production release: v92 · Four-block reusable Seoul street grid validation
+- Current candidate: v93 · reviewed offline Japanese translation for the Review CI retry
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
-- First-session goal: finish the first Game or Travel step within ten minutes
+- First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
 - Autonomous runtime: GitHub-connected scheduled task, four fresh runs per day
 - Long-term game direction: Seoul exploration quests and learning-earned avatar rewards; all payment UI deferred
 
@@ -117,8 +117,19 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 우선순위
 
-1. 재사용 서울 거리 타일셋을 모서리·교차로 단위로 확장한다.
-2. 실제 오답 근거를 모아 TOPIK I·II와 Shorts 문항·강사형 해설을 유형별로 확장한다.
+1. [출시 청사진 #110](https://github.com/okometsbu-beep/topik-quest/issues/110)이 #76 서울 맵 확장보다 우선이다.
+2. 새 P0·명백한 정답 오류 → 긴급 지시 → 일반 지시 → 이 문서 순서로, 의존성이 풀린 최소 작업 하나만 고른다.
+3. A01–A12는 감사에서 발견한 미해결 후보다. 기존 시각/기능 검사 통과가 교육 정확성이나 출시 합격을 뜻하지 않는다.
+
+## 2026 출시 마감 초안 · #110 합격 기준 유지
+
+- 9/13 전면 감사·범위·외부 의존성 확인; 9/27 핵심 학습 동선·P0/P1·백업 안정화.
+- 10/11 교육/번역·유형별 풀이·복습·한 RPG 코스 품질; 10/18 기능 동결·출시 후보.
+- 10/19–11/2 동의한 실제 테스터 베타; 11/2–11/15 심사/수정 버퍼.
+- 11/17 조건부 첫 공개 목표, 지연 시 12/1 대체 검토. Android 일정은 실제 의존성으로 별도 판단한다.
+- 주 마감마다 완료/미완료·증거·위험·다음 목표를 기록한다. 12명 중 10명 첫 학습 성공·9명 다음/복습 발견은
+  #110의 소규모 목표이며 대표 통계가 아니다. 실제 1일/7일 회상과 공개 후 14일 안정화도 필요하다.
+- 계정 가입/결제/신원·서명 키·외부 테스터 초대·개인정보 수집·스토어 제출/공개는 별도 승인 대상이다.
 
 ## 이번 운영 변경
 
@@ -131,23 +142,28 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-검증된 2×2 조합을 사용하는 첫 서울 거리 구역의 지면·상단·충돌 데이터를 만들되 기존 공항
-세계나 포털에는 아직 연결하지 않고 독립 구역 검증만 통과시킨다. NPC·학습 이벤트·TOPIK 문항은
-추가하지 않는다.
+A02: 신규/재방문/중도 종료 상태에서 입문·TOPIK I·II 선택과 Home 학습 CTA의 목적지를 재현한다.
+입문 학습 후 Game의 TOPIK II 문항으로 이어졌다는 #110 증거를 확인하고, 원인이 확인된 최소 상태 연결
+하나만 수정한다. 새 P0/명백한 정답 오류가 있으면 앞당긴다. 서울 구역 확장은 핵심 학습 게이트 뒤로 보류한다.
 
-## v92 후보 결과
+## 이번 작업 · 출시 사실 동기화와 Review 번역 게이트 복구
 
-- 검증된 12×10 블록 네 개를 24×20 비플레이 2×2 조합으로 만들고 내부 도로 포트 네 쌍,
-  동서·남북 전체 접속면, 외부 출구 8개의 좌표 유일성을 함께 검증한다.
-- 누락된 내부 연결, 재사용된 포트, 틀린 외부 포트 집합을 각각 실패시키며 실제 공항 3개 구역에는
-  2×2 조합을 추가하지 않는다.
-- 로컬 빠른 검사 74/74, 전체 검사 82/82, 런타임 42개, JS 구문 76개가 통과했다.
-- 최종 checkpoint Actions run `33559269169`에서 320·375·390·430px 밝은·어두운 테마와
-  Travel 회귀가 통과했고, 양쪽 390px 화면을 직접 열어 네 이음새·돌출·필터·기준선·충돌 표시를 확인했다.
-- 기존 저장·공항·NPC·문제·정답·해설·결제 경계는 변경하지 않았다.
-- 배포 주소: `https://okometsbu-beep.github.io/topik-quest/`; main CI와 Pages 성공 뒤 라이브 v92를
-  smoke 확인한다.
-- 되돌리기 기준: v91 main `21d04e3ce00f6f406f6810f72c081e62cb6f20b0`
+- 2026-09-08 최신 main `db1628ce5ef4206c3b1ece160d78e14715427d68`과 #110을 대조해 STATUS/HANDOFF를 정정했다.
+- v92는 PR #109로 이미 배포됐다. 당시 main Verify `33559995292`, Pages `33559993759` 성공 기록이 있다.
+- 당시 82/82 검사와 Chrome 320/375/390/430px 양쪽 테마 기록은 과거 배포 증거이며 이번 실기기 검사가 아니다.
+- 이번 로컬 Node v24.19.0 `npm run check`: 런타임/구문 및 82/82 통과. 라이브 HTTP smoke: v92 기본 3개+런타임 42개 통과.
+- Chrome 재방문 세션에서 Travel→Home→설정 v92를 확인했다. PR #111의 최종 CI/병합 여부는 #110에 기록한다.
+- 브랜치 CI `34182400771`에서 Review 재도전 문항 `P01-II-R-06`의 일본어 전체 번역이 외부 무료 번역 실패 시
+  한국어로 되돌아가는 결함을 재현했다. 정답·원문·ID는 바꾸지 않고 검수한 일본어 번역을 정적 등록해 네트워크 의존을 제거했다.
+- v93 로컬 검사: 콘텐츠 6/6, 빠른 검사 75/75, 전체 검사 83/83, 런타임 v93 42개, 구문 76개 통과.
+- 수정 커밋 `b0ee3395d4dda4989dd329b33bd98ae3dafc48b1`의 CI `34208096679`는 전체 검사와 실제 headless Chrome
+  320/375/390/430px 양쪽 테마 검사를 통과했다. 산출물 `10048705237`에서 Review 재도전·상세 해설 화면을 확인했다.
+- 이번 화면 증거는 데스크톱 Linux의 모바일 뷰포트 에뮬레이션이며 실제 iPhone/Android 검증으로 표시하지 않는다.
+- 문항 정답·한국어 원문·해설·저장 키·학습 기록·테마·모드 변경 없음.
+- 라이브 주소: https://okometsbu-beep.github.io/topik-quest/ (v92 유지).
+- 이번 문서 작업 되돌리기 기준: `db1628ce5ef4206c3b1ece160d78e14715427d68`.
+- v92 제품 되돌리기 기준: v91 `21d04e3ce00f6f406f6810f72c081e62cb6f20b0`.
+- 미검증: A02 상태 행렬, A03–A05 번역/해설/문법 정확성, A06 모바일 재현, 실제 iPhone/Android·음성·실사용 회상.
 
 ## 알려진 위험
 
@@ -160,10 +176,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 새 구역은 키 큰 오브젝트의 실루엣·기준선·충돌 셀을 함께 선언하지 않으면 검증을 통과할 수 없다.
 - P3 레이어 기반은 완료됐지만 광원은 현재 정적 하이라이트뿐이며 날씨·시간대 변화는 아직 없다.
 - v77 연출 계약은 공항 탐험 흐름부터 적용한다. 명동 NPC·보상 화면 연결과 실제 음원 선택 UI는 아직 없다.
-- 현재 공항 3개 구역은 기존 원화를 마이그레이션 아틀라스로 쓰되 런타임은 타일 ID별로만
-  그린다. 한국 거리 아틀라스는 직선·모서리·T자·십자 교차로까지 제공하지만 실제 서울 구역을
-  독립 카탈로그는 장식 상단 레이어까지 준비됐고 동서·남북·2×2 접속면 검증도 끝났다. 다음은
-  이 조합을 실제 포털에 연결하기 전 독립 서울 거리 구역 데이터로 옮겨 검증해야 한다.
+- 거리 블록 동서·남북·2×2 검증 맵은 비플레이 fixture다. 실제 서울 구역이나 학습 성과로 집계하지 않는다.
 - 첫 공항 NPC만 장문 대화·단어 퀴즈 계약에 편입됐다. 한국 조사물도 첫 청사초롱 한 개뿐이며
   다른 NPC와 조사물은 후속이다.
 - 기존 Plus·가격·결제 암시 UI가 새 화면에 재사용되지 않도록 계속 검사해야 한다.

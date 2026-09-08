@@ -34,3 +34,11 @@ test('Review contract keeps readable theme-aware surfaces and a fixed compatibil
   assert.match(visual,/\.tqReviewDeep p\{[^}]*white-space:pre-line/);
   assert.match(visual,/\.tqReviewChoiceAnalysis span\{[^}]*font-size:10px/);
 });
+
+test('Review ships a complete offline Japanese translation for the CI idiom retry',()=>{
+  const product=read('product-polish.js'),features=read('learning-features.js');
+  assert.match(product,/'P01-II-R-06':\{\s*ja:'次の文を読んで/);
+  assert.match(product,/年末で注文が殺到し、「눈코 뜰 새 없이」忙しかった。/);
+  for(const choice of ['長い時間眠った','とても暇だった','目が回るほど忙しかった','周囲を詳しく見た'])assert.match(product,new RegExp(choice));
+  assert.ok(features.indexOf('if(reviewed)return{fullText:reviewed,reviewed:true}')<features.indexOf("translateCached(base+'_body_full'"));
+});

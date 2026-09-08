@@ -56,6 +56,9 @@ window.MALBIT_REVIEWED_TRANSLATIONS={
     ja:'音声を聞いて、内容と同じものを選んでください。\n\n女：私たち、3時に会いましょうか。\n男：私は4時のほうがいいです。\n女：いいですね。では4時に会いましょう。\n\n1. 二人は3時に会います。\n2. 二人は4時に会います。\n3. 男性は3時がいいです。\n4. 女性は4時に時間がありません。',
     en:'Listen and choose the statement that matches the dialogue.\n\nWoman: Shall we meet at three o’clock?\nMan: I prefer four o’clock.\nWoman: All right. Then let’s meet at four o’clock.\n\n1. The two people will meet at three o’clock.\n2. The two people will meet at four o’clock.\n3. The man prefers three o’clock.\n4. The woman is not available at four o’clock.',
     zh:'请听对话，选择与内容相符的一项。\n\n女：我们三点见面好吗？\n男：我更喜欢四点。\n女：好，那我们四点见。\n\n1. 两个人三点见面。\n2. 两个人四点见面。\n3. 男士喜欢三点。\n4. 女士四点没有时间。'
+  }}},
+  2:{...(window.MALBIT_REVIEWED_TRANSLATIONS?.[2]||{}),read:{...(window.MALBIT_REVIEWED_TRANSLATIONS?.[2]?.read||{}),'P01-II-R-06':{
+    ja:'次の文を読んで、下線部と意味が最も近いものを選んでください。\n\n年末で注文が殺到し、「눈코 뜰 새 없이」忙しかった。\n\n1. 長い時間眠った\n2. とても暇だった\n3. 目が回るほど忙しかった\n4. 周囲を詳しく見た'
   }}}
 };
 const reviewedQ9=(window.TOPIK1_LISTENING_DATA||[]).find(q=>Number(q.id)===9);
