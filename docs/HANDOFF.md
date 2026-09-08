@@ -3,22 +3,22 @@
 This is the short continuity record for future work. Use it with `AGENTS.md`; do not reconstruct
 these facts from conversation history or the large TOPIK source bundle.
 
-## Current release priority · 2026-09-08
+## Current release priority · 2026-09-09
 
 - Source of truth: [release blueprint #110](https://github.com/okometsbu-beep/topik-quest/issues/110).
   It supersedes #76 map expansion until core learning quality gates pass. A01–A12 remain audit findings,
   not resolved items; existing feature/visual checks do not certify translation or teaching accuracy.
-- Production is v93 at `fb27acdd285031fa1ddac97a5bef72cd658a8e4e` (PR #111).
-  Main Verify `34209137202` and Pages `34209136694` succeeded. PR #112 is the v94 candidate:
-  it gives Beginner, TOPIK I, and TOPIK II one explicit saved learning path, aligns the Home selected tab,
-  Hero copy, continue label, and CTA destination, and resumes only a matching TOPIK session. It preserves
-  the learner's prior TOPIK exam level when Beginner is selected and leaves every existing storage root intact.
-  Branch CI `34245225998` passed the full suite and Linux Chrome 320/375/390/430px light/dark checks;
-  artifact `10063798354` was visually reviewed. This is not physical iPhone or Android evidence.
-  Candidate rollback is v93 `fb27acdd285031fa1ddac97a5bef72cd658a8e4e`.
-- After PR #112 is resolved, next: reproduce A03's requested Japanese full-translation fallback by
-  question ID, then provide reviewed translation or an honest unavailable state as one bounded change.
-  A new P0 or clear wrong answer takes precedence. Never duplicate an open PR or a resolved finding.
+- Production is v94 at `6f5399a2a81c5664064d764d735329fa0882d0a6` (PR #112).
+  Main Verify `34246497320` and Pages `34246495806` succeeded. The v95 candidate fixes A03's
+  Japanese Random Practice fallback: reviewed, automatic, and unavailable translations are distinct,
+  and a failed translator response that echoes Korean source text is shown as unavailable rather than
+  mislabeled as Japanese. It adds no guessed translation and preserves every content and storage contract.
+  Branch CI `34279625964` passed the full suite and Linux Chrome 320/375/390/430px light/dark checks;
+  artifact `10077161145` was visually reviewed. This is not physical iPhone or Android evidence.
+  Candidate rollback is v94 `6f5399a2a81c5664064d764d735329fa0882d0a6`.
+- Next: reproduce A04 in `M11-I-R-37`, where the explanation misses the decisive entrance-direction
+  evidence and duplicates distractor analysis, then correct evidence → per-choice trap → solving method
+  as one bounded content change. A new P0 or clear wrong answer takes precedence.
 - Follow start → understand → recall/speak/write → review → next learning for Japanese beginners, and
   passage evidence → specific distractor traps → reusable solving method for TOPIK I/II.
 - 2026 draft gates: Sep 13 audit/scope/dependencies; Sep 27 core flow/P0/P1/backup; Oct 11 teaching,
@@ -31,8 +31,9 @@ these facts from conversation history or the large TOPIK source bundle.
   tester invitations, personal-data collection, store submission and publication need separate owner approval.
   Stop on PAUSE. Only pause the recurring loop for owner stop, all-work blockage, or completed #110 gates.
 - Current-pass checks, documentation PR/merge and live verification belong in #110's progress comment.
-  Unseen states and unrun tests must remain unverified, including A03–A05 correctness, A06 physical-mobile
-  reproduction, actual iPhone/Android, audio, offline recovery, and real learner delayed recall.
+  Unseen states and unrun tests must remain unverified, including corpus-wide translation completeness,
+  A04–A05 correctness, A06 physical-mobile reproduction, actual iPhone/Android, audio, offline recovery,
+  and real learner delayed recall.
 
 ## Stable product state
 
