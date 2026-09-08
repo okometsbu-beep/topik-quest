@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v93 · reviewed offline Japanese translation for Review
-- Current candidate: v94 · A02 Home learning-path and primary-CTA alignment (PR #112)
+- Production release: v94 · A02 Home learning-path and primary-CTA alignment
+- Current candidate: v95 · honest Random Practice translation fallback
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -43,6 +43,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
   semantic visual owner with unanswered/graded four-width gates
 - Random Practice TOPIK I·II questions, choices, grading, translation, and instructor coaching use
   the same light/dark semantic surfaces with unanswered/graded four-width gates
+- Random Practice distinguishes reviewed, automatic, and unavailable full translations. A failed
+  Japanese translation can never be presented as translated text by echoing the Korean source.
 - Review TOPIK I·II filters, queue, retry, requested translation, grading, and option elimination use
   the same light/dark semantic surfaces with resolution/re-entry four-width gates
 - Travel exploration separates Seoul world/district/zone/collision/POI/portal data from route learning events
@@ -142,27 +144,28 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-A03: 일본어 Random Practice에서 전체 번역을 요청했을 때 원문 fallback을 번역처럼 표시하는 상태를
-문항 ID별로 재현한다. 검수된 일본어 번역을 제공하거나 미제공 상태를 정직하게 구분하는 최소 작업만
-고른다. 새 P0/명백한 정답 오류가 있으면 앞당긴다. 서울 구역 확장은 핵심 학습 게이트 뒤로 보류한다.
+A04: `M11-I-R-37`의 결정적 근거는 `오른쪽 출입구를 이용해 주세요`인데 현재 해설이 `공사 중입니다`를
+주 근거로 삼고 오답 분석을 중복하는 상태를 재현한다. 정답 근거 → 오답별 구체적 이유 → 재사용 풀이법을
+문항에 맞게 고치는 최소 작업만 고른다. 새 P0/명백한 정답 오류가 있으면 앞당긴다.
 
-## 이번 작업 · A02 Home 학습 경로와 CTA 정합성
+## 이번 작업 · A03 Random Practice 번역 fallback 정직성
 
-- 기준 main/라이브는 v93 `fb27acdd285031fa1ddac97a5bef72cd658a8e4e`; PR #112에서 v94를 준비한다.
-- 신규 사용자는 입문을 기본 경로로 보고, 입문/TOPIK I/TOPIK II 탭·Hero 제목·CTA 문구·목적지를 같은
-  `learningPath`로 결정한다. 입문 선택은 저장된 TOPIK 시험 레벨을 덮어쓰지 않는다.
-- 진행 중 TOPIK 세션은 선택한 레벨과 일치할 때만 “이어서 학습”으로 표시한다. TOPIK I 세션을 둔 채
-  TOPIK II를 선택하면 새 TOPIK II 학습으로 안내한다.
-- 기존 `malbitProductPrefsV1` 안에 `learningPath`만 추가하고 모든 기존 저장 루트, 문제·정답·해설·ID,
-  라이트/다크, Game/Travel 진행을 보존한다.
-- 로컬 Node v24.19.0: focused 14/14, 빠른 검사 76/76, 구문·diff 검사 통과.
-- 브랜치 CI `34245225998`: 전체 검사와 Linux Chrome 320/375/390/430px 라이트·다크 모바일
-  뷰포트 검사를 통과했다. 산출물 `10063798354`에서 입문 다크와 TOPIK II 라이트 상태를 직접 확인했다.
-- 실제 iPhone/Android 검증, 음성, 오프라인, 실제 학습자 첫 성공/지연 회상은 이번 통과로 표시하지 않는다.
-- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (PR #112 병합 후 v94 확인 대상).
-- 배포 전 되돌리기 기준: v93 `fb27acdd285031fa1ddac97a5bef72cd658a8e4e`. 최종 squash SHA와
+- 기준 main/라이브는 v94 `6f5399a2a81c5664064d764d735329fa0882d0a6`; v95 후보에서 A03의
+  번역 실패 표시만 고친다.
+- `translateCached`가 실패 때 한국어 원문을 돌려주고 Random Practice가 이를 성공한 일본어 번역처럼
+  그리던 원인을 `M11-I-R-37`로 재현했다.
+- 별도 정책 모듈이 검수 번역·자동 번역·미제공 상태를 구분한다. 비었거나 원문과 같거나 일본어 대상에
+  한글만 남은 결과는 번역으로 표시하지 않고, 원문이 위에 있다는 일본어 안내를 보여 준다.
+- 새 번역 내용을 추측해 추가하지 않았고 기존 문제 ID·원문·정답·해설·저장 루트·라이트/다크를 보존했다.
+- 로컬 Node v24.19.0: 정책 검사 3/3, 빠른 검사 77/77, 런타임 v95 43개 파일·구문 77개·diff 검사 통과.
+- 브랜치 CI `34279625964`: 전체 검사와 Linux Chrome 320/375/390/430px 라이트·다크 모바일
+  에뮬레이션을 통과했다. 산출물 `10077161145`에서 일본어 미제공 카드를 직접 확인했다.
+- 실제 iPhone/Android, 기기 TTS, 오프라인 복구, 외부 번역 성공 경로의 모든 언어 품질, 2,144문항 전체
+  번역 완전성은 이번 통과로 표시하지 않는다.
+- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (v95 병합 후 확인 대상).
+- 배포 전 되돌리기 기준: v94 `6f5399a2a81c5664064d764d735329fa0882d0a6`. 최종 squash SHA와
   Pages 결과는 #110 진행 기록에 남긴다.
-- 미검증: A03–A05 번역/해설/문법 정확성, A06 실제 모바일 재현, 실제 iPhone/Android·음성·실사용 회상.
+- 미검증: A04–A05 해설/문법 정확성, A06 실제 모바일 재현, 실제 단말·음성·실사용 회상.
 
 ## 알려진 위험
 
