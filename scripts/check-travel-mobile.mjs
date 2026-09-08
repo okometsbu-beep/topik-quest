@@ -624,9 +624,10 @@ try{
   assert.match(await evaluate(`document.querySelector('.t1TutorCoach')?.innerText`),/正解の根拠[\s\S]*選んだ選択肢の分析[\s\S]*解き方のコツ/);
   const unavailableTranslation=await evaluate(`(()=>{const card=document.querySelector('.malbitQuestionTranslation'),copy=card?.querySelector('p')?.textContent||'';return{status:card?.dataset.translationStatus,copy,hangul:/[\uac00-\ud7a3]/u.test(copy)}})()`);
   assert.deepEqual(unavailableTranslation,{status:'unavailable',copy:'この問題の全文翻訳は現在利用できません。韓国語の原文は上に表示されています。',hangul:false},'a Korean source fallback must be shown as unavailable, never as Japanese translation');
+  await evaluate(`document.querySelector('.malbitQuestionTranslation')?.scrollIntoView({block:'center',inline:'center',behavior:'auto'})`);await sleep(100);
+  await setViewport(390,844);await shot('00gb-random-practice-translation-unavailable.png');
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertRandomPracticeFits(`TOPIK I graded Random Practice dark ${width}px`,'dark')}
   await setViewport(390,844);await shot('00g-random-practice-topik1-coaching.png');
-  await shot('00gb-random-practice-translation-unavailable.png');
   await evaluate(`window.translateCached=window.__malbitOriginalTranslateCached;delete window.__malbitOriginalTranslateCached`);
 
   await evaluate(`(()=>{S.lang='ja';S.view='infinity';S.infinity={active:true,examLevel:2,count:0,graded:0,correct:0,writing:0,totalSec:0,targetSec:0,last:null,feedback:null,seenIds:[],current:{type:'read',id:956,bankId:'P01-II-R-06',choiceOrder:[0,1,2,3]}};save();render()})()`);await sleep(300);
