@@ -95,8 +95,9 @@ function originalQuestionText(state){
 async function translatedQuestion(state,source){
   const lang=appState()?.lang||'ko';if(lang==='ko')return source;
   const reviewed=window.MALBIT_REVIEWED_TRANSLATIONS?.[state.level]?.[state.type]?.[state.id]?.[lang];if(reviewed)return reviewed;
-  if(typeof window.translateCached!=='function')return source;
-  return window.translateCached(`random_whole_v24_${state.level}_${state.type}_${state.id}_${lang}`,source,'ko',lang);
+  const policy=window.MALBIT_RANDOM_TRANSLATION;
+  if(!policy)return{status:'unavailable',text:L('이 문제의 전체 번역은 현재 제공되지 않습니다. 한국어 원문은 위에 표시되어 있습니다.','この問題の全文翻訳は現在利用できません。韓国語の原文は上に表示されています。','A full translation is not available for this question. The Korean original is shown above.','这道题暂时无法提供全文翻译。上方显示的是韩语原文。')};
+  return policy.resolve({source,target:lang,reviewed,translate:typeof window.translateCached==='function'?(value,target)=>window.translateCached(`random_whole_v24_${state.level}_${state.type}_${state.id}_${target}`,value,'ko',target):null});
 }
 
 async function localizedExplanation(state){
@@ -120,7 +121,7 @@ function patchRandomFeedback(){
   if(inline){panel.replaceChildren(inline);if(detailed)panel.appendChild(detailed)}
   [...card.querySelectorAll('.closeBtn')].filter(button=>/\uD574설|\u89E3説|Explain|\u89E3析/.test(button.textContent)).forEach(button=>button.remove());
   const source=originalQuestionText(state);
-  translatedQuestion(state,source).then(value=>{const node=translation.isConnected&&translation.dataset.key===state.key?translation.querySelector('p'):null;if(node)node.textContent=value}).catch(()=>{const node=translation.querySelector('p');if(node)node.textContent=source});
+  translatedQuestion(state,source).then(result=>{const node=translation.isConnected&&translation.dataset.key===state.key?translation.querySelector('p'):null;if(!node)return;const resolved=typeof result==='string'?{status:'reviewed',text:result}:result;translation.dataset.translationStatus=resolved.status;translation.classList.toggle('unavailable',resolved.status==='unavailable');node.textContent=resolved.text}).catch(()=>{const node=translation.querySelector('p');if(node){translation.dataset.translationStatus='unavailable';translation.classList.add('unavailable');node.textContent=L('이 문제의 전체 번역은 현재 제공되지 않습니다. 한국어 원문은 위에 표시되어 있습니다.','この問題の全文翻訳は現在利用できません。韓国語の原文は上に表示されています。','A full translation is not available for this question. The Korean original is shown above.','这道题暂时无法提供全文翻译。上方显示的是韩语原文。')}});
   if(!inline)localizedExplanation(state).then(value=>{const node=panel.querySelector('.malbitExplanationLoading');if(node){node.className='malbitExplanationBody';node.textContent=value}});
 }
 
