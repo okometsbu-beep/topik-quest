@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v92 · Four-block reusable Seoul street grid validation
-- Current candidate: v93 · reviewed offline Japanese translation for the Review CI retry
+- Production release: v93 · reviewed offline Japanese translation for Review
+- Current candidate: v94 · A02 Home learning-path and primary-CTA alignment (PR #112)
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -142,28 +142,27 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-A02: 신규/재방문/중도 종료 상태에서 입문·TOPIK I·II 선택과 Home 학습 CTA의 목적지를 재현한다.
-입문 학습 후 Game의 TOPIK II 문항으로 이어졌다는 #110 증거를 확인하고, 원인이 확인된 최소 상태 연결
-하나만 수정한다. 새 P0/명백한 정답 오류가 있으면 앞당긴다. 서울 구역 확장은 핵심 학습 게이트 뒤로 보류한다.
+A03: 일본어 Random Practice에서 전체 번역을 요청했을 때 원문 fallback을 번역처럼 표시하는 상태를
+문항 ID별로 재현한다. 검수된 일본어 번역을 제공하거나 미제공 상태를 정직하게 구분하는 최소 작업만
+고른다. 새 P0/명백한 정답 오류가 있으면 앞당긴다. 서울 구역 확장은 핵심 학습 게이트 뒤로 보류한다.
 
-## 이번 작업 · 출시 사실 동기화와 Review 번역 게이트 복구
+## 이번 작업 · A02 Home 학습 경로와 CTA 정합성
 
-- 2026-09-08 최신 main `db1628ce5ef4206c3b1ece160d78e14715427d68`과 #110을 대조해 STATUS/HANDOFF를 정정했다.
-- v92는 PR #109로 이미 배포됐다. 당시 main Verify `33559995292`, Pages `33559993759` 성공 기록이 있다.
-- 당시 82/82 검사와 Chrome 320/375/390/430px 양쪽 테마 기록은 과거 배포 증거이며 이번 실기기 검사가 아니다.
-- 이번 로컬 Node v24.19.0 `npm run check`: 런타임/구문 및 82/82 통과. 라이브 HTTP smoke: v92 기본 3개+런타임 42개 통과.
-- Chrome 재방문 세션에서 Travel→Home→설정 v92를 확인했다. PR #111의 최종 CI/병합 여부는 #110에 기록한다.
-- 브랜치 CI `34182400771`에서 Review 재도전 문항 `P01-II-R-06`의 일본어 전체 번역이 외부 무료 번역 실패 시
-  한국어로 되돌아가는 결함을 재현했다. 정답·원문·ID는 바꾸지 않고 검수한 일본어 번역을 정적 등록해 네트워크 의존을 제거했다.
-- v93 로컬 검사: 콘텐츠 6/6, 빠른 검사 75/75, 전체 검사 83/83, 런타임 v93 42개, 구문 76개 통과.
-- 수정 커밋 `b0ee3395d4dda4989dd329b33bd98ae3dafc48b1`의 CI `34208096679`는 전체 검사와 실제 headless Chrome
-  320/375/390/430px 양쪽 테마 검사를 통과했다. 산출물 `10048705237`에서 Review 재도전·상세 해설 화면을 확인했다.
-- 이번 화면 증거는 데스크톱 Linux의 모바일 뷰포트 에뮬레이션이며 실제 iPhone/Android 검증으로 표시하지 않는다.
-- 문항 정답·한국어 원문·해설·저장 키·학습 기록·테마·모드 변경 없음.
-- 라이브 주소: https://okometsbu-beep.github.io/topik-quest/ (v92 유지).
-- 이번 문서 작업 되돌리기 기준: `db1628ce5ef4206c3b1ece160d78e14715427d68`.
-- v92 제품 되돌리기 기준: v91 `21d04e3ce00f6f406f6810f72c081e62cb6f20b0`.
-- 미검증: A02 상태 행렬, A03–A05 번역/해설/문법 정확성, A06 모바일 재현, 실제 iPhone/Android·음성·실사용 회상.
+- 기준 main/라이브는 v93 `fb27acdd285031fa1ddac97a5bef72cd658a8e4e`; PR #112에서 v94를 준비한다.
+- 신규 사용자는 입문을 기본 경로로 보고, 입문/TOPIK I/TOPIK II 탭·Hero 제목·CTA 문구·목적지를 같은
+  `learningPath`로 결정한다. 입문 선택은 저장된 TOPIK 시험 레벨을 덮어쓰지 않는다.
+- 진행 중 TOPIK 세션은 선택한 레벨과 일치할 때만 “이어서 학습”으로 표시한다. TOPIK I 세션을 둔 채
+  TOPIK II를 선택하면 새 TOPIK II 학습으로 안내한다.
+- 기존 `malbitProductPrefsV1` 안에 `learningPath`만 추가하고 모든 기존 저장 루트, 문제·정답·해설·ID,
+  라이트/다크, Game/Travel 진행을 보존한다.
+- 로컬 Node v24.19.0: focused 14/14, 빠른 검사 76/76, 구문·diff 검사 통과.
+- 브랜치 CI `34245225998`: 전체 검사와 Linux Chrome 320/375/390/430px 라이트·다크 모바일
+  뷰포트 검사를 통과했다. 산출물 `10063798354`에서 입문 다크와 TOPIK II 라이트 상태를 직접 확인했다.
+- 실제 iPhone/Android 검증, 음성, 오프라인, 실제 학습자 첫 성공/지연 회상은 이번 통과로 표시하지 않는다.
+- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (PR #112 병합 후 v94 확인 대상).
+- 배포 전 되돌리기 기준: v93 `fb27acdd285031fa1ddac97a5bef72cd658a8e4e`. 최종 squash SHA와
+  Pages 결과는 #110 진행 기록에 남긴다.
+- 미검증: A03–A05 번역/해설/문법 정확성, A06 실제 모바일 재현, 실제 iPhone/Android·음성·실사용 회상.
 
 ## 알려진 위험
 

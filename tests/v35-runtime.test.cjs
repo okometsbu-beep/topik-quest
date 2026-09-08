@@ -22,7 +22,7 @@ test('v35 exposes four writing sets and recognizes a closely traced mask', () =>
   oldLaunch.remove = () => { oldLaunch.removed = true; };
   header.children = [back, title, duplicateFlag]; duplicateFlag.remove = () => { header.children = header.children.filter(node => node !== duplicateFlag); };
   writingTab.classList.add('on');
-  let screen = 'home', openedView = null;
+  let screen = 'home', openedView = null, selectedPath = null;
   const document = {
     head: element(), body: element(), documentElement: element(),
     createElement: element, getElementById() { return null; },
@@ -44,6 +44,7 @@ test('v35 exposes four writing sets and recognizes a closely traced mask', () =>
     },
     S: { view: 'home', lang: 'ko' },
     setView(view) { openedView = view; },
+    tqSetLearningPath(path) { selectedPath = path; },
     render() {}
   };
   context.window = context;
@@ -54,8 +55,10 @@ test('v35 exposes four writing sets and recognizes a closely traced mask', () =>
   assert.equal(oldLaunch.removed, true, 'the separate beginner card is removed');
   assert.equal(level.classList.contains('v35ThreeLevels'), true);
   assert.equal(level.children.length, 3, 'beginner joins TOPIK I and II in one selector');
+  assert.equal(level.children[0].classList.contains('on'), true, 'a fresh learner starts with beginner selected');
   level.children[0].onclick({ preventDefault() {} });
   assert.equal(openedView, 'beginner');
+  assert.equal(selectedPath, 'beginner', 'opening beginner records the active learning path');
 
   screen = 'beginner'; context.S.view = 'beginner'; context.render();
   assert.equal(header.children.length, 2, 'only the global language button remains');

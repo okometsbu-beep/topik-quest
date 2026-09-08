@@ -8,15 +8,16 @@ these facts from conversation history or the large TOPIK source bundle.
 - Source of truth: [release blueprint #110](https://github.com/okometsbu-beep/topik-quest/issues/110).
   It supersedes #76 map expansion until core learning quality gates pass. A01–A12 remain audit findings,
   not resolved items; existing feature/visual checks do not certify translation or teaching accuracy.
-- Production is v92 at `db1628ce5ef4206c3b1ece160d78e14715427d68` (PR #109).
-  Historical main Verify `33559995292` and Pages `33559993759` succeeded. PR #111 is the v93 candidate:
-  it synchronizes the roadmap and replaces the Review CI retry's network-dependent Japanese translation
-  with one reviewed offline entry while preserving the original question, answer, ID, explanation, and storage.
-  Candidate commit `b0ee3395d4dda4989dd329b33bd98ae3dafc48b1` passed local 83/83 and CI `34208096679`,
-  including headless Chrome mobile-viewport checks; this is not evidence from a physical iPhone or Android device.
-  Candidate rollback is v92; v92 product rollback is v91 `21d04e3ce00f6f406f6810f72c081e62cb6f20b0`.
-- After PR #111 is resolved, next: reproduce A02 with new/returning/interrupted sessions,
-  beginner/TOPIK I/II selection, and Home learning CTA destinations; then fix one confirmed state-link defect.
+- Production is v93 at `fb27acdd285031fa1ddac97a5bef72cd658a8e4e` (PR #111).
+  Main Verify `34209137202` and Pages `34209136694` succeeded. PR #112 is the v94 candidate:
+  it gives Beginner, TOPIK I, and TOPIK II one explicit saved learning path, aligns the Home selected tab,
+  Hero copy, continue label, and CTA destination, and resumes only a matching TOPIK session. It preserves
+  the learner's prior TOPIK exam level when Beginner is selected and leaves every existing storage root intact.
+  Branch CI `34245225998` passed the full suite and Linux Chrome 320/375/390/430px light/dark checks;
+  artifact `10063798354` was visually reviewed. This is not physical iPhone or Android evidence.
+  Candidate rollback is v93 `fb27acdd285031fa1ddac97a5bef72cd658a8e4e`.
+- After PR #112 is resolved, next: reproduce A03's requested Japanese full-translation fallback by
+  question ID, then provide reviewed translation or an honest unavailable state as one bounded change.
   A new P0 or clear wrong answer takes precedence. Never duplicate an open PR or a resolved finding.
 - Follow start → understand → recall/speak/write → review → next learning for Japanese beginners, and
   passage evidence → specific distractor traps → reusable solving method for TOPIK I/II.
@@ -30,7 +31,8 @@ these facts from conversation history or the large TOPIK source bundle.
   tester invitations, personal-data collection, store submission and publication need separate owner approval.
   Stop on PAUSE. Only pause the recurring loop for owner stop, all-work blockage, or completed #110 gates.
 - Current-pass checks, documentation PR/merge and live verification belong in #110's progress comment.
-  Unseen states and unrun tests must remain unverified, including A03–A05 correctness and A06 mobile reproduction.
+  Unseen states and unrun tests must remain unverified, including A03–A05 correctness, A06 physical-mobile
+  reproduction, actual iPhone/Android, audio, offline recovery, and real learner delayed recall.
 
 ## Stable product state
 
