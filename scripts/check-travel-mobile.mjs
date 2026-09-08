@@ -518,7 +518,7 @@ try{
   await evaluate(`setView('home')`);await sleep(100);await shot('00eb-home-beginner-path-dark.png');
   await tap('.tqHomeScreen>.t1level button',1,120);
   assert.match(await evaluate(`document.querySelector('.tqHomeScreen>.t1level button.on')?.textContent`),/TOPIK I/);
-  await evaluate(`startPractice('random',1)`);await sleep(120);assert.equal(await evaluate(`S.view`),'t1quiz');
+  await evaluate(`(()=>{const prefs=JSON.parse(localStorage.getItem('malbitProductPrefsV1')||'{}');prefs.listeningMode='off';localStorage.setItem('malbitProductPrefsV1',JSON.stringify(prefs));tqStartMode('random')})()`);await sleep(120);assert.equal(await evaluate(`S.view`),'t1quiz');
   await evaluate(`setView('home')`);await sleep(120);
   assert.match(await evaluate(`document.querySelector('.tqV9Continue')?.textContent`),/続きから学習/,'a matching interrupted TOPIK session must be resumable');
   await tap('.tqV9Continue',0,120);assert.equal(await evaluate(`S.view`),'t1quiz');
