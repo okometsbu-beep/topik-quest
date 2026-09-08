@@ -6,6 +6,11 @@ const path=require('node:path');
 const root=path.resolve(__dirname,'..');
 const read=file=>fs.readFileSync(path.join(root,file),'utf8');
 
+function translationPolicy(){
+  const context={window:{}};require('node:vm').runInNewContext(read('random-practice-translation.js'),context);
+  return context.window.MALBIT_RANDOM_TRANSLATION;
+}
+
 test('Random Practice has one final visual owner for TOPIK I and II',()=>{
   const bootstrap=read('site-patch.js'),visual=read('random-practice-visual-system.js');
   assert.ok(bootstrap.indexOf("'random-practice-visual-system.js'")>bootstrap.indexOf("'shorts-visual-system.js'"));
@@ -35,4 +40,17 @@ test('Random Practice contract keeps readable learning surfaces and coaching',()
   assert.match(feedback,/x\?\.bankId&&window\.MALBIT_BANK\?window\.MALBIT_BANK\.present\(x\.bankId,x\.choiceOrder\)/);
   assert.match(feedback,/tutorCoach=strip\.querySelector\('\.t1TutorCoach'\)/);
   assert.match(feedback,/if\(tutorCoach\)strip\.appendChild\(tutorCoach\)/);
+});
+
+test('Random Practice never presents a Korean source fallback as a translation',async()=>{
+  const policy=translationPolicy(),source='다음을 읽고 무엇에 대한 글인지 고르십시오.\n\n공사 중입니다. 오른쪽 출입구를 이용해 주세요.';
+  const failed=await policy.resolve({source,target:'ja',translate:async value=>value});
+  assert.equal(failed.status,'unavailable');
+  assert.match(failed.text,/全文翻訳は現在利用できません/u);
+  assert.notEqual(failed.text,source);
+  const reviewed=await policy.resolve({source,target:'ja',reviewed:'工事中です。右側の出入口をご利用ください。'});
+  assert.deepEqual({...reviewed},{status:'reviewed',text:'工事中です。右側の出入口をご利用ください。'});
+  const automatic=await policy.resolve({source,target:'ja',translate:async()=> '次の文を読んでください。'});
+  assert.deepEqual({...automatic},{status:'automatic',text:'次の文を読んでください。'});
+  assert.equal(policy.usable(source,'공사 중입니다。','ja'),false,'Hangul-only fallback with changed punctuation is still unavailable');
 });

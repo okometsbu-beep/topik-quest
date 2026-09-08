@@ -79,6 +79,7 @@ before(runtime, 'learning-features.js', 'travel-mode.js');
 before(runtime, 'travel-mode.js', 'product-polish.js');
 before(runtime, 'data/beginner-grammar-v1.js', 'beginner-grammar.js');
 for (const [first, second] of [['app-polish-v22.js', 'app-polish-v24.js'], ['app-polish-v24.js', 'app-polish-v33.js'], ['app-polish-v33.js', 'app-polish-v34.js'], ['app-polish-v34.js', 'app-polish-v35.js']]) before(runtime, first, second);
+before(runtime, 'random-practice-translation.js', 'app-polish-v24.js');
 before(runtime, 'app-polish-v35.js', 'beginner-grammar.js');
 before(runtime, 'beginner-grammar.js', 'vocab-editor.js');
 
