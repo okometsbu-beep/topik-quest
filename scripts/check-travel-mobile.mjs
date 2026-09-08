@@ -502,10 +502,30 @@ try{
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertHomeFits(`Home dark ${width}px`,'dark')}
   await setViewport(390,844);await shot('00e-home-visual-contract.png');
   assert.equal(await evaluate(`document.querySelectorAll('.tqHomeScreen>.t1level button').length`),3,'Home must keep beginner, TOPIK I, and TOPIK II entries');
+  assert.match(await evaluate(`document.querySelector('.tqHomeScreen>.t1level button.on')?.textContent`),/入門/,'a fresh learner must see Beginner as the selected path');
+  assert.match(await evaluate(`document.querySelector('.tqV9HeroBottom h2')?.textContent`),/ハングルから始める韓国語/,'the primary lesson must name the visible beginner destination');
+  assert.match(await evaluate(`document.querySelector('.tqV9Continue')?.textContent`),/入門学習を始める/);
+  assert.equal(await evaluate(`localStorage.getItem('topikQuestExamLevel')`),null,'selecting beginner by default must not invent an exam level');
+  await tap('.tqV9Continue',0,120);
+  assert.equal(await evaluate(`S.view`),'beginner','fresh learner CTA must enter the beginner course');
+  await evaluate(`setView('home')`);await sleep(100);
   await tap('.tqHomeScreen>.t1level button',2,120);
   assert.match(await evaluate(`document.querySelector('.tqHomeScreen>.t1level button.on')?.textContent`),/TOPIK II/);
+  assert.deepEqual(await evaluate(`({level:localStorage.getItem('topikQuestExamLevel'),path:JSON.parse(localStorage.getItem('malbitProductPrefsV1')).learningPath})`),{level:'2',path:'topik2'});
+  await tap('.tqHomeScreen>.t1level button',0,120);
+  assert.equal(await evaluate(`S.view`),'beginner');
+  assert.deepEqual(await evaluate(`({level:localStorage.getItem('topikQuestExamLevel'),path:JSON.parse(localStorage.getItem('malbitProductPrefsV1')).learningPath})`),{level:'2',path:'beginner'},'beginner must not overwrite the learner\'s saved TOPIK level');
+  await evaluate(`setView('home')`);await sleep(100);await shot('00eb-home-beginner-path-dark.png');
   await tap('.tqHomeScreen>.t1level button',1,120);
   assert.match(await evaluate(`document.querySelector('.tqHomeScreen>.t1level button.on')?.textContent`),/TOPIK I/);
+  await evaluate(`tqStartMode('random')`);await sleep(120);assert.equal(await evaluate(`S.view`),'t1quiz');
+  await evaluate(`setView('home')`);await sleep(120);
+  assert.match(await evaluate(`document.querySelector('.tqV9Continue')?.textContent`),/続きから学習/,'a matching interrupted TOPIK session must be resumable');
+  await tap('.tqV9Continue',0,120);assert.equal(await evaluate(`S.view`),'t1quiz');
+  await evaluate(`setView('home');tqSetLevel(2)`);await sleep(120);
+  assert.doesNotMatch(await evaluate(`document.querySelector('.tqV9Continue')?.textContent`),/続きから学習/,'a TOPIK I session must not label the TOPIK II destination as resumable');
+  await evaluate(`malbitSetTheme('light')`);await sleep(100);await shot('00ec-home-topik2-path-light.png');
+  await evaluate(`malbitSetTheme('dark')`);await sleep(100);
 
   await evaluate(`(()=>{localStorage.setItem('malbitBeginnerV1',JSON.stringify({known:['v:ㅏ'],legacyScore:7}));S.lang='ja';S.view='beginner';save();render()})()`);await sleep(220);
   assert.ok(await evaluate(`!!document.querySelector('.bgLaunch')`),'beginner grammar launch card missing');

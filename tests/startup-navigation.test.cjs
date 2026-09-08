@@ -14,6 +14,19 @@ test('startup opens the app directly without onboarding or level diagnostics', (
   assert.match(growth, /function retireStartupGates\(\)/);
 });
 
+test('Home keeps beginner and TOPIK selection independent and routes one explicit primary lesson', () => {
+  const topik = read('topik1.js');
+  const beginner = read('app-polish-v35.js');
+  assert.match(topik, /localStorage\.getItem\(LEVEL\)==='2'\?2:1/, 'an absent exam level must not default a new learner to TOPIK II');
+  assert.match(topik, /return'beginner'/, 'a learner without a saved path starts at beginner');
+  assert.match(topik, /prefs\.learningPath=path/, 'the active learning path is stored inside the portable preferences root');
+  assert.match(topik, /if\(path==='beginner'\)return setView\('beginner'\)/, 'the Home primary CTA must follow the visible beginner path');
+  assert.match(topik, /matchingSession=.*Number\(session\.examLevel\|\|1\)===lv/, 'only a session for the selected TOPIK level may be resumed');
+  assert.match(topik, /const continueLabel=beginnerPath/, 'the CTA label is derived from the same path as its destination');
+  assert.match(beginner, /tqSetLearningPath==='function'.*tqSetLearningPath\('beginner'\)/, 'the beginner selector records its path without rewriting the exam level');
+  assert.doesNotMatch(beginner, /setItem\('topikQuestExamLevel'.*beginner/, 'beginner must not overwrite the saved TOPIK level');
+});
+
 test('bottom navigation routes are rendered and guarded against a frozen screen', () => {
   const index = read('index.html');
   const topik1 = read('topik1.js');

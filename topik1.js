@@ -3,7 +3,7 @@
 'use strict';
 const L=window.TOPIK1_LISTENING_DATA||[],R=window.TOPIK1_READING_DATA||[],A=[...L,...R],BANK=window.MALBIT_BANK||null;
 if(!A.length){console.error('TOPIK I data missing');return}
-const LEVEL='topikQuestExamLevel',SESSION='topikQuestTopik1Session',SHORTS_KEY='topikQuestShortsV1',GAME1_KEY='topikQuestTopik1GameV1',EXT=['mp3','m4a','aac','webm','ogg'];
+const LEVEL='topikQuestExamLevel',SESSION='topikQuestTopik1Session',SHORTS_KEY='topikQuestShortsV1',GAME1_KEY='topikQuestTopik1GameV1',HOME_PREFS_KEY='malbitProductPrefsV1',BEGINNER_KEY='malbitBeginnerV1',EXT=['mp3','m4a','aac','webm','ogg'];
 const SHORTS=[
   {type:'word',term:'미루다',meaning:{ko:'해야 할 일을 나중으로 넘기다',ja:'先延ばしにする',en:'to put off until later',zh:'推迟；拖延'},example:'할 일을 내일로 미루지 마세요.'},
   {type:'idiom',term:'마음에 들다',meaning:{ko:'좋게 생각하거나 만족스럽게 느끼다',ja:'気に入る',en:'to like or be pleased with',zh:'中意；喜欢'},example:'이 가방이 아주 마음에 들어요.'},
@@ -53,7 +53,21 @@ const HOME_HERO='data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAAAAAAD/2wBDAAcFBQYF
 let Q=null,timer=null,rollTimer=null,audio=null,ctx=null;
 const E=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const T=(ko,ja,en,zh)=>typeof ml==='function'?ml(ko,ja,en,zh):ko;
-const level=()=>{try{return localStorage.getItem(LEVEL)==='1'?1:2}catch(e){return 2}};
+const level=()=>{try{return localStorage.getItem(LEVEL)==='2'?2:1}catch(e){return 1}};
+function readHomeJSON(key,fallback){try{return JSON.parse(localStorage.getItem(key)||'null')??fallback}catch(e){return fallback}}
+function learningPath(){
+  const selected=readHomeJSON(HOME_PREFS_KEY,{}).learningPath;if(['beginner','topik1','topik2'].includes(selected))return selected;
+  try{const saved=localStorage.getItem(LEVEL);if(saved==='1'||saved==='2')return`topik${saved}`}catch(e){}
+  return'beginner'
+}
+function saveLearningPath(path){
+  if(!['beginner','topik1','topik2'].includes(path))return false;
+  try{const prefs=readHomeJSON(HOME_PREFS_KEY,{});prefs.learningPath=path;localStorage.setItem(HOME_PREFS_KEY,JSON.stringify(prefs));return true}catch(e){return false}
+}
+function beginnerStarted(){
+  const value=readHomeJSON(BEGINNER_KEY,{}),grammar=value?.grammarV1||{},writing=value?.writing||{},guided=value?.writingV35||{};
+  return !!((Array.isArray(value?.known)&&value.known.length)||Number(value?.quiz)>0||Number(value?.correct)>0||Object.values(writing).some(Number)||Number(guided?.success)>0||(Array.isArray(grammar?.completed)&&grammar.completed.length)||Object.values(grammar?.attempts||{}).some(Number))
+}
 function modeLangButton(extra=''){
   const flag=window.LANGS?.[S?.lang]?.flag||({ko:'🇰🇷',ja:'🇯🇵',en:'🇺🇸',zh:'🇨🇳'}[S?.lang]||'🌐');
   return `<button type="button" class="t1ModeLang ${extra}" onclick="event.stopPropagation();flagMenu()" aria-label="${T('설명 언어 바꾸기','説明言語を変更','Change explanation language','切换解析语言')}">${flag}</button>`
@@ -196,7 +210,8 @@ function game1PrepareEncounterQuestions(node=Q?.node||'battle'){
   if(!available.length&&BANK)available=BANK.gamePool(Q.examLevel,Q.gameStage,[...used]).map(x=>x.id);
   Q.ids=shuffle(available).slice(0,96);Q.i=0;Q.answers={};Q.played={};Q.choiceOrders=Q.choiceOrders||{};Q.encounterQuestionTier=node;Q.hiddenChoices=[];Q.last=null
 }
-window.tqSetLevel=n=>{try{localStorage.setItem(LEVEL,String(n))}catch(e){};render()};
+window.tqSetLearningPath=path=>{if(!saveLearningPath(path))return false;render();return true};
+window.tqSetLevel=n=>{const next=Number(n)===2?2:1;try{localStorage.setItem(LEVEL,String(next))}catch(e){};saveLearningPath(`topik${next}`);render()};
 if(S.view==='game'){S.view='t1game';try{save()}catch(e){}}
 function stopAudio(){window.__t1tts=null;try{if(window.MALBIT_TTS)window.MALBIT_TTS.cancel();else speechSynthesis.cancel()}catch(e){};if(audio){try{audio.pause();audio.currentTime=0}catch(e){}audio=null}}
 function stopTimer(){if(timer){clearInterval(timer);timer=null}}
@@ -293,7 +308,8 @@ window.tqStartMode=mode=>{
   return startPractice('random',1);
 };
 window.tqHomeContinue=()=>{
-  const lv=level(),session=restore(),profile=game1Profile(lv);
+  const path=learningPath();if(path==='beginner')return setView('beginner');
+  const lv=path==='topik2'?2:1,session=restore(),profile=game1Profile(lv);
   if(session&&!session.result&&Number(session.examLevel||1)===lv)return open('t1quiz');
   if(lv===1){profile.selected=Math.min(profile.unlock,GAME1_STAGES.length);saveGame1();return open('t1game')}
   if(S.real?.active){S.view='real';save();return render()}
@@ -636,12 +652,15 @@ home=function(sc){
 };
 home=function(sc){
   navActive('home');setProgress(0);syncStatsNav();sc.className='screen tqHomeScreen';
-  const lv=level(),stats=shortsStats(lv),daily=Math.min(5,Number(SH.daily?.[dayKey()]?.total)||0),degree=Math.round(daily/5*360),weekGoal=Math.min(5,stats.weekCount),session=restore(),profile=game1Profile(lv);
+  const path=learningPath(),beginnerPath=path==='beginner',lv=path==='topik2'?2:path==='topik1'?1:level(),stats=shortsStats(lv),daily=Math.min(5,Number(SH.daily?.[dayKey()]?.total)||0),degree=Math.round(daily/5*360),weekGoal=Math.min(5,stats.weekCount),session=restore(),matchingSession=!beginnerPath&&session&&!session.result&&Number(session.examLevel||1)===lv,activeExam=!beginnerPath&&lv===2&&S.real?.active,profile=game1Profile(lv),resumeBeginner=beginnerPath&&beginnerStarted();
   const labels=({ko:['월','화','수','목','금','토','일'],ja:['月','火','水','木','金','土','日'],en:['M','T','W','T','F','S','S'],zh:['一','二','三','四','五','六','日']}[S.lang]||['월','화','수','목','금','토','일']);
-  const lessonTitle=session&&!session.result&&Number(session.examLevel||1)===lv
+  const lessonTitle=beginnerPath
+    ?(resumeBeginner?T('한글·기초 문법 이어 배우기','ハングル・基礎文法の続き','Continue Hangul & basic grammar','继续学习韩文和基础语法'):T('한글부터 시작하는 한국어','ハングルから始める韓国語','Start Korean with Hangul','从韩文字母开始学韩语'))
+    :matchingSession
     ?T(`TOPIK ${lv===1?'I':'II'} 학습 이어풀기`,`TOPIK ${lv===1?'I':'II'} 学習を続ける`,`Continue TOPIK ${lv===1?'I':'II'}`,`继续 TOPIK ${lv===1?'I':'II'} 学习`)
-    :(lv===2&&S.real?.active?T('TOPIK II 모의고사 이어풀기','TOPIK II 模擬試験を続ける','Continue TOPIK II exam','继续 TOPIK II 模拟考试'):`STAGE ${profile.unlock} · ${game1Title(profile.unlock)}`);
-  const lessonMeta=lv===1?T('약 10분 · 듣기와 읽기','約10分 · 聞き取りと読解','About 10 min · Listening & Reading','约10分钟 · 听力与阅读'):T('약 12분 · 실전 문제','約12分 · 実戦問題','About 12 min · Exam questions','约12分钟 · 实战题目');
+    :(activeExam?T('TOPIK II 모의고사 이어풀기','TOPIK II 模擬試験を続ける','Continue TOPIK II exam','继续 TOPIK II 模拟考试'):`TOPIK ${lv===1?'I':'II'} · STAGE ${profile.unlock} · ${game1Title(profile.unlock)}`);
+  const lessonMeta=beginnerPath?T('약 5분 · 한글·발음·기초 문법·쓰기','約5分 · ハングル・発音・基礎文法・書き取り','About 5 min · Hangul, sound, grammar & writing','约5分钟 · 韩文、发音、基础语法和书写'):lv===1?T('약 10분 · 듣기와 읽기','約10分 · 聞き取りと読解','About 10 min · Listening & Reading','约10分钟 · 听力与阅读'):T('약 12분 · 실전 문제','約12分 · 実戦問題','About 12 min · Exam questions','约12分钟 · 实战题目');
+  const continueLabel=beginnerPath?(resumeBeginner?T('입문 학습 이어가기','入門学習の続きから','Continue beginner course','继续入门学习'):T('입문 학습 시작','入門学習を始める','Start beginner course','开始入门学习')):(matchingSession||activeExam?T('이어서 학습','続きから学習','Continue learning','继续学习'):T('오늘 학습 시작','今日の学習を始める','Start today’s lesson','开始今日学习'));
   sc.innerHTML=`
     <div class="tqHomeHeader"><div class="tqHomeLogo">MALBIT · 말빛</div><div class="tqHomeMeta"><span class="tqStreak">🔥 ${stats.dayStreak?T(`${stats.dayStreak}일 연속`,`${stats.dayStreak}日連続`,`${stats.dayStreak}-day streak`,`${stats.dayStreak}天连续`):T('오늘 시작','今日スタート','Start today','今天开始')}</span><button class="tqLang" onclick="event.stopPropagation();flagMenu()">${LANGS[S.lang].flag}</button></div></div>
     <div class="t1level"><button class="${lv===1?'on':''}" onclick="tqSetLevel(1)">TOPIK I</button><button class="${lv===2?'on':''}" onclick="tqSetLevel(2)">TOPIK II</button></div>
@@ -649,7 +668,7 @@ home=function(sc){
     <section class="tqV9Hero">
       <img class="tqV9HeroImage" src="assets/art/malbit-home-hero.webp" alt="${T('서울의 밤, 한국어를 공부하는 말빛 학습자','ソウルの夜に韓国語を学ぶMALBIT学習者','A MALBIT learner studying Korean at night in Seoul','首尔夜晚学习韩语的MALBIT学习者')}" width="1280" height="720" fetchpriority="high">
       <div class="tqV9HeroShade"></div>
-      <div class="tqV9HeroContent"><div class="tqV9HeroTop"><span class="tqV9Label">✦ ${T('오늘의 학습','今日の学習','Today’s lesson','今日学习')}</span><div class="tqV9Ring" style="--p:${degree}deg"><b>${daily}<small>/5</small></b></div></div><div class="tqV9HeroBottom"><h2>${lessonTitle}</h2><p>${lessonMeta}</p><button class="tqV9Continue" onclick="tqHomeContinue()">${session&&!session.result?T('이어서 학습','続きから学習','Continue learning','继续学习'):T('오늘 학습 시작','今日の学習を始める','Start today’s lesson','开始今日学习')} ›</button></div></div>
+      <div class="tqV9HeroContent"><div class="tqV9HeroTop"><span class="tqV9Label">✦ ${T('오늘의 학습','今日の学習','Today’s lesson','今日学习')}</span><div class="tqV9Ring" style="--p:${degree}deg"><b>${daily}<small>/5</small></b></div></div><div class="tqV9HeroBottom"><h2>${lessonTitle}</h2><p>${lessonMeta}</p><button class="tqV9Continue" onclick="tqHomeContinue()">${continueLabel} ›</button></div></div>
     </section>
     <div class="tqV9SectionHead"><b>⚡ ${T('빠른 연습','クイック練習','Quick practice','快速练习')}</b><span>${lv===1?'TOPIK I':'TOPIK II'}</span></div>
     <div class="tqV9Modes">
