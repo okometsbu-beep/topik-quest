@@ -230,6 +230,7 @@ test('Travel Mode is independent from Full Mock and wired into the ordered runti
   const topik = read('topik1.js');
   const bootstrap = read('site-patch.js');
   const runtime = read('travel-mode.js');
+  const styles = read('styles.css');
 
   assert.match(topik, /mode==='travel'/);
   assert.match(topik, /class="tqV9Mode travel"/);
@@ -246,6 +247,11 @@ test('Travel Mode is independent from Full Mock and wired into the ordered runti
   assert.match(runtime, /MALBIT_REVIEW\?\.record/);
   assert.match(runtime, /function cleanScript/);
   assert.match(runtime, /function resetViewport/);
+  assert.match(runtime, /malbitTravelOpen=\(\)=>\{setView\('travel'\);resetViewport\(\)\}/);
+  assert.match(styles, /\.travelHubHead\{padding-top:calc\(5px \+ env\(safe-area-inset-top\)\)\}/);
+  assert.match(styles, /body\.travel-rpg-active\{[^}]*overflow:hidden[^}]*padding-bottom:0\}/);
+  assert.match(styles, /body\.travel-rpg-active \.travelScreen\{overflow:hidden;padding:0\}/);
+  assert.match(styles, /\.travelRpgTopHud\{[^}]*top:calc\(10px \+ env\(safe-area-inset-top\)\)/);
   assert.match(runtime, /function resetTransient/);
   assert.match(runtime, /function normalizeMetrics/);
   assert.match(runtime, /window\.malbitTravelMetrics/);

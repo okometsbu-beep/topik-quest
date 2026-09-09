@@ -96,6 +96,16 @@ try{
     assert.deepEqual(fit.outside,[],`${label}: interactive element leaves viewport`);
     assert.deepEqual(fit.overlaps,[],`${label}: flow elements overlap`);
   };
+  const assertTravelTopSafe=async label=>{
+    const fit=await evaluate(`(()=>{const screen=document.querySelector('.travelScreen'),rpg=document.querySelector('.travelRpgScreen'),top=document.querySelector('.travelRpgTopHud'),back=document.querySelector('.travelRpgBack'),hub=document.querySelector('.travelHubHead');const rect=el=>el?(()=>{const r=el.getBoundingClientRect();return{top:r.top,bottom:r.bottom,left:r.left,right:r.right}})():null;return{scrollY,innerWidth,innerHeight,screen:rect(screen),rpg:rect(rpg),top:rect(top),back:rect(back),hub:rect(hub),bodyOverflow:getComputedStyle(document.body).overflowY}})()`);
+    assert.ok(fit.scrollY<=1,`${label}: retained page scroll ${fit.scrollY}`);
+    for(const [name,rect] of Object.entries({screen:fit.screen,rpg:fit.rpg,top:fit.top,back:fit.back,hub:fit.hub})){
+      if(!rect)continue;
+      assert.ok(rect.top>=-1,`${label}: ${name} clipped above viewport at ${rect.top}`);
+      assert.ok(rect.left>=-1&&rect.right<=fit.innerWidth+1,`${label}: ${name} leaves viewport horizontally`);
+    }
+    if(fit.rpg)assert.equal(fit.bodyOverflow,'hidden',`${label}: RPG page must own and lock its viewport`);
+  };
   const assertRpgFits=async(label,theme,expectedMap='airport-arrivals-map-v1.webp')=>{
     const fit=await evaluate(`(()=>{const root=document.querySelector('.travelRpgCard'),viewport=document.querySelector('.travelRpgViewport'),board=document.querySelector('.travelRpgBoard'),player=document.querySelector('.travelRpgPlayer'),map=document.querySelector('.travelRpgMap'),topHud=document.querySelector('.travelRpgTopHud'),statusHud=document.querySelector('.travelRpgStatusHud'),objectiveHud=document.querySelector('.travelRpgObjectiveHud'),controlsHud=document.querySelector('.travelRpgControls');if(!root||!viewport||!board||!player||!map||!topHud||!statusHud||!objectiveHud||!controlsHud)return{missing:true};const rect=el=>{const r=el.getBoundingClientRect();return{left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width,height:r.height}};const vr=rect(viewport),br=rect(board),pr=rect(player),rr=rect(root),hud=[topHud,statusHud,objectiveHud,controlsHud].map(rect),controls=[...root.querySelectorAll('.travelRpgBack,.travelRpgLang,.travelRpgDpad button,.travelRpgAction,.travelRpgDiscovery button')];const small=controls.filter(el=>{const r=el.getBoundingClientRect();return r.width<43||r.height<43}).map(el=>({class:el.className,width:Math.round(el.getBoundingClientRect().width),height:Math.round(el.getBoundingClientRect().height)}));const outside=controls.filter(el=>{const r=el.getBoundingClientRect();return r.left<-1||r.right>innerWidth+1||r.top<vr.top-1||r.bottom>vr.bottom+1}).length;const copy=[...root.querySelectorAll('small,.travelRpgObjectiveHud b')].map(el=>parseFloat(getComputedStyle(el).fontSize)).filter(size=>size<9.9);const mapStyle=getComputedStyle(map),boardStyle=getComputedStyle(board);return{missing:false,theme:document.documentElement.dataset.theme,rootWidth:document.documentElement.scrollWidth,bodyWidth:document.body.scrollWidth,innerWidth,asymmetry:Math.abs(rr.left-(innerWidth-rr.right)),ratio:br.width/br.height,viewportShare:vr.height/innerHeight,boardCovers:br.left<=vr.left+1&&br.right>=vr.right-1&&br.top<=vr.top+1&&br.bottom>=vr.bottom-1,boardWidthRatio:br.width/vr.width,boardIsolation:boardStyle.isolation,boardDepth:boardStyle.zIndex,playerInside:pr.left>=vr.left-1&&pr.right<=vr.right+1&&pr.top>=vr.top-1&&pr.bottom<=vr.bottom+1,hudInside:hud.every(r=>r.left>=vr.left-1&&r.right<=vr.right+1&&r.top>=vr.top-1&&r.bottom<=vr.bottom+1),small,outside,copy,mapOpacity:mapStyle.opacity,mapFilter:mapStyle.filter,mapSrc:map.getAttribute('src')}})()`);
     const spriteFit=await evaluate(`(()=>{const viewport=document.querySelector('.travelRpgViewport'),board=document.querySelector('.travelRpgBoard'),player=document.querySelector('.travelRpgPlayer'),sprite=document.querySelector('.travelRpgSprite');if(!viewport||!board||!player||!sprite)return{missing:true};const vs=getComputedStyle(viewport),bs=getComputedStyle(board),ss=getComputedStyle(sprite),pr=player.getBoundingClientRect(),sr=sprite.getBoundingClientRect();return{missing:false,boardHeightRatio:board.getBoundingClientRect().height/viewport.getBoundingClientRect().height,columns:player.dataset.spriteColumns,rows:player.dataset.spriteRows,walkFps:player.dataset.walkFps,footAnchor:player.dataset.footAnchor,spriteImage:ss.backgroundImage,spriteSize:ss.backgroundSize,playerWidth:pr.width,playerHeight:pr.height,spriteWidth:sr.width,spriteHeight:sr.height,viewportBackground:vs.backgroundColor,boardHeight:bs.height}})()`);
@@ -280,10 +290,12 @@ try{
         for(let wait=0;wait<20;wait++){if(await evaluate(`document.querySelector('.travelHubHead h1')?.textContent==='旅行モード'`)){opened=true;break}await sleep(50)}
       }
     }else{
+      await evaluate(`scrollTo({top:42,left:0,behavior:'auto'})`);
       await evaluate(`malbitTravelOpen()`);
       for(let wait=0;wait<40;wait++){if(await evaluate(`document.querySelector('.travelHubHead h1')?.textContent==='旅行モード'`)){opened=true;break}await sleep(50)}
     }
     assert.ok(opened,'Travel entry must open the hub');
+    await sleep(80);await assertTravelTopSafe('Travel hub after scrolled Home entry');
     assert.equal(await evaluate(`document.querySelector('.travelHubHead h1')?.textContent`),'旅行モード');
     if(seedMetrics){
       assert.equal(await evaluate(`document.querySelectorAll('.travelMetric').length`),7);
@@ -304,6 +316,11 @@ try{
     }
     await tapUntilScene('.travelEpisodeCard .travelPrimary','arrival');
     await assertSmoothRpgMotion();
+    await evaluate(`scrollTo({top:42,left:0,behavior:'auto'})`);await sleep(80);
+    await assertTravelTopSafe('Travel RPG after legacy 42px scroll attempt');
+    await setViewport(844,390);await assertTravelTopSafe('Travel RPG after landscape rotation');
+    await setViewport(390,500);await assertTravelTopSafe('Travel RPG after keyboard-height viewport');
+    await setViewport(390,844);await assertTravelTopSafe('Travel RPG after portrait restore');
     const captureRpgVisuals=!fs.existsSync(path.join(out,'00m-travel-rpg-light.png'));
     if(captureRpgVisuals){
       await evaluate(`malbitSetTheme('light')`);await sleep(120);
