@@ -13,8 +13,8 @@ these facts from conversation history or the large TOPIK source bundle.
   `M11-I-R-37`: the requested right-hand entrance is the decisive evidence, construction is background,
   the three distractors have distinct reasons, and the request-ending method is reusable. Random Practice
   renders evidence, distractor analysis, and strategy once each instead of repeating the full explanation.
-  Branch CI `34306240025` passed the full suite and Linux Chrome 320/375/390/430px mobile checks;
-  artifact `10086782949` dark coaching was visually reviewed. Final light evidence remains a candidate check.
+  Branch CI `34306811010` passed the full suite and Linux Chrome 320/375/390/430px mobile checks;
+  artifact `10086984653` dark and light coaching were visually reviewed. Real iPhone/Android remain unverified.
   This is not physical iPhone or Android evidence. Candidate rollback is v95 `fc6d84280f5bc04ae544c97924e8a42d25b3fd9c`.
 - Next: reproduce A05's beginner-grammar example where the Japanese field contains a grammar note rather
   than a full translation, then correct that one content owner without changing transformation or writing
