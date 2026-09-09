@@ -340,6 +340,7 @@ try{
       assert.match(await evaluate(`document.querySelector('.travelFirstAction')?.innerText||''`),/空港スタッフと道を尋ねる/);
       if(!fs.existsSync(path.join(out,'00be-a07-first-action-light.png'))){
         for(const theme of ['light','dark']){
+          await evaluate(`localStorage.removeItem('malbitStoryV1');S.lang='ja';S.view='home';save();render()`);
           await evaluate(`malbitSetTheme(${JSON.stringify(theme)})`);await sleep(100);await evaluate(`malbitTravelOpen()`);
           let themedActionReady=false;
           for(let wait=0;wait<40;wait++){if(await evaluate(`!!document.querySelector('.travelFirstAction')&&!!document.querySelector('.travelMetricsSummary')`)){themedActionReady=true;break}await sleep(50)}
@@ -358,7 +359,12 @@ try{
           await evaluate(`document.querySelector('.travelFirstAction').scrollIntoView({block:'center',behavior:'auto'})`);await sleep(80);
           await shot(`00b${theme==='light'?'e':'f'}-a07-first-action-${theme}.png`);
         }
-        await evaluate(`malbitSetTheme('dark')`);await setViewport(390,844);await evaluate(`scrollTo({top:0,left:0,behavior:'auto'})`);
+        await evaluate(`localStorage.removeItem('malbitStoryV1');S.lang='ja';S.view='home';save();render()`);
+        await evaluate(`malbitSetTheme('dark')`);await sleep(100);await evaluate(`malbitTravelOpen()`);
+        let restoredActionReady=false;
+        for(let wait=0;wait<40;wait++){if(await evaluate(`!!document.querySelector('.travelFirstAction')&&!!document.querySelector('.travelMetricsSummary')`)){restoredActionReady=true;break}await sleep(50)}
+        assert.ok(restoredActionReady,'A07 fresh Travel hub did not restore after theme evidence');
+        await setViewport(390,844);await evaluate(`scrollTo({top:0,left:0,behavior:'auto'})`);
       }
     }
     if(!fs.existsSync(path.join(out,'01a-travel-hub.png'))){
