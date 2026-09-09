@@ -317,9 +317,10 @@ try{
           await evaluate(`document.querySelector('.travelMetrics').open=true`);
           for(const width of [320,375,390,430]){
             await setViewport(width,width===320?700:844);
-            const detailsFit=await evaluate(`(()=>{const card=document.querySelector('.travelMetrics'),summary=document.querySelector('.travelMetricsSummary');return{overflow:card.scrollWidth-card.clientWidth,left:card.getBoundingClientRect().left,right:card.getBoundingClientRect().right,summaryHeight:summary.getBoundingClientRect().height,width:innerWidth}})()`);
+            const detailsFit=await evaluate(`(()=>{const card=document.querySelector('.travelMetrics'),summary=document.querySelector('.travelMetricsSummary');return{overflow:card.scrollWidth-card.clientWidth,left:card.getBoundingClientRect().left,right:card.getBoundingClientRect().right,summaryHeight:summary.getBoundingClientRect().height,borderImage:getComputedStyle(card).borderImageSource,width:innerWidth}})()`);
             assert.ok(detailsFit.overflow<=1&&detailsFit.left>=-1&&detailsFit.right<=detailsFit.width+1,`A07 ${theme} ${width}px expanded metrics overflow: ${JSON.stringify(detailsFit)}`);
             assert.ok(detailsFit.summaryHeight>=43,`A07 ${theme} ${width}px metrics summary below 44px`);
+            assert.equal(detailsFit.borderImage,'none',`A07 ${theme} ${width}px metrics must use the semantic theme surface`);
             await assertFits(`A07 expanded Travel metrics ${theme} ${width}px`);
           }
           await setViewport(390,844);await evaluate(`document.querySelector('.travelMetrics').scrollIntoView({block:'center',behavior:'auto'})`);await sleep(80);
