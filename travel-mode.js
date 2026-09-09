@@ -828,7 +828,7 @@
     return renderEnding(sc,pack,state,scene);
   }
 
-  window.malbitTravelOpen=()=>setView('travel');
+  window.malbitTravelOpen=()=>{setView('travel');resetViewport()};
   window.malbitTravelStart=(packId,fresh)=>{
     cancelRpgMotion();clearRpgCue();
     const pack=packById(packId)||PACKS[0],store=readStore(),previous=normalizeState(pack,store.episodes[pack.id]);

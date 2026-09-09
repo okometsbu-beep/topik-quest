@@ -8,16 +8,17 @@ these facts from conversation history or the large TOPIK source bundle.
 - Source of truth: [release blueprint #110](https://github.com/okometsbu-beep/topik-quest/issues/110).
   It supersedes #76 map expansion until core learning quality gates pass. A01–A12 remain audit findings,
   not resolved items; existing feature/visual checks do not certify translation or teaching accuracy.
-- Production is v96 at `d1db91d1b29f29c2f09a11d42cc34a5a3a25638d` (PR #114).
-  Main Verify `34307427379` and Pages `34307426273` succeeded. The v97 candidate fixes A05 for the
-  `sentence-order` library example: its Japanese field now contains the full translation
-  `私は図書館で本を読みます。`, while the location/object/predicate explanation renders as a separate
-  localized teacher note. Transformation answers, accepted variants, handwriting, the bank, and saved
-  progress are unchanged. Local grammar 8/8, content 7/7, and quick 78/78 checks pass. This runner has no
-  Chrome, so Linux Chrome 320/375/390/430px light/dark evidence must be reviewed from branch CI before merge.
-  Real iPhone/Android remain unverified. Candidate rollback is v96 `d1db91d1b29f29c2f09a11d42cc34a5a3a25638d`.
-- Next: reproduce A06 Travel header/safe-area clipping at the mobile viewport boundary, then fix the
-  smallest owning surface. A new P0 or clear wrong answer takes precedence.
+- Production is v97 at `6b8f5e48dea0d3b14276e5cda9478e84dc6e5483` (PR #115).
+  Main Verify `34335360623` and Pages `34335359958` succeeded. The v98 candidate fixes A06: the ordinary
+  Travel screen's 42px bottom padding no longer creates a scroll range beneath the full-height RPG, RPG mode
+  owns and locks its viewport, hub/map headers use the top safe area, and entering Travel resets inherited
+  page scroll. Existing progress, movement, camera, held controls, themes, questions and rewards are unchanged.
+  Local Travel 25/25 and quick 78/78 checks pass. This runner has no Chrome, so Linux Chrome 320/375/390/430px
+  light/dark plus scroll/rotation/keyboard-height evidence must be reviewed from branch CI before merge.
+  Real iPhone/Android notch, Safari toolbar, OS keyboard and rotation remain unverified. Candidate rollback is
+  v97 `6b8f5e48dea0d3b14276e5cda9478e84dc6e5483`.
+- Next: A07 should demote first-visit Travel operating metrics and lead with a concrete who/where/what action.
+  A new P0 or clear wrong answer takes precedence.
 - Follow start → understand → recall/speak/write → review → next learning for Japanese beginners, and
   passage evidence → specific distractor traps → reusable solving method for TOPIK I/II.
 - 2026 draft gates: Sep 13 audit/scope/dependencies; Sep 27 core flow/P0/P1/backup; Oct 11 teaching,
@@ -31,7 +32,7 @@ these facts from conversation history or the large TOPIK source bundle.
   Stop on PAUSE. Only pause the recurring loop for owner stop, all-work blockage, or completed #110 gates.
 - Current-pass checks, documentation PR/merge and live verification belong in #110's progress comment.
   Unseen states and unrun tests must remain unverified, including corpus-wide translation completeness,
-  corpus-wide explanation and A05 correctness, A06 physical-mobile reproduction, actual iPhone/Android, audio, offline recovery,
+  corpus-wide explanation and grammar correctness, A06 physical-mobile reproduction, actual iPhone/Android, audio, offline recovery,
   and real learner delayed recall. Corpus-wide grammar-translation correctness remains unverified beyond A05.
 
 ## Stable product state

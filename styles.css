@@ -48,6 +48,8 @@ body.travel-active .app{max-width:560px}
 .travelScreen button{font-family:inherit}
 .travelHub,.travelPlay{width:100%;max-width:520px;margin:0 auto;padding-top:calc(14px + env(safe-area-inset-top))}
 .travelHubHead,.travelTop{display:flex;align-items:center;gap:12px;padding:5px 2px 17px}
+.travelHubHead{padding-top:calc(5px + env(safe-area-inset-top))}
+.travelPlay:not(.travelQuestionPlay):not(.travelRpgScreen) .travelTop{padding-top:calc(5px + env(safe-area-inset-top))}
 .travelHubHead>button:first-child,.travelBack,.travelLang{width:42px;height:42px;flex:0 0 42px;border:1px solid rgba(255,255,255,.13);border-radius:14px;background:rgba(255,255,255,.07);color:#fff;font-size:25px;display:grid;place-items:center}
 .travelHubHead>div,.travelTop>div{flex:1;min-width:0}.travelHubHead small,.travelTop small{display:block;color:#92a1c7;font-size:9px;font-weight:950;letter-spacing:.13em}.travelHubHead h1{font-size:24px;margin:3px 0 2px;letter-spacing:-.04em}.travelHubHead p{font-size:10px;line-height:1.45;color:#aeb9d4;margin:0}.travelLang{font-size:21px}
 .travelHubBanner{display:flex;align-items:center;gap:13px;padding:16px;border:1px solid rgba(67,201,168,.3);border-radius:22px;background:linear-gradient(135deg,rgba(26,115,120,.42),rgba(50,80,153,.28));box-shadow:0 16px 40px rgba(0,0,0,.18)}.travelHubBanner>span{font-size:34px}.travelHubBanner small{display:block;font-size:8px;color:#8de4cf;font-weight:900;letter-spacing:.12em}.travelHubBanner b{display:block;margin-top:4px;font-size:14px}.travelHubBanner p{margin:4px 0 0;color:#aebbd5;font-size:8px;line-height:1.4}
@@ -219,6 +221,9 @@ body.travel-active,body.travel-active .app{background:radial-gradient(circle at 
 .travelSecondary,.travelMyeongdongHead>button{border-color:var(--travel-line);background:var(--travel-surface-raised);color:var(--travel-text)}
 .travelPrimary{border:0;border-image:none;border-radius:15px;background:linear-gradient(135deg,var(--travel-action),color-mix(in srgb,var(--travel-action) 74%,#6b5be8));color:#fff;box-shadow:0 10px 22px color-mix(in srgb,var(--travel-action) 28%,transparent)}
 .travelRpgScreen{width:100vw;max-width:none;margin:0 calc(50% - 50vw);padding:0;min-height:100vh;min-height:100dvh}
+body.travel-rpg-active{height:100vh;height:100dvh;overflow:hidden;overscroll-behavior:none;padding-bottom:0}
+body.travel-rpg-active .app,body.travel-rpg-active .travelScreen{height:100vh;height:100dvh;min-height:0}
+body.travel-rpg-active .travelScreen{overflow:hidden;padding:0}
 .travelRpgCard{width:100%;overflow:hidden;border:0;border-radius:0;background:var(--travel-canvas);color:var(--travel-text);box-shadow:none}
 .travelRpgShell{position:relative;height:100vh;height:100dvh;min-height:560px;isolation:isolate}
 .travelRpgViewport{position:absolute;inset:0;width:100%;height:100%;overflow:hidden;background:#dbe7e5;isolation:isolate;touch-action:manipulation}
@@ -232,7 +237,7 @@ body.travel-active,body.travel-active .app{background:radial-gradient(circle at 
 .travelRpgLight.kind-window{clip-path:polygon(4% 0,96% 0,100% 8%,100% 92%,96% 100%,4% 100%,0 92%,0 8%)}
 .travelRpgForeground{position:absolute;inset:0;width:100%;height:100%;opacity:1;filter:none;pointer-events:none;user-select:none}.travelRpgForeground .travelRpgTile{z-index:inherit}
 .travelRpgShadow{position:absolute;width:var(--travel-rpg-shadow-width,.86%);height:var(--travel-rpg-shadow-height,.45%);transform:translate(-50%,-50%);background:var(--travel-contact-shadow);clip-path:polygon(16% 0,84% 0,100% 34%,100% 66%,84% 100%,16% 100%,0 66%,0 34%);pointer-events:none;transition:left .11s linear,top .11s linear;will-change:left,top}.travelRpgShadow.npc{width:var(--travel-rpg-npc-shadow-width,.9%);height:var(--travel-rpg-npc-shadow-height,.5%)}
-.travelRpgTopHud{position:absolute;z-index:20;top:max(10px,env(safe-area-inset-top));left:12px;right:12px;display:grid;grid-template-columns:44px minmax(0,1fr) 44px;align-items:center;gap:8px;max-width:none}
+.travelRpgTopHud{position:absolute;z-index:20;top:calc(10px + env(safe-area-inset-top));left:12px;right:12px;display:grid;grid-template-columns:44px minmax(0,1fr) 44px;align-items:center;gap:8px;max-width:none}
 .travelRpgBack,.travelRpgLang{display:grid;place-items:center;width:44px;height:44px;border:1px solid rgba(255,255,255,.72);border-radius:14px;background:color-mix(in srgb,var(--travel-surface) 86%,transparent);color:var(--travel-text);box-shadow:0 7px 20px rgba(20,39,58,.2);backdrop-filter:blur(12px)}
 .travelRpgBack{font-size:27px}.travelRpgLang{font-size:18px;font-weight:950}
 .travelRpgLocationHud{align-self:stretch;display:flex;min-width:0;flex-direction:column;justify-content:center;border:1px solid color-mix(in srgb,var(--travel-line) 78%,transparent);border-radius:15px;background:color-mix(in srgb,var(--travel-surface) 88%,transparent);padding:6px 11px;color:var(--travel-text);box-shadow:0 7px 20px rgba(20,39,58,.18);backdrop-filter:blur(12px)}
