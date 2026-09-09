@@ -8,17 +8,16 @@ these facts from conversation history or the large TOPIK source bundle.
 - Source of truth: [release blueprint #110](https://github.com/okometsbu-beep/topik-quest/issues/110).
   It supersedes #76 map expansion until core learning quality gates pass. A01–A12 remain audit findings,
   not resolved items; existing feature/visual checks do not certify translation or teaching accuracy.
-- Production is v95 at `fc6d84280f5bc04ae544c97924e8a42d25b3fd9c` (PR #113).
-  Main Verify `34280947019` and Pages `34280945876` succeeded. The v96 candidate fixes A04 for
-  `M11-I-R-37`: the requested right-hand entrance is the decisive evidence, construction is background,
-  the three distractors have distinct reasons, and the request-ending method is reusable. Random Practice
-  renders evidence, distractor analysis, and strategy once each instead of repeating the full explanation.
-  Branch CI `34306811010` passed the full suite and Linux Chrome 320/375/390/430px mobile checks;
-  artifact `10086984653` dark and light coaching were visually reviewed. Real iPhone/Android remain unverified.
-  This is not physical iPhone or Android evidence. Candidate rollback is v95 `fc6d84280f5bc04ae544c97924e8a42d25b3fd9c`.
-- Next: reproduce A05's beginner-grammar example where the Japanese field contains a grammar note rather
-  than a full translation, then correct that one content owner without changing transformation or writing
-  answers. A new P0 or clear wrong answer takes precedence.
+- Production is v96 at `d1db91d1b29f29c2f09a11d42cc34a5a3a25638d` (PR #114).
+  Main Verify `34307427379` and Pages `34307426273` succeeded. The v97 candidate fixes A05 for the
+  `sentence-order` library example: its Japanese field now contains the full translation
+  `私は図書館で本を読みます。`, while the location/object/predicate explanation renders as a separate
+  localized teacher note. Transformation answers, accepted variants, handwriting, the bank, and saved
+  progress are unchanged. Local grammar 8/8, content 7/7, and quick 78/78 checks pass. This runner has no
+  Chrome, so Linux Chrome 320/375/390/430px light/dark evidence must be reviewed from branch CI before merge.
+  Real iPhone/Android remain unverified. Candidate rollback is v96 `d1db91d1b29f29c2f09a11d42cc34a5a3a25638d`.
+- Next: reproduce A06 Travel header/safe-area clipping at the mobile viewport boundary, then fix the
+  smallest owning surface. A new P0 or clear wrong answer takes precedence.
 - Follow start → understand → recall/speak/write → review → next learning for Japanese beginners, and
   passage evidence → specific distractor traps → reusable solving method for TOPIK I/II.
 - 2026 draft gates: Sep 13 audit/scope/dependencies; Sep 27 core flow/P0/P1/backup; Oct 11 teaching,
@@ -33,7 +32,7 @@ these facts from conversation history or the large TOPIK source bundle.
 - Current-pass checks, documentation PR/merge and live verification belong in #110's progress comment.
   Unseen states and unrun tests must remain unverified, including corpus-wide translation completeness,
   corpus-wide explanation and A05 correctness, A06 physical-mobile reproduction, actual iPhone/Android, audio, offline recovery,
-  and real learner delayed recall.
+  and real learner delayed recall. Corpus-wide grammar-translation correctness remains unverified beyond A05.
 
 ## Stable product state
 

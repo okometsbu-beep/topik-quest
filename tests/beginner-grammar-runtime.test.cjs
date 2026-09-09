@@ -76,3 +76,10 @@ test('opening the course preserves old beginner data', () => {
   assert.deepEqual(stored.known, ['c:ㄱ']);
   assert.deepEqual(stored.attempts, { old: 3 });
 });
+
+test('example translations and teaching notes render as separate fields', () => {
+  const source = fs.readFileSync(path.join(root, 'beginner-grammar.js'), 'utf8');
+  assert.match(source, /class="bgExampleMeaning"/u);
+  assert.match(source, /class="bgExampleNote"/u);
+  assert.match(source, /講師メモ/u);
+});
