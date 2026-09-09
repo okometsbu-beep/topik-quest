@@ -17,6 +17,7 @@ context.window.localStorage = context.localStorage;
 vm.createContext(context);
 for (let part = 1; part <= 4; part++) vm.runInContext(fs.readFileSync(`data/question-bank-v1-part${part}.js`, 'utf8'), context);
 vm.runInContext(fs.readFileSync('data/question-bank-practice-v1.js', 'utf8'), context);
+vm.runInContext(fs.readFileSync('data/explanations-i18n.js', 'utf8'), context);
 vm.runInContext(fs.readFileSync('question-bank-engine.js', 'utf8'), context);
 
 const bank = context.window.MALBIT_BANK;
@@ -137,6 +138,24 @@ const idiomQuestion = bank.present('P01-II-R-06', [0, 1, 2, 3]);
 assert.match(idiomQuestion.explanationI18n.ko, /잠깐 쉴 틈도 없을 만큼/u);
 assert.match(idiomQuestion.explanationI18n.ja, /慣用句全体/u);
 assert.match(idiomQuestion.explanationI18n.ja, /タイプ別の解き方/u);
+
+const entranceQuestion = bank.present('M11-I-R-37', [2, 0, 3, 1]);
+assert.equal(entranceQuestion.choices[entranceQuestion.answerIndex], '출입 안내');
+for (const language of ['ko', 'ja']) {
+  assert.match(entranceQuestion.explanationI18n[language], /오른쪽 출입구를 이용해 주세요/u, `M11-I-R-37 ${language} should quote the decisive action`);
+  assert.match(entranceQuestion.explanationI18n[language], /공사 중입니다/u, `M11-I-R-37 ${language} should identify construction as background`);
+  assert.match(entranceQuestion.explanationI18n[language], /-아\/어 주세요/u, `M11-I-R-37 ${language} should teach the reusable request-ending method`);
+}
+const entranceDistractors = entranceQuestion.choices.map((choice, index) => ({
+  choice,
+  ko: entranceQuestion.choiceExplanationsI18n.ko[index],
+  ja: entranceQuestion.choiceExplanationsI18n.ja[index]
+})).filter((entry) => entry.choice !== '출입 안내');
+assert.equal(new Set(entranceDistractors.map((entry) => entry.ko)).size, 3, 'M11-I-R-37 should explain each Korean distractor separately');
+assert.equal(new Set(entranceDistractors.map((entry) => entry.ja)).size, 3, 'M11-I-R-37 should explain each Japanese distractor separately');
+assert.match(entranceDistractors.find((entry) => entry.choice === '가격 안내').ja, /金額/u);
+assert.match(entranceDistractors.find((entry) => entry.choice === '예약 안내').ja, /予約方法/u);
+assert.match(entranceDistractors.find((entry) => entry.choice === '분실물 안내').ja, /紛失物/u);
 
 for (const item of bank.items.filter((entry) => entry.section === 'writing')) {
   const question = bank.present(item);

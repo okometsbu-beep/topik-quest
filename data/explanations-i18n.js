@@ -211,10 +211,57 @@ const TOPIK2_WRITING={
 }
 };
 
+// Reviewed coaching for immutable generated-bank items. Keys use the stable bank ID so
+// answer shuffling can change the displayed position without changing the teaching source.
+const BANK_COACH={
+'M11-I-R-37':{
+  ko:{
+    reason:'“오른쪽 출입구를 이용해 주세요”가 사용할 출입구를 직접 지시하므로 글의 목적은 출입 안내입니다. “공사 중입니다”는 그 안내가 필요한 배경입니다.',
+    trap:'가격 안내에는 금액·할인, 예약 안내에는 신청·일시, 분실물 안내에는 잃어버린 물건·연락처가 필요하지만 본문에는 모두 없습니다.',
+    strategy:'상황 설명과 행동 지시를 나누고, “-아/어 주세요·-(으)세요·-지 마세요” 같은 마지막 요청·명령을 목적의 핵심으로 잡습니다.',
+    choices:{
+      '가격 안내':'금액, 가격표, 할인율이 전혀 없으므로 가격 안내가 아닙니다.',
+      '예약 안내':'예약 방법, 신청 기한, 예약 일시가 전혀 없으므로 예약 안내가 아닙니다.',
+      '분실물 안내':'잃어버린 물건, 보관 장소, 문의 연락처가 전혀 없으므로 분실물 안내가 아닙니다.'
+    }
+  },
+  ja:{
+    reason:'「오른쪽 출입구를 이용해 주세요（右側の出入口をご利用ください）」と利用する入口を直接指示しているため、目的は「出入案内」です。「공사 중입니다（工事中です）」は、その案内が必要な背景です。',
+    trap:'「가격 안내」なら金額・割引、「예약 안내」なら申請・日時、「분실물 안내」なら紛失物・連絡先が必要ですが、本文にはどれもありません。',
+    strategy:'状況説明と行動指示を分け、「-아/어 주세요」「-(으)세요」「-지 마세요」のような最後の依頼・命令を目的の中心として捉えます。',
+    choices:{
+      '가격 안내':'金額・価格表・割引率が一つもないため、「가격 안내（価格案内）」ではありません。',
+      '예약 안내':'予約方法・申込期限・予約日時が一つもないため、「예약 안내（予約案内）」ではありません。',
+      '분실물 안내':'紛失物・保管場所・問い合わせ先が一つもないため、「분실물 안내（遺失物案内）」ではありません。'
+    }
+  },
+  en:{
+    reason:'“오른쪽 출입구를 이용해 주세요” directly tells readers to use the right-hand entrance, so the purpose is entrance guidance. “공사 중입니다” only gives the reason that guidance is needed.',
+    trap:'Price guidance needs an amount or discount, reservation guidance needs an application or time, and lost-property guidance needs a missing item or contact. None appears here.',
+    strategy:'Separate the situation from the requested action. In notices, treat the final request or command, such as “-아/어 주세요,” “-(으)세요,” or “-지 마세요,” as the core purpose.',
+    choices:{
+      '가격 안내':'There is no amount, price list, or discount, so this is not price guidance.',
+      '예약 안내':'There is no booking method, application deadline, or reservation time, so this is not reservation guidance.',
+      '분실물 안내':'There is no missing item, storage location, or contact information, so this is not lost-property guidance.'
+    }
+  },
+  zh:{
+    reason:'“오른쪽 출입구를 이용해 주세요（请使用右侧出入口）”直接指示应使用哪个出入口，因此文章目的是出入指引。“공사 중입니다（正在施工）”只是需要该指引的背景。',
+    trap:'价格通知应有金额或折扣，预约通知应有申请方式或时间，失物通知应有遗失物或联系方式；原文均未出现。',
+    strategy:'先区分情况说明和行动指示，再把“-아/어 주세요”“-(으)세요”“-지 마세요”等结尾的请求或命令作为通知的核心目的。',
+    choices:{
+      '가격 안내':'没有金额、价目表或折扣率，因此不是价格通知。',
+      '예약 안내':'没有预约方式、申请期限或预约时间，因此不是预约通知。',
+      '분실물 안내':'没有遗失物、保管地点或联系方式，因此不是失物通知。'
+    }
+  }
+}
+};
+
 for(const q of window.TOPIK1_LISTENING_DATA||[]){T1_LISTENING[q.id]={ko:q.explanation,...T1_LISTENING[q.id]};q.explanationI18n=T1_LISTENING[q.id]}
 for(const q of window.TOPIK1_READING_DATA||[]){T1_READING[q.id]={ko:q.explanation,...T1_READING[q.id]};q.explanationI18n=T1_READING[q.id]}
 // TOPIK II reading data already contains individually authored Japanese rationale in `why`.
 // Copy it into the shared pack so every explanation route uses the same reviewed source.
 if(typeof RW!=='undefined')for(const q of RW){if(Number(q.id)<=50&&TOPIK2_READING[q.id]&&!TOPIK2_READING[q.id].ja)TOPIK2_READING[q.id].ja=q.why||''}
-window.MALBIT_EXPLANATIONS={reviewVersion:2,topik1Listening:T1_LISTENING,topik1Reading:T1_READING,topik2Reading:TOPIK2_READING,topik2Listening:TOPIK2_LISTENING,topik2Writing:TOPIK2_WRITING};
+window.MALBIT_EXPLANATIONS={reviewVersion:3,topik1Listening:T1_LISTENING,topik1Reading:T1_READING,topik2Reading:TOPIK2_READING,topik2Listening:TOPIK2_LISTENING,topik2Writing:TOPIK2_WRITING,bankCoach:BANK_COACH};
 })();

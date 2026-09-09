@@ -610,7 +610,10 @@ try{
   await evaluate(`S.view='home';save();render()`);await sleep(300);
   const durableBefore=await evaluate(`({vocab:JSON.parse(localStorage.getItem('topikQuestV8')).vocab,gameUnlock:JSON.parse(localStorage.getItem('topikQuestV8')).gameUnlock,game:localStorage.getItem('topikQuestTopik1GameV1'),review:localStorage.getItem('malbitWrongReviewV3')})`);
 
-  await evaluate(`(()=>{S.lang='ja';save();localStorage.setItem('topikQuestExamLevel','1');localStorage.setItem('malbitProductPrefsV1',JSON.stringify({listeningMode:'off'}));tqStartMode('random')})()`);await sleep(300);
+  await evaluate(`(()=>{S.lang='ja';save();localStorage.setItem('topikQuestExamLevel','1');localStorage.setItem('malbitProductPrefsV1',JSON.stringify({listeningMode:'off'}));tqStartMode('random');const q=JSON.parse(localStorage.getItem('topikQuestTopik1Session'));q.ids=['M11-I-R-37'];q.seenIds=['M11-I-R-37'];q.i=0;q.answers={};q.choiceOrders={'M11-I-R-37':[2,0,3,1]};q.score=0;q.total=0;q.streak=0;q.locked=false;localStorage.setItem('topikQuestTopik1Session',JSON.stringify(q))})()`);
+  await send('Page.reload',{ignoreCache:true});await ready();
+  for(let wait=0;wait<50&&!await evaluate(`!!document.querySelector('.tqRandomPracticeScreen')`);wait++)await sleep(50);
+  assert.equal(await evaluate(`JSON.parse(localStorage.getItem('topikQuestTopik1Session')).ids[0]`),'M11-I-R-37','TOPIK I visual proof must use the reviewed entrance-guidance item');
   assert.ok(await evaluate(`!!document.querySelector('#malbitRandomPracticeVisualSystem')`),'Random Practice visual system must load after compatibility layers');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertRandomPracticeFits(`TOPIK I unanswered Random Practice light ${width}px`,'light')}
@@ -621,7 +624,9 @@ try{
   await evaluate(`window.__malbitOriginalTranslateCached=window.translateCached;window.translateCached=async(key,value)=>value`);
   await tap('.choice',topik1Answer,100);await tap('.choice',topik1Answer,250);
   assert.equal(await evaluate(`document.querySelectorAll('.t1TutorCoach>div').length`),3,'TOPIK I feedback must keep evidence, selected-choice analysis, and a solving tip');
-  assert.match(await evaluate(`document.querySelector('.t1TutorCoach')?.innerText`),/正解の根拠[\s\S]*選んだ選択肢の分析[\s\S]*解き方のコツ/);
+  const entranceCoach=await evaluate(`document.querySelector('.t1TutorCoach')?.innerText`);
+  assert.match(entranceCoach,/正解の根拠[\s\S]*選んだ選択肢の分析[\s\S]*解き方のコツ/);
+  assert.match(entranceCoach,/오른쪽 출입구를 이용해 주세요[\s\S]*金額・割引[\s\S]*予約[\s\S]*紛失物[\s\S]*-아\/어 주세요/,'rendered Japanese coaching must show decisive evidence, three distinct distractor cues, and the reusable ending method');
   const unavailableTranslation=await evaluate(`(()=>{const card=document.querySelector('.malbitQuestionTranslation'),copy=card?.querySelector('p')?.textContent||'';return{status:card?.dataset.translationStatus,copy,hangul:/[\uac00-\ud7a3]/u.test(copy)}})()`);
   assert.deepEqual(unavailableTranslation,{status:'unavailable',copy:'この問題の全文翻訳は現在利用できません。韓国語の原文は上に表示されています。',hangul:false},'a Korean source fallback must be shown as unavailable, never as Japanese translation');
   await evaluate(`document.querySelector('.malbitQuestionTranslation')?.scrollIntoView({block:'center',inline:'center',behavior:'auto'})`);await sleep(100);

@@ -34,13 +34,14 @@
   };
 
   const rows = raw.rows;
+  const reviewedCoach = window.MALBIT_EXPLANATIONS?.bankCoach || {};
   const rowItem = (row) => ({
     id: row[0], set: Number(row[1]), level: Number(row[2]), section: SECTION[row[3]], no: Number(row[4]),
     itemType: row[5], difficulty: DIFFICULTY[row[6]], difficultyRank: RANK[DIFFICULTY[row[6]]] || 1,
     instruction: cleanProblemText(row[7]), passage: cleanProblemText(row[8]), script: cleanProblemText(row[9]), prompt: cleanProblemText(row[10]), options: row[11],
     answerIndex: row[3] === 'w' ? null : Number(row[12]), acceptedAnswer: row[3] === 'w' ? row[12] : null,
     explanationKo: row[13], explanationJa: row[14], targetSkills: row[15] || [], visual: row[16],
-    model: row[17], rubric: row[18], stimulusGroup: row[19] || null, coach: null
+    model: row[17], rubric: row[18], stimulusGroup: row[19] || null, coach: reviewedCoach[row[0]] || null
   });
   const authoredItem = (source) => ({
     id:String(source.id||''),set:Number(source.set)||0,level:Number(source.level)===1?1:2,section:String(source.section||'reading'),no:Number(source.no)||0,
@@ -412,10 +413,7 @@
     const answerLines={ko:`정답 표현은 “${answer}”입니다.`,ja:`正解の表現は「${answer}」です。`,en:`The correct expression is “${answer}.”`,zh:`正确表达是“${answer}”。`};
     const custom=item.coach||{};
     return Object.freeze({
-      ko: `【${headings.ko[0]}】${custom.ko?.reason||reason.ko} ${answerLines.ko}\n【${headings.ko[1]}】${custom.ko?.trap||trap.ko}\n【${headings.ko[2]}】${strategy.ko} ${position.ko}`,
-      ja: `【${headings.ja[0]}】${custom.ja?.reason||reason.ja} ${answerLines.ja}\n【${headings.ja[1]}】${custom.ja?.trap||trap.ja}\n【${headings.ja[2]}】${strategy.ja} ${position.ja}`,
-      en: `【${headings.en[0]}】${reason.en} ${answerLines.en}\n【${headings.en[1]}】${trap.en}\n【${headings.en[2]}】${strategy.en} ${position.en}`,
-      zh: `【${headings.zh[0]}】${reason.zh} ${answerLines.zh}\n【${headings.zh[1]}】${trap.zh}\n【${headings.zh[2]}】${strategy.zh} ${position.zh}`
+      ...Object.fromEntries(Object.keys(headings).map((lang)=>[lang,`【${headings[lang][0]}】${custom[lang]?.reason||reason[lang]} ${answerLines[lang]}\n【${headings[lang][1]}】${custom[lang]?.trap||trap[lang]}\n【${headings[lang][2]}】${custom[lang]?.strategy||strategy[lang]} ${position[lang]}`]))
     });
   }
   function choiceExplanationPack(item, answerIndex, choices, overall) {
@@ -487,7 +485,7 @@
         en: `“${choice}” does not satisfy the requested relationship or match the evidence “${evidence}.”`,
         zh: `“${choice}”不符合题目要求的关系，或与依据“${evidence}”不一致，因此排除。`
       };
-      for (const lang of Object.keys(packs)) packs[lang][index] = values[lang];
+      for (const lang of Object.keys(packs)) packs[lang][index] = item.coach?.[lang]?.choices?.[choice] || values[lang];
     });
     return packs;
   }
