@@ -359,7 +359,10 @@ try{
       await shot('01a-travel-hub.png');
     }
     await tapUntilScene('.travelEpisodeCard .travelPrimary','arrival');
-    await evaluate(`S.view='travel';save();render()`);await sleep(80);
+    await evaluate(`malbitTravelStart('route-001-airport-myeongdong',false)`);
+    let rpgReady=false;
+    for(let wait=0;wait<40;wait++){if(await evaluate(`!!document.querySelector('.travelRpgViewport')`)){rpgReady=true;break}await sleep(50)}
+    assert.ok(rpgReady,'fresh Travel route must render the RPG viewport after hub theme checks');
     await assertSmoothRpgMotion();
     await evaluate(`scrollTo({top:42,left:0,behavior:'auto'})`);await sleep(80);
     await assertTravelTopSafe('Travel RPG after legacy 42px scroll attempt');
