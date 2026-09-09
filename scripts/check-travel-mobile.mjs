@@ -625,8 +625,9 @@ try{
   await tap('.choice',topik1Answer,100);await tap('.choice',topik1Answer,250);
   assert.equal(await evaluate(`document.querySelectorAll('.t1TutorCoach>div').length`),3,'TOPIK I feedback must keep evidence, selected-choice analysis, and a solving tip');
   const entranceCoach=await evaluate(`document.querySelector('.t1TutorCoach')?.innerText`);
-  assert.match(entranceCoach,/正解の根拠[\s\S]*選んだ選択肢の分析[\s\S]*解き方のコツ/);
-  assert.match(entranceCoach,/오른쪽 출입구를 이용해 주세요[\s\S]*金額・割引[\s\S]*予約[\s\S]*紛失物[\s\S]*-아\/어 주세요/,'rendered Japanese coaching must show decisive evidence, three distinct distractor cues, and the reusable ending method');
+  assert.match(entranceCoach,/正解の根拠[\s\S]*誤答選択肢の分析[\s\S]*解き方のコツ/);
+  assert.match(entranceCoach,/오른쪽 출입구를 이용해 주세요[\s\S]*金額・割引[\s\S]*申請・日時[\s\S]*紛失物・連絡先[\s\S]*-아\/어 주세요/,'rendered Japanese coaching must show decisive evidence, three distinct distractor cues, and the reusable ending method');
+  assert.equal((entranceCoach.match(/오른쪽 출입구를 이용해 주세요/gu)||[]).length,1,'decisive evidence must not be duplicated across coaching sections');
   const unavailableTranslation=await evaluate(`(()=>{const card=document.querySelector('.malbitQuestionTranslation'),copy=card?.querySelector('p')?.textContent||'';return{status:card?.dataset.translationStatus,copy,hangul:/[\uac00-\ud7a3]/u.test(copy)}})()`);
   assert.deepEqual(unavailableTranslation,{status:'unavailable',copy:'この問題の全文翻訳は現在利用できません。韓国語の原文は上に表示されています。',hangul:false},'a Korean source fallback must be shown as unavailable, never as Japanese translation');
   await evaluate(`document.querySelector('.malbitQuestionTranslation')?.scrollIntoView({block:'center',inline:'center',behavior:'auto'})`);await sleep(100);
