@@ -632,6 +632,10 @@ try{
   assert.deepEqual(unavailableTranslation,{status:'unavailable',copy:'この問題の全文翻訳は現在利用できません。韓国語の原文は上に表示されています。',hangul:false},'a Korean source fallback must be shown as unavailable, never as Japanese translation');
   await evaluate(`document.querySelector('.malbitQuestionTranslation')?.scrollIntoView({block:'center',inline:'center',behavior:'auto'})`);await sleep(100);
   await setViewport(390,844);await shot('00gb-random-practice-translation-unavailable.png');
+  await evaluate(`malbitSetTheme('light')`);await sleep(100);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertRandomPracticeFits(`TOPIK I graded Random Practice light ${width}px`,'light')}
+  await setViewport(390,844);await shot('00gc-random-practice-topik1-coaching-light.png');
+  await evaluate(`malbitSetTheme('dark')`);await sleep(100);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertRandomPracticeFits(`TOPIK I graded Random Practice dark ${width}px`,'dark')}
   await setViewport(390,844);await shot('00g-random-practice-topik1-coaching.png');
   await evaluate(`window.translateCached=window.__malbitOriginalTranslateCached;delete window.__malbitOriginalTranslateCached`);
