@@ -310,7 +310,11 @@ try{
       assert.match(await evaluate(`document.querySelector('.travelMetrics>p')?.textContent`),/この端末内に数値だけを保存し、外部へ送信しません/);
       if(!fs.existsSync(path.join(out,'00bg-a07-metrics-light.png'))){
         for(const theme of ['light','dark']){
-          await evaluate(`malbitSetTheme(${JSON.stringify(theme)});malbitTravelOpen();document.querySelector('.travelMetrics').open=true`);await sleep(100);
+          await evaluate(`malbitSetTheme(${JSON.stringify(theme)})`);await sleep(100);await evaluate(`malbitTravelOpen()`);
+          let themedMetricsReady=false;
+          for(let wait=0;wait<40;wait++){if(await evaluate(`!!document.querySelector('.travelMetricsSummary')`)){themedMetricsReady=true;break}await sleep(50)}
+          assert.ok(themedMetricsReady,`A07 ${theme} expanded metrics hub did not render`);
+          await evaluate(`document.querySelector('.travelMetrics').open=true`);
           for(const width of [320,375,390,430]){
             await setViewport(width,width===320?700:844);
             const detailsFit=await evaluate(`(()=>{const card=document.querySelector('.travelMetrics'),summary=document.querySelector('.travelMetricsSummary');return{overflow:card.scrollWidth-card.clientWidth,left:card.getBoundingClientRect().left,right:card.getBoundingClientRect().right,summaryHeight:summary.getBoundingClientRect().height,width:innerWidth}})()`);
@@ -321,7 +325,7 @@ try{
           await setViewport(390,844);await evaluate(`document.querySelector('.travelMetrics').scrollIntoView({block:'center',behavior:'auto'})`);await sleep(80);
           await shot(`00b${theme==='light'?'g':'h'}-a07-metrics-${theme}.png`);
         }
-        await evaluate(`malbitSetTheme('dark');malbitTravelOpen();document.querySelector('.travelMetrics').open=true`);await setViewport(390,844);
+        await evaluate(`malbitSetTheme('dark')`);await sleep(100);await evaluate(`malbitTravelOpen()`);await sleep(100);await evaluate(`document.querySelector('.travelMetrics').open=true`);await setViewport(390,844);
       }
       const metricFit=await evaluate(`(()=>{const card=document.querySelector('.travelMetrics'),grid=document.querySelector('.travelMetricsGrid'),feedback=document.querySelector('.travelMetricFeedback');return{card:card.scrollWidth-card.clientWidth,grid:grid.scrollWidth-grid.clientWidth,feedback:feedback.scrollWidth-feedback.clientWidth}})()`);
       assert.ok(metricFit.card<=1&&metricFit.grid<=1&&metricFit.feedback<=1,`local metrics overflow: ${JSON.stringify(metricFit)}`);
@@ -336,7 +340,10 @@ try{
       assert.match(await evaluate(`document.querySelector('.travelFirstAction')?.innerText||''`),/空港スタッフと道を尋ねる/);
       if(!fs.existsSync(path.join(out,'00be-a07-first-action-light.png'))){
         for(const theme of ['light','dark']){
-          await evaluate(`malbitSetTheme(${JSON.stringify(theme)});malbitTravelOpen()`);await sleep(100);
+          await evaluate(`malbitSetTheme(${JSON.stringify(theme)})`);await sleep(100);await evaluate(`malbitTravelOpen()`);
+          let themedActionReady=false;
+          for(let wait=0;wait<40;wait++){if(await evaluate(`!!document.querySelector('.travelFirstAction')&&!!document.querySelector('.travelMetricsSummary')`)){themedActionReady=true;break}await sleep(50)}
+          assert.ok(themedActionReady,`A07 ${theme} first-action hub did not render`);
           for(const width of [320,375,390,430]){
             await setViewport(width,width===320?700:844);
             const actionFit=await evaluate(`(()=>{const card=document.querySelector('.travelEpisodeCard'),brief=document.querySelector('.travelFirstAction'),cta=document.querySelector('.travelEpisodeCard .travelPrimary'),summary=document.querySelector('.travelMetricsSummary');const fit=el=>({overflow:el.scrollWidth-el.clientWidth,left:el.getBoundingClientRect().left,right:el.getBoundingClientRect().right,height:el.getBoundingClientRect().height});return{card:fit(card),brief:fit(brief),cta:fit(cta),summary:fit(summary),width:innerWidth}})()`);
