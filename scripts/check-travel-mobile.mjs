@@ -297,7 +297,12 @@ try{
     assert.ok(opened,'Travel entry must open the hub');
     await sleep(80);await assertTravelTopSafe('Travel hub after scrolled Home entry');
     assert.equal(await evaluate(`document.querySelector('.travelHubHead h1')?.textContent`),'旅行モード');
+    assert.equal(await evaluate(`document.querySelector('.travelMetrics')?.open`),false,'local metrics must start collapsed');
+    assert.equal(await evaluate(`!!(document.querySelector('.travelAvatar')?.compareDocumentPosition(document.querySelector('.travelMetrics'))&Node.DOCUMENT_POSITION_FOLLOWING)`),true,'learner-facing avatar must precede secondary metrics');
     if(seedMetrics){
+      const summaryTarget=await tap('.travelMetricsSummary',0,100);
+      assert.ok(summaryTarget.height>=43,'local metrics summary must remain a 44px touch target');
+      assert.equal(await evaluate(`document.querySelector('.travelMetrics')?.open`),true,'local metrics must expand on demand');
       assert.equal(await evaluate(`document.querySelectorAll('.travelMetric').length`),7);
       assert.deepEqual(await evaluate(`[...document.querySelectorAll('.travelMetric b')].map(node=>node.textContent)`),['5','80%','75%','67%','75%','2','60,000旅ウォン']);
       assert.match(await evaluate(`document.querySelector('.travelMetricFeedback')?.textContent`),/完了率75%・誤答2回・完了後の平均60,000旅ウォン/);
@@ -309,6 +314,30 @@ try{
       await sleep(100);
       await shot('01b-local-metrics.png');
       await evaluate(`scrollTo({top:0,left:0,behavior:'auto'})`);
+    }
+    if(!seedMetrics){
+      assert.match(await evaluate(`document.querySelector('.travelFirstAction')?.innerText||''`),/最初の行動/);
+      assert.match(await evaluate(`document.querySelector('.travelFirstAction')?.innerText||''`),/入国ロビーミッション1/);
+      assert.match(await evaluate(`document.querySelector('.travelFirstAction')?.innerText||''`),/空港スタッフと道を尋ねる/);
+      if(!fs.existsSync(path.join(out,'00be-a07-first-action-light.png'))){
+        for(const theme of ['light','dark']){
+          await evaluate(`malbitSetTheme(${JSON.stringify(theme)})`);await sleep(100);
+          for(const width of [320,375,390,430]){
+            await setViewport(width,width===320?700:844);
+            const actionFit=await evaluate(`(()=>{const card=document.querySelector('.travelEpisodeCard'),brief=document.querySelector('.travelFirstAction'),cta=document.querySelector('.travelEpisodeCard .travelPrimary'),summary=document.querySelector('.travelMetricsSummary');const fit=el=>({overflow:el.scrollWidth-el.clientWidth,left:el.getBoundingClientRect().left,right:el.getBoundingClientRect().right,height:el.getBoundingClientRect().height});return{card:fit(card),brief:fit(brief),cta:fit(cta),summary:fit(summary),width:innerWidth}})()`);
+            for(const [name,value] of Object.entries(actionFit))if(name!=='width'){
+              assert.ok(value.overflow<=1,`A07 ${theme} ${width}px ${name} overflow: ${JSON.stringify(value)}`);
+              assert.ok(value.left>=-1&&value.right<=actionFit.width+1,`A07 ${theme} ${width}px ${name} leaves viewport`);
+            }
+            assert.ok(actionFit.cta.height>=43&&actionFit.summary.height>=43,`A07 ${theme} ${width}px touch target below 44px`);
+            await assertFits(`A07 first Travel action ${theme} ${width}px`);
+          }
+          await setViewport(390,844);
+          await evaluate(`document.querySelector('.travelFirstAction').scrollIntoView({block:'center',behavior:'auto'})`);await sleep(80);
+          await shot(`00b${theme==='light'?'e':'f'}-a07-first-action-${theme}.png`);
+        }
+        await evaluate(`malbitSetTheme('dark')`);await setViewport(390,844);await evaluate(`scrollTo({top:0,left:0,behavior:'auto'})`);
+      }
     }
     if(!fs.existsSync(path.join(out,'01a-travel-hub.png'))){
       await assertFits('Travel hub');

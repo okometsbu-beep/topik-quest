@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v97 · A05 full grammar translation separated from teacher note
-- Current candidate: v98 · A06 Travel full-screen viewport and safe-area ownership
+- Production release: v98 · A06 Travel full-screen viewport and safe-area ownership
+- Current candidate: v99 · A07 first Travel action before secondary local metrics
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -147,26 +147,26 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-A07: Travel 첫 화면에서 행동 목표보다 앞서는 운영 지표를 접거나 통계 영역으로 옮기고, 첫 행동을
-`누구에게/어디서/무엇을` 해야 하는지 명확히 한다. 새 P0/명백한 정답 오류가 있으면 앞당긴다.
+A08: 첫 Game 허브에서 장비 빈 슬롯·등급 확률·패배 손실보다 주 학습 행동을 앞세우고, 기존 Game 접근과
+모든 기록을 유지한다. 새 P0/명백한 정답 오류가 있으면 앞당긴다.
 
-## 이번 작업 · A06 Travel 전체화면 헤더/안전영역
+## 이번 작업 · A07 첫 Travel 행동과 지표 위계
 
-- 기준 main/라이브는 v97 `6b8f5e48dea0d3b14276e5cda9478e84dc6e5483`; v98에서 A06 한 건을 준비한다.
-- 일반 Travel 화면의 42px 하단 패딩이 100dvh RPG 자식과 합쳐져 문서에 정확히 42px 스크롤 여유를
-  만들었고, 그 상태에서 `旅マップ` 버튼과 상단 HUD가 화면 위로 밀리는 원인을 코드와 감사 DOM 값으로 재현했다.
-- RPG 활성 상태가 화면 높이·overflow·padding을 직접 소유하도록 하고, 허브/일반 Travel 헤더와 RPG HUD의
-  top safe-area를 분리했습니다. Home에서 Travel 진입할 때도 기존 스크롤을 즉시 초기화한다.
-- 회귀 검사는 기존 320/375/390/430px 양쪽 테마 외에 42px 스크롤 시도, 가로 회전, 키보드 높이 축소,
-  세로 복원을 순환하며 상단 헤더가 뷰포트 안에 있고 RPG 문서 스크롤이 0인지 확인한다.
-- 기존 `malbitStoryV1`과 모든 저장 루트, 이동/카메라/held input/포털/문항/보상, 라이트/다크는 변경하지 않았다.
-- 로컬 Node v24.19.0: Travel 집중 검사 25/25, 빠른 검사 78/78, diff 검사 통과. 로컬 환경에는
-  Chrome/Chromium이 없어 실제 화면은 PR CI 산출물에서 확인하며, 확인 전에는 병합하지 않는다.
-- Linux Chrome 4개 폭·양쪽 테마, 전체 검사, 실제 배포는 아직 미검증이다. 실제 iPhone/Android의 notch,
-  Safari 주소창, OS 키보드와 회전도 미검증이다.
-- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (v98 병합 후 확인 대상).
-- 배포 전 되돌리기 기준: v97 `6b8f5e48dea0d3b14276e5cda9478e84dc6e5483`. 최종 squash SHA와
-  Pages 결과는 #110 진행 기록에 남긴다.
+- 기준 main/라이브는 v98 `1df0f96a4c211c6fa4ed08d2a3cdfb042d292940`; v99에서 A07 한 건을 준비한다.
+- 신규 Travel 허브에서 7개 로컬 지표가 모두 0/미제공인데도 크게 펼쳐져 첫 학습 행동보다 앞서는 상태를
+  공개 앱 DOM과 코드에서 재현했다. 앱 오류는 없었고 데스크톱 원격 Chrome 관찰은 모바일 증거로 계산하지 않는다.
+- 첫 실제 문항의 기존 검수 데이터에서 장소·상대·행동을 가져와 `어디서`와 `누구에게 · 무엇을`을 코스 CTA
+  바로 위에 안내한다. 미완료/완료 코스에서는 중복 안내하지 않는다.
+- 로컬 여행 기록은 계산·저장·개인정보 경계를 바꾸지 않고 기본 접힌 상세 정보로 바꿨으며, 아바타 다음에 둬
+  학습과 선택을 우선했다. 요약은 44px 터치 대상으로 유지한다.
+- 로컬 Node v24.19.0: Travel 집중 검사 9/9, 빠른 검사 78/78, 전체 검사 87/87, diff 검사 통과.
+  로컬 환경에는 Chrome/Chromium이 없어 Linux Chrome 320/375/390/430px 라이트/다크 화면은 PR CI 산출물에서
+  확인 전 미검증이다.
+- 기존 `malbitStoryV1` 지표·진행·보상과 모든 학습/단어장/복습/Game/설정 기록, 문항, 라이트/다크는 보존한다.
+- 실제 iPhone/Android, 오프라인/복구, 음성, 실제 초보자의 첫 행동 이해도는 아직 미검증이다.
+- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (v99 병합 후 확인 대상).
+- 배포 전 되돌리기 기준: v98 `1df0f96a4c211c6fa4ed08d2a3cdfb042d292940`. 최종 squash SHA와 Pages 결과는
+  #110 진행 기록에 남긴다.
 
 ## 알려진 위험
 
