@@ -359,6 +359,7 @@ try{
       await shot('01a-travel-hub.png');
     }
     await tapUntilScene('.travelEpisodeCard .travelPrimary','arrival');
+    await evaluate(`S.view='travel';save();render()`);await sleep(80);
     await assertSmoothRpgMotion();
     await evaluate(`scrollTo({top:42,left:0,behavior:'auto'})`);await sleep(80);
     await assertTravelTopSafe('Travel RPG after legacy 42px scroll attempt');
