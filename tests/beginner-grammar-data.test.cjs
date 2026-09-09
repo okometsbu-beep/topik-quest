@@ -54,6 +54,7 @@ test('every lesson teaches the condition, form, examples, trap, transformation, 
     for (const [index, example] of item.examples.entries()) {
       assert.match(example.korean, /[가-힣]/u, `${item.id}.examples.${index} needs Korean`);
       localized(example.meaning, `${item.id}.examples.${index}.meaning`);
+      if (example.note) localized(example.note, `${item.id}.examples.${index}.note`);
     }
     assert.match(item.drill.source, /[가-힣]/u, `${item.id} drill source needs Korean`);
     localized(item.drill.task, `${item.id}.drill.task`);
@@ -62,6 +63,20 @@ test('every lesson teaches the condition, form, examples, trap, transformation, 
     assert.ok(item.drill.accepted.includes(item.drill.answer), `${item.id} model answer must be accepted`);
     assert.match(item.drill.writing, /[가-힣]/u, `${item.id} needs a handwriting phrase`);
   }
+});
+
+test('sentence-order library example separates its full translation from teaching notes', () => {
+  const item = loadData().lessons.find(lesson => lesson.id === 'sentence-order');
+  const example = item.examples.find(value => value.korean === '저는 도서관에서 책을 읽어요.');
+  assert.equal(example.meaning.ja, '私は図書館で本を読みます。');
+  assert.doesNotMatch(example.meaning.ja, /最後|動作の場所/u);
+  localized(example.note, 'sentence-order.library-example.note');
+  assert.match(example.note.ja, /도서관에서/u);
+  assert.match(example.note.ja, /책을/u);
+  assert.match(example.note.ja, /읽어요/u);
+  assert.deepEqual(Array.from(item.drill.accepted), ['저는 한국어를 공부해요', '저는 한국어를 공부해요.']);
+  assert.equal(item.drill.answer, '저는 한국어를 공부해요');
+  assert.equal(item.drill.writing, '한국어를 공부해요');
 });
 
 test('high-risk conjugations keep reviewed answers and exceptions explicit', () => {

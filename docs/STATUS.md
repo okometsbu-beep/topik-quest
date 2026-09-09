@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v95 · honest Random Practice translation fallback
-- Current candidate: v96 · M11-I-R-37 evidence-led explanation
+- Production release: v96 · M11-I-R-37 evidence-led explanation
+- Current candidate: v97 · A05 full grammar translation separated from teacher note
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -144,25 +144,23 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-A05: 입문 문법 예문의 일본어 칸에 문장 전체 번역이 아니라 문법 설명이 들어간 사례를 ID별로 재현한다.
-원문과 대응하는 자연스러운 전체 번역으로 고치고 한국어 형태 연습·쓰기 답안은 보존한다. 새 P0/명백한
-정답 오류가 있으면 앞당긴다.
+A06: Travel 모바일 헤더·안전영역 잘림을 실제 재현 가능한 뷰포트에서 확인하고, 헤더 소유권과
+safe-area inset을 최소 범위로 바로잡는다. 새 P0/명백한 정답 오류가 있으면 앞당긴다.
 
-## 이번 작업 · A04 M11-I-R-37 근거 중심 해설
+## 이번 작업 · A05 입문 문법 전체 번역/강사 메모 분리
 
-- 기준 main/라이브는 v95 `fc6d84280f5bc04ae544c97924e8a42d25b3fd9c`; PR #114에서 v96을 준비한다.
-- 생성 문제 원본은 수정하지 않고 검수 데이터 소유자에 `M11-I-R-37` 전용 해설을 추가했다.
-  `오른쪽 출입구를 이용해 주세요`를 결정적 행동 근거, `공사 중입니다`를 배경으로 구분한다.
-- 가격·예약·분실물 오답은 각각 금액/할인·신청/일시·분실물/연락처가 없다는 고유 이유로 제거하며,
-  요청·명령 종결형을 찾는 재사용 풀이법을 한국어·일본어·영어·중국어로 제공한다.
-- Random Practice 즉시 해설은 구조화된 세 섹션을 한 번씩만 표시해 전체 해설 중복을 제거한다.
-- 문제 ID·원문·보기·정답·생성 은행 해시·저장 루트·라이트/다크를 보존했다.
-- 로컬 Node v24.19.0: 콘텐츠 6/6, 빠른 검사 77/77, 구문·diff 검사 통과. 전체 검사는 PR 최종본에서 수행한다.
-- 브랜치 CI `34306811010`: 전체 85/85 및 Linux Chrome 320/375/390/430px 모바일 에뮬레이션을
-  통과했다. 산출물 `10086984653`에서 일본어 다크·라이트 해설을 직접 확인했다. 실제 iPhone·Android는 미검증이다.
-- 실제 iPhone/Android, 기기 TTS, 오프라인 복구, 전체 문항 해설 정확성, 실제 학습자 회상은 미검증이다.
-- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (v96 병합 후 확인 대상).
-- 배포 전 되돌리기 기준: v95 `fc6d84280f5bc04ae544c97924e8a42d25b3fd9c`. 최종 squash SHA와
+- 기준 main/라이브는 v96 `d1db91d1b29f29c2f09a11d42cc34a5a3a25638d`; v97에서 A05 한 건을 준비한다.
+- `sentence-order`의 두 번째 예문 `저는 도서관에서 책을 읽어요.`에서 일본어 번역 칸에 문법 설명이
+  들어간 상태를 ID별로 재현했다. 일본어 전체 번역을 `私は図書館で本を読みます。`로 바로잡았다.
+- 장소·목적어·서술어 순서 설명은 별도 `강사 노트/講師メモ` 필드와 화면으로 분리했다. 한국어·영어·중국어도
+  동일한 번역/설명 의미 구조를 갖게 했으며, 기존 변형 연습 정답·허용 답안·손글씨 문구는 회귀 검사로 고정했다.
+- 기존 문제 은행 2,088개와 연습 56개, 학습/복습/여행/게임/설정 저장 루트, 라이트/다크 테마는 변경하지 않았다.
+- 로컬 Node v24.19.0: 입문 문법 8/8, 콘텐츠 7/7, 빠른 검사 78/78, diff 검사 통과. 로컬 환경에는
+  Chrome/Chromium이 없어 모바일 화면은 PR CI 산출물에서 확인하며, 확인 전에는 병합하지 않는다.
+- Linux Chrome 320/375/390/430px 라이트·다크 결과, 전체 검사, 실제 배포는 아직 미검증이다.
+- 실제 iPhone/Android, 기기 TTS, 오프라인 복구, 전체 문법 번역 정확성, 실제 학습자 회상도 미검증이다.
+- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (v97 병합 후 확인 대상).
+- 배포 전 되돌리기 기준: v96 `d1db91d1b29f29c2f09a11d42cc34a5a3a25638d`. 최종 squash SHA와
   Pages 결과는 #110 진행 기록에 남긴다.
 
 ## 알려진 위험
