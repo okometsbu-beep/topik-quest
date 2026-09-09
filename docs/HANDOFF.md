@@ -3,21 +3,21 @@
 This is the short continuity record for future work. Use it with `AGENTS.md`; do not reconstruct
 these facts from conversation history or the large TOPIK source bundle.
 
-## Current release priority · 2026-09-09
+## Current release priority · 2026-09-10
 
 - Source of truth: [release blueprint #110](https://github.com/okometsbu-beep/topik-quest/issues/110).
   It supersedes #76 map expansion until core learning quality gates pass. A01–A12 remain audit findings,
   not resolved items; existing feature/visual checks do not certify translation or teaching accuracy.
-- Production is v97 at `6b8f5e48dea0d3b14276e5cda9478e84dc6e5483` (PR #115).
-  Main Verify `34335360623` and Pages `34335359958` succeeded. The v98 candidate fixes A06: the ordinary
-  Travel screen's 42px bottom padding no longer creates a scroll range beneath the full-height RPG, RPG mode
-  owns and locks its viewport, hub/map headers use the top safe area, and entering Travel resets inherited
-  page scroll. Existing progress, movement, camera, held controls, themes, questions and rewards are unchanged.
-  Local Travel 25/25 and quick 78/78 checks pass. This runner has no Chrome, so Linux Chrome 320/375/390/430px
-  light/dark plus scroll/rotation/keyboard-height evidence must be reviewed from branch CI before merge.
-  Real iPhone/Android notch, Safari toolbar, OS keyboard and rotation remain unverified. Candidate rollback is
-  v97 `6b8f5e48dea0d3b14276e5cda9478e84dc6e5483`.
-- Next: A07 should demote first-visit Travel operating metrics and lead with a concrete who/where/what action.
+- Production is v98 at `1df0f96a4c211c6fa4ed08d2a3cdfb042d292940` (PR #116).
+  Main Verify `34369070590` and Pages `34369069465` succeeded. The v99 candidate fixes A07: a new Travel
+  learner sees the first real mission's reviewed where/who/what brief immediately before the route CTA, while
+  the unchanged on-device metrics move after the avatar and start collapsed behind a 44px summary. Returning
+  progress does not repeat the first-action brief. Existing route metrics, progress, questions, rewards, themes,
+  and all other learner records are unchanged. Local Travel 9/9, quick 78/78, and full 87/87 checks pass. This
+  runner has no Chrome, so Linux Chrome 320/375/390/430px light/dark evidence must be reviewed from branch
+  CI before merge. Real iPhone/Android and real-beginner comprehension remain unverified. Candidate rollback is
+  v98 `1df0f96a4c211c6fa4ed08d2a3cdfb042d292940`.
+- Next: A08 should make the first Game learning action primary without removing Game access or saved records.
   A new P0 or clear wrong answer takes precedence.
 - Follow start → understand → recall/speak/write → review → next learning for Japanese beginners, and
   passage evidence → specific distractor traps → reusable solving method for TOPIK I/II.
@@ -32,7 +32,7 @@ these facts from conversation history or the large TOPIK source bundle.
   Stop on PAUSE. Only pause the recurring loop for owner stop, all-work blockage, or completed #110 gates.
 - Current-pass checks, documentation PR/merge and live verification belong in #110's progress comment.
   Unseen states and unrun tests must remain unverified, including corpus-wide translation completeness,
-  corpus-wide explanation and grammar correctness, A06 physical-mobile reproduction, actual iPhone/Android, audio, offline recovery,
+  corpus-wide explanation and grammar correctness, A06/A07 physical-mobile reproduction, actual iPhone/Android, audio, offline recovery,
   and real learner delayed recall. Corpus-wide grammar-translation correctness remains unverified beyond A05.
 
 ## Stable product state

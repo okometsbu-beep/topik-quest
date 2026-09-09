@@ -325,6 +325,12 @@ test('the travel runtime can complete, resume, replay, and record a wrong answer
   assert.match(screen.innerHTML, /서울역/);
   assert.match(screen.innerHTML, /내 여행자/);
   assert.match(screen.innerHTML, /이 기기의 여행 기록/);
+  assert.match(screen.innerHTML, /첫 행동/);
+  assert.match(screen.innerHTML, /입국장 미션 1/);
+  assert.match(screen.innerHTML, /공항 직원과 길을 묻고 답하기/);
+  assert.match(screen.innerHTML, /<details class="travelMetrics">/);
+  assert.doesNotMatch(screen.innerHTML, /<details class="travelMetrics"[^>]*open/);
+  assert.ok(screen.innerHTML.indexOf('travelAvatar')<screen.innerHTML.indexOf('travelMetrics'),'the learner avatar must precede secondary local metrics');
   assert.match(screen.innerHTML, /외부로 전송하지 않습니다/);
   assert.equal(runtime.malbitTravelMetrics().routeStarts,0);
   assert.equal(runtime.malbitTravelMetrics().priceQuestStarts,0);
@@ -334,6 +340,9 @@ test('the travel runtime can complete, resume, replay, and record a wrong answer
   assert.match(screen.innerHTML,/가격 × 개수 → 예산 − 합계/);
   runtime.malbitTravelStart('route-001-airport-myeongdong', false);
   assert.match(screen.innerHTML, /한국 여행이 시작됐다/);
+  runtime.malbitTravelBack();
+  assert.doesNotMatch(screen.innerHTML, /travelFirstAction/,'the first-action brief must not replace resumed progress');
+  runtime.malbitTravelStart('route-001-airport-myeongdong', false);
   assert.equal(runtime.malbitTravelMetrics().routeStarts,1);
   assert.equal(runtime.malbitTravelMetrics().completionRate,0);
   runtime.malbitTravelNext();
