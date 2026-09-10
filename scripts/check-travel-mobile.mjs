@@ -816,6 +816,7 @@ try{
   assert.match(timeReview.summary,/아직[\s\S]*完了していない/u,'selected Japanese feedback must explain the specific 아직 trap');
   assert.match(timeReview.answer,/もう（予想より早く）/u);assert.equal(timeReview.closed,true);
   assert.equal(timeReview.nextBeforeDetails,true,'Next question must precede optional time-adverb coaching');
+  assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'宿題をもう全部終えました。','reviewed Japanese example must render locally without a translation wait');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 time adverb light ${width}px`,'light')}
   await setViewport(390,844);await shot('00be-shorts-time-adverb-wrong-light.png');

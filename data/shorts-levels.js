@@ -86,10 +86,10 @@ const TIME_METHOD=Object.freeze({
   en:'First classify the time: earlier-than-expected completion = 벌써, continuing or incomplete = 아직, immediate past = 방금, near future = 곧.',
   zh:'先判断时间：比预想早完成＝벌써，持续或未完成＝아직，刚刚过去＝방금，不久的将来＝곧。'
 });
-const reviewedTimeItem=(id,term,key,example,evidence)=>{
+const reviewedTimeItem=(id,term,key,example,exampleI18n,evidence)=>{
   const target=TIME_WORDS[key];
   return Object.freeze({
-    id,level:1,type:'word',difficulty:'easy',term,meaning:target.meaning,example,answerIndex:TIME_ORDER.indexOf(key),shortsFastReview:true,
+    id,level:1,type:'word',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:TIME_ORDER.indexOf(key),shortsFastReview:true,
     shortChoices:Object.freeze(TIME_ORDER.map(choiceKey=>Object.freeze({
       meaning:TIME_WORDS[choiceKey].meaning,
       explanationI18n:TIME_WORDS[choiceKey].selected
@@ -128,24 +128,32 @@ const TOPIK_I=[
   item(1,'word','포장하다','물건을 싸거나 음식을 가져갈 수 있게 담다','包む；持ち帰り用にする','wrap; pack to go','包装；打包','남은 음식은 포장해 주세요.'),
   item(1,'word','직접','다른 사람을 통하지 않고 스스로','直接；自分で','directly; in person','亲自；直接','신청서를 직접 제출했습니다.'),
   reviewedTimeItem('S04-I-W-TIME-01','벌써','already','숙제를 벌써 다 했어요.',{
+    ko:'숙제를 벌써 다 했어요.',ja:'宿題をもう全部終えました。',en:'I already finished all my homework.',zh:'我已经把作业全做完了。'
+  },{
     ko:'“숙제를 벌써 다 했어요”는 예상보다 이르게 숙제가 이미 끝났다는 뜻입니다.',
     ja:'「숙제를 벌써 다 했어요」は「宿題をもう全部終えました」という、予想より早い完了です。',
     en:'“숙제를 벌써 다 했어요” says the homework is already finished, earlier than expected.',
     zh:'“숙제를 벌써 다 했어요”表示作业已经完成，而且比预想更早。'
   }),
   reviewedTimeItem('S04-I-W-TIME-02','아직','still','가게가 아직 안 열렸어요.',{
+    ko:'가게가 아직 안 열렸어요.',ja:'店はまだ開いていません。',en:'The shop is still not open.',zh:'商店还没开门。'
+  },{
     ko:'“가게가 아직 안 열렸어요”는 지금까지도 가게가 열리지 않은 미완료 상태입니다.',
     ja:'「가게가 아직 안 열렸어요」は「店はまだ開いていません」という未完了の状態です。',
     en:'“가게가 아직 안 열렸어요” says the shop is still not open, an incomplete state.',
     zh:'“가게가 아직 안 열렸어요”表示商店到现在还没开门，是未完成状态。'
   }),
   reviewedTimeItem('S04-I-W-TIME-03','방금','justNow','기차가 방금 출발했어요.',{
+    ko:'기차가 방금 출발했어요.',ja:'列車はたった今出発しました。',en:'The train just left.',zh:'火车刚刚出发了。'
+  },{
     ko:'“기차가 방금 출발했어요”는 기차가 말하는 때의 바로 조금 전에 떠났다는 뜻입니다.',
     ja:'「기차가 방금 출발했어요」は「列車はたった今出発しました」という直前の出来事です。',
     en:'“기차가 방금 출발했어요” places the train’s departure in the immediate past: just now.',
     zh:'“기차가 방금 출발했어요”表示火车就在说话前不久刚刚出发。'
   }),
   reviewedTimeItem('S04-I-W-TIME-04','곧','soon','수업이 곧 시작해요.',{
+    ko:'수업이 곧 시작해요.',ja:'授業がもうすぐ始まります。',en:'Class will start soon.',zh:'马上就要上课了。'
+  },{
     ko:'“수업이 곧 시작해요”는 수업이 아직 시작하지 않았지만 가까운 미래에 시작한다는 뜻입니다.',
     ja:'「수업이 곧 시작해요」は「授業がもうすぐ始まります」という近い未来です。',
     en:'“수업이 곧 시작해요” says the class has not started yet but will start soon.',
