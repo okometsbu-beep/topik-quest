@@ -157,14 +157,14 @@ try{
     assert.deepEqual(themeFit.tiles.filter(row=>row.contrast===null||row.contrast<3.5),[],`${label}: surface text contrast below 3.5`);
   };
   const assertShortsFits=async(label,theme)=>{
-    const fit=await evaluate(`(()=>{const root=document.querySelector('.tqShortsScreen');if(!root)return{missing:true};const visible=el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)!==0&&r.width>0&&r.height>0};const rect=el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),right:Math.round(r.right),width:Math.round(r.width),height:Math.round(r.height)}};const controls=[...root.querySelectorAll('.shortsTop button,.shortsChoice,.shortsAction button,.malbitShortTools button,.malbitShortProposal>button')].filter(visible);const surfaces=[...root.querySelectorAll('.shortsCard')].filter(visible);const tiles=[...root.querySelectorAll('.shortsCard,.shortsChoice,.shortsFeedback,.malbitShortProposal')].filter(visible);const copy=[...root.querySelectorAll('.shortsInstruction,.shortsFeedback small,.doubleTapHint,.shortsSwipe,.malbitShortTools button,.malbitShortDaily,.malbitShortProposal small,.malbitShortProposal p')].filter(visible);const channels=color=>(color.match(/[\\d.]+/g)||[]).slice(0,3).map(Number);const card=document.querySelector('.shortsCard');return{missing:false,innerWidth,rootWidth:document.documentElement.scrollWidth,bodyWidth:document.body.scrollWidth,cardOverflow:card?card.scrollWidth-card.clientWidth:0,outside:controls.filter(el=>{const r=el.getBoundingClientRect();return r.left<-1||r.right>innerWidth+1}).map(rect),small:controls.filter(el=>{const r=el.getBoundingClientRect();return r.width<43||r.height<43}).map(rect),offCenter:surfaces.filter(el=>{const r=el.getBoundingClientRect();return Math.abs(r.left-(innerWidth-r.right))>2}).map(el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),rightGap:Math.round(innerWidth-r.right)}}),darkTiles:tiles.map(el=>({class:el.className,color:getComputedStyle(el).backgroundColor,rgb:channels(getComputedStyle(el).backgroundColor)})).filter(row=>row.rgb.length===3&&row.rgb.reduce((sum,value)=>sum+value,0)/3<170),tinyCopy:copy.map(el=>({class:el.className,size:parseFloat(getComputedStyle(el).fontSize)})).filter(row=>row.size<9.9)}})()`);
+    const fit=await evaluate(`(()=>{const root=document.querySelector('.tqShortsScreen');if(!root)return{missing:true};const visible=el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)!==0&&r.width>0&&r.height>0};const rect=el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),right:Math.round(r.right),width:Math.round(r.width),height:Math.round(r.height)}};const controls=[...root.querySelectorAll('.shortsTop button,.shortsChoice,.shortsAction button,.shortsExplanation summary,.malbitShortTools button,.malbitShortProposal>button')].filter(visible);const surfaces=[...root.querySelectorAll('.shortsCard')].filter(visible);const tiles=[...root.querySelectorAll('.shortsCard,.shortsChoice,.shortsFeedback,.shortsExplanation,.malbitShortProposal')].filter(visible);const copy=[...root.querySelectorAll('.shortsInstruction,.shortsFeedback small,.shortsExplanation summary,.shortsExplanation small,.doubleTapHint,.shortsSwipe,.malbitShortTools button,.malbitShortDaily,.malbitShortProposal small,.malbitShortProposal p')].filter(visible);const channels=color=>(color.match(/[\\d.]+/g)||[]).slice(0,3).map(Number);const card=document.querySelector('.shortsCard');return{missing:false,innerWidth,rootWidth:document.documentElement.scrollWidth,bodyWidth:document.body.scrollWidth,cardOverflow:card?card.scrollWidth-card.clientWidth:0,outside:controls.filter(el=>{const r=el.getBoundingClientRect();return r.left<-1||r.right>innerWidth+1}).map(rect),small:controls.filter(el=>{const r=el.getBoundingClientRect();return r.width<43||r.height<43}).map(rect),offCenter:surfaces.filter(el=>{const r=el.getBoundingClientRect();return Math.abs(r.left-(innerWidth-r.right))>2}).map(el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),rightGap:Math.round(innerWidth-r.right)}}),darkTiles:tiles.map(el=>({class:el.className,color:getComputedStyle(el).backgroundColor,rgb:channels(getComputedStyle(el).backgroundColor)})).filter(row=>row.rgb.length===3&&row.rgb.reduce((sum,value)=>sum+value,0)/3<170),tinyCopy:copy.map(el=>({class:el.className,size:parseFloat(getComputedStyle(el).fontSize)})).filter(row=>row.size<9.9)}})()`);
     assert.equal(fit.missing,false,`${label}: Shorts root missing`);
     assert.ok(fit.rootWidth<=fit.innerWidth+1&&fit.bodyWidth<=fit.innerWidth+1,`${label}: horizontal overflow ${fit.rootWidth}/${fit.bodyWidth}/${fit.innerWidth}`);
     assert.ok(fit.cardOverflow<=1,`${label}: Shorts card content overflow ${fit.cardOverflow}`);
     assert.deepEqual(fit.outside,[],`${label}: interactive element leaves viewport`);
     assert.deepEqual(fit.small,[],`${label}: touch target below 44px`);
     assert.deepEqual(fit.offCenter,[],`${label}: asymmetric Shorts card`);
-    await assertThemeSurfaces(label,theme,'.tqShortsScreen','.shortsCard,.shortsChoice,.shortsFeedback,.malbitShortProposal');
+    await assertThemeSurfaces(label,theme,'.tqShortsScreen','.shortsCard,.shortsChoice,.shortsFeedback,.shortsExplanation,.malbitShortProposal');
     assert.deepEqual(fit.tinyCopy,[],`${label}: Shorts copy below 10px`);
   };
   const assertRandomPracticeFits=async(label,theme)=>{
@@ -223,8 +223,9 @@ try{
     await assertThemeSurfaces(label,theme,'.bgScreen','.bgMethod,.bgChapterCard,.bgLessonRow,.bgScope,.bgFormula,.bgRuleCard,.bgExamples,.bgVariant,.bgDrill,.bgWriting,.bgLessonFinish');
     assert.deepEqual(fit.tinyCopy,[],`${label}: grammar copy below 10px`);
   };
-  const openStoredShorts=async index=>{
-    await evaluate(`(()=>{S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','2');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:2,activeLevel:2,levels:{1:{index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null},2:{index:${Number(index)},selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null}},daily:{}}))})()`);
+  const openStoredShorts=async(index,examLevel=2)=>{
+    const lv=Number(examLevel)===1?1:2;
+    await evaluate(`(()=>{S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel',${JSON.stringify(String(lv))});localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:2,activeLevel:${lv},levels:{1:{index:${lv===1?Number(index):0},selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null},2:{index:${lv===2?Number(index):0},selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null}},daily:{}}))})()`);
     await send('Page.reload',{ignoreCache:true});await ready();
     for(let wait=0;wait<50;wait++){if(await evaluate(`!!document.querySelector('.shortsCard')`))return;await sleep(50)}
     throw new Error('Stored Shorts card did not render');
@@ -770,6 +771,22 @@ try{
   assert.match(bankCoach,/慣用句全体/);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`bank Shorts dark ${width}px`,'dark')}
   await setViewport(390,844);await shot('00b-shorts-type-coaching.png');
+
+  const meetingShortsIndex=await evaluate(`window.MALBIT_SHORTS_DECKS[1].length+window.MALBIT_BANK.shorts(1).findIndex(item=>item.bankId==='M01-I-R-44')`);
+  assert.ok(meetingShortsIndex>=await evaluate(`window.MALBIT_SHORTS_DECKS[1].length`),'reviewed meeting/home item must enter TOPIK I Shorts');
+  await openStoredShorts(meetingShortsIndex,1);await submitShortsLabel('회의 전에 집에 들렀습니다.');await sleep(250);
+  const meetingReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,details:details?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),proposal:!!document.querySelector('.malbitShortProposal')}})()`);
+  assert.match(meetingReview.summary,/전에[\s\S]*時間順序が逆/u,'selected Japanese feedback must explain the before/after reversal');
+  assert.equal(meetingReview.closed,true,'full meeting explanation must start collapsed');
+  assert.equal(meetingReview.nextBeforeDetails,true,'Next question must precede the optional full explanation');
+  assert.equal(meetingReview.proposal,false,'bank question must not show an unrelated curated vocabulary proposal');
+  await evaluate(`malbitSetTheme('light')`);await sleep(100);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`meeting/home Shorts light ${width}px`,'light')}
+  await setViewport(390,844);await shot('00ba-shorts-meeting-wrong-light.png');
+  await evaluate(`malbitSetTheme('dark');document.querySelector('.shortsExplanation').open=true`);await sleep(100);
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【ひっかけ分析】[\s\S]*【タイプ別の解き方】/u,'expanded Japanese review must keep all three teaching stages');
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`meeting/home expanded Shorts dark ${width}px`,'dark')}
+  await setViewport(390,844);await shot('00bb-shorts-meeting-full-dark.png');
 
   await evaluate(`S.view='home';save();render()`);await sleep(1000);await shot('01-game-entry.png');
   await startFresh(true);

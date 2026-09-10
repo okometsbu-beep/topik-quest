@@ -213,7 +213,56 @@ const TOPIK2_WRITING={
 
 // Reviewed coaching for immutable generated-bank items. Keys use the stable bank ID so
 // answer shuffling can change the displayed position without changing the teaching source.
+const MEETING_HOME_COACH={
+  shortsFastReview:true,
+  ko:{
+    short:'“끝난 후에 바로”와 “마치고 곧”은 모두 회의 뒤 즉시 귀가했다는 뜻입니다.',
+    reason:'원문의 “회의가 끝난 후에 바로 집에 갔습니다”는 회의가 끝난 뒤 곧바로 귀가했다는 뜻입니다. “회의를 마치고 곧 집으로 갔습니다”도 사건의 순서와 행동이 같습니다.',
+    trap:'핵심 함정은 “후에(뒤에)”를 “전에(앞에)”로 뒤집는 것입니다. 운동과 과일 판매 보기는 회의·귀가와 관계없는 내용입니다.',
+    strategy:'같은 뜻 고르기에서는 주체, 행동, 시간 순서를 짧게 표시합니다. 이 문장은 ‘회의 종료 → 즉시 귀가’가 모두 유지되는 보기만 남깁니다.',
+    choices:{
+      '회의 전에 집에 들렀습니다.':'“전에”는 회의 앞을 뜻해 원문의 “끝난 후에”와 시간 순서가 반대이고, “들렀습니다”도 곧장 귀가했다는 행동과 다릅니다.',
+      '저는 평일마다 혼자 운동합니다.':'평일 운동 습관은 회의가 끝난 뒤 귀가한 사건과 주제·행동이 모두 다릅니다.',
+      '이 가게는 과일을 팔지 않습니다.':'가게의 과일 판매 여부는 회의가 끝난 뒤 귀가한 사건과 아무 관련이 없습니다.'
+    }
+  },
+  ja:{
+    short:'「끝난 후에 바로」と「마치고 곧」は、どちらも「会議後すぐ帰宅した」という意味です。',
+    reason:'原文の「회의가 끝난 후에 바로 집에 갔습니다」は「会議が終わった後、すぐ家に帰りました」という意味です。「회의를 마치고 곧 집으로 갔습니다」も出来事の順序と行動が同じです。',
+    trap:'中心となるひっかけは、「후에（後に）」を「전에（前に）」へ逆転させることです。運動と果物販売の選択肢は、会議後の帰宅とは無関係です。',
+    strategy:'言い換え問題では、主体・行動・時間順序を短く確認します。この文では「会議終了 → すぐ帰宅」がすべて保たれる選択肢だけを残します。',
+    choices:{
+      '회의 전에 집에 들렀습니다.':'「전에」は会議の前を表し、原文の「끝난 후에（終わった後）」と時間順序が逆です。「들렀습니다（立ち寄りました）」も、すぐ帰宅したという行動とは異なります。',
+      '저는 평일마다 혼자 운동합니다.':'「平日はいつも一人で運動します」という習慣で、会議後に帰宅した出来事とは話題も行動も異なります。',
+      '이 가게는 과일을 팔지 않습니다.':'「この店は果物を売っていません」という内容で、会議後に帰宅した出来事とは無関係です。'
+    }
+  },
+  en:{
+    short:'Both “끝난 후에 바로” and “마치고 곧” mean that the speaker went home immediately after the meeting.',
+    reason:'The source says the speaker went home immediately after the meeting ended. “회의를 마치고 곧 집으로 갔습니다” preserves both the event order and the action.',
+    trap:'The key trap reverses “after” (후에) to “before” (전에). The exercise and fruit-selling choices are unrelated to the meeting and the trip home.',
+    strategy:'For a paraphrase, quickly match the subject, action, and time order. Keep only the choice that preserves “meeting ends → immediately goes home.”',
+    choices:{
+      '회의 전에 집에 들렀습니다.':'“전에” means before the meeting, reversing “끝난 후에” (after it ended). “들렀습니다” also means stopped by, not went straight home.',
+      '저는 평일마다 혼자 운동합니다.':'A weekday exercise habit changes both the topic and action from going home after a meeting.',
+      '이 가게는 과일을 팔지 않습니다.':'Whether a store sells fruit is unrelated to going home after a meeting.'
+    }
+  },
+  zh:{
+    short:'“끝난 후에 바로”和“마치고 곧”都表示“会议结束后马上回家”。',
+    reason:'原句表示会议结束后马上回家。“회의를 마치고 곧 집으로 갔습니다”保留了相同的事件顺序和行为。',
+    trap:'核心陷阱是把“후에（之后）”改成“전에（之前）”。运动和水果销售两个选项与会后回家无关。',
+    strategy:'同义改写题要快速核对主体、行为和时间顺序。本题只保留完整对应“会议结束 → 马上回家”的选项。',
+    choices:{
+      '회의 전에 집에 들렀습니다.':'“전에”表示会议之前，与原句“끝난 후에（结束之后）”的时间顺序相反；“들렀습니다”表示顺路停留，也不同于直接回家。',
+      '저는 평일마다 혼자 운동합니다.':'工作日独自运动的习惯，与会议结束后回家的事件在主题和行为上都不同。',
+      '이 가게는 과일을 팔지 않습니다.':'商店是否出售水果，与会议结束后回家的事件无关。'
+    }
+  }
+};
+const MEETING_HOME_IDS=['M01-I-R-44','M02-I-R-43','M04-I-R-45','M05-I-R-44','M06-I-R-43','M08-I-R-45','M09-I-R-44','M10-I-R-43','M12-I-R-45'];
 const BANK_COACH={
+...Object.fromEntries(MEETING_HOME_IDS.map(id=>[id,MEETING_HOME_COACH])),
 'M11-I-R-37':{
   ko:{
     reason:'“오른쪽 출입구를 이용해 주세요”가 사용할 출입구를 직접 지시하므로 글의 목적은 출입 안내입니다. “공사 중입니다”는 그 안내가 필요한 배경입니다.',
