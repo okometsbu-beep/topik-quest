@@ -55,6 +55,10 @@ try{
     for(let i=0;i<100;i++){if(await evaluate(`document.readyState==='complete'&&!!window.MALBIT_TRAVEL&&!document.documentElement.classList.contains('tq-booting')`))return;await sleep(100)}
     throw new Error('MALBIT travel runtime did not become ready');
   };
+  const waitForSelector=async selector=>{
+    for(let i=0;i<100;i++){if(await evaluate(`!!document.querySelector(${JSON.stringify(selector)})`))return;await sleep(100)}
+    throw new Error(`Timed out waiting for selector: ${selector}`);
+  };
   const tap=async(selector,index=0,delay=250)=>{
     const found=await evaluate(`(()=>{const el=document.querySelectorAll(${JSON.stringify(selector)})[${index}];if(!el||el.disabled)return false;el.scrollIntoView({block:'center',inline:'center',behavior:'auto'});return true})()`);
     assert.ok(found,`tap target missing or disabled: ${selector}[${index}]`);
@@ -802,7 +806,7 @@ try{
 
   const timeAdverb=await evaluate(`(()=>{const lv=1,deck=[...window.MALBIT_SHORTS_DECKS[lv],...window.MALBIT_BANK.shorts(lv)],index=deck.findIndex(item=>item.id==='S04-I-W-TIME-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,0,3,1],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','1');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:1,levels:{1:active,2:blank},daily:{}}));return{index,id:identity.id}})()`);
   assert.equal(timeAdverb.id,'S04-I-W-TIME-01','reviewed time-adverb card must have its explicit stable ID');
-  await send('Page.reload',{ignoreCache:true});await ready();await sleep(120);
+  await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsWord');
   const timeBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['1'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
   assert.equal(timeBefore.term,'벌써');assert.equal(timeBefore.cardId,timeAdverb.id);assert.equal(timeBefore.orderId,timeAdverb.id);
   assert.deepEqual(timeBefore.choiceOrder,[2,0,3,1]);
@@ -819,7 +823,7 @@ try{
   assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 time adverb expanded dark ${width}px`,'dark')}
   await setViewport(390,844);await shot('00bf-shorts-time-adverb-full-dark.png');
-  await send('Page.reload',{ignoreCache:true});await ready();await sleep(120);
+  await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsFeedbackSummary');
   const timeRestored=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['1'];return{cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder,locked:state.locked,summary:document.querySelector('.shortsFeedbackSummary')?.innerText,answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
   assert.equal(timeRestored.cardId,timeAdverb.id,'reviewed card ID must survive reload');
   assert.equal(timeRestored.orderId,timeAdverb.id,'reviewed choice-order ID must survive reload');
