@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v100 · S02 reviewed meeting/home Shorts feedback and next-question route (`cd24451b5e0aba40e00f5ccc370f1a16b00d2317`)
-- Current candidate: v101 · S03 stable Shorts identity and semantic-family cycle (PR #120)
+- Production release: v101 · S03 stable Shorts identity and semantic-family cycle (`711d2b234fd2ba3ba038bdc5e5162c6d76a71468`)
+- Current candidate: v102 · S04 reviewed TOPIK I time-adverb Shorts pilot
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -18,7 +18,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - TOPIK I·II, Shorts, Random Practice, full mock exams, Review, Vocabulary, Statistics
 - Beginner grammar covers core sentence order and major particle, tense, politeness, negation, connective,
   modifier, irregular, and speech-level transformations with per-rule writing practice.
-- Shorts has 172 TOPIK I / 116 TOPIK II rows, but only 84 / 78 distinct question-choice sets;
+- Shorts has 176 TOPIK I / 116 TOPIK II rows, but only 88 / 78 distinct question-choice sets;
   these are inventory counts, not educationally approved questions. Fixed mock composition remains intact.
 - bank explanations structured as answer evidence → distractor trap → reusable type-solving method,
   with separate TOPIK II writing 51–54 plans
@@ -150,24 +150,22 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-S04: S01 재고에서 부족한 유형을 고르고, 실제 5–15초 한 판단에 맞는 새 숏츠를 작은 검수 묶음으로
-추가한다. 정답 유일성·짧은 선택 오답 해설·ko/ja/en/zh 번역을 함께 검수하며 수량만 늘리지 않는다.
-새 P0/명백한 정답 오류가 있으면 앞당긴다.
+S04 다음 묶음: TOPIK II의 부족 어휘·문법 중 기존 의미군과 겹치지 않는 5–15초 한 판단 문항을
+작게 추가한다. 정답 유일성·선택 오답 해설·ko/ja/en/zh 번역을 함께 검수하고 실제 사람 풀이시간은
+별도 미검증으로 유지한다. 새 P0/명백한 정답 오류가 있으면 앞당긴다.
 
-## 이번 작업 · S03 숏츠 안정 ID·의미군 반복 방지
+## 이번 작업 · S04 TOPIK I 시간 부사 숏츠 4문항 검수·확충
 
-- 기준 production v100 `cd24451b5e0aba40e00f5ccc370f1a16b00d2317`, candidate v101. 저장 루트
-  `topikQuestShortsV1`은 유지하고 schema 2 숫자 인덱스/최근 기록을 안정 문항 ID·의미군 ID로 비파괴 변환한다.
-- 288행을 162개 질문+보기 의미군으로 순환한다. 같은 ID와 정확 중복 의미군은 다른 새 문제로 세지 않으며,
-  아직 안 본 의미군과 나중에 추가된 의미군을 먼저 낸다. 전부 소진한 반복은 현재 언어로 `간격 복습`이라 표시한다.
-- 숫자 인덱스 진행/선택지 순서/점수 보존, 데이터 앞삽입 뒤 동일 카드 복구, 정확 중복군, 새 의미군,
-  전체 소진, 한 의미군 fallback을 자동 검사했다. 원본 은행·ID·정답·모의 위치와 다른 저장 루트는 변경하지 않는다.
-- 로컬 Node v24 quick 83/83 및 집중 13/13 통과. PR CI `34494776380` 통과. Linux Chrome에서
-  320/375/390/430px 라이트·다크, 소진 뒤 복습 전환, 즉시 같은 의미군 회피, reload 복구를 확인했다.
-- 배포 전 후보 PR #120. 현재 되돌리기 기준은 production v100 `cd24451b5e0aba40e00f5ccc370f1a16b00d2317`;
-  병합/Pages/라이브 결과와 최종 배포 SHA는 #110 댓글에 기록한다.
-- 288행 전수 정답·해설·번역 검수, 실제 초보자 5–15초 풀이·1일/7일 회상, 실제 iPhone/Android와
-  네트워크 단절 복구는 미검증이다. 162 의미군은 승인 문항 수가 아니며 S04 검수·확충이 필요하다.
+- 기준 production v101 `711d2b234fd2ba3ba038bdc5e5162c6d76a71468`, candidate v102. TOPIK I에 기존
+  숏츠에 없던 `벌써·아직·방금·곧` 네 시간 부사를 독립 안정 ID로 추가했다.
+- 각 카드는 한 단어와 짧은 네 뜻만 비교한다. 고정 검수 선택지를 카드마다 섞되 기존 Shorts 저장 루트에서
+  순서를 복구하고, 선택한 오답의 시간 기준을 먼저 설명한 뒤 상세 해설에서 근거→함정→재사용 풀이를 제공한다.
+- ko/ja/en/zh의 뜻·보기·짧은 피드백·예문 해설·상세 해설을 함께 AI 검수했다. 새 정확 중복과 정답 충돌은 0이며
+  재고는 292행/166 정확 의미군, 레벨별 서로 다른 묶음은 I 88·II 78이다. 이는 전체 승인 수가 아니다.
+- 원본 2,088문항, 연습 확장, 기존 숏츠 ID·정답·모의 위치와 모든 학습 저장 루트는 변경하지 않는다.
+- 로컬 Node v24 전체 release 검사 96/96을 통과했다. 모바일 화면·PR CI·Pages/라이브 결과는 후보 검증 뒤 기록한다.
+- 실제 일본어 모어 화자 검수, 실제 초보자 5–15초 풀이·1일/7일 회상, 실제 iPhone/Android와
+  네트워크 단절 복구는 미검증이다. 사람 검수 완료로 과장하지 않는다.
 
 ## 알려진 위험
 

@@ -6,11 +6,11 @@ const { inventory, curatedId } = require('../scripts/audit-shorts.cjs');
 
 test('Shorts audit covers the actual deck and keeps all content approvals unreviewed', () => {
   const report = inventory();
-  assert.equal(report.summary.total, 288);
-  assert.deepEqual(report.summary.byLevel, [{level:1,total:172,curated:48,bank:124},{level:2,total:116,curated:54,bank:62}]);
-  assert.equal(new Set(report.rows.map(row => row.id)).size, 288);
+  assert.equal(report.summary.total, 292);
+  assert.deepEqual(report.summary.byLevel, [{level:1,total:176,curated:52,bank:124},{level:2,total:116,curated:54,bank:62}]);
+  assert.equal(new Set(report.rows.map(row => row.id)).size, 292);
   assert.equal(report.summary.approved, 0);
-  assert.equal(report.summary.distinctQuestionChoiceSets, 162);
+  assert.equal(report.summary.distinctQuestionChoiceSets, 166);
   assert.equal(report.summary.redundantRows, 126);
   assert.equal(report.exactDuplicateGroups.length, 30);
   assert.equal(report.conflictingAnswerGroups.length, 0);
@@ -36,4 +36,5 @@ test('Generated inventory stays current, deterministic and independent of learne
   const item = {level:1,type:'word',term:'학교'};
   assert.equal(curatedId(item), curatedId({...item,index:999,meaning:{ja:'学校'}}));
   assert.notEqual(curatedId(item), curatedId({...item,level:2}));
+  assert.equal(curatedId({...item,id:'S04-I-W-SCHOOL-01'}),'S04-I-W-SCHOOL-01');
 });

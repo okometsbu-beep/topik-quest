@@ -41,6 +41,69 @@ const item=(level,type,term,ko,ja,en,zh,example)=>{
   });
 };
 
+const TIME_WORDS=Object.freeze({
+  already:Object.freeze({
+    meaning:Object.freeze({ko:'예상보다 이르게 이미',ja:'もう（予想より早く）',en:'already (earlier than expected)',zh:'已经（比预想早）'}),
+    selected:Object.freeze({
+      ko:'“벌써”는 예상보다 이른 완료를 나타냅니다. 완료 시점이 뜻밖에 빠른지 확인하세요.',
+      ja:'「벌써」は予想より早い完了を表します。完了が思ったより早いかを確認しましょう。',
+      en:'“벌써” marks an earlier-than-expected completion. Check whether the result is already complete.',
+      zh:'“벌써”表示比预想更早完成。请确认事情是否已经完成。'
+    })
+  }),
+  still:Object.freeze({
+    meaning:Object.freeze({ko:'지금까지도; 아직은',ja:'まだ',en:'still; yet',zh:'还；尚未'}),
+    selected:Object.freeze({
+      ko:'“아직”은 상태가 지금까지 계속되거나 일이 완료되지 않았음을 나타냅니다.',
+      ja:'「아직」は状態の継続、または物事が完了していないことを表します。',
+      en:'“아직” marks a continuing state or something that is not complete yet.',
+      zh:'“아직”表示状态仍在持续，或事情尚未完成。'
+    })
+  }),
+  justNow:Object.freeze({
+    meaning:Object.freeze({ko:'바로 조금 전',ja:'たった今',en:'just now',zh:'刚刚'}),
+    selected:Object.freeze({
+      ko:'“방금”은 말하는 때에서 아주 가까운 과거를 가리킵니다.',
+      ja:'「방금」は発話時点のすぐ前、つまりごく近い過去を指します。',
+      en:'“방금” points to the immediate past, just before the moment of speaking.',
+      zh:'“방금”指说话时刻之前不久，也就是刚刚发生。'
+    })
+  }),
+  soon:Object.freeze({
+    meaning:Object.freeze({ko:'짧은 시간이 지나면',ja:'もうすぐ',en:'soon; shortly',zh:'马上；不久'}),
+    selected:Object.freeze({
+      ko:'“곧”은 아직 일어나지 않았지만 가까운 미래에 일어날 일을 나타냅니다.',
+      ja:'「곧」はまだ起きていないものの、近い未来に起きることを表します。',
+      en:'“곧” marks something that has not happened yet but will happen in the near future.',
+      zh:'“곧”表示事情尚未发生，但会在不久的将来发生。'
+    })
+  })
+});
+const TIME_ORDER=['already','still','justNow','soon'];
+const TIME_METHOD=Object.freeze({
+  ko:'예상보다 이른 완료=벌써, 지속·미완료=아직, 바로 전=방금, 가까운 미래=곧으로 시점을 먼저 나누세요.',
+  ja:'予想より早い完了＝벌써、継続・未完了＝아직、直前＝방금、近い未来＝곧、と時点を先に分けます。',
+  en:'First classify the time: earlier-than-expected completion = 벌써, continuing or incomplete = 아직, immediate past = 방금, near future = 곧.',
+  zh:'先判断时间：比预想早完成＝벌써，持续或未完成＝아직，刚刚过去＝방금，不久的将来＝곧。'
+});
+const reviewedTimeItem=(id,term,key,example,evidence)=>{
+  const target=TIME_WORDS[key];
+  return Object.freeze({
+    id,level:1,type:'word',difficulty:'easy',term,meaning:target.meaning,example,answerIndex:TIME_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(TIME_ORDER.map(choiceKey=>Object.freeze({
+      meaning:TIME_WORDS[choiceKey].meaning,
+      explanationI18n:TIME_WORDS[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]} )]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】벌써·아직·방금·곧은 각각 이른 완료·지속/미완료·바로 전·가까운 미래로 시간 기준이 다릅니다.\n【재사용 풀이】${TIME_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】벌써・아직・방금・곧 はそれぞれ、早い完了・継続/未完了・直前・近い未来を表し、時間の基準が異なります。\n【再利用できる解き方】${TIME_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 벌써, 아직, 방금, and 곧 mark earlier completion, continuation/incompletion, the immediate past, and the near future respectively.\n[Reusable method] ${TIME_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】벌써、아직、방금、곧分别表示提前完成、持续/未完成、刚刚过去和不久的将来，时间基准不同。\n【通用解法】${TIME_METHOD.zh}`
+    })
+  });
+};
+
 const TOPIK_I=[
   item(1,'word','가게','상점','店','store; shop','商店','집 앞 가게에서 우유를 샀어요.'),
   item(1,'word','약속','만나기로 정한 일','約束','promise; appointment','约定','친구와 세 시에 만날 약속이 있어요.'),
@@ -64,6 +127,30 @@ const TOPIK_I=[
   item(1,'word','미끄럽다','표면이 매끈해서 쉽게 넘어질 수 있다','滑りやすい','be slippery','滑','비가 와서 길이 미끄러워요.'),
   item(1,'word','포장하다','물건을 싸거나 음식을 가져갈 수 있게 담다','包む；持ち帰り用にする','wrap; pack to go','包装；打包','남은 음식은 포장해 주세요.'),
   item(1,'word','직접','다른 사람을 통하지 않고 스스로','直接；自分で','directly; in person','亲自；直接','신청서를 직접 제출했습니다.'),
+  reviewedTimeItem('S04-I-W-TIME-01','벌써','already','숙제를 벌써 다 했어요.',{
+    ko:'“숙제를 벌써 다 했어요”는 예상보다 이르게 숙제가 이미 끝났다는 뜻입니다.',
+    ja:'「숙제를 벌써 다 했어요」は「宿題をもう全部終えました」という、予想より早い完了です。',
+    en:'“숙제를 벌써 다 했어요” says the homework is already finished, earlier than expected.',
+    zh:'“숙제를 벌써 다 했어요”表示作业已经完成，而且比预想更早。'
+  }),
+  reviewedTimeItem('S04-I-W-TIME-02','아직','still','가게가 아직 안 열렸어요.',{
+    ko:'“가게가 아직 안 열렸어요”는 지금까지도 가게가 열리지 않은 미완료 상태입니다.',
+    ja:'「가게가 아직 안 열렸어요」は「店はまだ開いていません」という未完了の状態です。',
+    en:'“가게가 아직 안 열렸어요” says the shop is still not open, an incomplete state.',
+    zh:'“가게가 아직 안 열렸어요”表示商店到现在还没开门，是未完成状态。'
+  }),
+  reviewedTimeItem('S04-I-W-TIME-03','방금','justNow','기차가 방금 출발했어요.',{
+    ko:'“기차가 방금 출발했어요”는 기차가 말하는 때의 바로 조금 전에 떠났다는 뜻입니다.',
+    ja:'「기차가 방금 출발했어요」は「列車はたった今出発しました」という直前の出来事です。',
+    en:'“기차가 방금 출발했어요” places the train’s departure in the immediate past: just now.',
+    zh:'“기차가 방금 출발했어요”表示火车就在说话前不久刚刚出发。'
+  }),
+  reviewedTimeItem('S04-I-W-TIME-04','곧','soon','수업이 곧 시작해요.',{
+    ko:'“수업이 곧 시작해요”는 수업이 아직 시작하지 않았지만 가까운 미래에 시작한다는 뜻입니다.',
+    ja:'「수업이 곧 시작해요」は「授業がもうすぐ始まります」という近い未来です。',
+    en:'“수업이 곧 시작해요” says the class has not started yet but will start soon.',
+    zh:'“수업이 곧 시작해요”表示课程还没开始，但马上就要开始。'
+  }),
 
   item(1,'grammar','-고 싶다','~하기를 원하다','～したい','want to','想……','한국 음식을 먹고 싶어요.'),
   item(1,'grammar','-아/어 주세요','정중하게 부탁함','～してください','please ...','请……','문을 닫아 주세요.'),

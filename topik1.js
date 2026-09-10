@@ -596,6 +596,7 @@ function shortsStats(examLevel=level()){
 function shortsOptions(index,examLevel=SH.activeLevel||level()){
   const lv=Number(examLevel)===1?1:2,deck=shortsDeck(lv),target=deck[Math.max(0,Number(index)||0)%deck.length];
   if(target.bankId){const p=SH.levels?.[lv]||{},order=p.orderId===target.bankId?BANK.cleanOrder(p.choiceOrder,4):[0,1,2,3];return{items:order.map(i=>({label:target.choices[i],sourceIndex:i})),correct:order.indexOf(target.answerIndex),target,level:lv}}
+  if(target.shortChoices){const p=SH.levels?.[lv]||{},order=p.orderId===target.id?BANK.cleanOrder(p.choiceOrder,4):[0,1,2,3];return{items:order.map(i=>({...target.shortChoices[i],sourceIndex:i})),correct:order.indexOf(target.answerIndex),target,level:lv}}
   const pool=deck.filter(x=>x!==target&&!x.bankId&&x.meaning&&x.type===target.type),start=((Number(index)||0)*5+lv)%pool.length;
   const items=Array.from({length:3},(_,i)=>pool[(start+i)%pool.length]),correct=((Number(index)||0)*3+lv)%4;
   items.splice(correct,0,target);return {items,correct,target,level:lv};
@@ -614,7 +615,7 @@ function randomShortsIndex(current,examLevel=SH.activeLevel||level()){
   let candidates=deck.map((_,i)=>i).filter(i=>i!==Number(current)&&!recent.has(i));if(!candidates.length)candidates=deck.map((_,i)=>i).filter(i=>i!==Number(current));
   const next=candidates[Math.floor(Math.random()*candidates.length)];p.recent=[...(p.recent||[]),next].slice(-Math.min(40,Math.max(1,deck.length-1)));return next
 }
-function prepareShortsCard(p,examLevel=SH.activeLevel){const deck=shortsDeck(examLevel);if(SHORTS_CYCLE)SHORTS_CYCLE.migrate(p,deck,examLevel);const item=deck[p.index];p.orderId=item?.bankId||null;p.choiceOrder=item?.bankId&&BANK?BANK.shuffledOrder(4):null}
+function prepareShortsCard(p,examLevel=SH.activeLevel){const deck=shortsDeck(examLevel);if(SHORTS_CYCLE)SHORTS_CYCLE.migrate(p,deck,examLevel);const item=deck[p.index];p.orderId=item?.bankId||item?.id||null;p.choiceOrder=(item?.bankId||item?.shortChoices)&&BANK?BANK.shuffledOrder(4):null}
 window.startShorts=()=>{SH.activeLevel=level();const p=shortState();p.index=randomShortsIndex(p.index,SH.activeLevel);p.selected=null;p.locked=false;prepareShortsCard(p);saveShorts();open('shorts')};
 window.pickShorts=i=>{const p=shortState();if(p.locked)return;const next=Number(i);if(p.selected===next)return checkShorts();p.selected=next;saveShorts();render()};
 window.checkShorts=()=>{
@@ -641,10 +642,10 @@ function renderShorts(sc){
     const label=item.bankId?x.label:(x.meaning[S.lang]||x.meaning.ko);return `<button class="${cls}" onclick="pickShorts(${i})" ${p.locked?'disabled':''}><i>${i+1}</i><span>${E(label)}</span></button>`;
   }).join('');
   const ok=p.locked&&p.selected===set.correct;
-  const bankItem=item.bankId&&BANK?.byId?BANK.byId(item.bankId):null,bankQuestion=bankItem&&BANK?.present?BANK.present(bankItem,set.items.map(x=>x.sourceIndex)):null,fastReview=!!bankItem?.coach?.shortsFastReview;
+  const bankItem=item.bankId&&BANK?.byId?BANK.byId(item.bankId):null,bankQuestion=bankItem&&BANK?.present?BANK.present(bankItem,set.items.map(x=>x.sourceIndex)):null,fastReview=!!(bankItem?.coach?.shortsFastReview||item.shortsFastReview);
   const explanationI18n=bankQuestion?.explanationI18n||(item.bankId&&BANK?.explain?BANK.explain(item.bankId,set.correct,set.items.map(x=>x.label)):item.explanationI18n);
   const detail=item.bankId?(explanationI18n?.[S.lang]||explanationI18n?.ko||T('정답과 문맥을 함께 확인하세요.','正解と文脈を一緒に確認しましょう。','Check the answer together with its context.','请结合语境核对答案。')):(explanationI18n?.[S.lang]||explanationI18n?.ko||`${T('예문','例文','Example','例句')}: ${item.example}`);
-  const selectedReview=bankQuestion?.choiceExplanationsI18n?.[S.lang]?.[p.selected]||bankQuestion?.choiceExplanationsI18n?.ko?.[p.selected]||'',feedbackSummary=fastReview?(ok?(bankItem.coach?.[S.lang]?.short||bankItem.coach?.ko?.short):selectedReview):detail;
+  const selectedReview=bankQuestion?.choiceExplanationsI18n?.[S.lang]?.[p.selected]||bankQuestion?.choiceExplanationsI18n?.ko?.[p.selected]||set.items[p.selected]?.explanationI18n?.[S.lang]||set.items[p.selected]?.explanationI18n?.ko||'',feedbackSummary=fastReview?(ok?(bankItem?.coach?.[S.lang]?.short||bankItem?.coach?.ko?.short||item.coach?.[S.lang]?.short||item.coach?.ko?.short):selectedReview):detail;
   const feedback=p.locked?`<div class="shortsFeedback ${ok?'good':'bad'}"><b>${ok?T('정답이에요!','正解です！','Correct!','回答正确！'):T('한 번 더 기억해요','もう一度覚えましょう','Remember this one','再记一次')}</b><p>${item.bankId?`${T('정답','正解','Answer','答案')}: `:''}${E(answer)}</p><small class="shortsFeedbackSummary">${E(feedbackSummary||detail)}</small></div>`:'';
   const fullReview=p.locked&&fastReview?`<details class="shortsExplanation"><summary>${T('전체 해설 보기','詳しい解説を見る','View full explanation','查看完整解析')}</summary><small>${E(detail)}</small></details>`:'';
   const instruction=item.bankId?T('짧은 TOPIK 어휘·문법 문제입니다. 가장 알맞은 답을 고르세요.','短いTOPIK語彙・文法問題です。最も適切な答えを選んでください。','Choose the best answer for this quick TOPIK vocabulary or grammar question.','这是一道TOPIK词汇语法快题，请选择最合适的答案。'):T('한국어 표현을 보고 내 언어의 가장 가까운 뜻을 고르세요.','韓国語の表現を見て、自分の言語で最も近い意味を選んでください。','Read the Korean expression and choose its closest equivalent in your language.','阅读韩语表达，选择你语言中最接近的对应意思。');

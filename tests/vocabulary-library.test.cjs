@@ -11,7 +11,7 @@ vm.runInContext(fs.readFileSync(path.join(root, 'data/shorts-levels.js'), 'utf8'
 
 test('TOPIK study library is complete, multilingual, and organized by level', () => {
   const decks = context.window.MALBIT_SHORTS_DECKS;
-  assert.equal(decks[1].length, 48);
+  assert.equal(decks[1].length, 52);
   assert.equal(decks[2].length, 54);
   assert.deepEqual([...new Set(decks[1].map(item => item.type))].sort(), ['expression', 'grammar', 'word']);
   assert.deepEqual([...new Set(decks[2].map(item => item.type))].sort(), ['grammar', 'idiom', 'word']);
@@ -19,7 +19,24 @@ test('TOPIK study library is complete, multilingual, and organized by level', ()
     assert.equal(new Set(decks[level].map(item => item.term)).size, decks[level].length, `TOPIK ${level} terms should be unique`);
     assert.ok(decks[level].every(item => item.term && item.example && ['ko', 'ja', 'en', 'zh'].every(lang => item.meaning[lang])));
     assert.ok(decks[level].every(item => ['ko', 'ja', 'en', 'zh'].every(lang => item.explanationI18n[lang])));
-    assert.ok(decks[level].every(item => /【意味】[\s\S]*【文脈】[\s\S]*【覚え方】/u.test(item.explanationI18n.ja)));
+    assert.ok(decks[level].every(item => /【意味】[\s\S]*【文脈】[\s\S]*【覚え方】/u.test(item.explanationI18n.ja)||/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u.test(item.explanationI18n.ja)));
+  }
+});
+
+test('S04 time-adverb Shorts have stable IDs and reviewed fixed feedback in every language', () => {
+  const rows=context.window.MALBIT_SHORTS_DECKS[1].filter(item=>item.id?.startsWith('S04-I-W-TIME-'));
+  assert.equal(rows.length,4);
+  assert.deepEqual(Array.from(rows,item=>item.term),['벌써','아직','방금','곧']);
+  for(const item of rows){
+    assert.equal(item.shortChoices.length,4);
+    assert.equal(item.shortChoices[item.answerIndex].meaning.ko,item.meaning.ko);
+    for(const lang of ['ko','ja','en','zh']){
+      assert.equal(new Set(item.shortChoices.map(choice=>choice.meaning[lang])).size,4,`${item.id} must have four distinct ${lang} choices`);
+      assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
+      assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
+    }
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
   }
 });
 

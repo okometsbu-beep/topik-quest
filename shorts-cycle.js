@@ -7,7 +7,7 @@ const unique=values=>[...new Set((values||[]).filter(Boolean))];
 
 function identity(item,level){
   const lv=Number(level)===1?1:2,type=normalize(item?.type||'item'),term=normalize(item?.term);
-  const id=item?.bankId||`SHORT-${lv}-${type}-${term}`;
+  const id=item?.bankId||item?.id||`SHORT-${lv}-${type}-${term}`;
   const family=item?.bankId
     ?`BANK-${lv}-${type}-${term}-${(item.choices||[]).map(normalize).sort().join('¦')}`
     :`CURATED-${lv}-${type}-${term}`;

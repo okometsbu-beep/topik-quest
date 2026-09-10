@@ -8,7 +8,7 @@ const root = path.resolve(__dirname, '..');
 const languages = ['ko', 'ja', 'en', 'zh'];
 const hash = value => crypto.createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const normalize = value => String(value || '').normalize('NFKC').replace(/\s+/g, ' ').trim();
-const curatedId = item => `SHORT-${item.level}-${hash([item.type, item.term]).slice(0, 16)}`;
+const curatedId = item => item.id || `SHORT-${item.level}-${hash([item.type, item.term]).slice(0, 16)}`;
 
 function inventory() {
   const sources = ['data/shorts-levels.js', ...[1, 2, 3, 4].map(n => `data/question-bank-v1-part${n}.js`),
@@ -65,7 +65,7 @@ function inventory() {
   }, {})).filter(ids => ids.length > 1);
   return {
     schemaVersion: 1,
-    note: 'Generated structural inventory, not a content approval ledger. IDs for curated rows are audit-only, not a storage migration. Manual verdicts belong in a separate ID + contentHash review record; never edit this generated file.',
+    note: 'Generated structural inventory, not a content approval ledger. Legacy curated IDs without an explicit item ID are audit-only. Manual verdicts belong in a separate ID + contentHash review record; never edit this generated file.',
     sourceHashes: Object.fromEntries(sources.map(file => [file, crypto.createHash('sha256').update(fs.readFileSync(path.join(root, file))).digest('hex')])),
     summary: { total: rows.length, byLevel: [1, 2].map(level => ({ level, total: rows.filter(x => x.level === level).length,
       curated: rows.filter(x => x.level === level && x.source === 'curated').length,
