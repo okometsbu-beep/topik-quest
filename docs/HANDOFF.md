@@ -3,26 +3,27 @@
 This is the short continuity record for future work. Use it with `AGENTS.md`; do not reconstruct
 these facts from conversation history or the large TOPIK source bundle.
 
-## Current release priority · 2026-09-10
+## Current release priority · 2026-09-11
 
 - Source of truth: [release blueprint #110](https://github.com/okometsbu-beep/topik-quest/issues/110).
   It supersedes #76 map expansion until core learning quality gates pass. A01–A12 remain audit findings,
   not resolved items; existing feature/visual checks do not certify translation or teaching accuracy.
-- Production is v99 at `b578466cdacf2e4e6fb30e37bbfd7be2fbf4eea2` (PR #117).
-  Main Verify `34409205412` and Pages `34409204655` succeeded per #110. A07 first-action brief and collapsed
-  local metrics are shipped, not candidates. Product rollback is v98 `1df0f96a4c211c6fa4ed08d2a3cdfb042d292940`.
+- Production is v100 at `cd24451b5e0aba40e00f5ccc370f1a16b00d2317` (PR #119).
+  The reviewed meeting/home Shorts feedback and next-question route are shipped. Product rollback is
+  v99 `b578466cdacf2e4e6fb30e37bbfd7be2fbf4eea2`.
 - Latest #110 instruction: C01–C06 content quality, first applied as S01–S05 Shorts, outranks A08/#76.
   S01 adds `docs/qa/shorts-audit.md`, generated ID/content-hash inventory and `scripts/audit-shorts.cjs`.
   288 runtime rows have only 162 distinct question-choice sets (I 84, II 78), 30 duplicate groups and 15
   structural review candidates. Comprehensive content approvals remain 0/288, not 288 passed questions.
   Audit-only curated IDs must NOT replace saved numeric indices without the S03 migration contract.
-- S02 candidate v100 (PR #119) reviews the nine immutable meeting/home IDs. Selected `전에` feedback
-  identifies the `후에→전에` order reversal and `귀가→들름` action change; full ko/ja/en/zh coaching is
-  optional behind a collapsed detail after the next-question action. Returning bank cards no longer inherit
-  unrelated curated listen/save/translation UI. Node 89/89 and branch CI `34460473577` passed; direct Linux
-  Chrome evidence covers 320/375/390/430px light/dark, wrong answer, collapsed/expanded explanation and next.
-- Next: S03 stable selection/migration contract preventing the same ID and semantic family from recurring at
-  short intervals without rewriting saved numeric indices or the original bank. Then S04 reviewed expansion.
+- S03 candidate v101 (PR #120) migrates schema-2 numeric Shorts progress to stable card/family IDs without
+  replacing `topikQuestShortsV1`. It cycles 162 exact question-choice families before intentional repeats,
+  prioritizes newly added families, avoids the current/recent family, and labels exhausted-cycle items as review.
+  Original 288 rows, answers, mock placement and all learner roots remain unchanged. Node quick 83/83 and PR CI
+  `34494776380` passed; direct Linux Chrome evidence covers 320/375/390/430px light/dark, cycle exhaustion,
+  visible Japanese review disclosure and reload restoration. Merge/Pages/live SHA belongs in the #110 comment.
+- Next: S04 adds one small, fully reviewed batch in shortage types: one 5–15-second judgment, unique answer,
+  concise selected-trap feedback and clean ko/ja/en/zh translation together. Quantity alone is not progress.
   A new P0 or clear wrong answer takes precedence.
   At least 56 I / 62 II additional distinct sets are needed even before suitability review for the 140/level
   planning floor; this is not the final expansion target. Timing 5–15 seconds is unmeasured and never forced.

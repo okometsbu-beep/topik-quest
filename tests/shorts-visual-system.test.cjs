@@ -18,6 +18,7 @@ test('Shorts has one final visual owner built on semantic UI tokens',()=>{
   assert.match(visual,/--shorts-canvas:var\(--ui-canvas\)/);
   assert.match(visual,/html\[data-theme="light"\] body\.tq-shorts-active/);
   assert.match(visual,/\.shortsChoice\{[^}]*background:var\(--shorts-surface-raised\)/);
+  assert.match(visual,/\.shortsReviewBadge\{[^}]*var\(--shorts-good\)/,'cycle repeats need a visible review marker');
 });
 
 test('Shorts visual contract keeps readable copy and a fixed compatibility bridge',()=>{
@@ -33,6 +34,8 @@ test('Shorts visual contract keeps readable copy and a fixed compatibility bridg
   assert.match(visual,/\.shortsExplanation summary\{[^}]*min-height:var\(--ui-touch\)/);
   assert.match(visual,/\.shortsAction button\{[^}]*color:#fff/,'primary Next action must remain readable in both themes');
   assert.match(runtime,/choiceExplanationsI18n\?\.\[S\.lang\]\?\.\[p\.selected\]/);
+  assert.match(runtime,/SHORTS_CYCLE\.pick\(p,deck,lv\)/,'runtime must select Shorts with stable semantic-cycle state');
+  assert.match(runtime,/shortsReviewBadge/,'intentional repeats must be disclosed as review');
   assert.match(runtime,/\$\{feedback\}<div class="shortsAction">[\s\S]*\$\{fullReview\}<\/article>/u,'Next action should precede the optional full explanation');
   assert.match(growth,/document\.querySelector\('\.shortsWord\.bank'\)/,'bank questions must not propose an unrelated curated vocabulary card');
   assert.match(polish,/deck=\[\.\.\.\(window\.MALBIT_SHORTS_DECKS\?\.\[lv\][\s\S]*window\.MALBIT_BANK\?\.shorts/,'returning Shorts state must resolve against the combined deck');
