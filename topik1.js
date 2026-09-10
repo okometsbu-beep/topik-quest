@@ -1,7 +1,7 @@
 // MALBIT · TOPIK I practice engine v3 · full UI localization
 (function(){
 'use strict';
-const L=window.TOPIK1_LISTENING_DATA||[],R=window.TOPIK1_READING_DATA||[],A=[...L,...R],BANK=window.MALBIT_BANK||null;
+const L=window.TOPIK1_LISTENING_DATA||[],R=window.TOPIK1_READING_DATA||[],A=[...L,...R],BANK=window.MALBIT_BANK||null,SHORTS_CYCLE=window.MALBIT_SHORTS_CYCLE||null;
 if(!A.length){console.error('TOPIK I data missing');return}
 const LEVEL='topikQuestExamLevel',SESSION='topikQuestTopik1Session',SHORTS_KEY='topikQuestShortsV1',GAME1_KEY='topikQuestTopik1GameV1',HOME_PREFS_KEY='malbitProductPrefsV1',BEGINNER_KEY='malbitBeginnerV1',EXT=['mp3','m4a','aac','webm','ogg'];
 const SHORTS=[
@@ -566,17 +566,19 @@ renderTopik1Game=function(sc){
   sc.innerHTML=`<div class="tqGameNav"><button onclick="setView('home')">‹</button><h1>${T('게임모드','ゲームモード','Game Mode','游戏模式')}</h1><div class="tqGameNavActions"><span class="tqGameLevel">TOPIK ${lv===1?'I':'II'}</span>${modeLangButton('t1GameLang')}</div></div><section class="tqGameArena"><div class="tqGameScene"><div class="tqGameSceneBg" style="background-image:url('${stageBg(st)}')"></div><div class="tqGameSceneShade"></div>${gameHeroSvg()}<div class="tqGameSpeech">${game1Desc(st)}</div></div><div class="tqGameMission"><small>STAGE ${st} · ${clear?T('클리어','クリア','CLEARED','已通关'):T('말빛 원정','言葉の光遠征','WORDLIGHT EXPEDITION','语光远征')}</small><h2>${game1Title(st)}</h2><div class="tqGameProgressTop"><span>${T('최고 정답','ベスト正解','Best answers','最佳答对')}</span><b>${best}</b></div><div class="tqGameProgress"><i style="width:${progress}%"></i></div><button class="tqGameStart" onclick="${resume?'t1ResumeGame()':`t1StartGameStage(${st})`}">${startLabel} ›</button></div></section><div class="t1GameMetaRow"><b>${T('현재 원정 장비','現在の遠征装備','Current run gear','当前冒险装备')}</b><div class="t1RunCurrencies"><span><i class="malbitGoldCoin">●</i>${run?.gold||0}</span><span><i class="malbitWordlight">✦</i>${run?.essence||0}</span></div></div><div class="t1GameLoadout">${runSlots}</div><div class="t1RarityLegend">${rarityLegend}</div><div class="t1RunRule">☠ ${T('몬스터에게 쓰러지면 골드·말빛 재화·획득 장비가 모두 사라집니다. 상점은 상점 칸에 도착했을 때만 열립니다.','倒されるとゴールド・言葉の光・獲得装備をすべて失います。店はショップマスでのみ開きます。','Death wipes gold, Wordlight currency, and all run gear. Shops open only on shop spaces.','死亡会失去金币、语光货币和本次获得的全部装备；商店仅在商店格开启。')}</div><div class="tqGameWorldNav"><b>${T('스테이지 경로','ステージルート','Stage trail','关卡路线')} · ${Object.values(p.cleared).filter(x=>x?.clear).length}/${GAME1_STAGES.length}</b></div><div class="tqGameStageList">${stageButtons}</div><div class="tqGameTts"><i>●</i> ${T('독자 제작 문제와 몬스터 아트를 사용하는 비공식 TOPIK 대비 앱이며 시험 주관기관과 관련이 없습니다','独自制作の問題とモンスターアートを使う非公式TOPIK対策アプリで、試験主催機関とは関係ありません','An independent TOPIK prep app with original questions and monster art; not affiliated with the exam administrator','使用原创题目与怪物美术的非官方TOPIK备考应用，与考试主办机构无关')}</div>`;
 };
 gameMap=function(sc){S.view='t1game';try{save()}catch(e){};return renderTopik1Game(sc)};
-const blankShorts=()=>({index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null});
-let SH={schema:2,activeLevel:level(),levels:{1:blankShorts(),2:blankShorts()},daily:{}};
+const blankShorts=()=>({index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false});
+let SH={schema:3,activeLevel:level(),levels:{1:blankShorts(),2:blankShorts()},daily:{}};
 try{
   const saved=JSON.parse(localStorage.getItem(SHORTS_KEY)||'null');
-  if(saved?.schema===2&&saved.levels){SH={...SH,...saved,levels:{1:{...blankShorts(),...(saved.levels[1]||saved.levels['1'])},2:{...blankShorts(),...(saved.levels[2]||saved.levels['2'])}}}}
+  if(saved?.schema>=2&&saved.levels){SH={...SH,...saved,schema:3,levels:{1:{...blankShorts(),...(saved.levels[1]||saved.levels['1'])},2:{...blankShorts(),...(saved.levels[2]||saved.levels['2'])}}}}
   else if(saved){SH.daily=saved.daily||{};SH.levels[2]={...blankShorts(),index:saved.index,total:saved.total,score:saved.score,streak:saved.streak}}
 }catch(e){}
 SH.daily=SH.daily&&typeof SH.daily==='object'?SH.daily:{};
 function shortState(examLevel=SH.activeLevel||level()){
   const lv=Number(examLevel)===1?1:2,deck=shortsDeck(lv);SH.levels=SH.levels||{};SH.levels[lv]={...blankShorts(),...(SH.levels[lv]||SH.levels[String(lv)])};
-  const p=SH.levels[lv];p.index=Math.max(0,Number(p.index)||0)%Math.max(1,deck.length);return p
+  const p=SH.levels[lv];
+  if(SHORTS_CYCLE)SHORTS_CYCLE.migrate(p,deck,lv);else p.index=Math.max(0,Number(p.index)||0)%Math.max(1,deck.length);
+  return p
 }
 function saveShorts(){try{localStorage.setItem(SHORTS_KEY,JSON.stringify(SH))}catch(e){}}
 function dayKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
@@ -606,11 +608,13 @@ function syncStatsNav(){
 }
 syncStatsNav();
 function randomShortsIndex(current,examLevel=SH.activeLevel||level()){
-  const lv=Number(examLevel)===1?1:2,deck=shortsDeck(lv),p=SH.levels?.[lv]||{},recent=new Set((p.recent||[]).map(Number));if(deck.length<2)return 0;
+  const lv=Number(examLevel)===1?1:2,deck=shortsDeck(lv),p=SH.levels?.[lv]||{};
+  if(SHORTS_CYCLE)return SHORTS_CYCLE.pick(p,deck,lv);
+  const recent=new Set((p.recent||[]).map(Number));if(deck.length<2)return 0;
   let candidates=deck.map((_,i)=>i).filter(i=>i!==Number(current)&&!recent.has(i));if(!candidates.length)candidates=deck.map((_,i)=>i).filter(i=>i!==Number(current));
   const next=candidates[Math.floor(Math.random()*candidates.length)];p.recent=[...(p.recent||[]),next].slice(-Math.min(40,Math.max(1,deck.length-1)));return next
 }
-function prepareShortsCard(p,examLevel=SH.activeLevel){const item=shortsDeck(examLevel)[p.index];p.orderId=item?.bankId||null;p.choiceOrder=item?.bankId&&BANK?BANK.shuffledOrder(4):null}
+function prepareShortsCard(p,examLevel=SH.activeLevel){const deck=shortsDeck(examLevel);if(SHORTS_CYCLE)SHORTS_CYCLE.migrate(p,deck,examLevel);const item=deck[p.index];p.orderId=item?.bankId||null;p.choiceOrder=item?.bankId&&BANK?BANK.shuffledOrder(4):null}
 window.startShorts=()=>{SH.activeLevel=level();const p=shortState();p.index=randomShortsIndex(p.index,SH.activeLevel);p.selected=null;p.locked=false;prepareShortsCard(p);saveShorts();open('shorts')};
 window.pickShorts=i=>{const p=shortState();if(p.locked)return;const next=Number(i);if(p.selected===next)return checkShorts();p.selected=next;saveShorts();render()};
 window.checkShorts=()=>{
@@ -644,7 +648,8 @@ function renderShorts(sc){
   const feedback=p.locked?`<div class="shortsFeedback ${ok?'good':'bad'}"><b>${ok?T('정답이에요!','正解です！','Correct!','回答正确！'):T('한 번 더 기억해요','もう一度覚えましょう','Remember this one','再记一次')}</b><p>${item.bankId?`${T('정답','正解','Answer','答案')}: `:''}${E(answer)}</p><small class="shortsFeedbackSummary">${E(feedbackSummary||detail)}</small></div>`:'';
   const fullReview=p.locked&&fastReview?`<details class="shortsExplanation"><summary>${T('전체 해설 보기','詳しい解説を見る','View full explanation','查看完整解析')}</summary><small>${E(detail)}</small></details>`:'';
   const instruction=item.bankId?T('짧은 TOPIK 어휘·문법 문제입니다. 가장 알맞은 답을 고르세요.','短いTOPIK語彙・文法問題です。最も適切な答えを選んでください。','Choose the best answer for this quick TOPIK vocabulary or grammar question.','这是一道TOPIK词汇语法快题，请选择最合适的答案。'):T('한국어 표현을 보고 내 언어의 가장 가까운 뜻을 고르세요.','韓国語の表現を見て、自分の言語で最も近い意味を選んでください。','Read the Korean expression and choose its closest equivalent in your language.','阅读韩语表达，选择你语言中最接近的对应意思。');
-  sc.innerHTML=`<div class="shortsTop"><button onclick="setView('home')">‹</button><b>${T('숏츠 모드','ショーツモード','Shorts Mode','短题模式')}</b><div class="shortsTopActions"><span>🔥 ${Number(p.streak)||0}</span>${modeLangButton('shortsLang')}</div></div><div class="shortsProgress"><i style="width:${Math.max(8,(stats.total%10+1)*10)}%"></i></div><article class="shortsCard"><span class="shortsType">${shortType(item.type)}</span><span class="shortsLevel">TOPIK ${lv===1?'I':'II'} · ${item.difficulty||''}</span><div class="shortsWord ${item.bankId?'bank':''}">${E(item.term)}</div><div class="shortsInstruction">${instruction}</div><div class="shortsChoices">${choices}</div>${feedback}<div class="shortsAction">${p.locked?`<button onclick="nextShorts()">${T('다음 문제','次の問題','Next question','下一题')} ›</button><div class="shortsSwipe">${T('좌우로 스와이프하여 다음 문제로','左右にスワイプして次の問題へ','Swipe left or right for the next question','左右滑动进入下一题')}</div>`:`<div class="doubleTapHint">${T('한 번 탭해 선택 · 같은 답을 다시 탭하면 즉시 제출','1回タップで選択・同じ答えをもう一度タップすると提出','Tap once to select · tap the same answer again to submit','点一次选择 · 再点同一答案立即提交')}</div><button class="shortsSkip" onclick="skipShorts()">↻ ${T('다른 문제 랜덤 출력','別の問題をランダム表示','Show another random question','随机换一道题')}</button>`}</div>${fullReview}</article>`;
+  const reviewBadge=p.isReview?`<span class="shortsReviewBadge">↻ ${T('간격 복습','間隔復習','Spaced review','间隔复习')}</span>`:'';
+  sc.innerHTML=`<div class="shortsTop"><button onclick="setView('home')">‹</button><b>${T('숏츠 모드','ショーツモード','Shorts Mode','短题模式')}</b><div class="shortsTopActions"><span>🔥 ${Number(p.streak)||0}</span>${modeLangButton('shortsLang')}</div></div><div class="shortsProgress"><i style="width:${Math.max(8,(stats.total%10+1)*10)}%"></i></div><article class="shortsCard"><span class="shortsType">${shortType(item.type)}</span><span class="shortsLevel">TOPIK ${lv===1?'I':'II'} · ${item.difficulty||''}</span>${reviewBadge}<div class="shortsWord ${item.bankId?'bank':''}">${E(item.term)}</div><div class="shortsInstruction">${instruction}</div><div class="shortsChoices">${choices}</div>${feedback}<div class="shortsAction">${p.locked?`<button onclick="nextShorts()">${T('다음 문제','次の問題','Next question','下一题')} ›</button><div class="shortsSwipe">${T('좌우로 스와이프하여 다음 문제로','左右にスワイプして次の問題へ','Swipe left or right for the next question','左右滑动进入下一题')}</div>`:`<div class="doubleTapHint">${T('한 번 탭해 선택 · 같은 답을 다시 탭하면 즉시 제출','1回タップで選択・同じ答をもう一度タップすると提出','Tap once to select · tap the same answer again to submit','点一次选择 · 再点同一答案立即提交')}</div><button class="shortsSkip" onclick="skipShorts()">↻ ${T('다른 문제 랜덤 출력','別の問題をランダム表示','Show another random question','随机换一道题')}</button>`}</div>${fullReview}</article>`;
   setTimeout(bindShortsSwipe,0);
 }
 function statsPage(sc){

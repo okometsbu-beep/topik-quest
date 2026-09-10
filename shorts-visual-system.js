@@ -20,9 +20,10 @@ body.tq-shorts-active .shortsTopActions .t1ModeLang{font-size:19px}
 body.tq-shorts-active .shortsProgress{height:7px;margin:0 0 var(--ui-space-3);border-radius:99px;background:var(--shorts-surface-soft)}
 body.tq-shorts-active .shortsProgress i{background:linear-gradient(90deg,#e45c49,#f39a3d);box-shadow:none}
 body.tq-shorts-active .shortsCard{width:100%;max-width:100%;border:1px solid var(--shorts-border);border-radius:var(--ui-radius-card);background:var(--shorts-surface);color:var(--shorts-ink);padding:var(--ui-space-4);box-shadow:0 12px 28px var(--shorts-shadow-strong)}
-body.tq-shorts-active .shortsType,body.tq-shorts-active .shortsLevel{display:inline-flex;align-items:center;min-height:28px;border-radius:999px;padding:5px 9px;font-size:10px;line-height:1.2}
+body.tq-shorts-active .shortsType,body.tq-shorts-active .shortsLevel,body.tq-shorts-active .shortsReviewBadge{display:inline-flex;align-items:center;min-height:28px;border-radius:999px;padding:5px 9px;font-size:10px;line-height:1.2}
 body.tq-shorts-active .shortsType{border-color:color-mix(in srgb,var(--shorts-accent) 44%,var(--shorts-border));background:var(--shorts-accent-soft);color:var(--shorts-accent)}
 body.tq-shorts-active .shortsLevel{border-color:color-mix(in srgb,var(--shorts-accent-blue) 42%,var(--shorts-border));background:var(--shorts-selected-soft);color:var(--shorts-accent-blue)}
+body.tq-shorts-active .shortsReviewBadge{border:1px solid color-mix(in srgb,var(--shorts-good) 42%,var(--shorts-border));background:color-mix(in srgb,var(--shorts-good) 12%,var(--shorts-surface));color:var(--shorts-good);font-weight:800}
 body.tq-shorts-active .shortsWord{max-width:100%;margin:var(--ui-space-4) 0 var(--ui-space-2);overflow-wrap:anywhere;color:var(--shorts-ink);font-size:32px;line-height:1.28;letter-spacing:-.04em}
 body.tq-shorts-active .shortsWord.bank{font-size:20px;line-height:1.55;letter-spacing:-.025em}
 body.tq-shorts-active .shortsInstruction{margin:0 0 var(--ui-space-4);color:var(--shorts-muted);font-size:11px;line-height:1.6}

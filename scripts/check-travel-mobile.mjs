@@ -230,6 +230,14 @@ try{
     for(let wait=0;wait<50;wait++){if(await evaluate(`!!document.querySelector('.shortsCard')`))return;await sleep(50)}
     throw new Error('Stored Shorts card did not render');
   };
+  const openExhaustedShortsCycle=async(examLevel=1)=>{
+    const lv=Number(examLevel)===1?1:2;
+    const seeded=await evaluate(`(()=>{const lv=${lv},deck=[...window.MALBIT_SHORTS_DECKS[lv],...window.MALBIT_BANK.shorts(lv)],identities=deck.map(item=>window.MALBIT_SHORTS_CYCLE.identity(item,lv)),families=[...new Set(identities.map(item=>item.family))],index=deck.findIndex(item=>item.bankId==='M01-I-R-44'),current=identities[index],blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:deck[index].bankId,cardId:current.id,familyId:current.family,recentIds:[current.id],recentFamilies:[current.family],cycleFamilies:families};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel',String(lv));localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:lv,levels:{1:lv===1?active:blank,2:lv===2?active:blank},daily:{}}));return{familyCount:families.length,currentFamily:current.family,currentId:current.id}})()`);
+    assert.ok(seeded.familyCount>1,'S03 mobile proof needs more than one semantic family');
+    await send('Page.reload',{ignoreCache:true});await ready();
+    for(let wait=0;wait<50;wait++){if(await evaluate(`!!document.querySelector('.shortsCard')`))return seeded;await sleep(50)}
+    throw new Error('Exhausted Shorts cycle did not render');
+  };
   const submitShortsLabel=async label=>{
     const choiceIndex=await evaluate(`[...document.querySelectorAll('.shortsChoice span')].findIndex(node=>node.textContent.trim()===${JSON.stringify(label)})`);
     assert.ok(choiceIndex>=0,`Shorts answer missing: ${label}`);
@@ -791,6 +799,26 @@ try{
   assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【ひっかけ分析】[\s\S]*【タイプ別の解き方】/u,'expanded Japanese review must keep all three teaching stages');
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`meeting/home expanded Shorts dark ${width}px`,'dark')}
   await setViewport(390,844);await shot('00bb-shorts-meeting-full-dark.png');
+
+  const exhausted=await openExhaustedShortsCycle(1);
+  await evaluate(`nextShorts()`);await sleep(180);
+  const cycled=await evaluate(`(()=>{const saved=JSON.parse(localStorage.getItem('topikQuestShortsV1')),state=saved.levels['1']||saved.levels[1];return{schema:saved.schema,cycle:state.cycle,isReview:state.isReview,cardId:state.cardId,familyId:state.familyId,term:document.querySelector('.shortsWord')?.textContent.trim(),badge:document.querySelector('.shortsReviewBadge')?.textContent.trim()}})()`);
+  assert.equal(cycled.schema,3,'Shorts cycle must persist schema 3');
+  assert.equal(cycled.cycle,1,'exhaustion must start the first review cycle');
+  assert.equal(cycled.isReview,true,'intentional repeat must persist as review');
+  assert.notEqual(cycled.familyId,exhausted.currentFamily,'cycle wrap must not immediately repeat the current semantic family');
+  assert.match(cycled.badge,/間隔復習/u,'Japanese review marker must be visible');
+  await evaluate(`malbitSetTheme('light')`);await sleep(100);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`cycled Shorts light ${width}px`,'light')}
+  await setViewport(390,844);await shot('00bc-shorts-spaced-review-light.png');
+  await evaluate(`malbitSetTheme('dark')`);await sleep(100);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`cycled Shorts dark ${width}px`,'dark')}
+  await setViewport(390,844);await shot('00bd-shorts-spaced-review-dark.png');
+  await send('Page.reload',{ignoreCache:true});await ready();await sleep(120);
+  const restored=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['1'];return{cardId:state.cardId,term:document.querySelector('.shortsWord')?.textContent.trim(),badge:document.querySelector('.shortsReviewBadge')?.textContent.trim()}})()`);
+  assert.equal(restored.cardId,cycled.cardId,'reload must restore the same stable Shorts card');
+  assert.equal(restored.term,cycled.term,'reload must not drift to the old numeric index');
+  assert.match(restored.badge,/間隔復習/u,'reload must preserve the review disclosure');
 
   await evaluate(`S.view='home';save();render()`);await sleep(1000);await shot('01-game-entry.png');
   await startFresh(true);

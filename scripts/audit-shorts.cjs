@@ -12,7 +12,7 @@ const curatedId = item => `SHORT-${item.level}-${hash([item.type, item.term]).sl
 
 function inventory() {
   const sources = ['data/shorts-levels.js', ...[1, 2, 3, 4].map(n => `data/question-bank-v1-part${n}.js`),
-    'data/question-bank-practice-v1.js', 'data/explanations-i18n.js', 'question-bank-engine.js', 'topik1.js'];
+    'data/question-bank-practice-v1.js', 'data/explanations-i18n.js', 'question-bank-engine.js', 'shorts-cycle.js', 'topik1.js'];
   const context = { window: {}, console, localStorage: { getItem: () => null, setItem: () => {} } };
   vm.createContext(context);
   for (const file of sources.slice(0, -1)) vm.runInContext(fs.readFileSync(path.join(root, file), 'utf8'), context);
