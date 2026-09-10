@@ -846,7 +846,7 @@ try{
   await evaluate(`malbitSetTheme('dark')`);await sleep(100);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`cycled Shorts dark ${width}px`,'dark')}
   await setViewport(390,844);await shot('00bd-shorts-spaced-review-dark.png');
-  await send('Page.reload',{ignoreCache:true});await ready();await sleep(120);
+  await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsWord');
   const restored=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['1'];return{cardId:state.cardId,term:document.querySelector('.shortsWord')?.textContent.trim(),badge:document.querySelector('.shortsReviewBadge')?.textContent.trim()}})()`);
   assert.equal(restored.cardId,cycled.cardId,'reload must restore the same stable Shorts card');
   assert.equal(restored.term,cycled.term,'reload must not drift to the old numeric index');
