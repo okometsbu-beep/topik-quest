@@ -25,6 +25,9 @@ these facts from conversation history or the large TOPIK source bundle.
 - S04 candidate v102 adds four TOPIK I time-adverb cards with explicit stable IDs, fixed reviewed choice sets,
   concise selected-choice feedback and optional evidence→traps→method coaching in ko/ja/en/zh. Inventory and
   automated/AI review details are in `docs/qa/shorts-review-s04-time.md`; human review and learner timing stay open.
+  Local Node v24 and branch CI `34532452034` pass 97/97; that CI also covers Linux Chrome emulation at
+  320/375/390/430px in both themes, concise wrong-answer recovery, expanded coaching and reload restoration.
+  Bundled ko/ja/en/zh examples render without network translation. Physical devices remain unverified.
 - Next: add one similarly bounded TOPIK II shortage batch. Quantity alone is not progress, and a new P0 or clear
   wrong answer takes precedence. At least 52 I / 62 II additional distinct sets remain even before suitability review for the 140/level
   planning floor; this is not the final expansion target. Timing 5–15 seconds is unmeasured and never forced.

@@ -40,3 +40,9 @@ The fixed reviewed choices are shuffled per card and restored from the existing 
 Inventory becomes 292 rows / 166 exact question-choice families (TOPIK I 88, TOPIK II 78). These totals are
 not content approvals: the generated inventory deliberately remains `approved: 0`, and only the four IDs above
 have this bounded AI review record.
+
+Automated evidence: local Node v24 and branch CI
+[`34532452034`](https://github.com/okometsbu-beep/topik-quest/actions/runs/34532452034) passed 97/97.
+The CI browser gate used Linux Chrome emulation at 320/375/390/430px in light and dark themes; it verified
+the shuffled reviewed choices, choice-specific Japanese recovery, immediate bundled Japanese example,
+collapsed/expanded coaching, next-card priority and graded-state reload restoration. It is not physical-device evidence.
