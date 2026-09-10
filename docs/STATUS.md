@@ -6,7 +6,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 - Production: GitHub Pages static PWA
 - Production release: v99 · A07 first Travel action before secondary local metrics (`b578466cdacf2e4e6fb30e37bbfd7be2fbf4eea2`)
-- Current candidate: S01 Shorts inventory/audit tooling only; runtime remains v99
+- Current candidate: v100 · S02 reviewed meeting/home Shorts feedback and next-question route (PR #119)
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -150,29 +150,25 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-S02 최소 파일럿: 회의 종료/귀가 동의문 9-ID 중복군의 선택 오답 `전에` 대 정답 `후에` 근거와
-짧은 해설→다음 문제 동선을 검수한다. 원본 은행/기록 보존. 이어 S03 ID/유사군 반복 방지,
-S04 검수된 부족 유형 확충. 새 P0/명백한 정답 오류가 있으면 앞당긴다.
+S03: 저장된 숫자 인덱스와 원본 은행을 보존하면서 동일 ID 및 같은 의미 문항군이 짧은 간격으로
+다시 나오지 않게 선택 계약과 마이그레이션을 설계·검증한다. 이어 S04 검수된 부족 유형 확충.
+새 P0/명백한 정답 오류가 있으면 앞당긴다.
 
-## 이번 작업 · S01 숏츠 재고·적합성 검수대장
+## 이번 작업 · S02 회의 종료/귀가 숏츠 9-ID 검수
 
-- 기준 v99 `b578466cdacf2e4e6fb30e37bbfd7be2fbf4eea2`. `docs/qa/shorts-audit.md`와
-  생성형 ID별 재고 `docs/qa/shorts-inventory.json`, 감사 스크립트/회귀 검사를 추가한다.
-- 실제 selector 기준 288행, 같은 질문+보기 묶음 162종, 중복군 30개/중복분 126행.
-  길이·표기 검토 후보 15행. 동일 묶음 내 정답 라벨 충돌은 0이나 정답의 의미적 유일성 검수는 아니다.
-- 종합 내용 통과 0/288; 정답·해설·각 언어 번역·판단 단계·실제 풀이시간은 별도 미검수/미측정.
-  레벨별 140종 계획 단위에도 현재 텍스트 재고로는 최소 I 56종/II 62종이 부족하며 실제 부족분은 검수 후 확정한다.
-- 원격 Chrome 1363×936 라이트: Home→숏츠→일본어→회의 문항 오답 두 번 탭→채점→다음 `빌리다` 확인.
-  선택 오답별 근거 부족과 문맥 밖 `교환하다` 저장 제안은 후속 검수 후보로 기록. 합성 QA이지 실사용 통계가 아니다.
-- 로컬 Node v24: 감사 2/2, 콘텐츠 7/7, 전체 89/89 및 런타임/원본 은행 해시 검사 통과.
-  초기 감사 테스트의 VM 배열 비교 실패는 직렬화 계약 비교로 수정 후 통과했다.
-  브랜치 CI `34432220146` 전체/모바일 회귀 통과, 390px 숏츠 라이트·다크/채점 캡처 4개 직접 확인.
-  P01-II-R-06 별표 노출과 채점 후 첫 화면 밖으로 밀리는 다음 동선은 기존 S02 개선 대상으로 기록했다.
-  네 폭 containment 검사와 모든 폭·모든 문항 화면/교육 품질 검수는 다르다. 최종 CI/Pages 결과는 #110 댓글 참조.
-- 제품 런타임·원본 은행·모든 학습 기록·테마는 변경하지 않는다. 버전 올림 없음.
-- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (v99 유지). 이번 감사 변경의 되돌리기 기준은
-  `b578466cdacf2e4e6fb30e37bbfd7be2fbf4eea2`; 기존 제품 v99 되돌리기는 v98 `1df0f96a4c211c6fa4ed08d2a3cdfb042d292940`.
-- 실제 iPhone/Android·오프라인/복구·음성·실제 초보자의 시간/회상 및 전수 내용 검수는 미검증이다.
+- 기준 production v99 `b578466cdacf2e4e6fb30e37bbfd7be2fbf4eea2`, candidate v100. 같은 회의 종료 후
+  귀가 문항을 가진 9개 불변 ID에서 정답·원문·보기·모의 위치는 보존하고 해설만 검수했다.
+- 선택한 `회의 전에 집에 들렀습니다`가 `후에→전에`로 시간 순서를 뒤집고 `귀가→들름`으로 행동도
+  바꾼다는 근거를 즉시 표시한다. 정답 근거→세 오답의 개별 함정→주체·행동·시간 순서 비교법을
+  ko/ja/en/zh에 넣었으며 일본어의 `後／前`, `帰る／立ち寄る` 의미를 함께 확인했다.
+- 채점 뒤에는 선택 오답의 짧은 해설과 `다음 문제`를 먼저 보여 주고 전체 해설은 접었다.
+  은행 문항에 무관한 큐레이션 단어 제안·듣기/저장/예문 번역이 섞이던 재방문 상태도 함께 차단했다.
+- 로컬 Node v24 전체 89/89, quick 78/78, 콘텐츠 7/7 통과. 브랜치 CI `34460473577` 통과.
+  Linux Chrome에서 320/375/390/430px 라이트·다크, 선택 오답, 접힘/펼침, 다음 동선 캡처를 직접 확인했다.
+- 원본 2,144문항·9개 ID/정답·고정 모의·모든 학습 기록·테마를 보존한다. 배포 전 후보이며 PR #119와
+  최종 Pages 결과는 #110 댓글에 기록한다. 되돌리기 기준은 production v99 `b578466cdacf2e4e6fb30e37bbfd7be2fbf4eea2`.
+- 실제 iPhone/Android·동의한 일본어 모어 검수자·초보자의 5–15초 풀이시간·1일/7일 회상,
+  다른 279행의 정답/해설/번역과 S03 반복 방지는 미검증이다.
 
 ## 알려진 위험
 

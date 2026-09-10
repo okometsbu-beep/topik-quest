@@ -157,6 +157,24 @@ assert.match(entranceDistractors.find((entry) => entry.choice === '가격 안내
 assert.match(entranceDistractors.find((entry) => entry.choice === '예약 안내').ja, /予約方法/u);
 assert.match(entranceDistractors.find((entry) => entry.choice === '분실물 안내').ja, /紛失物/u);
 
+const meetingHomeIds = ['M01-I-R-44','M02-I-R-43','M04-I-R-45','M05-I-R-44','M06-I-R-43','M08-I-R-45','M09-I-R-44','M10-I-R-43','M12-I-R-45'];
+for (const id of meetingHomeIds) {
+  const sourceItem = bank.byId(id);
+  assert.equal(sourceItem.coach?.shortsFastReview, true, `${id} should use the reviewed fast Shorts feedback`);
+  const question = bank.present(id, [2, 0, 3, 1]);
+  assert.equal(question.choices[question.answerIndex], '회의를 마치고 곧 집으로 갔습니다.', `${id} should preserve the reviewed answer`);
+  for (const language of ['ko', 'ja']) {
+    assert.match(question.explanationI18n[language], /끝난 후에/u, `${id} ${language} should cite the after-meeting evidence`);
+    assert.match(question.explanationI18n[language], /마치고 곧/u, `${id} ${language} should connect the paraphrase`);
+    assert.match(question.explanationI18n[language], language === 'ko' ? /회의 종료/u : /会議終了/u, `${id} ${language} should teach the event-order method`);
+  }
+  const beforeIndex = question.choices.indexOf('회의 전에 집에 들렀습니다.');
+  assert.ok(beforeIndex >= 0, `${id} should preserve the before-meeting distractor`);
+  assert.match(question.choiceExplanationsI18n.ko[beforeIndex], /시간 순서가 반대/u, `${id} should explain 후에 versus 전에`);
+  assert.match(question.choiceExplanationsI18n.ja[beforeIndex], /時間順序が逆/u, `${id} Japanese feedback should explain the reversal`);
+  assert.match(sourceItem.coach.ja.short, /会議後すぐ帰宅/u, `${id} should have a concise Japanese answer rationale`);
+}
+
 for (const item of bank.items.filter((entry) => entry.section === 'writing')) {
   const question = bank.present(item);
   for (const lang of ['ko', 'ja', 'en', 'zh']) assert.ok(question.explanationI18n[lang], `${item.id} should have a ${lang} writing guide`);

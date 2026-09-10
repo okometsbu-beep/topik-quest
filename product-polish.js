@@ -184,7 +184,7 @@ function renderPolishedStats(sc){
 window.malbitStartRecommendation=skill=>{if(['word','vocab','grammar','idiom','expression'].includes(skill))return window.startShorts?.();prefs.randomMix=skill==='writing'?'writing':'lr';writeJSON(PREFS_KEY,prefs);if(skill==='writing'){localStorage.setItem('topikQuestExamLevel','2');return startRandomPractice(2)}return window.tqStartMode?.('random')};
 
 function currentShort(){
-  const sh=readJSON(SHORTS_KEY,{}),lv=Number(sh.activeLevel)||level(),p=sh.levels?.[lv]||sh.levels?.[String(lv)]||{},deck=window.MALBIT_SHORTS_DECKS?.[lv]||[];
+  const sh=readJSON(SHORTS_KEY,{}),lv=Number(sh.activeLevel)||level(),p=sh.levels?.[lv]||sh.levels?.[String(lv)]||{},deck=[...(window.MALBIT_SHORTS_DECKS?.[lv]||[]),...(window.MALBIT_BANK?.shorts?.(lv)||[])];
   const bankItem=p.orderId?window.MALBIT_BANK?.shorts(lv).find(item=>item.bankId===p.orderId):null;
   return{lv,p,item:bankItem||deck[(Number(p.index)||0)%Math.max(1,deck.length)]};
 }

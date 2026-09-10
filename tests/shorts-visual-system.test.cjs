@@ -21,7 +21,7 @@ test('Shorts has one final visual owner built on semantic UI tokens',()=>{
 });
 
 test('Shorts visual contract keeps readable copy and a fixed compatibility bridge',()=>{
-  const visual=read('shorts-visual-system.js');
+  const visual=read('shorts-visual-system.js'),runtime=read('topik1.js'),growth=read('product-growth.js'),polish=read('product-polish.js');
   const sizes=[...visual.matchAll(/font-size:(\d+)px/g)].map(match=>Number(match[1]));
   assert.ok(sizes.length>0);
   assert.ok(sizes.every(size=>size>=10),`Shorts visual system contains sub-10px text: ${sizes.filter(size=>size<10)}`);
@@ -30,4 +30,10 @@ test('Shorts visual contract keeps readable copy and a fixed compatibility bridg
   assert.match(visual,/\.malbitShortTools button\{[^}]*min-height:var\(--ui-touch\)/);
   assert.match(visual,/\.malbitShortProposal>button\{[^}]*min-height:var\(--ui-touch\)/);
   assert.match(visual,/\.shortsFeedback small\{[^}]*white-space:pre-line/);
+  assert.match(visual,/\.shortsExplanation summary\{[^}]*min-height:var\(--ui-touch\)/);
+  assert.match(visual,/\.shortsAction button\{[^}]*color:#fff/,'primary Next action must remain readable in both themes');
+  assert.match(runtime,/choiceExplanationsI18n\?\.\[S\.lang\]\?\.\[p\.selected\]/);
+  assert.match(runtime,/\$\{feedback\}<div class="shortsAction">[\s\S]*\$\{fullReview\}<\/article>/u,'Next action should precede the optional full explanation');
+  assert.match(growth,/document\.querySelector\('\.shortsWord\.bank'\)/,'bank questions must not propose an unrelated curated vocabulary card');
+  assert.match(polish,/deck=\[\.\.\.\(window\.MALBIT_SHORTS_DECKS\?\.\[lv\][\s\S]*window\.MALBIT_BANK\?\.shorts/,'returning Shorts state must resolve against the combined deck');
 });
