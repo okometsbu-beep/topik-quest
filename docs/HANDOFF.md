@@ -16,9 +16,14 @@ these facts from conversation history or the large TOPIK source bundle.
   288 runtime rows have only 162 distinct question-choice sets (I 84, II 78), 30 duplicate groups and 15
   structural review candidates. Comprehensive content approvals remain 0/288, not 288 passed questions.
   Audit-only curated IDs must NOT replace saved numeric indices without the S03 migration contract.
-- Next: S02 bounded meeting/home duplicate-family pilot: selected `전에` versus correct `후에`, specific
-  explanation and short feedback/next route. Then S03 repeat prevention and S04 reviewed expansion.
-  A new P0 or clear wrong answer takes precedence. Runtime and learner records remain unchanged in S01.
+- S02 candidate v100 (PR #119) reviews the nine immutable meeting/home IDs. Selected `전에` feedback
+  identifies the `후에→전에` order reversal and `귀가→들름` action change; full ko/ja/en/zh coaching is
+  optional behind a collapsed detail after the next-question action. Returning bank cards no longer inherit
+  unrelated curated listen/save/translation UI. Node 89/89 and branch CI `34460473577` passed; direct Linux
+  Chrome evidence covers 320/375/390/430px light/dark, wrong answer, collapsed/expanded explanation and next.
+- Next: S03 stable selection/migration contract preventing the same ID and semantic family from recurring at
+  short intervals without rewriting saved numeric indices or the original bank. Then S04 reviewed expansion.
+  A new P0 or clear wrong answer takes precedence.
   At least 56 I / 62 II additional distinct sets are needed even before suitability review for the 140/level
   planning floor; this is not the final expansion target. Timing 5–15 seconds is unmeasured and never forced.
 - Follow start → understand → recall/speak/write → review → next learning for Japanese beginners, and

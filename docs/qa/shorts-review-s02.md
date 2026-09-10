@@ -38,9 +38,9 @@ All nine immutable generated IDs keep their original question, choices, answer, 
 | Explanation | AI-reviewed pass | Decisive evidence, all three choice-specific traps, and one reusable method in ko/ja/en/zh. |
 | Japanese meaning | AI-reviewed pass | Source, correct choice, selected trap, two unrelated traps, short feedback and full coaching reviewed together. |
 | Runtime/storage | automated pass | Original generated bank files, IDs, answer indices, fixed mocks, and learner roots are unchanged. |
-| Mobile/theme | pending until CI evidence review | CI covers 320/375/390/430px light/dark, collapsed/expanded states; not a physical device. |
+| Mobile/theme | automated/direct-review pass | Branch CI `34460473577`; 320/375/390/430px light/dark, selected wrong answer, collapsed/expanded coaching and next route directly reviewed in Linux Chrome captures. Not a physical device. |
 | Human/learner | unverified | No native Japanese reviewer, consenting beginner timing, day-1 recall, or physical iPhone/Android evidence. |
-| Overall family | in-review | Automated and AI content gates pass; mobile CI and external evidence remain open. |
+| Overall family | in-review | Automated, AI content and emulated-mobile gates pass; external language/learner and physical-device evidence remain open. |
 
 The graded card shows the selected-choice explanation first. `Next question` precedes a collapsed full explanation,
 so detailed coaching is optional rather than a delay. Bank questions do not show a vocabulary proposal sourced from
