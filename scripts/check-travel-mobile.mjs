@@ -775,15 +775,19 @@ try{
   const meetingShortsIndex=await evaluate(`window.MALBIT_SHORTS_DECKS[1].length+window.MALBIT_BANK.shorts(1).findIndex(item=>item.bankId==='M01-I-R-44')`);
   assert.ok(meetingShortsIndex>=await evaluate(`window.MALBIT_SHORTS_DECKS[1].length`),'reviewed meeting/home item must enter TOPIK I Shorts');
   await openStoredShorts(meetingShortsIndex,1);await submitShortsLabel('회의 전에 집에 들렀습니다.');await sleep(250);
-  const meetingReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,details:details?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),proposal:!!document.querySelector('.malbitShortProposal')}})()`);
+  const meetingReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,details:details?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),proposal:!!document.querySelector('.malbitShortProposal'),tools:!!document.querySelector('.malbitShortTools'),exampleTranslation:!!document.querySelector('.malbitExampleTranslation'),nextText:next?.innerText,nextColor:getComputedStyle(next).color}})()`);
   assert.match(meetingReview.summary,/전에[\s\S]*時間順序が逆/u,'selected Japanese feedback must explain the before/after reversal');
   assert.equal(meetingReview.closed,true,'full meeting explanation must start collapsed');
   assert.equal(meetingReview.nextBeforeDetails,true,'Next question must precede the optional full explanation');
   assert.equal(meetingReview.proposal,false,'bank question must not show an unrelated curated vocabulary proposal');
+  assert.equal(meetingReview.tools,false,'bank question must not inherit curated word tools from the same numeric index');
+  assert.equal(meetingReview.exampleTranslation,false,'bank question must not start an unrelated curated example translation');
+  assert.match(meetingReview.nextText,/次の問題/u,'Japanese Next label must remain visible');
+  assert.equal(meetingReview.nextColor,'rgb(255, 255, 255)','Next label must remain white in both themes');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`meeting/home Shorts light ${width}px`,'light')}
   await setViewport(390,844);await shot('00ba-shorts-meeting-wrong-light.png');
-  await evaluate(`malbitSetTheme('dark');document.querySelector('.shortsExplanation').open=true`);await sleep(100);
+  await evaluate(`malbitSetTheme('dark');const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);
   assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【ひっかけ分析】[\s\S]*【タイプ別の解き方】/u,'expanded Japanese review must keep all three teaching stages');
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`meeting/home expanded Shorts dark ${width}px`,'dark')}
   await setViewport(390,844);await shot('00bb-shorts-meeting-full-dark.png');

@@ -41,7 +41,7 @@ body.tq-shorts-active .shortsFeedback>b{font-size:13px;line-height:1.4}
 body.tq-shorts-active .shortsFeedback p{margin:6px 0 0;font-size:14px;line-height:1.55;overflow-wrap:anywhere}
 body.tq-shorts-active .shortsFeedback small{display:block;margin:8px 0 0;color:var(--shorts-ink);font-size:11px;line-height:1.72;white-space:pre-line;overflow-wrap:anywhere}
 body.tq-shorts-active .tqShortsScreen .doubleTapHint{margin-top:var(--ui-space-3);border-color:#b9c9dc;background:var(--shorts-surface-soft);color:var(--shorts-muted);font-size:10px;line-height:1.5}
-body.tq-shorts-active .shortsAction button{min-height:50px;margin-top:var(--ui-space-3);border-radius:var(--ui-radius-control);background:linear-gradient(135deg,#e95e4b,#ee9139);font-size:13px;box-shadow:0 8px 18px rgba(218,92,58,.2)}
+body.tq-shorts-active .shortsAction button{min-height:50px;margin-top:var(--ui-space-3);border-radius:var(--ui-radius-control);background:linear-gradient(135deg,#e95e4b,#ee9139);color:#fff;font-size:13px;box-shadow:0 8px 18px rgba(218,92,58,.2)}
 body.tq-shorts-active .shortsAction button.shortsSkip{border:1px solid var(--shorts-border);background:var(--shorts-surface-soft);color:var(--shorts-ink);box-shadow:none}
 body.tq-shorts-active .shortsSwipe{margin-top:var(--ui-space-2);color:var(--shorts-muted);font-size:10px;line-height:1.5}
 body.tq-shorts-active .shortsExplanation{margin-top:var(--ui-space-3);border:1px solid var(--shorts-border);border-radius:var(--ui-radius-control);background:var(--shorts-surface-soft);color:var(--shorts-ink);overflow:hidden}
