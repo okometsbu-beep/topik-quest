@@ -190,7 +190,7 @@ function currentShort(){
 }
 window.malbitSpeak=text=>{try{if(window.MALBIT_TTS){window.MALBIT_TTS.play(text);return}speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(text||''));u.lang='ko-KR';u.rate=.82;speechSynthesis.speak(u)}catch(e){toast(L('이 기기에서는 음성을 재생할 수 없어요.','この端末では音声を再生できません。','Voice playback is unavailable.','此设备无法播放语音。'))}};
 window.malbitSaveShort=term=>window.MALBIT_LEARNING?.addVocabTerm?.(term);
-async function translateShortExample(item,node){if(!item||!node||S.lang==='ko')return;node.textContent=L('예문 번역 중…','例文を翻訳中…','Translating example…','正在翻译例句…');const value=await translateCached(`short_example_${S.lang}_${item.term}`,item.example,'ko',S.lang);if(node.isConnected)node.textContent=value}
+async function translateShortExample(item,node){if(!item||!node||S.lang==='ko')return;const reviewed=item.exampleI18n?.[S.lang];if(reviewed){node.textContent=reviewed;return}node.textContent=L('예문 번역 중…','例文を翻訳中…','Translating example…','正在翻译例句…');const value=await translateCached(`short_example_${S.lang}_${item.term}`,item.example,'ko',S.lang);if(node.isConnected)node.textContent=value}
 function patchShorts(){
   const card=document.querySelector('.shortsCard');if(!card||card.dataset.productPolish==='1')return;card.dataset.productPolish='1';const {p,item}=currentShort();if(!item)return;
   if(!item.bankId){const word=card.querySelector('.shortsWord');word?.insertAdjacentHTML('afterend',`<div class="malbitShortTools"><button onclick='malbitSpeak(${JSON.stringify(item.term)})'>🔊 ${L('듣기','聞く','Listen','听发音')}</button><button onclick='malbitSaveShort(${JSON.stringify(item.term)})'>＋ ${L('단어장','単語帳','Save','收藏')}</button></div>`)}

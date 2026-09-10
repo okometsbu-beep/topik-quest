@@ -18,6 +18,13 @@ test('schema 2 numeric progress migrates to stable IDs without losing progress',
   assert.equal(state.index,2,'bank expansion must not move the learner to another saved card');
 });
 
+test('an explicit reviewed Shorts ID stays stable when display copy changes',()=>{
+  const before={id:'S04-I-W-TIME-01',term:'벌써',type:'word'};
+  const after={...before,term:'벌써 다 했어요.'};
+  assert.equal(cycle.identity(before,1).id,'S04-I-W-TIME-01');
+  assert.equal(cycle.identity(after,1).id,'S04-I-W-TIME-01');
+});
+
 test('exact duplicate rows consume one semantic family, not separate cycle slots',()=>{
   const deck=[item('A1','회의 전에 귀가'),item('A2','회의 전에 귀가'),item('B','예약 시간'),item('C','표 사기')];
   const state={index:0,cardId:'A1',familyId:cycle.identity(deck[0],1).family,recentIds:['A1'],recentFamilies:[cycle.identity(deck[0],1).family],cycleFamilies:[cycle.identity(deck[0],1).family]};

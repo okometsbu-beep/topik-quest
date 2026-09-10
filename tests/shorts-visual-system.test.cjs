@@ -34,6 +34,7 @@ test('Shorts visual contract keeps readable copy and a fixed compatibility bridg
   assert.match(visual,/\.shortsExplanation summary\{[^}]*min-height:var\(--ui-touch\)/);
   assert.match(visual,/\.shortsAction button\{[^}]*color:#fff/,'primary Next action must remain readable in both themes');
   assert.match(runtime,/choiceExplanationsI18n\?\.\[S\.lang\]\?\.\[p\.selected\]/);
+  assert.match(runtime,/set\.items\[p\.selected\]\?\.explanationI18n\?\.\[S\.lang\]/,'reviewed curated choices should explain the selected distractor');
   assert.match(runtime,/SHORTS_CYCLE\.pick\(p,deck,lv\)/,'runtime must select Shorts with stable semantic-cycle state');
   assert.match(runtime,/shortsReviewBadge/,'intentional repeats must be disclosed as review');
   assert.match(runtime,/\$\{feedback\}<div class="shortsAction">[\s\S]*\$\{fullReview\}<\/article>/u,'Next action should precede the optional full explanation');
