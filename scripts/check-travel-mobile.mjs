@@ -820,8 +820,13 @@ try{
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 time adverb expanded dark ${width}px`,'dark')}
   await setViewport(390,844);await shot('00bf-shorts-time-adverb-full-dark.png');
   await send('Page.reload',{ignoreCache:true});await ready();await sleep(120);
-  const timeRestored=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['1'];return{cardId:state.cardId,orderId:state.orderId,labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),locked:state.locked}})()`);
-  assert.deepEqual(timeRestored,{cardId:timeAdverb.id,orderId:timeAdverb.id,labels:timeBefore.labels,locked:true},'reviewed card, shuffle and graded state must survive reload');
+  const timeRestored=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['1'];return{cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder,locked:state.locked,summary:document.querySelector('.shortsFeedbackSummary')?.innerText,answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
+  assert.equal(timeRestored.cardId,timeAdverb.id,'reviewed card ID must survive reload');
+  assert.equal(timeRestored.orderId,timeAdverb.id,'reviewed choice-order ID must survive reload');
+  assert.deepEqual(timeRestored.choiceOrder,[2,0,3,1],'saved reviewed choice order must survive reload');
+  assert.equal(timeRestored.locked,true,'graded state must survive reload');
+  assert.match(timeRestored.summary,/아직[\s\S]*完了していない/u,'selected Japanese feedback must survive reload');
+  assert.match(timeRestored.answer,/もう（予想より早く）/u,'reviewed answer must survive reload');
 
   const exhausted=await openExhaustedShortsCycle(1);
   await evaluate(`nextShorts()`);await sleep(180);
