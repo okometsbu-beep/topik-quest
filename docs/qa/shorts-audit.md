@@ -39,7 +39,8 @@ Exact-text diversity is an upper bound on independently useful contexts, not 162
 - 15 rows trigger a length or literal-markdown inspection flag. Question >60 characters and any choice
   >40 characters are screening thresholds only; neither establishes unsuitability or 5–15-second timing.
 - Six terms contain `**`: `P01-I-R-25/26`, `P01-II-R-05/06/11/12`. Rendering uses escaped text;
-  their individual live cards have not been visually inspected. Do not call this a verified six-card UI fix.
+  their individual live cards have not been visually inspected. Branch CI later visually confirmed literal
+  stars on `P01-II-R-06`; the other five remain code-only candidates. No six-card UI fix is claimed.
 - Same-answer groups are candidates for semantic review, not proof of duplication. Synonyms, alternate valid
   answers, unrelated distractors, target difficulty and decision steps need content review.
 - Each row includes instruction prompt/shared instruction family, question/choice lengths, type, objective
@@ -85,6 +86,16 @@ Observed review candidates (no production fixes in S01):
 
 This exploration is desktop, NOT mobile emulation. Branch CI can provide four-width/two-theme regression
 screenshots; its sampled fixtures cannot certify all 288 cards. No offline/audio/physical-device claims.
+
+Branch Verify [34432220146](https://github.com/okometsbu-beep/topik-quest/actions/runs/34432220146)
+passed full 89/89 and the existing mobile suite (73 screenshots, app errors 0). On its Linux Chrome
+390px captures, directly reviewed `00fa-shorts-light.png`, `00f-shorts-visual-contract-unanswered.png`,
+`00a-shorts-idiom-coaching.png`, `00b-shorts-type-coaching.png` (artifact `10134939643`). The suite checks
+320/375/390/430px containment; this review is not physical-device or every-width screenshot inspection.
+Unanswered light/dark cards are readable. Graded cards extend below the first viewport, and `P01-II-R-06`
+shows literal `**` rather than the requested underline. These are existing S02 audit findings, not fixed
+by this tooling-only change. One curated screenshot says example translation is loading; recovery was not
+visually inspected, so no automatic-translation success is inferred. Post-merge results belong in #110.
 
 ## Next small task and quantity decision
 
