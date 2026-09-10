@@ -8,17 +8,19 @@ these facts from conversation history or the large TOPIK source bundle.
 - Source of truth: [release blueprint #110](https://github.com/okometsbu-beep/topik-quest/issues/110).
   It supersedes #76 map expansion until core learning quality gates pass. A01–A12 remain audit findings,
   not resolved items; existing feature/visual checks do not certify translation or teaching accuracy.
-- Production is v98 at `1df0f96a4c211c6fa4ed08d2a3cdfb042d292940` (PR #116).
-  Main Verify `34369070590` and Pages `34369069465` succeeded. The v99 candidate fixes A07: a new Travel
-  learner sees the first real mission's reviewed where/who/what brief immediately before the route CTA, while
-  the unchanged on-device metrics move after the avatar and start collapsed behind a 44px summary. Returning
-  progress does not repeat the first-action brief. Existing route metrics, progress, questions, rewards, themes,
-  and all other learner records are unchanged. Local Travel 9/9, quick 78/78, and full 87/87 checks pass. This
-  runner has no Chrome, so Linux Chrome 320/375/390/430px light/dark evidence must be reviewed from branch
-  CI before merge. Real iPhone/Android and real-beginner comprehension remain unverified. Candidate rollback is
-  v98 `1df0f96a4c211c6fa4ed08d2a3cdfb042d292940`.
-- Next: A08 should make the first Game learning action primary without removing Game access or saved records.
-  A new P0 or clear wrong answer takes precedence.
+- Production is v99 at `b578466cdacf2e4e6fb30e37bbfd7be2fbf4eea2` (PR #117).
+  Main Verify `34409205412` and Pages `34409204655` succeeded per #110. A07 first-action brief and collapsed
+  local metrics are shipped, not candidates. Product rollback is v98 `1df0f96a4c211c6fa4ed08d2a3cdfb042d292940`.
+- Latest #110 instruction: C01–C06 content quality, first applied as S01–S05 Shorts, outranks A08/#76.
+  S01 adds `docs/qa/shorts-audit.md`, generated ID/content-hash inventory and `scripts/audit-shorts.cjs`.
+  288 runtime rows have only 162 distinct question-choice sets (I 84, II 78), 30 duplicate groups and 15
+  structural review candidates. Comprehensive content approvals remain 0/288, not 288 passed questions.
+  Audit-only curated IDs must NOT replace saved numeric indices without the S03 migration contract.
+- Next: S02 bounded meeting/home duplicate-family pilot: selected `전에` versus correct `후에`, specific
+  explanation and short feedback/next route. Then S03 repeat prevention and S04 reviewed expansion.
+  A new P0 or clear wrong answer takes precedence. Runtime and learner records remain unchanged in S01.
+  At least 56 I / 62 II additional distinct sets are needed even before suitability review for the 140/level
+  planning floor; this is not the final expansion target. Timing 5–15 seconds is unmeasured and never forced.
 - Follow start → understand → recall/speak/write → review → next learning for Japanese beginners, and
   passage evidence → specific distractor traps → reusable solving method for TOPIK I/II.
 - 2026 draft gates: Sep 13 audit/scope/dependencies; Sep 27 core flow/P0/P1/backup; Oct 11 teaching,

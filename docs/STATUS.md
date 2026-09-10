@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v98 · A06 Travel full-screen viewport and safe-area ownership
-- Current candidate: v99 · A07 first Travel action before secondary local metrics
+- Production release: v99 · A07 first Travel action before secondary local metrics (`b578466cdacf2e4e6fb30e37bbfd7be2fbf4eea2`)
+- Current candidate: S01 Shorts inventory/audit tooling only; runtime remains v99
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -18,7 +18,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - TOPIK I·II, Shorts, Random Practice, full mock exams, Review, Vocabulary, Statistics
 - Beginner grammar covers core sentence order and major particle, tense, politeness, negation, connective,
   modifier, irregular, and speech-level transformations with per-rule writing practice.
-- 172 TOPIK I and 116 TOPIK II quick-practice questions; fixed 12-set mock composition remains intact
+- Shorts has 172 TOPIK I / 116 TOPIK II rows, but only 84 / 78 distinct question-choice sets;
+  these are inventory counts, not educationally approved questions. Fixed mock composition remains intact.
 - bank explanations structured as answer evidence → distractor trap → reusable type-solving method,
   with separate TOPIK II writing 51–54 plans
 - independent Seoul Travel Mode and Wordlight Expedition
@@ -125,6 +126,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 1. [출시 청사진 #110](https://github.com/okometsbu-beep/topik-quest/issues/110)이 #76 서울 맵 확장보다 우선이다.
 2. 새 P0·명백한 정답 오류 → 긴급 지시 → 일반 지시 → 이 문서 순서로, 의존성이 풀린 최소 작업 하나만 고른다.
 3. A01–A12는 감사에서 발견한 미해결 후보다. 기존 시각/기능 검사 통과가 교육 정확성이나 출시 합격을 뜻하지 않는다.
+4. 9/10 최신 지시: C01–C06 콘텐츠 품질의 첫 대상은 S01–S05 숏츠다. A08/서울 확장보다
+   짧은 한 판단·정답 납득·구체적 해설·완전 번역·중복 회피·검수된 문제량을 우선한다.
 
 ## 2026 출시 마감 초안 · #110 합격 기준 유지
 
@@ -147,26 +150,29 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-A08: 첫 Game 허브에서 장비 빈 슬롯·등급 확률·패배 손실보다 주 학습 행동을 앞세우고, 기존 Game 접근과
-모든 기록을 유지한다. 새 P0/명백한 정답 오류가 있으면 앞당긴다.
+S02 최소 파일럿: 회의 종료/귀가 동의문 9-ID 중복군의 선택 오답 `전에` 대 정답 `후에` 근거와
+짧은 해설→다음 문제 동선을 검수한다. 원본 은행/기록 보존. 이어 S03 ID/유사군 반복 방지,
+S04 검수된 부족 유형 확충. 새 P0/명백한 정답 오류가 있으면 앞당긴다.
 
-## 이번 작업 · A07 첫 Travel 행동과 지표 위계
+## 이번 작업 · S01 숏츠 재고·적합성 검수대장
 
-- 기준 main/라이브는 v98 `1df0f96a4c211c6fa4ed08d2a3cdfb042d292940`; v99에서 A07 한 건을 준비한다.
-- 신규 Travel 허브에서 7개 로컬 지표가 모두 0/미제공인데도 크게 펼쳐져 첫 학습 행동보다 앞서는 상태를
-  공개 앱 DOM과 코드에서 재현했다. 앱 오류는 없었고 데스크톱 원격 Chrome 관찰은 모바일 증거로 계산하지 않는다.
-- 첫 실제 문항의 기존 검수 데이터에서 장소·상대·행동을 가져와 `어디서`와 `누구에게 · 무엇을`을 코스 CTA
-  바로 위에 안내한다. 미완료/완료 코스에서는 중복 안내하지 않는다.
-- 로컬 여행 기록은 계산·저장·개인정보 경계를 바꾸지 않고 기본 접힌 상세 정보로 바꿨으며, 아바타 다음에 둬
-  학습과 선택을 우선했다. 요약은 44px 터치 대상으로 유지한다.
-- 로컬 Node v24.19.0: Travel 집중 검사 9/9, 빠른 검사 78/78, 전체 검사 87/87, diff 검사 통과.
-  로컬 환경에는 Chrome/Chromium이 없어 Linux Chrome 320/375/390/430px 라이트/다크 화면은 PR CI 산출물에서
-  확인 전 미검증이다.
-- 기존 `malbitStoryV1` 지표·진행·보상과 모든 학습/단어장/복습/Game/설정 기록, 문항, 라이트/다크는 보존한다.
-- 실제 iPhone/Android, 오프라인/복구, 음성, 실제 초보자의 첫 행동 이해도는 아직 미검증이다.
-- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (v99 병합 후 확인 대상).
-- 배포 전 되돌리기 기준: v98 `1df0f96a4c211c6fa4ed08d2a3cdfb042d292940`. 최종 squash SHA와 Pages 결과는
-  #110 진행 기록에 남긴다.
+- 기준 v99 `b578466cdacf2e4e6fb30e37bbfd7be2fbf4eea2`. `docs/qa/shorts-audit.md`와
+  생성형 ID별 재고 `docs/qa/shorts-inventory.json`, 감사 스크립트/회귀 검사를 추가한다.
+- 실제 selector 기준 288행, 같은 질문+보기 묶음 162종, 중복군 30개/중복분 126행.
+  길이·표기 검토 후보 15행. 동일 묶음 내 정답 라벨 충돌은 0이나 정답의 의미적 유일성 검수는 아니다.
+- 종합 내용 통과 0/288; 정답·해설·각 언어 번역·판단 단계·실제 풀이시간은 별도 미검수/미측정.
+  레벨별 140종 계획 단위에도 현재 텍스트 재고로는 최소 I 56종/II 62종이 부족하며 실제 부족분은 검수 후 확정한다.
+- 원격 Chrome 1363×936 라이트: Home→숏츠→일본어→회의 문항 오답 두 번 탭→채점→다음 `빌리다` 확인.
+  선택 오답별 근거 부족과 문맥 밖 `교환하다` 저장 제안은 후속 검수 후보로 기록. 합성 QA이지 실사용 통계가 아니다.
+- 로컬 Node v24: 감사 2/2, 콘텐츠 7/7, 전체 89/89 및 런타임/원본 은행 해시 검사 통과.
+  초기 감사 테스트의 VM 배열 비교 실패는 직렬화 계약 비교로 수정 후 통과했다.
+  브랜치 CI `34432220146` 전체/모바일 회귀 통과, 390px 숏츠 라이트·다크/채점 캡처 4개 직접 확인.
+  P01-II-R-06 별표 노출과 채점 후 첫 화면 밖으로 밀리는 다음 동선은 기존 S02 개선 대상으로 기록했다.
+  네 폭 containment 검사와 모든 폭·모든 문항 화면/교육 품질 검수는 다르다. 최종 CI/Pages 결과는 #110 댓글 참조.
+- 제품 런타임·원본 은행·모든 학습 기록·테마는 변경하지 않는다. 버전 올림 없음.
+- 배포 주소: https://okometsbu-beep.github.io/topik-quest/ (v99 유지). 이번 감사 변경의 되돌리기 기준은
+  `b578466cdacf2e4e6fb30e37bbfd7be2fbf4eea2`; 기존 제품 v99 되돌리기는 v98 `1df0f96a4c211c6fa4ed08d2a3cdfb042d292940`.
+- 실제 iPhone/Android·오프라인/복구·음성·실제 초보자의 시간/회상 및 전수 내용 검수는 미검증이다.
 
 ## 알려진 위험
 
