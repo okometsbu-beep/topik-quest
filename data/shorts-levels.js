@@ -104,6 +104,69 @@ const reviewedTimeItem=(id,term,key,example,exampleI18n,evidence)=>{
   });
 };
 
+const CONNECTOR_WORDS=Object.freeze({
+  result:Object.freeze({
+    meaning:Object.freeze({ko:'앞 내용의 결과를 이어 말함',ja:'したがって；そのため',en:'therefore; as a result',zh:'因此；所以'}),
+    selected:Object.freeze({
+      ko:'“따라서”는 앞의 원인이나 근거에서 나온 결과를 이어 말합니다.',
+      ja:'「따라서」は、前の原因・根拠から導かれる結果を続けます。',
+      en:'“따라서” introduces a result that follows from the preceding cause or reason.',
+      zh:'“따라서”用于引出由前面的原因或依据得出的结果。'
+    })
+  }),
+  contrast:Object.freeze({
+    meaning:Object.freeze({ko:'서로 다른 두 면을 대조함',ja:'一方で；それに対して',en:'whereas; on the other hand',zh:'另一方面；与此相反'}),
+    selected:Object.freeze({
+      ko:'“반면에”는 두 대상이나 상황의 서로 다른 면을 나란히 대조합니다.',
+      ja:'「반면에」は、二つの対象や状況の異なる面を並べて対比します。',
+      en:'“반면에” contrasts different sides of two subjects or situations.',
+      zh:'“반면에”把两个对象或情况的不同方面放在一起对比。'
+    })
+  }),
+  addition:Object.freeze({
+    meaning:Object.freeze({ko:'같은 방향의 내용을 더함',ja:'そのうえ；さらに',en:'moreover; in addition',zh:'而且；此外'}),
+    selected:Object.freeze({
+      ko:'“게다가”는 앞 내용과 같은 방향의 정보를 하나 더 보탭니다.',
+      ja:'「게다가」は、前の内容と同じ方向の情報をさらに付け加えます。',
+      en:'“게다가” adds another point in the same direction as the preceding statement.',
+      zh:'“게다가”在前面内容的同一方向上再补充一点。'
+    })
+  }),
+  condition:Object.freeze({
+    meaning:Object.freeze({ko:'앞 내용을 제한하는 조건을 덧붙임',ja:'ただし；ただ',en:'however; with one condition',zh:'不过；只是'}),
+    selected:Object.freeze({
+      ko:'“다만”은 앞 내용을 유지하면서 제한이나 조건을 덧붙입니다.',
+      ja:'「다만」は、前の内容を保ちながら制限や条件を付け加えます。',
+      en:'“다만” keeps the preceding statement but adds a limitation or condition.',
+      zh:'“다만”保留前面的内容，同时补充限制或条件。'
+    })
+  })
+});
+const CONNECTOR_ORDER=['result','contrast','addition','condition'];
+const CONNECTOR_METHOD=Object.freeze({
+  ko:'원인 뒤 결과=따라서, 두 면의 대조=반면에, 같은 방향의 추가=게다가, 앞말을 유지한 조건=다만으로 관계를 먼저 고르세요.',
+  ja:'原因の後の結果＝따라서、二面の対比＝반면에、同方向の追加＝게다가、前言を保った条件＝다만、と関係を先に選びます。',
+  en:'Classify the link first: result after a cause = 따라서, contrast = 반면에, same-direction addition = 게다가, retained statement plus a condition = 다만.',
+  zh:'先判断关系：原因后的结果＝따라서，两面对比＝반면에，同方向补充＝게다가，保留前述内容并加条件＝다만。'
+});
+const reviewedConnectorItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=CONNECTOR_WORDS[key];
+  return Object.freeze({
+    id,level:2,type:'word',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:CONNECTOR_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(CONNECTOR_ORDER.map(choiceKey=>Object.freeze({
+      meaning:CONNECTOR_WORDS[choiceKey].meaning,
+      explanationI18n:CONNECTOR_WORDS[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】따라서=결과, 반면에=대조, 게다가=같은 방향의 추가, 다만=제한 조건으로 문장 관계가 각각 다릅니다.\n【재사용 풀이】${CONNECTOR_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】따라서＝結果、반면에＝対比、게다가＝同方向の追加、다만＝制限条件で、文の関係がそれぞれ異なります。\n【再利用できる解き方】${CONNECTOR_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 따라서 marks a result, 반면에 a contrast, 게다가 a same-direction addition, and 다만 a limiting condition.\n[Reusable method] ${CONNECTOR_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】따라서表示结果，반면에表示对比，게다가表示同方向补充，다만表示限制条件，句间关系各不相同。\n【通用解法】${CONNECTOR_METHOD.zh}`
+    })
+  });
+};
+
 const TOPIK_I=[
   item(1,'word','가게','상점','店','store; shop','商店','집 앞 가게에서 우유를 샀어요.'),
   item(1,'word','약속','만나기로 정한 일','約束','promise; appointment','约定','친구와 세 시에 만날 약속이 있어요.'),
@@ -209,6 +272,38 @@ const TOPIK_II=[
   item(2,'word','선뜻','망설이지 않고 기꺼이','快く；ためらわずに','readily; willingly','欣然；爽快地','어려운 부탁인데도 선뜻 도와주었어요.'),
   item(2,'word','줄곧','처음부터 끝까지 계속','ずっと；終始','all along; throughout','一直；始终','그는 십 년 동안 줄곧 같은 분야를 연구했어요.'),
   item(2,'word','마련하다','필요한 것을 준비하거나 만들다','用意する；設ける','prepare; provide','准备；筹备','주민들을 위한 쉼터를 마련했어요.'),
+  reviewedConnectorItem('S04-II-W-LINK-01','따라서','result','비가 많이 왔습니다. 따라서 경기가 취소되었습니다.',{
+    ko:'비가 많이 왔습니다. 따라서 경기가 취소되었습니다.',ja:'大雨が降りました。したがって、試合は中止になりました。',en:'It rained heavily. Therefore, the match was canceled.',zh:'下了大雨。因此，比赛取消了。'
+  },{
+    ko:'“비가 많이 왔습니다”가 원인이고 경기 취소가 그 결과이므로 “따라서”가 맞습니다.',
+    ja:'「大雨が降った」が原因で、試合の中止がその結果なので「따라서」が合います。',
+    en:'Heavy rain is the cause and the cancellation is its result, so 따라서 fits.',
+    zh:'“下了大雨”是原因，比赛取消是结果，所以应选“따라서”。'
+  }),
+  reviewedConnectorItem('S04-II-W-LINK-02','반면에','contrast','도시는 편리합니다. 반면에 생활비가 비쌉니다.',{
+    ko:'도시는 편리합니다. 반면에 생활비가 비쌉니다.',ja:'都市は便利です。一方で、生活費が高いです。',en:'Cities are convenient. On the other hand, living costs are high.',zh:'城市很方便。另一方面，生活费很高。'
+  },{
+    ko:'도시의 편리함과 비싼 생활비라는 서로 다른 두 면을 대조하므로 “반면에”가 맞습니다.',
+    ja:'都市の便利さと生活費の高さという異なる二面を対比するので「반면에」が合います。',
+    en:'The sentence contrasts convenience with high living costs, so 반면에 fits.',
+    zh:'句子把城市的便利和高昂的生活费进行对比，所以应选“반면에”。'
+  }),
+  reviewedConnectorItem('S04-II-W-LINK-03','게다가','addition','이 식당은 음식이 맛있습니다. 게다가 가격도 저렴합니다.',{
+    ko:'이 식당은 음식이 맛있습니다. 게다가 가격도 저렴합니다.',ja:'この食堂は料理がおいしいです。そのうえ、値段も安いです。',en:'This restaurant serves delicious food. Moreover, it is inexpensive.',zh:'这家餐厅的菜很好吃。而且，价格也便宜。'
+  },{
+    ko:'맛있다는 장점에 저렴하다는 장점을 같은 방향으로 더하므로 “게다가”가 맞습니다.',
+    ja:'おいしいという長所に、安いという長所を同じ方向で加えるので「게다가」が合います。',
+    en:'A second positive point, low price, is added to good taste, so 게다가 fits.',
+    zh:'在“好吃”这个优点上又补充“便宜”这个同方向的优点，所以应选“게다가”。'
+  }),
+  reviewedConnectorItem('S04-II-W-LINK-04','다만','condition','참가비는 무료입니다. 다만 미리 신청해야 합니다.',{
+    ko:'참가비는 무료입니다. 다만 미리 신청해야 합니다.',ja:'参加費は無料です。ただし、事前に申し込む必要があります。',en:'Participation is free. However, you must register in advance.',zh:'参加免费。不过，必须提前报名。'
+  },{
+    ko:'무료라는 앞말은 그대로 두고 사전 신청 조건만 붙이므로 “다만”이 맞습니다.',
+    ja:'無料という前言は保ち、事前申請という条件だけを付けるので「다만」が合います。',
+    en:'The event remains free, but advance registration is added as a condition, so 다만 fits.',
+    zh:'“免费”这一点不变，只补充提前报名的条件，所以应选“다만”。'
+  }),
 
   item(2,'idiom','눈에 띄다','두드러져 보이다','目立つ','stand out','显眼；引人注目','빨간 우산이 멀리서도 눈에 띄어요.'),
   item(2,'idiom','손이 크다','넉넉하게 많이 준비하다','気前よく多く用意する','prepare generously','出手大方；准备得多','할머니는 손이 커서 음식을 많이 만드세요.'),
