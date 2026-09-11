@@ -293,6 +293,69 @@ const reviewedInferenceEvidenceItem=(id,term,key,example,exampleI18n,evidence)=>
   });
 };
 
+const REPORTED_SPEECH=Object.freeze({
+  statement:Object.freeze({
+    meaning:Object.freeze({ko:'진술·사실을 전달',ja:'発言・事実の伝達',en:'report a statement or fact',zh:'转述陈述或事实'}),
+    selected:Object.freeze({
+      ko:'“-다고 하다”는 평서문으로 말한 내용이나 사실을 인용해 전달합니다.',
+      ja:'「-다고 하다」は、平叙文で述べた内容や事実を引用して伝えます。',
+      en:'“-다고 하다” reports the content or fact stated in a declarative sentence.',
+      zh:'“-다고 하다”用于转述陈述句中说出的内容或事实。'
+    })
+  }),
+  question:Object.freeze({
+    meaning:Object.freeze({ko:'질문을 전달',ja:'質問の伝達',en:'report a question',zh:'转述提问'}),
+    selected:Object.freeze({
+      ko:'“-냐고 하다”는 상대가 물은 내용을 간접적으로 전달합니다.',
+      ja:'「-냐고 하다」は、相手が尋ねた内容を間接的に伝えます。',
+      en:'“-냐고 하다” indirectly reports what someone asked.',
+      zh:'“-냐고 하다”用于间接转述别人询问的内容。'
+    })
+  }),
+  command:Object.freeze({
+    meaning:Object.freeze({ko:'명령·요청을 전달',ja:'命令・依頼の伝達',en:'report a command or request',zh:'转述命令或请求'}),
+    selected:Object.freeze({
+      ko:'“-(으)라고 하다”는 누군가에게 하라고 한 명령이나 요청을 전달합니다.',
+      ja:'「-(으)라고 하다」は、誰かにするよう求めた命令・依頼を伝えます。',
+      en:'“-(으)라고 하다” reports a command or request telling someone to do something.',
+      zh:'“-(으)라고 하다”用于转述让某人做某事的命令或请求。'
+    })
+  }),
+  suggestion:Object.freeze({
+    meaning:Object.freeze({ko:'함께하자는 제안을 전달',ja:'一緒にしようという提案の伝達',en:'report a suggestion to do together',zh:'转述一起做某事的建议'}),
+    selected:Object.freeze({
+      ko:'“-자고 하다”는 화자가 함께하자고 제안한 내용을 전달합니다.',
+      ja:'「-자고 하다」は、話し手が一緒にしようと提案した内容を伝えます。',
+      en:'“-자고 하다” reports a suggestion that the speaker and listener do something together.',
+      zh:'“-자고 하다”用于转述说话人提议大家一起做某事。'
+    })
+  })
+});
+const REPORTED_SPEECH_ORDER=['statement','question','command','suggestion'];
+const REPORTED_SPEECH_METHOD=Object.freeze({
+  ko:'인용한 원래 문장의 기능을 먼저 보세요. 설명·사실=다고, 물음=냐고, 상대에게 시킴·부탁=라고, 함께하자는 제안=자고입니다.',
+  ja:'引用された元の文の働きを先に見ます。説明・事実＝다고、質問＝냐고、相手への命令・依頼＝라고、一緒にしようという提案＝자고です。',
+  en:'First identify the original sentence function: statement or fact = 다고, question = 냐고, command or request = 라고, and suggestion to do together = 자고.',
+  zh:'先判断原句的功能：陈述或事实＝다고，提问＝냐고，命令或请求＝라고，一起做某事的建议＝자고。'
+});
+const reviewedReportedSpeechItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=REPORTED_SPEECH[key];
+  return Object.freeze({
+    id,level:2,type:'grammar',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:REPORTED_SPEECH_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(REPORTED_SPEECH_ORDER.map(choiceKey=>Object.freeze({
+      meaning:REPORTED_SPEECH[choiceKey].meaning,
+      explanationI18n:REPORTED_SPEECH[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】-다고 하다=진술·사실, -냐고 하다=질문, -(으)라고 하다=명령·요청, -자고 하다=함께하자는 제안을 전달합니다.\n【재사용 풀이】${REPORTED_SPEECH_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】-다고 하다＝発言・事実、-냐고 하다＝質問、-(으)라고 하다＝命令・依頼、-자고 하다＝一緒にしようという提案を伝えます。\n【再利用できる解き方】${REPORTED_SPEECH_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] -다고 하다 reports a statement or fact, -냐고 하다 a question, -(으)라고 하다 a command or request, and -자고 하다 a suggestion to do something together.\n[Reusable method] ${REPORTED_SPEECH_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】-다고 하다转述陈述或事实，-냐고 하다转述提问，-(으)라고 하다转述命令或请求，-자고 하다转述一起做某事的建议。\n【通用解法】${REPORTED_SPEECH_METHOD.zh}`
+    })
+  });
+};
+
 const LOCATION_WORDS=Object.freeze({
   opposite:Object.freeze({
     meaning:Object.freeze({ko:'길·공간의 반대쪽',ja:'道・空間の向こう側',en:'opposite side',zh:'道路或空间的对面'}),
@@ -627,6 +690,39 @@ const TOPIK_II=[
     ja:'自分が資料を整理するという意志を理由に、相手へ発表準備を頼むので「-(으)ㄹ 테니」が合います。',
     en:'The speaker’s intention to organize the materials supports the request that follows, so -(으)ㄹ 테니 fits.',
     zh:'说话人以自己要整理资料的意志为理由，请对方准备发表，所以应选“-(으)ㄹ 테니”。'
+  }),
+
+  reviewedReportedSpeechItem('S04-II-G-REPORT-01','-다고 하다','statement','민수 씨는 오늘 바쁘다고 했어요.',{
+    ko:'민수 씨는 오늘 바쁘다고 했어요.',ja:'ミンスさんは今日忙しいと言いました。',en:'Minsu said that he was busy today.',zh:'敏洙说他今天很忙。'
+  },{
+    ko:'“오늘 바쁘다”라는 사실을 평서문으로 전하므로 “-다고 하다”가 맞습니다.',
+    ja:'「今日は忙しい」という事実を平叙文として伝えているので「-다고 하다」が合います。',
+    en:'The speaker reports the declarative fact “Minsu is busy today,” so -다고 하다 fits.',
+    zh:'句子把“敏洙今天很忙”作为陈述事实转述，所以应选“-다고 하다”。'
+  }),
+  reviewedReportedSpeechItem('S04-II-G-REPORT-02','-냐고 하다','question','친구가 언제 출발하냐고 물었어요.',{
+    ko:'친구가 언제 출발하냐고 물었어요.',ja:'友だちがいつ出発するのかと聞きました。',en:'My friend asked when we would leave.',zh:'朋友问什么时候出发。'
+  },{
+    ko:'“언제 출발하나?”라는 물음을 간접적으로 전달하므로 “-냐고 하다”가 맞습니다.',
+    ja:'「いつ出発するのか」という質問を間接的に伝えているので「-냐고 하다」が合います。',
+    en:'The sentence indirectly reports the question “When will you leave?”, so -냐고 하다 fits.',
+    zh:'句子间接转述“什么时候出发？”这一提问，所以应选“-냐고 하다”。'
+  }),
+  reviewedReportedSpeechItem('S04-II-G-REPORT-03','-(으)라고 하다','command','직원이 여기에서 기다리라고 했어요.',{
+    ko:'직원이 여기에서 기다리라고 했어요.',ja:'職員がここで待つように言いました。',en:'The staff member told me to wait here.',zh:'工作人员让我在这里等。'
+  },{
+    ko:'직원이 상대에게 “여기에서 기다리세요”라고 요구했으므로 “-(으)라고 하다”가 맞습니다.',
+    ja:'職員が相手に「ここで待ってください」と求めたので「-(으)라고 하다」が合います。',
+    en:'The staff member tells someone to “wait here,” so -(으)라고 하다 fits.',
+    zh:'工作人员要求对方“在这里等”，所以应选“-(으)라고 하다”。'
+  }),
+  reviewedReportedSpeechItem('S04-II-G-REPORT-04','-자고 하다','suggestion','친구가 주말에 같이 등산하자고 했어요.',{
+    ko:'친구가 주말에 같이 등산하자고 했어요.',ja:'友だちが週末に一緒に登山しようと言いました。',en:'My friend suggested that we go hiking together this weekend.',zh:'朋友提议周末一起去登山。'
+  },{
+    ko:'친구가 주말에 함께 등산하자고 제안했으므로 “-자고 하다”가 맞습니다.',
+    ja:'友だちが週末に一緒に登山しようと提案したので「-자고 하다」が合います。',
+    en:'The friend suggests that they go hiking together, so -자고 하다 fits.',
+    zh:'朋友提议周末一起去登山，所以应选“-자고 하다”。'
   })
 ];
 
