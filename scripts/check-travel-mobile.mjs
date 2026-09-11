@@ -891,6 +891,35 @@ try{
   assert.match(causeRestored.summary,/덕분에[\s\S]*良い結果/u,'cause-concession selected feedback must survive reload');
   assert.match(causeRestored.answer,/悪い結果の原因/u,'reviewed cause-concession answer must survive reload');
 
+  const inferenceEvidence=await evaluate(`(()=>{const lv=2,deck=[...window.MALBIT_SHORTS_DECKS[lv],...window.MALBIT_BANK.shorts(lv)],index=deck.findIndex(item=>item.id==='S04-II-G-INFER-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','2');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:2,levels:{1:blank,2:active},daily:{}}));return{index,id:identity.id}})()`);
+  assert.equal(inferenceEvidence.id,'S04-II-G-INFER-01','reviewed inference-evidence card must have its explicit stable ID');
+  await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsWord');
+  const inferenceBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['2'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
+  assert.equal(inferenceBefore.term,'-나 보다');assert.equal(inferenceBefore.cardId,inferenceEvidence.id);assert.equal(inferenceBefore.orderId,inferenceEvidence.id);
+  assert.deepEqual(inferenceBefore.choiceOrder,[2,1,0,3]);
+  assert.deepEqual(inferenceBefore.labels,['事実だと強く確信（～に違いない）','可能性を残す（～かもしれない）','見える手掛かりから推測','自分の意志を理由に後を依頼'],'fixed inference-evidence choices must keep the saved shuffle');
+  await submitShortsLabel('可能性を残す（～かもしれない）');
+  const inferenceReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
+  assert.match(inferenceReview.summary,/ㄹ지도 모르다[\s\S]*可能性/u,'selected Japanese feedback must explain the open-possibility trap');
+  assert.match(inferenceReview.answer,/見える手掛かり/u);assert.equal(inferenceReview.closed,true);
+  assert.equal(inferenceReview.nextBeforeDetails,true,'Next question must precede optional inference-evidence coaching');
+  assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'事務所の明かりが消えているのを見ると、みんな退勤したようです。','reviewed Japanese inference example must render locally');
+  await evaluate(`malbitSetTheme('light')`);await sleep(100);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK II inference-evidence light ${width}px`,'light')}
+  await setViewport(390,844);await shot('00bk-shorts-topik2-inference-wrong-light.png');
+  await evaluate(`malbitSetTheme('dark');const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK II inference-evidence expanded dark ${width}px`,'dark')}
+  await setViewport(390,844);await shot('00bl-shorts-topik2-inference-full-dark.png');
+  await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsFeedbackSummary');
+  const inferenceRestored=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['2'];return{cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder,locked:state.locked,summary:document.querySelector('.shortsFeedbackSummary')?.innerText,answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
+  assert.equal(inferenceRestored.cardId,inferenceEvidence.id,'reviewed inference-evidence ID must survive reload');
+  assert.equal(inferenceRestored.orderId,inferenceEvidence.id,'reviewed inference-evidence choice-order ID must survive reload');
+  assert.deepEqual(inferenceRestored.choiceOrder,[2,1,0,3],'saved inference-evidence choice order must survive reload');
+  assert.equal(inferenceRestored.locked,true,'graded inference-evidence state must survive reload');
+  assert.match(inferenceRestored.summary,/ㄹ지도 모르다[\s\S]*可能性/u,'inference-evidence selected feedback must survive reload');
+  assert.match(inferenceRestored.answer,/見える手掛かり/u,'reviewed inference-evidence answer must survive reload');
+
   const exhausted=await openExhaustedShortsCycle(1);
   await evaluate(`nextShorts()`);await sleep(180);
   const cycled=await evaluate(`(()=>{const saved=JSON.parse(localStorage.getItem('topikQuestShortsV1')),state=saved.levels['1']||saved.levels[1];return{schema:saved.schema,cycle:state.cycle,isReview:state.isReview,cardId:state.cardId,familyId:state.familyId,term:document.querySelector('.shortsWord')?.textContent.trim(),badge:document.querySelector('.shortsReviewBadge')?.textContent.trim()}})()`);
