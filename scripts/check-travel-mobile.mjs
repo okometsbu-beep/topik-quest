@@ -862,6 +862,35 @@ try{
   assert.match(connectorRestored.summary,/다만[\s\S]*制限や条件/u,'connector-specific Japanese feedback must survive reload');
   assert.match(connectorRestored.answer,/したがって；そのため/u,'reviewed connector answer must survive reload');
 
+  const causeConcession=await evaluate(`(()=>{const lv=2,deck=[...window.MALBIT_SHORTS_DECKS[lv],...window.MALBIT_BANK.shorts(lv)],index=deck.findIndex(item=>item.id==='S04-II-G-CAUSE-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','2');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:2,levels:{1:blank,2:active},daily:{}}));return{index,id:identity.id}})()`);
+  assert.equal(causeConcession.id,'S04-II-G-CAUSE-01','reviewed cause-concession card must have its explicit stable ID');
+  await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsWord');
+  const causeBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['2'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
+  assert.equal(causeBefore.term,'-(으)ㄴ 탓에');assert.equal(causeBefore.cardId,causeConcession.id);assert.equal(causeBefore.orderId,causeConcession.id);
+  assert.deepEqual(causeBefore.choiceOrder,[2,1,0,3]);
+  assert.deepEqual(causeBefore.labels,['事実に反する結果（～のに）','良い結果の原因（～おかげで）','悪い結果の原因（～せいで）','仮定しても結論維持（たとえ～ても）'],'fixed cause-concession choices must keep the saved shuffle');
+  await submitShortsLabel('良い結果の原因（～おかげで）');
+  const causeReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
+  assert.match(causeReview.summary,/덕분에[\s\S]*良い結果/u,'selected Japanese feedback must explain the specific beneficial-cause trap');
+  assert.match(causeReview.answer,/悪い結果の原因/u);assert.equal(causeReview.closed,true);
+  assert.equal(causeReview.nextBeforeDetails,true,'Next question must precede optional cause-concession coaching');
+  assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'準備が足りなかったせいで、発表に失敗しました。','reviewed Japanese cause example must render locally');
+  await evaluate(`malbitSetTheme('light')`);await sleep(100);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK II cause-concession light ${width}px`,'light')}
+  await setViewport(390,844);await shot('00bi-shorts-topik2-cause-wrong-light.png');
+  await evaluate(`malbitSetTheme('dark');const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK II cause-concession expanded dark ${width}px`,'dark')}
+  await setViewport(390,844);await shot('00bj-shorts-topik2-cause-full-dark.png');
+  await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsFeedbackSummary');
+  const causeRestored=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['2'];return{cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder,locked:state.locked,summary:document.querySelector('.shortsFeedbackSummary')?.innerText,answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
+  assert.equal(causeRestored.cardId,causeConcession.id,'reviewed cause-concession ID must survive reload');
+  assert.equal(causeRestored.orderId,causeConcession.id,'reviewed cause-concession choice-order ID must survive reload');
+  assert.deepEqual(causeRestored.choiceOrder,[2,1,0,3],'saved cause-concession choice order must survive reload');
+  assert.equal(causeRestored.locked,true,'graded cause-concession state must survive reload');
+  assert.match(causeRestored.summary,/덕분에[\s\S]*良い結果/u,'cause-concession selected feedback must survive reload');
+  assert.match(causeRestored.answer,/悪い結果の原因/u,'reviewed cause-concession answer must survive reload');
+
   const exhausted=await openExhaustedShortsCycle(1);
   await evaluate(`nextShorts()`);await sleep(180);
   const cycled=await evaluate(`(()=>{const saved=JSON.parse(localStorage.getItem('topikQuestShortsV1')),state=saved.levels['1']||saved.levels[1];return{schema:saved.schema,cycle:state.cycle,isReview:state.isReview,cardId:state.cardId,familyId:state.familyId,term:document.querySelector('.shortsWord')?.textContent.trim(),badge:document.querySelector('.shortsReviewBadge')?.textContent.trim()}})()`);

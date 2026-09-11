@@ -167,6 +167,69 @@ const reviewedConnectorItem=(id,term,key,example,exampleI18n,evidence)=>{
   });
 };
 
+const CAUSE_CONCESSION=Object.freeze({
+  badCause:Object.freeze({
+    meaning:Object.freeze({ko:'나쁜 결과의 원인·책임',ja:'悪い結果の原因（～せいで）',en:'bad result from a cause',zh:'坏结果的原因（都怪……）'}),
+    selected:Object.freeze({
+      ko:'“-(으)ㄴ 탓에”는 좋지 않은 결과의 원인이나 책임을 앞 내용에 돌립니다.',
+      ja:'「-(으)ㄴ 탓에」は、悪い結果の原因・責任を前の内容に求めます。',
+      en:'“-(으)ㄴ 탓에” attributes a bad result or blame to the preceding cause.',
+      zh:'“-(으)ㄴ 탓에”把坏结果的原因或责任归于前面的内容。'
+    })
+  }),
+  goodCause:Object.freeze({
+    meaning:Object.freeze({ko:'좋은 결과의 원인·고마움',ja:'良い結果の原因（～おかげで）',en:'good result thanks to a cause',zh:'好结果的原因（多亏……）'}),
+    selected:Object.freeze({
+      ko:'“-(으)ㄴ 덕분에”는 좋은 결과를 가능하게 한 원인에 고마움이나 긍정 평가를 담습니다.',
+      ja:'「-(으)ㄴ 덕분에」は、良い結果をもたらした原因への感謝・肯定を表します。',
+      en:'“-(으)ㄴ 덕분에” credits a cause for a good result, often with gratitude.',
+      zh:'“-(으)ㄴ 덕분에”表示某个原因带来了好结果，常含感谢之意。'
+    })
+  }),
+  factConcession:Object.freeze({
+    meaning:Object.freeze({ko:'사실인데도 예상과 다른 결과',ja:'事実に反する結果（～のに）',en:'unexpected result despite a fact',zh:'尽管是事实，结果却相反'}),
+    selected:Object.freeze({
+      ko:'“-는데도”는 실제로 성립한 앞 사실을 인정하지만 뒤에 예상과 다른 결과가 나옵니다.',
+      ja:'「-는데도」は、実際に成立した前の事実を認めつつ、予想に反する結果を続けます。',
+      en:'“-는데도” concedes an actual fact, then gives a result contrary to expectation.',
+      zh:'“-는데도”承认前面的事实已经成立，但后面出现与预期相反的结果。'
+    })
+  }),
+  hypotheticalConcession:Object.freeze({
+    meaning:Object.freeze({ko:'가정해도 뒤 판단을 유지함',ja:'仮定しても結論維持（たとえ～ても）',en:'same conclusion even if imagined',zh:'即使假设成立，结论仍不变'}),
+    selected:Object.freeze({
+      ko:'“-(으)ㄹ지라도”는 아직 확정되지 않은 상황을 가정해 인정해도 뒤 판단이나 의지를 유지합니다.',
+      ja:'「-(으)ㄹ지라도」は、未確定の状況を仮定して認めても、後の判断・意志を保ちます。',
+      en:'“-(으)ㄹ지라도” concedes a hypothetical situation while keeping the following judgment or resolve.',
+      zh:'“-(으)ㄹ지라도”先假设并承认尚未确定的情况，后面的判断或意志仍保持不变。'
+    })
+  })
+});
+const CAUSE_CONCESSION_ORDER=['badCause','goodCause','factConcession','hypotheticalConcession'];
+const CAUSE_CONCESSION_METHOD=Object.freeze({
+  ko:'결과의 평가와 현실성을 먼저 보세요. 나쁜 원인=탓에, 좋은 원인=덕분에, 실제 사실과 반대=는데도, 가정해도 결론 유지=ㄹ지라도입니다.',
+  ja:'結果の評価と現実性を先に見ます。悪い原因＝탓에、良い原因＝덕분에、実際の事実に反する結果＝는데도、仮定しても結論維持＝ㄹ지라도です。',
+  en:'Check the result value and reality first: bad cause = 탓에, beneficial cause = 덕분에, actual fact but contrary result = 는데도, hypothetical concession with a retained conclusion = ㄹ지라도.',
+  zh:'先看结果的好坏和现实性：坏原因＝탓에，好原因＝덕분에，既成事实却有相反结果＝는데도，假设成立结论仍不变＝ㄹ지라도。'
+});
+const reviewedCauseConcessionItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=CAUSE_CONCESSION[key];
+  return Object.freeze({
+    id,level:2,type:'grammar',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:CAUSE_CONCESSION_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(CAUSE_CONCESSION_ORDER.map(choiceKey=>Object.freeze({
+      meaning:CAUSE_CONCESSION[choiceKey].meaning,
+      explanationI18n:CAUSE_CONCESSION[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】탓에=나쁜 원인, 덕분에=좋은 원인, 는데도=실제 사실과 반대 결과, ㄹ지라도=가정해도 유지되는 결론으로 기준이 다릅니다.\n【재사용 풀이】${CAUSE_CONCESSION_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】탓에＝悪い原因、덕분에＝良い原因、는데도＝実際の事実に反する結果、ㄹ지라도＝仮定しても保つ結論で、基準が異なります。\n【再利用できる解き方】${CAUSE_CONCESSION_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 탓에 marks a bad cause, 덕분에 a beneficial cause, 는데도 an actual fact with a contrary result, and ㄹ지라도 a hypothetical concession with a retained conclusion.\n[Reusable method] ${CAUSE_CONCESSION_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】탓에表示坏原因，덕분에表示好原因，는데도表示既成事实却有相反结果，ㄹ지라도表示即使假设成立结论仍不变，判断标准各不相同。\n【通用解法】${CAUSE_CONCESSION_METHOD.zh}`
+    })
+  });
+};
+
 const TOPIK_I=[
   item(1,'word','가게','상점','店','store; shop','商店','집 앞 가게에서 우유를 샀어요.'),
   item(1,'word','약속','만나기로 정한 일','約束','promise; appointment','约定','친구와 세 시에 만날 약속이 있어요.'),
@@ -304,7 +367,6 @@ const TOPIK_II=[
     en:'The event remains free, but advance registration is added as a condition, so 다만 fits.',
     zh:'“免费”这一点不变，只补充提前报名的条件，所以应选“다만”。'
   }),
-
   item(2,'idiom','눈에 띄다','두드러져 보이다','目立つ','stand out','显眼；引人注目','빨간 우산이 멀리서도 눈에 띄어요.'),
   item(2,'idiom','손이 크다','넉넉하게 많이 준비하다','気前よく多く用意する','prepare generously','出手大方；准备得多','할머니는 손이 커서 음식을 많이 만드세요.'),
   item(2,'idiom','기분이 풀리다','화난 마음이 좋아지다','機嫌が直る','feel better','消气；心情好转','사과를 듣고 기분이 풀렸어요.'),
@@ -340,7 +402,40 @@ const TOPIK_II=[
   item(2,'grammar','-더라도','앞 상황을 인정해도 뒤의 판단이나 결과가 유지됨','～としても','even if; even though','即使……也……','결과가 좋지 않더라도 과정에서 배울 수 있어요.'),
   item(2,'grammar','-(으)ㄹ 뿐만 아니라','앞의 사실에 뒤의 사실을 더함','～だけでなく','not only ... but also','不仅……而且……','이 도서관은 자료가 다양할 뿐만 아니라 늦게까지 문을 열어요.'),
   item(2,'grammar','-기 마련이다','일반적으로 그렇게 되는 것이 당연하거나 자연스러움','～ものだ','be bound to; naturally','总会……；自然会……','새로운 일을 시작하면 실수하기 마련이에요.'),
-  item(2,'grammar','-는 한','앞의 조건이 유지되는 범위에서','～する限り','as long as','只要……','원칙을 지키는 한 신뢰를 잃지 않을 거예요.')
+  item(2,'grammar','-는 한','앞의 조건이 유지되는 범위에서','～する限り','as long as','只要……','원칙을 지키는 한 신뢰를 잃지 않을 거예요.'),
+
+  reviewedCauseConcessionItem('S04-II-G-CAUSE-01','-(으)ㄴ 탓에','badCause','준비가 부족했던 탓에 발표를 망쳤습니다.',{
+    ko:'준비가 부족했던 탓에 발표를 망쳤습니다.',ja:'準備が足りなかったせいで、発表に失敗しました。',en:'I ruined the presentation because I had not prepared enough.',zh:'由于准备不足，我把发表搞砸了。'
+  },{
+    ko:'“발표를 망쳤습니다”라는 나쁜 결과의 원인을 준비 부족에 돌리므로 “-(으)ㄴ 탓에”가 맞습니다.',
+    ja:'「発表に失敗した」という悪い結果の原因を準備不足に求めているので「-(으)ㄴ 탓에」が合います。',
+    en:'The sentence blames insufficient preparation for the bad result, a ruined presentation, so -(으)ㄴ 탓에 fits.',
+    zh:'句子把“发表搞砸”这一坏结果归因于准备不足，所以应选“-(으)ㄴ 탓에”。'
+  }),
+  reviewedCauseConcessionItem('S04-II-G-CAUSE-02','-(으)ㄴ 덕분에','goodCause','동료들이 도와준 덕분에 일을 제시간에 끝냈습니다.',{
+    ko:'동료들이 도와준 덕분에 일을 제시간에 끝냈습니다.',ja:'同僚が手伝ってくれたおかげで、仕事を時間どおりに終えられました。',en:'Thanks to my colleagues’ help, I finished the work on time.',zh:'多亏同事们帮忙，我按时完成了工作。'
+  },{
+    ko:'제시간에 끝냈다는 좋은 결과를 동료의 도움 덕으로 평가하므로 “-(으)ㄴ 덕분에”가 맞습니다.',
+    ja:'時間どおりに終えたという良い結果を同僚の助けのおかげだと評価するので「-(으)ㄴ 덕분에」が合います。',
+    en:'The sentence credits colleagues’ help for the good result of finishing on time, so -(으)ㄴ 덕분에 fits.',
+    zh:'句子把按时完成这一好结果归功于同事的帮助，所以应选“-(으)ㄴ 덕분에”。'
+  }),
+  reviewedCauseConcessionItem('S04-II-G-CAUSE-03','-는데도','factConcession','밤새 비가 왔는데도 길은 막히지 않았습니다.',{
+    ko:'밤새 비가 왔는데도 길은 막히지 않았습니다.',ja:'一晩中雨が降ったのに、道は渋滞しませんでした。',en:'Although it rained all night, the roads were not congested.',zh:'尽管下了一整夜的雨，道路却没有堵塞。'
+  },{
+    ko:'밤새 비가 온 것은 실제 사실이지만 길이 막히지 않았다는 예상 밖 결과가 이어지므로 “-는데도”가 맞습니다.',
+    ja:'一晩中雨が降ったのは事実ですが、道が渋滞しなかったという予想外の結果が続くので「-는데도」が合います。',
+    en:'It actually rained all night, yet the roads were unexpectedly clear, so -는데도 fits.',
+    zh:'下了一整夜雨是事实，但后面却是道路没有堵塞这一意外结果，所以应选“-는데도”。'
+  }),
+  reviewedCauseConcessionItem('S04-II-G-CAUSE-04','-(으)ㄹ지라도','hypotheticalConcession','실패할지라도 다시 도전하겠습니다.',{
+    ko:'실패할지라도 다시 도전하겠습니다.',ja:'たとえ失敗しても、もう一度挑戦します。',en:'Even if I fail, I will try again.',zh:'即使失败，我也会再次挑战。'
+  },{
+    ko:'실패는 아직 확정되지 않은 가정이고, 그 경우에도 다시 도전하겠다는 의지는 유지되므로 “-(으)ㄹ지라도”가 맞습니다.',
+    ja:'失敗はまだ確定していない仮定で、その場合でも再挑戦する意志を保つので「-(으)ㄹ지라도」が合います。',
+    en:'Failure is hypothetical, and the resolve to try again remains even in that case, so -(으)ㄹ지라도 fits.',
+    zh:'失败还是未确定的假设，即使如此，再次挑战的意志仍不变，所以应选“-(으)ㄹ지라도”。'
+  })
 ];
 
 window.MALBIT_SHORTS_DECKS={1:TOPIK_I,2:TOPIK_II};
