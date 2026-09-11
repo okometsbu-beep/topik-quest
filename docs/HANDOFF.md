@@ -8,13 +8,13 @@ these facts from conversation history or the large TOPIK source bundle.
 - Source of truth: [release blueprint #110](https://github.com/okometsbu-beep/topik-quest/issues/110).
   It supersedes #76 map expansion until core learning quality gates pass. A01–A12 remain audit findings,
   not resolved items; existing feature/visual checks do not certify translation or teaching accuracy.
-- Production is v101 at `711d2b234fd2ba3ba038bdc5e5162c6d76a71468` (PR #120).
-  Stable card/family cycling and explicit spaced-review disclosure are shipped. Product rollback is
-  v100 `cd24451b5e0aba40e00f5ccc370f1a16b00d2317`.
+- Production is v102 at `5d5a9ec9831c3b39265367ad0cba066f66b21106` (PR #121).
+  Four reviewed TOPIK I time-adverb Shorts are shipped on top of stable card/family cycling. Product rollback is
+  v101 `711d2b234fd2ba3ba038bdc5e5162c6d76a71468`.
 - Latest #110 instruction: C01–C06 content quality, first applied as S01–S05 Shorts, outranks A08/#76.
   S01 adds `docs/qa/shorts-audit.md`, generated ID/content-hash inventory and `scripts/audit-shorts.cjs`.
-  The v102 candidate has 292 runtime rows but only 166 distinct question-choice sets (I 88, II 78), 30 duplicate
-  groups and 15 structural review candidates. Comprehensive content approvals remain 0/292, not 292 passed questions.
+  The v103 candidate has 296 runtime rows but only 170 distinct question-choice sets (I 88, II 82), 30 duplicate
+  groups and 15 structural review candidates. Comprehensive content approvals remain 0/296, not 296 passed questions.
   Audit-only curated IDs must NOT replace saved numeric indices without the S03 migration contract.
 - S03 v101 (PR #120) migrates schema-2 numeric Shorts progress to stable card/family IDs without
   replacing `topikQuestShortsV1`. It cycles 162 exact question-choice families before intentional repeats,
@@ -22,14 +22,20 @@ these facts from conversation history or the large TOPIK source bundle.
   Original 288 rows, answers, mock placement and all learner roots remain unchanged. Node quick 83/83 and PR CI
   `34494776380` passed; direct Linux Chrome evidence covers 320/375/390/430px light/dark, cycle exhaustion,
   visible Japanese review disclosure and reload restoration.
-- S04 candidate v102 adds four TOPIK I time-adverb cards with explicit stable IDs, fixed reviewed choice sets,
+- S04 v102 adds four TOPIK I time-adverb cards with explicit stable IDs, fixed reviewed choice sets,
   concise selected-choice feedback and optional evidence→traps→method coaching in ko/ja/en/zh. Inventory and
   automated/AI review details are in `docs/qa/shorts-review-s04-time.md`; human review and learner timing stay open.
   Local Node v24 and branch CI `34532452034` pass 97/97; that CI also covers Linux Chrome emulation at
   320/375/390/430px in both themes, concise wrong-answer recovery, expanded coaching and reload restoration.
   Bundled ko/ja/en/zh examples render without network translation. Physical devices remain unverified.
-- Next: add one similarly bounded TOPIK II shortage batch. Quantity alone is not progress, and a new P0 or clear
-  wrong answer takes precedence. At least 52 I / 62 II additional distinct sets remain even before suitability review for the 140/level
+- S04 candidate v103 adds four TOPIK II connective-adverb cards for result, contrast, addition and limiting
+  condition. Each uses one short relation judgment, fixed reviewed choices, choice-specific ko/ja/en/zh feedback,
+  bundled full examples, and evidence→traps→method coaching. The bounded review ledger is
+  `docs/qa/shorts-review-s04-topik2-linkers.md`. Local Node 22 and PR #122 CI `34557440568` pass 98/98;
+  that CI also covers 320/375/390/430px Linux Chrome emulation in both themes, selected-wrong feedback,
+  expanded coaching and reload restoration. Physical devices and learner timing remain unverified.
+- Next: add one bounded TOPIK II cause/concession grammar batch. Quantity alone is not progress, and a new P0 or clear
+  wrong answer takes precedence. At least 52 I / 58 II additional distinct sets remain even before suitability review for the 140/level
   planning floor; this is not the final expansion target. Timing 5–15 seconds is unmeasured and never forced.
 - Follow start → understand → recall/speak/write → review → next learning for Japanese beginners, and
   passage evidence → specific distractor traps → reusable solving method for TOPIK I/II.

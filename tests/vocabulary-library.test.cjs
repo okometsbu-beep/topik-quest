@@ -12,7 +12,7 @@ vm.runInContext(fs.readFileSync(path.join(root, 'data/shorts-levels.js'), 'utf8'
 test('TOPIK study library is complete, multilingual, and organized by level', () => {
   const decks = context.window.MALBIT_SHORTS_DECKS;
   assert.equal(decks[1].length, 52);
-  assert.equal(decks[2].length, 54);
+  assert.equal(decks[2].length, 58);
   assert.deepEqual([...new Set(decks[1].map(item => item.type))].sort(), ['expression', 'grammar', 'word']);
   assert.deepEqual([...new Set(decks[2].map(item => item.type))].sort(), ['grammar', 'idiom', 'word']);
   for (const level of [1, 2]) {
@@ -27,6 +27,24 @@ test('S04 time-adverb Shorts have stable IDs and reviewed fixed feedback in ever
   const rows=context.window.MALBIT_SHORTS_DECKS[1].filter(item=>item.id?.startsWith('S04-I-W-TIME-'));
   assert.equal(rows.length,4);
   assert.deepEqual(Array.from(rows,item=>item.term),['벌써','아직','방금','곧']);
+  for(const item of rows){
+    assert.equal(item.shortChoices.length,4);
+    assert.equal(item.shortChoices[item.answerIndex].meaning.ko,item.meaning.ko);
+    for(const lang of ['ko','ja','en','zh']){
+      assert.ok(item.exampleI18n[lang],`${item.id} must ship a reviewed ${lang} example translation`);
+      assert.equal(new Set(item.shortChoices.map(choice=>choice.meaning[lang])).size,4,`${item.id} must have four distinct ${lang} choices`);
+      assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
+      assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
+    }
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  }
+});
+
+test('S04 TOPIK II connector Shorts make one reviewed relation judgment in every language', () => {
+  const rows=context.window.MALBIT_SHORTS_DECKS[2].filter(item=>item.id?.startsWith('S04-II-W-LINK-'));
+  assert.equal(rows.length,4);
+  assert.deepEqual(Array.from(rows,item=>item.term),['따라서','반면에','게다가','다만']);
   for(const item of rows){
     assert.equal(item.shortChoices.length,4);
     assert.equal(item.shortChoices[item.answerIndex].meaning.ko,item.meaning.ko);

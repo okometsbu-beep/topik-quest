@@ -6,11 +6,11 @@ const { inventory, curatedId } = require('../scripts/audit-shorts.cjs');
 
 test('Shorts audit covers the actual deck and keeps all content approvals unreviewed', () => {
   const report = inventory();
-  assert.equal(report.summary.total, 292);
-  assert.deepEqual(report.summary.byLevel, [{level:1,total:176,curated:52,bank:124},{level:2,total:116,curated:54,bank:62}]);
-  assert.equal(new Set(report.rows.map(row => row.id)).size, 292);
+  assert.equal(report.summary.total, 296);
+  assert.deepEqual(report.summary.byLevel, [{level:1,total:176,curated:52,bank:124},{level:2,total:120,curated:58,bank:62}]);
+  assert.equal(new Set(report.rows.map(row => row.id)).size, 296);
   assert.equal(report.summary.approved, 0);
-  assert.equal(report.summary.distinctQuestionChoiceSets, 166);
+  assert.equal(report.summary.distinctQuestionChoiceSets, 170);
   assert.equal(report.summary.redundantRows, 126);
   assert.equal(report.exactDuplicateGroups.length, 30);
   assert.equal(report.conflictingAnswerGroups.length, 0);
