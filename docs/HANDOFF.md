@@ -52,7 +52,9 @@ these facts from conversation history or the large TOPIK source bundle.
   beside one place, between two places, and the nearby area. Each has a stable ID, fixed choice-specific
   ko/ja/en/zh feedback, bundled examples, and evidence→traps→reference-point/distance coaching. The bounded
   review ledger is `docs/qa/shorts-review-s04-topik1-location.md`. Focused data and inventory checks pass 10/10,
-  and local Node 22 full checks pass 101/101; PR CI and emulated-mobile evidence remain pending and block merge.
+  while local Node 22 and PR #125 CI `34615296081` full checks pass 101/101. That CI covers 320/375/390/430px
+  Linux Chrome emulation in both themes, selected-wrong feedback, expanded coaching, next-first flow and reload
+  restoration. Physical devices, native-language review and learner timing remain unverified.
 - Next: after v106 passes, rebalance with one bounded TOPIK II shortage batch. Quantity alone is not progress, and a new P0 or clear
   wrong answer takes precedence. At least 48 I / 50 II additional distinct sets remain even before suitability review for the 140/level
   planning floor; this is not the final expansion target. Timing 5–15 seconds is unmeasured and never forced.
