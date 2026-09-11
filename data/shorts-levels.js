@@ -230,6 +230,69 @@ const reviewedCauseConcessionItem=(id,term,key,example,exampleI18n,evidence)=>{
   });
 };
 
+const INFERENCE_EVIDENCE=Object.freeze({
+  clueGuess:Object.freeze({
+    meaning:Object.freeze({ko:'보이는 단서로 조심스럽게 추측',ja:'見える手掛かりから推測',en:'guess from visible clues',zh:'根据眼前线索推测'}),
+    selected:Object.freeze({
+      ko:'“-나 보다”는 보고 들은 단서를 바탕으로 상황을 조심스럽게 추측합니다.',
+      ja:'「-나 보다」は、見聞きした手掛かりから状況を控えめに推測します。',
+      en:'“-나 보다” makes a tentative guess from something seen or heard.',
+      zh:'“-나 보다”根据看到或听到的线索谨慎推测情况。'
+    })
+  }),
+  possibility:Object.freeze({
+    meaning:Object.freeze({ko:'가능성을 열어 둠',ja:'可能性を残す（～かもしれない）',en:'leave open a possibility',zh:'保留某种可能性'}),
+    selected:Object.freeze({
+      ko:'“-(으)ㄹ지도 모르다”는 미래 상황이 그렇게 될 가능성을 확정하지 않고 열어 둡니다.',
+      ja:'「-(으)ㄹ지도 모르다」は、今後そうなる可能性を確定せずに残します。',
+      en:'“-(으)ㄹ지도 모르다” leaves open the possibility that something may happen.',
+      zh:'“-(으)ㄹ지도 모르다”不下定论，保留将来可能发生的情况。'
+    })
+  }),
+  certainty:Object.freeze({
+    meaning:Object.freeze({ko:'사실이라고 강하게 확신',ja:'事実だと強く確信（～に違いない）',en:'strong certainty it is true',zh:'强烈确信这是事实'}),
+    selected:Object.freeze({
+      ko:'“-(으)ㄹ 것이 틀림없다”는 말하는 사람이 그 판단을 사실이라고 강하게 확신합니다.',
+      ja:'「-(으)ㄹ 것이 틀림없다」は、話し手がその判断を事実だと強く確信します。',
+      en:'“-(으)ㄹ 것이 틀림없다” expresses strong confidence that the judgment is true.',
+      zh:'“-(으)ㄹ 것이 틀림없다”表示说话人强烈确信该判断属实。'
+    })
+  }),
+  intentionBasis:Object.freeze({
+    meaning:Object.freeze({ko:'내 의지를 이유로 뒤 행동 요청',ja:'自分の意志を理由に後を依頼',en:'my intention supports a request',zh:'以自己的意志为理由提出请求'}),
+    selected:Object.freeze({
+      ko:'“-(으)ㄹ 테니”는 말하는 사람의 의지나 예상을 근거로 뒤의 부탁·지시를 이어 갑니다.',
+      ja:'「-(으)ㄹ 테니」は、話し手の意志・予想を根拠に、後ろの依頼や指示へ続けます。',
+      en:'“-(으)ㄹ 테니” uses the speaker’s intention or prediction as the basis for a following request.',
+      zh:'“-(으)ㄹ 테니”以说话人的意志或预想为根据，接着提出请求或指示。'
+    })
+  })
+});
+const INFERENCE_EVIDENCE_ORDER=['clueGuess','possibility','certainty','intentionBasis'];
+const INFERENCE_EVIDENCE_METHOD=Object.freeze({
+  ko:'단서·확신도·뒷문장을 보세요. 관찰 뒤 추측=나 보다, 가능성만 남김=ㄹ지도 모르다, 강한 확신=ㄹ 것이 틀림없다, 내 의지 뒤 부탁=ㄹ 테니입니다.',
+  ja:'手掛かり・確信度・後続文を見ます。観察後の推測＝나 보다、可能性を残す＝ㄹ지도 모르다、強い確信＝ㄹ 것이 틀림없다、自分の意志の後に依頼＝ㄹ 테니です。',
+  en:'Check the clue, certainty, and next clause: observed clue = 나 보다, open possibility = ㄹ지도 모르다, strong certainty = ㄹ 것이 틀림없다, my intention followed by a request = ㄹ 테니.',
+  zh:'看线索、确信程度和后句：观察后推测＝나 보다，保留可能＝ㄹ지도 모르다，强烈确信＝ㄹ 것이 틀림없다，以自己的意志接请求＝ㄹ 테니。'
+});
+const reviewedInferenceEvidenceItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=INFERENCE_EVIDENCE[key];
+  return Object.freeze({
+    id,level:2,type:'grammar',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:INFERENCE_EVIDENCE_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(INFERENCE_EVIDENCE_ORDER.map(choiceKey=>Object.freeze({
+      meaning:INFERENCE_EVIDENCE[choiceKey].meaning,
+      explanationI18n:INFERENCE_EVIDENCE[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】나 보다=관찰 단서의 추측, ㄹ지도 모르다=열린 가능성, ㄹ 것이 틀림없다=강한 확신, ㄹ 테니=내 의지·예상 뒤 부탁으로 판단 기준이 다릅니다.\n【재사용 풀이】${INFERENCE_EVIDENCE_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】나 보다＝観察した手掛かりからの推測、ㄹ지도 모르다＝残された可能性、ㄹ 것이 틀림없다＝強い確信、ㄹ 테니＝自分の意志・予想に続く依頼で、判断基準が異なります。\n【再利用できる解き方】${INFERENCE_EVIDENCE_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 나 보다 infers from observed clues, ㄹ지도 모르다 leaves possibility open, ㄹ 것이 틀림없다 marks strong certainty, and ㄹ 테니 supports a following request with the speaker’s intention or prediction.\n[Reusable method] ${INFERENCE_EVIDENCE_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】나 보다表示根据观察线索推测，ㄹ지도 모르다保留可能性，ㄹ 것이 틀림없다表示强烈确信，ㄹ 테니以说话人的意志或预想引出请求，判断标准各不相同。\n【通用解法】${INFERENCE_EVIDENCE_METHOD.zh}`
+    })
+  });
+};
+
 const TOPIK_I=[
   item(1,'word','가게','상점','店','store; shop','商店','집 앞 가게에서 우유를 샀어요.'),
   item(1,'word','약속','만나기로 정한 일','約束','promise; appointment','约定','친구와 세 시에 만날 약속이 있어요.'),
@@ -435,6 +498,39 @@ const TOPIK_II=[
     ja:'失敗はまだ確定していない仮定で、その場合でも再挑戦する意志を保つので「-(으)ㄹ지라도」が合います。',
     en:'Failure is hypothetical, and the resolve to try again remains even in that case, so -(으)ㄹ지라도 fits.',
     zh:'失败还是未确定的假设，即使如此，再次挑战的意志仍不变，所以应选“-(으)ㄹ지라도”。'
+  }),
+
+  reviewedInferenceEvidenceItem('S04-II-G-INFER-01','-나 보다','clueGuess','사무실 불이 꺼진 걸 보니 모두 퇴근했나 봐요.',{
+    ko:'사무실 불이 꺼진 걸 보니 모두 퇴근했나 봐요.',ja:'事務所の明かりが消えているのを見ると、みんな退勤したようです。',en:'The office lights are off, so it looks like everyone has left.',zh:'看到办公室的灯关了，看来大家都下班了。'
+  },{
+    ko:'사무실 불이 꺼진 모습을 직접 보고 퇴근을 추측하므로 “-나 보다”가 맞습니다.',
+    ja:'事務所の明かりが消えているのを見て、退勤したと推測しているので「-나 보다」が合います。',
+    en:'The speaker sees the office lights off and infers that everyone left, so -나 보다 fits.',
+    zh:'说话人看到办公室的灯关了，由此推测大家已经下班，所以应选“-나 보다”。'
+  }),
+  reviewedInferenceEvidenceItem('S04-II-G-INFER-02','-(으)ㄹ지도 모르다','possibility','눈이 많이 오면 기차가 늦을지도 몰라요.',{
+    ko:'눈이 많이 오면 기차가 늦을지도 몰라요.',ja:'雪がたくさん降ると、列車が遅れるかもしれません。',en:'If it snows heavily, the train may be late.',zh:'如果雪下得很大，火车可能会晚点。'
+  },{
+    ko:'기차 지연을 확정하지 않고 가능한 결과 하나로 열어 두므로 “-(으)ㄹ지도 모르다”가 맞습니다.',
+    ja:'列車の遅れを断定せず、起こり得る結果として残しているので「-(으)ㄹ지도 모르다」が合います。',
+    en:'The delay is not certain; it remains one possible result, so -(으)ㄹ지도 모르다 fits.',
+    zh:'句子没有断定火车会晚点，只把它作为一种可能结果，所以应选“-(으)ㄹ지도 모르다”。'
+  }),
+  reviewedInferenceEvidenceItem('S04-II-G-INFER-03','-(으)ㄹ 것이 틀림없다','certainty','매일 연습했으니 실력이 늘었을 것이 틀림없어요.',{
+    ko:'매일 연습했으니 실력이 늘었을 것이 틀림없어요.',ja:'毎日練習したので、実力が伸びたに違いありません。',en:'After practicing every day, their skills must have improved.',zh:'每天都练习，实力一定提高了。'
+  },{
+    ko:'매일 연습했다는 근거로 실력 향상을 강하게 확신하므로 “-(으)ㄹ 것이 틀림없다”가 맞습니다.',
+    ja:'毎日練習したことを根拠に、実力が伸びたと強く確信しているので「-(으)ㄹ 것이 틀림없다」が合います。',
+    en:'Daily practice supports a strong conviction that the skills improved, so -(으)ㄹ 것이 틀림없다 fits.',
+    zh:'句子以每天练习为根据，强烈确信实力已经提高，所以应选“-(으)ㄹ 것이 틀림없다”。'
+  }),
+  reviewedInferenceEvidenceItem('S04-II-G-INFER-04','-(으)ㄹ 테니','intentionBasis','제가 자료를 정리할 테니 먼저 발표를 준비하세요.',{
+    ko:'제가 자료를 정리할 테니 먼저 발표를 준비하세요.',ja:'私が資料を整理するので、先に発表の準備をしてください。',en:'I will organize the materials, so please prepare the presentation first.',zh:'我来整理资料，请先准备发表。'
+  },{
+    ko:'내가 자료를 정리하겠다는 의지를 이유로 상대에게 발표 준비를 요청하므로 “-(으)ㄹ 테니”가 맞습니다.',
+    ja:'自分が資料を整理するという意志を理由に、相手へ発表準備を頼むので「-(으)ㄹ 테니」が合います。',
+    en:'The speaker’s intention to organize the materials supports the request that follows, so -(으)ㄹ 테니 fits.',
+    zh:'说话人以自己要整理资料的意志为理由，请对方准备发表，所以应选“-(으)ㄹ 테니”。'
   })
 ];
 
