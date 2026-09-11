@@ -293,6 +293,69 @@ const reviewedInferenceEvidenceItem=(id,term,key,example,exampleI18n,evidence)=>
   });
 };
 
+const LOCATION_WORDS=Object.freeze({
+  opposite:Object.freeze({
+    meaning:Object.freeze({ko:'길·공간의 반대쪽',ja:'道・空間の向こう側',en:'opposite side',zh:'道路或空间的对面'}),
+    selected:Object.freeze({
+      ko:'“건너편”은 길이나 열린 공간을 건너 마주 보는 반대쪽입니다.',
+      ja:'「건너편」は、道や空間を挟んで向かい合う反対側です。',
+      en:'“건너편” is the opposite side across a road or open space.',
+      zh:'“건너편”指隔着道路或空间相对的另一边。'
+    })
+  }),
+  nextTo:Object.freeze({
+    meaning:Object.freeze({ko:'바로 곁',ja:'すぐ隣・横',en:'right next to',zh:'紧挨着；旁边'}),
+    selected:Object.freeze({
+      ko:'“옆”은 한 기준점의 바로 곁이나 좌우에 붙은 위치입니다.',
+      ja:'「옆」は、一つの基準となる場所のすぐ隣・横です。',
+      en:'“옆” is directly beside one reference point.',
+      zh:'“옆”指紧挨着一个参照地点的旁边。'
+    })
+  }),
+  between:Object.freeze({
+    meaning:Object.freeze({ko:'둘의 가운데',ja:'二つの間',en:'between two places',zh:'两者之间'}),
+    selected:Object.freeze({
+      ko:'“사이”는 두 기준점의 가운데에 있는 위치입니다.',
+      ja:'「사이」は、二つの基準となる場所の間にある位置です。',
+      en:'“사이” is a position between two reference points.',
+      zh:'“사이”指位于两个参照地点之间的位置。'
+    })
+  }),
+  nearby:Object.freeze({
+    meaning:Object.freeze({ko:'가까운 주변',ja:'近く・周辺',en:'nearby area',zh:'附近一带'}),
+    selected:Object.freeze({
+      ko:'“근처”는 바로 붙어 있지 않아도 기준점에서 가까운 주변입니다.',
+      ja:'「근처」は、すぐ隣でなくても基準となる場所から近い周辺です。',
+      en:'“근처” is the nearby area, not necessarily directly beside the reference point.',
+      zh:'“근처”指参照地点附近的一带，不一定紧挨着。'
+    })
+  })
+});
+const LOCATION_ORDER=['opposite','nextTo','between','nearby'];
+const LOCATION_METHOD=Object.freeze({
+  ko:'기준점 수와 거리를 보세요. 길 너머 반대쪽=건너편, 한 곳 바로 곁=옆, 두 곳 가운데=사이, 정확한 옆이 아닌 가까운 주변=근처입니다.',
+  ja:'基準となる場所の数と距離を見ます。道の向こう側＝건너편、一か所のすぐ隣＝옆、二か所の間＝사이、すぐ隣とは限らない近い周辺＝근처です。',
+  en:'Check the number of reference points and distance: across a road = 건너편, directly beside one place = 옆, between two places = 사이, nearby but not necessarily adjacent = 근처.',
+  zh:'看参照地点的数量和距离：隔路相对＝건너편，紧挨一处＝옆，两处中间＝사이，不一定紧挨的附近＝근처。'
+});
+const reviewedLocationItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=LOCATION_WORDS[key];
+  return Object.freeze({
+    id,level:1,type:'word',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:LOCATION_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(LOCATION_ORDER.map(choiceKey=>Object.freeze({
+      meaning:LOCATION_WORDS[choiceKey].meaning,
+      explanationI18n:LOCATION_WORDS[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】건너편=길·공간 너머 반대쪽, 옆=한 곳 바로 곁, 사이=두 곳 가운데, 근처=가까운 주변으로 기준점과 거리가 다릅니다.\n【재사용 풀이】${LOCATION_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】건너편＝道・空間の向こう側、옆＝一か所のすぐ隣、사이＝二か所の間、근처＝近い周辺で、基準となる場所と距離が異なります。\n【再利用できる解き方】${LOCATION_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 건너편 is across a road or space, 옆 directly beside one place, 사이 between two places, and 근처 the nearby area.\n[Reusable method] ${LOCATION_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】건너편是隔着道路或空间的对面，옆是一处旁边，사이是两处中间，근처是附近一带，参照地点和距离各不相同。\n【通用解法】${LOCATION_METHOD.zh}`
+    })
+  });
+};
+
 const TOPIK_I=[
   item(1,'word','가게','상점','店','store; shop','商店','집 앞 가게에서 우유를 샀어요.'),
   item(1,'word','약속','만나기로 정한 일','約束','promise; appointment','约定','친구와 세 시에 만날 약속이 있어요.'),
@@ -375,7 +438,40 @@ const TOPIK_I=[
   item(1,'expression','시간이 나다','해야 할 일이 없어 여유 시간이 생기다','時間が空く','have some free time','有空','오후에 시간이 나면 같이 차를 마셔요.'),
   item(1,'expression','손이 모자라다','일할 사람이 부족하다','人手が足りない','be short-handed','人手不足','축제 준비를 도울 사람이 적어서 손이 모자라요.'),
   item(1,'expression','잘 부탁드립니다','앞으로 좋은 관계나 도움을 정중히 청하는 인사','よろしくお願いします','I look forward to working with you.','请多关照','오늘부터 함께 일하게 되었습니다. 잘 부탁드립니다.'),
-  item(1,'expression','다녀오겠습니다','나갔다가 돌아오겠다고 알리는 인사','行ってきます','I am leaving and will be back.','我出门了，会回来的','학교에 다녀오겠습니다.')
+  item(1,'expression','다녀오겠습니다','나갔다가 돌아오겠다고 알리는 인사','行ってきます','I am leaving and will be back.','我出门了，会回来的','학교에 다녀오겠습니다.'),
+
+  reviewedLocationItem('S04-I-W-PLACE-01','건너편','opposite','은행은 길 건너편에 있어요.',{
+    ko:'은행은 길 건너편에 있어요.',ja:'銀行は道の向こう側にあります。',en:'The bank is on the other side of the street.',zh:'银行在马路对面。'
+  },{
+    ko:'“길 건너편”은 길을 사이에 두고 마주 보는 반대쪽이므로 “건너편”이 맞습니다.',
+    ja:'「길 건너편」は道を挟んで向かい合う反対側なので、「건너편」が合います。',
+    en:'“길 건너편” is the opposite side across the street, so 건너편 fits.',
+    zh:'“길 건너편”是隔着马路相对的另一边，所以应选“건너편”。'
+  }),
+  reviewedLocationItem('S04-I-W-PLACE-02','옆','nextTo','약국은 병원 옆에 있어요.',{
+    ko:'약국은 병원 옆에 있어요.',ja:'薬局は病院の隣にあります。',en:'The pharmacy is next to the hospital.',zh:'药店在医院旁边。'
+  },{
+    ko:'약국이 병원 한 곳의 바로 곁에 있으므로 “옆”이 맞습니다.',
+    ja:'薬局が病院という一か所のすぐ隣にあるので、「옆」が合います。',
+    en:'The pharmacy is directly beside one reference point, the hospital, so 옆 fits.',
+    zh:'药店紧挨着医院这一处参照地点，所以应选“옆”。'
+  }),
+  reviewedLocationItem('S04-I-W-PLACE-03','사이','between','화장실은 식당과 카페 사이에 있어요.',{
+    ko:'화장실은 식당과 카페 사이에 있어요.',ja:'トイレは食堂とカフェの間にあります。',en:'The restroom is between the restaurant and the cafe.',zh:'洗手间在餐厅和咖啡店之间。'
+  },{
+    ko:'식당과 카페라는 두 기준점의 가운데이므로 “사이”가 맞습니다.',
+    ja:'食堂とカフェという二つの場所の間なので、「사이」が合います。',
+    en:'The restroom is between two reference points, the restaurant and cafe, so 사이 fits.',
+    zh:'洗手间位于餐厅和咖啡店两个参照地点之间，所以应选“사이”。'
+  }),
+  reviewedLocationItem('S04-I-W-PLACE-04','근처','nearby','역 근처에 편의점이 있어요.',{
+    ko:'역 근처에 편의점이 있어요.',ja:'駅の近くにコンビニがあります。',en:'There is a convenience store near the station.',zh:'车站附近有一家便利店。'
+  },{
+    ko:'편의점이 역의 바로 옆이라고 한정하지 않고 가까운 주변에 있으므로 “근처”가 맞습니다.',
+    ja:'コンビニが駅のすぐ隣とは限らず、近い周辺にあるので、「근처」が合います。',
+    en:'The store is in the area near the station, not necessarily directly beside it, so 근처 fits.',
+    zh:'便利店在车站附近一带，不限定为紧挨着，所以应选“근처”。'
+  })
 ];
 
 const TOPIK_II=[
