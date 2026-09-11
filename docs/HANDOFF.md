@@ -44,8 +44,10 @@ these facts from conversation history or the large TOPIK source bundle.
 - S04 candidate v105 adds four TOPIK II inference/evidence grammar cards that separate an observed-clue guess,
   open possibility, strong certainty, and speaker intention followed by a request. Each has a stable ID, fixed
   choice-specific ko/ja/en/zh feedback, bundled examples, and evidence→traps→method coaching. The bounded review
-  ledger is `docs/qa/shorts-review-s04-topik2-inference-evidence.md`. Focused data and inventory checks pass 9/9;
-  full CI and emulated-mobile evidence remain pending and block merge.
+  ledger is `docs/qa/shorts-review-s04-topik2-inference-evidence.md`. Focused checks pass 9/9, local Node 22 and
+  PR #124 CI `34586448188` pass 100/100. That CI covers 320/375/390/430px Linux Chrome emulation in both themes,
+  selected-wrong feedback, expanded coaching, next-first flow and reload restoration. Physical devices,
+  native-language review and learner timing remain unverified.
 - Next: after v105 passes, rebalance with one bounded TOPIK I shortage batch. Quantity alone is not progress, and a new P0 or clear
   wrong answer takes precedence. At least 52 I / 50 II additional distinct sets remain even before suitability review for the 140/level
   planning floor; this is not the final expansion target. Timing 5–15 seconds is unmeasured and never forced.

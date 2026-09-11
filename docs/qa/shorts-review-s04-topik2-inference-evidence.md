@@ -36,9 +36,9 @@ existing Shorts record.
 | Translation | AI-reviewed pass | Meaning, choices, feedback, full example and coaching are bundled in ko/ja/en/zh; no network translation is needed. |
 | Repeat/inventory | automated pass | Four stable IDs add four exact families with no new duplicate, structural flag, or conflicting-answer group. |
 | Storage | automated pass | Existing `topikQuestShortsV1` and earlier IDs remain; choice order and graded state restore without deleting progress. |
-| Emulated mobile | pending | CI must cover 320/375/390/430px, light/dark, wrong-answer recovery, expanded coaching and reload restoration. |
+| Emulated mobile | automated/visual pass | PR #124 CI `34586448188`: Linux Chrome at 320/375/390/430px, light/dark, selected-wrong feedback, expanded coaching, next-first flow, and reload restoration. This is not physical-device evidence. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
-| Overall | in-review | Merge is blocked until full CI and emulated-mobile evidence pass; external validation remains open afterward. |
+| Overall | in-review | Suitable for this limited web pilot after automated/emulated-mobile gates; external validation remains open. |
 
 Inventory becomes 304 rows / 178 exact question-choice families (TOPIK I 88, TOPIK II 90). The 15 existing
 structural review candidates do not increase. These totals are not content approvals: the generated inventory
