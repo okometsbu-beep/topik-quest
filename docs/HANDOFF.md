@@ -59,8 +59,9 @@ these facts from conversation history or the large TOPIK source bundle.
   questions, commands/requests, and suggestions to act together. Each has a stable ID, fixed choice-specific
   ko/ja/en/zh feedback, bundled examples, and evidence→traps→original-sentence-function coaching. The bounded
   review ledger is `docs/qa/shorts-review-s04-topik2-reported-speech.md`. Focused data/inventory checks pass
-  11/11, content checks pass 14/14, and local Node 22 full release checks pass 102/102; mobile-emulation
-  checks remain pending.
+  11/11, content checks pass 14/14, and local Node 22 plus PR #126 CI `34647756064` full release checks
+  pass 102/102. That CI rerun covers 320/375/390/430px Linux Chrome emulation in both themes,
+  selected-wrong feedback, expanded coaching, next-first flow and reload restoration.
   Physical devices, native-language review and learner timing remain unverified.
 - Next: after v107 passes, rebalance with one bounded TOPIK I shortage batch. Quantity alone is not progress, and a new P0 or clear
   wrong answer takes precedence. At least 48 I / 46 II additional distinct sets remain even before suitability review for the 140/level
