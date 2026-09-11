@@ -38,8 +38,9 @@ these facts from conversation history or the large TOPIK source bundle.
   actual contrary result, and hypothetical concession. Each uses one short two-axis judgment, fixed reviewed choices,
   choice-specific ko/ja/en/zh feedback, bundled full examples, and evidence→traps→method coaching. The bounded review
   ledger is `docs/qa/shorts-review-s04-topik2-cause-concession.md`. Focused inventory checks pass 8/8,
-  content checks 11/11, and local Node 22 full release checks 99/99. Emulated-mobile verification remains a
-  candidate gate. Physical devices and learner timing are unverified.
+  content checks 11/11, and local Node 22 plus PR #123 CI `34583234297` full release checks pass 99/99.
+  That CI covers 320/375/390/430px Linux Chrome emulation in both themes, selected-wrong feedback,
+  expanded coaching, next-first flow, and reload restoration. Physical devices and learner timing are unverified.
 - Next: add one bounded TOPIK II inference/evidence grammar batch. Quantity alone is not progress, and a new P0 or clear
   wrong answer takes precedence. At least 52 I / 54 II additional distinct sets remain even before suitability review for the 140/level
   planning floor; this is not the final expansion target. Timing 5–15 seconds is unmeasured and never forced.
