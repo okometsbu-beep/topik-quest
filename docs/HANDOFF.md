@@ -31,7 +31,9 @@ these facts from conversation history or the large TOPIK source bundle.
 - S04 candidate v103 adds four TOPIK II connective-adverb cards for result, contrast, addition and limiting
   condition. Each uses one short relation judgment, fixed reviewed choices, choice-specific ko/ja/en/zh feedback,
   bundled full examples, and evidence→traps→method coaching. The bounded review ledger is
-  `docs/qa/shorts-review-s04-topik2-linkers.md`.
+  `docs/qa/shorts-review-s04-topik2-linkers.md`. Local Node 22 and PR #122 CI `34557440568` pass 98/98;
+  that CI also covers 320/375/390/430px Linux Chrome emulation in both themes, selected-wrong feedback,
+  expanded coaching and reload restoration. Physical devices and learner timing remain unverified.
 - Next: add one bounded TOPIK II cause/concession grammar batch. Quantity alone is not progress, and a new P0 or clear
   wrong answer takes precedence. At least 52 I / 58 II additional distinct sets remain even before suitability review for the 140/level
   planning floor; this is not the final expansion target. Timing 5–15 seconds is unmeasured and never forced.

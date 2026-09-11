@@ -34,6 +34,7 @@ choices are shuffled per card and restored from the existing Shorts record.
 | Translation | AI-reviewed pass | Term meaning, choices, feedback, full example and coaching reviewed and bundled in ko/ja/en/zh; no network translation is needed. |
 | Repeat/inventory | automated pass | Four new stable IDs and exact families; no new duplicate or conflicting-answer group. |
 | Storage | automated pass | Existing `topikQuestShortsV1` root and earlier IDs remain; choice order and graded state restore without deleting progress. |
+| Emulated mobile | automated/visual pass | PR #122 CI `34557440568`: Linux Chrome at 320/375/390/430px, light/dark, selected-wrong feedback, expanded coaching, and reload restoration. This is not physical-device evidence. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
 | Overall | in-review | Suitable for this limited web pilot after automated/emulated-mobile gates; external validation remains open. |
 
