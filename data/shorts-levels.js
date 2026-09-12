@@ -419,6 +419,69 @@ const reviewedLocationItem=(id,term,key,example,exampleI18n,evidence)=>{
   });
 };
 
+const FREQUENCY_WORDS=Object.freeze({
+  always:Object.freeze({
+    meaning:Object.freeze({ko:'매번 빠짐없이',ja:'いつも；毎回',en:'always; every time',zh:'总是；每次'}),
+    selected:Object.freeze({
+      ko:'“항상”은 예외 없이 매번 같은 일이 일어남을 나타냅니다.',
+      ja:'「항상」は、例外なく毎回同じことが起こることを表します。',
+      en:'“항상” means the same thing happens every time, without an exception.',
+      zh:'“항상”表示没有例外，每次都会发生同样的事情。'
+    })
+  }),
+  often:Object.freeze({
+    meaning:Object.freeze({ko:'횟수가 많게',ja:'よく；頻繁に',en:'often; frequently',zh:'经常；频繁'}),
+    selected:Object.freeze({
+      ko:'“자주”는 어떤 일이 여러 번, 높은 빈도로 일어남을 나타냅니다.',
+      ja:'「자주」は、あることが何度も高い頻度で起こることを表します。',
+      en:'“자주” means something happens many times or with high frequency.',
+      zh:'“자주”表示某事发生很多次、频率较高。'
+    })
+  }),
+  sometimes:Object.freeze({
+    meaning:Object.freeze({ko:'때때로; 어떤 때에는',ja:'時々；たまに',en:'sometimes; occasionally',zh:'有时；偶尔'}),
+    selected:Object.freeze({
+      ko:'“가끔”은 늘 그렇지는 않고 어떤 때에만 일이 일어남을 나타냅니다.',
+      ja:'「가끔」は、いつもではなく、ある時だけ起こることを表します。',
+      en:'“가끔” means something happens on some occasions, but not regularly.',
+      zh:'“가끔”表示并非总是如此，只在有些时候发生。'
+    })
+  }),
+  notAtAll:Object.freeze({
+    meaning:Object.freeze({ko:'부정문에서 조금도 아님',ja:'否定とともに「まったく～ない」',en:'not at all (with a negative)',zh:'与否定搭配，完全不'}),
+    selected:Object.freeze({
+      ko:'“전혀”는 “안·못·없다” 같은 부정 표현과 함께 정도나 횟수가 조금도 없음을 강조합니다.',
+      ja:'「전혀」は「안・못・없다」などの否定表現とともに使い、程度や回数がまったくないことを強調します。',
+      en:'“전혀” combines with a negative such as 안, 못, or 없다 to stress “not at all.”',
+      zh:'“전혀”与“안、못、없다”等否定表达搭配，强调程度或次数完全为零。'
+    })
+  })
+});
+const FREQUENCY_ORDER=['always','often','sometimes','notAtAll'];
+const FREQUENCY_METHOD=Object.freeze({
+  ko:'빈도를 먼저 나누세요. 예외 없이 매번=항상, 횟수가 많음=자주, 어떤 때에만=가끔, 부정 표현과 함께 0회·0정도=전혀입니다.',
+  ja:'頻度を先に分けます。例外なく毎回＝항상、高い頻度＝자주、ある時だけ＝가끔、否定表現とともに0回・0程度＝전혀です。',
+  en:'Classify the frequency first: every time = 항상, high frequency = 자주, on some occasions = 가끔, and zero with a negative expression = 전혀.',
+  zh:'先判断频率：每次无例外＝항상，频率高＝자주，有时才发生＝가끔，与否定搭配表示零次或零程度＝전혀。'
+});
+const reviewedFrequencyItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=FREQUENCY_WORDS[key];
+  return Object.freeze({
+    id,level:1,type:'word',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:FREQUENCY_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(FREQUENCY_ORDER.map(choiceKey=>Object.freeze({
+      meaning:FREQUENCY_WORDS[choiceKey].meaning,
+      explanationI18n:FREQUENCY_WORDS[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】항상=매번, 자주=높은 빈도, 가끔=어떤 때에만, 전혀=부정 표현과 함께 0회·0정도로 빈도가 다릅니다.\n【재사용 풀이】${FREQUENCY_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】항상＝毎回、자주＝高い頻度、가끔＝ある時だけ、전혀＝否定表現とともに0回・0程度で、頻度が異なります。\n【再利用できる解き方】${FREQUENCY_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 항상 means every time, 자주 high frequency, 가끔 some occasions, and 전혀 zero frequency or degree with a negative expression.\n[Reusable method] ${FREQUENCY_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】항상表示每次，자주表示高频，가끔表示有时，전혀与否定搭配表示零次或零程度，频率各不相同。\n【通用解法】${FREQUENCY_METHOD.zh}`
+    })
+  });
+};
+
 const TOPIK_I=[
   item(1,'word','가게','상점','店','store; shop','商店','집 앞 가게에서 우유를 샀어요.'),
   item(1,'word','약속','만나기로 정한 일','約束','promise; appointment','约定','친구와 세 시에 만날 약속이 있어요.'),
@@ -534,6 +597,38 @@ const TOPIK_I=[
     ja:'コンビニが駅のすぐ隣とは限らず、近い周辺にあるので、「근처」が合います。',
     en:'The store is in the area near the station, not necessarily directly beside it, so 근처 fits.',
     zh:'便利店在车站附近一带，不限定为紧挨着，所以应选“근처”。'
+  }),
+  reviewedFrequencyItem('S04-I-W-FREQ-01','항상','always','저는 항상 아침밥을 먹어요.',{
+    ko:'저는 항상 아침밥을 먹어요.',ja:'私はいつも朝ご飯を食べます。',en:'I always eat breakfast.',zh:'我总是吃早饭。'
+  },{
+    ko:'“저는 항상 아침밥을 먹어요”는 예외 없이 매번 아침밥을 먹는다는 뜻입니다.',
+    ja:'「저는 항상 아침밥을 먹어요」は「私はいつも朝ご飯を食べます」という、例外のない毎回の習慣です。',
+    en:'“저는 항상 아침밥을 먹어요” says breakfast is eaten every time, without exception.',
+    zh:'“저는 항상 아침밥을 먹어요”表示每次都吃早饭，没有例外。'
+  }),
+  reviewedFrequencyItem('S04-I-W-FREQ-02','자주','often','주말에 이 공원에 자주 와요.',{
+    ko:'주말에 이 공원에 자주 와요.',ja:'週末はこの公園によく来ます。',en:'I often come to this park on weekends.',zh:'我周末经常来这个公园。'
+  },{
+    ko:'“주말에 이 공원에 자주 와요”는 공원에 오는 횟수가 많다는 뜻입니다.',
+    ja:'「주말에 이 공원에 자주 와요」は「週末はこの公園によく来ます」という、高い頻度を表します。',
+    en:'“주말에 이 공원에 자주 와요” says visits to the park happen with high frequency.',
+    zh:'“주말에 이 공원에 자주 와요”表示周末来这个公园的频率很高。'
+  }),
+  reviewedFrequencyItem('S04-I-W-FREQ-03','가끔','sometimes','저는 가끔 버스로 학교에 가요.',{
+    ko:'저는 가끔 버스로 학교에 가요.',ja:'私は時々バスで学校へ行きます。',en:'I sometimes go to school by bus.',zh:'我有时坐公交车去学校。'
+  },{
+    ko:'“저는 가끔 버스로 학교에 가요”는 늘 버스를 타는 것이 아니라 어떤 때에만 탄다는 뜻입니다.',
+    ja:'「저는 가끔 버스로 학교에 가요」は「私は時々バスで学校へ行きます」という、ある時だけの行動です。',
+    en:'“저는 가끔 버스로 학교에 가요” says the bus is used on some occasions, not every time.',
+    zh:'“저는 가끔 버스로 학교에 가요”表示不是每次，而是有时坐公交车去学校。'
+  }),
+  reviewedFrequencyItem('S04-I-W-FREQ-04','전혀','notAtAll','저는 매운 음식을 전혀 못 먹어요.',{
+    ko:'저는 매운 음식을 전혀 못 먹어요.',ja:'私は辛い物がまったく食べられません。',en:'I cannot eat spicy food at all.',zh:'我完全不能吃辣的食物。'
+  },{
+    ko:'“전혀 못 먹어요”는 부정 표현 “못”과 함께 먹을 수 있는 정도가 조금도 없음을 강조합니다.',
+    ja:'「전혀 못 먹어요」は、否定表現「못」とともに「まったく食べられない」と0の程度を強調します。',
+    en:'“전혀 못 먹어요” combines 전혀 with 못 to emphasize zero ability: cannot eat it at all.',
+    zh:'“전혀 못 먹어요”把전혀和否定词“못”搭配，强调一点也不能吃。'
   })
 ];
 
