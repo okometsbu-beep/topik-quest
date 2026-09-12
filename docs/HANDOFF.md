@@ -67,7 +67,9 @@ these facts from conversation history or the large TOPIK source bundle.
   some occasions, and zero degree/frequency with a negative expression. Each has a stable ID, fixed
   choice-specific ko/ja/en/zh feedback, bundled examples, and evidence→traps→frequency-scale coaching.
   The bounded review ledger is `docs/qa/shorts-review-s04-topik1-frequency.md`. Focused data/inventory checks
-  pass 12/12 locally; the full release check and PR Chrome evidence remain pending before merge.
+  pass 12/12, content checks pass 15/15, and local Node 22 plus PR #127 CI `34669739020` full release checks
+  pass 103/103. That CI covers 320/375/390/430px Linux Chrome emulation in both themes, selected-wrong
+  feedback, expanded coaching, next-first flow and reload restoration.
   Physical devices, native-language review and learner timing remain unverified.
 - Next: after v108 passes, rebalance with one bounded TOPIK II shortage batch. Quantity alone is not progress, and a new P0 or clear
   wrong answer takes precedence. At least 44 I / 46 II additional distinct sets remain even before suitability review for the 140/level

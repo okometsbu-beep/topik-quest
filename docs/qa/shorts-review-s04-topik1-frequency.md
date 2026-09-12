@@ -35,10 +35,10 @@ and restored through the existing Shorts record.
 | Repeat/inventory | automated pass | Four stable IDs add four exact families with no new duplicate, structural flag, or conflicting-answer group. |
 | Storage | automated pass | Existing `topikQuestShortsV1` and earlier IDs remain; cards are appended after existing TOPIK I rows. |
 | Focused local checks | pass | Inventory and vocabulary tests pass 12/12 on Node 22. |
-| Full release checks | pending | Recorded after the candidate release check. |
-| Emulated mobile | pending | Required at 320/375/390/430px in light/dark before merge. |
+| Full release checks | pass | Node 22 `npm run check` passed 103/103; content checks passed 15/15. |
+| Emulated mobile | pass | PR #127 CI `34669739020` covered 320/375/390/430px, light/dark, wrong-answer recovery, expanded coaching, next-first flow and reload restoration. Evidence: `00bq-shorts-topik1-frequency-wrong-light.png`, `00br-shorts-topik1-frequency-full-dark.png`. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
-| Overall | candidate | Merge requires the full release and browser gates; external human, timing and physical-device validation remains open. |
+| Overall | bounded pass | Automated, visual-emulation and AI content gates pass for these four IDs only; external human, timing and physical-device validation remains open. |
 
 Inventory becomes 316 rows / 190 exact question-choice families (TOPIK I 96, TOPIK II 94). The 15 existing
 structural review candidates do not increase. These totals are not content approvals: the generated inventory
