@@ -658,10 +658,10 @@ try{
   assert.equal(await evaluate(`document.querySelectorAll('.writingReview .writingPart').length`),2,'Review must show ㉠ and ㉡ separately');
   assert.deepEqual(await evaluate(`[...document.querySelectorAll('.writingReview .writingPart')].map(part=>part.innerText.includes('수업이 끝난 뒤에 만날까요?')||part.innerText.includes('네, 도서관 앞에서 기다릴게요.'))`),[true,true],'Review must keep both saved answers');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);
-  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertWritingFits(`Writing review light ${width}px`,'light',true)}
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await sleep(120);await evaluate(`document.querySelector('.writingReview details').open=true`);await assertWritingFits(`Writing review light ${width}px`,'light',true)}
   await evaluate(`malbitSetTheme('dark')`);await sleep(100);
-  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertWritingFits(`Writing review dark ${width}px`,'dark',true)}
-  await setViewport(390,844);await evaluate(`document.querySelector('.writingReview').scrollIntoView({block:'start',behavior:'auto'})`);await sleep(80);await shot('00bw-writing-two-blanks-review-dark.png');
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await sleep(120);await evaluate(`document.querySelector('.writingReview details').open=true`);await assertWritingFits(`Writing review dark ${width}px`,'dark',true)}
+  await setViewport(390,844);await sleep(120);await evaluate(`document.querySelector('.writingReview details').open=true;document.querySelector('.writingReview').scrollIntoView({block:'start',behavior:'auto'})`);await sleep(80);await shot('00bw-writing-two-blanks-review-dark.png');
   await evaluate(`(()=>{S.real={active:true,mode:'write',phase:'write',id:51,mockSet:1,deadline:Date.now()+3000000,audioPlayed:{}};S.writing[51]='이전 통합 답안';S.view='real';save();render()})()`);await sleep(120);
   assert.deepEqual(await evaluate(`({notice:document.querySelector('.writingMigration')?.innerText,answers:Object.fromEntries([...document.querySelectorAll('[data-writing-part]')].map(el=>[el.dataset.writingPart,el.value]))})`),{notice:'以前の一体型答案を㉠に保存しました。2つの欄を確認して分けてください。',answers:{giyeok:'이전 통합 답안',nieun:''}},'an unlabelled legacy answer must stay in ㉠ with a migration notice');
   await evaluate(`S.view='home';save();render()`);await sleep(180);
