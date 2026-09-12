@@ -5,8 +5,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v106 · S04 reviewed TOPIK I everyday-location word Shorts pilot (`cec686dbc851eb0601c47b9edc942064dc3685a8`)
-- Current candidate: v107 · S04 reviewed TOPIK II reported-speech grammar Shorts pilot
+- Production release: v107 · S04 reviewed TOPIK II reported-speech grammar Shorts pilot (`18a8b9008cb38f3fca276191767482520fb80186`)
+- Current candidate: v108 · S04 reviewed TOPIK I frequency-adverb Shorts pilot
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -18,7 +18,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - TOPIK I·II, Shorts, Random Practice, full mock exams, Review, Vocabulary, Statistics
 - Beginner grammar covers core sentence order and major particle, tense, politeness, negation, connective,
   modifier, irregular, and speech-level transformations with per-rule writing practice.
-- Shorts candidate has 180 TOPIK I / 132 TOPIK II rows, but only 92 / 94 distinct question-choice sets;
+- Shorts candidate has 184 TOPIK I / 132 TOPIK II rows, but only 96 / 94 distinct question-choice sets;
   these are inventory counts, not educationally approved questions. Fixed mock composition remains intact.
 - bank explanations structured as answer evidence → distractor trap → reusable type-solving method,
   with separate TOPIK II writing 51–54 plans
@@ -150,26 +150,25 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-S04 다음 묶음: v107 통과 뒤 다시 더 부족해지는 TOPIK I의 미검수 유형 4개를 재고와 대조한 뒤
-같은 한 판단 계약으로 검수·확충한다. 정답 유일성·선택
-오답 해설·ko/ja/en/zh 번역을 함께 검수하고 실제 사람 풀이시간은 별도 미검증으로 유지한다.
+S04 다음 묶음: v108 통과 뒤 다시 더 부족해지는 TOPIK II의 미검수 유형 4개를 재고와 대조한 뒤
+같은 한 판단 계약으로 검수·확충한다. 정답 유일성·선택 오답 해설·ko/ja/en/zh 번역을 함께
+검수하고 실제 사람 풀이시간은 별도 미검증으로 유지한다.
 새 P0/명백한 정답 오류가 있으면 앞당긴다.
 
-## 이번 작업 · S04 TOPIK II 간접화법 숏츠 4문항 검수·확충
+## 이번 작업 · S04 TOPIK I 빈도 부사 숏츠 4문항 검수·확충
 
-- 기준 production v106 `cec686dbc851eb0601c47b9edc942064dc3685a8`, candidate v107. TOPIK II에
-  `-다고 하다·-냐고 하다·-(으)라고 하다·-자고 하다` 네 간접화법 어미를 독립 안정 ID로 추가했다.
-- 각 카드는 원래 문장의 기능인 진술·사실, 질문, 명령·요청, 함께하자는 제안 중 하나만 빠르게
+- 기준 production v107 `18a8b9008cb38f3fca276191767482520fb80186`, candidate v108. TOPIK I에
+  `항상·자주·가끔·전혀` 네 빈도 부사를 독립 안정 ID로 추가했다.
+- 각 카드는 예외 없는 매번, 높은 빈도, 어떤 때에만, 부정 표현과 함께 0회·0정도 중 하나만 빠르게
   판단한다. 고정 검수 선택지를 카드마다 섞되 기존 Shorts 저장 루트에서 순서를 복구한다. 선택
-  오답의 기능을 먼저 설명한 뒤 상세 해설에서 결정적 예문→네 기능 함정→원문 기능 판별법을 제공한다.
+  오답의 빈도를 먼저 설명한 뒤 상세 해설에서 결정적 예문→네 빈도 함정→빈도축 판별법을 제공한다.
 - ko/ja/en/zh의 뜻·보기·선택 피드백·완전한 예문 번역·상세 해설을 함께 AI 검수했다. 새 정확 중복,
-  구조 검토 후보 증가와 정답 충돌은 0이며 재고는 312행/186 정확 의미군, 레벨별 서로 다른 묶음은
-  I 92·II 94이다. 이는 전체 승인 수가 아니며 이번 제한 검수 대상은 새 4개뿐이다.
+  구조 검토 후보 증가와 정답 충돌은 0이며 재고는 316행/190 정확 의미군, 레벨별 서로 다른 묶음은
+  I 96·II 94이다. 이는 전체 승인 수가 아니며 이번 제한 검수 대상은 새 4개뿐이다.
 - 원본 2,088문항, 연습 확장, 기존 숏츠 ID·정답·모의 위치와 모든 학습 저장 루트는 변경하지 않는다.
-- 집중 데이터·재고 검사 11/11, 콘텐츠 검사 14/14, 로컬 Node 22와 PR #126 CI `34647756064`
-  전체 검사 102/102를 통과했다. 같은 CI의 Linux Chrome 에뮬레이션에서 320·375·390·430px
-  라이트/다크, 선택 오답→짧은 복구→다음 문제 우선→상세 해설과 새로고침 상태 복원을 확인했다.
-  첫 실행의 기존 명동 허브 복원 단계 일시 실패는 동일 커밋 재실행에서 통과했다.
+- 집중 데이터·재고 12/12, 콘텐츠 15/15, 로컬 Node 22와 PR #127 CI `34669739020` 전체 검사
+  103/103을 통과했다. 같은 CI의 Linux Chrome 에뮬레이션에서 320·375·390·430px 라이트/다크,
+  선택 오답→짧은 복구→다음 문제 우선→상세 해설과 새로고침 상태 복원을 확인했다.
 - 실제 일본어 모어 화자 검수, 실제 초보자 5–15초 풀이·1일/7일 회상, 실제 iPhone/Android와
   네트워크 단절 복구는 미검증이다. 사람 검수 완료로 과장하지 않는다.
 

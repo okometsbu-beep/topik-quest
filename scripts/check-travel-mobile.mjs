@@ -978,6 +978,35 @@ try{
   assert.match(reportedRestored.summary,/-냐고 하다[\s\S]*尋ねた内容/u,'reported-speech selected feedback must survive reload');
   assert.match(reportedRestored.answer,/発言・事実の伝達/u,'reviewed reported-speech answer must survive reload');
 
+  const frequencyWord=await evaluate(`(()=>{const lv=1,deck=[...window.MALBIT_SHORTS_DECKS[lv],...window.MALBIT_BANK.shorts(lv)],index=deck.findIndex(item=>item.id==='S04-I-W-FREQ-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','1');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:1,levels:{1:active,2:blank},daily:{}}));return{index,id:identity.id}})()`);
+  assert.equal(frequencyWord.id,'S04-I-W-FREQ-01','reviewed frequency card must have its explicit stable ID');
+  await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsWord');
+  const frequencyBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['1'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
+  assert.equal(frequencyBefore.term,'항상');assert.equal(frequencyBefore.cardId,frequencyWord.id);assert.equal(frequencyBefore.orderId,frequencyWord.id);
+  assert.deepEqual(frequencyBefore.choiceOrder,[2,1,0,3]);
+  assert.deepEqual(frequencyBefore.labels,['時々；たまに','よく；頻繁に','いつも；毎回','否定とともに「まったく～ない」'],'fixed frequency choices must keep the saved shuffle');
+  await submitShortsLabel('よく；頻繁に');
+  const frequencyReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
+  assert.match(frequencyReview.summary,/자주[\s\S]*高い頻度/u,'selected Japanese feedback must explain the high-frequency trap');
+  assert.match(frequencyReview.answer,/いつも；毎回/u);assert.equal(frequencyReview.closed,true);
+  assert.equal(frequencyReview.nextBeforeDetails,true,'Next question must precede optional frequency coaching');
+  assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'私はいつも朝ご飯を食べます。','reviewed Japanese frequency example must render locally');
+  await evaluate(`malbitSetTheme('light')`);await sleep(100);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK I frequency light ${width}px`,'light')}
+  await setViewport(390,844);await shot('00bq-shorts-topik1-frequency-wrong-light.png');
+  await evaluate(`malbitSetTheme('dark');const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK I frequency expanded dark ${width}px`,'dark')}
+  await setViewport(390,844);await shot('00br-shorts-topik1-frequency-full-dark.png');
+  await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsFeedbackSummary');
+  const frequencyRestored=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['1'];return{cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder,locked:state.locked,summary:document.querySelector('.shortsFeedbackSummary')?.innerText,answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
+  assert.equal(frequencyRestored.cardId,frequencyWord.id,'reviewed frequency ID must survive reload');
+  assert.equal(frequencyRestored.orderId,frequencyWord.id,'reviewed frequency choice-order ID must survive reload');
+  assert.deepEqual(frequencyRestored.choiceOrder,[2,1,0,3],'saved frequency choice order must survive reload');
+  assert.equal(frequencyRestored.locked,true,'graded frequency state must survive reload');
+  assert.match(frequencyRestored.summary,/자주[\s\S]*高い頻度/u,'frequency selected feedback must survive reload');
+  assert.match(frequencyRestored.answer,/いつも；毎回/u,'reviewed frequency answer must survive reload');
+
   const exhausted=await openExhaustedShortsCycle(1);
   await evaluate(`nextShorts()`);await sleep(180);
   const cycled=await evaluate(`(()=>{const saved=JSON.parse(localStorage.getItem('topikQuestShortsV1')),state=saved.levels['1']||saved.levels[1];return{schema:saved.schema,cycle:state.cycle,isReview:state.isReview,cardId:state.cardId,familyId:state.familyId,term:document.querySelector('.shortsWord')?.textContent.trim(),badge:document.querySelector('.shortsReviewBadge')?.textContent.trim()}})()`);
