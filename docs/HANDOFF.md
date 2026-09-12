@@ -5,7 +5,8 @@ these facts from conversation history or the large TOPIK source bundle.
 
 ## Immediate user priority · #129
 
-- Pause Shorts expansion for the explicit writing-input fix on `agent/fix-writing-two-blanks`.
+- Completed in v110 through PR #130. Product commit is `a0f852517ae72b3371ca9ab6c6fc3936c09ddda3`;
+  v109 `b84e596129956e0e70328910c22917b9a8bfbb5c` is the rollback baseline.
 - `writing-answers.js` defines schema 2 `{answers:{giyeok,nieun}}`, preserving `legacyText`.
   Labelled ㄱ/ㄴ strings split; unlabelled text stays in the first field with a migration notice.
 - Owning core renders/binds two fields for 51/52, estimates each blank separately, and snapshots
@@ -14,22 +15,24 @@ these facts from conversation history or the large TOPIK source bundle.
 - Recovery now counts `writingHistory` as durable core progress. A writing-only snapshot previously
   had zero weight and could be lost after an empty-core reset. Failing-then-passing coverage also
   verifies that a current writing history is not replaced by an older snapshot.
-- Sep 12 follow-up: Node v24.19.0 focused 10/10, quick 95/95, full 110/110; local HTTP base 3/runtime 45.
-  Live SET 1/51 was reached through public UI and still has one textbox before this release.
+- Sep 12 follow-up: Node v24.19.0 focused 10/10, quick 95/95, full 110/110; local and live HTTP
+  smoke pass base 3/runtime 45 at v110.
 - Branch CI `34701329686` passed the repository's Linux Chrome gate at 320/375/390/430px in both themes:
   two keyed fields, touch input, independent save, reload restore, bounded score, split Review, and legacy notice.
   Artifact `10300595038` screenshots were inspected. This is emulation, not iPhone/Android hardware or real IME proof.
-- v110 has been bumped exactly once. Finish full release checks, PR/CI, merge, Pages and live verification.
-- Live v109 is `b84e596129956e0e70328910c22917b9a8bfbb5c` (PR #128); this is the rollback baseline.
+- PR and main CI `34702111845` passed. Its first main attempt lost the Chrome target; the unchanged rerun
+  passed all 110 checks. Live public UI shows two labelled fields and preserves different ㄱ/ㄴ values after
+  next/back navigation. Physical iPhone/Android and real IME remain unverified.
 
 ## Current release priority · 2026-09-12
 
 - Source of truth: [release blueprint #110](https://github.com/okometsbu-beep/topik-quest/issues/110).
   It supersedes #76 map expansion until core learning quality gates pass. A01–A12 remain audit findings,
   not resolved items; existing feature/visual checks do not certify translation or teaching accuracy.
-- Production is v108 at `d68ac0a8dac3fa3d4ab7355aec8b3b34cddeb082` (PR #127).
-  Four reviewed TOPIK I frequency-adverb Shorts are shipped on top of stable card/family cycling. Product rollback is
-  v107 `18a8b9008cb38f3fca276191767482520fb80186`.
+- Production is v110 at `a0f852517ae72b3371ca9ab6c6fc3936c09ddda3` (PR #130).
+  TOPIK II writing 51/52 now uses separate labelled ㄱ/ㄴ fields through input, scoring, save, Review,
+  recovery, and compatible legacy migration. Product rollback is v109
+  `b84e596129956e0e70328910c22917b9a8bfbb5c`.
 - Latest #110 instruction: C01–C06 content quality, first applied as S01–S05 Shorts, outranks A08/#76.
   S01 adds `docs/qa/shorts-audit.md`, generated ID/content-hash inventory and `scripts/audit-shorts.cjs`.
   The v109 candidate has 320 runtime rows but only 194 distinct question-choice sets (I 96, II 98), 30 duplicate
@@ -90,7 +93,7 @@ these facts from conversation history or the large TOPIK source bundle.
   pass 103/103. That CI covers 320/375/390/430px Linux Chrome emulation in both themes, selected-wrong
   feedback, expanded coaching, next-first flow and reload restoration.
   Physical devices, native-language review and learner timing remain unverified.
-- S04 candidate v109 adds four TOPIK II state/change grammar cards that separate a circumstance-led new action,
+- S04 v109 added four TOPIK II state/change grammar cards that separate a circumstance-led new action,
   adjective quality change, action in progress, and the remaining result state of a completed action. Each has a
   stable ID, fixed choice-specific ko/ja/en/zh feedback, bundled examples, and evidence→traps→state-function
   coaching. The bounded review ledger is `docs/qa/shorts-review-s04-topik2-state-change.md`. Focused data and
@@ -99,7 +102,7 @@ these facts from conversation history or the large TOPIK source bundle.
   emulation in both themes, selected-wrong feedback, expanded coaching, next-first flow and reload restoration.
   Its first attempt ended only on an unrelated external-resource HTTP 429; the unchanged rerun passed.
   Physical devices, native-language review and learner timing remain unverified.
-- Next: after v109 passes, rebalance with one bounded TOPIK I shortage batch. Quantity alone is not progress, and a new P0 or clear
+- Next: resume with one bounded TOPIK I shortage batch. Quantity alone is not progress, and a new P0 or clear
   wrong answer takes precedence. At least 44 I / 42 II additional distinct sets remain even before suitability review for the 140/level
   planning floor; this is not the final expansion target. Timing 5–15 seconds is unmeasured and never forced.
 - Follow start → understand → recall/speak/write → review → next learning for Japanese beginners, and
