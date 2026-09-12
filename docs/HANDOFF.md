@@ -8,13 +8,13 @@ these facts from conversation history or the large TOPIK source bundle.
 - Source of truth: [release blueprint #110](https://github.com/okometsbu-beep/topik-quest/issues/110).
   It supersedes #76 map expansion until core learning quality gates pass. A01–A12 remain audit findings,
   not resolved items; existing feature/visual checks do not certify translation or teaching accuracy.
-- Production is v107 at `18a8b9008cb38f3fca276191767482520fb80186` (PR #126).
-  Four reviewed TOPIK II reported-speech Shorts are shipped on top of stable card/family cycling. Product rollback is
-  v106 `cec686dbc851eb0601c47b9edc942064dc3685a8`.
+- Production is v108 at `d68ac0a8dac3fa3d4ab7355aec8b3b34cddeb082` (PR #127).
+  Four reviewed TOPIK I frequency-adverb Shorts are shipped on top of stable card/family cycling. Product rollback is
+  v107 `18a8b9008cb38f3fca276191767482520fb80186`.
 - Latest #110 instruction: C01–C06 content quality, first applied as S01–S05 Shorts, outranks A08/#76.
   S01 adds `docs/qa/shorts-audit.md`, generated ID/content-hash inventory and `scripts/audit-shorts.cjs`.
-  The v108 candidate has 316 runtime rows but only 190 distinct question-choice sets (I 96, II 94), 30 duplicate
-  groups and 15 structural review candidates. Comprehensive content approvals remain 0/316, not 316 passed questions.
+  The v109 candidate has 320 runtime rows but only 194 distinct question-choice sets (I 96, II 98), 30 duplicate
+  groups and 15 structural review candidates. Comprehensive content approvals remain 0/320, not 320 passed questions.
   Audit-only curated IDs must NOT replace saved numeric indices without the S03 migration contract.
 - S03 v101 (PR #120) migrates schema-2 numeric Shorts progress to stable card/family IDs without
   replacing `topikQuestShortsV1`. It cycles 162 exact question-choice families before intentional repeats,
@@ -63,7 +63,7 @@ these facts from conversation history or the large TOPIK source bundle.
   pass 102/102. That CI rerun covers 320/375/390/430px Linux Chrome emulation in both themes,
   selected-wrong feedback, expanded coaching, next-first flow and reload restoration.
   Physical devices, native-language review and learner timing remain unverified.
-- S04 candidate v108 adds four TOPIK I frequency-adverb cards that separate every time, high frequency,
+- S04 v108 adds four TOPIK I frequency-adverb cards that separate every time, high frequency,
   some occasions, and zero degree/frequency with a negative expression. Each has a stable ID, fixed
   choice-specific ko/ja/en/zh feedback, bundled examples, and evidence→traps→frequency-scale coaching.
   The bounded review ledger is `docs/qa/shorts-review-s04-topik1-frequency.md`. Focused data/inventory checks
@@ -71,8 +71,17 @@ these facts from conversation history or the large TOPIK source bundle.
   pass 103/103. That CI covers 320/375/390/430px Linux Chrome emulation in both themes, selected-wrong
   feedback, expanded coaching, next-first flow and reload restoration.
   Physical devices, native-language review and learner timing remain unverified.
-- Next: after v108 passes, rebalance with one bounded TOPIK II shortage batch. Quantity alone is not progress, and a new P0 or clear
-  wrong answer takes precedence. At least 44 I / 46 II additional distinct sets remain even before suitability review for the 140/level
+- S04 candidate v109 adds four TOPIK II state/change grammar cards that separate a circumstance-led new action,
+  adjective quality change, action in progress, and the remaining result state of a completed action. Each has a
+  stable ID, fixed choice-specific ko/ja/en/zh feedback, bundled examples, and evidence→traps→state-function
+  coaching. The bounded review ledger is `docs/qa/shorts-review-s04-topik2-state-change.md`. Focused data and
+  inventory checks pass 13/13, content checks pass 16/16, and local Node 24 full checks pass 104/104.
+  PR #128 CI `34671148823` rerun also passes 104/104 and covers 320/375/390/430px Linux Chrome
+  emulation in both themes, selected-wrong feedback, expanded coaching, next-first flow and reload restoration.
+  Its first attempt ended only on an unrelated external-resource HTTP 429; the unchanged rerun passed.
+  Physical devices, native-language review and learner timing remain unverified.
+- Next: after v109 passes, rebalance with one bounded TOPIK I shortage batch. Quantity alone is not progress, and a new P0 or clear
+  wrong answer takes precedence. At least 44 I / 42 II additional distinct sets remain even before suitability review for the 140/level
   planning floor; this is not the final expansion target. Timing 5–15 seconds is unmeasured and never forced.
 - Follow start → understand → recall/speak/write → review → next learning for Japanese beginners, and
   passage evidence → specific distractor traps → reusable solving method for TOPIK I/II.

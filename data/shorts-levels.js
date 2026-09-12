@@ -356,6 +356,69 @@ const reviewedReportedSpeechItem=(id,term,key,example,exampleI18n,evidence)=>{
   });
 };
 
+const STATE_CHANGE=Object.freeze({
+  circumstanceChange:Object.freeze({
+    meaning:Object.freeze({ko:'상황의 흐름으로 새롭게 하게 됨',ja:'状況の流れで～することになる',en:'come to do through circumstances',zh:'因情况变化而开始做'}),
+    selected:Object.freeze({
+      ko:'“-게 되다”는 계획·상황의 변화로 이전과 달리 어떤 일을 새롭게 하게 됨을 나타냅니다.',
+      ja:'「-게 되다」は、計画・状況の変化により、以前とは違って新たに何かをすることになったことを表します。',
+      en:'“-게 되다” marks that circumstances or plans led to doing something new.',
+      zh:'“-게 되다”表示由于计划或情况变化，开始做以前没有做的事。'
+    })
+  }),
+  qualityChange:Object.freeze({
+    meaning:Object.freeze({ko:'성질·상태가 달라짐',ja:'性質・状態が～く／になる',en:'a quality or state becomes different',zh:'性质或状态发生变化'}),
+    selected:Object.freeze({
+      ko:'“-아/어지다”는 형용사로 나타낸 성질이나 상태가 이전과 다르게 변함을 나타냅니다.',
+      ja:'「-아/어지다」は、形容詞で表す性質・状態が以前と違う状態に変わることを表します。',
+      en:'“-아/어지다” marks a change in a quality or state expressed by an adjective.',
+      zh:'“-아/어지다”表示由形容词表达的性质或状态发生变化。'
+    })
+  }),
+  actionProgress:Object.freeze({
+    meaning:Object.freeze({ko:'동작이 지금 진행 중',ja:'動作が今進行中（～している）',en:'an action is in progress now',zh:'动作现在正在进行'}),
+    selected:Object.freeze({
+      ko:'“-고 있다”는 주어가 하는 동작이 말하는 시점에 진행 중임을 나타냅니다.',
+      ja:'「-고 있다」は、主語が行う動作が話している時点で進行中であることを表します。',
+      en:'“-고 있다” marks an action the subject is performing at the present moment.',
+      zh:'“-고 있다”表示主语所做的动作在说话时正在进行。'
+    })
+  }),
+  resultState:Object.freeze({
+    meaning:Object.freeze({ko:'동작이 끝난 뒤 결과 상태 유지',ja:'動作後の結果状態が続く',en:'a result state remains after an action',zh:'动作结束后的结果状态持续'}),
+    selected:Object.freeze({
+      ko:'“-아/어 있다”는 동작이 끝난 뒤 생긴 결과 상태가 그대로 이어짐을 나타냅니다.',
+      ja:'「-아/어 있다」は、動作が終わった後に生じた結果の状態がそのまま続いていることを表します。',
+      en:'“-아/어 있다” marks that the state produced by a completed action still remains.',
+      zh:'“-아/어 있다”表示动作结束后形成的结果状态仍在持续。'
+    })
+  })
+});
+const STATE_CHANGE_ORDER=['circumstanceChange','qualityChange','actionProgress','resultState'];
+const STATE_CHANGE_METHOD=Object.freeze({
+  ko:'무엇이 달라지거나 이어지는지 보세요. 상황 때문에 새 행동=게 되다, 성질 변화=아/어지다, 지금 하는 동작=고 있다, 끝난 동작의 결과 유지=아/어 있다입니다.',
+  ja:'何が変わる・続くのかを見ます。状況による新しい行動＝게 되다、性質の変化＝아/어지다、今している動作＝고 있다、終わった動作の結果状態＝아/어 있다です。',
+  en:'Identify what changes or continues: a new action caused by circumstances = 게 되다, a quality change = 아/어지다, an action happening now = 고 있다, and a remaining result state = 아/어 있다.',
+  zh:'先看变化或持续的是什么：因情况而开始的新动作＝게 되다，性质变化＝아/어지다，正在进行的动作＝고 있다，动作结束后持续的结果状态＝아/어 있다。'
+});
+const reviewedStateChangeItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=STATE_CHANGE[key];
+  return Object.freeze({
+    id,level:2,type:'grammar',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:STATE_CHANGE_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(STATE_CHANGE_ORDER.map(choiceKey=>Object.freeze({
+      meaning:STATE_CHANGE[choiceKey].meaning,
+      explanationI18n:STATE_CHANGE[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】-게 되다=상황에 따른 새 행동, -아/어지다=성질·상태 변화, -고 있다=진행 중인 동작, -아/어 있다=끝난 동작의 결과 상태로 기준이 다릅니다.\n【재사용 풀이】${STATE_CHANGE_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】-게 되다＝状況による新しい行動、-아/어지다＝性質・状態の変化、-고 있다＝進行中の動作、-아/어 있다＝終わった動作の結果状態で、基準が異なります。\n【再利用できる解き方】${STATE_CHANGE_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] -게 되다 marks a new action due to circumstances, -아/어지다 a quality change, -고 있다 an action in progress, and -아/어 있다 a remaining result state.\n[Reusable method] ${STATE_CHANGE_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】-게 되다表示因情况而开始的新动作，-아/어지다表示性质或状态变化，-고 있다表示正在进行的动作，-아/어 있다表示动作结束后持续的结果状态，判断标准各不相同。\n【通用解法】${STATE_CHANGE_METHOD.zh}`
+    })
+  });
+};
+
 const LOCATION_WORDS=Object.freeze({
   opposite:Object.freeze({
     meaning:Object.freeze({ko:'길·공간의 반대쪽',ja:'道・空間の向こう側',en:'opposite side',zh:'道路或空间的对面'}),
@@ -818,6 +881,39 @@ const TOPIK_II=[
     ja:'友だちが週末に一緒に登山しようと提案したので「-자고 하다」が合います。',
     en:'The friend suggests that they go hiking together, so -자고 하다 fits.',
     zh:'朋友提议周末一起去登山，所以应选“-자고 하다”。'
+  }),
+
+  reviewedStateChangeItem('S04-II-G-STATE-01','-게 되다','circumstanceChange','회사 사정으로 다음 달부터 부산에서 근무하게 되었습니다.',{
+    ko:'회사 사정으로 다음 달부터 부산에서 근무하게 되었습니다.',ja:'会社の事情で、来月から釜山で勤務することになりました。',en:'Due to company circumstances, I will start working in Busan next month.',zh:'由于公司的安排，我从下个月起将在釜山工作。'
+  },{
+    ko:'회사 사정이라는 외부 상황 때문에 다음 달부터 새로 부산 근무를 하게 되므로 “-게 되다”가 맞습니다.',
+    ja:'会社の事情という外部の状況により、来月から新たに釜山で勤務することになったので「-게 되다」が合います。',
+    en:'Company circumstances lead to the new action of working in Busan next month, so -게 되다 fits.',
+    zh:'由于公司安排这一外部情况，下个月起将开始在釜山工作，所以应选“-게 되다”。'
+  }),
+  reviewedStateChangeItem('S04-II-G-STATE-02','-아/어지다','qualityChange','봄이 오면서 날씨가 따뜻해졌습니다.',{
+    ko:'봄이 오면서 날씨가 따뜻해졌습니다.',ja:'春が来て、天気が暖かくなりました。',en:'As spring arrived, the weather became warmer.',zh:'随着春天到来，天气变暖了。'
+  },{
+    ko:'날씨의 성질이 “따뜻하다”라는 새 상태로 변했으므로 “-아/어지다”가 맞습니다.',
+    ja:'天気の性質が「暖かい」という新しい状態に変わったので「-아/어지다」が合います。',
+    en:'The quality of the weather changes to the new state “warm,” so -아/어지다 fits.',
+    zh:'天气的性质变成“温暖”这一新状态，所以应选“-아/어지다”。'
+  }),
+  reviewedStateChangeItem('S04-II-G-STATE-03','-고 있다','actionProgress','학생들이 지금 도서관에서 공부하고 있습니다.',{
+    ko:'학생들이 지금 도서관에서 공부하고 있습니다.',ja:'学生たちは今、図書館で勉強しています。',en:'The students are studying in the library now.',zh:'学生们现在正在图书馆学习。'
+  },{
+    ko:'“지금” 학생들이 하는 공부 동작이 진행 중이므로 “-고 있다”가 맞습니다.',
+    ja:'「今」、学生たちが行う勉強という動作が進行中なので「-고 있다」が合います。',
+    en:'The word “now” shows that the students’ action of studying is in progress, so -고 있다 fits.',
+    zh:'“现在”表明学生们学习这一动作正在进行，所以应选“-고 있다”。'
+  }),
+  reviewedStateChangeItem('S04-II-G-STATE-04','-아/어 있다','resultState','회의실 문이 열려 있습니다.',{
+    ko:'회의실 문이 열려 있습니다.',ja:'会議室のドアが開いています。',en:'The meeting-room door is open.',zh:'会议室的门开着。'
+  },{
+    ko:'문을 여는 동작은 끝났고 열린 결과 상태가 그대로 유지되므로 “-아/어 있다”가 맞습니다.',
+    ja:'ドアを開ける動作は終わり、開いた結果の状態がそのまま続いているので「-아/어 있다」が合います。',
+    en:'The opening action is complete and the resulting open state remains, so -아/어 있다 fits.',
+    zh:'开门的动作已经结束，门开着的结果状态仍在持续，所以应选“-아/어 있다”。'
   })
 ];
 
