@@ -183,6 +183,20 @@ try{
     await assertThemeSurfaces(label,theme,'.tqRandomPracticeScreen','.card,.choice,.infinityBar div,.t1RandomTop .t1hud span,.hud span,.malbitQuestionTranslation,.malbitExplanationToggle,.malbitRandomExplanation.open .tqInlineExplanation');
     assert.deepEqual(fit.tinyCopy,[],`${label}: Random Practice copy below 10px`);
   };
+  const assertWritingFits=async(label,theme,review=false)=>{
+    const fit=await evaluate(`(()=>{const root=document.querySelector(${review?"'.writingReview'":"'.screen>.card'"});if(!root)return{missing:true};const visible=el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)!==0&&r.width>0&&r.height>0};const rect=el=>{const r=el.getBoundingClientRect();return{left:Math.round(r.left),right:Math.round(r.right),top:Math.round(r.top),bottom:Math.round(r.bottom),width:Math.round(r.width),height:Math.round(r.height)}};const parts=[...root.querySelectorAll('.writingPart')].filter(visible),inputs=[...root.querySelectorAll('[data-writing-part]')].filter(visible),labels=[...root.querySelectorAll('.writingPart label,.writingPart h4')].filter(visible);return{missing:false,theme:document.documentElement.dataset.theme,innerWidth,rootWidth:document.documentElement.scrollWidth,bodyWidth:document.body.scrollWidth,parts:parts.map(rect),inputs:inputs.map(el=>({key:el.dataset.writingPart,...rect(el)})),labels:labels.map(el=>el.textContent.trim()),small:[...root.querySelectorAll('small')].filter(visible).map(el=>parseFloat(getComputedStyle(el).fontSize)).filter(size=>size<9.9)}})()`);
+    assert.equal(fit.missing,false,`${label}: writing surface missing`);assert.equal(fit.theme,theme,`${label}: expected ${theme} theme`);
+    assert.ok(fit.rootWidth<=fit.innerWidth+1&&fit.bodyWidth<=fit.innerWidth+1,`${label}: horizontal overflow ${fit.rootWidth}/${fit.bodyWidth}/${fit.innerWidth}`);
+    assert.equal(fit.parts.length,2,`${label}: writing must keep two visible answer sections`);
+    assert.deepEqual(fit.labels.slice(0,2),['㉠（ㄱ）解答','㉡（ㄴ）解答'],`${label}: writing labels must identify both answers`);
+    if(!review){
+      assert.deepEqual(fit.inputs.map(row=>row.key),['giyeok','nieun'],`${label}: writing inputs must have independent keys`);
+      assert.deepEqual(fit.inputs.filter(row=>row.left<-1||row.right>fit.innerWidth+1||row.height<44),[],`${label}: writing input outside viewport or below touch target`);
+      assert.ok(fit.inputs[0].bottom<=fit.inputs[1].top,`${label}: writing inputs overlap`);
+    }
+    assert.deepEqual(fit.small,[],`${label}: writing copy below 10px`);
+    await assertThemeSurfaces(label,theme,review?'.writingReview':'.screen>.card','.writingPart');
+  };
   const assertReviewFits=async(label,theme,retry=false)=>{
     const fit=await evaluate(`(()=>{const root=document.querySelector(${retry?"'#sheetBody.tqReviewRetrySheet'":"'.tqReviewScreen'"});if(!root)return{missing:true};const visible=el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)!==0&&r.width>0&&r.height>0};const rect=el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),right:Math.round(r.right),width:Math.round(r.width),height:Math.round(r.height)}};const controls=[...root.querySelectorAll('button:not(:disabled)')].filter(visible);const surfaces=[...root.querySelectorAll(${retry?"'.tqReviewQuestion,.tqReviewDeep'":"'.tqReviewHero,.tqReviewStats,.tqReviewFilters,.tqReviewItem,.tqReviewEmpty'"})].filter(visible);const tiles=[...root.querySelectorAll(${retry?"'.tqReviewQuestion,.tqReviewChoices .choice,.tqReviewDeep,.tqReviewChoiceAnalysis li'":"'.tqReviewStats>div,.tqReviewFilters button,.tqReviewItem,.tqReviewEmpty'"})].filter(visible);const copy=[...root.querySelectorAll(${retry?"'.reward small,.tqReviewQuestion>small,.tqReviewQuestion li,.tqTranslationToggle,.doubleTapHint,.tqReviewDeep h4,.tqReviewDeep blockquote,.tqReviewChoiceAnalysis span'":"'.tqReviewHero small,.tqReviewHero p,.tqReviewStats small,.tqReviewFilters button,.tqReviewBadge small,.tqReviewItem p,.tqReviewItem>div>small,.tqReviewEmpty p'"})].filter(visible);const channels=color=>(color.match(/[\\d.]+/g)||[]).slice(0,3).map(Number);return{missing:false,active:document.body.classList.contains('tq-review-active'),innerWidth,rootWidth:document.documentElement.scrollWidth,bodyWidth:document.body.scrollWidth,rootOverflow:root.scrollWidth-root.clientWidth,outside:controls.filter(el=>{const r=el.getBoundingClientRect();return r.left<-1||r.right>innerWidth+1}).map(rect),small:controls.filter(el=>{const r=el.getBoundingClientRect();return r.width<43||r.height<43}).map(rect),offCenter:surfaces.filter(el=>{const r=el.getBoundingClientRect();return Math.abs(r.left-(innerWidth-r.right))>2}).map(el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),rightGap:Math.round(innerWidth-r.right)}}),darkTiles:tiles.map(el=>({class:el.className,color:getComputedStyle(el).backgroundColor,rgb:channels(getComputedStyle(el).backgroundColor)})).filter(row=>row.rgb.length===3&&row.rgb.reduce((sum,value)=>sum+value,0)/3<170),tinyCopy:copy.map(el=>({class:el.className,size:parseFloat(getComputedStyle(el).fontSize)})).filter(row=>row.size<9.9)}})()`);
     assert.equal(fit.missing,false,`${label}: Review root missing`);
@@ -618,6 +632,39 @@ try{
   assert.doesNotMatch(await evaluate(`document.querySelector('.tqV9Continue')?.textContent`),/続きから学習/,'a TOPIK I session must not label the TOPIK II destination as resumable');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);await shot('00ec-home-topik2-path-light.png');
   await evaluate(`malbitSetTheme('dark')`);await sleep(100);
+
+  await evaluate(`(()=>{S.lang='ja';localStorage.setItem('topikQuestExamLevel','2');beginReal('write')})()`);await sleep(180);
+  assert.equal(await evaluate(`S.real?.phase`),'write','writing-only exam must enter the writing section');
+  assert.equal(await evaluate(`S.real?.id`),51,'writing-only exam must begin at question 51');
+  assert.equal(await evaluate(`document.querySelectorAll('[data-writing-part]').length`),2,'question 51 must render two independent inputs');
+  await evaluate(`malbitSetTheme('light')`);await sleep(100);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertWritingFits(`Writing question 51 light ${width}px`,'light')}
+  await setViewport(390,844);await shot('00bu-writing-two-blanks-light.png');
+  await tap('[data-writing-part="giyeok"]',0,80);await send('Input.insertText',{text:'수업이 끝난 뒤에 만날까요?'});await sleep(100);
+  assert.deepEqual(await evaluate(`JSON.parse(localStorage.getItem('topikQuestV8')).writing['51'].answers`),{giyeok:'수업이 끝난 뒤에 만날까요?',nieun:''},'typing in ㉠ must not write into ㉡');
+  await tap('[data-writing-part="nieun"]',0,80);await send('Input.insertText',{text:'네, 도서관 앞에서 기다릴게요.'});await sleep(100);
+  const writingSaved=await evaluate(`(()=>{const core=JSON.parse(localStorage.getItem('topikQuestV8')),pair=core.writing['51'];return{schema:pair.schema,answers:pair.answers,counters:[document.querySelector('#count-giyeok')?.textContent,document.querySelector('#count-nieun')?.textContent],score:writingEstimate()}})()`);
+  assert.equal(writingSaved.schema,2,'writing pair must save the versioned two-answer schema');
+  assert.deepEqual(writingSaved.answers,{giyeok:'수업이 끝난 뒤에 만날까요?',nieun:'네, 도서관 앞에서 기다릴게요.'},'both writing answers must save independently');
+  assert.ok(writingSaved.counters.every(value=>/^\d+ · 自動保存$/u.test(value)),'each writing input must own an auto-save counter');
+  assert.ok(writingSaved.score>0&&writingSaved.score<=10,'question 51 fields must contribute separately within their 10-point ceiling');
+  await evaluate(`malbitSetTheme('dark')`);await sleep(100);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertWritingFits(`Writing question 51 dark ${width}px`,'dark')}
+  await setViewport(390,844);await shot('00bv-writing-two-blanks-dark.png');
+  await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('[data-writing-part="giyeok"]');
+  assert.deepEqual(await evaluate(`Object.fromEntries([...document.querySelectorAll('[data-writing-part]')].map(el=>[el.dataset.writingPart,el.value]))`),writingSaved.answers,'both writing inputs must restore after reload');
+  await evaluate(`(()=>{rememberWriting(RW[50],'exam');save();S.view='review';render()})()`);await sleep(180);
+  await evaluate(`document.querySelector('.writingReview details').open=true`);await sleep(80);
+  assert.equal(await evaluate(`document.querySelectorAll('.writingReview .writingPart').length`),2,'Review must show ㉠ and ㉡ separately');
+  assert.deepEqual(await evaluate(`[...document.querySelectorAll('.writingReview .writingPart')].map(part=>part.innerText.includes('수업이 끝난 뒤에 만날까요?')||part.innerText.includes('네, 도서관 앞에서 기다릴게요.'))`),[true,true],'Review must keep both saved answers');
+  await evaluate(`malbitSetTheme('light')`);await sleep(100);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertWritingFits(`Writing review light ${width}px`,'light',true)}
+  await evaluate(`malbitSetTheme('dark')`);await sleep(100);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertWritingFits(`Writing review dark ${width}px`,'dark',true)}
+  await setViewport(390,844);await evaluate(`document.querySelector('.writingReview').scrollIntoView({block:'start',behavior:'auto'})`);await sleep(80);await shot('00bw-writing-two-blanks-review-dark.png');
+  await evaluate(`(()=>{S.real={active:true,mode:'write',phase:'write',id:51,mockSet:1,deadline:Date.now()+3000000,audioPlayed:{}};S.writing[51]='이전 통합 답안';S.view='real';save();render()})()`);await sleep(120);
+  assert.deepEqual(await evaluate(`({notice:document.querySelector('.writingMigration')?.innerText,answers:Object.fromEntries([...document.querySelectorAll('[data-writing-part]')].map(el=>[el.dataset.writingPart,el.value]))})`),{notice:'以前の一体型答案を㉠に保存しました。2つの欄を確認して分けてください。',answers:{giyeok:'이전 통합 답안',nieun:''}},'an unlabelled legacy answer must stay in ㉠ with a migration notice');
+  await evaluate(`S.view='home';save();render()`);await sleep(180);
 
   await evaluate(`(()=>{localStorage.setItem('malbitBeginnerV1',JSON.stringify({known:['v:ㅏ'],legacyScore:7}));S.lang='ja';S.view='beginner';save();render()})()`);await sleep(220);
   assert.ok(await evaluate(`!!document.querySelector('.bgLaunch')`),'beginner grammar launch card missing');
