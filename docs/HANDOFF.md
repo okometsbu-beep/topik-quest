@@ -15,11 +15,11 @@ these facts from conversation history or the large TOPIK source bundle.
   had zero weight and could be lost after an empty-core reset. Failing-then-passing coverage also
   verifies that a current writing history is not replaced by an older snapshot.
 - Sep 12 follow-up: Node v24.19.0 focused 10/10, quick 95/95, full 110/110; local HTTP base 3/runtime 45.
-  Live SET 1/51 was reached through public UI and still has one textbox. Candidate browser access to
-  localhost was blocked with ERR_BLOCKED_BY_CLIENT; no alternate browser/network bypass.
-- No PR or deployment: mobile visual evidence is pending. Automatic approval review blocked
-  screenshot setup documentation access as an unspecified/private resource; do not bypass.
-- Resume #129 visual/interaction verification, then bump version once and follow release gates.
+  Live SET 1/51 was reached through public UI and still has one textbox before this release.
+- Branch CI `34701329686` passed the repository's Linux Chrome gate at 320/375/390/430px in both themes:
+  two keyed fields, touch input, independent save, reload restore, bounded score, split Review, and legacy notice.
+  Artifact `10300595038` screenshots were inspected. This is emulation, not iPhone/Android hardware or real IME proof.
+- v110 has been bumped exactly once. Finish full release checks, PR/CI, merge, Pages and live verification.
 - Live v109 is `b84e596129956e0e70328910c22917b9a8bfbb5c` (PR #128); this is the rollback baseline.
 
 ## Current release priority · 2026-09-12

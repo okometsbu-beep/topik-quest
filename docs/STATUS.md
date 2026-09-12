@@ -5,15 +5,14 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 긴급 사용자 요청 · #129
 
 - 대상: TOPIK II 작문 51·52번 ㄱ/ㄴ 입력 완전 분리. Shorts 확충보다 우선.
-- 구현 브랜치: `agent/fix-writing-two-blanks`; 아직 PR/병합/배포 없음.
+- 구현 브랜치: `agent/fix-writing-two-blanks`; v110 후보, 아직 PR/병합/배포 없음.
 - 두 textarea, 개별 자동 저장/제출 조건/참고 점수/모범답안 비교/복습 스냅샷 구현.
 - 기존 표지 있는 문자열은 분리, 무표지 문자열은 ㄱ에 원문 보존 + 확인 안내. 53·54 긴 글 및 원본 은행 불변.
 - 2026-09-12 추가 검증: 작문 복습만 남은 복구 스냅샷을 `coreWeight`가 0으로 계산해 빈 core 복구를 놓치는 결함을 실패 테스트로 재현 후 수정. 기존 스냅샷이 최신 작문 기록을 덮어쓰지 않는 경우도 검사.
-- 실제 검사: Linux Node v24.19.0, 집중 10/10·quick 95/95·전체 `npm run check` 110/110. 로컬 HTTP 3개 기본+45개 런타임 통과. 최초 smoke는 서버 종료에 따른 ECONNREFUSED였고 서버/검사를 같은 프로세스 수명으로 실행해 통과(브라우저 검사 아님).
+- 실제 검사: Linux Node v24.19.0, 집중 10/10·quick 95/95·전체 `npm run check` 110/110. 로컬 HTTP 3개 기본+45개 런타임 통과. 브랜치 CI `34701329686`에서 Linux Chrome 320/375/390/430px×라이트/다크, 두 칸 터치 입력·독립 저장·새로고침 복원·참고 점수·복습 분리·구형 단일 답안 안내를 통과.
 - 라이브 공개 브라우저 재현: TOPIK II → 전체 모의 → 쓰기만 → 음성 제외 → SET 1/51번. ㉠/㉡ 지문과 단일 textbox 확인(입력값 추가 없음). 수집된 오류 5개는 브라우저 확장 출처이며 앱 오류로 집계하지 않음.
-- 미검증: 수정본 모바일 4폭×2테마·터치/재진입·시각 캡처·실기기. 기존 캡처 안내 승인 차단은 재시도하지 않았고, 이번 후보 `http://127.0.0.1:4173` 접근은 브라우저 `ERR_BLOCKED_BY_CLIENT`. 대체 브라우저/네트워크 경로로 우회하지 않음.
-- 안전한 코드/회귀 검사는 가능하므로 전체 작업 차단으로 간주하지 않음. 자율 작업 유지, #129 검증이 우선.
-- 다음 한 작업: #129 화면 검증을 완료한 후 버전 증가·전체 검사·PR/CI/배포. 검증 전 배포 금지.
+- 시각 증거: CI artifact `10300595038`의 `00bu-writing-two-blanks-light.png`, `00bv-writing-two-blanks-dark.png`, `00bw-writing-two-blanks-review-dark.png` 직접 확인. 실제 iPhone/Android 및 실제 IME는 미검증이며 에뮬레이션과 구별한다.
+- 다음 한 작업: v110 전체 검사 후 #129 PR/CI/배포·라이브 재검증. 합격 전 배포 금지.
 - 현재 라이브/복귀 기준: v109 `b84e596129956e0e70328910c22917b9a8bfbb5c`, https://okometsbu-beep.github.io/topik-quest/ . 이번 변경은 라이브에 적용되지 않음.
 
 ## 현재 상태
