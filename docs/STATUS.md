@@ -5,21 +5,23 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 긴급 사용자 요청 · #129
 
 - 대상: TOPIK II 작문 51·52번 ㄱ/ㄴ 입력 완전 분리. Shorts 확충보다 우선.
-- 구현 브랜치: `agent/fix-writing-two-blanks`; v110 후보, 아직 PR/병합/배포 없음.
+- 완료: PR #130을 squash merge하고 v110을 GitHub Pages에 배포했다. 제품 커밋은
+  `a0f852517ae72b3371ca9ab6c6fc3936c09ddda3`, 복귀 기준은 v109
+  `b84e596129956e0e70328910c22917b9a8bfbb5c`다.
 - 두 textarea, 개별 자동 저장/제출 조건/참고 점수/모범답안 비교/복습 스냅샷 구현.
 - 기존 표지 있는 문자열은 분리, 무표지 문자열은 ㄱ에 원문 보존 + 확인 안내. 53·54 긴 글 및 원본 은행 불변.
 - 2026-09-12 추가 검증: 작문 복습만 남은 복구 스냅샷을 `coreWeight`가 0으로 계산해 빈 core 복구를 놓치는 결함을 실패 테스트로 재현 후 수정. 기존 스냅샷이 최신 작문 기록을 덮어쓰지 않는 경우도 검사.
-- 실제 검사: Linux Node v24.19.0, 집중 10/10·quick 95/95·전체 `npm run check` 110/110. 로컬 HTTP 3개 기본+45개 런타임 통과. 브랜치 CI `34701329686`에서 Linux Chrome 320/375/390/430px×라이트/다크, 두 칸 터치 입력·독립 저장·새로고침 복원·참고 점수·복습 분리·구형 단일 답안 안내를 통과.
-- 라이브 공개 브라우저 재현: TOPIK II → 전체 모의 → 쓰기만 → 음성 제외 → SET 1/51번. ㉠/㉡ 지문과 단일 textbox 확인(입력값 추가 없음). 수집된 오류 5개는 브라우저 확장 출처이며 앱 오류로 집계하지 않음.
+- 실제 검사: Linux Node v24.19.0, 집중 10/10·quick 95/95·전체 `npm run check` 110/110. 로컬 HTTP 3개 기본+45개 런타임 통과. PR CI와 main CI `34702111845`에서 Linux Chrome 320/375/390/430px×라이트/다크, 두 칸 터치 입력·독립 저장·새로고침 복원·참고 점수·복습 분리·구형 단일 답안 안내를 통과했다. main CI 첫 시도는 Chrome target 종료로 실패했으나 동일 커밋 재실행은 통과했다.
+- 라이브 공개 브라우저: v110을 새로 불러온 TOPIK II → 쓰기만 → 51번에서 `ㄱ(기역) 답안`과 `ㄴ(니은) 답안` 두 textbox를 확인했다. 서로 다른 값을 입력하고 다음→이전 뒤에도 각각 유지됐다. HTTP smoke는 3개 기본+45개 런타임을 통과했다.
 - 시각 증거: CI artifact `10300595038`의 `00bu-writing-two-blanks-light.png`, `00bv-writing-two-blanks-dark.png`, `00bw-writing-two-blanks-review-dark.png` 직접 확인. 실제 iPhone/Android 및 실제 IME는 미검증이며 에뮬레이션과 구별한다.
-- 다음 한 작업: v110 전체 검사 후 #129 PR/CI/배포·라이브 재검증. 합격 전 배포 금지.
-- 현재 라이브/복귀 기준: v109 `b84e596129956e0e70328910c22917b9a8bfbb5c`, https://okometsbu-beep.github.io/topik-quest/ . 이번 변경은 라이브에 적용되지 않음.
+- 다음 한 작업: #110 우선순위로 복귀해 아직 부족한 TOPIK I 숏츠 한 묶음을 검수한다. 새 P0·정답 오류가 우선한다.
+- 현재 라이브/복귀 기준: v110 `a0f852517ae72b3371ca9ab6c6fc3936c09ddda3`, https://okometsbu-beep.github.io/topik-quest/ . 복귀 기준은 위 v109다.
 
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v109 · TOPIK II state/change Shorts (`b84e596129956e0e70328910c22917b9a8bfbb5c`)
-- Current candidate: unversioned #129 writing-input separation; visual verification pending
+- Production release: v110 · split TOPIK II writing answers (`a0f852517ae72b3371ca9ab6c6fc3936c09ddda3`)
+- Current candidate: none
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -163,12 +165,12 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-#129 작문 입력 분리의 모바일 화면·상호작용 검증. 검증 후 PR/CI/Pages 배포.
-기존 S04 TOPIK I 확충은 이 사용자 긴급 요청이 완료될 때까지 후순위.
+#129 긴급 작문 입력 분리는 완료됐다. #110에 따라 S04 TOPIK I 부족 유형 한 묶음을
+정답 유일성·오답별 해설·ko/ja/en/zh 번역과 함께 제한 검수한다.
 
-## 이번 작업 · S04 TOPIK II 상태·변화 숏츠 4문항 검수·확충
+## 이전 작업 · S04 TOPIK II 상태·변화 숏츠 4문항 검수·확충
 
-- 기준 production v108 `d68ac0a8dac3fa3d4ab7355aec8b3b34cddeb082`, candidate v109. TOPIK II에
+- 당시 기준 production v108 `d68ac0a8dac3fa3d4ab7355aec8b3b34cddeb082`, release v109. TOPIK II에
   `-게 되다·-아/어지다·-고 있다·-아/어 있다` 네 상태·변화 문법을 독립 안정 ID로 추가했다.
 - 각 카드는 상황에 따른 새 행동, 성질 변화, 지금 진행 중인 동작, 끝난 동작의 결과 상태 중 하나만
   빠르게 판단한다. 고정 검수 선택지를 카드마다 섞되 기존 Shorts 저장 루트에서 순서를 복구한다.
