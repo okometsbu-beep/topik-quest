@@ -3,6 +3,25 @@
 This is the short continuity record for future work. Use it with `AGENTS.md`; do not reconstruct
 these facts from conversation history or the large TOPIK source bundle.
 
+## Immediate user priority · #129
+
+- Pause Shorts expansion for the explicit writing-input fix on `agent/fix-writing-two-blanks`.
+- `writing-answers.js` defines schema 2 `{answers:{giyeok,nieun}}`, preserving `legacyText`.
+  Labelled ㄱ/ㄴ strings split; unlabelled text stays in the first field with a migration notice.
+- Owning core renders/binds two fields for 51/52, estimates each blank separately, and snapshots
+  answers/model comparisons under existing `topikQuestV8.writingHistory` for Review.
+- Product wrappers use per-field readiness; long-form 53/54 stays string-based.
+- Recovery now counts `writingHistory` as durable core progress. A writing-only snapshot previously
+  had zero weight and could be lost after an empty-core reset. Failing-then-passing coverage also
+  verifies that a current writing history is not replaced by an older snapshot.
+- Sep 12 follow-up: Node v24.19.0 focused 10/10, quick 95/95, full 110/110; local HTTP base 3/runtime 45.
+  Live SET 1/51 was reached through public UI and still has one textbox before this release.
+- Branch CI `34701329686` passed the repository's Linux Chrome gate at 320/375/390/430px in both themes:
+  two keyed fields, touch input, independent save, reload restore, bounded score, split Review, and legacy notice.
+  Artifact `10300595038` screenshots were inspected. This is emulation, not iPhone/Android hardware or real IME proof.
+- v110 has been bumped exactly once. Finish full release checks, PR/CI, merge, Pages and live verification.
+- Live v109 is `b84e596129956e0e70328910c22917b9a8bfbb5c` (PR #128); this is the rollback baseline.
+
 ## Current release priority · 2026-09-12
 
 - Source of truth: [release blueprint #110](https://github.com/okometsbu-beep/topik-quest/issues/110).

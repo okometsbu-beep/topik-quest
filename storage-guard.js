@@ -42,7 +42,7 @@
       const value=JSON.parse(raw),count=entry=>entry&&typeof entry==='object'?Object.keys(entry).length:0;
       return (Array.isArray(value?.vocab)?value.vocab.length*20:0)
         +Math.max(0,Number(value?.gameUnlock||1)-1)
-        +count(value?.gameAnswers)+count(value?.writing)+count(value?.rwAnswers)+count(value?.lsAnswers)
+        +count(value?.gameAnswers)+count(value?.writing)+count(value?.writingHistory)+count(value?.rwAnswers)+count(value?.lsAnswers)
         +count(value?.realAnswers?.listen)+count(value?.realAnswers?.read)
         +(value?.infinity?1:0);
     }catch(error){return -1}

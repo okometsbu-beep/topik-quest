@@ -2,11 +2,24 @@
 
 Keep this file compact. Replace stale detail instead of appending an endless diary.
 
+## 긴급 사용자 요청 · #129
+
+- 대상: TOPIK II 작문 51·52번 ㄱ/ㄴ 입력 완전 분리. Shorts 확충보다 우선.
+- 구현 브랜치: `agent/fix-writing-two-blanks`; v110 후보, 아직 PR/병합/배포 없음.
+- 두 textarea, 개별 자동 저장/제출 조건/참고 점수/모범답안 비교/복습 스냅샷 구현.
+- 기존 표지 있는 문자열은 분리, 무표지 문자열은 ㄱ에 원문 보존 + 확인 안내. 53·54 긴 글 및 원본 은행 불변.
+- 2026-09-12 추가 검증: 작문 복습만 남은 복구 스냅샷을 `coreWeight`가 0으로 계산해 빈 core 복구를 놓치는 결함을 실패 테스트로 재현 후 수정. 기존 스냅샷이 최신 작문 기록을 덮어쓰지 않는 경우도 검사.
+- 실제 검사: Linux Node v24.19.0, 집중 10/10·quick 95/95·전체 `npm run check` 110/110. 로컬 HTTP 3개 기본+45개 런타임 통과. 브랜치 CI `34701329686`에서 Linux Chrome 320/375/390/430px×라이트/다크, 두 칸 터치 입력·독립 저장·새로고침 복원·참고 점수·복습 분리·구형 단일 답안 안내를 통과.
+- 라이브 공개 브라우저 재현: TOPIK II → 전체 모의 → 쓰기만 → 음성 제외 → SET 1/51번. ㉠/㉡ 지문과 단일 textbox 확인(입력값 추가 없음). 수집된 오류 5개는 브라우저 확장 출처이며 앱 오류로 집계하지 않음.
+- 시각 증거: CI artifact `10300595038`의 `00bu-writing-two-blanks-light.png`, `00bv-writing-two-blanks-dark.png`, `00bw-writing-two-blanks-review-dark.png` 직접 확인. 실제 iPhone/Android 및 실제 IME는 미검증이며 에뮬레이션과 구별한다.
+- 다음 한 작업: v110 전체 검사 후 #129 PR/CI/배포·라이브 재검증. 합격 전 배포 금지.
+- 현재 라이브/복귀 기준: v109 `b84e596129956e0e70328910c22917b9a8bfbb5c`, https://okometsbu-beep.github.io/topik-quest/ . 이번 변경은 라이브에 적용되지 않음.
+
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v108 · S04 reviewed TOPIK I frequency-adverb Shorts pilot (`d68ac0a8dac3fa3d4ab7355aec8b3b34cddeb082`)
-- Current candidate: v109 · S04 reviewed TOPIK II state/change grammar Shorts pilot
+- Production release: v109 · TOPIK II state/change Shorts (`b84e596129956e0e70328910c22917b9a8bfbb5c`)
+- Current candidate: unversioned #129 writing-input separation; visual verification pending
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -150,10 +163,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-S04 다음 묶음: v109 통과 뒤 다시 더 부족해지는 TOPIK I의 미검수 유형 4개를 재고와 대조한 뒤
-같은 한 판단 계약으로 검수·확충한다. 정답 유일성·선택 오답 해설·ko/ja/en/zh 번역을 함께
-검수하고 실제 사람 풀이시간은 별도 미검증으로 유지한다.
-새 P0/명백한 정답 오류가 있으면 앞당긴다.
+#129 작문 입력 분리의 모바일 화면·상호작용 검증. 검증 후 PR/CI/Pages 배포.
+기존 S04 TOPIK I 확충은 이 사용자 긴급 요청이 완료될 때까지 후순위.
 
 ## 이번 작업 · S04 TOPIK II 상태·변화 숏츠 4문항 검수·확충
 

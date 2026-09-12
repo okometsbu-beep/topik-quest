@@ -130,6 +130,11 @@ function writingRule(id){
   return L('랜덤 연습 최소 120자 · 실제 목표 600~700자','ランダム練習は120字以上・本番目標は600～700字','Practice minimum 120 characters · exam target 600–700','随机练习至少120字 · 正式目标600～700字');
 }
 function updateWritingGate(id){
+  if(MALBIT_WRITING.short(id)){
+    const ready=MALBIT_WRITING.ready(id,S.writing[id],writingMinimum(id)),btn=document.getElementById('malbitWritingSubmit');
+    if(btn){btn.disabled=!ready;btn.setAttribute('aria-disabled',String(!ready))}
+    return;
+  }
   const ta=document.getElementById('writeBox'),btn=document.getElementById('malbitWritingSubmit'),count=String(ta?.value||'').replace(/\s/g,'').length,need=writingMinimum(id),counter=document.getElementById('charCount'),hint=document.getElementById('malbitWritingGate');
   if(counter)counter.textContent=`${count} / ${need}+`;
   if(btn){btn.disabled=count<need;btn.setAttribute('aria-disabled',String(count<need))}
@@ -140,7 +145,9 @@ if(typeof window.renderRandomWriting==='function'){
   const base=window.renderRandomWriting;
   window.renderRandomWriting=function(q){
     let out=base.apply(this,arguments);if(S.infinity?.feedback)return out;
-    const id=Number(q.id),need=writingMinimum(id),value=String(S.writing?.[id]||''),count=value.replace(/\s/g,'').length;
+    const id=Number(q.id),need=writingMinimum(id);
+    if(MALBIT_WRITING.short(id))return out.replace('<button class="randomWriteAction" onclick="submitInfinityWriting()">',`<p class="malbitWritingRule">${html(L('각 칸에 공백 제외 3자 이상 작성해 주세요.','各欄に空白を除いて3文字以上入力してください。','Write at least 3 non-space characters in each field.','每栏请填写至少3个非空白字符。'))}</p><button id="malbitWritingSubmit" class="randomWriteAction" onclick="submitInfinityWriting()" ${MALBIT_WRITING.ready(id,S.writing[id],need)?'':'disabled'}>`);
+    const value=String(S.writing?.[id]||''),count=value.replace(/\s/g,'').length;
     const placeholder=id<=52?L('㉠과 ㉡을 각각 자연스러운 한 문장으로 완성하세요.','㉠と㉡をそれぞれ自然な一文で完成させてください。','Complete ㉠ and ㉡ with one natural sentence each.','分别用一个自然的句子完成㉠和㉡。'):id===53?L('자료의 증가·감소와 원인을 연결해 쓰세요.','資料の増減と原因を結び付けて書いてください。','Connect the increases, decreases, and causes shown in the data.','结合资料中的增减变化及其原因作答。'):L('세 가지 과제를 모두 다루고, 주장과 근거를 나누어 쓰세요.','3つの課題をすべて扱い、主張と根拠を分けて書いてください。','Address all three prompts and separate your claim from its reasons.','涵盖三个要求，并区分观点与依据。');
     out=out.replace(/placeholder="[^"]*"/,`placeholder="${html(placeholder)}"`)
       .replace('<div class="counter">',`<div class="malbitWritingRule">${html(writingRule(id))}</div><div id="malbitWritingGate" class="malbitWritingGate ${count>=need?'ready':''}">${html(count>=need?L('제출할 수 있어요. 모범답안과 비교해 보세요.','提出できます。模範解答と比較しましょう。','Ready to submit. Compare your work with the model.','可以提交了，请与参考答案比较。'):L(`제출까지 ${need-count}자 남았어요.`,`提出まであと${need-count}字です。`,`${need-count} characters until submission.`,`还差${need-count}字即可提交。`))}</div><div class="counter">`)
@@ -152,14 +159,14 @@ if(typeof window.renderRandomWriting==='function'){
 
 if(typeof window.bindWrite==='function'){
   const base=window.bindWrite;
-  window.bindWrite=function(id,context){const out=base.apply(this,arguments),ta=document.getElementById('writeBox');if(context==='inf'&&ta){ta.addEventListener('input',()=>updateWritingGate(id));updateWritingGate(id)}return out};
+  window.bindWrite=function(id,context){const out=base.apply(this,arguments),ta=document.getElementById('writeBox');if(context==='inf'){document.querySelectorAll('#writeBox,[data-writing-part]').forEach(el=>el.addEventListener('input',()=>updateWritingGate(id)));updateWritingGate(id)}return out};
 }
 
 if(typeof window.submitInfinityWriting==='function'){
   window.submitInfinityWriting=function(){
-    const inf=S.infinity,x=inf?.current;if(!inf||x?.type!=='write')return;const q=RW[x.id-1],txt=String(S.writing?.[x.id]||'').trim(),need=writingMinimum(x.id),key=visibleQuestionKey();
-    if(txt.replace(/\s/g,'').length<need){updateWritingGate(x.id);document.getElementById('writeBox')?.focus();return toast(L(`최소 ${need}자까지 작성해 주세요.`,`最低${need}字まで書いてください。`,`Write at least ${need} characters.`,`请至少写${need}字。`))}
-    const sec=elapsed();stopTimer();inf.count++;inf.writing=(Number(inf.writing)||0)+1;inf.totalSec+=sec;inf.targetSec+=infLimit(x);inf.feedback={write:true,sec};save();recordEvent({key,level:2,mode:'random',skill:'writing',id:q.id,correct:true,duration:durationFor(key)});render();
+    const inf=S.infinity,x=inf?.current;if(!inf||x?.type!=='write')return;const q=infinityCurrentQuestion(),txt=MALBIT_WRITING.text(x.id,S.writing?.[x.id]).trim(),need=writingMinimum(x.id),key=visibleQuestionKey();
+    if(!MALBIT_WRITING.ready(x.id,S.writing[x.id],need)){updateWritingGate(x.id);document.getElementById('writeBox')?.focus();return toast(L(`최소 ${need}자까지 작성해 주세요.`,`最低${need}字まで書いてください。`,`Write at least ${need} characters.`,`请至少写${need}字。`))}
+    const sec=elapsed();stopTimer();inf.count++;inf.writing=(Number(inf.writing)||0)+1;inf.totalSec+=sec;inf.targetSec+=infLimit(x);rememberWriting(q,'random');inf.feedback={write:true,sec,answers:MALBIT_WRITING.short(x.id)?{...writingPair(x.id).answers}:undefined};save();durationFor(key);render();
   };
 }
 
