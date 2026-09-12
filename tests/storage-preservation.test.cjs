@@ -77,6 +77,36 @@ test('a suspicious empty core cannot overwrite a richer learner record', () => {
   assert.equal(JSON.parse(storage.get('topikQuestV8')).vocab[0].text, '광화문');
 });
 
+test('writing-only review history recovers when the active core is reset to empty', () => {
+  const history = {
+    'M01-II-W-51': {
+      id: 51, bankId: 'M01-II-W-51',
+      answers: { giyeok: '첫 칸 연습 답안', nieun: '둘째 칸 연습 답안' },
+      legacyText: '이관 전 원문',
+      assessment: { giyeok: { status: 'compare' }, nieun: { status: 'compare' } }
+    }
+  };
+  const saved = JSON.stringify({ writing: {}, writingHistory: history });
+  const snapshot = JSON.stringify({ schema: 1, storage: { topikQuestV8: saved } });
+  const { storage } = runGuard({
+    malbitRecoverySnapshotV1: snapshot,
+    topikQuestV8: JSON.stringify({ writing: {}, writingHistory: {}, vocab: [], gameUnlock: 1 })
+  });
+  assert.deepEqual(JSON.parse(storage.get('topikQuestV8')).writingHistory, history);
+  const recoveredSnapshot = JSON.parse(storage.get('malbitRecoverySnapshotV1'));
+  assert.deepEqual(JSON.parse(recoveredSnapshot.storage.topikQuestV8).writingHistory, history);
+});
+
+test('current writing history is not replaced by an older recovery snapshot', () => {
+  const oldCore = { writingHistory: { old: { answers: { giyeok: '옛 답', nieun: '옛 답' } } } };
+  const current = { writingHistory: { current: { answers: { giyeok: '현재 첫 답', nieun: '현재 둘째 답' } } } };
+  const { storage } = runGuard({
+    malbitRecoverySnapshotV1: JSON.stringify({ schema: 1, storage: { topikQuestV8: JSON.stringify(oldCore) } }),
+    topikQuestV8: JSON.stringify(current)
+  });
+  assert.deepEqual(JSON.parse(storage.get('topikQuestV8')), current);
+});
+
 test('backup import preserves newer roots that are absent from an older file', () => {
   const source = read('product-polish.js');
   assert.match(source, /'malbitBeginnerV1','malbitStoryV1'/);
