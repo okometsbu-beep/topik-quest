@@ -37,9 +37,9 @@ through the existing Shorts record.
 | Storage | automated pass | Existing `topikQuestShortsV1` and earlier IDs remain; cards are appended after existing TOPIK II rows. |
 | Focused local checks | pass | Inventory and vocabulary tests pass 13/13 on Node 24. |
 | Full release checks | pass | Node 24 `npm run check` passed 104/104; content checks passed 16/16. |
-| Emulated mobile | pending | PR CI must cover 320/375/390/430px, both themes, wrong-answer recovery, expanded coaching, next-first flow and reload restoration. |
+| Emulated mobile | pass | PR #128 CI `34671148823` rerun covers 320/375/390/430px, both themes, wrong-answer recovery, expanded coaching, next-first flow and reload restoration. Screens: `00bs-shorts-topik2-state-change-wrong-light.png`, `00bt-shorts-topik2-state-change-full-dark.png`. The first attempt ended only on an unrelated external-resource HTTP 429; the unchanged rerun passed. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
-| Overall | pending | Automated, full-release and AI content gates pass for these four IDs; release awaits visual gates. |
+| Overall | bounded pass | Automated, full-release, AI content and Linux Chrome emulation gates pass for these four IDs. This is not human or physical-device approval. |
 
 Inventory becomes 320 rows / 194 exact question-choice families (TOPIK I 96, TOPIK II 98). The 15 existing
 structural review candidates do not increase. These totals are not content approvals: the generated inventory

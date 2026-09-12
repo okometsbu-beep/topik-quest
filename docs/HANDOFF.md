@@ -75,8 +75,10 @@ these facts from conversation history or the large TOPIK source bundle.
   adjective quality change, action in progress, and the remaining result state of a completed action. Each has a
   stable ID, fixed choice-specific ko/ja/en/zh feedback, bundled examples, and evidence→traps→state-function
   coaching. The bounded review ledger is `docs/qa/shorts-review-s04-topik2-state-change.md`. Focused data and
-  inventory checks pass 13/13, content checks pass 16/16, and local Node 24 full checks pass 104/104;
-  the mobile gate remains pending before merge.
+  inventory checks pass 13/13, content checks pass 16/16, and local Node 24 full checks pass 104/104.
+  PR #128 CI `34671148823` rerun also passes 104/104 and covers 320/375/390/430px Linux Chrome
+  emulation in both themes, selected-wrong feedback, expanded coaching, next-first flow and reload restoration.
+  Its first attempt ended only on an unrelated external-resource HTTP 429; the unchanged rerun passed.
   Physical devices, native-language review and learner timing remain unverified.
 - Next: after v109 passes, rebalance with one bounded TOPIK I shortage batch. Quantity alone is not progress, and a new P0 or clear
   wrong answer takes precedence. At least 44 I / 42 II additional distinct sets remain even before suitability review for the 140/level
