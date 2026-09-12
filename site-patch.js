@@ -4,6 +4,7 @@
   'use strict';
   const VERSION='109';
   const RUNTIME_FILES=Object.freeze([
+    'writing-answers.js',
     'site-patch-core.js',
     'storage-guard.js',
     'neural-tts.js',

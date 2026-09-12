@@ -3,6 +3,19 @@
 This is the short continuity record for future work. Use it with `AGENTS.md`; do not reconstruct
 these facts from conversation history or the large TOPIK source bundle.
 
+## Immediate user priority · #129
+
+- Pause Shorts expansion for the explicit writing-input fix on `agent/fix-writing-two-blanks`.
+- `writing-answers.js` defines schema 2 `{answers:{giyeok,nieun}}`, preserving `legacyText`.
+  Labelled ㄱ/ㄴ strings split; unlabelled text stays in the first field with a migration notice.
+- Owning core renders/binds two fields for 51/52, estimates each blank separately, and snapshots
+  answers/model comparisons under existing `topikQuestV8.writingHistory` for Review.
+- Product wrappers use per-field readiness; long-form 53/54 stays string-based.
+- No PR or deployment: mobile visual evidence is pending. Automatic approval review blocked
+  screenshot setup documentation access as an unspecified/private resource; do not bypass.
+- Resume #129 visual/interaction verification, then bump version once and follow release gates.
+- Live v109 is `b84e596129956e0e70328910c22917b9a8bfbb5c` (PR #128); this is the rollback baseline.
+
 ## Current release priority · 2026-09-12
 
 - Source of truth: [release blueprint #110](https://github.com/okometsbu-beep/topik-quest/issues/110).

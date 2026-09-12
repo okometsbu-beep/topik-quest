@@ -326,3 +326,15 @@ body.travel-rpg-active .travelScreen{overflow:hidden;padding:0}
   .travelBudgetActions{grid-template-columns:1fr}
   .travelBudgetActions .travelTextButton{margin-top:7px}
 }
+
+/* Independent writing blanks: keep labels and input boundaries in both themes. */
+.writingPair{display:grid;gap:16px;min-width:0;margin:16px 0;color:var(--ui-ink)}
+.writingPart{min-width:0;padding:16px;border:1px solid var(--ui-border);border-radius:14px;background:var(--ui-surface)}
+.writingPart label,.writingPart h4{display:block;font-size:16px;font-weight:800;margin:0 0 10px;color:var(--ui-ink)}
+.writingPart textarea.write{display:block;box-sizing:border-box;width:100%;min-height:100px;height:110px;margin:0 0 8px;padding:12px;border:1px solid var(--ui-border);border-radius:10px;background:var(--ui-surface-soft);color:var(--ui-ink);font-size:16px;resize:vertical}
+.writingPart textarea:focus{outline:2px solid var(--ui-accent);outline-offset:2px}
+.writingPart small{color:var(--ui-muted)}
+.writingPart p,.writingMigration{white-space:pre-wrap;overflow-wrap:anywhere}
+.writingMigration{padding:12px;border-radius:10px;background:var(--ui-warning-soft);color:var(--ui-warning)}
+.writingReview details{padding:14px;margin:12px 0;border:1px solid var(--ui-border);border-radius:14px;background:var(--ui-surface);color:var(--ui-ink)}
+.writingReview summary{cursor:pointer;min-height:44px;font-weight:700}

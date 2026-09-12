@@ -2,11 +2,22 @@
 
 Keep this file compact. Replace stale detail instead of appending an endless diary.
 
+## 긴급 사용자 요청 · #129
+
+- 대상: TOPIK II 작문 51·52번 ㄱ/ㄴ 입력 완전 분리. Shorts 확충보다 우선.
+- 구현 브랜치: `agent/fix-writing-two-blanks`; 아직 PR/병합/배포 없음.
+- 두 textarea, 개별 자동 저장/제출 조건/참고 점수/모범답안 비교/복습 스냅샷 구현.
+- 기존 표지 있는 문자열은 분리, 무표지 문자열은 ㄱ에 원문 보존 + 확인 안내. 53·54 긴 글 및 원본 은행 불변.
+- 실제 검사: Linux Node, `npm run test:quick`, `npm run test:content`, `npm run check` 통과(전체 108/108). migration/독립 저장/한 칸 미작성/모범답안 매칭/복습 스냅샷/20점 상한 검증.
+- 미검증: 모바일 4폭×2테마·실제 터치/재진입·시각 캡처·실기기. 캡처 준비용 브라우저 안내 조회가 자동 승인 검토에서 차단됨(자료 공개 여부 불명 사유); 우회 없음.
+- 다음 한 작업: #129 화면 검증을 완료한 후 버전 증가·전체 검사·PR/CI/배포. 검증 전 배포 금지.
+- 현재 라이브/복귀 기준: v109 `b84e596129956e0e70328910c22917b9a8bfbb5c`, https://okometsbu-beep.github.io/topik-quest/ . 이번 변경은 라이브에 적용되지 않음.
+
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v108 · S04 reviewed TOPIK I frequency-adverb Shorts pilot (`d68ac0a8dac3fa3d4ab7355aec8b3b34cddeb082`)
-- Current candidate: v109 · S04 reviewed TOPIK II state/change grammar Shorts pilot
+- Production release: v109 · TOPIK II state/change Shorts (`b84e596129956e0e70328910c22917b9a8bfbb5c`)
+- Current candidate: unversioned #129 writing-input separation; visual verification pending
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -150,10 +161,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-S04 다음 묶음: v109 통과 뒤 다시 더 부족해지는 TOPIK I의 미검수 유형 4개를 재고와 대조한 뒤
-같은 한 판단 계약으로 검수·확충한다. 정답 유일성·선택 오답 해설·ko/ja/en/zh 번역을 함께
-검수하고 실제 사람 풀이시간은 별도 미검증으로 유지한다.
-새 P0/명백한 정답 오류가 있으면 앞당긴다.
+#129 작문 입력 분리의 모바일 화면·상호작용 검증. 검증 후 PR/CI/Pages 배포.
+기존 S04 TOPIK I 확충은 이 사용자 긴급 요청이 완료될 때까지 후순위.
 
 ## 이번 작업 · S04 TOPIK II 상태·변화 숏츠 4문항 검수·확충
 
