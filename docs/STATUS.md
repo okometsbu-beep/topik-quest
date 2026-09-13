@@ -14,7 +14,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 실제 검사: Linux Node v24.19.0, 집중 10/10·quick 95/95·전체 `npm run check` 110/110. 로컬 HTTP 3개 기본+45개 런타임 통과. PR CI와 main CI `34702111845`에서 Linux Chrome 320/375/390/430px×라이트/다크, 두 칸 터치 입력·독립 저장·새로고침 복원·참고 점수·복습 분리·구형 단일 답안 안내를 통과했다. main CI 첫 시도는 Chrome target 종료로 실패했으나 동일 커밋 재실행은 통과했다.
 - 라이브 공개 브라우저: v110을 새로 불러온 TOPIK II → 쓰기만 → 51번에서 `ㄱ(기역) 답안`과 `ㄴ(니은) 답안` 두 textbox를 확인했다. 서로 다른 값을 입력하고 다음→이전 뒤에도 각각 유지됐다. HTTP smoke는 3개 기본+45개 런타임을 통과했다.
 - 시각 증거: CI artifact `10300595038`의 `00bu-writing-two-blanks-light.png`, `00bv-writing-two-blanks-dark.png`, `00bw-writing-two-blanks-review-dark.png` 직접 확인. 실제 iPhone/Android 및 실제 IME는 미검증이며 에뮬레이션과 구별한다.
-- 다음 한 작업: v111 TOPIK I 단위 명사 숏츠 후보의 CI·모바일·라이브 배포 게이트를 완료한다. 새 P0·정답 오류가 우선한다.
+- 다음 한 작업: v111 TOPIK I 단위 명사 숏츠 후보의 최종 CI·병합·라이브 배포 게이트를 완료한다. 새 P0·정답 오류가 우선한다.
 - 현재 라이브/복귀 기준: v110 `a0f852517ae72b3371ca9ab6c6fc3936c09ddda3`, https://okometsbu-beep.github.io/topik-quest/ . 복귀 기준은 위 v109다.
 
 ## 현재 상태
@@ -165,8 +165,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-#129 긴급 작문 입력 분리는 완료됐다. v111 후보에서 TOPIK I 단위 명사 4문항의 CI·모바일
-에뮬레이션·라이브 배포 게이트를 마친다. 통과 후 다음 묶음은 부족 수가 더 큰 TOPIK II다.
+#129 긴급 작문 입력 분리는 완료됐다. v111 후보에서 TOPIK I 단위 명사 4문항의 최종 CI·병합·
+라이브 배포 게이트를 마친다. 통과 후 다음 묶음은 부족 수가 더 큰 TOPIK II다.
 
 ## 현재 작업 · S04 TOPIK I 단위 명사 숏츠 4문항 검수·확충
 
@@ -176,8 +176,12 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
   예문·해설을 내장했다. AI 제한 검수이며 사람 언어 검수나 실제 학습자 측정으로 집계하지 않는다.
 - 재고는 324행/198 정확 의미군, 레벨별 서로 다른 묶음은 I 100·II 98이다. 기존 중복 126행,
   구조 후보 15개, 정답 충돌 0은 유지된다. 전체 승인 수는 여전히 0/324다.
-- Node 24 콘텐츠 검사 17/17, 재고 2/2, 전체 검사 111/111 통과. CI 모바일·라이브 배포는 아직
-  미검증이므로 v111을 production으로 표시하지 않는다.
+- Node 24 콘텐츠 검사 17/17, 재고 2/2, 전체 검사 111/111 통과. PR #132 CI `34734763048`의
+  동일 커밋 재실행에서 111/111과 320·375·390·430px 라이트/다크 Linux Chrome 에뮬레이션,
+  선택 오답 해설·상세 해설·새로고침 복원을 통과했다. 첫 실행은 외부 리소스 HTTP 429, 두 번째는
+  기존 인과·양보 복원 검사 비결정 실패였고 세 번째에서 재현되지 않았다. artifact `10311116003`의
+  `00bx`/`00by` 화면을 직접 확인했다. 병합·라이브 배포는 아직 미검증이므로 v111을 production으로
+  표시하지 않는다.
 
 ## 이전 작업 · S04 TOPIK II 상태·변화 숏츠 4문항 검수·확충
 

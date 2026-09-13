@@ -36,9 +36,9 @@ object-first method. Fixed choices are shuffled and restored through the existin
 | Storage | automated pass | Existing `topikQuestShortsV1` and earlier IDs remain; cards are appended after existing TOPIK I rows. |
 | Focused local checks | pass | Node 24 content checks passed 17/17; generated inventory checks passed 2/2. |
 | Full release checks | pass | Node 24 `npm run check` passed 111/111 at candidate v111. |
-| Emulated mobile | pending | 320/375/390/430px, light/dark, feedback, expanded coaching and reload restoration remain to run. |
+| Emulated mobile | pass | PR #132 CI run `34734763048` passed at 320/375/390/430px in light/dark, including selected-wrong feedback, expanded coaching and reload restoration. Artifact `10311116003` screenshots `00bx-shorts-topik1-counter-wrong-light.png` and `00by-shorts-topik1-counter-full-dark.png` were inspected. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
-| Overall | candidate | Do not merge until automated and mobile-emulation gates pass. |
+| Overall | release candidate | Local and PR automated/mobile-emulation gates pass. Merge and live deployment verification remain. |
 
 Inventory becomes 324 rows / 198 exact question-choice families (TOPIK I 100, TOPIK II 98). The 15 existing
 structural review candidates do not increase. These totals are not content approvals: the generated inventory

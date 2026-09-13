@@ -36,7 +36,11 @@ these facts from conversation history or the large TOPIK source bundle.
 - Current candidate v111 adds four TOPIK I counters: `명` for people, `개` for general objects,
   `병` for bottles, and `권` for books/notebooks. The bounded ledger is
   `docs/qa/shorts-review-s04-topik1-counters.md`. Node 24 content 17/17, inventory 2/2, and full
-  release checks 111/111 pass; CI mobile emulation and live deployment are still pending.
+  release checks 111/111 pass. PR #132 CI `34734763048` passes the same 111/111 plus Linux Chrome
+  emulation at 320/375/390/430px in light/dark, selected-wrong feedback, expanded coaching and reload
+  restoration. Artifact `10311116003` screenshots `00bx`/`00by` were inspected. The first attempt ended
+  on external HTTP 429 and the second on an existing non-deterministic reload assertion; neither reproduced
+  on the successful unchanged run. Final CI after this evidence update, merge, and live deployment remain.
 - Latest #110 instruction: C01–C06 content quality, first applied as S01–S05 Shorts, outranks A08/#76.
   S01 adds `docs/qa/shorts-audit.md`, generated ID/content-hash inventory and `scripts/audit-shorts.cjs`.
   The v111 candidate has 324 runtime rows but only 198 distinct question-choice sets (I 100, II 98), 30 duplicate
@@ -106,7 +110,7 @@ these facts from conversation history or the large TOPIK source bundle.
   emulation in both themes, selected-wrong feedback, expanded coaching, next-first flow and reload restoration.
   Its first attempt ended only on an unrelated external-resource HTTP 429; the unchanged rerun passed.
   Physical devices, native-language review and learner timing remain unverified.
-- Next: finish v111 CI/mobile/live gates, then resume with one bounded TOPIK II shortage batch. Quantity alone is not progress, and a new P0 or clear
+- Next: finish v111 final CI/merge/live gates, then resume with one bounded TOPIK II shortage batch. Quantity alone is not progress, and a new P0 or clear
   wrong answer takes precedence. At least 40 I / 42 II additional distinct sets remain even before suitability review for the 140/level
   planning floor; this is not the final expansion target. Timing 5–15 seconds is unmeasured and never forced.
 - Follow start → understand → recall/speak/write → review → next learning for Japanese beginners, and
