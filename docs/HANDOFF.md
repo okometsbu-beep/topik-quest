@@ -29,11 +29,11 @@ these facts from conversation history or the large TOPIK source bundle.
 - Source of truth: [release blueprint #110](https://github.com/okometsbu-beep/topik-quest/issues/110).
   It supersedes #76 map expansion until core learning quality gates pass. A01–A12 remain audit findings,
   not resolved items; existing feature/visual checks do not certify translation or teaching accuracy.
-- Production is v111 at `5cbb6773f9cb78c6ab4bd6791165841126038707` (PR #132); candidate v112
-  adds four bounded TOPIK II condition-relation cards.
+- Production is v112 at `b42d0759a6b98c363f77f6ac72be527e742e8707` (PR #134), adding four
+  bounded TOPIK II condition-relation cards. There is no current candidate.
   TOPIK II writing 51/52 keeps the v110 separate labelled ㄱ/ㄴ fields through input, scoring, save,
-  Review, recovery, and compatible legacy migration. Product rollback is v110
-  `a0f852517ae72b3371ca9ab6c6fc3936c09ddda3`.
+  Review, recovery, and compatible legacy migration. Product rollback is v111
+  `5cbb6773f9cb78c6ab4bd6791165841126038707`.
 - v111 adds four TOPIK I counters: `명` for people, `개` for general objects,
   `병` for bottles, and `권` for books/notebooks. The bounded ledger is
   `docs/qa/shorts-review-s04-topik1-counters.md`. Node 24 content 17/17, inventory 2/2, and full
@@ -46,7 +46,7 @@ these facts from conversation history or the large TOPIK source bundle.
   v111 with 3 base + 45 runtime files; the four IDs and `data/shorts-levels.js` hash match main.
 - Latest #110 instruction: C01–C06 content quality, first applied as S01–S05 Shorts, outranks A08/#76.
   S01 adds `docs/qa/shorts-audit.md`, generated ID/content-hash inventory and `scripts/audit-shorts.cjs`.
-  The v112 candidate has 328 runtime rows but only 202 distinct question-choice sets (I 100, II 102), 30 duplicate
+  Production v112 has 328 runtime rows but only 202 distinct question-choice sets (I 100, II 102), 30 duplicate
   groups and 15 structural review candidates. Comprehensive content approvals remain 0/328, not 328 passed questions.
   Audit-only curated IDs must NOT replace saved numeric indices without the S03 migration contract.
 - S03 v101 (PR #120) migrates schema-2 numeric Shorts progress to stable card/family IDs without
@@ -113,16 +113,20 @@ these facts from conversation history or the large TOPIK source bundle.
   emulation in both themes, selected-wrong feedback, expanded coaching, next-first flow and reload restoration.
   Its first attempt ended only on an unrelated external-resource HTTP 429; the unchanged rerun passed.
   Physical devices, native-language review and learner timing remain unverified.
-- S04 candidate v112 adds four TOPIK II condition-relation grammar cards that distinguish an actual-event
+- S04 v112 adds four TOPIK II condition-relation grammar cards that distinguish an actual-event
   condition followed by a request, a necessary prerequisite, an undecided supposition, and a warning about
   continuing behavior. Each has a stable ID, fixed choice-specific ko/ja/en/zh feedback, bundled examples,
   and evidence→traps→following-clause coaching. The bounded review ledger is
   `docs/qa/shorts-review-s04-topik2-conditions.md`. Focused data checks pass 13/13 and inventory checks pass 2/2;
-  full release checks pass 112/112. PR #134 CI `34764974560` passes the same checks plus Linux Chrome
+  full release checks pass 112/112. PR #134 final CI `34765253730` passes the same checks plus Linux Chrome
   emulation at 320/375/390/430px in light/dark, selected-wrong feedback, expanded coaching and reload
-  restoration. Artifact `10320915051` screenshots `00bz`/`00cb` were inspected. Local Chrome was unavailable;
-  this evidence is CI emulation, not physical iPhone/Android.
-- Next after this candidate: one bounded TOPIK I shortage batch. Quantity alone is not progress, and a new P0 or clear
+  restoration. Artifact `10320915051` screenshots `00bz`/`00cb` were inspected. PR #134 was squash merged as
+  `b42d0759a6b98c363f77f6ac72be527e742e8707`; main CI `34765463888` and Pages `34765463632` succeeded.
+  Live HTTP smoke reports v112 with 3 base + 45 runtime files, and the four IDs plus
+  `data/shorts-levels.js` and `site-patch.js` hashes match main. Local Chrome was unavailable; this evidence is CI
+  emulation, not physical iPhone/Android. Product rollback is v111
+  `5cbb6773f9cb78c6ab4bd6791165841126038707`.
+- Next: one bounded TOPIK I shortage batch. Quantity alone is not progress, and a new P0 or clear
   wrong answer takes precedence. At least 40 I / 38 II additional distinct sets remain even before suitability review for the 140/level
   planning floor; this is not the final expansion target. Timing 5–15 seconds is unmeasured and never forced.
 - Follow start → understand → recall/speak/write → review → next learning for Japanese beginners, and
