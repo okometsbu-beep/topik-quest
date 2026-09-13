@@ -1,6 +1,7 @@
 # S04 · TOPIK II condition-relation Shorts pilot
 
-Baseline: production v111 `5cbb6773f9cb78c6ab4bd6791165841126038707`; reviewed candidate v112.
+Production: v112 `b42d0759a6b98c363f77f6ac72be527e742e8707`; product rollback is v111
+`5cbb6773f9cb78c6ab4bd6791165841126038707`.
 Scope: four new TOPIK II grammar cards only. This is an AI content review plus automated/browser QA record,
 not native-speaker approval, learner timing evidence, or approval of the other 324 Shorts rows.
 
@@ -36,10 +37,10 @@ are shuffled and restored through the existing Shorts record.
 | Repeat/inventory | automated pass | Four stable IDs add four exact families with no new duplicate, structural flag, or conflicting-answer group. |
 | Storage | automated pass | Existing `topikQuestShortsV1` and earlier IDs remain; cards are appended after existing TOPIK II rows. |
 | Focused local checks | pass | Node 24 vocabulary/data checks pass 13/13; generated inventory checks pass 2/2. |
-| Full release checks | pass | Node 24 `npm run check` passes 112/112 at candidate v112. |
-| Emulated mobile | pass | PR #134 CI `34764974560` covers 320/375/390/430px in light/dark, selected-wrong feedback, expanded coaching, next-first flow and reload restoration. Artifact `10320915051` screens `00bz`/`00cb` were inspected. Local Chrome was unavailable; this is CI Linux Chrome emulation. |
+| Full release checks | pass | Node 24 `npm run check` passes 112/112 at production v112. |
+| Emulated mobile | pass | PR #134 final CI `34765253730` covers 320/375/390/430px in light/dark, selected-wrong feedback, expanded coaching, next-first flow and reload restoration. Artifact `10320915051` screens `00bz`/`00cb` were inspected. Local Chrome was unavailable; this is CI Linux Chrome emulation. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
-| Overall | bounded pass | Automated, full-release, AI content and CI Linux Chrome emulation gates pass for these four IDs. Merge and live deployment remain pending; human and physical-device limits above stay open. |
+| Overall | bounded pass | Automated, full-release, AI content and CI Linux Chrome emulation gates pass for these four IDs. PR #134 is merged; main CI `34765463888`, Pages `34765463632`, live v112 HTTP smoke, and live asset hashes pass. Human and physical-device limits above stay open. |
 
 Inventory becomes 328 rows / 202 exact question-choice families (TOPIK I 100, TOPIK II 102). The 15 existing
 structural review candidates do not increase. These totals are not content approvals: the generated inventory
