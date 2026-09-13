@@ -33,10 +33,14 @@ these facts from conversation history or the large TOPIK source bundle.
   TOPIK II writing 51/52 now uses separate labelled ㄱ/ㄴ fields through input, scoring, save, Review,
   recovery, and compatible legacy migration. Product rollback is v109
   `b84e596129956e0e70328910c22917b9a8bfbb5c`.
+- Current candidate v111 adds four TOPIK I counters: `명` for people, `개` for general objects,
+  `병` for bottles, and `권` for books/notebooks. The bounded ledger is
+  `docs/qa/shorts-review-s04-topik1-counters.md`. Node 24 content 17/17, inventory 2/2, and full
+  release checks 111/111 pass; CI mobile emulation and live deployment are still pending.
 - Latest #110 instruction: C01–C06 content quality, first applied as S01–S05 Shorts, outranks A08/#76.
   S01 adds `docs/qa/shorts-audit.md`, generated ID/content-hash inventory and `scripts/audit-shorts.cjs`.
-  The v109 candidate has 320 runtime rows but only 194 distinct question-choice sets (I 96, II 98), 30 duplicate
-  groups and 15 structural review candidates. Comprehensive content approvals remain 0/320, not 320 passed questions.
+  The v111 candidate has 324 runtime rows but only 198 distinct question-choice sets (I 100, II 98), 30 duplicate
+  groups and 15 structural review candidates. Comprehensive content approvals remain 0/324, not 324 passed questions.
   Audit-only curated IDs must NOT replace saved numeric indices without the S03 migration contract.
 - S03 v101 (PR #120) migrates schema-2 numeric Shorts progress to stable card/family IDs without
   replacing `topikQuestShortsV1`. It cycles 162 exact question-choice families before intentional repeats,
@@ -102,8 +106,8 @@ these facts from conversation history or the large TOPIK source bundle.
   emulation in both themes, selected-wrong feedback, expanded coaching, next-first flow and reload restoration.
   Its first attempt ended only on an unrelated external-resource HTTP 429; the unchanged rerun passed.
   Physical devices, native-language review and learner timing remain unverified.
-- Next: resume with one bounded TOPIK I shortage batch. Quantity alone is not progress, and a new P0 or clear
-  wrong answer takes precedence. At least 44 I / 42 II additional distinct sets remain even before suitability review for the 140/level
+- Next: finish v111 CI/mobile/live gates, then resume with one bounded TOPIK II shortage batch. Quantity alone is not progress, and a new P0 or clear
+  wrong answer takes precedence. At least 40 I / 42 II additional distinct sets remain even before suitability review for the 140/level
   planning floor; this is not the final expansion target. Timing 5–15 seconds is unmeasured and never forced.
 - Follow start → understand → recall/speak/write → review → next learning for Japanese beginners, and
   passage evidence → specific distractor traps → reusable solving method for TOPIK I/II.

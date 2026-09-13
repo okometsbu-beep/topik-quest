@@ -35,7 +35,7 @@ object-first method. Fixed choices are shuffled and restored through the existin
 | Repeat/inventory | automated pass | Four stable IDs add four exact families with no new duplicate, structural flag, or conflicting-answer group. |
 | Storage | automated pass | Existing `topikQuestShortsV1` and earlier IDs remain; cards are appended after existing TOPIK I rows. |
 | Focused local checks | pass | Node 24 content checks passed 17/17; generated inventory checks passed 2/2. |
-| Full release checks | pending | The full release lane must pass before merge. |
+| Full release checks | pass | Node 24 `npm run check` passed 111/111 at candidate v111. |
 | Emulated mobile | pending | 320/375/390/430px, light/dark, feedback, expanded coaching and reload restoration remain to run. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
 | Overall | candidate | Do not merge until automated and mobile-emulation gates pass. |
