@@ -545,6 +545,69 @@ const reviewedFrequencyItem=(id,term,key,example,exampleI18n,evidence)=>{
   });
 };
 
+const COUNTER_UNITS=Object.freeze({
+  people:Object.freeze({
+    meaning:Object.freeze({ko:'사람을 세는 단위',ja:'人を数える助数詞（～人）',en:'counter for people',zh:'数人的量词（名、位）'}),
+    selected:Object.freeze({
+      ko:'“명”은 사람의 수를 셀 때 쓰는 단위입니다.',
+      ja:'「명」は、人の人数を数えるときに使う助数詞です。',
+      en:'“명” is the counter used for people.',
+      zh:'“명”是计算人数时使用的量词。'
+    })
+  }),
+  general:Object.freeze({
+    meaning:Object.freeze({ko:'일반적인 물건을 세는 단위',ja:'一般の物を数える助数詞（～個）',en:'general counter for objects',zh:'数一般物品的量词（个）'}),
+    selected:Object.freeze({
+      ko:'“개”는 특별한 단위가 없는 일반적인 물건의 수를 셀 때 씁니다.',
+      ja:'「개」は、専用の助数詞がない一般の物を数えるときに使います。',
+      en:'“개” is the general counter for objects without a more specific counter.',
+      zh:'“개”用于计算没有专用量词的一般物品。'
+    })
+  }),
+  bottles:Object.freeze({
+    meaning:Object.freeze({ko:'병에 든 것을 세는 단위',ja:'瓶入りの物を数える助数詞（～本）',en:'counter for bottles',zh:'数瓶装物品的量词（瓶）'}),
+    selected:Object.freeze({
+      ko:'“병”은 물이나 음료처럼 병에 담긴 것의 수를 셀 때 쓰는 단위입니다.',
+      ja:'「병」は、水や飲み物など瓶に入った物を数えるときに使う助数詞です。',
+      en:'“병” counts bottles or things packaged in bottles, such as water or drinks.',
+      zh:'“병”用于计算水、饮料等瓶装物品。'
+    })
+  }),
+  volumes:Object.freeze({
+    meaning:Object.freeze({ko:'책·공책을 세는 단위',ja:'本・冊子を数える助数詞（～冊）',en:'counter for books and bound volumes',zh:'数书本的量词（册、本）'}),
+    selected:Object.freeze({
+      ko:'“권”은 책이나 공책처럼 묶인 책 형태의 물건을 셀 때 쓰는 단위입니다.',
+      ja:'「권」は、本やノートなど冊子になった物を数えるときに使う助数詞です。',
+      en:'“권” counts books, notebooks, and other bound volumes.',
+      zh:'“권”用于计算书、笔记本等装订成册的物品。'
+    })
+  })
+});
+const COUNTER_ORDER=['people','general','bottles','volumes'];
+const COUNTER_METHOD=Object.freeze({
+  ko:'세는 대상의 종류를 먼저 보세요. 사람=명, 일반 물건=개, 병에 든 것=병, 책·공책=권입니다.',
+  ja:'数える対象を先に見ます。人＝명、一般の物＝개、瓶入りの物＝병、本・ノート＝권です。',
+  en:'Identify what is being counted first: people = 명, general objects = 개, bottles = 병, and books or notebooks = 권.',
+  zh:'先看要数的对象：人＝명，一般物品＝개，瓶装物品＝병，书或笔记本＝권。'
+});
+const reviewedCounterItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=COUNTER_UNITS[key];
+  return Object.freeze({
+    id,level:1,type:'word',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:COUNTER_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(COUNTER_ORDER.map(choiceKey=>Object.freeze({
+      meaning:COUNTER_UNITS[choiceKey].meaning,
+      explanationI18n:COUNTER_UNITS[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】명=사람, 개=일반 물건, 병=병에 든 것, 권=책·공책으로 세는 대상이 다릅니다.\n【재사용 풀이】${COUNTER_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】명＝人、개＝一般の物、병＝瓶入りの物、권＝本・ノートで、数える対象が異なります。\n【再利用できる解き方】${COUNTER_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 명 counts people, 개 general objects, 병 bottles, and 권 books or notebooks.\n[Reusable method] ${COUNTER_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】명数人，개数一般物品，병数瓶装物品，권数书或笔记本，计数对象各不相同。\n【通用解法】${COUNTER_METHOD.zh}`
+    })
+  });
+};
+
 const TOPIK_I=[
   item(1,'word','가게','상점','店','store; shop','商店','집 앞 가게에서 우유를 샀어요.'),
   item(1,'word','약속','만나기로 정한 일','約束','promise; appointment','约定','친구와 세 시에 만날 약속이 있어요.'),
@@ -692,6 +755,38 @@ const TOPIK_I=[
     ja:'「전혀 못 먹어요」は、否定表現「못」とともに「まったく食べられない」と0の程度を強調します。',
     en:'“전혀 못 먹어요” combines 전혀 with 못 to emphasize zero ability: cannot eat it at all.',
     zh:'“전혀 못 먹어요”把전혀和否定词“못”搭配，强调一点也不能吃。'
+  }),
+  reviewedCounterItem('S04-I-W-COUNT-01','명','people','교실에 학생이 두 명 있어요.',{
+    ko:'교실에 학생이 두 명 있어요.',ja:'教室に学生が二人います。',en:'There are two students in the classroom.',zh:'教室里有两名学生。'
+  },{
+    ko:'“학생이 두 명”은 사람인 학생의 수를 세므로 “명”이 맞습니다.',
+    ja:'「학생이 두 명」は、人である学生の人数を数えているので「명」が合います。',
+    en:'“학생이 두 명” counts students, who are people, so 명 fits.',
+    zh:'“학생이 두 명”计算的是学生人数，所以应选“명”。'
+  }),
+  reviewedCounterItem('S04-I-W-COUNT-02','개','general','사과를 세 개 샀어요.',{
+    ko:'사과를 세 개 샀어요.',ja:'りんごを三個買いました。',en:'I bought three apples.',zh:'我买了三个苹果。'
+  },{
+    ko:'“사과 세 개”는 일반적인 물건인 사과의 수를 세므로 “개”가 맞습니다.',
+    ja:'「사과를 세 개」は、一般の物であるりんごの数を数えているので「개」が合います。',
+    en:'“사과를 세 개” counts apples as general objects, so 개 fits.',
+    zh:'“사과를 세 개”计算的是一般物品苹果的数量，所以应选“개”。'
+  }),
+  reviewedCounterItem('S04-I-W-COUNT-03','병','bottles','물을 한 병 주세요.',{
+    ko:'물을 한 병 주세요.',ja:'水を一本ください。',en:'Please give me one bottle of water.',zh:'请给我一瓶水。'
+  },{
+    ko:'“물 한 병”은 병에 든 물 하나를 세므로 “병”이 맞습니다.',
+    ja:'「물을 한 병」は、瓶に入った水を一本と数えているので「병」が合います。',
+    en:'“물을 한 병” counts one bottle of water, so 병 fits.',
+    zh:'“물을 한 병”计算的是一瓶水，所以应选“병”。'
+  }),
+  reviewedCounterItem('S04-I-W-COUNT-04','권','volumes','책을 네 권 빌렸어요.',{
+    ko:'책을 네 권 빌렸어요.',ja:'本を四冊借りました。',en:'I borrowed four books.',zh:'我借了四本书。'
+  },{
+    ko:'“책 네 권”은 책의 수를 세므로 “권”이 맞습니다.',
+    ja:'「책을 네 권」は、本の冊数を数えているので「권」が合います。',
+    en:'“책을 네 권” counts books as bound volumes, so 권 fits.',
+    zh:'“책을 네 권”计算的是书的数量，所以应选“권”。'
   })
 ];
 
