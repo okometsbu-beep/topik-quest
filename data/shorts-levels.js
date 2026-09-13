@@ -608,6 +608,69 @@ const reviewedFrequencyItem=(id,term,key,example,exampleI18n,evidence)=>{
   });
 };
 
+const QUESTION_WORDS=Object.freeze({
+  person:Object.freeze({
+    meaning:Object.freeze({ko:'사람을 물음',ja:'人を尋ねる「だれ」',en:'who; asks about a person',zh:'询问人物：谁'}),
+    selected:Object.freeze({
+      ko:'“누구”는 이름이나 관계를 모르는 사람을 물을 때 씁니다.',
+      ja:'「누구」は、名前や関係が分からない人を尋ねるときに使います。',
+      en:'“누구” asks who a person is when their name or relationship is unknown.',
+      zh:'“누구”用于询问姓名或关系不清楚的人。'
+    })
+  }),
+  place:Object.freeze({
+    meaning:Object.freeze({ko:'장소를 물음',ja:'場所を尋ねる「どこ」',en:'where; asks about a place',zh:'询问地点：哪里'}),
+    selected:Object.freeze({
+      ko:'“어디”는 위치나 가고 오는 장소를 물을 때 씁니다.',
+      ja:'「어디」は、位置や行き来する場所を尋ねるときに使います。',
+      en:'“어디” asks about a location or a place someone goes to or comes from.',
+      zh:'“어디”用于询问位置或往来的地点。'
+    })
+  }),
+  time:Object.freeze({
+    meaning:Object.freeze({ko:'시간을 물음',ja:'時を尋ねる「いつ」',en:'when; asks about time',zh:'询问时间：什么时候'}),
+    selected:Object.freeze({
+      ko:'“언제”는 일이 일어나는 날이나 시각을 물을 때 씁니다.',
+      ja:'「언제」は、物事が起こる日や時刻を尋ねるときに使います。',
+      en:'“언제” asks for the day or time when something happens.',
+      zh:'“언제”用于询问事情发生的日期或时刻。'
+    })
+  }),
+  price:Object.freeze({
+    meaning:Object.freeze({ko:'가격·금액을 물음',ja:'値段・金額を尋ねる「いくら」',en:'how much; asks about a price or amount',zh:'询问价格或金额：多少钱'}),
+    selected:Object.freeze({
+      ko:'“얼마”는 물건의 가격이나 돈의 액수를 물을 때 씁니다.',
+      ja:'「얼마」は、品物の値段やお金の金額を尋ねるときに使います。',
+      en:'“얼마” asks for the price of an item or an amount of money.',
+      zh:'“얼마”用于询问物品价格或钱的数额。'
+    })
+  })
+});
+const QUESTION_WORD_ORDER=['person','place','time','price'];
+const QUESTION_WORD_METHOD=Object.freeze({
+  ko:'묻는 대상을 먼저 보세요. 사람=누구, 장소=어디, 날·시각=언제, 가격·금액=얼마입니다.',
+  ja:'何を尋ねるかを先に見ます。人＝누구、場所＝어디、日・時刻＝언제、値段・金額＝얼마です。',
+  en:'Identify what is being asked: person = 누구, place = 어디, day or time = 언제, and price or amount = 얼마.',
+  zh:'先看询问对象：人物＝누구，地点＝어디，日期或时刻＝언제，价格或金额＝얼마。'
+});
+const reviewedQuestionWordItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=QUESTION_WORDS[key];
+  return Object.freeze({
+    id,level:1,type:'word',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:QUESTION_WORD_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(QUESTION_WORD_ORDER.map(choiceKey=>Object.freeze({
+      meaning:QUESTION_WORDS[choiceKey].meaning,
+      explanationI18n:QUESTION_WORDS[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】누구=사람, 어디=장소, 언제=날·시각, 얼마=가격·금액으로 묻는 대상이 다릅니다.\n【재사용 풀이】${QUESTION_WORD_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】누구＝人、어디＝場所、언제＝日・時刻、얼마＝値段・金額で、尋ねる対象が異なります。\n【再利用できる解き方】${QUESTION_WORD_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 누구 asks about a person, 어디 a place, 언제 a day or time, and 얼마 a price or amount.\n[Reusable method] ${QUESTION_WORD_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】누구问人物，어디问地点，언제问日期或时刻，얼마问价格或金额，询问对象各不相同。\n【通用解法】${QUESTION_WORD_METHOD.zh}`
+    })
+  });
+};
+
 const COUNTER_UNITS=Object.freeze({
   people:Object.freeze({
     meaning:Object.freeze({ko:'사람을 세는 단위',ja:'人を数える助数詞（～人）',en:'counter for people',zh:'数人的量词（名、位）'}),
@@ -850,6 +913,38 @@ const TOPIK_I=[
     ja:'「책을 네 권」は、本の冊数を数えているので「권」が合います。',
     en:'“책을 네 권” counts books as bound volumes, so 권 fits.',
     zh:'“책을 네 권”计算的是书的数量，所以应选“권”。'
+  }),
+  reviewedQuestionWordItem('S04-I-W-QUESTION-01','누구','person','저 사람은 누구예요?',{
+    ko:'저 사람은 누구예요?',ja:'あの人はだれですか。',en:'Who is that person?',zh:'那个人是谁？'
+  },{
+    ko:'“저 사람”의 이름이나 관계를 묻고 있으므로 사람을 묻는 “누구”가 맞습니다.',
+    ja:'「저 사람（あの人）」の名前や関係を尋ねているので、人を尋ねる「누구」が合います。',
+    en:'The sentence asks for the identity of “that person,” so the person question word 누구 fits.',
+    zh:'句子在询问“那个人”的身份，所以应选询问人物的“누구”。'
+  }),
+  reviewedQuestionWordItem('S04-I-W-QUESTION-02','어디','place','화장실이 어디에 있어요?',{
+    ko:'화장실이 어디에 있어요?',ja:'トイレはどこにありますか。',en:'Where is the restroom?',zh:'洗手间在哪里？'
+  },{
+    ko:'화장실의 위치를 묻고 있으므로 장소를 묻는 “어디”가 맞습니다.',
+    ja:'トイレの位置を尋ねているので、場所を尋ねる「어디」が合います。',
+    en:'The sentence asks for the restroom’s location, so the place question word 어디 fits.',
+    zh:'句子在询问洗手间的位置，所以应选询问地点的“어디”。'
+  }),
+  reviewedQuestionWordItem('S04-I-W-QUESTION-03','언제','time','시험이 언제예요?',{
+    ko:'시험이 언제예요?',ja:'試験はいつですか。',en:'When is the exam?',zh:'考试是什么时候？'
+  },{
+    ko:'시험이 있는 날이나 시각을 묻고 있으므로 시간을 묻는 “언제”가 맞습니다.',
+    ja:'試験がある日や時刻を尋ねているので、時を尋ねる「언제」が合います。',
+    en:'The sentence asks for the exam’s day or time, so the time question word 언제 fits.',
+    zh:'句子在询问考试的日期或时刻，所以应选询问时间的“언제”。'
+  }),
+  reviewedQuestionWordItem('S04-I-W-QUESTION-04','얼마','price','이 가방은 얼마예요?',{
+    ko:'이 가방은 얼마예요?',ja:'このかばんはいくらですか。',en:'How much is this bag?',zh:'这个包多少钱？'
+  },{
+    ko:'가방의 가격을 묻고 있으므로 가격·금액을 묻는 “얼마”가 맞습니다.',
+    ja:'かばんの値段を尋ねているので、値段・金額を尋ねる「얼마」が合います。',
+    en:'The sentence asks for the bag’s price, so the price question word 얼마 fits.',
+    zh:'句子在询问包的价格，所以应选询问价格或金额的“얼마”。'
   })
 ];
 

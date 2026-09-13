@@ -30,7 +30,8 @@ these facts from conversation history or the large TOPIK source bundle.
   It supersedes #76 map expansion until core learning quality gates pass. A01–A12 remain audit findings,
   not resolved items; existing feature/visual checks do not certify translation or teaching accuracy.
 - Production is v112 at `b42d0759a6b98c363f77f6ac72be527e742e8707` (PR #134), adding four
-  bounded TOPIK II condition-relation cards. There is no current candidate.
+  bounded TOPIK II condition-relation cards. Candidate v113 adds four TOPIK I question-word cards for
+  person/place/time/price; it is not merged or deployed until release and mobile-emulation gates pass.
   TOPIK II writing 51/52 keeps the v110 separate labelled ㄱ/ㄴ fields through input, scoring, save,
   Review, recovery, and compatible legacy migration. Product rollback is v111
   `5cbb6773f9cb78c6ab4bd6791165841126038707`.
@@ -46,8 +47,8 @@ these facts from conversation history or the large TOPIK source bundle.
   v111 with 3 base + 45 runtime files; the four IDs and `data/shorts-levels.js` hash match main.
 - Latest #110 instruction: C01–C06 content quality, first applied as S01–S05 Shorts, outranks A08/#76.
   S01 adds `docs/qa/shorts-audit.md`, generated ID/content-hash inventory and `scripts/audit-shorts.cjs`.
-  Production v112 has 328 runtime rows but only 202 distinct question-choice sets (I 100, II 102), 30 duplicate
-  groups and 15 structural review candidates. Comprehensive content approvals remain 0/328, not 328 passed questions.
+  Candidate v113 has 332 runtime rows but only 206 distinct question-choice sets (I 104, II 102), 30 duplicate
+  groups and 15 structural review candidates. Comprehensive content approvals remain 0/332, not 332 passed questions.
   Audit-only curated IDs must NOT replace saved numeric indices without the S03 migration contract.
 - S03 v101 (PR #120) migrates schema-2 numeric Shorts progress to stable card/family IDs without
   replacing `topikQuestShortsV1`. It cycles 162 exact question-choice families before intentional repeats,
@@ -126,8 +127,13 @@ these facts from conversation history or the large TOPIK source bundle.
   `data/shorts-levels.js` and `site-patch.js` hashes match main. Local Chrome was unavailable; this evidence is CI
   emulation, not physical iPhone/Android. Product rollback is v111
   `5cbb6773f9cb78c6ab4bd6791165841126038707`.
-- Next: one bounded TOPIK I shortage batch. Quantity alone is not progress, and a new P0 or clear
-  wrong answer takes precedence. At least 40 I / 38 II additional distinct sets remain even before suitability review for the 140/level
+- S04 candidate v113 adds four TOPIK I question-word cards that distinguish a person, a place, a day/time,
+  and a price/amount. Each has a stable ID, fixed choice-specific ko/ja/en/zh feedback, bundled examples,
+  and evidence→traps→target-category coaching. The bounded ledger is
+  `docs/qa/shorts-review-s04-topik1-question-words.md`. Node 24 content checks pass 19/19 and full release
+  checks pass 113/113; CI mobile emulation, merge, Pages and live verification remain pending.
+- Next: complete only the v113 release gates. Quantity alone is not progress, and a new P0 or clear
+  wrong answer takes precedence. At least 36 I / 38 II additional distinct sets remain even before suitability review for the 140/level
   planning floor; this is not the final expansion target. Timing 5–15 seconds is unmeasured and never forced.
 - Follow start → understand → recall/speak/write → review → next learning for Japanese beginners, and
   passage evidence → specific distractor traps → reusable solving method for TOPIK I/II.
