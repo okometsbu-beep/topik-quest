@@ -14,7 +14,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 실제 검사: Linux Node v24.19.0, 집중 10/10·quick 95/95·전체 `npm run check` 110/110. 로컬 HTTP 3개 기본+45개 런타임 통과. PR CI와 main CI `34702111845`에서 Linux Chrome 320/375/390/430px×라이트/다크, 두 칸 터치 입력·독립 저장·새로고침 복원·참고 점수·복습 분리·구형 단일 답안 안내를 통과했다. main CI 첫 시도는 Chrome target 종료로 실패했으나 동일 커밋 재실행은 통과했다.
 - 라이브 공개 브라우저: v110을 새로 불러온 TOPIK II → 쓰기만 → 51번에서 `ㄱ(기역) 답안`과 `ㄴ(니은) 답안` 두 textbox를 확인했다. 서로 다른 값을 입력하고 다음→이전 뒤에도 각각 유지됐다. HTTP smoke는 3개 기본+45개 런타임을 통과했다.
 - 시각 증거: CI artifact `10300595038`의 `00bu-writing-two-blanks-light.png`, `00bv-writing-two-blanks-dark.png`, `00bw-writing-two-blanks-review-dark.png` 직접 확인. 실제 iPhone/Android 및 실제 IME는 미검증이며 에뮬레이션과 구별한다.
-- 다음 한 작업: 새 P0·명백한 정답 오류가 없으면 S04 TOPIK II 부족 유형 4문항을 같은 제한 검수 기준으로 진행한다.
+- 현재 한 작업: S04 TOPIK II 조건 관계 4문항을 같은 제한 검수 기준으로 진행한다.
 - 현재 라이브/복귀 기준: v111 `5cbb6773f9cb78c6ab4bd6791165841126038707`,
   https://okometsbu-beep.github.io/topik-quest/ . 제품 복귀 기준은 v110
   `a0f852517ae72b3371ca9ab6c6fc3936c09ddda3`다.
@@ -23,7 +23,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 - Production: GitHub Pages static PWA
 - Production release: v111 · four reviewed TOPIK I counter Shorts (`5cbb6773f9cb78c6ab4bd6791165841126038707`)
-- Current candidate: none
+- Current candidate: v112 · four reviewed TOPIK II condition-relation Shorts
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -35,7 +35,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - TOPIK I·II, Shorts, Random Practice, full mock exams, Review, Vocabulary, Statistics
 - Beginner grammar covers core sentence order and major particle, tense, politeness, negation, connective,
   modifier, irregular, and speech-level transformations with per-rule writing practice.
-- Shorts release has 188 TOPIK I / 136 TOPIK II rows, but only 100 / 98 distinct question-choice sets;
+- Shorts candidate has 188 TOPIK I / 140 TOPIK II rows, but only 100 / 102 distinct question-choice sets;
   these are inventory counts, not educationally approved questions. Fixed mock composition remains intact.
 - bank explanations structured as answer evidence → distractor trap → reusable type-solving method,
   with separate TOPIK II writing 51–54 plans
@@ -167,10 +167,23 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-#129 긴급 작문 입력 분리와 v111 TOPIK I 단위 명사 4문항 배포는 완료됐다. 새 P0·명백한
-정답 오류가 없으면 다음 묶음은 부족 수가 더 큰 TOPIK II다.
+#129 긴급 작문 입력 분리와 v111 TOPIK I 단위 명사 4문항 배포는 완료됐다. 이번 한 작업은
+TOPIK II 조건 관계 4문항의 제한 검수와 배포다.
 
-## 현재 작업 · S04 TOPIK I 단위 명사 숏츠 4문항 검수·확충
+## 현재 작업 · S04 TOPIK II 조건 관계 숏츠 4문항 검수·확충
+
+- v112 후보에서 `-거든·-아/어야만·-(으)ㄴ/는다면·-다가는`을 실제 발생 뒤 부탁·지시,
+  필수 조건, 미정 상황 가정, 계속할 때의 나쁜 결과 경고와 매칭하는 짧은 카드 4개를 안정 ID로
+  추가했다. 기존 숏츠와 모든 학습 저장 루트는 변경하지 않는다.
+- 각 카드에 선택 오답별 설명, 결정적 예문→네 함정→뒤 절 역할 풀이법, ko/ja/en/zh 뜻·보기·
+  예문·해설을 내장했다. AI 제한 검수이며 사람 언어 검수나 실제 학습자 측정으로 집계하지 않는다.
+- 후보 재고는 328행/202 정확 의미군, 레벨별 서로 다른 묶음은 I 100·II 102다. 기존 중복 126행,
+  구조 후보 15개, 정답 충돌 0은 유지된다. 전체 승인 수는 여전히 0/328이다.
+- Node 24 데이터 검사 13/13, 재고 검사 2/2, 전체 release check 112/112를 통과했다. 네 폭·두 테마
+  Linux Chrome 에뮬레이션은 체크포인트 뒤 실행하며, 통과 전에는 병합·배포하지 않는다.
+- 다음 한 작업: 새 P0·명백한 정답 오류가 없으면 검수 수가 더 적은 TOPIK I 부족 유형 4문항.
+
+## 이전 작업 · S04 TOPIK I 단위 명사 숏츠 4문항 검수·확충
 
 - v111에서 `명·개·병·권`을 사람·일반 물건·병에 든 것·책/공책과 매칭하는
   짧은 카드 4개를 안정 ID로 추가했다. 기존 숏츠와 모든 학습 저장 루트는 변경하지 않는다.
