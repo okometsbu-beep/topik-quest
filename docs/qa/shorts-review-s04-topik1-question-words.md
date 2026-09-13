@@ -36,10 +36,10 @@ target-first method. Fixed choices are shuffled and restored through the existin
 | Storage | automated pass | Existing `topikQuestShortsV1` and earlier IDs remain; cards are appended after existing TOPIK I rows. |
 | Focused local checks | pass | Node 24 content checks passed 19/19; generated inventory checks passed. |
 | Full release checks | pass | Node 24 `npm run check` passed 113/113 at candidate v113 after the inventory-count contract was updated. |
-| Emulated mobile | pending | Requires 320/375/390/430px light/dark, selected-wrong feedback, expanded coaching, next-first flow and reload restoration. |
+| Emulated mobile | pass | PR #136 CI `34783191274` passed at 320/375/390/430px in light/dark, including selected-wrong feedback, expanded coaching, next-first flow and reload restoration. Artifact `10325594505` screens `00cc`/`00cd` were inspected. Local Chrome was unavailable; this is CI Linux Chrome emulation. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
-| Deployment | pending | Do not merge until CI and mobile-emulation evidence are inspected. |
-| Overall | candidate | Automated release and bounded AI review pass; mobile, merge, live, human, learner and physical-device gates remain open. |
+| Deployment | pending | PR #136 remains unmerged until the evidence-record commit passes final CI. |
+| Overall | candidate | Automated, bounded AI review and CI Linux Chrome emulation pass; merge, live, human, learner and physical-device gates remain open. |
 
 Inventory becomes 332 rows / 206 exact question-choice families (TOPIK I 104, TOPIK II 102). The 15
 existing structural review candidates do not increase. These totals are not content approvals: the generated
