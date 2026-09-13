@@ -1,6 +1,7 @@
 # S04 · TOPIK I counter Shorts pilot
 
-Baseline: production v110 `a0f852517ae72b3371ca9ab6c6fc3936c09ddda3`; reviewed candidate v111.
+Baseline: production v110 `a0f852517ae72b3371ca9ab6c6fc3936c09ddda3`; deployed in v111
+`5cbb6773f9cb78c6ab4bd6791165841126038707`.
 Scope: four new TOPIK I counter cards only. This is an AI content review plus automated/browser QA record,
 not native-speaker approval, learner timing evidence, or approval of the other 320 Shorts rows.
 
@@ -38,7 +39,8 @@ object-first method. Fixed choices are shuffled and restored through the existin
 | Full release checks | pass | Node 24 `npm run check` passed 111/111 at candidate v111. |
 | Emulated mobile | pass | PR #132 CI run `34734763048` passed at 320/375/390/430px in light/dark, including selected-wrong feedback, expanded coaching and reload restoration. Artifact `10311116003` screenshots `00bx-shorts-topik1-counter-wrong-light.png` and `00by-shorts-topik1-counter-full-dark.png` were inspected. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
-| Overall | release candidate | Local and PR automated/mobile-emulation gates pass. Merge and live deployment verification remain. |
+| Deployment | pass | PR #132 was squash merged. Main CI `34735492655` passed unchanged on rerun, Pages `34735492297` succeeded, and live HTTP smoke reports v111 with 3 base + 45 runtime files. The four IDs and `data/shorts-levels.js` hash match main. |
+| Overall | deployed | Automated, emulated-mobile, merge, Pages and live-asset gates pass. Human/learner/physical-device limits above remain open. |
 
 Inventory becomes 324 rows / 198 exact question-choice families (TOPIK I 100, TOPIK II 98). The 15 existing
 structural review candidates do not increase. These totals are not content approvals: the generated inventory
