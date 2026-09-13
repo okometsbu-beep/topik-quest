@@ -419,6 +419,69 @@ const reviewedStateChangeItem=(id,term,key,example,exampleI18n,evidence)=>{
   });
 };
 
+const CONDITION_RELATIONS=Object.freeze({
+  eventCondition:Object.freeze({
+    meaning:Object.freeze({ko:'앞일이 생기면 뒤의 지시를 실행',ja:'前のことが起きたら後の指示を実行',en:'do the instruction if the event occurs',zh:'前件发生时执行后面的指示'}),
+    selected:Object.freeze({
+      ko:'“-거든”은 앞 상황이 실제로 생길 때 뒤의 부탁이나 지시를 실행하라는 조건을 나타냅니다.',
+      ja:'「-거든」は、前の状況が実際に起きたら、後ろの依頼・指示を実行するという条件を表します。',
+      en:'“-거든” sets an event as the condition for carrying out the following request or instruction.',
+      zh:'“-거든”表示前面的情况实际发生时，再执行后面的请求或指示。'
+    })
+  }),
+  necessaryCondition:Object.freeze({
+    meaning:Object.freeze({ko:'오직 앞 조건을 충족해야 뒤가 가능',ja:'前の条件を満たしてこそ後が可能',en:'only if the first condition is met',zh:'只有满足前项条件才可能'}),
+    selected:Object.freeze({
+      ko:'“-아/어야만”은 앞 조건이 반드시 충족되어야 뒤 결과가 가능함을 강조합니다.',
+      ja:'「-아/어야만」は、前の条件を必ず満たして初めて後ろの結果が可能になることを強調します。',
+      en:'“-아/어야만” emphasizes that the following result is possible only when the preceding condition is met.',
+      zh:'“-아/어야만”强调必须满足前面的条件，后面的结果才有可能。'
+    })
+  }),
+  hypotheticalCondition:Object.freeze({
+    meaning:Object.freeze({ko:'아직 정해지지 않은 상황을 가정',ja:'まだ決まっていない状況を仮定',en:'suppose an undecided situation',zh:'假设尚未确定的情况'}),
+    selected:Object.freeze({
+      ko:'“-(으)ㄴ/는다면”은 아직 정해지지 않은 상황을 가정하고 그 경우를 생각합니다.',
+      ja:'「-(으)ㄴ/는다면」は、まだ決まっていない状況を仮定し、その場合について考えます。',
+      en:'“-(으)ㄴ/는다면” supposes an undecided situation and considers what would happen in that case.',
+      zh:'“-(으)ㄴ/는다면”假设一个尚未确定的情况，并思考在这种情况下会怎样。'
+    })
+  }),
+  warningCondition:Object.freeze({
+    meaning:Object.freeze({ko:'지금 행동을 계속하면 나쁜 결과를 경고',ja:'今の行動を続けると悪い結果になると警告',en:'warn of a bad result if this continues',zh:'警告继续当前行为会有坏结果'}),
+    selected:Object.freeze({
+      ko:'“-다가는”은 지금과 같은 행동이 계속되면 좋지 않은 결과가 생길 수 있다고 경고합니다.',
+      ja:'「-다가는」は、今のような行動を続けると、よくない結果になり得ると警告します。',
+      en:'“-다가는” warns that continuing the current behavior may lead to an undesirable result.',
+      zh:'“-다가는”警告如果继续当前的行为，可能会导致不好的结果。'
+    })
+  })
+});
+const CONDITION_RELATION_ORDER=['eventCondition','necessaryCondition','hypotheticalCondition','warningCondition'];
+const CONDITION_RELATION_METHOD=Object.freeze({
+  ko:'뒤 절의 역할을 먼저 보세요. 실제 발생 뒤 부탁·지시=거든, 반드시 충족할 조건=아/어야만, 미정 상황 가정=ㄴ/는다면, 계속할 때의 나쁜 결과 경고=다가는입니다.',
+  ja:'後件の役割を先に見ます。実際に起きた後の依頼・指示＝거든、必須条件＝아/어야만、未定の状況の仮定＝ㄴ/는다면、続けた場合の悪い結果への警告＝다가는です。',
+  en:'Check the following clause first: request after an actual event = 거든, required condition = 아/어야만, undecided hypothesis = ㄴ/는다면, and warning about a bad result from continuing = 다가는.',
+  zh:'先看后句的作用：事情发生后的请求或指示＝거든，必要条件＝아/어야만，假设未定情况＝ㄴ/는다면，继续下去会有坏结果的警告＝다가는。'
+});
+const reviewedConditionRelationItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=CONDITION_RELATIONS[key];
+  return Object.freeze({
+    id,level:2,type:'grammar',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:CONDITION_RELATION_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(CONDITION_RELATION_ORDER.map(choiceKey=>Object.freeze({
+      meaning:CONDITION_RELATIONS[choiceKey].meaning,
+      explanationI18n:CONDITION_RELATIONS[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】-거든=실제 발생 뒤 부탁·지시, -아/어야만=필수 조건, -(으)ㄴ/는다면=미정 상황 가정, -다가는=계속할 때의 나쁜 결과 경고로 기준이 다릅니다.\n【재사용 풀이】${CONDITION_RELATION_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】-거든＝実際に起きた後の依頼・指示、-아/어야만＝必須条件、-(으)ㄴ/는다면＝未定の状況の仮定、-다가는＝続けた場合の悪い結果への警告で、基準が異なります。\n【再利用できる解き方】${CONDITION_RELATION_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] -거든 sets an actual-event condition for a request, -아/어야만 a necessary condition, -(으)ㄴ/는다면 an undecided hypothesis, and -다가는 a warning about continuing behavior.\n[Reusable method] ${CONDITION_RELATION_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】-거든表示事情发生后执行请求或指示，-아/어야만表示必要条件，-(으)ㄴ/는다면表示假设未定情况，-다가는表示继续当前行为会产生坏结果的警告，判断标准各不相同。\n【通用解法】${CONDITION_RELATION_METHOD.zh}`
+    })
+  });
+};
+
 const LOCATION_WORDS=Object.freeze({
   opposite:Object.freeze({
     meaning:Object.freeze({ko:'길·공간의 반대쪽',ja:'道・空間の向こう側',en:'opposite side',zh:'道路或空间的对面'}),
@@ -1009,6 +1072,39 @@ const TOPIK_II=[
     ja:'ドアを開ける動作は終わり、開いた結果の状態がそのまま続いているので「-아/어 있다」が合います。',
     en:'The opening action is complete and the resulting open state remains, so -아/어 있다 fits.',
     zh:'开门的动作已经结束，门开着的结果状态仍在持续，所以应选“-아/어 있다”。'
+  }),
+
+  reviewedConditionRelationItem('S04-II-G-COND-01','-거든','eventCondition','시간이 나거든 이 서류를 확인해 주세요.',{
+    ko:'시간이 나거든 이 서류를 확인해 주세요.',ja:'時間ができたら、この書類を確認してください。',en:'If you have time, please check this document.',zh:'如果有时间，请确认一下这份文件。'
+  },{
+    ko:'시간이 나는 일이 실제로 생길 때 서류를 확인해 달라고 부탁하므로 “-거든”이 맞습니다.',
+    ja:'時間ができたときに書類を確認してほしいという依頼なので「-거든」が合います。',
+    en:'The speaker asks the listener to check the document when time becomes available, so -거든 fits.',
+    zh:'说话人请对方在有时间时确认文件，所以应选“-거든”。'
+  }),
+  reviewedConditionRelationItem('S04-II-G-COND-02','-아/어야만','necessaryCondition','신분증을 보여야만 들어갈 수 있습니다.',{
+    ko:'신분증을 보여야만 들어갈 수 있습니다.',ja:'身分証を見せなければ入れません。',en:'You can enter only if you show identification.',zh:'只有出示身份证件才能进入。'
+  },{
+    ko:'신분증을 보이는 것이 입장에 반드시 필요한 조건이므로 “-아/어야만”이 맞습니다.',
+    ja:'身分証を見せることが入場に必須の条件なので「-아/어야만」が合います。',
+    en:'Showing identification is a required condition for entry, so -아/어야만 fits.',
+    zh:'出示身份证件是进入的必要条件，所以应选“-아/어야만”。'
+  }),
+  reviewedConditionRelationItem('S04-II-G-COND-03','-(으)ㄴ/는다면','hypotheticalCondition','회사를 옮긴다면 어떤 일을 하고 싶어요?',{
+    ko:'회사를 옮긴다면 어떤 일을 하고 싶어요?',ja:'もし転職するなら、どんな仕事をしたいですか。',en:'If you changed companies, what kind of work would you like to do?',zh:'如果换工作，你想做什么样的工作？'
+  },{
+    ko:'회사 이동이 아직 정해지지 않은 상황을 가정해 희망을 묻기 때문에 “-(으)ㄴ/는다면”이 맞습니다.',
+    ja:'転職がまだ決まっていない状況を仮定して希望を尋ねるので「-(으)ㄴ/는다면」が合います。',
+    en:'The question supposes an undecided job change and asks about a preference, so -(으)ㄴ/는다면 fits.',
+    zh:'句子假设尚未确定的换工作情况，并询问意愿，所以应选“-(으)ㄴ/는다면”。'
+  }),
+  reviewedConditionRelationItem('S04-II-G-COND-04','-다가는','warningCondition','계속 무리하다가는 건강을 해칠 거예요.',{
+    ko:'계속 무리하다가는 건강을 해칠 거예요.',ja:'このまま無理を続けると、健康を害しますよ。',en:'If you keep overworking, you will harm your health.',zh:'再这样勉强下去，会损害健康。'
+  },{
+    ko:'무리하는 행동을 계속할 때 건강을 해치는 나쁜 결과를 경고하므로 “-다가는”이 맞습니다.',
+    ja:'無理を続けた場合に健康を害するという悪い結果を警告するので「-다가는」が合います。',
+    en:'The sentence warns that continuing to overwork will cause the bad result of harming one’s health, so -다가는 fits.',
+    zh:'句子警告继续勉强下去会损害健康，所以应选“-다가는”。'
   })
 ];
 

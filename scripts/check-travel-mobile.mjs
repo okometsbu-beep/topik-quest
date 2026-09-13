@@ -1054,6 +1054,35 @@ try{
   assert.match(stateChangeRestored.summary,/-아\/어지다[\s\S]*形容詞/u,'state-change selected feedback must survive reload');
   assert.match(stateChangeRestored.answer,/状況の流れ/u,'reviewed state-change answer must survive reload');
 
+  const conditionRelation=await evaluate(`(()=>{const lv=2,deck=[...window.MALBIT_SHORTS_DECKS[lv],...window.MALBIT_BANK.shorts(lv)],index=deck.findIndex(item=>item.id==='S04-II-G-COND-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','2');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:2,levels:{1:blank,2:active},daily:{}}));return{index,id:identity.id}})()`);
+  assert.equal(conditionRelation.id,'S04-II-G-COND-01','reviewed condition card must have its explicit stable ID');
+  await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsWord');
+  const conditionBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['2'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
+  assert.equal(conditionBefore.term,'-거든');assert.equal(conditionBefore.cardId,conditionRelation.id);assert.equal(conditionBefore.orderId,conditionRelation.id);
+  assert.deepEqual(conditionBefore.choiceOrder,[2,1,0,3]);
+  assert.deepEqual(conditionBefore.labels,['まだ決まっていない状況を仮定','前の条件を満たしてこそ後が可能','前のことが起きたら後の指示を実行','今の行動を続けると悪い結果になると警告'],'fixed condition choices must keep the saved shuffle');
+  await submitShortsLabel('前の条件を満たしてこそ後が可能');
+  const conditionReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
+  assert.match(conditionReview.summary,/-아\/어야만[\s\S]*必ず満たして/u,'selected Japanese feedback must explain the necessary-condition trap');
+  assert.match(conditionReview.answer,/前のことが起きたら後の指示を実行/u);assert.equal(conditionReview.closed,true);
+  assert.equal(conditionReview.nextBeforeDetails,true,'Next question must precede optional condition coaching');
+  assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'時間ができたら、この書類を確認してください。','reviewed Japanese condition example must render locally');
+  await evaluate(`malbitSetTheme('light')`);await sleep(100);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK II condition light ${width}px`,'light')}
+  await setViewport(390,844);await shot('00bz-shorts-topik2-condition-wrong-light.png');
+  await evaluate(`malbitSetTheme('dark');const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK II condition expanded dark ${width}px`,'dark')}
+  await setViewport(390,844);await shot('00cb-shorts-topik2-condition-full-dark.png');
+  await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsFeedbackSummary');
+  const conditionRestored=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['2'];return{cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder,locked:state.locked,summary:document.querySelector('.shortsFeedbackSummary')?.innerText,answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
+  assert.equal(conditionRestored.cardId,conditionRelation.id,'reviewed condition ID must survive reload');
+  assert.equal(conditionRestored.orderId,conditionRelation.id,'reviewed condition choice-order ID must survive reload');
+  assert.deepEqual(conditionRestored.choiceOrder,[2,1,0,3],'saved condition choice order must survive reload');
+  assert.equal(conditionRestored.locked,true,'graded condition state must survive reload');
+  assert.match(conditionRestored.summary,/-아\/어야만[\s\S]*必ず満たして/u,'condition selected feedback must survive reload');
+  assert.match(conditionRestored.answer,/前のことが起きたら後の指示を実行/u,'reviewed condition answer must survive reload');
+
   const frequencyWord=await evaluate(`(()=>{const lv=1,deck=[...window.MALBIT_SHORTS_DECKS[lv],...window.MALBIT_BANK.shorts(lv)],index=deck.findIndex(item=>item.id==='S04-I-W-FREQ-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','1');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:1,levels:{1:active,2:blank},daily:{}}));return{index,id:identity.id}})()`);
   assert.equal(frequencyWord.id,'S04-I-W-FREQ-01','reviewed frequency card must have its explicit stable ID');
   await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsWord');
