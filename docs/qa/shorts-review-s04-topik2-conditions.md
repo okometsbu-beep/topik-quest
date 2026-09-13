@@ -37,9 +37,9 @@ are shuffled and restored through the existing Shorts record.
 | Storage | automated pass | Existing `topikQuestShortsV1` and earlier IDs remain; cards are appended after existing TOPIK II rows. |
 | Focused local checks | pass | Node 24 vocabulary/data checks pass 13/13; generated inventory checks pass 2/2. |
 | Full release checks | pass | Node 24 `npm run check` passes 112/112 at candidate v112. |
-| Emulated mobile | pending | Required at 320/375/390/430px in both themes before merge. |
+| Emulated mobile | pass | PR #134 CI `34764974560` covers 320/375/390/430px in light/dark, selected-wrong feedback, expanded coaching, next-first flow and reload restoration. Artifact `10320915051` screens `00bz`/`00cb` were inspected. Local Chrome was unavailable; this is CI Linux Chrome emulation. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
-| Overall | pending | Merge and deployment still require the mobile gate. |
+| Overall | bounded pass | Automated, full-release, AI content and CI Linux Chrome emulation gates pass for these four IDs. Merge and live deployment remain pending; human and physical-device limits above stay open. |
 
 Inventory becomes 328 rows / 202 exact question-choice families (TOPIK I 100, TOPIK II 102). The 15 existing
 structural review candidates do not increase. These totals are not content approvals: the generated inventory

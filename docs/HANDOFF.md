@@ -118,7 +118,10 @@ these facts from conversation history or the large TOPIK source bundle.
   continuing behavior. Each has a stable ID, fixed choice-specific ko/ja/en/zh feedback, bundled examples,
   and evidence→traps→following-clause coaching. The bounded review ledger is
   `docs/qa/shorts-review-s04-topik2-conditions.md`. Focused data checks pass 13/13 and inventory checks pass 2/2;
-  full release checks pass 112/112; the mobile gate remains required before merge.
+  full release checks pass 112/112. PR #134 CI `34764974560` passes the same checks plus Linux Chrome
+  emulation at 320/375/390/430px in light/dark, selected-wrong feedback, expanded coaching and reload
+  restoration. Artifact `10320915051` screenshots `00bz`/`00cb` were inspected. Local Chrome was unavailable;
+  this evidence is CI emulation, not physical iPhone/Android.
 - Next after this candidate: one bounded TOPIK I shortage batch. Quantity alone is not progress, and a new P0 or clear
   wrong answer takes precedence. At least 40 I / 38 II additional distinct sets remain even before suitability review for the 140/level
   planning floor; this is not the final expansion target. Timing 5–15 seconds is unmeasured and never forced.
