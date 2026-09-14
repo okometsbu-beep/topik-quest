@@ -152,7 +152,18 @@ these facts from conversation history or the large TOPIK source bundle.
   four IDs plus `data/shorts-levels.js` and `site-patch.js` hashes match main. Product rollback is v113
   `71c749eb02868d0dd72bb378bfbe34ca0f9c34ff`. Physical devices, native-language review and learner
   timing are unverified.
-- Next: if no new P0 or clear wrong answer appears, review one bounded four-card TOPIK I shortage batch.
+- Candidate v115 adds four TOPIK I particle-role cards that distinguish a movement destination, an action
+  location, a means or method, and a human recipient. Stable IDs, fixed choice-specific ko/ja/en/zh feedback,
+  bundled examples, and evidence→traps→verb-plus-noun-role coaching are recorded in
+  `docs/qa/shorts-review-s04-topik1-particles.md`. Node 24 content checks pass 21/21, inventory checks pass
+  2/2, and full release checks pass 115/115. PR #140 CI `34861099960` passes 320/375/390/430px Linux
+  Chrome emulation in both themes, selected-wrong feedback, expanded coaching, next-first flow and reload
+  restoration. Artifact `10354814262` screens `00cg`/`00ch` were inspected. An earlier concurrent push run
+  failed only at the unrelated Travel 390x844 step while the unchanged PR run passed; the final run with the
+  particle-specific visual contract passed. Merge and live verification remain pending, so production stays
+  v114. Physical devices, native-language review and learner timing are unverified.
+- Next after a successful v115 deployment: synchronize STATUS/HANDOFF/the particle ledger with the actual
+  production commit, final CI, Pages, live hashes and rollback evidence.
   Quantity alone is not progress, and a new P0 or clear
   wrong answer takes precedence. At least 36 I / 34 II additional distinct sets remain even before suitability review for the 140/level
   planning floor; this is not the final expansion target. Timing 5–15 seconds is unmeasured and never forced.

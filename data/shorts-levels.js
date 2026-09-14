@@ -734,6 +734,69 @@ const reviewedQuestionWordItem=(id,term,key,example,exampleI18n,evidence)=>{
   });
 };
 
+const PARTICLE_ROLES=Object.freeze({
+  destination:Object.freeze({
+    meaning:Object.freeze({ko:'이동이 끝나는 곳',ja:'移動の到着点（～へ／～に）',en:'destination of movement',zh:'移动的目的地'}),
+    selected:Object.freeze({
+      ko:'“에”는 가다·오다 같은 이동 동사와 함께 도착하는 장소를 나타냅니다.',
+      ja:'「에」は、가다・오다 などの移動動詞とともに、到着する場所を表します。',
+      en:'“에” marks the destination reached with a movement verb such as 가다 or 오다.',
+      zh:'“에”与가다、오다等移动动词搭配，表示到达的地点。'
+    })
+  }),
+  actionPlace:Object.freeze({
+    meaning:Object.freeze({ko:'행동이 일어나는 곳',ja:'動作が行われる場所（～で）',en:'place where an action happens',zh:'动作发生的场所'}),
+    selected:Object.freeze({
+      ko:'“에서”는 공부하다·먹다처럼 실제 행동이 일어나는 장소를 나타냅니다.',
+      ja:'「에서」は、공부하다・먹다 のような実際の動作が行われる場所を表します。',
+      en:'“에서” marks the place where an action such as studying or eating happens.',
+      zh:'“에서”表示공부하다、먹다等实际动作发生的场所。'
+    })
+  }),
+  means:Object.freeze({
+    meaning:Object.freeze({ko:'이동 수단·방법',ja:'手段・方法（～で）',en:'means or method',zh:'手段或方法'}),
+    selected:Object.freeze({
+      ko:'“(으)로”는 버스·지하철처럼 행동에 사용하는 수단이나 방법을 나타냅니다.',
+      ja:'「(으)로」は、バス・地下鉄など、動作に使う手段や方法を表します。',
+      en:'“(으)로” marks the means or method used for an action, such as a bus or subway.',
+      zh:'“(으)로”表示做某事所用的手段或方法，例如公交车、地铁。'
+    })
+  }),
+  recipient:Object.freeze({
+    meaning:Object.freeze({ko:'사람인 받는 대상',ja:'人である受け手（～に）',en:'person receiving something',zh:'人的接受对象'}),
+    selected:Object.freeze({
+      ko:'“에게”는 주다·말하다 같은 행동이 향하는 사람을 나타냅니다.',
+      ja:'「에게」は、주다・말하다 などの動作が向かう人を表します。',
+      en:'“에게” marks the person toward whom an action such as giving or speaking is directed.',
+      zh:'“에게”表示주다、말하다等动作所指向的人。'
+    })
+  })
+});
+const PARTICLE_ROLE_ORDER=['destination','actionPlace','means','recipient'];
+const PARTICLE_ROLE_METHOD=Object.freeze({
+  ko:'동사와 명사의 역할을 함께 보세요. 이동의 도착점=에, 행동 장소=에서, 수단·방법=(으)로, 행동을 받는 사람=에게입니다.',
+  ja:'動詞と名詞の役割を一緒に見ます。移動の到着点＝에、動作の場所＝에서、手段・方法＝(으)로、動作を受ける人＝에게 です。',
+  en:'Read the verb and the noun role together: destination = 에, action location = 에서, means or method = (으)로, and human recipient = 에게.',
+  zh:'结合动词和名词的作用判断：移动目的地＝에，动作场所＝에서，手段或方法＝(으)로，动作的接受者＝에게。'
+});
+const reviewedParticleItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=PARTICLE_ROLES[key];
+  return Object.freeze({
+    id,level:1,type:'grammar',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:PARTICLE_ROLE_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(PARTICLE_ROLE_ORDER.map(choiceKey=>Object.freeze({
+      meaning:PARTICLE_ROLES[choiceKey].meaning,
+      explanationI18n:PARTICLE_ROLES[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】에=이동 도착점, 에서=행동 장소, (으)로=수단·방법, 에게=사람인 받는 대상으로 명사의 역할이 다릅니다.\n【재사용 풀이】${PARTICLE_ROLE_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】에＝移動の到着点、에서＝動作の場所、(으)로＝手段・方法、에게＝人である受け手で、名詞の役割が異なります。\n【再利用できる解き方】${PARTICLE_ROLE_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 에 marks a destination, 에서 an action location, (으)로 a means or method, and 에게 a human recipient.\n[Reusable method] ${PARTICLE_ROLE_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】에表示移动目的地，에서表示动作场所，(으)로表示手段或方法，에게表示人的接受对象，名词的作用各不相同。\n【通用解法】${PARTICLE_ROLE_METHOD.zh}`
+    })
+  });
+};
+
 const COUNTER_UNITS=Object.freeze({
   people:Object.freeze({
     meaning:Object.freeze({ko:'사람을 세는 단위',ja:'人を数える助数詞（～人）',en:'counter for people',zh:'数人的量词（名、位）'}),
@@ -1008,6 +1071,38 @@ const TOPIK_I=[
     ja:'かばんの値段を尋ねているので、値段・金額を尋ねる「얼마」が合います。',
     en:'The sentence asks for the bag’s price, so the price question word 얼마 fits.',
     zh:'句子在询问包的价格，所以应选询问价格或金额的“얼마”。'
+  }),
+  reviewedParticleItem('S04-I-G-PARTICLE-01','에','destination','학교에 가요.',{
+    ko:'학교에 가요.',ja:'学校へ行きます。',en:'I go to school.',zh:'我去学校。'
+  },{
+    ko:'“가요”는 이동이고 “학교”는 도착하는 곳이므로 “에”가 맞습니다.',
+    ja:'「가요」は移動で、「학교」は到着する場所なので「에」が合います。',
+    en:'“가요” expresses movement and “학교” is its destination, so 에 fits.',
+    zh:'“가요”表示移动，“학교”是到达的地点，所以应选“에”。'
+  }),
+  reviewedParticleItem('S04-I-G-PARTICLE-02','에서','actionPlace','도서관에서 공부해요.',{
+    ko:'도서관에서 공부해요.',ja:'図書館で勉強します。',en:'I study at the library.',zh:'我在图书馆学习。'
+  },{
+    ko:'“공부해요”라는 행동이 도서관에서 일어나므로 “에서”가 맞습니다.',
+    ja:'「공부해요」という動作が図書館で行われるので「에서」が合います。',
+    en:'The action “공부해요” happens at the library, so 에서 fits.',
+    zh:'“공부해요”这一动作发生在图书馆，所以应选“에서”。'
+  }),
+  reviewedParticleItem('S04-I-G-PARTICLE-03','(으)로','means','버스로 회사에 가요.',{
+    ko:'버스로 회사에 가요.',ja:'バスで会社へ行きます。',en:'I go to work by bus.',zh:'我坐公交车去公司。'
+  },{
+    ko:'버스는 회사에 가는 데 사용하는 이동 수단이므로 “(으)로”가 맞습니다.',
+    ja:'バスは会社へ行くために使う移動手段なので「(으)로」が合います。',
+    en:'The bus is the means used to travel to work, so (으)로 fits.',
+    zh:'公交车是去公司时使用的交通手段，所以应选“(으)로”。'
+  }),
+  reviewedParticleItem('S04-I-G-PARTICLE-04','에게','recipient','친구에게 선물을 줘요.',{
+    ko:'친구에게 선물을 줘요.',ja:'友達にプレゼントをあげます。',en:'I give a gift to a friend.',zh:'我送礼物给朋友。'
+  },{
+    ko:'친구는 선물을 받는 사람이므로 사람인 대상을 나타내는 “에게”가 맞습니다.',
+    ja:'友達はプレゼントを受け取る人なので、人である受け手を表す「에게」が合います。',
+    en:'The friend is the person receiving the gift, so 에게 fits.',
+    zh:'朋友是接受礼物的人，所以应选表示人的接受对象的“에게”。'
   })
 ];
 
