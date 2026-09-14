@@ -14,7 +14,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 실제 검사: Linux Node v24.19.0, 집중 10/10·quick 95/95·전체 `npm run check` 110/110. 로컬 HTTP 3개 기본+45개 런타임 통과. PR CI와 main CI `34702111845`에서 Linux Chrome 320/375/390/430px×라이트/다크, 두 칸 터치 입력·독립 저장·새로고침 복원·참고 점수·복습 분리·구형 단일 답안 안내를 통과했다. main CI 첫 시도는 Chrome target 종료로 실패했으나 동일 커밋 재실행은 통과했다.
 - 라이브 공개 브라우저: v110을 새로 불러온 TOPIK II → 쓰기만 → 51번에서 `ㄱ(기역) 답안`과 `ㄴ(니은) 답안` 두 textbox를 확인했다. 서로 다른 값을 입력하고 다음→이전 뒤에도 각각 유지됐다. HTTP smoke는 3개 기본+45개 런타임을 통과했다.
 - 시각 증거: CI artifact `10300595038`의 `00bu-writing-two-blanks-light.png`, `00bv-writing-two-blanks-dark.png`, `00bw-writing-two-blanks-review-dark.png` 직접 확인. 실제 iPhone/Android 및 실제 IME는 미검증이며 에뮬레이션과 구별한다.
-- 현재 한 작업: 새 P0·명백한 정답 오류가 없으면 TOPIK II 부족 유형 4문항을 제한 검수한다.
+- 현재 한 작업: TOPIK II 완료·경험 문법 4문항을 v114 후보로 제한 검수한다.
 - 현재 라이브/복귀 기준: v113 `71c749eb02868d0dd72bb378bfbe34ca0f9c34ff`,
   https://okometsbu-beep.github.io/topik-quest/ . 제품 복귀 기준은 v112
   `b42d0759a6b98c363f77f6ac72be527e742e8707`이다.
@@ -23,7 +23,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 - Production: GitHub Pages static PWA
 - Production release: v113 · four reviewed TOPIK I question-word Shorts (`71c749eb02868d0dd72bb378bfbe34ca0f9c34ff`)
-- Current candidate: none
+- Current candidate: v114 · four reviewed TOPIK II completion/experience grammar Shorts; CI and visual evidence pending
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -35,7 +35,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - TOPIK I·II, Shorts, Random Practice, full mock exams, Review, Vocabulary, Statistics
 - Beginner grammar covers core sentence order and major particle, tense, politeness, negation, connective,
   modifier, irregular, and speech-level transformations with per-rule writing practice.
-- Shorts production has 192 TOPIK I / 140 TOPIK II rows, but only 104 / 102 distinct question-choice sets;
+- Shorts production candidate has 192 TOPIK I / 144 TOPIK II rows, but only 104 / 106 distinct question-choice sets;
   these are inventory counts, not educationally approved questions. Fixed mock composition remains intact.
 - bank explanations structured as answer evidence → distractor trap → reusable type-solving method,
   with separate TOPIK II writing 51–54 plans
@@ -168,8 +168,21 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 다음 한 작업
 
 #129 긴급 작문 입력 분리와 v111–v113의 제한 검수 문항 배포·운영 문서 동기화는 완료됐다.
-다음 제품 작업은 새 P0·명백한 정답 오류가 없으면 서로 다른 문항군이 더 적은 TOPIK II
-부족 유형 4문항 제한 검수다.
+현재 제품 작업은 TOPIK II 완료·경험 문법 4문항을 v114 후보로 제한 검수하는 것이다.
+
+## 진행 중 작업 · S04 TOPIK II 완료·경험 문법 숏츠 4문항
+
+- v114 후보는 `-아/어 버리다·-(으)ㄴ 끝에·-아/어 본 적이 있다·-아/어 놓다`를 남김없는 완료,
+  긴 과정 뒤 마지막 결과, 과거 경험, 미리 준비해 유지하는 상태와 각각 매칭한다.
+- 네 카드는 안정 ID와 고정 선택지, ko/ja/en/zh 예문·선택 오답별 설명·결정적 근거→네 함정→
+  끝난 뒤 강조점 풀이법을 내장한다. 기존 ID와 `topikQuestShortsV1` 저장 구조는 바꾸지 않는다.
+- 후보 재고는 336행/210 정확 질문-보기군, I 104·II 106개다. 기존 중복 126행·30군,
+  구조 후보 15개, 정답 충돌 0은 증가하지 않았다. 전체 승인 수는 여전히 0/336이다.
+- Node 24 집중 검사는 콘텐츠 20/20, 재고 2/2를 통과했고 전체 release check도 114/114를 통과했다.
+  Linux Chrome 320·375·390·430px 라이트/다크, 선택 오답·상세 해설·다음 문제 우선·새로고침 복원은 아직 미검증이다.
+  실제 일본어 모어 화자, 초보자 5–15초 풀이/D1·D7 회상, 실제 iPhone/Android도 미검증이다.
+- 배포 주소는 기존 v113 https://okometsbu-beep.github.io/topik-quest/ 이며 제품 복귀 기준은
+  v112 `b42d0759a6b98c363f77f6ac72be527e742e8707`이다. PR·CI·배포는 후보 검증 뒤에만 진행한다.
 
 ## 완료 작업 · S04 TOPIK I 의문사 숏츠 4문항 검수·확충
 
