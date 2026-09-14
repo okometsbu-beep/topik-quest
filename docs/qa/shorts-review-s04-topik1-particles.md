@@ -1,7 +1,7 @@
 # S04 · TOPIK I particle-role Shorts pilot
 
-Candidate: v115. Production remains v114 `655f8715fc080a9e14b7cea00d34b0a0911a099c` until PR, CI,
-mobile emulation and GitHub Pages gates pass. Product rollback is v114.
+Production: v115 `05e84b401330074bf3432339859169cc156d6357`. Product rollback is v114
+`655f8715fc080a9e14b7cea00d34b0a0911a099c`.
 Scope: four new TOPIK I grammar cards only. This is an AI content review plus automated QA record,
 not native-speaker approval, learner timing evidence, or approval of the other 336 Shorts rows.
 
@@ -38,10 +38,10 @@ existing Shorts record.
 | Storage | automated pass | Existing `topikQuestShortsV1` and earlier IDs remain; cards are appended after existing TOPIK I rows. |
 | Focused local checks | pass | Node 24 content checks pass 21/21; generated inventory checks pass 2/2. |
 | Full release checks | pass | Node 24 `npm run check` passes 115/115 at candidate v115. |
-| Emulated mobile | pass | PR #140 CI `34861099960` covers 320/375/390/430px in light/dark, selected-wrong feedback, expanded coaching, next-first flow and reload restoration. Artifact `10354814262` screens `00cg`/`00ch` were inspected. |
+| Emulated mobile | pass | PR #140 final CI `34861683365` covers 320/375/390/430px in light/dark, selected-wrong feedback, expanded coaching, next-first flow and reload restoration. Artifact `10354814262` screens `00cg`/`00ch` were inspected. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
-| Deployment | pending | PR CI and visual gates pass; merge, Pages and live asset/behavior verification remain. |
+| Deployment | pass | PR #140 was squash merged as `05e84b401330074bf3432339859169cc156d6357`; main CI `34862095120` and Pages `34862094068` succeeded. Live HTTP smoke reports v115 with 3 base + 45 runtime files, and all four IDs plus `data/shorts-levels.js` and `site-patch.js` hashes match main. |
 
-Candidate inventory is 340 rows / 214 exact question-choice families (TOPIK I 108, TOPIK II 106). The
+Production inventory is 340 rows / 214 exact question-choice families (TOPIK I 108, TOPIK II 106). The
 15 existing structural review candidates do not increase. These totals are not content approvals: the
 generated inventory remains `approved: 0`, and only the four IDs above have this bounded AI review record.
