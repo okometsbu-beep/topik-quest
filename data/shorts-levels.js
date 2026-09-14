@@ -482,6 +482,69 @@ const reviewedConditionRelationItem=(id,term,key,example,exampleI18n,evidence)=>
   });
 };
 
+const COMPLETION_EXPERIENCE=Object.freeze({
+  completeAll:Object.freeze({
+    meaning:Object.freeze({ko:'남김없이 끝냄',ja:'すっかり完了する',en:'finish completely',zh:'彻底做完'}),
+    selected:Object.freeze({
+      ko:'“-아/어 버리다”는 행동이 남김없이 끝났음을 나타내며, 문맥에 따라 아쉬움이나 후련함이 더해질 수 있습니다.',
+      ja:'「-아/어 버리다」は、行為がすっかり完了したことを表し、文脈によって残念さやすっきりした気持ちが加わります。',
+      en:'“-아/어 버리다” marks an action as fully completed and can add regret or relief depending on context.',
+      zh:'“-아/어 버리다”表示动作彻底完成，根据语境还可带有遗憾或轻松的语气。'
+    })
+  }),
+  longProcessResult:Object.freeze({
+    meaning:Object.freeze({ko:'긴 과정 뒤 결과',ja:'長い過程の末の結果',en:'result after a long process',zh:'漫长过程后的结果'}),
+    selected:Object.freeze({
+      ko:'“-(으)ㄴ 끝에”는 길거나 반복된 과정이 끝난 뒤 얻은 마지막 결과를 나타냅니다.',
+      ja:'「-(으)ㄴ 끝에」は、長い、または繰り返された過程の末に得た最終結果を表します。',
+      en:'“-(으)ㄴ 끝에” marks the final result reached after a long or repeated process.',
+      zh:'“-(으)ㄴ 끝에”表示经过漫长或反复的过程后得到的最终结果。'
+    })
+  }),
+  pastExperience:Object.freeze({
+    meaning:Object.freeze({ko:'과거에 해 본 경험',ja:'過去にした経験',en:'past experience',zh:'过去做过的经历'}),
+    selected:Object.freeze({
+      ko:'“-아/어 본 적이 있다”는 과거에 그 행동을 경험한 일이 있음을 나타냅니다.',
+      ja:'「-아/어 본 적이 있다」は、過去にその行為を経験したことがあると表します。',
+      en:'“-아/어 본 적이 있다” says that the action has been experienced at some time in the past.',
+      zh:'“-아/어 본 적이 있다”表示过去曾经有过做该动作的经历。'
+    })
+  }),
+  preparedState:Object.freeze({
+    meaning:Object.freeze({ko:'미리 해 둔 상태',ja:'前もってした状態',en:'prepare and keep ready',zh:'事先做好并保持'}),
+    selected:Object.freeze({
+      ko:'“-아/어 놓다”는 나중을 위해 행동을 미리 끝내고 그 결과 상태를 유지함을 나타냅니다.',
+      ja:'「-아/어 놓다」は、後のために行為を前もって済ませ、その結果の状態を保つことを表します。',
+      en:'“-아/어 놓다” means doing something in advance and keeping the resulting state for later.',
+      zh:'“-아/어 놓다”表示为了之后先完成动作，并保持其结果状态。'
+    })
+  })
+});
+const COMPLETION_EXPERIENCE_ORDER=['completeAll','longProcessResult','pastExperience','preparedState'];
+const COMPLETION_EXPERIENCE_METHOD=Object.freeze({
+  ko:'끝난 뒤 무엇을 강조하는지 보세요. 남김없는 완료=버리다, 긴 과정의 마지막 결과=끝에, 과거 경험=본 적이 있다, 미리 준비해 둔 상태=놓다입니다.',
+  ja:'終わった後に何を強調するかを見ます。完全な終了＝버리다、長い過程の最終結果＝끝에、過去の経験＝본 적이 있다、前もって準備した状態＝놓다です。',
+  en:'Check what is emphasized after the action: total completion = 버리다, a final result after a long process = 끝에, past experience = 본 적이 있다, and a prepared state kept for later = 놓다.',
+  zh:'看动作之后强调什么：彻底完成＝버리다，漫长过程的最终结果＝끝에，过去经历＝본 적이 있다，事先准备并保持状态＝놓다。'
+});
+const reviewedCompletionExperienceItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=COMPLETION_EXPERIENCE[key];
+  return Object.freeze({
+    id,level:2,type:'grammar',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:COMPLETION_EXPERIENCE_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(COMPLETION_EXPERIENCE_ORDER.map(choiceKey=>Object.freeze({
+      meaning:COMPLETION_EXPERIENCE[choiceKey].meaning,
+      explanationI18n:COMPLETION_EXPERIENCE[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】-아/어 버리다=남김없는 완료, -(으)ㄴ 끝에=긴 과정 뒤의 마지막 결과, -아/어 본 적이 있다=과거 경험, -아/어 놓다=미리 준비해 유지하는 상태로 기준이 다릅니다.\n【재사용 풀이】${COMPLETION_EXPERIENCE_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】-아/어 버리다＝完全な終了、-(으)ㄴ 끝에＝長い過程の最終結果、-아/어 본 적이 있다＝過去の経験、-아/어 놓다＝前もって準備して保つ状態で、基準が異なります。\n【再利用できる解き方】${COMPLETION_EXPERIENCE_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] -아/어 버리다 marks total completion, -(으)ㄴ 끝에 a final result after a long process, -아/어 본 적이 있다 past experience, and -아/어 놓다 a prepared state kept for later.\n[Reusable method] ${COMPLETION_EXPERIENCE_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】-아/어 버리다表示彻底完成，-(으)ㄴ 끝에表示漫长过程后的最终结果，-아/어 본 적이 있다表示过去经历，-아/어 놓다表示事先准备并保持状态，判断标准各不相同。\n【通用解法】${COMPLETION_EXPERIENCE_METHOD.zh}`
+    })
+  });
+};
+
 const LOCATION_WORDS=Object.freeze({
   opposite:Object.freeze({
     meaning:Object.freeze({ko:'길·공간의 반대쪽',ja:'道・空間の向こう側',en:'opposite side',zh:'道路或空间的对面'}),
@@ -1200,6 +1263,39 @@ const TOPIK_II=[
     ja:'無理を続けた場合に健康を害するという悪い結果を警告するので「-다가는」が合います。',
     en:'The sentence warns that continuing to overwork will cause the bad result of harming one’s health, so -다가는 fits.',
     zh:'句子警告继续勉强下去会损害健康，所以应选“-다가는”。'
+  }),
+
+  reviewedCompletionExperienceItem('S04-II-G-COMPLETE-01','-아/어 버리다','completeAll','밀린 보고서를 오늘 다 써 버렸습니다.',{
+    ko:'밀린 보고서를 오늘 다 써 버렸습니다.',ja:'たまっていた報告書を今日全部書き上げました。',en:'I finished writing all the overdue reports today.',zh:'我今天把积压的报告全都写完了。'
+  },{
+    ko:'“다”가 보고서 작성이 남김없이 끝났음을 보여 주므로 “-아/어 버리다”가 맞습니다.',
+    ja:'「全部」が、たまっていた報告書を書き残さず終えたことを示すので「-아/어 버리다」が合います。',
+    en:'“All” shows that none of the overdue reports remain unfinished, so -아/어 버리다 fits.',
+    zh:'“全都”表明积压的报告已经一个不剩地写完，所以应选“-아/어 버리다”。'
+  }),
+  reviewedCompletionExperienceItem('S04-II-G-COMPLETE-02','-(으)ㄴ 끝에','longProcessResult','여러 번 고친 끝에 보고서를 완성했습니다.',{
+    ko:'여러 번 고친 끝에 보고서를 완성했습니다.',ja:'何度も直した末に、報告書を完成させました。',en:'After revising it many times, I completed the report.',zh:'经过多次修改，终于完成了报告。'
+  },{
+    ko:'“여러 번 고친” 긴 과정 뒤에 보고서 완성이라는 마지막 결과가 나왔으므로 “-(으)ㄴ 끝에”가 맞습니다.',
+    ja:'「何度も直した」という長い過程の後に完成という最終結果が出たので「-(으)ㄴ 끝에」が合います。',
+    en:'Completion is the final result after many revisions, so -(으)ㄴ 끝에 fits.',
+    zh:'经过“多次修改”这一过程后得到完成报告的最终结果，所以应选“-(으)ㄴ 끝에”。'
+  }),
+  reviewedCompletionExperienceItem('S04-II-G-COMPLETE-03','-아/어 본 적이 있다','pastExperience','제주도에서 한라산에 올라 본 적이 있습니다.',{
+    ko:'제주도에서 한라산에 올라 본 적이 있습니다.',ja:'済州島で漢拏山に登ったことがあります。',en:'I have climbed Hallasan on Jeju Island before.',zh:'我曾经在济州岛登过汉拿山。'
+  },{
+    ko:'과거에 한라산 등반을 경험한 일이 있음을 말하므로 “-아/어 본 적이 있다”가 맞습니다.',
+    ja:'過去に漢拏山へ登った経験があると述べているので「-아/어 본 적이 있다」が合います。',
+    en:'The sentence states a past experience of climbing Hallasan, so -아/어 본 적이 있다 fits.',
+    zh:'句子说明过去有登汉拿山的经历，所以应选“-아/어 본 적이 있다”。'
+  }),
+  reviewedCompletionExperienceItem('S04-II-G-COMPLETE-04','-아/어 놓다','preparedState','손님이 오기 전에 방을 청소해 놓았습니다.',{
+    ko:'손님이 오기 전에 방을 청소해 놓았습니다.',ja:'お客さんが来る前に、部屋を掃除しておきました。',en:'I cleaned the room in advance before the guests arrived.',zh:'客人来之前，我事先把房间打扫好了。'
+  },{
+    ko:'손님을 맞을 준비로 방 청소를 미리 끝내고 깨끗한 상태를 유지하므로 “-아/어 놓다”가 맞습니다.',
+    ja:'客を迎える準備として前もって掃除を済ませ、きれいな状態を保つので「-아/어 놓다」が合います。',
+    en:'The room is cleaned beforehand and kept ready for the guests, so -아/어 놓다 fits.',
+    zh:'为了迎接客人，房间已事先打扫并保持整洁状态，所以应选“-아/어 놓다”。'
   })
 ];
 

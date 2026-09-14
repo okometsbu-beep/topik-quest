@@ -30,7 +30,8 @@ these facts from conversation history or the large TOPIK source bundle.
   It supersedes #76 map expansion until core learning quality gates pass. A01–A12 remain audit findings,
   not resolved items; existing feature/visual checks do not certify translation or teaching accuracy.
 - Production is v113 at `71c749eb02868d0dd72bb378bfbe34ca0f9c34ff` (PR #136), adding four
-  bounded TOPIK I question-word cards for person/place/time/price. There is no current release candidate.
+  bounded TOPIK I question-word cards for person/place/time/price. Candidate v114 adds four bounded
+  TOPIK II completion/experience grammar cards; full CI and visual evidence are pending.
   TOPIK II writing 51/52 keeps the v110 separate labelled ㄱ/ㄴ fields through input, scoring, save,
   Review, recovery, and compatible legacy migration. Product rollback is v112
   `b42d0759a6b98c363f77f6ac72be527e742e8707`.
@@ -46,8 +47,8 @@ these facts from conversation history or the large TOPIK source bundle.
   v111 with 3 base + 45 runtime files; the four IDs and `data/shorts-levels.js` hash match main.
 - Latest #110 instruction: C01–C06 content quality, first applied as S01–S05 Shorts, outranks A08/#76.
   S01 adds `docs/qa/shorts-audit.md`, generated ID/content-hash inventory and `scripts/audit-shorts.cjs`.
-  Production v113 has 332 runtime rows but only 206 distinct question-choice sets (I 104, II 102), 30 duplicate
-  groups and 15 structural review candidates. Comprehensive content approvals remain 0/332, not 332 passed questions.
+  Candidate v114 has 336 runtime rows but only 210 distinct question-choice sets (I 104, II 106), 30 duplicate
+  groups and 15 structural review candidates. Comprehensive content approvals remain 0/336, not 336 passed questions.
   Audit-only curated IDs must NOT replace saved numeric indices without the S03 migration contract.
 - S03 v101 (PR #120) migrates schema-2 numeric Shorts progress to stable card/family IDs without
   replacing `topikQuestShortsV1`. It cycles 162 exact question-choice families before intentional repeats,
@@ -138,9 +139,19 @@ these facts from conversation history or the large TOPIK source bundle.
   `34783696240` succeeded. Live HTTP smoke reports v113 with 3 base + 45 runtime files; the four IDs plus
   `data/shorts-levels.js` and `site-patch.js` hashes match main. Product rollback is v112
   `b42d0759a6b98c363f77f6ac72be527e742e8707`.
-- Next: if no new P0 or clear wrong answer appears, review one bounded four-card TOPIK II shortage batch.
+- Candidate v114 adds four TOPIK II completion/experience grammar cards that distinguish total completion,
+  a final result after a long process, past experience, and preparation completed and kept ready. Stable IDs,
+  fixed choice-specific ko/ja/en/zh feedback, bundled examples, and evidence→traps→post-action coaching are
+  recorded in `docs/qa/shorts-review-s04-topik2-completion-experience.md`. Node 24 focused content checks pass
+  20/20, inventory checks pass 2/2, and full release checks pass 114/114. PR #138 CI `34826401968` unchanged
+  rerun passes 320/375/390/430px Linux Chrome light/dark, selected-wrong feedback, expanded coaching,
+  next-first flow and reload restoration with 104 screenshots and zero browser errors. The first attempt stopped
+  at the pre-existing state-change reload assertion before the new cards; artifact `10339933219` screens
+  `00ce`/`00cf` from the unchanged passing run were inspected. Merge, Pages and live verification remain pending.
+  Physical devices, native-language review and learner timing are unverified.
+- Next: finish the v114 candidate gates; then, if no new P0 or clear wrong answer appears, review one bounded four-card TOPIK I shortage batch.
   Quantity alone is not progress, and a new P0 or clear
-  wrong answer takes precedence. At least 36 I / 38 II additional distinct sets remain even before suitability review for the 140/level
+  wrong answer takes precedence. At least 36 I / 34 II additional distinct sets remain even before suitability review for the 140/level
   planning floor; this is not the final expansion target. Timing 5–15 seconds is unmeasured and never forced.
 - Follow start → understand → recall/speak/write → review → next learning for Japanese beginners, and
   passage evidence → specific distractor traps → reusable solving method for TOPIK I/II.
