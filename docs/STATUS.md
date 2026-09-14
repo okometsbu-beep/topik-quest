@@ -23,7 +23,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 - Production: GitHub Pages static PWA
 - Production release: v113 · four reviewed TOPIK I question-word Shorts (`71c749eb02868d0dd72bb378bfbe34ca0f9c34ff`)
-- Current candidate: v114 · four reviewed TOPIK II completion/experience grammar Shorts; CI and visual evidence pending
+- Current candidate: v114 · four reviewed TOPIK II completion/experience grammar Shorts; PR #138 CI and visual evidence pass, merge/live pending
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -179,10 +179,13 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 후보 재고는 336행/210 정확 질문-보기군, I 104·II 106개다. 기존 중복 126행·30군,
   구조 후보 15개, 정답 충돌 0은 증가하지 않았다. 전체 승인 수는 여전히 0/336이다.
 - Node 24 집중 검사는 콘텐츠 20/20, 재고 2/2를 통과했고 전체 release check도 114/114를 통과했다.
-  Linux Chrome 320·375·390·430px 라이트/다크, 선택 오답·상세 해설·다음 문제 우선·새로고침 복원은 아직 미검증이다.
+  PR #138 CI `34826401968`의 동일 커밋 재실행은 Linux Chrome 320·375·390·430px 라이트/다크,
+  선택 오답·상세 해설·다음 문제 우선·새로고침 복원과 104개 화면을 오류 0으로 통과했다. 첫 시도는 새 카드에
+  도달하기 전 기존 상태 변화 카드의 새로고침 단언에서 중단됐고, 무변경 재실행으로 간헐 실패임을 구별했다.
+  artifact `10339933219`의 `00ce`/`00cf` 화면을 직접 확인했다.
   실제 일본어 모어 화자, 초보자 5–15초 풀이/D1·D7 회상, 실제 iPhone/Android도 미검증이다.
 - 배포 주소는 기존 v113 https://okometsbu-beep.github.io/topik-quest/ 이며 제품 복귀 기준은
-  v112 `b42d0759a6b98c363f77f6ac72be527e742e8707`이다. PR·CI·배포는 후보 검증 뒤에만 진행한다.
+  v112 `b42d0759a6b98c363f77f6ac72be527e742e8707`이다. PR #138 병합·Pages·라이브 검증은 남아 있다.
 
 ## 완료 작업 · S04 TOPIK I 의문사 숏츠 4문항 검수·확충
 
