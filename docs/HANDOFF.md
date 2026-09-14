@@ -143,8 +143,12 @@ these facts from conversation history or the large TOPIK source bundle.
   a final result after a long process, past experience, and preparation completed and kept ready. Stable IDs,
   fixed choice-specific ko/ja/en/zh feedback, bundled examples, and evidence→traps→post-action coaching are
   recorded in `docs/qa/shorts-review-s04-topik2-completion-experience.md`. Node 24 focused content checks pass
-  20/20, inventory checks pass 2/2, and full release checks pass 114/114. CI Linux Chrome emulation, screenshot inspection, merge,
-  Pages, and live verification remain pending. Physical devices, native-language review and learner timing are unverified.
+  20/20, inventory checks pass 2/2, and full release checks pass 114/114. PR #138 CI `34826401968` unchanged
+  rerun passes 320/375/390/430px Linux Chrome light/dark, selected-wrong feedback, expanded coaching,
+  next-first flow and reload restoration with 104 screenshots and zero browser errors. The first attempt stopped
+  at the pre-existing state-change reload assertion before the new cards; artifact `10339933219` screens
+  `00ce`/`00cf` from the unchanged passing run were inspected. Merge, Pages and live verification remain pending.
+  Physical devices, native-language review and learner timing are unverified.
 - Next: finish the v114 candidate gates; then, if no new P0 or clear wrong answer appears, review one bounded four-card TOPIK I shortage batch.
   Quantity alone is not progress, and a new P0 or clear
   wrong answer takes precedence. At least 36 I / 34 II additional distinct sets remain even before suitability review for the 140/level
