@@ -1,7 +1,7 @@
 # S04 · TOPIK II completion/experience grammar Shorts pilot
 
-Candidate: v114. Production remains v113 `71c749eb02868d0dd72bb378bfbe34ca0f9c34ff`; product rollback is v112
-`b42d0759a6b98c363f77f6ac72be527e742e8707` until the candidate passes CI and live verification.
+Production: v114 `655f8715fc080a9e14b7cea00d34b0a0911a099c` through PR #138. Product rollback is v113
+`71c749eb02868d0dd72bb378bfbe34ca0f9c34ff`.
 Scope: four new TOPIK II grammar cards only. This is an AI content review plus automated/browser QA record,
 not native-speaker approval, learner timing evidence, or approval of the other 332 Shorts rows.
 
@@ -36,10 +36,10 @@ four and gives one reusable post-action method. Fixed choices are shuffled and r
 | Repeat/inventory | automated pass | Four stable IDs add four exact families with no new duplicate, structural flag, or conflicting-answer group. |
 | Storage | automated pass | Existing `topikQuestShortsV1` and earlier IDs remain; cards are appended after existing TOPIK II rows. |
 | Focused local checks | pass | Node 24 vocabulary/data checks pass 15/15; generated inventory checks pass 2/2. |
-| Full release checks | pass | Node 24 `npm run check` passes 114/114 at candidate v114. |
+| Full release checks | pass | Node 24 `npm run check` passes 114/114 at production v114. |
 | Emulated mobile | pass | PR #138 CI `34826401968` unchanged rerun covers 320/375/390/430px in light/dark, selected-wrong feedback, expanded coaching, next-first flow and reload restoration. Artifact `10339933219` screens `00ce`/`00cf` were inspected. The first attempt stopped at the pre-existing state-change reload assertion before these cards; the unchanged rerun passed 104 screenshots with zero browser errors. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
-| Overall | PR-ready | Local and PR release gates pass, including inspected Linux Chrome evidence. Merge, Pages and live verification remain required. |
+| Overall | deployed | Final PR CI `34827184679`, main CI `34827681146`, and Pages `34827680006` passed. Live HTTP smoke reports v114 with 3 base + 45 runtime files; all four IDs and the core asset hashes match main. |
 
 Inventory becomes 336 rows / 210 exact question-choice families (TOPIK I 104, TOPIK II 106). The 15 existing
 structural review candidates do not increase. These totals are not content approvals: the generated inventory
