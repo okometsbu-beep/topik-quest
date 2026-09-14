@@ -1,6 +1,7 @@
 # S04 · TOPIK I question-word Shorts pilot
 
-Baseline: production v112 `b42d0759a6b98c363f77f6ac72be527e742e8707`; reviewed candidate v113.
+Release: production v113 `71c749eb02868d0dd72bb378bfbe34ca0f9c34ff`; product rollback v112
+`b42d0759a6b98c363f77f6ac72be527e742e8707`.
 Scope: four new TOPIK I question-word cards only. This is an AI content review plus automated/browser QA
 record, not native-speaker approval, learner timing evidence, or approval of the other 328 Shorts rows.
 
@@ -38,8 +39,8 @@ target-first method. Fixed choices are shuffled and restored through the existin
 | Full release checks | pass | Node 24 `npm run check` passed 113/113 at candidate v113 after the inventory-count contract was updated. |
 | Emulated mobile | pass | PR #136 CI `34783191274` passed at 320/375/390/430px in light/dark, including selected-wrong feedback, expanded coaching, next-first flow and reload restoration. Artifact `10325594505` screens `00cc`/`00cd` were inspected. Local Chrome was unavailable; this is CI Linux Chrome emulation. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
-| Deployment | pending | PR #136 remains unmerged until the evidence-record commit passes final CI. |
-| Overall | candidate | Automated, bounded AI review and CI Linux Chrome emulation pass; merge, live, human, learner and physical-device gates remain open. |
+| Deployment | pass | PR #136 final CI `34783447830` passed; squash merge `71c749eb02868d0dd72bb378bfbe34ca0f9c34ff`, main CI `34783696587` unchanged rerun, and Pages `34783696240` succeeded. Live v113 HTTP smoke passed 3 base + 45 runtime files; the card and bootstrap hashes plus all four IDs match main. |
+| Overall | bounded release | Automated, bounded AI review, CI Linux Chrome emulation, merge and live verification pass; human, learner and physical-device gates remain open. |
 
 Inventory becomes 332 rows / 206 exact question-choice families (TOPIK I 104, TOPIK II 102). The 15
 existing structural review candidates do not increase. These totals are not content approvals: the generated
