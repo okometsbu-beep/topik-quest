@@ -23,7 +23,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 - Production: GitHub Pages static PWA
 - Production release: v114 · four reviewed TOPIK II completion/experience grammar Shorts (`655f8715fc080a9e14b7cea00d34b0a0911a099c`)
-- Current candidate: v115 · four bounded TOPIK I particle-role Shorts; PR/mobile/deployment pending
+- Current candidate: v115 · four bounded TOPIK I particle-role Shorts; PR #140 CI/mobile pass, merge/deployment pending
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -179,8 +179,12 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
   풀이법을 내장했다. AI 제한 검수이며 실제 언어 검수나 학습자 측정으로 집계하지 않는다.
 - 후보 재고는 340행/214 정확 질문-보기군, I 108·II 106개다. 기존 중복 126행·30군,
   구조 후보 15개, 정답 충돌 0은 증가하지 않았다. 전체 승인 수는 여전히 0/340이다.
-- Node 24 콘텐츠 21/21, 재고 2/2, 전체 release check 115/115를 통과했다. PR CI와
-  320·375·390·430px 라이트/다크 Linux Chrome 에뮬레이션, 배포·라이브 확인은 아직 대기 중이다.
+- Node 24 콘텐츠 21/21, 재고 2/2, 전체 release check 115/115를 통과했다. PR #140 CI
+  `34861099960`은 320·375·390·430px 라이트/다크 Linux Chrome 에뮬레이션, 선택 오답 설명,
+  상세 해설, 다음 문제 우선, 새로고침 복원을 통과했다. artifact `10354814262`의 `00cg`/`00ch`
+  화면을 직접 확인했다. 같은 첫 후보 커밋의 push CI `34860142562`는 Travel 390x844 단계에서
+  실패했지만 변경 없는 PR CI `34860162071`은 전체 단계를 통과했고, 전용 시각 검사를 추가한
+  최종 PR CI도 통과했다. 병합·Pages·라이브 확인은 아직 대기 중이다.
 - 실제 일본어 모어 화자, 초보자 5–15초 풀이/D1·D7 회상, 실제 iPhone/Android는 미검증이다.
 
 ## 완료 작업 · S04 TOPIK II 완료·경험 문법 숏츠 4문항

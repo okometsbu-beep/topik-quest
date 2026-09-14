@@ -38,9 +38,9 @@ existing Shorts record.
 | Storage | automated pass | Existing `topikQuestShortsV1` and earlier IDs remain; cards are appended after existing TOPIK I rows. |
 | Focused local checks | pass | Node 24 content checks pass 21/21; generated inventory checks pass 2/2. |
 | Full release checks | pass | Node 24 `npm run check` passes 115/115 at candidate v115. |
-| Emulated mobile | pending | PR CI must cover 320/375/390/430px in light/dark, selected-wrong feedback, expanded coaching, next-first flow and reload restoration. |
+| Emulated mobile | pass | PR #140 CI `34861099960` covers 320/375/390/430px in light/dark, selected-wrong feedback, expanded coaching, next-first flow and reload restoration. Artifact `10354814262` screens `00cg`/`00ch` were inspected. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
-| Deployment | pending | Merge and live verification are forbidden until CI and visual gates pass. |
+| Deployment | pending | PR CI and visual gates pass; merge, Pages and live asset/behavior verification remain. |
 
 Candidate inventory is 340 rows / 214 exact question-choice families (TOPIK I 108, TOPIK II 106). The
 15 existing structural review candidates do not increase. These totals are not content approvals: the

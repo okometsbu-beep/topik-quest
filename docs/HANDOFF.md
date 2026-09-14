@@ -156,9 +156,12 @@ these facts from conversation history or the large TOPIK source bundle.
   location, a means or method, and a human recipient. Stable IDs, fixed choice-specific ko/ja/en/zh feedback,
   bundled examples, and evidence→traps→verb-plus-noun-role coaching are recorded in
   `docs/qa/shorts-review-s04-topik1-particles.md`. Node 24 content checks pass 21/21, inventory checks pass
-  2/2, and full release checks pass 115/115. PR CI, mobile emulation, merge and live verification are pending;
-  production remains v114 until those gates pass. Physical devices, native-language review and learner
-  timing are unverified.
+  2/2, and full release checks pass 115/115. PR #140 CI `34861099960` passes 320/375/390/430px Linux
+  Chrome emulation in both themes, selected-wrong feedback, expanded coaching, next-first flow and reload
+  restoration. Artifact `10354814262` screens `00cg`/`00ch` were inspected. An earlier concurrent push run
+  failed only at the unrelated Travel 390x844 step while the unchanged PR run passed; the final run with the
+  particle-specific visual contract passed. Merge and live verification remain pending, so production stays
+  v114. Physical devices, native-language review and learner timing are unverified.
 - Next after a successful v115 deployment: synchronize STATUS/HANDOFF/the particle ledger with the actual
   production commit, final CI, Pages, live hashes and rollback evidence.
   Quantity alone is not progress, and a new P0 or clear
