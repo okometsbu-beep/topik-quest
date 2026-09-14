@@ -37,9 +37,9 @@ four and gives one reusable post-action method. Fixed choices are shuffled and r
 | Storage | automated pass | Existing `topikQuestShortsV1` and earlier IDs remain; cards are appended after existing TOPIK II rows. |
 | Focused local checks | pass | Node 24 vocabulary/data checks pass 15/15; generated inventory checks pass 2/2. |
 | Full release checks | pass | Node 24 `npm run check` passes 114/114 at candidate v114. |
-| Emulated mobile | pending | CI must cover 320/375/390/430px in light/dark, selected-wrong feedback, expanded coaching and reload restoration. |
+| Emulated mobile | pass | PR #138 CI `34826401968` unchanged rerun covers 320/375/390/430px in light/dark, selected-wrong feedback, expanded coaching, next-first flow and reload restoration. Artifact `10339933219` screens `00ce`/`00cf` were inspected. The first attempt stopped at the pre-existing state-change reload assertion before these cards; the unchanged rerun passed 104 screenshots with zero browser errors. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
-| Overall | candidate | Local focused and full-release gates pass. Do not merge or deploy until CI Linux Chrome gates pass and the screenshots are inspected. |
+| Overall | PR-ready | Local and PR release gates pass, including inspected Linux Chrome evidence. Merge, Pages and live verification remain required. |
 
 Inventory becomes 336 rows / 210 exact question-choice families (TOPIK I 104, TOPIK II 106). The 15 existing
 structural review candidates do not increase. These totals are not content approvals: the generated inventory
