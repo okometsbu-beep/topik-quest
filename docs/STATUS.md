@@ -184,8 +184,13 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 후보 재고는 348행/222 정확 질문-보기군, I 112·II 110개다. 중복 126행·30군,
   구조 후보 15개, 정답 충돌 0은 증가하지 않았고 전체 승인 수는 여전히 0/348이다.
 - Node 24 집중 vocabulary+inventory 20/20, 콘텐츠 23/23, 전체 release check 117/117을
-  통과했다. Linux Chrome 320·375·390·430px 라이트/다크 시각 검증은 PR CI에서 실행한다.
-- production은 v116이며 실제 일본어 모어 화자, 초보자 풀이시간/D1·D7 회상, 실제
+  통과했다. PR #144 CI `34986620849`도 같은 117/117과 Linux Chrome 320·375·390·430px
+  라이트/다크, 선택 오답 설명, 상세 해설, 다음 문제 우선, 새로고침 복원을 통과했다.
+  artifact `10403494820`의 `00ck`/`00cl` 화면을 직접 확인했다.
+- 첫 PR run `34986362108`은 연결 경로가 생성 재고 JSON을 잘라 올려 브라우저 검사 전에
+  실패했다. 후보 내용 검사는 통과했고, 해당 blob을 로컬과 같은 바이트로 교체한 뒤 원격 tree가
+  로컬 검사 tree와 일치했으며 변경 없는 다음 run은 전체 통과했다.
+- production은 최종 증거 문서 CI·병합·Pages·라이브 확인 전까지 v116이며 실제 일본어 모어 화자, 초보자 풀이시간/D1·D7 회상, 실제
   iPhone/Android는 미검증이다.
 
 ## 완료 작업 · S04 TOPIK II 행동 판단·제약 문법 숏츠 4문항

@@ -189,7 +189,12 @@ these facts from conversation history or the large TOPIK source bundle.
   checks pass 20/20, content checks pass 23/23, and the full Node 24 release check passes 117/117. Candidate
   inventory is 348 rows / 222 exact sets, with no increase to 126 redundant rows,
   30 duplicate groups, 15 structural flags, or zero answer conflicts. Production remains v116 until the
-  full release, emulated-mobile, PR, Pages and live gates pass. Physical devices, native-language review,
+  full release gate passes 117/117 in PR #144 CI `34986620849`; its 320/375/390/430px Linux Chrome
+  light/dark run also covers selected-wrong feedback, expanded coaching, next-first flow and reload restoration.
+  Artifact `10403494820` screens `00ck`/`00cl` were inspected. The prior run `34986362108` stopped before
+  browser checks because the connector upload truncated the generated inventory JSON; replacing that blob
+  with exact local bytes made the remote and locally checked trees identical. Production remains v116 until
+  the evidence-only final CI, merge, Pages and live gates pass. Physical devices, native-language review,
   learner timing and delayed recall remain unverified.
   Quantity alone is not progress, and a new P0 or clear
   wrong answer takes precedence. At least 36 I / 34 II additional distinct sets remain even before suitability review for the 140/level
