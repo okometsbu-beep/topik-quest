@@ -1,7 +1,7 @@
 # S04 · TOPIK I demonstrative Shorts pilot
 
-Candidate: v117. Production remains v116 `0b93456fc400ff47b378c6e15b1384bc6187e8f2` until the
-release gates pass. Product rollback is v115 `05e84b401330074bf3432339859169cc156d6357`.
+Production: v117 `a14dd083f3afd64142990ae1d829df985cbf8db3` via PR #144.
+Product rollback is v116 `0b93456fc400ff47b378c6e15b1384bc6187e8f2`.
 Scope: four new TOPIK I word cards only. This is an AI content review plus automated QA record,
 not native-speaker approval, learner timing evidence, or approval of the other 344 Shorts rows.
 
@@ -38,16 +38,21 @@ Shorts record.
 | Repeat/inventory | automated pass | Four stable IDs add four exact families with no new duplicate, structural flag, or conflicting-answer group. |
 | Storage | automated pass | Existing `topikQuestShortsV1` and earlier IDs remain; cards are appended after existing TOPIK I rows. |
 | Focused local checks | pass | Node 24 focused vocabulary and generated-inventory checks pass 20/20; content checks pass 23/23. |
-| Full release checks | pass | Node 24 `npm run check` passes 117/117 at candidate v117. |
+| Full release checks | pass | Node 24 `npm run check` passes 117/117 at production v117. |
 | Emulated mobile | pass | PR #144 CI `34986620849` covers 320/375/390/430px in light/dark, selected-wrong feedback, expanded coaching, next-first flow and reload restoration. Artifact `10403494820` screens `00ck`/`00cl` were inspected. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
-| Deployment | pending | Production remains v116 until the evidence-only final PR CI, merge, main CI, Pages and live checks pass. |
+| Deployment | pass | Final PR CI `34987279723`, squash merge `a14dd083…`, main CI `34987826662`, Pages `34987825941`, and live v117 checks pass. |
 
-Candidate inventory is 348 rows / 222 exact question-choice families (TOPIK I 112, TOPIK II 110). The
+Production inventory is 348 rows / 222 exact question-choice families (TOPIK I 112, TOPIK II 110). The
 15 existing structural review candidates do not increase. These totals are not content approvals: the
 generated inventory remains `approved: 0`, and only the four IDs above have this bounded AI review record.
 
 The first PR run `34986362108` never reached browser verification because the connector upload truncated
-the generated inventory JSON. The candidate content tests themselves passed; replacing that one blob with
+the generated inventory JSON. The content tests themselves passed; replacing that one blob with
 the exact local bytes made the remote tree identical to the locally checked tree, and unchanged run
-`34986620849` passed the complete release and browser suite.
+`34986620849` passed the complete release and browser suite. Final evidence-only PR CI `34987279723`
+also passed. Main CI `34987826662` and Pages `34987825941` succeeded after squash merge. Live loads
+3 base + 45 runtime files at v117, exposes all four stable IDs, and matches main SHA-256 for
+`data/shorts-levels.js` (`3de9c878…5391`), `site-patch.js` (`a4c0f48a…a95c`), and `sw.js`
+(`aeac6cc0…3048`). Physical iPhone/Android, native-speaker review, consenting learner timing and D1/D7
+recall, audio, and full offline recovery remain unverified.
