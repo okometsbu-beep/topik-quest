@@ -24,16 +24,16 @@ these facts from conversation history or the large TOPIK source bundle.
   passed all 110 checks. Live public UI shows two labelled fields and preserves different ㄱ/ㄴ values after
   next/back navigation. Physical iPhone/Android and real IME remain unverified.
 
-## Current release priority · 2026-09-15
+## Current release priority · 2026-09-16
 
 - Source of truth: [release blueprint #110](https://github.com/okometsbu-beep/topik-quest/issues/110).
   It supersedes #76 map expansion until core learning quality gates pass. A01–A12 remain audit findings,
   not resolved items; existing feature/visual checks do not certify translation or teaching accuracy.
-- Production is v116 at `0b93456fc400ff47b378c6e15b1384bc6187e8f2` (PR #142), adding four
-  bounded TOPIK II action judgment/constraint cards. There is no active product candidate.
+- Production is v117 at `a14dd083f3afd64142990ae1d829df985cbf8db3` (PR #144), adding four
+  bounded TOPIK I demonstrative cards. There is no active product candidate.
   TOPIK II writing 51/52 keeps the v110 separate labelled ㄱ/ㄴ fields through input, scoring, save,
-  Review, recovery, and compatible legacy migration. Product rollback is v115
-  `05e84b401330074bf3432339859169cc156d6357`.
+  Review, recovery, and compatible legacy migration. Product rollback is v116
+  `0b93456fc400ff47b378c6e15b1384bc6187e8f2`.
 - v111 adds four TOPIK I counters: `명` for people, `개` for general objects,
   `병` for bottles, and `권` for books/notebooks. The bounded ledger is
   `docs/qa/shorts-review-s04-topik1-counters.md`. Node 24 content 17/17, inventory 2/2, and full
@@ -46,9 +46,9 @@ these facts from conversation history or the large TOPIK source bundle.
   v111 with 3 base + 45 runtime files; the four IDs and `data/shorts-levels.js` hash match main.
 - Latest #110 instruction: C01–C06 content quality, first applied as S01–S05 Shorts, outranks A08/#76.
   S01 adds `docs/qa/shorts-audit.md`, generated ID/content-hash inventory and `scripts/audit-shorts.cjs`.
-  Production v116 has 344 runtime rows but only 218 distinct question-choice sets (I 108, II 110),
+  Production v117 has 348 runtime rows but only 222 distinct question-choice sets (I 112, II 110),
   retaining 30 duplicate groups and 15 structural review candidates. Comprehensive content approvals
-  remain 0/344, not 344 passed questions.
+  remain 0/348, not 348 passed questions.
   Audit-only curated IDs must NOT replace saved numeric indices without the S03 migration contract.
 - S03 v101 (PR #120) migrates schema-2 numeric Shorts progress to stable card/family IDs without
   replacing `topikQuestShortsV1`. It cycles 162 exact question-choice families before intentional repeats,
@@ -181,24 +181,30 @@ these facts from conversation history or the large TOPIK source bundle.
   `data/shorts-levels.js` contained all four IDs and terms. Product rollback is v115
   `05e84b401330074bf3432339859169cc156d6357`. Local Chrome, physical devices, native-language review,
   learner timing and delayed recall remain unverified.
-- Current bounded candidate after checking new P0 and clear wrong-answer reports: v117 adds four TOPIK I
+- Production v117 adds four TOPIK I
   demonstrative cards for `이것·그것·저것·어느 것`, mapping speaker-near, listener-near/already-mentioned,
   far-from-both, and choose-among-many to Japanese `これ·それ·あれ·どれ`. Stable IDs, fixed
   choice-specific ko/ja/en/zh feedback, bundled examples, and evidence→traps→object-relation coaching are
   recorded in `docs/qa/shorts-review-s04-topik1-demonstratives.md`. Focused vocabulary and generated-inventory
-  checks pass 20/20, content checks pass 23/23, and the full Node 24 release check passes 117/117. Candidate
+  checks pass 20/20, content checks pass 23/23, and the full Node 24 release check passes 117/117. Production
   inventory is 348 rows / 222 exact sets, with no increase to 126 redundant rows,
-  30 duplicate groups, 15 structural flags, or zero answer conflicts. Production remains v116 until the
-  full release gate passes 117/117 in PR #144 CI `34986620849`; its 320/375/390/430px Linux Chrome
+  30 duplicate groups, 15 structural flags, or zero answer conflicts. PR #144 CI `34986620849` passes
+  117/117; its 320/375/390/430px Linux Chrome
   light/dark run also covers selected-wrong feedback, expanded coaching, next-first flow and reload restoration.
   Artifact `10403494820` screens `00ck`/`00cl` were inspected. The prior run `34986362108` stopped before
   browser checks because the connector upload truncated the generated inventory JSON; replacing that blob
-  with exact local bytes made the remote and locally checked trees identical. Production remains v116 until
-  the evidence-only final CI, merge, Pages and live gates pass. Physical devices, native-language review,
-  learner timing and delayed recall remain unverified.
+  with exact local bytes made the remote and locally checked trees identical. Final evidence-only PR CI
+  `34987279723` also passed. PR #144 was squash merged as
+  `a14dd083f3afd64142990ae1d829df985cbf8db3`; main CI `34987826662` and Pages `34987825941`
+  succeeded. Live uses `?v=117`, loads 3 base + 45 runtime files, exposes the four stable IDs, and matches
+  main SHA-256 for `data/shorts-levels.js`, `site-patch.js`, and `sw.js`. Product rollback is v116
+  `0b93456fc400ff47b378c6e15b1384bc6187e8f2`. Physical devices, native-language review, learner timing,
+  delayed recall, audio and full offline recovery remain unverified.
   Quantity alone is not progress, and a new P0 or clear
-  wrong answer takes precedence. At least 36 I / 34 II additional distinct sets remain even before suitability review for the 140/level
+  wrong answer takes precedence. At least 28 I / 30 II additional distinct sets remain even before suitability review for the 140/level
   planning floor; this is not the final expansion target. Timing 5–15 seconds is unmeasured and never forced.
+- Next one task after checking new P0 and clear wrong-answer reports: a bounded four-card review of a
+  missing TOPIK II type. There is no candidate before that review begins.
 - Follow start → understand → recall/speak/write → review → next learning for Japanese beginners, and
   passage evidence → specific distractor traps → reusable solving method for TOPIK I/II.
 - 2026 draft gates: Sep 13 audit/scope/dependencies; Sep 27 core flow/P0/P1/backup; Oct 11 teaching,

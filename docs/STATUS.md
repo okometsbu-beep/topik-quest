@@ -14,16 +14,16 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 실제 검사: Linux Node v24.19.0, 집중 10/10·quick 95/95·전체 `npm run check` 110/110. 로컬 HTTP 3개 기본+45개 런타임 통과. PR CI와 main CI `34702111845`에서 Linux Chrome 320/375/390/430px×라이트/다크, 두 칸 터치 입력·독립 저장·새로고침 복원·참고 점수·복습 분리·구형 단일 답안 안내를 통과했다. main CI 첫 시도는 Chrome target 종료로 실패했으나 동일 커밋 재실행은 통과했다.
 - 라이브 공개 브라우저: v110을 새로 불러온 TOPIK II → 쓰기만 → 51번에서 `ㄱ(기역) 답안`과 `ㄴ(니은) 답안` 두 textbox를 확인했다. 서로 다른 값을 입력하고 다음→이전 뒤에도 각각 유지됐다. HTTP smoke는 3개 기본+45개 런타임을 통과했다.
 - 시각 증거: CI artifact `10300595038`의 `00bu-writing-two-blanks-light.png`, `00bv-writing-two-blanks-dark.png`, `00bw-writing-two-blanks-review-dark.png` 직접 확인. 실제 iPhone/Android 및 실제 IME는 미검증이며 에뮬레이션과 구별한다.
-- 현재 한 작업: TOPIK I 지시어 `이것·그것·저것·어느 것` 4문항 제한 검수와 v117 후보 검증.
-- 현재 라이브/복귀 기준: v116 `0b93456fc400ff47b378c6e15b1384bc6187e8f2`,
-  https://okometsbu-beep.github.io/topik-quest/ . 제품 복귀 기준은 v115
-  `05e84b401330074bf3432339859169cc156d6357`이다.
+- 다음 한 작업: 새 P0·명백한 정답 오류가 없으면 TOPIK II 부족 유형 4문항 제한 검수.
+- 현재 라이브/복귀 기준: v117 `a14dd083f3afd64142990ae1d829df985cbf8db3`,
+  https://okometsbu-beep.github.io/topik-quest/ . 제품 복귀 기준은 v116
+  `0b93456fc400ff47b378c6e15b1384bc6187e8f2`이다.
 
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v116 · four reviewed TOPIK II action judgment/constraint Shorts (`0b93456fc400ff47b378c6e15b1384bc6187e8f2`)
-- Current candidate: v117 · four reviewed TOPIK I demonstrative Shorts; production remains v116 until all gates pass
+- Production release: v117 · four reviewed TOPIK I demonstrative Shorts (`a14dd083f3afd64142990ae1d829df985cbf8db3`)
+- Current candidate: none
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -35,7 +35,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - TOPIK I·II, Shorts, Random Practice, full mock exams, Review, Vocabulary, Statistics
 - Beginner grammar covers core sentence order and major particle, tense, politeness, negation, connective,
   modifier, irregular, and speech-level transformations with per-rule writing practice.
-- Production v116 has 196 TOPIK I / 148 TOPIK II rows and only 108 / 110 distinct
+- Production v117 has 200 TOPIK I / 148 TOPIK II rows and only 112 / 110 distinct
   question-choice sets. These are inventory counts, not educational approvals.
   Fixed mock composition remains intact.
 - bank explanations structured as answer evidence → distractor trap → reusable type-solving method,
@@ -168,14 +168,13 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-#129 긴급 작문 입력 분리와 v111–v116의 제한 검수 문항 배포·운영 문서 동기화는 완료됐다.
-현재 한 작업은 TOPIK I 지시어 `이것·그것·저것·어느 것` 4문항 제한 검수다. 화자 가까이,
-청자 가까이·이미 언급, 양쪽에서 멂, 여럿 중 질문을 일본어 `これ·それ·あれ·どれ`와 직접
-대응한다. 전체 검사·모바일 시각·PR CI·Pages·라이브 검증 전에는 production으로 표시하지 않는다.
+#129 긴급 작문 입력 분리와 v111–v117의 제한 검수 문항 배포·운영 문서 동기화는 완료됐다.
+다음 한 작업은 새 P0·명백한 정답 오류가 없으면 TOPIK II 부족 유형 4문항 제한 검수다.
+검수 전까지 새 후보는 없으며 수량 자체를 교육 승인이나 출시 진척으로 보지 않는다.
 
-## 진행 작업 · S04 TOPIK I 지시어 숏츠 4문항
+## 완료 작업 · S04 TOPIK I 지시어 숏츠 4문항
 
-- v117 후보는 `이것·그것·저것·어느 것`을 화자 가까이·청자 가까이/이미 언급·화자와 청자
+- v117은 `이것·그것·저것·어느 것`을 화자 가까이·청자 가까이/이미 언급·화자와 청자
   모두에게서 멂·여럿 중 질문과 각각 매칭한다. 기존 ID와 `topikQuestShortsV1` 저장 구조는
   변경하지 않는다.
 - 네 카드에는 ko/ja/en/zh 예문·선택 오답별 설명과 `결정적 근거 → 네 함정 → 사람과 물건의 관계`
@@ -189,9 +188,15 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
   artifact `10403494820`의 `00ck`/`00cl` 화면을 직접 확인했다.
 - 첫 PR run `34986362108`은 연결 경로가 생성 재고 JSON을 잘라 올려 브라우저 검사 전에
   실패했다. 후보 내용 검사는 통과했고, 해당 blob을 로컬과 같은 바이트로 교체한 뒤 원격 tree가
-  로컬 검사 tree와 일치했으며 변경 없는 다음 run은 전체 통과했다.
-- production은 최종 증거 문서 CI·병합·Pages·라이브 확인 전까지 v116이며 실제 일본어 모어 화자, 초보자 풀이시간/D1·D7 회상, 실제
-  iPhone/Android는 미검증이다.
+  로컬 검사 tree와 일치했으며 변경 없는 다음 run은 전체 통과했다. 최종 증거만 추가한 PR CI
+  `34987279723`도 성공했다.
+- PR #144를 squash merge한 production v117 제품 커밋은
+  `a14dd083f3afd64142990ae1d829df985cbf8db3`이다. main CI `34987826662`와 Pages
+  `34987825941`가 성공했다. 라이브에서 기본 3개+런타임 45개가 `?v=117`을 사용하며 Shorts
+  진입과 새 ID 4개를 확인했다. `data/shorts-levels.js`, `site-patch.js`, `sw.js` 해시는 main과
+  일치한다. 제품 복귀 기준은 v116 `0b93456fc400ff47b378c6e15b1384bc6187e8f2`이다.
+- 실제 일본어 모어 화자, 동의한 초보자 풀이시간/D1·D7 회상, 실제 iPhone/Android, 오디오와
+  전체 오프라인 복구는 미검증이다. CI 화면은 Linux Chrome 에뮬레이션이다.
 
 ## 완료 작업 · S04 TOPIK II 행동 판단·제약 문법 숏츠 4문항
 
