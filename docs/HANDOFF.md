@@ -172,9 +172,11 @@ these facts from conversation history or the large TOPIK source bundle.
   alternative, worth doing, required action, and unnecessary action. Stable IDs, fixed choice-specific
   ko/ja/en/zh feedback, bundled examples, and evidence→traps→action-judgment coaching are recorded in
   `docs/qa/shorts-review-s04-topik2-judgment-constraint.md`. Node 24 content checks pass 22/22 and inventory
-  checks pass 2/2, and full release checks pass 116/116. Mobile, CI, Pages and live verification are pending;
-  production remains v115.
-- Next: finish candidate v116 release gates. After a successful deployment, synchronize STATUS/HANDOFF and
+  checks pass 2/2, and full release checks pass 116/116. PR #142 CI `34924194105` passes 320/375/390/430px
+  Linux Chrome light/dark, selected-wrong feedback, expanded coaching, next-first flow and reload restoration.
+  Artifact `10379670755` screens `00ci`/`00cj` were inspected. Local Chrome was unavailable. Merge, Pages,
+  and live verification remain pending; production remains v115.
+- Next: finish candidate v116 deployment gates. After a successful deployment, synchronize STATUS/HANDOFF and
   the bounded ledger to the actual v116 production evidence.
   Quantity alone is not progress, and a new P0 or clear
   wrong answer takes precedence. At least 36 I / 34 II additional distinct sets remain even before suitability review for the 140/level

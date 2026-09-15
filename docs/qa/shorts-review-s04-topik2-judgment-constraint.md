@@ -37,9 +37,9 @@ optional full coaching compares all four. Fixed choices are shuffled and restore
 | Storage | automated pass | Existing `topikQuestShortsV1` and earlier IDs remain; cards are appended after existing TOPIK II rows. |
 | Focused local checks | pass | Node 24 content checks pass 22/22; generated inventory checks pass 2/2. |
 | Full release checks | pass | Node 24 `npm run check` passes 116/116 at candidate v116. |
-| Emulated mobile | pending | 320/375/390/430px light/dark, selected-wrong feedback, expanded coaching, next-first flow and reload restoration remain gated. |
+| Emulated mobile | pass | PR #142 CI `34924194105` covers 320/375/390/430px light/dark, selected-wrong feedback, expanded coaching, next-first flow and reload restoration. Artifact `10379670755` screens `00ci`/`00cj` were inspected. Local Chrome was unavailable. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
-| Deployment | pending | No PR, merge, Pages deployment, or live claim before every gate passes. |
+| Deployment | pending | PR #142 CI and visual gates pass; merge, Pages, and live asset/behavior verification remain. |
 
 Candidate inventory is 344 rows / 218 exact question-choice families (TOPIK I 108, TOPIK II 110). The
 15 existing structural review candidates do not increase. These totals are not content approvals: the
