@@ -14,16 +14,16 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 실제 검사: Linux Node v24.19.0, 집중 10/10·quick 95/95·전체 `npm run check` 110/110. 로컬 HTTP 3개 기본+45개 런타임 통과. PR CI와 main CI `34702111845`에서 Linux Chrome 320/375/390/430px×라이트/다크, 두 칸 터치 입력·독립 저장·새로고침 복원·참고 점수·복습 분리·구형 단일 답안 안내를 통과했다. main CI 첫 시도는 Chrome target 종료로 실패했으나 동일 커밋 재실행은 통과했다.
 - 라이브 공개 브라우저: v110을 새로 불러온 TOPIK II → 쓰기만 → 51번에서 `ㄱ(기역) 답안`과 `ㄴ(니은) 답안` 두 textbox를 확인했다. 서로 다른 값을 입력하고 다음→이전 뒤에도 각각 유지됐다. HTTP smoke는 3개 기본+45개 런타임을 통과했다.
 - 시각 증거: CI artifact `10300595038`의 `00bu-writing-two-blanks-light.png`, `00bv-writing-two-blanks-dark.png`, `00bw-writing-two-blanks-review-dark.png` 직접 확인. 실제 iPhone/Android 및 실제 IME는 미검증이며 에뮬레이션과 구별한다.
-- 현재 한 작업: TOPIK II 행동 판단·제약 표현 4문항 후보 v116을 검수한다.
-- 현재 라이브/복귀 기준: v115 `05e84b401330074bf3432339859169cc156d6357`,
-  https://okometsbu-beep.github.io/topik-quest/ . 제품 복귀 기준은 v114
-  `655f8715fc080a9e14b7cea00d34b0a0911a099c`이다.
+- 현재 한 작업: v116 운영 문서 동기화는 완료. 새 P0가 없으면 TOPIK I 부족 유형 4문항 제한 검수.
+- 현재 라이브/복귀 기준: v116 `0b93456fc400ff47b378c6e15b1384bc6187e8f2`,
+  https://okometsbu-beep.github.io/topik-quest/ . 제품 복귀 기준은 v115
+  `05e84b401330074bf3432339859169cc156d6357`이다.
 
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v115 · four reviewed TOPIK I particle-role Shorts (`05e84b401330074bf3432339859169cc156d6357`)
-- Current candidate: v116 · four bounded TOPIK II action judgment/constraint Shorts; release gates pending
+- Production release: v116 · four reviewed TOPIK II action judgment/constraint Shorts (`0b93456fc400ff47b378c6e15b1384bc6187e8f2`)
+- Current candidate: none; next bounded work is selected from #110 after checking new P0/correct-answer reports
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -35,8 +35,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - TOPIK I·II, Shorts, Random Practice, full mock exams, Review, Vocabulary, Statistics
 - Beginner grammar covers core sentence order and major particle, tense, politeness, negation, connective,
   modifier, irregular, and speech-level transformations with per-rule writing practice.
-- Production v115 has 196 TOPIK I / 144 TOPIK II rows; candidate v116 has 196 / 148 rows and only
-  108 / 110 distinct question-choice sets. These are inventory counts, not educational approvals.
+- Production v116 has 196 TOPIK I / 148 TOPIK II rows and only 108 / 110 distinct
+  question-choice sets. These are inventory counts, not educational approvals.
   Fixed mock composition remains intact.
 - bank explanations structured as answer evidence → distractor trap → reusable type-solving method,
   with separate TOPIK II writing 51–54 plans
@@ -168,25 +168,31 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-#129 긴급 작문 입력 분리와 v111–v115의 제한 검수 문항 배포·운영 문서 동기화는 완료됐다.
-현재 한 작업은 TOPIK II 행동 판단·제약 표현 4문항 후보 v116의 release gate 검증이다.
+#129 긴급 작문 입력 분리와 v111–v116의 제한 검수 문항 배포·운영 문서 동기화는 완료됐다.
+새 P0·명백한 정답 오류가 없으면 다음 한 작업은 검수 수가 더 적은 TOPIK I 부족 유형
+4문항 제한 검수다.
 
-## 진행 중 · S04 TOPIK II 행동 판단·제약 문법 숏츠 4문항
+## 완료 작업 · S04 TOPIK II 행동 판단·제약 문법 숏츠 4문항
 
-- 후보 v116은 `-(으)ㄹ 수밖에 없다·-(으)ㄹ 만하다·-(으)ㄹ 필요가 있다·-(으)ㄹ 필요가 없다`를
+- v116은 `-(으)ㄹ 수밖에 없다·-(으)ㄹ 만하다·-(으)ㄹ 필요가 있다·-(으)ㄹ 필요가 없다`를
   다른 선택 없음·해 볼 가치·해야 할 필요·하지 않아도 됨과 각각 매칭한다. 기존 ID와
   `topikQuestShortsV1` 저장 구조는 변경하지 않는다.
 - 네 카드에는 ko/ja/en/zh 예문·선택 오답별 설명과 `결정적 근거 → 네 함정 → 행동 판단`
   풀이법을 내장했다. 기존 카드와 중복된 최초 두 표현은 집중 검사에서 발견해 후보에서 제외했다.
-- 후보 재고는 344행/218 정확 질문-보기군, I 108·II 110개다. 중복 126행·30군,
+- 재고는 344행/218 정확 질문-보기군, I 108·II 110개다. 중복 126행·30군,
   구조 후보 15개, 정답 충돌 0은 증가하지 않았고 전체 승인 수는 여전히 0/344다.
-- Node 24 콘텐츠 22/22·재고 2/2·전체 release check 116/116을 통과했다. PR #142 CI
-  `34924194105`도 Linux Chrome 320·375·390·430px 라이트/다크, 선택 오답 설명, 상세 해설,
-  다음 문제 우선, 새로고침 복원을 통과했다. artifact `10379670755`의 `00ci`/`00cj`를 직접
-  확인했다. 뒤이은 문서 커밋 CI는 서로 다른 기존 카드의 복구 직후 빈 피드백을 읽는 경합을
-  드러냈고, 요소 존재뿐 아니라 내용 완료까지 기다리도록 검증 도구를 보강했다. 로컬 Chrome과
-  실제 일본어 모어 화자, 초보자 풀이시간/D1·D7 회상,
-  실제 iPhone/Android는 미검증이며 병합·Pages·라이브 확인은 아직 대기 중이다.
+- Node 24 콘텐츠 22/22·재고 2/2·전체 release check 116/116을 통과했다. PR #142 최종 CI
+  `34925330780`도 Linux Chrome 320·375·390·430px 라이트/다크, 선택 오답 설명, 상세 해설,
+  다음 문제 우선, 새로고침 복원을 통과했다. artifact `10380265217`의 `00ci`/`00cj`를 직접
+  확인했다. 앞선 문서 커밋 CI는 서로 다른 기존 카드의 복구 직후 빈 피드백을 읽는 경합을
+  드러냈고, 요소 존재뿐 아니라 내용 완료까지 기다리도록 검증 도구를 보강했다.
+- PR #142를 squash merge한 제품 커밋은 `0b93456fc400ff47b378c6e15b1384bc6187e8f2`이다.
+  main CI `34925644900`과 Pages `34925644352`가 성공했다. 공개 Chrome에서 캐시를 우회해
+  라이브를 열었고 런타임 script가 `?v=116`을 사용했다. 공개 `data/shorts-levels.js`
+  87,035문자에서 새 ID 4개와 네 표현을 확인했다. 제품 복귀 기준은 v115
+  `05e84b401330074bf3432339859169cc156d6357`이다.
+- 로컬 Chrome, 실제 일본어 모어 화자, 초보자 풀이시간/D1·D7 회상, 실제 iPhone/Android는
+  미검증이며 에뮬레이션과 구별한다.
 
 ## 완료 작업 · S04 TOPIK I 조사 역할 숏츠 4문항
 

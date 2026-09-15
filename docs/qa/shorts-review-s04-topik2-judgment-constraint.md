@@ -1,7 +1,7 @@
 # S04 · TOPIK II judgment/constraint Shorts pilot
 
-Candidate: v116. Production remains v115 `05e84b401330074bf3432339859169cc156d6357`
-until every release gate passes. Product rollback is v115.
+Production: v116 `0b93456fc400ff47b378c6e15b1384bc6187e8f2` through PR #142.
+Product rollback is v115 `05e84b401330074bf3432339859169cc156d6357`.
 Scope: four new TOPIK II grammar cards only. This is an AI content review plus automated QA record,
 not native-speaker approval, learner timing evidence, or approval of the other 340 Shorts rows.
 
@@ -36,10 +36,10 @@ optional full coaching compares all four. Fixed choices are shuffled and restore
 | Repeat/inventory | automated pass | Four stable IDs add four exact families with no new duplicate, structural flag, or conflicting-answer group. |
 | Storage | automated pass | Existing `topikQuestShortsV1` and earlier IDs remain; cards are appended after existing TOPIK II rows. |
 | Focused local checks | pass | Node 24 content checks pass 22/22; generated inventory checks pass 2/2. |
-| Full release checks | pass | Node 24 `npm run check` passes 116/116 at candidate v116. |
-| Emulated mobile | pass | PR #142 CI `34924194105` covers 320/375/390/430px light/dark, selected-wrong feedback, expanded coaching, next-first flow and reload restoration. Artifact `10379670755` screens `00ci`/`00cj` were inspected. Local Chrome was unavailable. |
+| Full release checks | pass | Node 24 `npm run check` passes 116/116 at v116. |
+| Emulated mobile | pass | PR #142 final CI `34925330780` covers 320/375/390/430px light/dark, selected-wrong feedback, expanded coaching, next-first flow and reload restoration. Artifact `10380265217` screens `00ci`/`00cj` were inspected. Local Chrome was unavailable. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
-| Deployment | pending | PR #142 CI and visual gates pass; merge, Pages, and live asset/behavior verification remain. |
+| Deployment | pass | PR #142 was squash merged as `0b93456fc400ff47b378c6e15b1384bc6187e8f2`; main CI `34925644900` and Pages `34925644352` succeeded. Public Chrome loaded runtime scripts at `?v=116`; live `data/shorts-levels.js` contained all four stable IDs and terms. |
 
 Two documentation-head reruns then exposed a pre-existing test race: after reload, the script waited for the
 feedback element but could read it before its text rendered, failing on different earlier card groups. The harness

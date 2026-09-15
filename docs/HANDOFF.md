@@ -24,17 +24,16 @@ these facts from conversation history or the large TOPIK source bundle.
   passed all 110 checks. Live public UI shows two labelled fields and preserves different ㄱ/ㄴ values after
   next/back navigation. Physical iPhone/Android and real IME remain unverified.
 
-## Current release priority · 2026-09-14
+## Current release priority · 2026-09-15
 
 - Source of truth: [release blueprint #110](https://github.com/okometsbu-beep/topik-quest/issues/110).
   It supersedes #76 map expansion until core learning quality gates pass. A01–A12 remain audit findings,
   not resolved items; existing feature/visual checks do not certify translation or teaching accuracy.
-- Production is v115 at `05e84b401330074bf3432339859169cc156d6357` (PR #140), adding four
-  bounded TOPIK I particle-role grammar cards. Candidate v116 adds four bounded TOPIK II
-  action judgment/constraint cards and remains unshipped until every release gate passes.
+- Production is v116 at `0b93456fc400ff47b378c6e15b1384bc6187e8f2` (PR #142), adding four
+  bounded TOPIK II action judgment/constraint cards. There is no active product candidate.
   TOPIK II writing 51/52 keeps the v110 separate labelled ㄱ/ㄴ fields through input, scoring, save,
-  Review, recovery, and compatible legacy migration. Product rollback is v114
-  `655f8715fc080a9e14b7cea00d34b0a0911a099c`.
+  Review, recovery, and compatible legacy migration. Product rollback is v115
+  `05e84b401330074bf3432339859169cc156d6357`.
 - v111 adds four TOPIK I counters: `명` for people, `개` for general objects,
   `병` for bottles, and `권` for books/notebooks. The bounded ledger is
   `docs/qa/shorts-review-s04-topik1-counters.md`. Node 24 content 17/17, inventory 2/2, and full
@@ -47,9 +46,9 @@ these facts from conversation history or the large TOPIK source bundle.
   v111 with 3 base + 45 runtime files; the four IDs and `data/shorts-levels.js` hash match main.
 - Latest #110 instruction: C01–C06 content quality, first applied as S01–S05 Shorts, outranks A08/#76.
   S01 adds `docs/qa/shorts-audit.md`, generated ID/content-hash inventory and `scripts/audit-shorts.cjs`.
-  Production v115 has 340 runtime rows but only 214 distinct question-choice sets (I 108, II 106); candidate
-  v116 has 344 rows / 218 sets (I 108, II 110). Both retain 30 duplicate groups and 15 structural review
-  candidates. Comprehensive content approvals remain 0/344, not 344 passed questions.
+  Production v116 has 344 runtime rows but only 218 distinct question-choice sets (I 108, II 110),
+  retaining 30 duplicate groups and 15 structural review candidates. Comprehensive content approvals
+  remain 0/344, not 344 passed questions.
   Audit-only curated IDs must NOT replace saved numeric indices without the S03 migration contract.
 - S03 v101 (PR #120) migrates schema-2 numeric Shorts progress to stable card/family IDs without
   replacing `topikQuestShortsV1`. It cycles 162 exact question-choice families before intentional repeats,
@@ -168,17 +167,22 @@ these facts from conversation history or the large TOPIK source bundle.
   `data/shorts-levels.js` and `site-patch.js` hashes match main. Product rollback is v114
   `655f8715fc080a9e14b7cea00d34b0a0911a099c`. Physical devices, native-language review and learner
   timing are unverified.
-- Candidate v116 adds four TOPIK II action judgment/constraint cards that distinguish no remaining
+- Production v116 adds four TOPIK II action judgment/constraint cards that distinguish no remaining
   alternative, worth doing, required action, and unnecessary action. Stable IDs, fixed choice-specific
   ko/ja/en/zh feedback, bundled examples, and evidence→traps→action-judgment coaching are recorded in
   `docs/qa/shorts-review-s04-topik2-judgment-constraint.md`. Node 24 content checks pass 22/22 and inventory
-  checks pass 2/2, and full release checks pass 116/116. PR #142 CI `34924194105` passes 320/375/390/430px
-  Linux Chrome light/dark, selected-wrong feedback, expanded coaching, next-first flow and reload restoration.
-  Artifact `10379670755` screens `00ci`/`00cj` were inspected. Local Chrome was unavailable. Merge, Pages,
-  and live verification remain pending; production remains v115. Two later doc-head attempts raced by finding
-  an earlier card's restored feedback element before its text rendered; the harness now waits for non-empty content.
-- Next: finish candidate v116 deployment gates. After a successful deployment, synchronize STATUS/HANDOFF and
-  the bounded ledger to the actual v116 production evidence.
+  checks pass 2/2, and full release checks pass 116/116. PR #142 final CI `34925330780` passes
+  320/375/390/430px Linux Chrome light/dark, selected-wrong feedback, expanded coaching, next-first flow
+  and reload restoration. Artifact `10380265217` screens `00ci`/`00cj` were inspected. Two earlier
+  documentation-head attempts raced by finding an earlier card's restored feedback element before its text
+  rendered; the verification harness now waits for non-empty content. PR #142 was squash merged as
+  `0b93456fc400ff47b378c6e15b1384bc6187e8f2`; main CI `34925644900` and Pages `34925644352`
+  succeeded. A cache-bypassed public Chrome load used runtime scripts at `?v=116`; the public
+  `data/shorts-levels.js` contained all four IDs and terms. Product rollback is v115
+  `05e84b401330074bf3432339859169cc156d6357`. Local Chrome, physical devices, native-language review,
+  learner timing and delayed recall remain unverified.
+- Next after checking new P0 and clear wrong-answer reports: a bounded four-card review of a missing
+  TOPIK I type.
   Quantity alone is not progress, and a new P0 or clear
   wrong answer takes precedence. At least 36 I / 34 II additional distinct sets remain even before suitability review for the 140/level
   planning floor; this is not the final expansion target. Timing 5–15 seconds is unmeasured and never forced.
