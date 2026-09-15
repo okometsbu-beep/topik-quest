@@ -545,6 +545,69 @@ const reviewedCompletionExperienceItem=(id,term,key,example,exampleI18n,evidence
   });
 };
 
+const JUDGMENT_CONSTRAINT=Object.freeze({
+  necessary:Object.freeze({
+    meaning:Object.freeze({ko:'그 행동을 할 필요가 있음',ja:'～する必要がある',en:'need to do it',zh:'有必要那么做'}),
+    selected:Object.freeze({
+      ko:'“-(으)ㄹ 필요가 있다”는 목표나 조건을 위해 그 행동이 요구된다고 판단합니다.',
+      ja:'「-(으)ㄹ 필요가 있다」は、目標や条件のために、その行動が必要だと判断します。',
+      en:'“-(으)ㄹ 필요가 있다” judges that an action is required for a goal or condition.',
+      zh:'“-(으)ㄹ 필요가 있다”表示为了目标或条件，需要采取该行动。'
+    })
+  }),
+  unavoidable:Object.freeze({
+    meaning:Object.freeze({ko:'다른 방법이 없어 그렇게 함',ja:'ほかに方法がなく～するしかない',en:'have no choice but to do it',zh:'别无选择，只能那么做'}),
+    selected:Object.freeze({
+      ko:'“-(으)ㄹ 수밖에 없다”는 다른 선택이나 방법이 남지 않아 그 행동을 피할 수 없음을 나타냅니다.',
+      ja:'「-(으)ㄹ 수밖에 없다」は、ほかの選択肢や方法がなく、その行動を避けられないことを表します。',
+      en:'“-(으)ㄹ 수밖에 없다” means no alternative remains, so the action cannot be avoided.',
+      zh:'“-(으)ㄹ 수밖에 없다”表示没有其他选择或办法，只能采取该行动。'
+    })
+  }),
+  unnecessary:Object.freeze({
+    meaning:Object.freeze({ko:'그 행동을 다시 할 필요가 없음',ja:'～する必要がない',en:'do not need to do it',zh:'没有必要那么做'}),
+    selected:Object.freeze({
+      ko:'“-(으)ㄹ 필요가 없다”는 이미 충족되었거나 요구되지 않아 그 행동을 하지 않아도 됨을 나타냅니다.',
+      ja:'「-(으)ㄹ 필요가 없다」は、すでに満たされているか要求されておらず、その行動をしなくてもよいことを表します。',
+      en:'“-(으)ㄹ 필요가 없다” means an action is not required because the need is already met or absent.',
+      zh:'“-(으)ㄹ 필요가 없다”表示需求已经满足或本来就不存在，因此不必采取该行动。'
+    })
+  }),
+  worthwhile:Object.freeze({
+    meaning:Object.freeze({ko:'해 볼 가치가 있음',ja:'～する価値がある',en:'be worth doing',zh:'值得一做'}),
+    selected:Object.freeze({
+      ko:'“-(으)ㄹ 만하다”는 어떤 행동이나 대상을 시도할 가치가 있거나 받아들일 만하다고 평가합니다.',
+      ja:'「-(으)ㄹ 만하다」は、ある行動や対象に試す価値がある、または受け入れられると評価します。',
+      en:'“-(으)ㄹ 만하다” evaluates an action or thing as worth trying or acceptable.',
+      zh:'“-(으)ㄹ 만하다”评价某个行动或对象值得尝试，或可以接受。'
+    })
+  })
+});
+const JUDGMENT_CONSTRAINT_ORDER=['unavoidable','worthwhile','necessary','unnecessary'];
+const JUDGMENT_CONSTRAINT_METHOD=Object.freeze({
+  ko:'행동을 둘러싼 판단을 보세요. 선택지가 사라짐=수밖에 없다, 해 볼 가치=만하다, 해야 할 요구=필요가 있다, 이미 충족되어 하지 않아도 됨=필요가 없다입니다.',
+  ja:'行動についての判断を見ます。選択肢がない＝수밖에 없다、試す価値＝만하다、する必要がある＝필요가 있다、すでに満たされていて不要＝필요가 없다です。',
+  en:'Identify the judgment around the action: no alternative = 수밖에 없다, worth doing = 만하다, required = 필요가 있다, and already unnecessary = 필요가 없다.',
+  zh:'先看对行动的判断：没有选择＝수밖에 없다，值得尝试＝만하다，需要做＝필요가 있다，需求已满足而不必做＝필요가 없다。'
+});
+const reviewedJudgmentConstraintItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=JUDGMENT_CONSTRAINT[key];
+  return Object.freeze({
+    id,level:2,type:'grammar',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:JUDGMENT_CONSTRAINT_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(JUDGMENT_CONSTRAINT_ORDER.map(choiceKey=>Object.freeze({
+      meaning:JUDGMENT_CONSTRAINT[choiceKey].meaning,
+      explanationI18n:JUDGMENT_CONSTRAINT[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】-(으)ㄹ 수밖에 없다=다른 선택 없음, -(으)ㄹ 만하다=해 볼 가치, -(으)ㄹ 필요가 있다=해야 할 요구, -(으)ㄹ 필요가 없다=하지 않아도 됨으로 기준이 다릅니다.\n【재사용 풀이】${JUDGMENT_CONSTRAINT_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】-(으)ㄹ 수밖에 없다＝ほかに選択肢がない、-(으)ㄹ 만하다＝試す価値、-(으)ㄹ 필요가 있다＝する必要がある、-(으)ㄹ 필요가 없다＝しなくてもよいで、判断基準が異なります。\n【再利用できる解き方】${JUDGMENT_CONSTRAINT_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] -(으)ㄹ 수밖에 없다 marks no alternative, -(으)ㄹ 만하다 something worth doing, -(으)ㄹ 필요가 있다 a required action, and -(으)ㄹ 필요가 없다 an unnecessary action.\n[Reusable method] ${JUDGMENT_CONSTRAINT_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】-(으)ㄹ 수밖에 없다表示没有其他选择，-(으)ㄹ 만하다表示值得尝试，-(으)ㄹ 필요가 있다表示需要做，-(으)ㄹ 필요가 없다表示不必做，判断标准各不相同。\n【通用解法】${JUDGMENT_CONSTRAINT_METHOD.zh}`
+    })
+  });
+};
+
 const LOCATION_WORDS=Object.freeze({
   opposite:Object.freeze({
     meaning:Object.freeze({ko:'길·공간의 반대쪽',ja:'道・空間の向こう側',en:'opposite side',zh:'道路或空间的对面'}),
@@ -1391,6 +1454,39 @@ const TOPIK_II=[
     ja:'客を迎える準備として前もって掃除を済ませ、きれいな状態を保つので「-아/어 놓다」が合います。',
     en:'The room is cleaned beforehand and kept ready for the guests, so -아/어 놓다 fits.',
     zh:'为了迎接客人，房间已事先打扫并保持整洁状态，所以应选“-아/어 놓다”。'
+  }),
+
+  reviewedJudgmentConstraintItem('S04-II-G-JUDGMENT-01','-(으)ㄹ 수밖에 없다','unavoidable','막차가 끊겨서 택시를 탈 수밖에 없었어요.',{
+    ko:'막차가 끊겨서 택시를 탈 수밖에 없었어요.',ja:'終電がなくなり、タクシーに乗るしかありませんでした。',en:'The last train had stopped running, so I had no choice but to take a taxi.',zh:'末班车已经停运，所以我只能坐出租车。'
+  },{
+    ko:'“막차가 끊겨서”가 다른 이동 선택을 없애 택시를 피할 수 없게 합니다.',
+    ja:'「終電がなくなり」がほかの移動手段をなくし、タクシーを避けられない状況にしています。',
+    en:'“The last train had stopped running” removes the alternative and makes the taxi unavoidable.',
+    zh:'“末班车已经停运”排除了其他出行选择，只能坐出租车。'
+  }),
+  reviewedJudgmentConstraintItem('S04-II-G-JUDGMENT-02','-(으)ㄹ 만하다','worthwhile','이 영화는 결말이 좋아서 다시 볼 만해요.',{
+    ko:'이 영화는 결말이 좋아서 다시 볼 만해요.',ja:'この映画は結末がよくて、もう一度見る価値があります。',en:'This film has a good ending, so it is worth watching again.',zh:'这部电影结局很好，值得再看一次。'
+  },{
+    ko:'“결말이 좋아서”가 다시 보는 행동에 가치가 있다고 평가하는 근거입니다.',
+    ja:'「結末がよくて」が、もう一度見る行動に価値があると評価する根拠です。',
+    en:'“Has a good ending” supports the evaluation that watching it again is worthwhile.',
+    zh:'“结局很好”是评价再次观看值得去做的依据。'
+  }),
+  reviewedJudgmentConstraintItem('S04-II-G-JUDGMENT-03','-(으)ㄹ 필요가 있다','necessary','신청하려면 오늘 서류를 낼 필요가 있어요.',{
+    ko:'신청하려면 오늘 서류를 낼 필요가 있어요.',ja:'申し込むなら、今日書類を出す必要があります。',en:'To apply, you need to submit the documents today.',zh:'如果要申请，今天需要提交材料。'
+  },{
+    ko:'“신청하려면”이 목표이고 오늘 서류 제출은 그 목표에 필요한 행동입니다.',
+    ja:'「申し込むなら」が目標で、今日の書類提出はその目標に必要な行動です。',
+    en:'“To apply” sets the goal, and submitting the documents today is required for it.',
+    zh:'“如果要申请”是目标，今天提交材料是实现该目标所需的行动。'
+  }),
+  reviewedJudgmentConstraintItem('S04-II-G-JUDGMENT-04','-(으)ㄹ 필요가 없다','unnecessary','이미 예약했으니 표를 다시 살 필요가 없어요.',{
+    ko:'이미 예약했으니 표를 다시 살 필요가 없어요.',ja:'すでに予約したので、切符をもう一度買う必要はありません。',en:'It is already booked, so there is no need to buy the ticket again.',zh:'已经预订了，所以不必再买票。'
+  },{
+    ko:'“이미 예약했으니”가 표를 다시 사야 할 요구가 이미 충족되었음을 보여 줍니다.',
+    ja:'「すでに予約したので」が、切符をもう一度買う必要がすでに満たされていることを示します。',
+    en:'“It is already booked” shows that the need to buy the ticket has already been met.',
+    zh:'“已经预订了”表明购票需求已经满足，不必再次购买。'
   })
 ];
 
