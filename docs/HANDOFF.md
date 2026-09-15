@@ -181,8 +181,21 @@ these facts from conversation history or the large TOPIK source bundle.
   `data/shorts-levels.js` contained all four IDs and terms. Product rollback is v115
   `05e84b401330074bf3432339859169cc156d6357`. Local Chrome, physical devices, native-language review,
   learner timing and delayed recall remain unverified.
-- Next after checking new P0 and clear wrong-answer reports: a bounded four-card review of a missing
-  TOPIK I type.
+- Current bounded candidate after checking new P0 and clear wrong-answer reports: v117 adds four TOPIK I
+  demonstrative cards for `이것·그것·저것·어느 것`, mapping speaker-near, listener-near/already-mentioned,
+  far-from-both, and choose-among-many to Japanese `これ·それ·あれ·どれ`. Stable IDs, fixed
+  choice-specific ko/ja/en/zh feedback, bundled examples, and evidence→traps→object-relation coaching are
+  recorded in `docs/qa/shorts-review-s04-topik1-demonstratives.md`. Focused vocabulary and generated-inventory
+  checks pass 20/20, content checks pass 23/23, and the full Node 24 release check passes 117/117. Candidate
+  inventory is 348 rows / 222 exact sets, with no increase to 126 redundant rows,
+  30 duplicate groups, 15 structural flags, or zero answer conflicts. Production remains v116 until the
+  full release gate passes 117/117 in PR #144 CI `34986620849`; its 320/375/390/430px Linux Chrome
+  light/dark run also covers selected-wrong feedback, expanded coaching, next-first flow and reload restoration.
+  Artifact `10403494820` screens `00ck`/`00cl` were inspected. The prior run `34986362108` stopped before
+  browser checks because the connector upload truncated the generated inventory JSON; replacing that blob
+  with exact local bytes made the remote and locally checked trees identical. Production remains v116 until
+  the evidence-only final CI, merge, Pages and live gates pass. Physical devices, native-language review,
+  learner timing and delayed recall remain unverified.
   Quantity alone is not progress, and a new P0 or clear
   wrong answer takes precedence. At least 36 I / 34 II additional distinct sets remain even before suitability review for the 140/level
   planning floor; this is not the final expansion target. Timing 5–15 seconds is unmeasured and never forced.

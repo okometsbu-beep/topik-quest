@@ -1257,6 +1257,35 @@ try{
   assert.match(particleRestored.summary,/에서[\s\S]*動作/u,'particle-role selected feedback must survive reload');
   assert.match(particleRestored.answer,/移動の到着点/u,'reviewed particle-role answer must survive reload');
 
+  const demonstrative=await evaluate(`(()=>{const lv=1,deck=[...window.MALBIT_SHORTS_DECKS[lv],...window.MALBIT_BANK.shorts(lv)],index=deck.findIndex(item=>item.id==='S04-I-W-DEMONSTRATIVE-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','1');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:1,levels:{1:active,2:blank},daily:{}}));return{index,id:identity.id}})()`);
+  assert.equal(demonstrative.id,'S04-I-W-DEMONSTRATIVE-01','reviewed demonstrative card must have its explicit stable ID');
+  await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsWord');
+  const demonstrativeBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['1'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
+  assert.equal(demonstrativeBefore.term,'이것');assert.equal(demonstrativeBefore.cardId,demonstrative.id);assert.equal(demonstrativeBefore.orderId,demonstrative.id);
+  assert.deepEqual(demonstrativeBefore.choiceOrder,[2,1,0,3]);
+  assert.deepEqual(demonstrativeBefore.labels,['二人から遠い物（あれ）','聞き手の近く・話題の物（それ）','話し手の近くの物（これ）','複数から選ぶ物（どれ）'],'fixed demonstrative choices must keep the saved shuffle');
+  await submitShortsLabel('聞き手の近く・話題の物（それ）');
+  const demonstrativeReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
+  assert.match(demonstrativeReview.summary,/그것[\s\S]*聞き手/u,'selected Japanese feedback must explain the listener-near demonstrative trap');
+  assert.match(demonstrativeReview.answer,/話し手の近くの物（これ）/u);assert.equal(demonstrativeReview.closed,true);
+  assert.equal(demonstrativeReview.nextBeforeDetails,true,'Next question must precede optional demonstrative coaching');
+  assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'これは私が持っている傘です。','reviewed Japanese demonstrative example must render locally');
+  await evaluate(`malbitSetTheme('light')`);await sleep(100);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK I demonstrative light ${width}px`,'light')}
+  await setViewport(390,844);await shot('00ck-shorts-topik1-demonstrative-wrong-light.png');
+  await evaluate(`malbitSetTheme('dark');const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK I demonstrative expanded dark ${width}px`,'dark')}
+  await setViewport(390,844);await shot('00cl-shorts-topik1-demonstrative-full-dark.png');
+  await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsFeedbackSummary');
+  const demonstrativeRestored=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['1'];return{cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder,locked:state.locked,summary:document.querySelector('.shortsFeedbackSummary')?.innerText,answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
+  assert.equal(demonstrativeRestored.cardId,demonstrative.id,'reviewed demonstrative ID must survive reload');
+  assert.equal(demonstrativeRestored.orderId,demonstrative.id,'reviewed demonstrative choice-order ID must survive reload');
+  assert.deepEqual(demonstrativeRestored.choiceOrder,[2,1,0,3],'saved demonstrative choice order must survive reload');
+  assert.equal(demonstrativeRestored.locked,true,'graded demonstrative state must survive reload');
+  assert.match(demonstrativeRestored.summary,/그것[\s\S]*聞き手/u,'demonstrative selected feedback must survive reload');
+  assert.match(demonstrativeRestored.answer,/話し手の近くの物（これ）/u,'reviewed demonstrative answer must survive reload');
+
   const exhausted=await openExhaustedShortsCycle(1);
   await evaluate(`nextShorts()`);await sleep(180);
   const cycled=await evaluate(`(()=>{const saved=JSON.parse(localStorage.getItem('topikQuestShortsV1')),state=saved.levels['1']||saved.levels[1];return{schema:saved.schema,cycle:state.cycle,isReview:state.isReview,cardId:state.cardId,familyId:state.familyId,term:document.querySelector('.shortsWord')?.textContent.trim(),badge:document.querySelector('.shortsReviewBadge')?.textContent.trim()}})()`);

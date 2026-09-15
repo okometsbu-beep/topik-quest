@@ -860,6 +860,69 @@ const reviewedParticleItem=(id,term,key,example,exampleI18n,evidence)=>{
   });
 };
 
+const DEMONSTRATIVES=Object.freeze({
+  speaker:Object.freeze({
+    meaning:Object.freeze({ko:'화자 가까이에 있는 물건',ja:'話し手の近くの物（これ）',en:'object near the speaker (this)',zh:'靠近说话者的物品（这个）'}),
+    selected:Object.freeze({
+      ko:'“이것”은 말하는 사람 가까이에 있는 물건을 가리킵니다.',
+      ja:'「이것」は、話し手の近くにある物を指し、日本語の「これ」に当たります。',
+      en:'“이것” points to an object near the speaker and corresponds to “this.”',
+      zh:'“이것”指靠近说话者的物品，相当于“这个”。'
+    })
+  }),
+  listenerOrMentioned:Object.freeze({
+    meaning:Object.freeze({ko:'청자 가까이·이미 말한 물건',ja:'聞き手の近く・話題の物（それ）',en:'object near listener or mentioned',zh:'靠近听话者或已提到的物品'}),
+    selected:Object.freeze({
+      ko:'“그것”은 듣는 사람 가까이에 있거나 앞에서 이미 말한 물건을 가리킵니다.',
+      ja:'「그것」は、聞き手の近くにある物や、すでに話題に出た物を指し、日本語の「それ」に当たります。',
+      en:'“그것” points to an object near the listener or one already mentioned, corresponding to “that.”',
+      zh:'“그것”指靠近听话者或前文已经提到的物品，相当于“那个”。'
+    })
+  }),
+  far:Object.freeze({
+    meaning:Object.freeze({ko:'화자·청자 모두에게서 먼 물건',ja:'二人から遠い物（あれ）',en:'object far from both people',zh:'离说话者和听话者都远的物品'}),
+    selected:Object.freeze({
+      ko:'“저것”은 말하는 사람과 듣는 사람 모두에게서 먼 물건을 가리킵니다.',
+      ja:'「저것」は、話し手と聞き手の両方から遠い物を指し、日本語の「あれ」に当たります。',
+      en:'“저것” points to an object far from both speaker and listener, corresponding to “that over there.”',
+      zh:'“저것”指离说话者和听话者双方都远的物品，相当于“远处那个”。'
+    })
+  }),
+  which:Object.freeze({
+    meaning:Object.freeze({ko:'여럿 중 어떤 물건인지 물음',ja:'複数から選ぶ物（どれ）',en:'which object among choices',zh:'在多个选项中询问哪一个'}),
+    selected:Object.freeze({
+      ko:'“어느 것”은 여러 물건 가운데 어떤 물건인지 물을 때 씁니다.',
+      ja:'「어느 것」は、複数の物からどの物かを尋ねる表現で、日本語の「どれ」に当たります。',
+      en:'“어느 것” asks which object is meant among two or more choices.',
+      zh:'“어느 것”用于询问多个物品中的哪一个。'
+    })
+  })
+});
+const DEMONSTRATIVE_ORDER=['speaker','listenerOrMentioned','far','which'];
+const DEMONSTRATIVE_METHOD=Object.freeze({
+  ko:'물건과 사람의 관계를 먼저 보세요. 화자 가까이=이것, 청자 가까이·앞서 말함=그것, 둘 모두에게서 멂=저것, 여럿 중 질문=어느 것입니다.',
+  ja:'物と人の関係を先に見ます。話し手の近く＝이것（これ）、聞き手の近く・話題の物＝그것（それ）、二人から遠い＝저것（あれ）、複数から質問＝어느 것（どれ）です。',
+  en:'Check the object’s relation first: near the speaker = 이것, near the listener or mentioned = 그것, far from both = 저것, and asking among choices = 어느 것.',
+  zh:'先判断物品与人的关系：靠近说话者＝이것，靠近听话者或前文已提到＝그것，离双方都远＝저것，在多个选项中提问＝어느 것。'
+});
+const reviewedDemonstrativeItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=DEMONSTRATIVES[key];
+  return Object.freeze({
+    id,level:1,type:'word',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:DEMONSTRATIVE_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(DEMONSTRATIVE_ORDER.map(choiceKey=>Object.freeze({
+      meaning:DEMONSTRATIVES[choiceKey].meaning,
+      explanationI18n:DEMONSTRATIVES[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】이것=화자 가까이, 그것=청자 가까이·이미 말함, 저것=둘 모두에게서 멂, 어느 것=여럿 중 질문으로 관계가 다릅니다.\n【재사용 풀이】${DEMONSTRATIVE_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】이것＝これ（話し手の近く）、그것＝それ（聞き手の近く・話題の物）、저것＝あれ（二人から遠い）、어느 것＝どれ（複数から質問）で、物と人の関係が異なります。\n【再利用できる解き方】${DEMONSTRATIVE_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 이것 is near the speaker, 그것 near the listener or already mentioned, 저것 far from both, and 어느 것 asks which one among choices.\n[Reusable method] ${DEMONSTRATIVE_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】이것靠近说话者，그것靠近听话者或前文已提到，저것离双方都远，어느 것用于在多个选项中提问，所指关系各不相同。\n【通用解法】${DEMONSTRATIVE_METHOD.zh}`
+    })
+  });
+};
+
 const COUNTER_UNITS=Object.freeze({
   people:Object.freeze({
     meaning:Object.freeze({ko:'사람을 세는 단위',ja:'人を数える助数詞（～人）',en:'counter for people',zh:'数人的量词（名、位）'}),
@@ -1166,6 +1229,38 @@ const TOPIK_I=[
     ja:'友達はプレゼントを受け取る人なので、人である受け手を表す「에게」が合います。',
     en:'The friend is the person receiving the gift, so 에게 fits.',
     zh:'朋友是接受礼物的人，所以应选表示人的接受对象的“에게”。'
+  }),
+  reviewedDemonstrativeItem('S04-I-W-DEMONSTRATIVE-01','이것','speaker','이것은 제가 들고 있는 우산이에요.',{
+    ko:'이것은 제가 들고 있는 우산이에요.',ja:'これは私が持っている傘です。',en:'This is the umbrella I am holding.',zh:'这是我手里拿着的雨伞。'
+  },{
+    ko:'“제가 들고 있는” 물건은 말하는 사람 가까이에 있으므로 “이것”이 맞습니다.',
+    ja:'「私が持っている」物は話し手の近くにあるため、「これ」に当たる「이것」が合います。',
+    en:'The speaker is holding the umbrella, so it is near the speaker and 이것 fits.',
+    zh:'雨伞正由说话者拿着，靠近说话者，所以应选“이것”。'
+  }),
+  reviewedDemonstrativeItem('S04-I-W-DEMONSTRATIVE-02','그것','listenerOrMentioned','네 앞에 있는 그것을 주세요.',{
+    ko:'네 앞에 있는 그것을 주세요.',ja:'あなたの前にあるそれをください。',en:'Please give me that one in front of you.',zh:'请把你面前的那个给我。'
+  },{
+    ko:'“네 앞에 있는” 물건은 듣는 사람 가까이에 있으므로 “그것”이 맞습니다.',
+    ja:'「あなたの前にある」物は聞き手の近くにあるため、「それ」に当たる「그것」が合います。',
+    en:'The object is in front of the listener, so 그것 fits.',
+    zh:'物品在听话者面前，靠近听话者，所以应选“그것”。'
+  }),
+  reviewedDemonstrativeItem('S04-I-W-DEMONSTRATIVE-03','저것','far','저기 멀리 보이는 저것은 남산타워예요.',{
+    ko:'저기 멀리 보이는 저것은 남산타워예요.',ja:'遠くに見えるあれは南山タワーです。',en:'That thing visible far over there is Namsan Tower.',zh:'远处看见的那个是南山塔。'
+  },{
+    ko:'“저기 멀리”는 두 사람에게서 먼 곳을 가리키므로 “저것”이 맞습니다.',
+    ja:'「遠くに見える」は二人から離れた物なので、「あれ」に当たる「저것」が合います。',
+    en:'“Far over there” places the object away from both people, so 저것 fits.',
+    zh:'“远处”表示物品离说话者和听话者都远，所以应选“저것”。'
+  }),
+  reviewedDemonstrativeItem('S04-I-W-DEMONSTRATIVE-04','어느 것','which','이 가방들 중에서 어느 것이 가장 가벼워요?',{
+    ko:'이 가방들 중에서 어느 것이 가장 가벼워요?',ja:'このかばんの中では、どれがいちばん軽いですか。',en:'Which one of these bags is the lightest?',zh:'这些包里哪一个最轻？'
+  },{
+    ko:'“가방들 중에서” 하나를 묻고 있으므로 “어느 것”이 맞습니다.',
+    ja:'「かばんの中で」一つを尋ねているため、「どれ」に当たる「어느 것」が合います。',
+    en:'The question asks for one item among several bags, so 어느 것 fits.',
+    zh:'句子在多个包中询问一个，所以应选“어느 것”。'
   })
 ];
 
