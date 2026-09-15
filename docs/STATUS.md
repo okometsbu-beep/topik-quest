@@ -183,7 +183,9 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - Node 24 콘텐츠 22/22·재고 2/2·전체 release check 116/116을 통과했다. PR #142 CI
   `34924194105`도 Linux Chrome 320·375·390·430px 라이트/다크, 선택 오답 설명, 상세 해설,
   다음 문제 우선, 새로고침 복원을 통과했다. artifact `10379670755`의 `00ci`/`00cj`를 직접
-  확인했다. 로컬 Chrome과 실제 일본어 모어 화자, 초보자 풀이시간/D1·D7 회상,
+  확인했다. 뒤이은 문서 커밋 CI는 서로 다른 기존 카드의 복구 직후 빈 피드백을 읽는 경합을
+  드러냈고, 요소 존재뿐 아니라 내용 완료까지 기다리도록 검증 도구를 보강했다. 로컬 Chrome과
+  실제 일본어 모어 화자, 초보자 풀이시간/D1·D7 회상,
   실제 iPhone/Android는 미검증이며 병합·Pages·라이브 확인은 아직 대기 중이다.
 
 ## 완료 작업 · S04 TOPIK I 조사 역할 숏츠 4문항

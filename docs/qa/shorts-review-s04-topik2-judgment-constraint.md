@@ -41,6 +41,10 @@ optional full coaching compares all four. Fixed choices are shuffled and restore
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
 | Deployment | pending | PR #142 CI and visual gates pass; merge, Pages, and live asset/behavior verification remain. |
 
+Two documentation-head reruns then exposed a pre-existing test race: after reload, the script waited for the
+feedback element but could read it before its text rendered, failing on different earlier card groups. The harness
+now waits for non-empty feedback content. This is verification-only and does not change app behavior or storage.
+
 Candidate inventory is 344 rows / 218 exact question-choice families (TOPIK I 108, TOPIK II 110). The
 15 existing structural review candidates do not increase. These totals are not content approvals: the
 generated inventory remains `approved: 0`, and only the four IDs above have this bounded AI review record.

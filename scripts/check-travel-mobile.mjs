@@ -56,7 +56,7 @@ try{
     throw new Error('MALBIT travel runtime did not become ready');
   };
   const waitForSelector=async selector=>{
-    for(let i=0;i<100;i++){if(await evaluate(`!!document.querySelector(${JSON.stringify(selector)})`))return;await sleep(100)}
+    for(let i=0;i<100;i++){if(await evaluate(`(()=>{const el=document.querySelector(${JSON.stringify(selector)});return!!el&&(${JSON.stringify(selector)}!=='.shortsFeedbackSummary'||el.innerText.trim().length>0)})()`))return;await sleep(100)}
     throw new Error(`Timed out waiting for selector: ${selector}`);
   };
   const tap=async(selector,index=0,delay=250)=>{

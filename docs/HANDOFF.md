@@ -175,7 +175,8 @@ these facts from conversation history or the large TOPIK source bundle.
   checks pass 2/2, and full release checks pass 116/116. PR #142 CI `34924194105` passes 320/375/390/430px
   Linux Chrome light/dark, selected-wrong feedback, expanded coaching, next-first flow and reload restoration.
   Artifact `10379670755` screens `00ci`/`00cj` were inspected. Local Chrome was unavailable. Merge, Pages,
-  and live verification remain pending; production remains v115.
+  and live verification remain pending; production remains v115. Two later doc-head attempts raced by finding
+  an earlier card's restored feedback element before its text rendered; the harness now waits for non-empty content.
 - Next: finish candidate v116 deployment gates. After a successful deployment, synchronize STATUS/HANDOFF and
   the bounded ledger to the actual v116 production evidence.
   Quantity alone is not progress, and a new P0 or clear
