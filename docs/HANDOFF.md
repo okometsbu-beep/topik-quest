@@ -30,7 +30,8 @@ these facts from conversation history or the large TOPIK source bundle.
   It supersedes #76 map expansion until core learning quality gates pass. A01–A12 remain audit findings,
   not resolved items; existing feature/visual checks do not certify translation or teaching accuracy.
 - Production is v117 at `a14dd083f3afd64142990ae1d829df985cbf8db3` (PR #144), adding four
-  bounded TOPIK I demonstrative cards. There is no active product candidate.
+  bounded TOPIK I demonstrative cards. Active candidate v118 adds four bounded TOPIK II plan-stage
+  cards on `agent/loop-20260916-topik2-plan-stage`; it is not production until all release gates pass.
   TOPIK II writing 51/52 keeps the v110 separate labelled ㄱ/ㄴ fields through input, scoring, save,
   Review, recovery, and compatible legacy migration. Product rollback is v116
   `0b93456fc400ff47b378c6e15b1384bc6187e8f2`.
@@ -203,8 +204,11 @@ these facts from conversation history or the large TOPIK source bundle.
   Quantity alone is not progress, and a new P0 or clear
   wrong answer takes precedence. At least 28 I / 30 II additional distinct sets remain even before suitability review for the 140/level
   planning floor; this is not the final expansion target. Timing 5–15 seconds is unmeasured and never forced.
-- Next one task after checking new P0 and clear wrong-answer reports: a bounded four-card review of a
-  missing TOPIK II type. There is no candidate before that review begins.
+- Current one task after checking new P0 and clear wrong-answer reports: verify and deploy the bounded v118
+  TOPIK II plan-stage candidate. It separates considering, personal intention, an already-made decision,
+  and a fixed schedule; focused content 24/24, inventory 2/2, and full release 118/118 pass on Node 24.
+  Emulated-mobile evidence remains pending, so production and rollback stay v117. The bounded ledger is
+  `docs/qa/shorts-review-s04-topik2-plan-stage.md`.
 - Follow start → understand → recall/speak/write → review → next learning for Japanese beginners, and
   passage evidence → specific distractor traps → reusable solving method for TOPIK I/II.
 - 2026 draft gates: Sep 13 audit/scope/dependencies; Sep 27 core flow/P0/P1/backup; Oct 11 teaching,

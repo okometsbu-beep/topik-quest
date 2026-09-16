@@ -608,6 +608,69 @@ const reviewedJudgmentConstraintItem=(id,term,key,example,exampleI18n,evidence)=
   });
 };
 
+const PLAN_STAGE=Object.freeze({
+  intention:Object.freeze({
+    meaning:Object.freeze({ko:'아직 정하지 않은 개인의 의향',ja:'まだ確定していない本人の意向',en:'a personal intention not yet fixed',zh:'尚未最终确定的个人意向'}),
+    selected:Object.freeze({
+      ko:'“-(으)ㄹ 생각이다”는 앞으로 그렇게 하려는 개인의 생각이나 의향을 나타냅니다.',
+      ja:'「-(으)ㄹ 생각이다」は、これからそうしようとする本人の考え・意向を表します。',
+      en:'“-(으)ㄹ 생각이다” expresses a person’s intention or idea about a future action.',
+      zh:'“-(으)ㄹ 생각이다”表示本人今后打算采取某个行动的想法或意向。'
+    })
+  }),
+  decision:Object.freeze({
+    meaning:Object.freeze({ko:'논의·판단 뒤에 이미 내린 결정',ja:'話し合い・判断の後ですでに決めたこと',en:'a decision already made',zh:'经过讨论或判断后已经作出的决定'}),
+    selected:Object.freeze({
+      ko:'“-기로 하다”는 혼자 또는 함께 의논해 앞으로 할 일을 이미 결정했음을 나타냅니다.',
+      ja:'「-기로 하다」は、一人で、または話し合って、これからすることをすでに決めたことを表します。',
+      en:'“-기로 하다” means a future action has already been decided, individually or together.',
+      zh:'“-기로 하다”表示个人或共同商议后，已经决定今后要做的事。'
+    })
+  }),
+  tentative:Object.freeze({
+    meaning:Object.freeze({ko:'아직 결정하지 않고 고민 중',ja:'まだ決めずに考えている段階',en:'still considering, not decided yet',zh:'尚未决定，仍在考虑'}),
+    selected:Object.freeze({
+      ko:'“-(으)ㄹ까 하다”는 아직 결정하지 않은 일을 할지 생각하거나 조심스럽게 제안하는 단계입니다.',
+      ja:'「-(으)ㄹ까 하다」は、まだ決めていないことをしようかと考える、または控えめに提案する段階です。',
+      en:'“-(으)ㄹ까 하다” marks a tentative thought about doing something that is not decided yet.',
+      zh:'“-(으)ㄹ까 하다”表示还没决定，正在考虑是否要做某事。'
+    })
+  }),
+  scheduled:Object.freeze({
+    meaning:Object.freeze({ko:'날짜·계획표에 정해진 예정',ja:'日程・計画表で決まっている予定',en:'an event fixed on a schedule',zh:'按日期或日程已经安排好的计划'}),
+    selected:Object.freeze({
+      ko:'“-(으)ㄹ 예정이다”는 날짜나 계획에 따라 일이 진행되도록 예정되어 있음을 나타냅니다.',
+      ja:'「-(으)ㄹ 예정이다」は、日付や計画に沿って行われる予定が決まっていることを表します。',
+      en:'“-(으)ㄹ 예정이다” marks an event arranged to happen according to a date or schedule.',
+      zh:'“-(으)ㄹ 예정이다”表示某件事已经按日期或计划安排进行。'
+    })
+  })
+});
+const PLAN_STAGE_ORDER=['intention','decision','tentative','scheduled'];
+const PLAN_STAGE_METHOD=Object.freeze({
+  ko:'계획이 어느 단계인지 보세요. 아직 고민=ㄹ까 하다, 개인 의향=생각이다, 이미 내린 결정=기로 하다, 날짜·일정 확정=예정이다입니다.',
+  ja:'計画がどの段階かを見ます。まだ検討中＝ㄹ까 하다、本人の意向＝생각이다、決定済み＝기로 하다、日付・日程が確定＝예정이다です。',
+  en:'Identify the plan stage: still considering = ㄹ까 하다, personal intention = 생각이다, decision already made = 기로 하다, fixed date or schedule = 예정이다.',
+  zh:'先看计划处于哪个阶段：仍在考虑＝ㄹ까 하다，个人意向＝생각이다，已经决定＝기로 하다，日期或日程已确定＝예정이다。'
+});
+const reviewedPlanStageItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=PLAN_STAGE[key];
+  return Object.freeze({
+    id,level:2,type:'grammar',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:PLAN_STAGE_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(PLAN_STAGE_ORDER.map(choiceKey=>Object.freeze({
+      meaning:PLAN_STAGE[choiceKey].meaning,
+      explanationI18n:PLAN_STAGE[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】-(으)ㄹ까 하다=아직 고민 중, -(으)ㄹ 생각이다=개인 의향, -기로 하다=이미 내린 결정, -(으)ㄹ 예정이다=확정된 일정으로 계획 단계가 다릅니다.\n【재사용 풀이】${PLAN_STAGE_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】-(으)ㄹ까 하다＝まだ検討中、-(으)ㄹ 생각이다＝本人の意向、-기로 하다＝決定済み、-(으)ㄹ 예정이다＝確定した日程で、計画の段階が異なります。\n【再利用できる解き方】${PLAN_STAGE_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] -(으)ㄹ까 하다 marks tentative consideration, -(으)ㄹ 생각이다 personal intention, -기로 하다 a decision already made, and -(으)ㄹ 예정이다 a fixed schedule.\n[Reusable method] ${PLAN_STAGE_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】-(으)ㄹ까 하다表示仍在考虑，-(으)ㄹ 생각이다表示个人意向，-기로 하다表示已经决定，-(으)ㄹ 예정이다表示确定的日程，计划阶段各不相同。\n【通用解法】${PLAN_STAGE_METHOD.zh}`
+    })
+  });
+};
+
 const LOCATION_WORDS=Object.freeze({
   opposite:Object.freeze({
     meaning:Object.freeze({ko:'길·공간의 반대쪽',ja:'道・空間の向こう側',en:'opposite side',zh:'道路或空间的对面'}),
@@ -1582,6 +1645,39 @@ const TOPIK_II=[
     ja:'「すでに予約したので」が、切符をもう一度買う必要がすでに満たされていることを示します。',
     en:'“It is already booked” shows that the need to buy the ticket has already been met.',
     zh:'“已经预订了”表明购票需求已经满足，不必再次购买。'
+  }),
+
+  reviewedPlanStageItem('S04-II-G-PLAN-01','-(으)ㄹ 생각이다','intention','졸업 후에는 한국에서 일할 생각이에요.',{
+    ko:'졸업 후에는 한국에서 일할 생각이에요.',ja:'卒業後は韓国で働こうと考えています。',en:'I intend to work in Korea after graduation.',zh:'毕业后我打算在韩国工作。'
+  },{
+    ko:'“생각이에요”는 졸업 뒤에 그렇게 하려는 말하는 사람의 의향을 보여 줍니다.',
+    ja:'「考えています」は、卒業後にそうしようとする話し手本人の意向を示します。',
+    en:'“I intend” shows the speaker’s personal plan for after graduation.',
+    zh:'“打算”表明说话者本人毕业后的个人意向。'
+  }),
+  reviewedPlanStageItem('S04-II-G-PLAN-02','-기로 하다','decision','가족 회의에서 올해는 제주도로 여행하기로 했어요.',{
+    ko:'가족 회의에서 올해는 제주도로 여행하기로 했어요.',ja:'家族会議で、今年は済州島へ旅行することにしました。',en:'At the family meeting, we decided to travel to Jeju this year.',zh:'我们在家庭会议上决定今年去济州岛旅行。'
+  },{
+    ko:'“가족 회의에서”와 “하기로 했어요”가 함께 의논한 뒤 이미 결정을 내렸음을 보여 줍니다.',
+    ja:'「家族会議で」と「することにしました」が、話し合いの後ですでに決めたことを示します。',
+    en:'“At the family meeting” and “decided” show that the choice was already made after discussion.',
+    zh:'“在家庭会议上”和“决定”表明大家讨论后已经作出决定。'
+  }),
+  reviewedPlanStageItem('S04-II-G-PLAN-03','-(으)ㄹ까 하다','tentative','요즘 퇴근 후에 수영을 배울까 해요.',{
+    ko:'요즘 퇴근 후에 수영을 배울까 해요.',ja:'最近、退勤後に水泳を習おうかと考えています。',en:'These days, I am thinking about taking swimming lessons after work.',zh:'最近我在考虑下班后学游泳。'
+  },{
+    ko:'“배울까 해요”는 아직 수영을 배우기로 결정하지 않고 생각 중임을 보여 줍니다.',
+    ja:'「習おうかと考えています」は、まだ水泳を習うと決めず、検討中であることを示します。',
+    en:'“Am thinking about” shows that the swimming plan is still under consideration, not decided.',
+    zh:'“在考虑”表明学游泳这件事尚未决定，仍处在考虑阶段。'
+  }),
+  reviewedPlanStageItem('S04-II-G-PLAN-04','-(으)ㄹ 예정이다','scheduled','설명회는 다음 주 월요일에 열릴 예정입니다.',{
+    ko:'설명회는 다음 주 월요일에 열릴 예정입니다.',ja:'説明会は来週の月曜日に開かれる予定です。',en:'The information session is scheduled for next Monday.',zh:'说明会定于下周一举行。'
+  },{
+    ko:'“다음 주 월요일”이라는 구체적 날짜가 행사 일정이 정해져 있음을 보여 줍니다.',
+    ja:'「来週の月曜日」という具体的な日付が、行事の日程が決まっていることを示します。',
+    en:'The specific date “next Monday” shows that the event is fixed on a schedule.',
+    zh:'“下周一”这一具体日期表明活动已经列入确定的日程。'
   })
 ];
 
