@@ -207,8 +207,10 @@ these facts from conversation history or the large TOPIK source bundle.
 - Current one task after checking new P0 and clear wrong-answer reports: verify and deploy the bounded v118
   TOPIK II plan-stage candidate. It separates considering, personal intention, an already-made decision,
   and a fixed schedule; focused content 24/24, inventory 2/2, and full release 118/118 pass on Node 24.
-  Emulated-mobile evidence remains pending, so production and rollback stay v117. The bounded ledger is
-  `docs/qa/shorts-review-s04-topik2-plan-stage.md`.
+  PR #146 CI `35051025731` passes 118/118 plus 320/375/390/430px Linux Chrome light/dark,
+  selected-wrong feedback, expanded coaching, next-first flow and reload restoration. Artifact
+  `10429495520` screens `00cm`/`00cn` were inspected. Final evidence-head CI, merge, and live checks remain,
+  so production and rollback stay v117. The bounded ledger is `docs/qa/shorts-review-s04-topik2-plan-stage.md`.
 - Follow start → understand → recall/speak/write → review → next learning for Japanese beginners, and
   passage evidence → specific distractor traps → reusable solving method for TOPIK I/II.
 - 2026 draft gates: Sep 13 audit/scope/dependencies; Sep 27 core flow/P0/P1/backup; Oct 11 teaching,

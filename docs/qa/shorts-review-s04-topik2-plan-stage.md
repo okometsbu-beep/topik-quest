@@ -39,7 +39,7 @@ the existing Shorts record.
 | Storage | automated pass | Existing `topikQuestShortsV1` and earlier IDs remain; cards are appended after existing TOPIK II rows. |
 | Focused local checks | pass | Node 24 content checks pass 24/24; generated inventory checks pass 2/2. |
 | Full release checks | pass | Node 24 `npm run check` passes 118/118; runtime contract reports v118, 45 ordered files, and valid bank hashes. |
-| Emulated mobile | pending | CI must cover 320/375/390/430px light/dark, selected-wrong feedback, expanded coaching, next-first flow, and reload restoration. |
+| Emulated mobile | pass | PR #146 CI `35051025731` covers 320/375/390/430px light/dark, selected-wrong feedback, expanded coaching, next-first flow, and reload restoration. Artifact `10429495520` screens `00cm`/`00cn` were inspected. Local Chrome was unavailable. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
 | Deployment | pending | Production remains v117 until main CI, Pages, live asset, stable-ID, and smoke checks pass. |
 
@@ -50,3 +50,8 @@ the generated inventory remains `approved: 0`, and only the four IDs above have 
 The first draft reused the existing original term `-(으)려던 참이다`. The uniqueness check rejected it
 before release; the candidate now uses the distinct `-(으)ㄹ까 하다` to make the progression
 considering → intention → decision → fixed schedule explicit. No existing row or stable ID was altered.
+
+PR #146 CI `35051025731` passes the same 118/118 release suite and Linux Chrome emulation. The inspected
+light screenshot shows the deliberately wrong `-기로 하다` selection, the correct personal-intention
+answer, and choice-specific Japanese feedback. The dark screenshot shows next-first flow and the complete
+evidence → traps → method explanation without clipping. This is emulation, not physical-device evidence.
