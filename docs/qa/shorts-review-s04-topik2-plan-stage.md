@@ -1,7 +1,6 @@
 # S04 · TOPIK II plan-stage Shorts pilot
 
-Candidate: v118 on `agent/loop-20260916-topik2-plan-stage`.
-Production remains v117 `a14dd083f3afd64142990ae1d829df985cbf8db3` until CI, emulated-mobile review, merge, and live checks pass.
+Production: v118 `5d7b03c73c21276523b8c56d00d7e0d347b0fea3` through PR #146.
 Product rollback is v117 `a14dd083f3afd64142990ae1d829df985cbf8db3`.
 Scope: four new TOPIK II grammar cards only. This is an AI content review plus automated QA record,
 not native-speaker approval, learner timing evidence, or approval of the other 348 Shorts rows.
@@ -39,19 +38,23 @@ the existing Shorts record.
 | Storage | automated pass | Existing `topikQuestShortsV1` and earlier IDs remain; cards are appended after existing TOPIK II rows. |
 | Focused local checks | pass | Node 24 content checks pass 24/24; generated inventory checks pass 2/2. |
 | Full release checks | pass | Node 24 `npm run check` passes 118/118; runtime contract reports v118, 45 ordered files, and valid bank hashes. |
-| Emulated mobile | pass | PR #146 CI `35051025731` covers 320/375/390/430px light/dark, selected-wrong feedback, expanded coaching, next-first flow, and reload restoration. Artifact `10429495520` screens `00cm`/`00cn` were inspected. Local Chrome was unavailable. |
+| Emulated mobile | pass | PR #146 final CI `35051427873` covers 320/375/390/430px light/dark, selected-wrong feedback, expanded coaching, next-first flow, and reload restoration. Artifact `10429495520` screens `00cm`/`00cn` were inspected. Local Chrome was unavailable. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
-| Deployment | pending | Production remains v117 until main CI, Pages, live asset, stable-ID, and smoke checks pass. |
+| Deployment | pass | PR #146 merged as `5d7b03c73c21276523b8c56d00d7e0d347b0fea3`; main CI `35051754654` and Pages `35051754080` passed. Public Chrome loaded `?v=118`, exposed the four stable IDs, and matched main hashes for the three release assets. |
 
-Candidate inventory is 352 rows / 226 exact question-choice families (TOPIK I 112, TOPIK II 114).
+Production inventory is 352 rows / 226 exact question-choice families (TOPIK I 112, TOPIK II 114).
 The 15 existing structural review candidates do not increase. These totals are not content approvals:
 the generated inventory remains `approved: 0`, and only the four IDs above have this bounded AI review record.
 
 The first draft reused the existing original term `-(으)려던 참이다`. The uniqueness check rejected it
-before release; the candidate now uses the distinct `-(으)ㄹ까 하다` to make the progression
+before release; production uses the distinct `-(으)ㄹ까 하다` to make the progression
 considering → intention → decision → fixed schedule explicit. No existing row or stable ID was altered.
 
-PR #146 CI `35051025731` passes the same 118/118 release suite and Linux Chrome emulation. The inspected
+PR #146 final CI `35051427873` passes the same 118/118 release suite and Linux Chrome emulation. The inspected
 light screenshot shows the deliberately wrong `-기로 하다` selection, the correct personal-intention
 answer, and choice-specific Japanese feedback. The dark screenshot shows next-first flow and the complete
 evidence → traps → method explanation without clipping. This is emulation, not physical-device evidence.
+
+PR #146 was squash merged as `5d7b03c73c21276523b8c56d00d7e0d347b0fea3`. Main CI
+`35051754654` and Pages `35051754080` succeeded. The cache-bypassed public app uses `?v=118`, contains
+all four stable IDs, and matches main SHA-256 for `data/shorts-levels.js`, `site-patch.js`, and `sw.js`.
