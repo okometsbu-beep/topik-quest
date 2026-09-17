@@ -671,6 +671,69 @@ const reviewedPlanStageItem=(id,term,key,example,exampleI18n,evidence)=>{
   });
 };
 
+const TIME_RELATION=Object.freeze({
+  immediate:Object.freeze({
+    meaning:Object.freeze({ko:'첫 동작 직후 바로 이어짐',ja:'最初の動作の直後にすぐ続く',en:'the second action follows immediately',zh:'前一动作一结束就立刻进行后一动作'}),
+    selected:Object.freeze({
+      ko:'“-자마자”는 첫 동작이 끝난 직후 시간 간격 없이 다음 동작이 바로 이어짐을 나타냅니다.',
+      ja:'「-자마자」は、最初の動作が終わった直後、間を置かず次の動作が続くことを表します。',
+      en:'“-자마자” means the next action follows immediately after the first action ends.',
+      zh:'“-자마자”表示前一动作一结束，后一动作就立刻发生。'
+    })
+  }),
+  afterCompletion:Object.freeze({
+    meaning:Object.freeze({ko:'첫 동작을 끝낸 뒤 다음 동작',ja:'最初の動作を終えてから次の動作',en:'the next action after completion',zh:'完成前一动作后再进行下一动作'}),
+    selected:Object.freeze({
+      ko:'“-고 나서”는 첫 동작을 마친 뒤에 다음 동작을 하는 순서를 나타냅니다.',
+      ja:'「-고 나서」は、最初の動作を終えてから次の動作をする順序を表します。',
+      en:'“-고 나서” marks the next action after the first action has been completed.',
+      zh:'“-고 나서”表示完成前一动作之后，再进行下一动作。'
+    })
+  }),
+  overlap:Object.freeze({
+    meaning:Object.freeze({ko:'한 동작이 계속되는 시간에 다른 동작',ja:'一つの動作が続く間に別の動作',en:'another action during the same interval',zh:'一个动作持续期间同时进行另一个动作'}),
+    selected:Object.freeze({
+      ko:'“-는 동안”은 한 동작이 계속되는 시간에 다른 동작도 함께 일어남을 나타냅니다.',
+      ja:'「-는 동안」は、一つの動作が続く時間に別の動作も起こることを表します。',
+      en:'“-는 동안” marks another action happening during the same time interval.',
+      zh:'“-는 동안”表示一个动作持续的期间，另一个动作也同时发生。'
+    })
+  }),
+  before:Object.freeze({
+    meaning:Object.freeze({ko:'첫 동작보다 앞서 하는 동작',ja:'最初の動作より前にすること',en:'an action before the first one',zh:'在前一动作之前进行的动作'}),
+    selected:Object.freeze({
+      ko:'“-기 전에”는 기준이 되는 동작보다 앞서 다른 동작을 함을 나타냅니다.',
+      ja:'「-기 전에」は、基準となる動作より前に別の動作をすることを表します。',
+      en:'“-기 전에” marks an action that happens before the reference action.',
+      zh:'“-기 전에”表示在作为基准的动作之前，先进行另一个动作。'
+    })
+  })
+});
+const TIME_RELATION_ORDER=['immediate','afterCompletion','overlap','before'];
+const TIME_RELATION_METHOD=Object.freeze({
+  ko:'두 동작의 순서와 겹침을 보세요. 즉시 이어짐=자마자, 끝낸 뒤=고 나서, 같은 시간에 겹침=는 동안, 앞선 행동=기 전입니다.',
+  ja:'二つの動作の順序と重なりを見ます。直後＝자마자、終えてから＝고 나서、同じ時間に重なる＝는 동안、前にする＝기 전です。',
+  en:'Compare the order and overlap of the two actions: immediate = 자마자, after completion = 고 나서, overlapping interval = 는 동안, and before = 기 전.',
+  zh:'比较两个动作的先后与重叠：立刻接续＝자마자，完成后＝고 나서，同时段重叠＝는 동안，之前＝기 전。'
+});
+const reviewedTimeRelationItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=TIME_RELATION[key];
+  return Object.freeze({
+    id,level:2,type:'grammar',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:TIME_RELATION_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(TIME_RELATION_ORDER.map(choiceKey=>Object.freeze({
+      meaning:TIME_RELATION[choiceKey].meaning,
+      explanationI18n:TIME_RELATION[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】-자마자=직후 바로, -고 나서=끝낸 뒤, -는 동안=같은 시간에 겹침, -기 전에=기준 동작보다 앞서로 시간 관계가 다릅니다.\n【재사용 풀이】${TIME_RELATION_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】-자마자＝直後、-고 나서＝終えてから、-는 동안＝同じ時間に重なる、-기 전에＝前にすることで、時間関係が異なります。\n【再利用できる解き方】${TIME_RELATION_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] -자마자 means immediately after, -고 나서 after completion, -는 동안 during an overlapping interval, and -기 전에 before the reference action.\n[Reusable method] ${TIME_RELATION_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】-자마자表示紧接着，-고 나서表示完成之后，-는 동안表示同一时段重叠，-기 전에表示在基准动作之前，时间关系各不相同。\n【通用解法】${TIME_RELATION_METHOD.zh}`
+    })
+  });
+};
+
 const BASIC_TENSE=Object.freeze({
   presentHabit:Object.freeze({
     meaning:Object.freeze({ko:'반복되는 현재 습관',ja:'今の習慣・繰り返し',en:'a present habit or routine',zh:'当前的习惯或反复动作'}),
@@ -1773,6 +1836,39 @@ const TOPIK_II=[
     ja:'「来週の月曜日」という具体的な日付が、行事の日程が決まっていることを示します。',
     en:'The specific date “next Monday” shows that the event is fixed on a schedule.',
     zh:'“下周一”这一具体日期表明活动已经列入确定的日程。'
+  }),
+
+  reviewedTimeRelationItem('S04-II-G-TIME-01','-자마자','immediate','집에 도착하자마자 손을 씻었어요.',{
+    ko:'집에 도착하자마자 손을 씻었어요.',ja:'家に着くとすぐ手を洗いました。',en:'As soon as I got home, I washed my hands.',zh:'我一到家就洗了手。'
+  },{
+    ko:'“도착하자마자”가 도착 뒤에 시간 간격 없이 바로 손을 씻었음을 보여 줍니다.',
+    ja:'「着くとすぐ」が、到着後に間を置かずすぐ手を洗ったことを示します。',
+    en:'“As soon as I got home” shows that washing followed the arrival with no delay.',
+    zh:'“一到家就”表明到家后没有间隔，马上洗了手。'
+  }),
+  reviewedTimeRelationItem('S04-II-G-TIME-02','-고 나서','afterCompletion','회의를 마치고 나서 보고서를 보냈어요.',{
+    ko:'회의를 마치고 나서 보고서를 보냈어요.',ja:'会議を終えてから報告書を送りました。',en:'After finishing the meeting, I sent the report.',zh:'开完会后，我发送了报告。'
+  },{
+    ko:'“회의를 마치고 나서”가 회의를 끝낸 다음 보고서를 보냈다는 순서를 보여 줍니다.',
+    ja:'「会議を終えてから」が、会議を完了した後に報告書を送った順序を示します。',
+    en:'“After finishing the meeting” shows that the meeting was completed before the report was sent.',
+    zh:'“开完会后”表明先结束会议，然后才发送报告。'
+  }),
+  reviewedTimeRelationItem('S04-II-G-TIME-03','-는 동안','overlap','기차를 기다리는 동안 책을 읽었어요.',{
+    ko:'기차를 기다리는 동안 책을 읽었어요.',ja:'電車を待っている間、本を読みました。',en:'I read a book while waiting for the train.',zh:'等火车期间，我读了书。'
+  },{
+    ko:'“기차를 기다리는 동안”이 기다리는 시간과 책을 읽는 시간이 겹쳤음을 보여 줍니다.',
+    ja:'「待っている間」が、電車を待つ時間と本を読む時間が重なっていたことを示します。',
+    en:'“While waiting for the train” shows that waiting and reading overlapped in time.',
+    zh:'“等火车期间”表明等待和读书发生在同一段时间里。'
+  }),
+  reviewedTimeRelationItem('S04-II-G-TIME-04','-기 전에','before','잠자기 전에 알람을 맞췄어요.',{
+    ko:'잠자기 전에 알람을 맞췄어요.',ja:'寝る前にアラームをセットしました。',en:'Before going to bed, I set the alarm.',zh:'睡觉前，我设好了闹钟。'
+  },{
+    ko:'“잠자기 전에”가 잠드는 것보다 알람을 맞추는 행동이 먼저였음을 보여 줍니다.',
+    ja:'「寝る前に」が、寝ることよりアラームをセットする行動が先だったことを示します。',
+    en:'“Before going to bed” shows that setting the alarm happened first.',
+    zh:'“睡觉前”表明设闹钟这一动作先于睡觉发生。'
   })
 ];
 
