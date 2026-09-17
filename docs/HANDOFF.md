@@ -30,7 +30,9 @@ these facts from conversation history or the large TOPIK source bundle.
   It supersedes #76 map expansion until core learning quality gates pass. A01–A12 remain audit findings,
   not resolved items; existing feature/visual checks do not certify translation or teaching accuracy.
 - Production is v119 at `584b42f86b062eb18932aac541ed2ffcfc3b723d` (PR #148), adding four
-  bounded TOPIK I basic-tense cards. There is no active candidate.
+  bounded TOPIK I basic-tense cards. Candidate v120 on
+  `agent/loop-20260918-topik2-time-relation` adds four TOPIK II time-relation cards; it still needs
+  full checks, four-width/two-theme evidence, CI, and live deployment verification.
   TOPIK II writing 51/52 keeps the v110 separate labelled ㄱ/ㄴ fields through input, scoring, save,
   Review, recovery, and compatible legacy migration. Product rollback is v118
   `5d7b03c73c21276523b8c56d00d7e0d347b0fea3`.
@@ -46,7 +48,8 @@ these facts from conversation history or the large TOPIK source bundle.
   v111 with 3 base + 45 runtime files; the four IDs and `data/shorts-levels.js` hash match main.
 - Latest #110 instruction: C01–C06 content quality, first applied as S01–S05 Shorts, outranks A08/#76.
   S01 adds `docs/qa/shorts-audit.md`, generated ID/content-hash inventory and `scripts/audit-shorts.cjs`.
-  Production v119 has 356 runtime rows but only 230 distinct question-choice sets (I 116, II 114),
+  Production v119 has 356 runtime rows but only 230 distinct question-choice sets (I 116, II 114).
+  Candidate v120 has 360 rows / 234 exact sets (I 116, II 118),
   retaining 30 duplicate groups and 15 structural review candidates. Comprehensive content approvals
   remain 0/356, not 356 passed questions.
   Audit-only curated IDs must NOT replace saved numeric indices without the S03 migration contract.
