@@ -182,7 +182,10 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 후보 재고는 356행/230 정확 질문-보기군, I 116·II 114개다. 중복 126행·30군,
   구조 후보 15개, 정답 충돌 0은 증가하지 않았고 전체 승인 수는 여전히 0/356이다.
 - Node 24 집중 vocabulary+inventory 22/22, 콘텐츠 25/25, 전체 release check 119/119과 v119
-  런타임 45개 계약은 통과했다. PR 모바일 증거·병합·라이브 검증 전에는 production v118을 유지한다.
+  런타임 45개 계약은 통과했다. PR #148 CI `35203602934`도 Linux Chrome 320·375·390·430px
+  라이트/다크, 선택 오답 설명, 상세 해설, 다음 문제 우선, 새로고침 복원을 통과했다. artifact
+  `10489585088`의 `00co`/`00cp`를 직접 확인했다. 최종 증거 커밋 CI·병합·라이브 검증 전에는
+  production v118을 유지한다.
 - 실제 일본어 모어 화자, 동의한 학습자 풀이시간/D1·D7 회상, 실제 iPhone/Android는 미검증이다.
   후보 검수대장은 `docs/qa/shorts-review-s04-topik1-basic-tense.md`다.
 

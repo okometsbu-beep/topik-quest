@@ -220,8 +220,11 @@ these facts from conversation history or the large TOPIK source bundle.
   and future plan using `매일 아침·어제·지금·내일` as decisive cues. Candidate inventory is 356 rows / 230
   exact sets (I 116, II 114) with no new duplicate, structural flag, or answer conflict. Node 24 focused
   vocabulary+inventory 22/22, content 25/25, full release 119/119, and v119 runtime 45-file checks pass.
-  PR mobile, merge, and live checks remain pending, so production and rollback stay v118. The bounded ledger is
-  `docs/qa/shorts-review-s04-topik1-basic-tense.md`. Do not treat added quantity as educational approval.
+  PR #148 CI `35203602934` passes the same checks plus 320/375/390/430px Linux Chrome light/dark,
+  selected-wrong feedback, expanded coaching, next-first flow, and reload restoration. Artifact `10489585088`
+  screens `00co`/`00cp` were inspected. Final evidence-head CI, merge, and live checks remain pending, so
+  production and rollback stay v118. The bounded ledger is `docs/qa/shorts-review-s04-topik1-basic-tense.md`.
+  Do not treat added quantity as educational approval.
 - Follow start → understand → recall/speak/write → review → next learning for Japanese beginners, and
   passage evidence → specific distractor traps → reusable solving method for TOPIK I/II.
 - 2026 draft gates: Sep 13 audit/scope/dependencies; Sep 27 core flow/P0/P1/backup; Oct 11 teaching,

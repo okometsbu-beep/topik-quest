@@ -39,7 +39,7 @@ full coaching compares all four. Fixed choices are shuffled and restored through
 | Storage | automated pass | Existing `topikQuestShortsV1` and earlier IDs remain; cards are appended after existing TOPIK I rows. |
 | Focused local checks | pass | Node 24 vocabulary + generated-inventory checks pass 22/22; content checks pass 25/25. |
 | Full release checks | pass | Node 24 `npm run check` passes 119/119; runtime contract reports v119, 45 ordered files, and valid bank hashes. |
-| Emulated mobile | pending | PR CI must cover 320/375/390/430px light/dark, selected-wrong feedback, expanded coaching, next-first flow, and reload restoration. |
+| Emulated mobile | pass | PR #148 CI `35203602934` covers 320/375/390/430px light/dark, selected-wrong feedback, expanded coaching, next-first flow, and reload restoration. Artifact `10489585088` screens `00co`/`00cp` were inspected. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
 | Deployment | pending | Production remains v118 until main CI, Pages, live asset, stable-ID, and smoke checks pass. |
 
@@ -48,5 +48,8 @@ The 15 existing structural review candidates do not increase. These totals are n
 the generated inventory remains `approved: 0`, and only the four IDs above have this bounded AI review record.
 
 The local release candidate passes the same forms and functions already taught by the beginner grammar course.
-No existing Shorts row, original bank item, answer, or stable ID was altered. PR mobile evidence, merge,
-and deployment remain pending.
+No existing Shorts row, original bank item, answer, or stable ID was altered. PR #148 CI `35203602934`
+passes the same 119/119 release suite and Linux Chrome emulation. The inspected light screenshot shows the
+deliberately wrong completed-past choice, the correct present-habit answer, and choice-specific Japanese feedback.
+The dark screenshot shows next-first flow and the complete evidence → traps → method explanation without clipping.
+This is emulation, not physical-device evidence. Merge and deployment remain pending.
