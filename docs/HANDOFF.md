@@ -30,7 +30,8 @@ these facts from conversation history or the large TOPIK source bundle.
   It supersedes #76 map expansion until core learning quality gates pass. A01–A12 remain audit findings,
   not resolved items; existing feature/visual checks do not certify translation or teaching accuracy.
 - Production is v118 at `5d7b03c73c21276523b8c56d00d7e0d347b0fea3` (PR #146), adding four
-  bounded TOPIK II plan-stage cards. There is no active candidate.
+  bounded TOPIK II plan-stage cards. Active candidate v119 adds four bounded TOPIK I basic-tense cards
+  on `agent/loop-20260917-topik1-basic-tense`; it is not production until all release gates pass.
   TOPIK II writing 51/52 keeps the v110 separate labelled ㄱ/ㄴ fields through input, scoring, save,
   Review, recovery, and compatible legacy migration. Product rollback is v117
   `a14dd083f3afd64142990ae1d829df985cbf8db3`.
@@ -214,8 +215,13 @@ these facts from conversation history or the large TOPIK source bundle.
   Product rollback is v117 `a14dd083f3afd64142990ae1d829df985cbf8db3`. Physical devices,
   native-language review, learner timing, and delayed recall remain unverified. The bounded ledger is
   `docs/qa/shorts-review-s04-topik2-plan-stage.md`.
-- Current one task after checking new P0 and clear wrong-answer reports: review one bounded four-card
-  TOPIK I missing-type set. Do not treat the lower distinct-set count or added quantity as educational approval.
+- Current one task after checking new P0 and clear wrong-answer reports: verify and deploy the bounded v119
+  TOPIK I basic-tense candidate. It separates a repeated present habit, completed past action, action in progress,
+  and future plan using `매일 아침·어제·지금·내일` as decisive cues. Candidate inventory is 356 rows / 230
+  exact sets (I 116, II 114) with no new duplicate, structural flag, or answer conflict. Node 24 focused
+  vocabulary+inventory 22/22, content 25/25, full release 119/119, and v119 runtime 45-file checks pass.
+  PR mobile, merge, and live checks remain pending, so production and rollback stay v118. The bounded ledger is
+  `docs/qa/shorts-review-s04-topik1-basic-tense.md`. Do not treat added quantity as educational approval.
 - Follow start → understand → recall/speak/write → review → next learning for Japanese beginners, and
   passage evidence → specific distractor traps → reusable solving method for TOPIK I/II.
 - 2026 draft gates: Sep 13 audit/scope/dependencies; Sep 27 core flow/P0/P1/backup; Oct 11 teaching,

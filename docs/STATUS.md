@@ -14,7 +14,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 실제 검사: Linux Node v24.19.0, 집중 10/10·quick 95/95·전체 `npm run check` 110/110. 로컬 HTTP 3개 기본+45개 런타임 통과. PR CI와 main CI `34702111845`에서 Linux Chrome 320/375/390/430px×라이트/다크, 두 칸 터치 입력·독립 저장·새로고침 복원·참고 점수·복습 분리·구형 단일 답안 안내를 통과했다. main CI 첫 시도는 Chrome target 종료로 실패했으나 동일 커밋 재실행은 통과했다.
 - 라이브 공개 브라우저: v110을 새로 불러온 TOPIK II → 쓰기만 → 51번에서 `ㄱ(기역) 답안`과 `ㄴ(니은) 답안` 두 textbox를 확인했다. 서로 다른 값을 입력하고 다음→이전 뒤에도 각각 유지됐다. HTTP smoke는 3개 기본+45개 런타임을 통과했다.
 - 시각 증거: CI artifact `10300595038`의 `00bu-writing-two-blanks-light.png`, `00bv-writing-two-blanks-dark.png`, `00bw-writing-two-blanks-review-dark.png` 직접 확인. 실제 iPhone/Android 및 실제 IME는 미검증이며 에뮬레이션과 구별한다.
-- 다음 한 작업: 새 P0·명백한 정답 오류가 없으면 TOPIK I 부족 유형 4문항 제한 검수.
+- 다음 한 작업: v119 TOPIK I 기초 시제 4문항 후보의 전체 검사·모바일 증거·배포 검증.
 - 현재 라이브/복귀 기준: v118 `5d7b03c73c21276523b8c56d00d7e0d347b0fea3`,
   https://okometsbu-beep.github.io/topik-quest/ . 제품 복귀 기준은 v117
   `a14dd083f3afd64142990ae1d829df985cbf8db3`이다.
@@ -23,7 +23,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 - Production: GitHub Pages static PWA
 - Production release: v118 · four reviewed TOPIK II plan-stage Shorts (`5d7b03c73c21276523b8c56d00d7e0d347b0fea3`)
-- Current candidate: none
+- Current candidate: v119 · four reviewed TOPIK I basic-tense Shorts on `agent/loop-20260917-topik1-basic-tense`
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -169,8 +169,22 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 다음 한 작업
 
 #129 긴급 작문 입력 분리와 v111–v118의 제한 검수 문항 배포·운영 문서 동기화는 완료됐다.
-다음 한 작업은 새 P0·명백한 정답 오류가 없으면 distinct set 수가 더 적은 TOPIK I의 아직 부족한
-유형 4문항 제한 검수다. 수량 자체를 교육 승인이나 출시 진척으로 보지 않는다.
+현재 한 작업은 TOPIK I 기초 시제 `-아/어요·-았/었어요·-고 있어요·-(으)ㄹ 거예요`
+4문항 v119 후보의 전체 검사·모바일 증거·배포 검증이다. 수량 자체를 교육 승인이나 출시 진척으로
+보지 않는다.
+
+## 현재 후보 · S04 TOPIK I 기초 시제 숏츠 4문항
+
+- v119 후보는 매일의 현재 습관·이미 끝난 과거·지금 진행 중·앞으로의 계획을 각각 구분한다.
+  기존 입문 문법의 현재/과거/진행/미래 규칙과 일치시키며 기존 ID와 `topikQuestShortsV1` 저장 구조는
+  변경하지 않는다.
+- ko/ja/en/zh 예문·선택 오답별 설명과 `결정적 시간 단서 → 네 함정 → 시간축` 풀이법을 내장했다.
+- 후보 재고는 356행/230 정확 질문-보기군, I 116·II 114개다. 중복 126행·30군,
+  구조 후보 15개, 정답 충돌 0은 증가하지 않았고 전체 승인 수는 여전히 0/356이다.
+- Node 24 집중 vocabulary+inventory 22/22, 콘텐츠 25/25, 전체 release check 119/119과 v119
+  런타임 45개 계약은 통과했다. PR 모바일 증거·병합·라이브 검증 전에는 production v118을 유지한다.
+- 실제 일본어 모어 화자, 동의한 학습자 풀이시간/D1·D7 회상, 실제 iPhone/Android는 미검증이다.
+  후보 검수대장은 `docs/qa/shorts-review-s04-topik1-basic-tense.md`다.
 
 ## 완료 작업 · S04 TOPIK II 계획 단계 문법 숏츠 4문항
 

@@ -671,6 +671,69 @@ const reviewedPlanStageItem=(id,term,key,example,exampleI18n,evidence)=>{
   });
 };
 
+const BASIC_TENSE=Object.freeze({
+  presentHabit:Object.freeze({
+    meaning:Object.freeze({ko:'반복되는 현재 습관',ja:'今の習慣・繰り返し',en:'a present habit or routine',zh:'当前的习惯或反复动作'}),
+    selected:Object.freeze({
+      ko:'“-아/어요”는 “매일”처럼 반복되는 현재의 습관이나 일반적인 일을 말할 수 있습니다.',
+      ja:'「-아/어요」は、「毎日」のように繰り返す現在の習慣や一般的なことを表せます。',
+      en:'“-아/어요” can describe a present habit or routine repeated regularly, such as every day.',
+      zh:'“-아/어요”可以表示像“每天”这样反复进行的当前习惯或一般情况。'
+    })
+  }),
+  completedPast:Object.freeze({
+    meaning:Object.freeze({ko:'이미 끝난 과거의 일',ja:'すでに終わった過去の出来事',en:'an action completed in the past',zh:'已经结束的过去动作'}),
+    selected:Object.freeze({
+      ko:'“-았/었어요”는 “어제”처럼 과거에 일어나 이미 끝난 일을 나타냅니다.',
+      ja:'「-았/었어요」は、「昨日」のように過去に起きてすでに終わったことを表します。',
+      en:'“-았/었어요” marks an action that happened and finished in the past, such as yesterday.',
+      zh:'“-았/었어요”表示像“昨天”那样发生在过去并已经结束的动作。'
+    })
+  }),
+  ongoingNow:Object.freeze({
+    meaning:Object.freeze({ko:'지금 진행 중인 동작',ja:'今している途中の動作',en:'an action in progress now',zh:'现在正在进行的动作'}),
+    selected:Object.freeze({
+      ko:'“-고 있어요”는 “지금” 하는 동작이 아직 진행 중임을 나타냅니다.',
+      ja:'「-고 있어요」は、「今」している動作がまだ進行中であることを表します。',
+      en:'“-고 있어요” marks an action that is still in progress right now.',
+      zh:'“-고 있어요”表示“现在”正在进行、尚未结束的动作。'
+    })
+  }),
+  futurePlan:Object.freeze({
+    meaning:Object.freeze({ko:'앞으로 할 계획',ja:'これからする予定',en:'a plan for the future',zh:'今后要做的计划'}),
+    selected:Object.freeze({
+      ko:'“-(으)ㄹ 거예요”는 “내일”처럼 앞으로 하려는 계획이나 미래의 일을 나타냅니다.',
+      ja:'「-(으)ㄹ 거예요」は、「明日」のようにこれからする予定や未来のことを表します。',
+      en:'“-(으)ㄹ 거예요” marks a future plan or something expected to happen, such as tomorrow.',
+      zh:'“-(으)ㄹ 거예요”表示像“明天”那样今后要做的计划或未来的事情。'
+    })
+  })
+});
+const BASIC_TENSE_ORDER=['presentHabit','completedPast','ongoingNow','futurePlan'];
+const BASIC_TENSE_METHOD=Object.freeze({
+  ko:'시간 단서를 먼저 찾으세요. 매일·보통=현재 습관, 어제·지난주=완료 과거, 지금·하는 중=진행, 내일·다음 주=미래 계획입니다.',
+  ja:'時間の手掛かりを先に探します。毎日・普段＝現在の習慣、昨日・先週＝完了した過去、今・途中＝進行、明日・来週＝未来の予定です。',
+  en:'Find the time cue first: every day or usually = present habit, yesterday or last week = completed past, now or in progress = ongoing, tomorrow or next week = future plan.',
+  zh:'先找时间线索：每天或平时＝当前习惯，昨天或上周＝完成的过去，现在或正在＝进行中，明天或下周＝未来计划。'
+});
+const reviewedBasicTenseItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=BASIC_TENSE[key];
+  return Object.freeze({
+    id,level:1,type:'grammar',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:BASIC_TENSE_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(BASIC_TENSE_ORDER.map(choiceKey=>Object.freeze({
+      meaning:BASIC_TENSE[choiceKey].meaning,
+      explanationI18n:BASIC_TENSE[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】-아/어요=현재 습관, -았/었어요=완료 과거, -고 있어요=현재 진행, -(으)ㄹ 거예요=미래 계획으로 시간 기준이 다릅니다.\n【재사용 풀이】${BASIC_TENSE_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】-아/어요＝現在の習慣、-았/었어요＝完了した過去、-고 있어요＝現在進行、-(으)ㄹ 거예요＝未来の予定で、時間の基準が異なります。\n【再利用できる解き方】${BASIC_TENSE_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] -아/어요 marks a present habit, -았/었어요 a completed past action, -고 있어요 an action in progress now, and -(으)ㄹ 거예요 a future plan.\n[Reusable method] ${BASIC_TENSE_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】-아/어요表示当前习惯，-았/었어요表示完成的过去，-고 있어요表示现在进行，-(으)ㄹ 거예요表示未来计划，时间基准各不相同。\n【通用解法】${BASIC_TENSE_METHOD.zh}`
+    })
+  });
+};
+
 const LOCATION_WORDS=Object.freeze({
   opposite:Object.freeze({
     meaning:Object.freeze({ko:'길·공간의 반대쪽',ja:'道・空間の向こう側',en:'opposite side',zh:'道路或空间的对面'}),
@@ -1324,6 +1387,38 @@ const TOPIK_I=[
     ja:'「かばんの中で」一つを尋ねているため、「どれ」に当たる「어느 것」が合います。',
     en:'The question asks for one item among several bags, so 어느 것 fits.',
     zh:'句子在多个包中询问一个，所以应选“어느 것”。'
+  }),
+  reviewedBasicTenseItem('S04-I-G-TENSE-01','-아/어요','presentHabit','저는 매일 아침 일곱 시에 일어나요.',{
+    ko:'저는 매일 아침 일곱 시에 일어나요.',ja:'私は毎朝7時に起きます。',en:'I get up at seven every morning.',zh:'我每天早上七点起床。'
+  },{
+    ko:'“매일 아침”은 일곱 시에 일어나는 일이 반복되는 현재 습관임을 보여 줍니다.',
+    ja:'「毎朝」が、7時に起きることを繰り返す現在の習慣だと示します。',
+    en:'“Every morning” shows that getting up at seven is a repeated present routine.',
+    zh:'“每天早上”表明七点起床是反复进行的当前习惯。'
+  }),
+  reviewedBasicTenseItem('S04-I-G-TENSE-02','-았/었어요','completedPast','어제 도서관에서 책을 빌렸어요.',{
+    ko:'어제 도서관에서 책을 빌렸어요.',ja:'昨日、図書館で本を借りました。',en:'I borrowed a book at the library yesterday.',zh:'我昨天在图书馆借了书。'
+  },{
+    ko:'“어제”와 “빌렸어요”는 책을 빌리는 일이 과거에 끝났음을 보여 줍니다.',
+    ja:'「昨日」と「借りました」が、本を借りることが過去に終わったと示します。',
+    en:'“Yesterday” and “borrowed” show that the action was completed in the past.',
+    zh:'“昨天”和“借了”表明借书这一动作已经在过去完成。'
+  }),
+  reviewedBasicTenseItem('S04-I-G-TENSE-03','-고 있어요','ongoingNow','지금 버스를 기다리고 있어요.',{
+    ko:'지금 버스를 기다리고 있어요.',ja:'今、バスを待っています。',en:'I am waiting for the bus now.',zh:'我现在正在等公交车。'
+  },{
+    ko:'“지금”과 “기다리고 있어요”는 기다리는 동작이 현재 계속되고 있음을 보여 줍니다.',
+    ja:'「今」と「待っています」が、待つ動作が現在も続いていると示します。',
+    en:'“Now” and “am waiting” show that the action is still in progress.',
+    zh:'“现在”和“正在等”表明等待这一动作仍在进行。'
+  }),
+  reviewedBasicTenseItem('S04-I-G-TENSE-04','-(으)ㄹ 거예요','futurePlan','내일 친구를 만날 거예요.',{
+    ko:'내일 친구를 만날 거예요.',ja:'明日、友達に会います。',en:'I will meet a friend tomorrow.',zh:'我明天要见朋友。'
+  },{
+    ko:'“내일”과 “만날 거예요”는 친구를 만나는 일이 앞으로 할 계획임을 보여 줍니다.',
+    ja:'「明日」と「会います」が、友達に会うことをこれからする予定だと示します。',
+    en:'“Tomorrow” and “will meet” show that meeting the friend is a future plan.',
+    zh:'“明天”和“要见”表明见朋友是今后要做的计划。'
   })
 ];
 
