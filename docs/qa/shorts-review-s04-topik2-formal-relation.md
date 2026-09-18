@@ -37,7 +37,7 @@ relations. Fixed choices are shuffled and restored through the existing stable-I
 | Storage | designed-pass | Existing `topikQuestShortsV1` and earlier IDs remain; cards are appended after existing TOPIK II rows. |
 | Focused local checks | pass | Node 24 vocabulary + generated-inventory checks pass 25/25; content checks pass 28/28. |
 | Full release checks | pass | Node 24 `npm run check` passes 122/122; runtime contract reports v122, 45 ordered files, and valid bank hashes. |
-| Emulated mobile | pending | CI must cover 320/375/390/430px light/dark, wrong feedback, expanded coaching, next-first flow, and reload restoration. |
+| Emulated mobile | pass | PR #154 CI `35360830953` covers 320/375/390/430px light/dark, selected-wrong feedback, expanded coaching, next-first flow, and reload restoration. Artifact `10554394352` screens `00cu`/`00cv` were inspected. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
 | Deployment | pending | Merge and Pages verification are forbidden until the candidate gates pass. |
 
@@ -45,3 +45,7 @@ Candidate inventory is 368 rows / 242 exact question-choice families (TOPIK I 12
 The 15 existing structural review candidates do not increase. These totals are not content approvals:
 the generated inventory remains `approved: 0`, and only the four IDs above have this bounded AI review record.
 No existing Shorts row, original bank item, answer, or stable ID is altered.
+The inspected light screenshot shows the deliberately wrong varying-standard choice, the correct
+information-source answer, and choice-specific Japanese feedback. The dark screenshot shows next-first
+flow and the complete evidence → traps → noun-role method without clipping. This is Linux Chrome
+emulation rather than physical-device evidence.
