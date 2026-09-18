@@ -1,7 +1,6 @@
 # S04 · TOPIK II formal-relation marker Shorts pilot
 
-Candidate: v122. Production remains v121 `4ab4628791d4524f6f9cb88b813a84e010bbe922` until
-the candidate passes CI, mobile emulation, merge, Pages deployment, and live verification.
+Production: v122 `16048fd8f67700f96575d85119614a0db3e8a9cc` via PR #154.
 Product rollback is v121 `4ab4628791d4524f6f9cb88b813a84e010bbe922`.
 Scope: four new TOPIK II grammar cards only. This is an AI content review plus automated QA record,
 not native-speaker approval, learner timing evidence, or approval of the other 364 Shorts rows.
@@ -39,9 +38,9 @@ relations. Fixed choices are shuffled and restored through the existing stable-I
 | Full release checks | pass | Node 24 `npm run check` passes 122/122; runtime contract reports v122, 45 ordered files, and valid bank hashes. |
 | Emulated mobile | pass | PR #154 CI `35360830953` covers 320/375/390/430px light/dark, selected-wrong feedback, expanded coaching, next-first flow, and reload restoration. Artifact `10554394352` screens `00cu`/`00cv` were inspected. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
-| Deployment | pending | Merge and Pages verification are forbidden until the candidate gates pass. |
+| Deployment | pass | PR #154 final CI `35361581234`, main CI `35362016106`, and Pages `35362015443` passed. Main CI needed one unchanged failed-job rerun after the existing Travel 390×844 browser step failed once. Public Chrome loads v122 with 3 base + 45 runtime scripts, publishes all four IDs, restores Japanese wrong-answer feedback after reload, and serves an `index.html` hash matching main. |
 
-Candidate inventory is 368 rows / 242 exact question-choice families (TOPIK I 120, TOPIK II 122).
+Production inventory is 368 rows / 242 exact question-choice families (TOPIK I 120, TOPIK II 122).
 The 15 existing structural review candidates do not increase. These totals are not content approvals:
 the generated inventory remains `approved: 0`, and only the four IDs above have this bounded AI review record.
 No existing Shorts row, original bank item, answer, or stable ID is altered.
