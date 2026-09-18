@@ -1,8 +1,7 @@
 # S04 · TOPIK II time-relation Shorts pilot
 
-Candidate: v120 on `agent/loop-20260918-topik2-time-relation`.
-Production remains v119 `584b42f86b062eb18932aac541ed2ffcfc3b723d`; product rollback is v118
-`5d7b03c73c21276523b8c56d00d7e0d347b0fea3` until this candidate is deployed.
+Production: v120 `ab8fa3e8803d904310ba49c811a9b4e9f764a0ab` via PR #150.
+Product rollback is v119 `584b42f86b062eb18932aac541ed2ffcfc3b723d`.
 Scope: four new TOPIK II grammar cards only. This is an AI content review plus automated QA record,
 not native-speaker approval, learner timing evidence, or approval of the other 356 Shorts rows.
 
@@ -39,9 +38,9 @@ four relations. Fixed choices are shuffled and restored through the existing Sho
 | Full release checks | pass | Node 24 `npm run check` passes 120/120; runtime contract reports v120, 45 ordered files, and valid bank hashes. |
 | Emulated mobile | pass | PR #150 CI `35275144430` covers 320/375/390/430px light/dark, selected-wrong feedback, expanded coaching, next-first flow, and reload restoration. Artifact `10520142804` screens `00cq`/`00cr` were inspected. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
-| Deployment | pending | Merge only after CI and visual inspection; then verify GitHub Pages v120 and hashes. |
+| Deployment | pass | PR #150 final CI `35275712725`, main CI `35276178355`, and Pages `35276177552` passed. Live v120 loads 3 base + 45 runtime files, publishes all four IDs, and restores locked feedback after reload. |
 
-Candidate inventory is 360 rows / 234 exact question-choice families (TOPIK I 116, TOPIK II 118).
+Production inventory is 360 rows / 234 exact question-choice families (TOPIK I 116, TOPIK II 118).
 The 15 existing structural review candidates do not increase. These totals are not content approvals:
 the generated inventory remains `approved: 0`, and only the four IDs above have this bounded AI review record.
 No existing Shorts row, original bank item, answer, or stable ID is altered.

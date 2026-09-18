@@ -14,17 +14,16 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 실제 검사: Linux Node v24.19.0, 집중 10/10·quick 95/95·전체 `npm run check` 110/110. 로컬 HTTP 3개 기본+45개 런타임 통과. PR CI와 main CI `34702111845`에서 Linux Chrome 320/375/390/430px×라이트/다크, 두 칸 터치 입력·독립 저장·새로고침 복원·참고 점수·복습 분리·구형 단일 답안 안내를 통과했다. main CI 첫 시도는 Chrome target 종료로 실패했으나 동일 커밋 재실행은 통과했다.
 - 라이브 공개 브라우저: v110을 새로 불러온 TOPIK II → 쓰기만 → 51번에서 `ㄱ(기역) 답안`과 `ㄴ(니은) 답안` 두 textbox를 확인했다. 서로 다른 값을 입력하고 다음→이전 뒤에도 각각 유지됐다. HTTP smoke는 3개 기본+45개 런타임을 통과했다.
 - 시각 증거: CI artifact `10300595038`의 `00bu-writing-two-blanks-light.png`, `00bv-writing-two-blanks-dark.png`, `00bw-writing-two-blanks-review-dark.png` 직접 확인. 실제 iPhone/Android 및 실제 IME는 미검증이며 에뮬레이션과 구별한다.
-- 다음 한 작업: v120 TOPIK II 시간 관계 4문항 후보의 전체 검사·모바일 증거·배포 검증.
-- 현재 라이브/복귀 기준: v119 `584b42f86b062eb18932aac541ed2ffcfc3b723d`,
-  https://okometsbu-beep.github.io/topik-quest/ . 제품 복귀 기준은 v118
-  `5d7b03c73c21276523b8c56d00d7e0d347b0fea3`이다.
+- 다음 한 작업: 새 P0·명백한 정답 오류가 없으면 TOPIK I 부족 유형 4문항 제한 검수.
+- 현재 라이브/복귀 기준: v120 `ab8fa3e8803d904310ba49c811a9b4e9f764a0ab`,
+  https://okometsbu-beep.github.io/topik-quest/ . 제품 복귀 기준은 v119
+  `584b42f86b062eb18932aac541ed2ffcfc3b723d`이다.
 
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v119 · four reviewed TOPIK I basic-tense Shorts (`584b42f86b062eb18932aac541ed2ffcfc3b723d`)
-- Current candidate: v120 · four reviewed TOPIK II time-relation Shorts on
-  `agent/loop-20260918-topik2-time-relation`
+- Production release: v120 · four reviewed TOPIK II time-relation Shorts (`ab8fa3e8803d904310ba49c811a9b4e9f764a0ab`)
+- Current candidate: none
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -36,12 +35,12 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - TOPIK I·II, Shorts, Random Practice, full mock exams, Review, Vocabulary, Statistics
 - Beginner grammar covers core sentence order and major particle, tense, politeness, negation, connective,
   modifier, irregular, and speech-level transformations with per-rule writing practice.
-- Production v119 has 204 TOPIK I / 152 TOPIK II rows and only 116 / 114 distinct
+- Production v120 has 204 TOPIK I / 156 TOPIK II rows and only 116 / 118 distinct
   question-choice sets. These are inventory counts, not educational approvals.
   Fixed mock composition remains intact.
-- Candidate v120 adds four TOPIK II temporal-relation cards (`-자마자`, `-고 나서`, `-는 동안`,
-  `-기 전에`) without changing production data. Its generated inventory is 360 rows / 234 exact
-  families (I 116, II 118), with the existing 15 structural flags unchanged.
+- v120 adds four TOPIK II temporal-relation cards (`-자마자`, `-고 나서`, `-는 동안`,
+  `-기 전에`). Its generated inventory is 360 rows / 234 exact families (I 116, II 118),
+  with the existing 15 structural flags unchanged.
 - bank explanations structured as answer evidence → distractor trap → reusable type-solving method,
   with separate TOPIK II writing 51–54 plans
 - independent Seoul Travel Mode and Wordlight Expedition
@@ -172,9 +171,27 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-#129 긴급 작문 입력 분리와 v111–v119의 제한 검수 문항 배포·운영 문서 동기화는 완료됐다.
-다음 한 작업은 새 P0·명백한 정답 오류가 없으면 distinct set 수가 더 적은 TOPIK II의 아직 부족한
+#129 긴급 작문 입력 분리와 v111–v120의 제한 검수 문항 배포·운영 문서 동기화는 완료됐다.
+다음 한 작업은 새 P0·명백한 정답 오류가 없으면 distinct set 수가 더 적은 TOPIK I의 아직 부족한
 유형 4문항 제한 검수다. 수량 자체를 교육 승인이나 출시 진척으로 보지 않는다.
+
+## 완료 작업 · S04 TOPIK II 시간 관계 숏츠 4문항
+
+- v120은 `-자마자·-고 나서·-는 동안·-기 전에`로 직후·완료 뒤·시간 겹침·기준 동작 전을
+  각각 구분한다. 기존 ID, 원본 은행과 `topikQuestShortsV1` 저장 구조는 변경하지 않는다.
+- ko/ja/en/zh 예문·선택 오답별 설명과 `결정적 근거 → 네 함정 → 시간축` 풀이법을 내장했다.
+- production 재고는 360행/234 정확 질문-보기군, I 116·II 118개다. 중복 126행·30군,
+  구조 후보 15개, 정답 충돌 0은 증가하지 않았고 전체 승인 수는 여전히 0/360이다.
+- Node 24 집중 vocabulary+inventory 23/23, 콘텐츠 26/26, 전체 release check 120/120과 v120
+  런타임 45개 계약은 통과했다. PR #150 CI `35275144430`도 Linux Chrome 320·375·390·430px
+  라이트/다크, 선택 오답 설명, 상세 해설, 다음 문제 우선, 새로고침 복원을 통과했다. artifact
+  `10520142804`의 `00cq`/`00cr`을 직접 확인했고 최종 PR CI `35275712725`도 성공했다.
+  PR #150을 squash merge한 production v120 제품 커밋은
+  `ab8fa3e8803d904310ba49c811a9b4e9f764a0ab`이며 main CI `35276178355`와 Pages
+  `35276177552`가 성공했다. 라이브 v120에서 기본 3개+런타임 45개, 새 ID 4개와 오답 제출 뒤
+  새로고침 복구를 확인했다. 제품 복귀 기준은 v119 `584b42f86b062eb18932aac541ed2ffcfc3b723d`다.
+- 실제 일본어 모어 화자, 동의한 학습자 풀이시간/D1·D7 회상, 실제 iPhone/Android는 미검증이다.
+  검수대장은 `docs/qa/shorts-review-s04-topik2-time-relation.md`다.
 
 ## 완료 작업 · S04 TOPIK I 기초 시제 숏츠 4문항
 
