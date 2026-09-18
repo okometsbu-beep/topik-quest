@@ -29,13 +29,12 @@ these facts from conversation history or the large TOPIK source bundle.
 - Source of truth: [release blueprint #110](https://github.com/okometsbu-beep/topik-quest/issues/110).
   It supersedes #76 map expansion until core learning quality gates pass. A01–A12 remain audit findings,
   not resolved items; existing feature/visual checks do not certify translation or teaching accuracy.
-- Production is v121 at `4ab4628791d4524f6f9cb88b813a84e010bbe922` (PR #152), adding four
-  bounded TOPIK I polite-interaction cards (`주세요`, `-(으)세요`, `-지 마세요`, `-(으)ㄹ까요?`).
-  Candidate v122 adds four bounded TOPIK II formal-relation marker cards separating information source,
-  varying standard, means/channel, and passive agent. Production remains v121 until all release gates pass.
+- Production is v122 at `16048fd8f67700f96575d85119614a0db3e8a9cc` (PR #154), adding four
+  bounded TOPIK II formal-relation marker cards separating information source, varying standard,
+  means/channel, and passive agent. There is no active release candidate.
   TOPIK II writing 51/52 keeps the v110 separate labelled ㄱ/ㄴ fields through input, scoring, save,
-  Review, recovery, and compatible legacy migration. Product rollback is v120
-  `ab8fa3e8803d904310ba49c811a9b4e9f764a0ab`.
+  Review, recovery, and compatible legacy migration. Product rollback is v121
+  `4ab4628791d4524f6f9cb88b813a84e010bbe922`.
 - v111 adds four TOPIK I counters: `명` for people, `개` for general objects,
   `병` for bottles, and `권` for books/notebooks. The bounded ledger is
   `docs/qa/shorts-review-s04-topik1-counters.md`. Node 24 content 17/17, inventory 2/2, and full
@@ -48,18 +47,18 @@ these facts from conversation history or the large TOPIK source bundle.
   v111 with 3 base + 45 runtime files; the four IDs and `data/shorts-levels.js` hash match main.
 - Latest #110 instruction: C01–C06 content quality, first applied as S01–S05 Shorts, outranks A08/#76.
   S01 adds `docs/qa/shorts-audit.md`, generated ID/content-hash inventory and `scripts/audit-shorts.cjs`.
-  Production v121 has 364 runtime rows but only 238 distinct question-choice sets (I 120, II 118),
+  Production v122 has 368 runtime rows but only 242 distinct question-choice sets (I 120, II 122),
   retaining 30 duplicate groups and 15 structural review candidates. Comprehensive content approvals
-  remain 0/364, not 364 passed questions.
+  remain 0/368, not 368 passed questions.
   Audit-only curated IDs must NOT replace saved numeric indices without the S03 migration contract.
 - Production v121 extends the bounded S04 lane with four TOPIK I polite-interaction cards that
   distinguish an item request, positive action request, prohibition, and shared suggestion. It uses
   stable IDs, fixed choice-specific ko/ja/en/zh feedback, bundled examples, and evidence→traps→speech-goal
   coaching. Production inventory is 364 rows / 238 exact families (I 120, II 118), with 15 structural
   flags unchanged. Its bounded ledger is `docs/qa/shorts-review-s04-topik1-polite-interaction.md`.
-- Candidate v122 extends the bounded S04 lane with four TOPIK II formal-relation marker cards. It uses
+- Production v122 extends the bounded S04 lane with four TOPIK II formal-relation marker cards. It uses
   stable IDs, fixed choice-specific ko/ja/en/zh feedback, bundled examples, and evidence→traps→noun-role
-  coaching. Candidate inventory is 368 rows / 242 exact families (I 120, II 122), with 15 structural
+  coaching. Production inventory is 368 rows / 242 exact families (I 120, II 122), with 15 structural
   flags unchanged. Its bounded ledger is `docs/qa/shorts-review-s04-topik2-formal-relation.md`.
 - S03 v101 (PR #120) migrates schema-2 numeric Shorts progress to stable card/family IDs without
   replacing `topikQuestShortsV1`. It cycles 162 exact question-choice families before intentional repeats,
@@ -264,8 +263,22 @@ these facts from conversation history or the large TOPIK source bundle.
   `ab8fa3e8803d904310ba49c811a9b4e9f764a0ab`. The bounded ledger is
   `docs/qa/shorts-review-s04-topik1-polite-interaction.md`. Physical devices, native-language review,
   learner timing, delayed recall, audio, and full offline recovery remain unverified.
-- Current one task after checking new P0 and clear wrong-answer reports: verify and, only if every gate passes,
-  deploy the bounded four-card TOPIK II formal-relation candidate. Do not treat added quantity as educational approval.
+- Production v122 adds four TOPIK II formal-relation marker cards separating information source, varying
+  standard, means/channel, and passive agent/formal cause. Production inventory is 368 rows / 242 exact sets
+  (I 120, II 122), with no new duplicate, structural flag, or answer conflict. Node 24 focused
+  vocabulary+inventory 25/25, content 28/28, full release 122/122, and v122 runtime 45-file checks pass.
+  PR #154 CI `35360830953` covers 320/375/390/430px Linux Chrome light/dark, selected-wrong feedback,
+  expanded coaching, next-first flow, and reload restoration. Artifact `10554394352` screens `00cu`/`00cv`
+  were inspected; final PR CI `35361581234` also passed. PR #154 was squash merged as
+  `16048fd8f67700f96575d85119614a0db3e8a9cc`. Main CI `35362016106` passed on an unchanged failed-job
+  rerun after the existing Travel 390×844 browser step failed once; Pages `35362015443` succeeded.
+  Public Chrome loads v122 with 3 base + 45 runtime scripts, exposes all four stable IDs, and restores locked
+  Japanese wrong-answer feedback after reload. The public `index.html` hash matches main. Product rollback is
+  v121 `4ab4628791d4524f6f9cb88b813a84e010bbe922`. The bounded ledger is
+  `docs/qa/shorts-review-s04-topik2-formal-relation.md`. Physical devices, native-language review,
+  learner timing, delayed recall, audio, and full offline recovery remain unverified.
+- Current one task after checking new P0 and clear wrong-answer reports: review one bounded four-card TOPIK I
+  missing-type set. Do not treat added quantity as educational approval.
 - Follow start → understand → recall/speak/write → review → next learning for Japanese beginners, and
   passage evidence → specific distractor traps → reusable solving method for TOPIK I/II.
 - 2026 draft gates: Sep 13 audit/scope/dependencies; Sep 27 core flow/P0/P1/backup; Oct 11 teaching,
