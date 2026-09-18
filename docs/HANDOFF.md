@@ -30,7 +30,9 @@ these facts from conversation history or the large TOPIK source bundle.
   It supersedes #76 map expansion until core learning quality gates pass. A01–A12 remain audit findings,
   not resolved items; existing feature/visual checks do not certify translation or teaching accuracy.
 - Production is v120 at `ab8fa3e8803d904310ba49c811a9b4e9f764a0ab` (PR #150), adding four
-  bounded TOPIK II time-relation cards. There is no active release candidate.
+  bounded TOPIK II time-relation cards. The active v121 candidate adds four bounded TOPIK I
+  polite-interaction cards (`주세요`, `-(으)세요`, `-지 마세요`, `-(으)ㄹ까요?`); full release,
+  mobile, CI and live checks are pending.
   TOPIK II writing 51/52 keeps the v110 separate labelled ㄱ/ㄴ fields through input, scoring, save,
   Review, recovery, and compatible legacy migration. Product rollback is v119
   `584b42f86b062eb18932aac541ed2ffcfc3b723d`.
@@ -50,6 +52,11 @@ these facts from conversation history or the large TOPIK source bundle.
   retaining 30 duplicate groups and 15 structural review candidates. Comprehensive content approvals
   remain 0/360, not 360 passed questions.
   Audit-only curated IDs must NOT replace saved numeric indices without the S03 migration contract.
+- The v121 candidate extends the bounded S04 lane with four TOPIK I polite-interaction cards that
+  distinguish an item request, positive action request, prohibition, and shared suggestion. It uses
+  stable IDs, fixed choice-specific ko/ja/en/zh feedback, bundled examples, and evidence→traps→speech-goal
+  coaching. Candidate inventory is 364 rows / 238 exact families (I 120, II 118), with 15 structural
+  flags unchanged. Its bounded ledger is `docs/qa/shorts-review-s04-topik1-polite-interaction.md`.
 - S03 v101 (PR #120) migrates schema-2 numeric Shorts progress to stable card/family IDs without
   replacing `topikQuestShortsV1`. It cycles 162 exact question-choice families before intentional repeats,
   prioritizes newly added families, avoids the current/recent family, and labels exhausted-cycle items as review.

@@ -14,7 +14,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 실제 검사: Linux Node v24.19.0, 집중 10/10·quick 95/95·전체 `npm run check` 110/110. 로컬 HTTP 3개 기본+45개 런타임 통과. PR CI와 main CI `34702111845`에서 Linux Chrome 320/375/390/430px×라이트/다크, 두 칸 터치 입력·독립 저장·새로고침 복원·참고 점수·복습 분리·구형 단일 답안 안내를 통과했다. main CI 첫 시도는 Chrome target 종료로 실패했으나 동일 커밋 재실행은 통과했다.
 - 라이브 공개 브라우저: v110을 새로 불러온 TOPIK II → 쓰기만 → 51번에서 `ㄱ(기역) 답안`과 `ㄴ(니은) 답안` 두 textbox를 확인했다. 서로 다른 값을 입력하고 다음→이전 뒤에도 각각 유지됐다. HTTP smoke는 3개 기본+45개 런타임을 통과했다.
 - 시각 증거: CI artifact `10300595038`의 `00bu-writing-two-blanks-light.png`, `00bv-writing-two-blanks-dark.png`, `00bw-writing-two-blanks-review-dark.png` 직접 확인. 실제 iPhone/Android 및 실제 IME는 미검증이며 에뮬레이션과 구별한다.
-- 다음 한 작업: 새 P0·명백한 정답 오류가 없으면 TOPIK I 부족 유형 4문항 제한 검수.
+- 다음 한 작업: v121 TOPIK I 정중한 상호작용 4문항 후보의 전체 검사·모바일 증거·배포 검증.
 - 현재 라이브/복귀 기준: v120 `ab8fa3e8803d904310ba49c811a9b4e9f764a0ab`,
   https://okometsbu-beep.github.io/topik-quest/ . 제품 복귀 기준은 v119
   `584b42f86b062eb18932aac541ed2ffcfc3b723d`이다.
@@ -23,7 +23,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 - Production: GitHub Pages static PWA
 - Production release: v120 · four reviewed TOPIK II time-relation Shorts (`ab8fa3e8803d904310ba49c811a9b4e9f764a0ab`)
-- Current candidate: none
+- Current candidate: v121 · four reviewed TOPIK I polite-interaction Shorts
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -41,6 +41,10 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - v120 adds four TOPIK II temporal-relation cards (`-자마자`, `-고 나서`, `-는 동안`,
   `-기 전에`). Its generated inventory is 360 rows / 234 exact families (I 116, II 118),
   with the existing 15 structural flags unchanged.
+- v121 candidate adds four TOPIK I polite-interaction cards (`주세요`, `-(으)세요`,
+  `-지 마세요`, `-(으)ㄹ까요?`). Its generated inventory is 364 rows / 238 exact families
+  (I 120, II 118), with the existing 15 structural flags unchanged. Full release, mobile,
+  CI and live deployment checks are still pending.
 - bank explanations structured as answer evidence → distractor trap → reusable type-solving method,
   with separate TOPIK II writing 51–54 plans
 - independent Seoul Travel Mode and Wordlight Expedition
