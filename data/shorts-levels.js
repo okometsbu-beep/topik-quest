@@ -797,6 +797,69 @@ const reviewedBasicTenseItem=(id,term,key,example,exampleI18n,evidence)=>{
   });
 };
 
+const POLITE_INTERACTION=Object.freeze({
+  objectRequest:Object.freeze({
+    meaning:Object.freeze({ko:'물건을 달라고 정중하게 부탁함',ja:'物を求める丁寧な依頼（～をください）',en:'politely asking for an item',zh:'礼貌地请求对方给某物'}),
+    selected:Object.freeze({
+      ko:'“주세요”는 명사 뒤에서 상대에게 그 물건을 달라고 정중하게 부탁합니다.',
+      ja:'「주세요」は名詞の後で、相手にその物を求める丁寧な依頼を表します。',
+      en:'“주세요” after a noun politely asks the listener to give that item.',
+      zh:'“주세요”接在名词后，礼貌地请求对方给出该物品。'
+    })
+  }),
+  actionRequest:Object.freeze({
+    meaning:Object.freeze({ko:'상대에게 행동을 정중하게 요청함',ja:'相手に行動を丁寧に求める（～してください）',en:'politely asking someone to do an action',zh:'礼貌地请对方做某个动作'}),
+    selected:Object.freeze({
+      ko:'“-(으)세요”는 듣는 사람에게 어떤 행동을 하도록 정중하게 요청하거나 안내합니다.',
+      ja:'「-(으)세요」は、聞き手にある行動をするよう丁寧に求めたり案内したりします。',
+      en:'“-(으)세요” politely asks or directs the listener to do an action.',
+      zh:'“-(으)세요”礼貌地请求或指引听话者做某个动作。'
+    })
+  }),
+  prohibition:Object.freeze({
+    meaning:Object.freeze({ko:'어떤 행동을 하지 말라고 정중하게 요청함',ja:'行動をしないよう丁寧に求める（～しないでください）',en:'politely asking someone not to act',zh:'礼貌地请对方不要做某个动作'}),
+    selected:Object.freeze({
+      ko:'“-지 마세요”는 듣는 사람에게 그 행동을 하지 말라고 정중하게 요청합니다.',
+      ja:'「-지 마세요」は、聞き手にその行動をしないよう丁寧に求めます。',
+      en:'“-지 마세요” politely asks the listener not to do an action.',
+      zh:'“-지 마세요”礼貌地请求听话者不要做某个动作。'
+    })
+  }),
+  suggestion:Object.freeze({
+    meaning:Object.freeze({ko:'함께 할 행동을 제안함',ja:'一緒にする行動を提案する（～しましょうか）',en:'suggesting an action to do together',zh:'提议一起做某个动作'}),
+    selected:Object.freeze({
+      ko:'“-(으)ㄹ까요?”는 화자와 듣는 사람이 함께 할 행동을 제안할 때 쓸 수 있습니다.',
+      ja:'「-(으)ㄹ까요？」は、話し手と聞き手が一緒にする行動を提案するときに使えます。',
+      en:'“-(으)ㄹ까요?” can suggest an action for the speaker and listener to do together.',
+      zh:'“-(으)ㄹ까요？”可以用来提议说话者和听话者一起做某个动作。'
+    })
+  })
+});
+const POLITE_INTERACTION_ORDER=['objectRequest','actionRequest','prohibition','suggestion'];
+const POLITE_INTERACTION_METHOD=Object.freeze({
+  ko:'말하는 목적을 먼저 보세요. 명사 뒤 물건 요청=주세요, 행동 요청=-(으)세요, 하지 말라는 금지=-지 마세요, 함께하자는 제안=-(으)ㄹ까요?입니다.',
+  ja:'発話の目的を先に見ます。名詞の後で物を求める＝주세요、行動を求める＝-(으)세요、禁止＝-지 마세요、一緒にする提案＝-(으)ㄹ까요？です。',
+  en:'Identify the speech goal first: 주세요 after a noun requests an item, -(으)세요 requests an action, -지 마세요 prohibits an action, and -(으)ㄹ까요? suggests doing something together.',
+  zh:'先判断说话目的：名词后用주세요请求物品，-(으)세요请求动作，-지 마세요表示禁止，-(으)ㄹ까요？提议一起行动。'
+});
+const reviewedPoliteInteractionItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=POLITE_INTERACTION[key];
+  return Object.freeze({
+    id,level:1,type:'grammar',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:POLITE_INTERACTION_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(POLITE_INTERACTION_ORDER.map(choiceKey=>Object.freeze({
+      meaning:POLITE_INTERACTION[choiceKey].meaning,
+      explanationI18n:POLITE_INTERACTION[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】주세요=물건 요청, -(으)세요=행동 요청, -지 마세요=금지, -(으)ㄹ까요?=함께할 행동 제안으로 말하는 목적이 다릅니다.\n【재사용 풀이】${POLITE_INTERACTION_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】주세요＝物の依頼、-(으)세요＝行動の依頼、-지 마세요＝禁止、-(으)ㄹ까요？＝一緒にする行動の提案で、発話の目的が異なります。\n【再利用できる解き方】${POLITE_INTERACTION_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 주세요 requests an item, -(으)세요 requests an action, -지 마세요 prohibits an action, and -(으)ㄹ까요? suggests doing an action together.\n[Reusable method] ${POLITE_INTERACTION_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】주세요用于请求物品，-(으)세요用于请求动作，-지 마세요表示禁止，-(으)ㄹ까요？表示提议一起行动，说话目的各不相同。\n【通用解法】${POLITE_INTERACTION_METHOD.zh}`
+    })
+  });
+};
+
 const LOCATION_WORDS=Object.freeze({
   opposite:Object.freeze({
     meaning:Object.freeze({ko:'길·공간의 반대쪽',ja:'道・空間の向こう側',en:'opposite side',zh:'道路或空间的对面'}),
@@ -1482,6 +1545,38 @@ const TOPIK_I=[
     ja:'「明日」と「会います」が、友達に会うことをこれからする予定だと示します。',
     en:'“Tomorrow” and “will meet” show that meeting the friend is a future plan.',
     zh:'“明天”和“要见”表明见朋友是今后要做的计划。'
+  }),
+  reviewedPoliteInteractionItem('S04-I-G-INTERACTION-01','주세요','objectRequest','물 한 병 주세요.',{
+    ko:'물 한 병 주세요.',ja:'水を一本ください。',en:'Please give me one bottle of water.',zh:'请给我一瓶水。'
+  },{
+    ko:'“물 한 병”이라는 명사 뒤의 “주세요”는 그 물건을 달라는 요청입니다.',
+    ja:'名詞「물 한 병（水一本）」の後の「주세요」は、その物を求める依頼です。',
+    en:'“주세요” follows the noun phrase “one bottle of water,” so it requests that item.',
+    zh:'“주세요”接在名词短语“一瓶水”后，因此是在请求该物品。'
+  }),
+  reviewedPoliteInteractionItem('S04-I-G-INTERACTION-02','-(으)세요','actionRequest','여기에서 잠깐 기다리세요.',{
+    ko:'여기에서 잠깐 기다리세요.',ja:'ここで少し待ってください。',en:'Please wait here for a moment.',zh:'请在这里稍等一下。'
+  },{
+    ko:'“잠깐 기다리세요”는 듣는 사람에게 기다리는 행동을 하도록 정중하게 요청합니다.',
+    ja:'「少し待ってください」は、聞き手に待つ行動をするよう丁寧に求めています。',
+    en:'“Please wait for a moment” politely asks the listener to perform the action of waiting.',
+    zh:'“请稍等一下”是在礼貌地请求听话者做“等待”这一动作。'
+  }),
+  reviewedPoliteInteractionItem('S04-I-G-INTERACTION-03','-지 마세요','prohibition','안에 들어가지 마세요.',{
+    ko:'안에 들어가지 마세요.',ja:'中に入らないでください。',en:'Please do not go inside.',zh:'请不要进去。'
+  },{
+    ko:'“들어가지” 뒤의 “마세요”는 안에 들어가는 행동을 하지 말라는 뜻입니다.',
+    ja:'「들어가지」の後の「마세요」は、中に入る行動をしないよう求めています。',
+    en:'“마세요” after “들어가지” asks the listener not to perform the action of going inside.',
+    zh:'“마세요”接在“들어가지”后，表示请对方不要做“进去”这一动作。'
+  }),
+  reviewedPoliteInteractionItem('S04-I-G-INTERACTION-04','-(으)ㄹ까요?','suggestion','같이 사진을 찍을까요?',{
+    ko:'같이 사진을 찍을까요?',ja:'一緒に写真を撮りましょうか。',en:'Shall we take a picture together?',zh:'我们一起拍张照好吗？'
+  },{
+    ko:'“같이”와 물음형 “찍을까요?”는 화자와 듣는 사람이 함께 사진을 찍자고 제안합니다.',
+    ja:'「一緒に」と疑問形「찍을까요？」が、話し手と聞き手で写真を撮る提案を示します。',
+    en:'“Together” plus the question “shall we take” proposes a shared action by speaker and listener.',
+    zh:'“一起”和疑问形式“要拍吗”表明说话者提议双方共同拍照。'
   })
 ];
 
