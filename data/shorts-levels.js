@@ -734,6 +734,69 @@ const reviewedTimeRelationItem=(id,term,key,example,exampleI18n,evidence)=>{
   });
 };
 
+const FORMAL_RELATION=Object.freeze({
+  source:Object.freeze({
+    meaning:Object.freeze({ko:'조사·발표 등 정보의 출처',ja:'調査・発表などの情報源',en:'source of reported information',zh:'调查或发布等信息的来源'}),
+    selected:Object.freeze({
+      ko:'“-에 따르면”은 뒤에 전하는 정보가 어디에서 나온 것인지 출처를 밝힙니다.',
+      ja:'「-에 따르면」は、後ろで伝える情報がどこから出たのか、その情報源を示します。',
+      en:'“-에 따르면” identifies the source from which the following information comes.',
+      zh:'“-에 따르면”说明后面所传达的信息来自哪里。'
+    })
+  }),
+  standard:Object.freeze({
+    meaning:Object.freeze({ko:'기준·조건에 따라 결과가 달라짐',ja:'基準・条件によって結果が変わる',en:'result varying by a condition',zh:'结果随基准或条件而变化'}),
+    selected:Object.freeze({
+      ko:'“-에 따라(서)”는 앞의 기준이나 조건이 달라지면 뒤의 결과도 달라짐을 나타냅니다.',
+      ja:'「-에 따라(서)」は、前の基準や条件が変わると後ろの結果も変わることを表します。',
+      en:'“-에 따라(서)” means the result changes when the preceding standard or condition changes.',
+      zh:'“-에 따라(서)”表示前面的基准或条件变化时，后面的结果也随之变化。'
+    })
+  }),
+  channel:Object.freeze({
+    meaning:Object.freeze({ko:'수단·경로를 거쳐 얻거나 실행함',ja:'手段・経路を通じて得る・行う',en:'means or channel used',zh:'通过某种手段或渠道获得、实施'}),
+    selected:Object.freeze({
+      ko:'“-을/를 통해(서)”는 어떤 수단이나 경로를 거쳐 배우거나 얻거나 실행함을 나타냅니다.',
+      ja:'「-을/를 통해(서)」は、ある手段や経路を通じて学ぶ・得る・行うことを表します。',
+      en:'“-을/를 통해(서)” marks the means or channel through which something is learned, obtained, or done.',
+      zh:'“-을/를 통해(서)”表示通过某种手段或渠道学习、获得或实施。'
+    })
+  }),
+  agent:Object.freeze({
+    meaning:Object.freeze({ko:'피동문의 행위 주체·공식적 원인',ja:'受け身文の動作主・公的な原因',en:'passive agent or formal cause',zh:'被动句的施事者或正式原因'}),
+    selected:Object.freeze({
+      ko:'“-에 의해(서)”는 피동문에서 그 행동을 한 주체나 공식적으로 서술하는 원인을 나타냅니다.',
+      ja:'「-에 의해(서)」は、受け身文でその動作をした主体、または改まって述べる原因を表します。',
+      en:'“-에 의해(서)” marks the agent of a passive action or a cause stated in a formal style.',
+      zh:'“-에 의해(서)”表示被动句中动作的施事者，或正式表述的原因。'
+    })
+  })
+});
+const FORMAL_RELATION_ORDER=['source','standard','channel','agent'];
+const FORMAL_RELATION_METHOD=Object.freeze({
+  ko:'앞 명사의 역할을 보세요. 정보가 나온 곳=따르면, 결과를 가르는 기준=따라서, 이용한 수단·경로=통해서, 피동 행동의 주체=의해서입니다.',
+  ja:'前の名詞の役割を見ます。情報源＝따르면、結果を分ける基準＝따라서、使った手段・経路＝통해서、受け身動作の主体＝의해서です。',
+  en:'Identify the role of the preceding noun: information source = 따르면, varying standard = 따라서, means or channel = 통해서, and passive agent = 의해서.',
+  zh:'先判断前面名词的作用：信息来源＝따르면，决定结果的基准＝따라서，使用的手段或渠道＝통해서，被动动作的施事者＝의해서。'
+});
+const reviewedFormalRelationItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=FORMAL_RELATION[key];
+  return Object.freeze({
+    id,level:2,type:'grammar',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:FORMAL_RELATION_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(FORMAL_RELATION_ORDER.map(choiceKey=>Object.freeze({
+      meaning:FORMAL_RELATION[choiceKey].meaning,
+      explanationI18n:FORMAL_RELATION[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】-에 따르면=정보 출처, -에 따라(서)=변화 기준, -을/를 통해(서)=수단·경로, -에 의해(서)=피동 주체·공식적 원인으로 앞 명사의 역할이 다릅니다.\n【재사용 풀이】${FORMAL_RELATION_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】-에 따르면＝情報源、-에 따라(서)＝変化の基準、-을/를 통해(서)＝手段・経路、-에 의해(서)＝受け身の主体・改まった原因で、前の名詞の役割が異なります。\n【再利用できる解き方】${FORMAL_RELATION_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] -에 따르면 marks an information source, -에 따라(서) a varying standard, -을/를 통해(서) a means or channel, and -에 의해(서) a passive agent or formal cause.\n[Reusable method] ${FORMAL_RELATION_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】-에 따르면表示信息来源，-에 따라(서)表示变化基准，-을/를 통해(서)表示手段或渠道，-에 의해(서)表示被动施事者或正式原因，前面名词的作用各不相同。\n【通用解法】${FORMAL_RELATION_METHOD.zh}`
+    })
+  });
+};
+
 const BASIC_TENSE=Object.freeze({
   presentHabit:Object.freeze({
     meaning:Object.freeze({ko:'반복되는 현재 습관',ja:'今の習慣・繰り返し',en:'a present habit or routine',zh:'当前的习惯或反复动作'}),
@@ -1964,6 +2027,39 @@ const TOPIK_II=[
     ja:'「寝る前に」が、寝ることよりアラームをセットする行動が先だったことを示します。',
     en:'“Before going to bed” shows that setting the alarm happened first.',
     zh:'“睡觉前”表明设闹钟这一动作先于睡觉发生。'
+  }),
+
+  reviewedFormalRelationItem('S04-II-G-RELATION-01','-에 따르면','source','기상청 발표에 따르면 내일 비가 옵니다.',{
+    ko:'기상청 발표에 따르면 내일 비가 옵니다.',ja:'気象庁の発表によると、明日は雨です。',en:'According to the weather agency announcement, it will rain tomorrow.',zh:'据气象厅发布的消息，明天会下雨。'
+  },{
+    ko:'“기상청 발표”가 내일 비가 온다는 정보의 출처이므로 “-에 따르면”이 맞습니다.',
+    ja:'「気象庁の発表」が、明日は雨だという情報の出所なので「-에 따르면」が合います。',
+    en:'“The weather agency announcement” is the source of the forecast, so -에 따르면 fits.',
+    zh:'“气象厅发布的消息”是明天下雨这一信息的来源，所以应选“-에 따르면”。'
+  }),
+  reviewedFormalRelationItem('S04-II-G-RELATION-02','-에 따라(서)','standard','계절에 따라 해가 지는 시간이 달라집니다.',{
+    ko:'계절에 따라 해가 지는 시간이 달라집니다.',ja:'季節によって、日が沈む時刻が変わります。',en:'The time the sun sets varies by season.',zh:'日落时间会随季节而变化。'
+  },{
+    ko:'계절이 바뀌면 해 지는 시간도 달라지므로 “계절”은 변화의 기준입니다.',
+    ja:'季節が変わると日没時刻も変わるため、「季節」は変化の基準です。',
+    en:'The sunset time changes when the season changes, so “season” is the varying standard.',
+    zh:'季节变化时日落时间也会变化，因此“季节”是变化的基准。'
+  }),
+  reviewedFormalRelationItem('S04-II-G-RELATION-03','-을/를 통해(서)','channel','온라인 강의를 통해 한국어를 배웠습니다.',{
+    ko:'온라인 강의를 통해 한국어를 배웠습니다.',ja:'オンライン講義を通じて韓国語を学びました。',en:'I learned Korean through online classes.',zh:'我通过在线课程学习了韩语。'
+  },{
+    ko:'“온라인 강의”는 한국어를 배우는 데 이용한 수단·경로이므로 “-을/를 통해(서)”가 맞습니다.',
+    ja:'「オンライン講義」は韓国語を学ぶために使った手段・経路なので「-을/를 통해(서)」が合います。',
+    en:'“Online classes” are the means used to learn Korean, so -을/를 통해(서) fits.',
+    zh:'“在线课程”是学习韩语所使用的手段或渠道，所以应选“-을/를 통해(서)”。'
+  }),
+  reviewedFormalRelationItem('S04-II-G-RELATION-04','-에 의해(서)','agent','이 다리는 유명한 건축가에 의해 설계되었습니다.',{
+    ko:'이 다리는 유명한 건축가에 의해 설계되었습니다.',ja:'この橋は有名な建築家によって設計されました。',en:'This bridge was designed by a famous architect.',zh:'这座桥由一位著名建筑师设计。'
+  },{
+    ko:'“설계되었습니다”는 피동이고 “유명한 건축가”는 설계한 주체이므로 “-에 의해(서)”가 맞습니다.',
+    ja:'「設計されました」は受け身で、「有名な建築家」は設計した主体なので「-에 의해(서)」が合います。',
+    en:'“Was designed” is passive, and “a famous architect” is the agent, so -에 의해(서) fits.',
+    zh:'“被设计”是被动表达，“著名建筑师”是动作的施事者，所以应选“-에 의해(서)”。'
   })
 ];
 

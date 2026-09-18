@@ -23,7 +23,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 - Production: GitHub Pages static PWA
 - Production release: v121 · four reviewed TOPIK I polite-interaction Shorts (`4ab4628791d4524f6f9cb88b813a84e010bbe922`)
-- Current candidate: none
+- Current candidate: v122 · four reviewed TOPIK II formal-relation marker Shorts
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -44,6 +44,10 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - v121 adds four TOPIK I polite-interaction cards (`주세요`, `-(으)세요`, `-지 마세요`,
   `-(으)ㄹ까요?`). Its generated inventory is 364 rows / 238 exact families (I 120, II 118),
   with the existing 15 structural flags unchanged.
+- Candidate v122 adds four TOPIK II formal-relation marker cards (`-에 따르면`, `-에 따라(서)`,
+  `-을/를 통해(서)`, `-에 의해(서)`). Its generated inventory is 368 rows / 242 exact families
+  (I 120, II 122), with the existing 15 structural flags unchanged. Production remains v121 until
+  full checks, mobile emulation, CI, merge, Pages and live verification pass.
 - bank explanations structured as answer evidence → distractor trap → reusable type-solving method,
   with separate TOPIK II writing 51–54 plans
 - independent Seoul Travel Mode and Wordlight Expedition
@@ -175,8 +179,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 다음 한 작업
 
 #129 긴급 작문 입력 분리와 v111–v121의 제한 검수 문항 배포·운영 문서 동기화는 완료됐다.
-다음 한 작업은 새 P0·명백한 정답 오류가 없으면 distinct set 수가 더 적은 TOPIK II의 아직 부족한
-유형 4문항 제한 검수다. 수량 자체를 교육 승인이나 출시 진척으로 보지 않는다.
+현재 한 작업은 TOPIK II 형식 관계 표지 4문항 v122 후보의 전체 검사·모바일 증거·CI·배포 검증이다.
+수량 자체를 교육 승인이나 출시 진척으로 보지 않는다.
 
 ## 완료 작업 · S04 TOPIK I 정중한 상호작용 숏츠 4문항
 
