@@ -1,6 +1,6 @@
 # S04 · TOPIK I polite-interaction Shorts pilot
 
-Candidate: v121 on `agent/loop-20260918-topik1-polite-interaction`.
+Candidate: v121 in PR #152 on `agent/loop-20260918-topik1-polite-interaction`.
 Production remains v120 `ab8fa3e8803d904310ba49c811a9b4e9f764a0ab`; product rollback is v119
 `584b42f86b062eb18932aac541ed2ffcfc3b723d` until the candidate passes CI and live verification.
 Scope: four new TOPIK I grammar cards only. This is an AI content review plus automated QA record,
@@ -39,11 +39,15 @@ compares all four. Fixed choices are shuffled and restored through the existing 
 | Storage | designed-pass | Existing `topikQuestShortsV1` and earlier IDs remain; cards are appended after existing TOPIK I rows. |
 | Focused local checks | pass | Node 24 vocabulary + generated-inventory checks pass 24/24; content checks pass 27/27. |
 | Full release checks | pass | Node 24 `npm run check` passes 121/121; runtime contract reports v121, 45 ordered files, and valid bank hashes. |
-| Emulated mobile | pending | Required at 320/375/390/430px in light/dark before PR merge. |
+| Emulated mobile | pass | PR #152 CI `35328201976` covers 320/375/390/430px light/dark, selected-wrong feedback, expanded coaching, next-first flow, and reload restoration. Artifact `10539553980` screens `00cs`/`00ct` were inspected. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
-| Deployment | pending | GitHub Pages remains on v120 until CI and live checks pass. |
+| Deployment | pending | Merge only after the final unchanged CI passes; then verify GitHub Pages v121 and hashes. |
 
 Candidate inventory is 364 rows / 238 exact question-choice families (TOPIK I 120, TOPIK II 118).
 The 15 existing structural review candidates do not increase. These totals are not content approvals:
 the generated inventory remains `approved: 0`, and only the four IDs above have this bounded AI review record.
 No existing Shorts row, original bank item, answer, or stable ID is altered.
+The inspected light screenshot shows a deliberately wrong positive-action request, the correct item-request
+answer, and choice-specific Japanese feedback. The dark screenshot shows next-first flow and the complete
+evidence → traps → speech-goal method without clipping. This is Linux Chrome emulation rather than
+physical-device evidence.
