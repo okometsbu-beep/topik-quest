@@ -42,8 +42,10 @@ these facts from conversation history or the large TOPIK source bundle.
   Shorts storage schema. Generated candidate inventory is 376 rows / 250 exact families (I 124,
   II 126), with 126 redundant rows, 30 duplicate groups, 15 structural flags, and 0 approvals.
   Node 24 focused vocabulary+inventory checks pass 27/27, content checks 30/30, and the full release
-  check 124/124 with the v124 45-file runtime contract. Local Chrome/Chromium is unavailable, so CI
-  mobile visual evidence remains required before merge.
+  check 124/124 with the v124 45-file runtime contract. Local Chrome/Chromium is unavailable. PR #158
+  evidence CI `35434058774` passes Linux Chrome 320/375/390/430px light/dark, selected-wrong feedback,
+  expanded coaching, next-first flow, and reload restoration. Artifact `10581702595` screens
+  `00cy`/`00cz` were inspected. Final PR CI, merge, Pages, and live checks remain pending.
   The bounded ledger is `docs/qa/shorts-review-s04-topik2-degree-comparison.md`; native review,
   learner timing/recall, physical devices, audio, and full offline recovery remain unverified.
 - v111 adds four TOPIK I counters: `명` for people, `개` for general objects,

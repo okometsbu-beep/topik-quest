@@ -38,11 +38,15 @@ stable-ID storage contract.
 | Storage | designed-pass | Existing `topikQuestShortsV1` and earlier IDs remain; cards are appended after existing TOPIK II rows. |
 | Focused local checks | pass | Node 24 vocabulary + generated-inventory checks pass 27/27; content checks pass 30/30. |
 | Full release checks | pass | Node 24 `npm run check` passes 124/124; runtime contract reports v124, 45 ordered files, and valid bank hashes. |
-| Emulated mobile | pending | Required CI Chrome evidence is 320/375/390/430px light/dark, selected-wrong feedback, expanded coaching, next-first flow, and reload restoration. Local Chrome is unavailable. |
+| Emulated mobile | pass | PR #158 CI `35434058774` covers 320/375/390/430px light/dark, selected-wrong feedback, expanded coaching, next-first flow, and reload restoration. Artifact `10581702595` screens `00cy`/`00cz` were inspected. Local Chrome remains unavailable. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
-| Deployment | pending | Do not merge or deploy until all automated and emulated-mobile gates pass. |
+| Deployment | pending | Automated and emulated-mobile gates pass; final PR CI, merge, Pages, and live behavior checks remain. |
 
 Candidate inventory is 376 rows / 250 exact question-choice families (TOPIK I 124, TOPIK II 126).
 The 15 existing structural review candidates do not increase. These totals are not content approvals:
 the generated inventory remains `approved: 0`, and only the four IDs above have this bounded AI review record.
 No existing Shorts row, original bank item, answer, or stable ID is altered.
+The inspected light screenshot shows the deliberately wrong not-inferior choice, the correct explicit-
+baseline answer, and choice-specific Japanese feedback. The dark screenshot shows next-first flow and
+the complete evidence → traps → reference/degree method without horizontal clipping. This is Linux
+Chrome emulation rather than physical-device evidence.
