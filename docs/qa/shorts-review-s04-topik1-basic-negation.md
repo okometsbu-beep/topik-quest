@@ -1,7 +1,7 @@
 # S04 · TOPIK I basic-negation Shorts pilot
 
-Candidate: v123. Production remains v122 `16048fd8f67700f96575d85119614a0db3e8a9cc`
-until the release gates pass. Product rollback is v122.
+Production: v123 `cdefae5b00748f2df360f99050d66ea0c079495d` (PR #156).
+Product rollback is v122 `16048fd8f67700f96575d85119614a0db3e8a9cc`.
 Scope: four new TOPIK I grammar cards only. This is an AI content review plus automated QA record,
 not native-speaker approval, learner timing evidence, or approval of the other 368 Shorts rows.
 
@@ -40,9 +40,9 @@ coaching compares all four. Fixed choices are shuffled and restored through the 
 | Full release checks | pass | Node 24 `npm run check` passes 123/123; runtime contract reports v123, 45 ordered files, and valid bank hashes. |
 | Emulated mobile | pass | PR #156 CI `35417933793` covers 320/375/390/430px light/dark, selected-wrong feedback, expanded coaching, next-first flow, and reload restoration. Artifact `10576448286` screens `00cw`/`00cx` were inspected. Local Chrome remains unavailable. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
-| Deployment | pending | No PR, merge, Pages release, or public-browser claim is made yet. |
+| Deployment | pass | PR #156 final CI `35418170909`, main CI `35418404159`, and Pages `35418403561` passed. Live HTTP smoke reports v123 with 3 base + 45 runtime files; public Chrome verified the Japanese `없어요` wrong-answer, reload-restoration, and detailed-coaching flow. |
 
-Candidate inventory is 372 rows / 246 exact question-choice families (TOPIK I 124, TOPIK II 122).
+Production inventory is 372 rows / 246 exact question-choice families (TOPIK I 124, TOPIK II 122).
 The 15 existing structural review candidates do not increase. These totals are not content approvals:
 the generated inventory remains `approved: 0`, and only the four IDs above have this bounded AI review record.
 No existing Shorts row, original bank item, answer, or stable ID is altered.
