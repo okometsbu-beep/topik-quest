@@ -1257,6 +1257,35 @@ try{
   assert.match(formalRestored.summary,/-에 따라\(서\)[\s\S]*基準/u,'formal-relation selected feedback must survive reload');
   assert.match(formalRestored.answer,/調査・発表などの情報源/u,'reviewed formal-relation answer must survive reload');
 
+  const basicNegation=await evaluate(`(()=>{const lv=1,deck=[...window.MALBIT_SHORTS_DECKS[lv],...window.MALBIT_BANK.shorts(lv)],index=deck.findIndex(item=>item.id==='S04-I-G-NEGATION-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','1');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:1,levels:{1:active,2:blank},daily:{}}));return{index,id:identity.id}})()`);
+  assert.equal(basicNegation.id,'S04-I-G-NEGATION-01','reviewed basic-negation card must have its explicit stable ID');
+  await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsWord');
+  const negationBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['1'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
+  assert.equal(negationBefore.term,'안');assert.equal(negationBefore.cardId,basicNegation.id);assert.equal(negationBefore.orderId,basicNegation.id);
+  assert.deepEqual(negationBefore.choiceOrder,[2,1,0,3]);
+  assert.deepEqual(negationBefore.labels,['名詞の身分・分類ではない（～ではない）','能力・状況のためできない','動作・状態の単純な否定（～しない）','人・物・時間などがない／いない'],'fixed basic-negation choices must keep the saved shuffle');
+  await submitShortsLabel('能力・状況のためできない');
+  const negationReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
+  assert.match(negationReview.summary,/못[\s\S]*能力や状況/u,'selected Japanese feedback must explain the inability trap');
+  assert.match(negationReview.answer,/動作・状態の単純な否定/u);assert.equal(negationReview.closed,true);
+  assert.equal(negationReview.nextBeforeDetails,true,'Next question must precede optional basic-negation coaching');
+  assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'私は朝、コーヒーを飲みません。','reviewed Japanese basic-negation example must render locally');
+  await evaluate(`malbitSetTheme('light')`);await sleep(100);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK I basic negation light ${width}px`,'light')}
+  await setViewport(390,844);await shot('00cw-shorts-topik1-basic-negation-wrong-light.png');
+  await evaluate(`malbitSetTheme('dark');const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK I basic negation expanded dark ${width}px`,'dark')}
+  await setViewport(390,844);await shot('00cx-shorts-topik1-basic-negation-full-dark.png');
+  await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsFeedbackSummary');
+  const negationRestored=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['1'];return{cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder,locked:state.locked,summary:document.querySelector('.shortsFeedbackSummary')?.innerText,answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
+  assert.equal(negationRestored.cardId,basicNegation.id,'reviewed basic-negation ID must survive reload');
+  assert.equal(negationRestored.orderId,basicNegation.id,'reviewed basic-negation choice-order ID must survive reload');
+  assert.deepEqual(negationRestored.choiceOrder,[2,1,0,3],'saved basic-negation choice order must survive reload');
+  assert.equal(negationRestored.locked,true,'graded basic-negation state must survive reload');
+  assert.match(negationRestored.summary,/못[\s\S]*能力や状況/u,'basic-negation selected feedback must survive reload');
+  assert.match(negationRestored.answer,/動作・状態の単純な否定/u,'reviewed basic-negation answer must survive reload');
+
   const basicTense=await evaluate(`(()=>{const lv=1,deck=[...window.MALBIT_SHORTS_DECKS[lv],...window.MALBIT_BANK.shorts(lv)],index=deck.findIndex(item=>item.id==='S04-I-G-TENSE-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','1');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:1,levels:{1:active,2:blank},daily:{}}));return{index,id:identity.id}})()`);
   assert.equal(basicTense.id,'S04-I-G-TENSE-01','reviewed basic-tense card must have its explicit stable ID');
   await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsWord');

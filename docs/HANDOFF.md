@@ -31,7 +31,8 @@ these facts from conversation history or the large TOPIK source bundle.
   not resolved items; existing feature/visual checks do not certify translation or teaching accuracy.
 - Production is v122 at `16048fd8f67700f96575d85119614a0db3e8a9cc` (PR #154), adding four
   bounded TOPIK II formal-relation marker cards separating information source, varying standard,
-  means/channel, and passive agent. There is no active release candidate.
+  means/channel, and passive agent. Candidate v123 adds four TOPIK I basic-negation cards separating
+  simple negation, inability, noun-category denial, and absence; it is not deployed yet.
   TOPIK II writing 51/52 keeps the v110 separate labelled ㄱ/ㄴ fields through input, scoring, save,
   Review, recovery, and compatible legacy migration. Product rollback is v121
   `4ab4628791d4524f6f9cb88b813a84e010bbe922`.
@@ -51,6 +52,16 @@ these facts from conversation history or the large TOPIK source bundle.
   retaining 30 duplicate groups and 15 structural review candidates. Comprehensive content approvals
   remain 0/368, not 368 passed questions.
   Audit-only curated IDs must NOT replace saved numeric indices without the S03 migration contract.
+- Candidate v123 extends the bounded S04 lane with four TOPIK I basic-negation cards (`안`, `못`,
+  `아니에요`, `없어요`). It uses stable IDs, fixed choice-specific ko/ja/en/zh feedback, bundled
+  examples, and evidence→traps→negation-role coaching. Candidate inventory is 372 rows / 246 exact
+  families (I 124, II 122), with 15 structural flags unchanged. Node 24 focused vocabulary+inventory
+  26/26, content 29/29, full release 123/123, and the v123 45-file runtime contract pass. PR #156 CI
+  `35417933793` covers 320/375/390/430px Linux Chrome light/dark, selected-wrong feedback, expanded
+  coaching, next-first flow, and reload restoration. Artifact `10576448286` screens `00cw`/`00cx` were
+  inspected. Local Chrome/Chromium is unavailable; final PR CI, deployment, and live checks remain pending.
+  The bounded
+  ledger is `docs/qa/shorts-review-s04-topik1-basic-negation.md`.
 - Production v121 extends the bounded S04 lane with four TOPIK I polite-interaction cards that
   distinguish an item request, positive action request, prohibition, and shared suggestion. It uses
   stable IDs, fixed choice-specific ko/ja/en/zh feedback, bundled examples, and evidence→traps→speech-goal
@@ -277,8 +288,9 @@ these facts from conversation history or the large TOPIK source bundle.
   v121 `4ab4628791d4524f6f9cb88b813a84e010bbe922`. The bounded ledger is
   `docs/qa/shorts-review-s04-topik2-formal-relation.md`. Physical devices, native-language review,
   learner timing, delayed recall, audio, and full offline recovery remain unverified.
-- Current one task after checking new P0 and clear wrong-answer reports: review one bounded four-card TOPIK I
-  missing-type set. Do not treat added quantity as educational approval.
+- Current one task after checking new P0 and clear wrong-answer reports: verify and release the bounded
+  v123 TOPIK I basic-negation set. If it deploys, the next one task is synchronizing STATUS/HANDOFF/ledger
+  to actual production v123. Do not treat added quantity as educational approval.
 - Follow start → understand → recall/speak/write → review → next learning for Japanese beginners, and
   passage evidence → specific distractor traps → reusable solving method for TOPIK I/II.
 - 2026 draft gates: Sep 13 audit/scope/dependencies; Sep 27 core flow/P0/P1/backup; Oct 11 teaching,
