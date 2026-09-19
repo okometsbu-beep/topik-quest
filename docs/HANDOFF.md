@@ -56,9 +56,11 @@ these facts from conversation history or the large TOPIK source bundle.
   `아니에요`, `없어요`). It uses stable IDs, fixed choice-specific ko/ja/en/zh feedback, bundled
   examples, and evidence→traps→negation-role coaching. Candidate inventory is 372 rows / 246 exact
   families (I 124, II 122), with 15 structural flags unchanged. Node 24 focused vocabulary+inventory
-  26/26, content 29/29, full release 123/123, and the v123 45-file runtime contract pass; emulated mobile,
-  PR, deployment, and live checks remain pending. Local Chrome/Chromium is unavailable, so PR CI must
-  supply the four-width light/dark visual gate before merge. The bounded
+  26/26, content 29/29, full release 123/123, and the v123 45-file runtime contract pass. PR #156 CI
+  `35417933793` covers 320/375/390/430px Linux Chrome light/dark, selected-wrong feedback, expanded
+  coaching, next-first flow, and reload restoration. Artifact `10576448286` screens `00cw`/`00cx` were
+  inspected. Local Chrome/Chromium is unavailable; final PR CI, deployment, and live checks remain pending.
+  The bounded
   ledger is `docs/qa/shorts-review-s04-topik1-basic-negation.md`.
 - Production v121 extends the bounded S04 lane with four TOPIK I polite-interaction cards that
   distinguish an item request, positive action request, prohibition, and shared suggestion. It uses

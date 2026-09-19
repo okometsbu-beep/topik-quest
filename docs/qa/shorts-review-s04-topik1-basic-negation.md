@@ -38,7 +38,7 @@ coaching compares all four. Fixed choices are shuffled and restored through the 
 | Storage | designed-pass | Existing `topikQuestShortsV1` and earlier IDs remain; cards are appended after existing TOPIK I rows. |
 | Focused local checks | pass | Node 24 vocabulary + generated-inventory checks pass 26/26; content checks pass 29/29. |
 | Full release checks | pass | Node 24 `npm run check` passes 123/123; runtime contract reports v123, 45 ordered files, and valid bank hashes. |
-| Emulated mobile | CI pending | Local Node 24 environment has no Chrome/Chromium executable. PR CI must cover 320/375/390/430px light/dark, selected-wrong feedback, expanded coaching, and reload restoration before merge. |
+| Emulated mobile | pass | PR #156 CI `35417933793` covers 320/375/390/430px light/dark, selected-wrong feedback, expanded coaching, next-first flow, and reload restoration. Artifact `10576448286` screens `00cw`/`00cx` were inspected. Local Chrome remains unavailable. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
 | Deployment | pending | No PR, merge, Pages release, or public-browser claim is made yet. |
 
@@ -46,3 +46,7 @@ Candidate inventory is 372 rows / 246 exact question-choice families (TOPIK I 12
 The 15 existing structural review candidates do not increase. These totals are not content approvals:
 the generated inventory remains `approved: 0`, and only the four IDs above have this bounded AI review record.
 No existing Shorts row, original bank item, answer, or stable ID is altered.
+The inspected light screenshot shows a deliberately wrong inability choice, the correct simple-negation
+answer, and choice-specific Japanese feedback. The dark screenshot shows next-first flow and the complete
+evidence → traps → negation-role method without clipping. This is Linux Chrome emulation rather than
+physical-device evidence.
