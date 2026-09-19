@@ -24,29 +24,34 @@ these facts from conversation history or the large TOPIK source bundle.
   passed all 110 checks. Live public UI shows two labelled fields and preserves different ㄱ/ㄴ values after
   next/back navigation. Physical iPhone/Android and real IME remain unverified.
 
-## Current release priority · 2026-09-19
+## Current release priority · 2026-09-20
 
 - Source of truth: [release blueprint #110](https://github.com/okometsbu-beep/topik-quest/issues/110).
   It supersedes #76 map expansion until core learning quality gates pass. A01–A12 remain audit findings,
   not resolved items; existing feature/visual checks do not certify translation or teaching accuracy.
-- Production is v123 at `cdefae5b00748f2df360f99050d66ea0c079495d` (PR #156), adding four
-  bounded TOPIK I basic-negation cards separating simple negation, inability, noun-category denial,
-  and absence. Current candidate v124 adds four bounded TOPIK II degree/comparison cards; production
-  remains v123 until CI, visual, merge, and live gates pass.
+- Production is v124 at `10bb264f48b75754c10456f33236d3352f6ba5a0` (PR #158), adding four
+  bounded TOPIK II degree/comparison cards separating an explicit baseline difference, a degree not
+  inferior to the reference, equal degree, and a result-demonstrated extreme degree. There is no current candidate.
   TOPIK II writing 51/52 keeps the v110 separate labelled ㄱ/ㄴ fields through input, scoring, save,
-  Review, recovery, and compatible legacy migration. Product rollback is v122
-  `16048fd8f67700f96575d85119614a0db3e8a9cc`.
-- Candidate v124 separates an explicit comparison baseline (`-에 비해(서)`), a degree not inferior
+  Review, recovery, and compatible legacy migration. Product rollback is v123
+  `cdefae5b00748f2df360f99050d66ea0c079495d`.
+- Production v124 separates an explicit comparison baseline (`-에 비해(서)`), a degree not inferior
   to the reference (`-에 못지않게`), equal degree (`-만큼`), and an extreme degree demonstrated by
   a result (`-(으)ㄹ 정도로`). It appends four stable IDs without changing the original bank or
-  Shorts storage schema. Generated candidate inventory is 376 rows / 250 exact families (I 124,
+  Shorts storage schema. Production inventory is 376 rows / 250 exact families (I 124,
   II 126), with 126 redundant rows, 30 duplicate groups, 15 structural flags, and 0 approvals.
   Node 24 focused vocabulary+inventory checks pass 27/27, content checks 30/30, and the full release
   check 124/124 with the v124 45-file runtime contract. Local Chrome/Chromium is unavailable. PR #158
   evidence CI `35434058774` passes Linux Chrome 320/375/390/430px light/dark, selected-wrong feedback,
   expanded coaching, next-first flow, and reload restoration. Artifact `10581702595` screens
-  `00cy`/`00cz` were inspected. Final PR CI, merge, Pages, and live checks remain pending.
-  The bounded ledger is `docs/qa/shorts-review-s04-topik2-degree-comparison.md`; native review,
+  `00cy`/`00cz` were inspected. Final PR CI `35434477757` passed on an unchanged failed-job rerun after
+  its first Chrome target closed. PR #158 was squash merged as `10bb264f48b75754c10456f33236d3352f6ba5a0`;
+  main CI `35434734289` and Pages `35434733945` succeeded. Live HTTP smoke reports v124 with 3 base +
+  45 runtime files. Public Chrome rendered the Japanese `-만큼` card, submitted a deliberate wrong answer,
+  restored locked feedback after reload, and exposed the detailed evidence, traps, and reusable method.
+  `index.html`, `site-patch.js`, `sw.js`, and `data/shorts-levels.js` hashes match main. Product rollback is
+  v123 `cdefae5b00748f2df360f99050d66ea0c079495d`. The bounded ledger is
+  `docs/qa/shorts-review-s04-topik2-degree-comparison.md`; native review,
   learner timing/recall, physical devices, audio, and full offline recovery remain unverified.
 - v111 adds four TOPIK I counters: `명` for people, `개` for general objects,
   `병` for bottles, and `권` for books/notebooks. The bounded ledger is
@@ -60,9 +65,9 @@ these facts from conversation history or the large TOPIK source bundle.
   v111 with 3 base + 45 runtime files; the four IDs and `data/shorts-levels.js` hash match main.
 - Latest #110 instruction: C01–C06 content quality, first applied as S01–S05 Shorts, outranks A08/#76.
   S01 adds `docs/qa/shorts-audit.md`, generated ID/content-hash inventory and `scripts/audit-shorts.cjs`.
-  Production v123 has 372 runtime rows but only 246 distinct question-choice sets (I 124, II 122),
+  Production v124 has 376 runtime rows but only 250 distinct question-choice sets (I 124, II 126),
   retaining 30 duplicate groups and 15 structural review candidates. Comprehensive content approvals
-  remain 0/372, not 372 passed questions.
+  remain 0/376, not 376 passed questions.
   Audit-only curated IDs must NOT replace saved numeric indices without the S03 migration contract.
 - Production v123 extends the bounded S04 lane with four TOPIK I basic-negation cards (`안`, `못`,
   `아니에요`, `없어요`). It uses stable IDs, fixed choice-specific ko/ja/en/zh feedback, bundled
@@ -305,9 +310,9 @@ these facts from conversation history or the large TOPIK source bundle.
   v121 `4ab4628791d4524f6f9cb88b813a84e010bbe922`. The bounded ledger is
   `docs/qa/shorts-review-s04-topik2-formal-relation.md`. Physical devices, native-language review,
   learner timing, delayed recall, audio, and full offline recovery remain unverified.
-- Current one task: verify candidate v124 locally and in CI at 320/375/390/430px in both themes,
-  inspect the actual wrong-answer and expanded-coaching screens, then merge and verify GitHub Pages
-  only if every release gate passes. Do not treat added quantity as educational approval.
+- Current one task after checking new P0 and clear wrong-answer reports: review one bounded four-card
+  TOPIK I missing-type set, because its 124 distinct sets trail TOPIK II's 126. Do not treat added
+  quantity as educational approval.
 - Follow start → understand → recall/speak/write → review → next learning for Japanese beginners, and
   passage evidence → specific distractor traps → reusable solving method for TOPIK I/II.
 - 2026 draft gates: Sep 13 audit/scope/dependencies; Sep 27 core flow/P0/P1/backup; Oct 11 teaching,
