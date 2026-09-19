@@ -31,10 +31,21 @@ these facts from conversation history or the large TOPIK source bundle.
   not resolved items; existing feature/visual checks do not certify translation or teaching accuracy.
 - Production is v123 at `cdefae5b00748f2df360f99050d66ea0c079495d` (PR #156), adding four
   bounded TOPIK I basic-negation cards separating simple negation, inability, noun-category denial,
-  and absence. There is no current candidate.
+  and absence. Current candidate v124 adds four bounded TOPIK II degree/comparison cards; production
+  remains v123 until CI, visual, merge, and live gates pass.
   TOPIK II writing 51/52 keeps the v110 separate labelled ㄱ/ㄴ fields through input, scoring, save,
   Review, recovery, and compatible legacy migration. Product rollback is v122
   `16048fd8f67700f96575d85119614a0db3e8a9cc`.
+- Candidate v124 separates an explicit comparison baseline (`-에 비해(서)`), a degree not inferior
+  to the reference (`-에 못지않게`), equal degree (`-만큼`), and an extreme degree demonstrated by
+  a result (`-(으)ㄹ 정도로`). It appends four stable IDs without changing the original bank or
+  Shorts storage schema. Generated candidate inventory is 376 rows / 250 exact families (I 124,
+  II 126), with 126 redundant rows, 30 duplicate groups, 15 structural flags, and 0 approvals.
+  Node 24 focused vocabulary+inventory checks pass 27/27, content checks 30/30, and the full release
+  check 124/124 with the v124 45-file runtime contract. Local Chrome/Chromium is unavailable, so CI
+  mobile visual evidence remains required before merge.
+  The bounded ledger is `docs/qa/shorts-review-s04-topik2-degree-comparison.md`; native review,
+  learner timing/recall, physical devices, audio, and full offline recovery remain unverified.
 - v111 adds four TOPIK I counters: `명` for people, `개` for general objects,
   `병` for bottles, and `권` for books/notebooks. The bounded ledger is
   `docs/qa/shorts-review-s04-topik1-counters.md`. Node 24 content 17/17, inventory 2/2, and full
@@ -292,9 +303,9 @@ these facts from conversation history or the large TOPIK source bundle.
   v121 `4ab4628791d4524f6f9cb88b813a84e010bbe922`. The bounded ledger is
   `docs/qa/shorts-review-s04-topik2-formal-relation.md`. Physical devices, native-language review,
   learner timing, delayed recall, audio, and full offline recovery remain unverified.
-- Current one task after checking new P0 and clear wrong-answer reports: review one bounded four-card
-  TOPIK II missing-type set, because its 122 distinct sets trail TOPIK I's 124. Do not treat added
-  quantity as educational approval.
+- Current one task: verify candidate v124 locally and in CI at 320/375/390/430px in both themes,
+  inspect the actual wrong-answer and expanded-coaching screens, then merge and verify GitHub Pages
+  only if every release gate passes. Do not treat added quantity as educational approval.
 - Follow start → understand → recall/speak/write → review → next learning for Japanese beginners, and
   passage evidence → specific distractor traps → reusable solving method for TOPIK I/II.
 - 2026 draft gates: Sep 13 audit/scope/dependencies; Sep 27 core flow/P0/P1/backup; Oct 11 teaching,
