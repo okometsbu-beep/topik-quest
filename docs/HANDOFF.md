@@ -29,13 +29,12 @@ these facts from conversation history or the large TOPIK source bundle.
 - Source of truth: [release blueprint #110](https://github.com/okometsbu-beep/topik-quest/issues/110).
   It supersedes #76 map expansion until core learning quality gates pass. A01–A12 remain audit findings,
   not resolved items; existing feature/visual checks do not certify translation or teaching accuracy.
-- Production is v122 at `16048fd8f67700f96575d85119614a0db3e8a9cc` (PR #154), adding four
-  bounded TOPIK II formal-relation marker cards separating information source, varying standard,
-  means/channel, and passive agent. Candidate v123 adds four TOPIK I basic-negation cards separating
-  simple negation, inability, noun-category denial, and absence; it is not deployed yet.
+- Production is v123 at `cdefae5b00748f2df360f99050d66ea0c079495d` (PR #156), adding four
+  bounded TOPIK I basic-negation cards separating simple negation, inability, noun-category denial,
+  and absence. There is no current candidate.
   TOPIK II writing 51/52 keeps the v110 separate labelled ㄱ/ㄴ fields through input, scoring, save,
-  Review, recovery, and compatible legacy migration. Product rollback is v121
-  `4ab4628791d4524f6f9cb88b813a84e010bbe922`.
+  Review, recovery, and compatible legacy migration. Product rollback is v122
+  `16048fd8f67700f96575d85119614a0db3e8a9cc`.
 - v111 adds four TOPIK I counters: `명` for people, `개` for general objects,
   `병` for bottles, and `권` for books/notebooks. The bounded ledger is
   `docs/qa/shorts-review-s04-topik1-counters.md`. Node 24 content 17/17, inventory 2/2, and full
@@ -48,20 +47,25 @@ these facts from conversation history or the large TOPIK source bundle.
   v111 with 3 base + 45 runtime files; the four IDs and `data/shorts-levels.js` hash match main.
 - Latest #110 instruction: C01–C06 content quality, first applied as S01–S05 Shorts, outranks A08/#76.
   S01 adds `docs/qa/shorts-audit.md`, generated ID/content-hash inventory and `scripts/audit-shorts.cjs`.
-  Production v122 has 368 runtime rows but only 242 distinct question-choice sets (I 120, II 122),
+  Production v123 has 372 runtime rows but only 246 distinct question-choice sets (I 124, II 122),
   retaining 30 duplicate groups and 15 structural review candidates. Comprehensive content approvals
-  remain 0/368, not 368 passed questions.
+  remain 0/372, not 372 passed questions.
   Audit-only curated IDs must NOT replace saved numeric indices without the S03 migration contract.
-- Candidate v123 extends the bounded S04 lane with four TOPIK I basic-negation cards (`안`, `못`,
+- Production v123 extends the bounded S04 lane with four TOPIK I basic-negation cards (`안`, `못`,
   `아니에요`, `없어요`). It uses stable IDs, fixed choice-specific ko/ja/en/zh feedback, bundled
-  examples, and evidence→traps→negation-role coaching. Candidate inventory is 372 rows / 246 exact
+  examples, and evidence→traps→negation-role coaching. Production inventory is 372 rows / 246 exact
   families (I 124, II 122), with 15 structural flags unchanged. Node 24 focused vocabulary+inventory
   26/26, content 29/29, full release 123/123, and the v123 45-file runtime contract pass. PR #156 CI
   `35417933793` covers 320/375/390/430px Linux Chrome light/dark, selected-wrong feedback, expanded
   coaching, next-first flow, and reload restoration. Artifact `10576448286` screens `00cw`/`00cx` were
-  inspected. Local Chrome/Chromium is unavailable; final PR CI, deployment, and live checks remain pending.
-  The bounded
-  ledger is `docs/qa/shorts-review-s04-topik1-basic-negation.md`.
+  inspected; final PR CI `35418170909` also passed. PR #156 was squash merged as
+  `cdefae5b00748f2df360f99050d66ea0c079495d`; main CI `35418404159` and Pages `35418403561`
+  succeeded. Live HTTP smoke reports v123 with 3 base + 45 runtime files. Public Chrome rendered the
+  Japanese `없어요` card, submitted a deliberate `못` error, restored locked feedback after reload,
+  and exposed the detailed evidence, traps, and reusable method. `index.html`, `site-patch.js`, `sw.js`,
+  and `data/shorts-levels.js` hashes match main. Local Chrome/Chromium and physical devices remain
+  unavailable. Product rollback is v122 `16048fd8f67700f96575d85119614a0db3e8a9cc`. The bounded ledger
+  is `docs/qa/shorts-review-s04-topik1-basic-negation.md`.
 - Production v121 extends the bounded S04 lane with four TOPIK I polite-interaction cards that
   distinguish an item request, positive action request, prohibition, and shared suggestion. It uses
   stable IDs, fixed choice-specific ko/ja/en/zh feedback, bundled examples, and evidence→traps→speech-goal
@@ -288,9 +292,9 @@ these facts from conversation history or the large TOPIK source bundle.
   v121 `4ab4628791d4524f6f9cb88b813a84e010bbe922`. The bounded ledger is
   `docs/qa/shorts-review-s04-topik2-formal-relation.md`. Physical devices, native-language review,
   learner timing, delayed recall, audio, and full offline recovery remain unverified.
-- Current one task after checking new P0 and clear wrong-answer reports: verify and release the bounded
-  v123 TOPIK I basic-negation set. If it deploys, the next one task is synchronizing STATUS/HANDOFF/ledger
-  to actual production v123. Do not treat added quantity as educational approval.
+- Current one task after checking new P0 and clear wrong-answer reports: review one bounded four-card
+  TOPIK II missing-type set, because its 122 distinct sets trail TOPIK I's 124. Do not treat added
+  quantity as educational approval.
 - Follow start → understand → recall/speak/write → review → next learning for Japanese beginners, and
   passage evidence → specific distractor traps → reusable solving method for TOPIK I/II.
 - 2026 draft gates: Sep 13 audit/scope/dependencies; Sep 27 core flow/P0/P1/backup; Oct 11 teaching,
