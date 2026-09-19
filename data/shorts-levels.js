@@ -797,6 +797,69 @@ const reviewedFormalRelationItem=(id,term,key,example,exampleI18n,evidence)=>{
   });
 };
 
+const BASIC_NEGATION=Object.freeze({
+  general:Object.freeze({
+    meaning:Object.freeze({ko:'행동·상태를 단순히 부정함',ja:'動作・状態の単純な否定（～しない）',en:'simple negation of an action or state',zh:'对动作或状态作一般否定'}),
+    selected:Object.freeze({
+      ko:'“안”은 용언 앞에서 그 행동을 하지 않거나 상태가 그렇지 않다고 단순히 부정합니다.',
+      ja:'「안」は用言の前で、その動作をしないことや、その状態ではないことを単純に否定します。',
+      en:'“안” comes before a predicate to simply negate an action or state.',
+      zh:'“안”放在谓词前，单纯否定某个动作或状态。'
+    })
+  }),
+  inability:Object.freeze({
+    meaning:Object.freeze({ko:'능력·상황 때문에 할 수 없음',ja:'能力・状況のためできない',en:'cannot because of skill or situation',zh:'因能力或情况而无法做到'}),
+    selected:Object.freeze({
+      ko:'“못”은 의지가 아니라 능력이나 상황 때문에 동작을 할 수 없음을 나타냅니다.',
+      ja:'「못」は意思ではなく、能力や状況のため動作ができないことを表します。',
+      en:'“못” marks that an action is impossible because of ability or circumstances, not merely a choice not to act.',
+      zh:'“못”表示并非出于意愿，而是因能力或情况无法完成动作。'
+    })
+  }),
+  identity:Object.freeze({
+    meaning:Object.freeze({ko:'명사의 정체·분류가 아님',ja:'名詞の身分・分類ではない（～ではない）',en:'not being the stated noun or category',zh:'不是该名词所指的身份或类别'}),
+    selected:Object.freeze({
+      ko:'“아니에요”는 명사 뒤의 이/가와 함께 그 정체나 분류가 아님을 나타냅니다.',
+      ja:'「아니에요」は名詞に付く이/가とともに、その身分・分類ではないことを表します。',
+      en:'“아니에요” follows a noun marked by 이/가 to deny an identity or category.',
+      zh:'“아니에요”与名词后的이/가一起使用，否定其身份或类别。'
+    })
+  }),
+  absence:Object.freeze({
+    meaning:Object.freeze({ko:'사람·물건·시간 등이 존재하지 않음',ja:'人・物・時間などがない／いない',en:'absence of a person, thing, or time',zh:'人、物品或时间等不存在、没有'}),
+    selected:Object.freeze({
+      ko:'“없어요”는 사람이나 물건이 존재하지 않거나 가진 것이 없음을 나타냅니다.',
+      ja:'「없어요」は、人や物が存在しないこと、または持っていないことを表します。',
+      en:'“없어요” says that a person or thing does not exist or that something is not available or possessed.',
+      zh:'“없어요”表示人或物不存在，或表示没有、未持有某物。'
+    })
+  })
+});
+const BASIC_NEGATION_ORDER=['general','inability','identity','absence'];
+const BASIC_NEGATION_METHOD=Object.freeze({
+  ko:'무엇을 부정하는지 먼저 보세요. 행동·상태의 단순 부정=안, 능력·상황상 불가능=못, 명사의 정체 부정=아니에요, 존재·소유의 부정=없어요입니다.',
+  ja:'何を否定するかを先に見ます。動作・状態の単純否定＝안、能力・状況による不可能＝못、名詞の身分・分類の否定＝아니에요、存在・所有の否定＝없어요です。',
+  en:'First identify what is negated: a simple action or state = 안, inability from skill or circumstances = 못, noun identity or category = 아니에요, existence or possession = 없어요.',
+  zh:'先判断否定对象：一般动作或状态＝안，因能力或情况无法做到＝못，否定名词身份或类别＝아니에요，否定存在或拥有＝없어요。'
+});
+const reviewedBasicNegationItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=BASIC_NEGATION[key];
+  return Object.freeze({
+    id,level:1,type:'grammar',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:BASIC_NEGATION_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(BASIC_NEGATION_ORDER.map(choiceKey=>Object.freeze({
+      meaning:BASIC_NEGATION[choiceKey].meaning,
+      explanationI18n:BASIC_NEGATION[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】안=단순 부정, 못=불가능, 아니에요=명사 정체 부정, 없어요=존재·소유 부정으로 부정하는 대상과 이유가 다릅니다.\n【재사용 풀이】${BASIC_NEGATION_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】안＝単純否定、못＝不可能、아니에요＝名詞の身分・分類の否定、없어요＝存在・所有の否定で、否定する対象と理由が異なります。\n【再利用できる解き方】${BASIC_NEGATION_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 안 is simple negation, 못 marks inability, 아니에요 denies noun identity or category, and 없어요 denies existence or possession.\n[Reusable method] ${BASIC_NEGATION_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】안表示一般否定，못表示无法做到，아니에요否定名词身份或类别，없어요否定存在或拥有，否定对象和原因各不相同。\n【通用解法】${BASIC_NEGATION_METHOD.zh}`
+    })
+  });
+};
+
 const BASIC_TENSE=Object.freeze({
   presentHabit:Object.freeze({
     meaning:Object.freeze({ko:'반복되는 현재 습관',ja:'今の習慣・繰り返し',en:'a present habit or routine',zh:'当前的习惯或反复动作'}),
@@ -1640,6 +1703,38 @@ const TOPIK_I=[
     ja:'「一緒に」と疑問形「찍을까요？」が、話し手と聞き手で写真を撮る提案を示します。',
     en:'“Together” plus the question “shall we take” proposes a shared action by speaker and listener.',
     zh:'“一起”和疑问形式“要拍吗”表明说话者提议双方共同拍照。'
+  }),
+  reviewedBasicNegationItem('S04-I-G-NEGATION-01','안','general','저는 아침에 커피를 안 마셔요.',{
+    ko:'저는 아침에 커피를 안 마셔요.',ja:'私は朝、コーヒーを飲みません。',en:'I do not drink coffee in the morning.',zh:'我早上不喝咖啡。'
+  },{
+    ko:'“안”이 동사 “마셔요” 바로 앞에서 커피를 마시는 행동을 단순히 부정합니다.',
+    ja:'「안」が動詞「마셔요」の直前にあり、コーヒーを飲む動作を単純に否定しています。',
+    en:'“안” appears directly before “마셔요,” simply negating the action of drinking coffee.',
+    zh:'“안”直接放在动词“마셔요”前，单纯否定喝咖啡这一动作。'
+  }),
+  reviewedBasicNegationItem('S04-I-G-NEGATION-02','못','inability','오늘은 바빠서 친구를 못 만나요.',{
+    ko:'오늘은 바빠서 친구를 못 만나요.',ja:'今日は忙しくて友達に会えません。',en:'I cannot meet my friend today because I am busy.',zh:'今天很忙，所以没法见朋友。'
+  },{
+    ko:'“바빠서”라는 상황 때문에 만나고 싶어도 만날 수 없으므로 “못”은 불가능을 나타냅니다.',
+    ja:'「忙しくて」という状況のため、会いたくても会えないので、「못」は不可能を表します。',
+    en:'Being busy prevents the meeting even if it is wanted, so “못” marks circumstantial inability.',
+    zh:'因为“很忙”这一情况，即使想见也无法见面，所以“못”表示客观上无法做到。'
+  }),
+  reviewedBasicNegationItem('S04-I-G-NEGATION-03','아니에요','identity','여기는 약국이 아니에요. 은행이에요.',{
+    ko:'여기는 약국이 아니에요. 은행이에요.',ja:'ここは薬局ではありません。銀行です。',en:'This is not a pharmacy. It is a bank.',zh:'这里不是药店，是银行。'
+  },{
+    ko:'“약국이 아니에요” 뒤에 실제 분류인 “은행이에요”가 이어져 장소의 정체를 부정합니다.',
+    ja:'「薬局ではありません」の後に実際の分類「銀行です」が続き、場所の身分・分類を否定しています。',
+    en:'“It is a bank” supplies the actual category after “not a pharmacy,” so 아니에요 denies noun identity.',
+    zh:'“不是药店”之后接着说明实际类别“是银行”，因此“아니에요”否定名词身份。'
+  }),
+  reviewedBasicNegationItem('S04-I-G-NEGATION-04','없어요','absence','냉장고에 우유가 없어요.',{
+    ko:'냉장고에 우유가 없어요.',ja:'冷蔵庫に牛乳がありません。',en:'There is no milk in the refrigerator.',zh:'冰箱里没有牛奶。'
+  },{
+    ko:'장소 “냉장고에”와 주어 “우유가” 뒤의 “없어요”는 우유가 존재하지 않음을 나타냅니다.',
+    ja:'場所「冷蔵庫に」と主語「牛乳が」の後の「없어요」は、牛乳が存在しないことを表します。',
+    en:'With the location “in the refrigerator” and subject “milk,” 없어요 states that the milk is absent.',
+    zh:'在地点“冰箱里”和主语“牛奶”之后使用“없어요”，表示牛奶不存在。'
   })
 ];
 

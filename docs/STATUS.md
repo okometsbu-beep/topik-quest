@@ -14,7 +14,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 실제 검사: Linux Node v24.19.0, 집중 10/10·quick 95/95·전체 `npm run check` 110/110. 로컬 HTTP 3개 기본+45개 런타임 통과. PR CI와 main CI `34702111845`에서 Linux Chrome 320/375/390/430px×라이트/다크, 두 칸 터치 입력·독립 저장·새로고침 복원·참고 점수·복습 분리·구형 단일 답안 안내를 통과했다. main CI 첫 시도는 Chrome target 종료로 실패했으나 동일 커밋 재실행은 통과했다.
 - 라이브 공개 브라우저: v110을 새로 불러온 TOPIK II → 쓰기만 → 51번에서 `ㄱ(기역) 답안`과 `ㄴ(니은) 답안` 두 textbox를 확인했다. 서로 다른 값을 입력하고 다음→이전 뒤에도 각각 유지됐다. HTTP smoke는 3개 기본+45개 런타임을 통과했다.
 - 시각 증거: CI artifact `10300595038`의 `00bu-writing-two-blanks-light.png`, `00bv-writing-two-blanks-dark.png`, `00bw-writing-two-blanks-review-dark.png` 직접 확인. 실제 iPhone/Android 및 실제 IME는 미검증이며 에뮬레이션과 구별한다.
-- 다음 한 작업: 새 P0·명백한 정답 오류가 없으면 TOPIK I 부족 유형 4문항 제한 검수.
+- 다음 한 작업: v123 기초 부정 표현 후보의 검사·배포가 끝나면 STATUS/HANDOFF를 실제 운영 상태와 동기화.
 - 현재 라이브/복귀 기준: v122 `16048fd8f67700f96575d85119614a0db3e8a9cc`,
   https://okometsbu-beep.github.io/topik-quest/ . 제품 복귀 기준은 v121
   `4ab4628791d4524f6f9cb88b813a84e010bbe922`이다.
@@ -23,7 +23,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 - Production: GitHub Pages static PWA
 - Production release: v122 · four reviewed TOPIK II formal-relation marker Shorts (`16048fd8f67700f96575d85119614a0db3e8a9cc`)
-- Current candidate: none
+- Current candidate: v123 · four bounded TOPIK I basic-negation Shorts (`안·못·아니에요·없어요`)
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -47,6 +47,9 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - v122 adds four TOPIK II formal-relation marker cards (`-에 따르면`, `-에 따라(서)`,
   `-을/를 통해(서)`, `-에 의해(서)`). Its generated inventory is 368 rows / 242 exact families
   (I 120, II 122), with the existing 15 structural flags unchanged.
+- Candidate v123 adds four TOPIK I basic-negation cards (`안`, `못`, `아니에요`, `없어요`).
+  Its generated inventory is 372 rows / 246 exact families (I 124, II 122), with the existing
+  15 structural flags unchanged. This is a bounded AI review, not human approval or learner evidence.
 - bank explanations structured as answer evidence → distractor trap → reusable type-solving method,
   with separate TOPIK II writing 51–54 plans
 - independent Seoul Travel Mode and Wordlight Expedition
@@ -178,8 +181,24 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 다음 한 작업
 
 #129 긴급 작문 입력 분리와 v111–v122의 제한 검수 문항 배포·운영 문서 동기화는 완료됐다.
-다음 한 작업은 새 P0·명백한 정답 오류가 없으면 distinct set 수가 더 적은 TOPIK I의 아직 부족한
-유형 4문항 제한 검수다. 수량 자체를 교육 승인이나 출시 진척으로 보지 않는다.
+현재 한 작업은 TOPIK I의 `안·못·아니에요·없어요` 기초 부정 표현 4문항 후보를 검수·배포하는
+것이다. 통과 뒤 다음 한 작업은 STATUS/HANDOFF/검수대장을 실제 production v123과 동기화한다.
+수량 자체를 교육 승인이나 출시 진척으로 보지 않는다.
+
+## 후보 작업 · S04 TOPIK I 기초 부정 표현 숏츠 4문항
+
+- v123 후보는 `안·못·아니에요·없어요`를 일반 부정·능력/상황상 불가능·명사 정체 부정·
+  사람/사물/시간의 부재와 각각 구분한다. 기존 ID, 원본 은행과 `topikQuestShortsV1` 저장 구조는
+  변경하지 않으며 기존 TOPIK I 행 뒤에만 추가한다.
+- ko/ja/en/zh 예문·선택 오답별 설명과 `결정적 근거 → 네 함정 → 부정 역할` 풀이법을 내장했다.
+- 후보 재고는 372행/246 정확 질문-보기군, I 124·II 122개다. 기존 중복 126행·30군,
+  구조 후보 15개, 정답 충돌 0은 증가하지 않았고 전체 승인 수는 여전히 0/372다.
+- Node 24 집중 vocabulary+inventory 26/26, 콘텐츠 29/29, 전체 release check 123/123과
+  v123 런타임 45개 계약은 통과했다. 로컬에는 Chrome/Chromium 실행 파일이 없어 모바일
+  검사가 시작되지 않았으며 PR CI의 Linux Chrome 게이트가 통과하기 전에는 병합하지 않는다.
+  PR·CI·Pages·라이브 검증은 아직 수행 전이며 통과로 표시하지 않는다.
+- 실제 일본어 모어 화자, 동의한 학습자 풀이시간/D1·D7 회상, 실제 iPhone/Android는 미검증이다.
+  검수대장은 `docs/qa/shorts-review-s04-topik1-basic-negation.md`다.
 
 ## 완료 작업 · S04 TOPIK II 격식 관계 표지 숏츠 4문항
 
