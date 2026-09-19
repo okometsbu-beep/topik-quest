@@ -31,7 +31,15 @@ these facts from conversation history or the large TOPIK source bundle.
   not resolved items; existing feature/visual checks do not certify translation or teaching accuracy.
 - Production is v124 at `10bb264f48b75754c10456f33236d3352f6ba5a0` (PR #158), adding four
   bounded TOPIK II degree/comparison cards separating an explicit baseline difference, a degree not
-  inferior to the reference, equal degree, and a result-demonstrated extreme degree. There is no current candidate.
+  inferior to the reference, equal degree, and a result-demonstrated extreme degree. Current candidate v125
+  adds four bounded TOPIK I basic-connective cards separating simultaneous actions, a reason before a
+  judgment/request, movement purpose, and discourse background. Candidate inventory is 380 rows / 254
+  exact families (I 128, II 126); local focused vocabulary+inventory checks pass 28/28, content checks
+  31/31, and the full release check 125/125 with the v125 45-file runtime contract. PR #160 CI
+  `35469665976` covers Linux Chrome 320/375/390/430px light/dark, selected-wrong feedback,
+  expanded coaching, next-first flow, and reload restoration. Artifact `10592252454` screens
+  `00da`/`00db` were inspected. Local Chrome/Chromium and physical devices remain unavailable;
+  merge, Pages, and live gates are pending.
   TOPIK II writing 51/52 keeps the v110 separate labelled ㄱ/ㄴ fields through input, scoring, save,
   Review, recovery, and compatible legacy migration. Product rollback is v123
   `cdefae5b00748f2df360f99050d66ea0c079495d`.

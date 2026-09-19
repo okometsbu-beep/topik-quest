@@ -860,6 +860,69 @@ const reviewedDegreeComparisonItem=(id,term,key,example,exampleI18n,evidence)=>{
   });
 };
 
+const BASIC_CONNECTIVES=Object.freeze({
+  simultaneous:Object.freeze({
+    meaning:Object.freeze({ko:'두 행동이 같은 시간에 진행됨',ja:'二つの動作が同時に進む',en:'two actions happen at the same time',zh:'两个动作同时进行'}),
+    selected:Object.freeze({
+      ko:'“-(으)면서”는 한 사람이 두 행동을 같은 시간에 하고 있음을 나타냅니다.',
+      ja:'「-(으)면서」は、一人が二つの動作を同時にしていることを表します。',
+      en:'“-(으)면서” shows that the same person performs two actions at the same time.',
+      zh:'“-(으)면서”表示同一个人同时进行两个动作。'
+    })
+  }),
+  reason:Object.freeze({
+    meaning:Object.freeze({ko:'앞 이유를 들어 뒤에서 판단·요청함',ja:'前に理由を示し、後ろで判断・依頼をする',en:'gives a reason for a judgment or request',zh:'先说明原因，再作判断或请求'}),
+    selected:Object.freeze({
+      ko:'“-(으)니까”는 앞 절을 이유로 제시하고 뒤에서 판단하거나 요청할 때 씁니다.',
+      ja:'「-(으)니까」は、前の節を理由として示し、後ろで判断や依頼をするときに使います。',
+      en:'“-(으)니까” presents the first clause as a reason for a judgment or request in the second.',
+      zh:'“-(으)니까”把前句作为理由，用于后句的判断或请求。'
+    })
+  }),
+  movementPurpose:Object.freeze({
+    meaning:Object.freeze({ko:'이동하는 목적을 나타냄',ja:'移動する目的を表す',en:'marks the purpose of movement',zh:'表示移动的目的'}),
+    selected:Object.freeze({
+      ko:'“-(으)러”는 가다·오다 같은 이동 동사 앞에서 그 이동의 목적을 나타냅니다.',
+      ja:'「-(으)러」は、가다・오다 などの移動動詞の前で、その移動の目的を表します。',
+      en:'“-(으)러” comes before a movement verb such as 가다 or 오다 and marks the purpose of that movement.',
+      zh:'“-(으)러”放在가다、오다等移动动词前，表示移动的目的。'
+    })
+  }),
+  background:Object.freeze({
+    meaning:Object.freeze({ko:'뒤말의 배경·상황을 먼저 제시함',ja:'後ろの内容の背景・状況を先に示す',en:'sets up background for what follows',zh:'先交代后项内容的背景或情况'}),
+    selected:Object.freeze({
+      ko:'“-는데”는 뒤에서 말할 결정이나 설명을 이해하는 데 필요한 현재 상황을 먼저 제시합니다.',
+      ja:'「-는데」は、後ろの決定や説明を理解するために必要な現在の状況を先に示します。',
+      en:'“-는데” first supplies the current situation needed to understand the decision or explanation that follows.',
+      zh:'“-는데”先交代当前情况，为理解后面的决定或说明提供背景。'
+    })
+  })
+});
+const BASIC_CONNECTIVE_ORDER=['simultaneous','reason','movementPurpose','background'];
+const BASIC_CONNECTIVE_METHOD=Object.freeze({
+  ko:'두 절의 관계와 뒤 동사를 보세요. 동시 행동=(으)면서, 이유 뒤 판단·요청=(으)니까, 이동 목적=(으)러, 뒤말의 배경=는데입니다.',
+  ja:'二つの節の関係と後ろの動詞を見ます。同時動作＝(으)면서、理由の後の判断・依頼＝(으)니까、移動目的＝(으)러、後ろの内容の背景＝는데です。',
+  en:'Read the relation and the following verb: simultaneous actions = (으)면서, reason for a judgment or request = (으)니까, movement purpose = (으)러, and background for what follows = 는데.',
+  zh:'结合分句关系和后面的动词判断：同时动作＝(으)면서，作为判断或请求的理由＝(으)니까，移动目的＝(으)러，后项背景＝는데。'
+});
+const reviewedBasicConnectiveItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=BASIC_CONNECTIVES[key];
+  return Object.freeze({
+    id,level:1,type:'grammar',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:BASIC_CONNECTIVE_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(BASIC_CONNECTIVE_ORDER.map(choiceKey=>Object.freeze({
+      meaning:BASIC_CONNECTIVES[choiceKey].meaning,
+      explanationI18n:BASIC_CONNECTIVES[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】-(으)면서=동시 행동, -(으)니까=이유 뒤 판단·요청, -(으)러=이동 목적, -는데=뒤말의 배경으로 관계가 다릅니다.\n【재사용 풀이】${BASIC_CONNECTIVE_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】-(으)면서＝同時動作、-(으)니까＝理由の後の判断・依頼、-(으)러＝移動目的、-는데＝後ろの内容の背景で、関係が異なります。\n【再利用できる解き方】${BASIC_CONNECTIVE_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] -(으)면서 marks simultaneous actions, -(으)니까 a reason for a judgment or request, -(으)러 movement purpose, and -는데 background for what follows.\n[Reusable method] ${BASIC_CONNECTIVE_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】-(으)면서表示同时动作，-(으)니까表示判断或请求的理由，-(으)러表示移动目的，-는데表示后项背景，关系各不相同。\n【通用解法】${BASIC_CONNECTIVE_METHOD.zh}`
+    })
+  });
+};
+
 const BASIC_NEGATION=Object.freeze({
   general:Object.freeze({
     meaning:Object.freeze({ko:'행동·상태를 단순히 부정함',ja:'動作・状態の単純な否定（～しない）',en:'simple negation of an action or state',zh:'对动作或状态作一般否定'}),
@@ -1798,6 +1861,38 @@ const TOPIK_I=[
     ja:'場所「冷蔵庫に」と主語「牛乳が」の後の「없어요」は、牛乳が存在しないことを表します。',
     en:'With the location “in the refrigerator” and subject “milk,” 없어요 states that the milk is absent.',
     zh:'在地点“冰箱里”和主语“牛奶”之后使用“없어요”，表示牛奶不存在。'
+  }),
+  reviewedBasicConnectiveItem('S04-I-G-CONNECTIVE-01','-(으)면서','simultaneous','친구와 이야기하면서 커피를 마셨어요.',{
+    ko:'친구와 이야기하면서 커피를 마셨어요.',ja:'友達と話しながらコーヒーを飲みました。',en:'I drank coffee while talking with a friend.',zh:'我一边和朋友聊天，一边喝了咖啡。'
+  },{
+    ko:'한 사람이 친구와 이야기하는 동안 커피도 마셨으므로 두 행동이 같은 시간에 진행됩니다.',
+    ja:'同じ人が友達と話している間にコーヒーも飲んだので、二つの動作が同時に進んでいます。',
+    en:'The same person talks with a friend and drinks coffee during the same time, so the actions are simultaneous.',
+    zh:'同一个人在和朋友聊天的同时也喝咖啡，因此两个动作同时进行。'
+  }),
+  reviewedBasicConnectiveItem('S04-I-G-CONNECTIVE-02','-(으)니까','reason','비가 오니까 우산을 가져가세요.',{
+    ko:'비가 오니까 우산을 가져가세요.',ja:'雨が降っているので、傘を持って行ってください。',en:'It is raining, so please take an umbrella.',zh:'因为下雨，请带上伞。'
+  },{
+    ko:'비가 온다는 이유를 먼저 말한 뒤 “가져가세요”라고 요청하므로 이유 뒤에 요청이 이어집니다.',
+    ja:'雨が降っているという理由を先に述べ、その後で「持って行ってください」と依頼しています。',
+    en:'The rain is given first as the reason, followed by the request “please take an umbrella.”',
+    zh:'先说明下雨这一原因，后面接“请带上伞”的请求。'
+  }),
+  reviewedBasicConnectiveItem('S04-I-G-CONNECTIVE-03','-(으)러','movementPurpose','책을 빌리러 도서관에 갔어요.',{
+    ko:'책을 빌리러 도서관에 갔어요.',ja:'本を借りに図書館へ行きました。',en:'I went to the library to borrow a book.',zh:'我去图书馆借书了。'
+  },{
+    ko:'뒤의 이동 동사 “도서관에 갔어요” 앞에서 “책을 빌리다”가 그 이동의 목적을 밝힙니다.',
+    ja:'後ろの移動動詞「図書館へ行きました」の前で、「本を借りる」がその移動の目的を示しています。',
+    en:'Before the movement “went to the library,” borrowing a book states the purpose of that trip.',
+    zh:'在后面的移动表达“去了图书馆”之前，“借书”说明了这次移动的目的。'
+  }),
+  reviewedBasicConnectiveItem('S04-I-G-CONNECTIVE-04','-는데','background','지금 회의 중인데 나중에 전화할게요.',{
+    ko:'지금 회의 중인데 나중에 전화할게요.',ja:'今は会議中なので、後で電話しますね。',en:'I am in a meeting now, so I will call you later.',zh:'我现在正在开会，稍后给你打电话。'
+  },{
+    ko:'“지금 회의 중”이라는 현재 상황을 먼저 제시한 뒤, 그 배경에서 나중에 전화하겠다는 결정을 말합니다.',
+    ja:'「今は会議中」という現在の状況を先に示し、その背景を受けて後で電話するという判断を述べています。',
+    en:'The current meeting is supplied as background before the speaker says they will call later.',
+    zh:'先说明“现在正在开会”这一当前情况，再在此背景下表示稍后会打电话。'
   })
 ];
 
