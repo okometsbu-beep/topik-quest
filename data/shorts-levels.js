@@ -797,6 +797,69 @@ const reviewedFormalRelationItem=(id,term,key,example,exampleI18n,evidence)=>{
   });
 };
 
+const DEGREE_COMPARISON=Object.freeze({
+  baseline:Object.freeze({
+    meaning:Object.freeze({ko:'기준 대상과 비교한 차이',ja:'基準となる対象と比べた差',en:'a difference from an explicit baseline',zh:'与明确基准对象相比的差异'}),
+    selected:Object.freeze({
+      ko:'“-에 비해(서)”는 앞의 대상을 비교 기준으로 삼아 뒤 대상의 차이를 말합니다.',
+      ja:'「-에 비해(서)」は、前の対象を比較の基準にして、後ろの対象との違いを述べます。',
+      en:'“-에 비해(서)” sets the preceding item as the baseline and states how the following item differs.',
+      zh:'“-에 비해(서)”把前面的对象作为比较基准，说明后面对象与它的差异。'
+    })
+  }),
+  noLess:Object.freeze({
+    meaning:Object.freeze({ko:'기준 대상에 뒤지지 않는 정도',ja:'基準となる対象に劣らない程度',en:'a degree not inferior to a reference',zh:'不逊于基准对象的程度'}),
+    selected:Object.freeze({
+      ko:'“-에 못지않게”는 뒤 대상의 정도가 앞의 기준 대상보다 뒤떨어지지 않음을 나타냅니다.',
+      ja:'「-에 못지않게」は、後ろの対象の程度が前の基準となる対象に劣らないことを表します。',
+      en:'“-에 못지않게” means the following item is not inferior in degree to the preceding reference.',
+      zh:'“-에 못지않게”表示后面对象的程度不逊于前面的基准对象。'
+    })
+  }),
+  equal:Object.freeze({
+    meaning:Object.freeze({ko:'기준 대상과 같은 정도',ja:'基準となる対象と同じ程度',en:'the same degree as a reference',zh:'与基准对象相同的程度'}),
+    selected:Object.freeze({
+      ko:'“-만큼”은 앞의 대상을 기준으로 뒤 대상의 정도가 그와 같거나 맞먹음을 나타냅니다.',
+      ja:'「-만큼」は、前の対象を基準に、後ろの対象の程度が同じくらいであることを表します。',
+      en:'“-만큼” uses the preceding item as a reference and marks an equal or matching degree.',
+      zh:'“-만큼”以前面的对象为基准，表示后面对象的程度与其相同或相当。'
+    })
+  }),
+  extent:Object.freeze({
+    meaning:Object.freeze({ko:'결과로 드러나는 매우 큰 정도',ja:'結果から分かる非常に大きな程度',en:'an extreme degree shown by its result',zh:'由结果体现出的很大程度'}),
+    selected:Object.freeze({
+      ko:'“-(으)ㄹ 정도로”는 뒤의 결과가 생길 만큼 앞의 상태나 행동 정도가 큼을 나타냅니다.',
+      ja:'「-(으)ㄹ 정도로」は、後ろの結果が生じるほど、前の状態・動作の程度が大きいことを表します。',
+      en:'“-(으)ㄹ 정도로” shows that the preceding state or action is strong enough to produce the following result.',
+      zh:'“-(으)ㄹ 정도로”表示前面的状态或动作程度很大，足以产生后面的结果。'
+    })
+  })
+});
+const DEGREE_COMPARISON_ORDER=['baseline','noLess','equal','extent'];
+const DEGREE_COMPARISON_METHOD=Object.freeze({
+  ko:'문장 속 기준과 정도 관계를 보세요. 두 대상의 차이=비해서, 기준에 뒤지지 않음=못지않게, 같은 정도=만큼, 결과가 보여 주는 큰 정도=ㄹ 정도로입니다.',
+  ja:'文中の基準と程度の関係を見ます。二つの対象の差＝비해서、基準に劣らない＝못지않게、同じ程度＝만큼、結果で分かる大きな程度＝ㄹ 정도로です。',
+  en:'Find the reference and degree relation: difference between two items = 비해서, not inferior to the reference = 못지않게, equal degree = 만큼, and an extreme degree shown by a result = ㄹ 정도로.',
+  zh:'先找句中的基准和程度关系：两个对象的差异＝비해서，不逊于基准＝못지않게，相同程度＝만큼，由结果体现的大程度＝ㄹ 정도로。'
+});
+const reviewedDegreeComparisonItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=DEGREE_COMPARISON[key];
+  return Object.freeze({
+    id,level:2,type:'grammar',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:DEGREE_COMPARISON_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(DEGREE_COMPARISON_ORDER.map(choiceKey=>Object.freeze({
+      meaning:DEGREE_COMPARISON[choiceKey].meaning,
+      explanationI18n:DEGREE_COMPARISON[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】-에 비해(서)=두 대상의 차이, -에 못지않게=기준에 뒤지지 않음, -만큼=같은 정도, -(으)ㄹ 정도로=결과가 보여 주는 큰 정도로 관계가 다릅니다.\n【재사용 풀이】${DEGREE_COMPARISON_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】-에 비해(서)＝二つの対象の差、-에 못지않게＝基準に劣らない、-만큼＝同じ程度、-(으)ㄹ 정도로＝結果で分かる大きな程度で、関係が異なります。\n【再利用できる解き方】${DEGREE_COMPARISON_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] -에 비해(서) compares two items, -에 못지않게 means not inferior to a reference, -만큼 equal degree, and -(으)ㄹ 정도로 an extreme degree shown by a result.\n[Reusable method] ${DEGREE_COMPARISON_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】-에 비해(서)表示两个对象的差异，-에 못지않게表示不逊于基准，-만큼表示相同程度，-(으)ㄹ 정도로表示由结果体现出的很大程度，关系各不相同。\n【通用解法】${DEGREE_COMPARISON_METHOD.zh}`
+    })
+  });
+};
+
 const BASIC_NEGATION=Object.freeze({
   general:Object.freeze({
     meaning:Object.freeze({ko:'행동·상태를 단순히 부정함',ja:'動作・状態の単純な否定（～しない）',en:'simple negation of an action or state',zh:'对动作或状态作一般否定'}),
@@ -2155,6 +2218,39 @@ const TOPIK_II=[
     ja:'「設計されました」は受け身で、「有名な建築家」は設計した主体なので「-에 의해(서)」が合います。',
     en:'“Was designed” is passive, and “a famous architect” is the agent, so -에 의해(서) fits.',
     zh:'“被设计”是被动表达，“著名建筑师”是动作的施事者，所以应选“-에 의해(서)”。'
+  }),
+
+  reviewedDegreeComparisonItem('S04-II-G-DEGREE-01','-에 비해(서)','baseline','지난달에 비해 이번 달 매출이 늘었습니다.',{
+    ko:'지난달에 비해 이번 달 매출이 늘었습니다.',ja:'先月に比べて、今月の売上が増えました。',en:'Compared with last month, sales increased this month.',zh:'与上个月相比，这个月的销售额增加了。'
+  },{
+    ko:'“지난달”과 “이번 달” 두 대상을 직접 비교해 매출 차이를 말하므로 “-에 비해(서)”가 맞습니다.',
+    ja:'「先月」と「今月」の二つを直接比べて売上の差を述べるので「-에 비해(서)」が合います。',
+    en:'The sentence directly compares last month with this month and states a sales difference, so -에 비해(서) fits.',
+    zh:'句子直接比较“上个月”和“这个月”并说明销售额的差异，所以应选“-에 비해(서)”。'
+  }),
+  reviewedDegreeComparisonItem('S04-II-G-DEGREE-02','-에 못지않게','noLess','이 작품은 전작에 못지않게 인기가 많습니다.',{
+    ko:'이 작품은 전작에 못지않게 인기가 많습니다.',ja:'この作品は前作に劣らず人気があります。',en:'This work is no less popular than the previous one.',zh:'这部作品的人气不逊于前作。'
+  },{
+    ko:'이 작품의 인기가 기준인 “전작”보다 뒤떨어지지 않는다고 하므로 “-에 못지않게”가 맞습니다.',
+    ja:'この作品の人気が基準となる「前作」に劣らないと述べるので「-에 못지않게」が合います。',
+    en:'The current work is said to be no less popular than the previous one, so -에 못지않게 fits.',
+    zh:'句子表示这部作品的人气不逊于作为基准的“前作”，所以应选“-에 못지않게”。'
+  }),
+  reviewedDegreeComparisonItem('S04-II-G-DEGREE-03','-만큼','equal','동생은 형만큼 키가 큽니다.',{
+    ko:'동생은 형만큼 키가 큽니다.',ja:'弟は兄と同じくらい背が高いです。',en:'The younger brother is as tall as his older brother.',zh:'弟弟和哥哥一样高。'
+  },{
+    ko:'동생의 키가 기준인 “형”과 같은 정도라고 하므로 “-만큼”이 맞습니다.',
+    ja:'弟の背が基準となる「兄」と同じ程度だと述べるので「-만큼」が合います。',
+    en:'The younger brother’s height is stated to equal the older brother’s, so -만큼 fits.',
+    zh:'句子表示弟弟的身高与作为基准的“哥哥”相同，所以应选“-만큼”。'
+  }),
+  reviewedDegreeComparisonItem('S04-II-G-DEGREE-04','-(으)ㄹ 정도로','extent','목소리가 밖에서도 들릴 정도로 컸습니다.',{
+    ko:'목소리가 밖에서도 들릴 정도로 컸습니다.',ja:'声は外でも聞こえるほど大きかったです。',en:'The voice was so loud that it could be heard outside.',zh:'声音大得连外面都能听见。'
+  },{
+    ko:'“밖에서도 들리다”라는 결과가 목소리가 얼마나 컸는지 보여 주므로 “-(으)ㄹ 정도로”가 맞습니다.',
+    ja:'「外でも聞こえる」という結果が、声がどれほど大きかったかを示すので「-(으)ㄹ 정도로」が合います。',
+    en:'The result “could be heard outside” shows how loud the voice was, so -(으)ㄹ 정도로 fits.',
+    zh:'“连外面都能听见”这一结果体现了声音有多大，所以应选“-(으)ㄹ 정도로”。'
   })
 ];
 
