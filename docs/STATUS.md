@@ -58,8 +58,11 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - Candidate v127 adds four TOPIK I wearing-action cards (`입다`, `신다`, `쓰다`, `끼다`).
   Candidate inventory is 388 rows / 262 exact families (I 132, II 130), with the existing 126
   redundant rows, 30 duplicate groups, 15 structural flags, and 0 approvals unchanged. Native review,
-  learner timing/recall, physical devices, PR mobile evidence, and deployment remain unverified. Local
-  focused checks pass 30/30, content 33/33, and full release 127/127 with the v127 45-file runtime contract.
+  learner timing/recall, physical devices, and deployment remain unverified. Local focused checks pass
+  30/30, content 33/33, and full release 127/127 with the v127 45-file runtime contract. PR #164 CI
+  `35518597198` passed Linux Chrome 320/375/390/430px light/dark, Japanese wrong-answer feedback,
+  detailed coaching, next-first flow, and reload restoration; artifact `10606903965` screens
+  `00de`/`00df` were inspected.
 - v120 adds four TOPIK II temporal-relation cards (`-자마자`, `-고 나서`, `-는 동안`,
   `-기 전에`). Its generated inventory is 360 rows / 234 exact families (I 116, II 118),
   with the existing 15 structural flags unchanged.
@@ -213,7 +216,9 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 후보 재고는 388행/262 정확 질문-보기군, I 132·II 130개다. 기존 중복 126행·30군,
   구조 후보 15개, 정답 충돌 0은 증가하지 않았고 전체 승인 수는 0/388이다.
 - Node 24 집중 vocabulary+inventory 30/30, 콘텐츠 33/33, 전체 release check 127/127과
-  v127 런타임 45개 계약을 통과했다. PR Linux Chrome 모바일 증거, 실제 일본어 모어 화자,
+  v127 런타임 45개 계약을 통과했다. PR #164 CI `35518597198`은 Linux Chrome 320·375·390·
+  430px 라이트/다크, 일본어 선택 오답 설명, 상세 해설, 다음 문제 우선, 새로고침 복원을 통과했다.
+  artifact `10606903965`의 `00de`/`00df` 화면을 직접 확인했다. 실제 일본어 모어 화자,
   학습자 풀이시간/D1·D7 회상, 실제 iPhone/Android는 아직 미검증이다.
 - production과 제품 복귀 기준은 검증 완료 전까지 v126
   `39e2ac7d305d5e5acbfdd8308bf1075994c00d1c`이다. 검수대장은
