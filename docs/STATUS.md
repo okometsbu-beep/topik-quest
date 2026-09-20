@@ -14,7 +14,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 실제 검사: Linux Node v24.19.0, 집중 10/10·quick 95/95·전체 `npm run check` 110/110. 로컬 HTTP 3개 기본+45개 런타임 통과. PR CI와 main CI `34702111845`에서 Linux Chrome 320/375/390/430px×라이트/다크, 두 칸 터치 입력·독립 저장·새로고침 복원·참고 점수·복습 분리·구형 단일 답안 안내를 통과했다. main CI 첫 시도는 Chrome target 종료로 실패했으나 동일 커밋 재실행은 통과했다.
 - 라이브 공개 브라우저: v110을 새로 불러온 TOPIK II → 쓰기만 → 51번에서 `ㄱ(기역) 답안`과 `ㄴ(니은) 답안` 두 textbox를 확인했다. 서로 다른 값을 입력하고 다음→이전 뒤에도 각각 유지됐다. HTTP smoke는 3개 기본+45개 런타임을 통과했다.
 - 시각 증거: CI artifact `10300595038`의 `00bu-writing-two-blanks-light.png`, `00bv-writing-two-blanks-dark.png`, `00bw-writing-two-blanks-review-dark.png` 직접 확인. 실제 iPhone/Android 및 실제 IME는 미검증이며 에뮬레이션과 구별한다.
-- 다음 한 작업: 새 P0·명백한 정답 오류가 없으면 TOPIK II 부족 유형 4문항 제한 검수.
+- 다음 한 작업: v126 TOPIK II 태도 부사 4문항의 CI 모바일 증거를 확인한 뒤 합격할 때만 배포.
 - 현재 라이브/복귀 기준: v125 `91923d31206dfbe8695f5348050ab9834dafc478`,
   https://okometsbu-beep.github.io/topik-quest/ . 제품 복귀 기준은 v124
   `10bb264f48b75754c10456f33236d3352f6ba5a0`이다.
@@ -23,7 +23,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 - Production: GitHub Pages static PWA
 - Production release: v125 · four bounded TOPIK I basic-connective Shorts (`91923d31206dfbe8695f5348050ab9834dafc478`)
-- Current candidate: none
+- Current candidate: v126 · four bounded TOPIK II stance-adverb Shorts (`간신히`, `차라리`, `도무지`, `미처`)
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -44,6 +44,10 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - Production v125 adds four TOPIK I clause-relation cards (`-(으)면서`, `-(으)니까`,
   `-(으)러`, `-는데`). Production inventory is 380 rows / 254 exact families (I 128, II 126),
   with 126 redundant rows, 30 duplicate groups, 15 structural flags, and 0 approvals.
+- Candidate v126 adds four TOPIK II stance-adverb cards (`간신히`, `차라리`, `도무지`, `미처`).
+  Candidate inventory is 384 rows / 258 exact families (I 128, II 130), with the existing 126
+  redundant rows, 30 duplicate groups, 15 structural flags, and 0 approvals unchanged. Native review,
+  learner timing/recall, physical devices, and deployment remain unverified.
 - v120 adds four TOPIK II temporal-relation cards (`-자마자`, `-고 나서`, `-는 동안`,
   `-기 전에`). Its generated inventory is 360 rows / 234 exact families (I 116, II 118),
   with the existing 15 structural flags unchanged.
@@ -187,8 +191,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 다음 한 작업
 
 #129 긴급 작문 입력 분리와 v111–v125의 제한 검수 문항 배포·운영 문서 동기화는 완료됐다.
-새 P0·명백한 정답 오류가 없으면 다음 한 작업은 서로 다른 검수 세트 수가 더 적은
-TOPIK II(126)의 부족 유형 4문항 제한 검수다. 수량 자체를 교육 승인이나 출시 진척으로 보지 않는다.
+이번 한 작업은 TOPIK II 태도 부사 4문항 후보 v126의 자동·모바일·배포 검증이다.
+수량 자체를 교육 승인이나 출시 진척으로 보지 않는다.
 
 ## 완료 작업 · S04 TOPIK I 기본 연결 표현 숏츠 4문항
 
