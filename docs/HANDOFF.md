@@ -85,6 +85,14 @@ these facts from conversation history or the large TOPIK source bundle.
   Final CI `35501808421`, main CI `35502032804`, and Pages `35502032361` passed. Live HTTP smoke and
   public-browser verification passed; product rollback is v125. The next bounded review target is TOPIK I,
   which has fewer distinct sets (128) than TOPIK II (130).
+  Candidate v127 appends four stable TOPIK I wearing-action IDs for `입다`, `신다`, `쓰다`, and
+  `끼다`. The candidate has 388 runtime rows / 262 exact sets (I 132, II 130), while the existing
+  126 redundant rows, 30 duplicate groups, 15 structural candidates, and 0 approvals remain unchanged.
+  Local focused checks pass 30/30, content 33/33, and full release 127/127 with the v127 45-file
+  runtime contract. PR #164 CI `35518597198` passes Linux Chrome 320/375/390/430px light/dark,
+  Japanese wrong-answer feedback, expanded coaching, next-first flow, and reload restoration. Artifact
+  `10606903965` screens `00de`/`00df` were inspected. Final CI, merge, Pages, and public-browser gates
+  remain; production and rollback remain v126.
   Audit-only curated IDs must NOT replace saved numeric indices without the S03 migration contract.
 - Production v123 extends the bounded S04 lane with four TOPIK I basic-negation cards (`안`, `못`,
   `아니에요`, `없어요`). It uses stable IDs, fixed choice-specific ko/ja/en/zh feedback, bundled

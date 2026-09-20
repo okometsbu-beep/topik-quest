@@ -1553,6 +1553,69 @@ const reviewedCounterItem=(id,term,key,example,exampleI18n,evidence)=>{
   });
 };
 
+const WEARING_ACTIONS=Object.freeze({
+  clothes:Object.freeze({
+    meaning:Object.freeze({ko:'옷을 몸에 입음',ja:'服を着る',en:'put on or wear clothes',zh:'穿衣服'}),
+    selected:Object.freeze({
+      ko:'“입다”는 코트·셔츠처럼 몸에 걸치는 옷을 착용할 때 씁니다.',
+      ja:'「입다」は、コートやシャツなど、体に着る服を身につけるときに使います。',
+      en:'“입다” is used for clothes worn on the body, such as coats and shirts.',
+      zh:'“입다”用于穿在身上的衣服，如外套、衬衫。'
+    })
+  }),
+  footwear:Object.freeze({
+    meaning:Object.freeze({ko:'신발·양말을 발에 신음',ja:'靴・靴下を履く',en:'put on or wear shoes or socks',zh:'穿鞋或袜子'}),
+    selected:Object.freeze({
+      ko:'“신다”는 신발이나 양말처럼 발에 착용하는 것을 말할 때 씁니다.',
+      ja:'「신다」は、靴や靴下など、足につける物を履くときに使います。',
+      en:'“신다” is used for things worn on the feet, such as shoes and socks.',
+      zh:'“신다”用于穿在脚上的物品，如鞋、袜子。'
+    })
+  }),
+  headwear:Object.freeze({
+    meaning:Object.freeze({ko:'모자를 머리에 씀',ja:'帽子をかぶる',en:'put on or wear a hat',zh:'戴帽子'}),
+    selected:Object.freeze({
+      ko:'“쓰다”는 모자처럼 머리에 얹어 착용하는 것을 말할 때 씁니다.',
+      ja:'「쓰다」は、帽子のように頭にかぶる物を身につけるときに使います。',
+      en:'“쓰다” is used for something worn on the head, such as a hat.',
+      zh:'“쓰다”用于戴在头上的物品，如帽子。'
+    })
+  }),
+  gloves:Object.freeze({
+    meaning:Object.freeze({ko:'장갑을 손에 낌',ja:'手袋をはめる',en:'put on or wear gloves',zh:'戴手套'}),
+    selected:Object.freeze({
+      ko:'“끼다”는 장갑처럼 손이나 손가락에 밀착시켜 착용하는 것을 말할 때 씁니다.',
+      ja:'「끼다」は、手袋のように手や指に密着させて身につけるときに使います。',
+      en:'“끼다” is used for something fitted onto the hands or fingers, such as gloves.',
+      zh:'“끼다”用于戴在手或手指上的贴身物品，如手套。'
+    })
+  })
+});
+const WEARING_ACTION_ORDER=['clothes','footwear','headwear','gloves'];
+const WEARING_ACTION_METHOD=Object.freeze({
+  ko:'착용하는 물건과 몸의 위치를 먼저 보세요. 몸의 옷=입다, 발의 신발·양말=신다, 머리의 모자=쓰다, 손의 장갑=끼다입니다.',
+  ja:'身につける物と体の位置を先に見ます。体の服＝입다、足の靴・靴下＝신다、頭の帽子＝쓰다、手の手袋＝끼다です。',
+  en:'Identify the item and body location first: clothes on the body = 입다, shoes or socks on the feet = 신다, a hat on the head = 쓰다, and gloves on the hands = 끼다.',
+  zh:'先看穿戴物和身体部位：身上的衣服＝입다，脚上的鞋或袜子＝신다，头上的帽子＝쓰다，手上的手套＝끼다。'
+});
+const reviewedWearingActionItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=WEARING_ACTIONS[key];
+  return Object.freeze({
+    id,level:1,type:'word',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:WEARING_ACTION_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(WEARING_ACTION_ORDER.map(choiceKey=>Object.freeze({
+      meaning:WEARING_ACTIONS[choiceKey].meaning,
+      explanationI18n:WEARING_ACTIONS[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】입다=몸의 옷, 신다=발의 신발·양말, 쓰다=머리의 모자, 끼다=손의 장갑으로 착용하는 물건과 위치가 다릅니다.\n【재사용 풀이】${WEARING_ACTION_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】입다＝体の服、신다＝足の靴・靴下、쓰다＝頭の帽子、끼다＝手の手袋で、身につける物と位置が異なります。\n【再利用できる解き方】${WEARING_ACTION_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 입다 is for clothes on the body, 신다 shoes or socks on the feet, 쓰다 a hat on the head, and 끼다 gloves on the hands.\n[Reusable method] ${WEARING_ACTION_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】입다用于身上的衣服，신다用于脚上的鞋或袜子，쓰다用于头上的帽子，끼다用于手上的手套，穿戴物和部位各不相同。\n【通用解法】${WEARING_ACTION_METHOD.zh}`
+    })
+  });
+};
+
 const TOPIK_I=[
   item(1,'word','가게','상점','店','store; shop','商店','집 앞 가게에서 우유를 샀어요.'),
   item(1,'word','약속','만나기로 정한 일','約束','promise; appointment','约定','친구와 세 시에 만날 약속이 있어요.'),
@@ -1956,6 +2019,38 @@ const TOPIK_I=[
     ja:'「今は会議中」という現在の状況を先に示し、その背景を受けて後で電話するという判断を述べています。',
     en:'The current meeting is supplied as background before the speaker says they will call later.',
     zh:'先说明“现在正在开会”这一当前情况，再在此背景下表示稍后会打电话。'
+  }),
+  reviewedWearingActionItem('S04-I-W-WEAR-01','입다','clothes','날씨가 추워서 두꺼운 코트를 입었어요.',{
+    ko:'날씨가 추워서 두꺼운 코트를 입었어요.',ja:'寒かったので、厚いコートを着ました。',en:'It was cold, so I put on a thick coat.',zh:'天气很冷，所以我穿了厚外套。'
+  },{
+    ko:'“두꺼운 코트”는 몸에 걸치는 옷이므로 착용 동사 “입다”가 맞습니다.',
+    ja:'「厚いコート」は体に着る服なので、着用動詞「입다」が合います。',
+    en:'A thick coat is clothing worn on the body, so 입다 is the correct wearing verb.',
+    zh:'“厚外套”是穿在身上的衣服，所以应使用穿戴动词“입다”。'
+  }),
+  reviewedWearingActionItem('S04-I-W-WEAR-02','신다','footwear','비가 와서 장화를 신었어요.',{
+    ko:'비가 와서 장화를 신었어요.',ja:'雨が降ったので、長靴を履きました。',en:'It was raining, so I put on rain boots.',zh:'下雨了，所以我穿上了雨靴。'
+  },{
+    ko:'“장화”는 발에 착용하는 신발이므로 착용 동사 “신다”가 맞습니다.',
+    ja:'「長靴」は足に履く靴なので、着用動詞「신다」が合います。',
+    en:'Rain boots are footwear worn on the feet, so 신다 is the correct wearing verb.',
+    zh:'“雨靴”是穿在脚上的鞋，所以应使用穿戴动词“신다”。'
+  }),
+  reviewedWearingActionItem('S04-I-W-WEAR-03','쓰다','headwear','햇빛이 강해서 모자를 썼어요.',{
+    ko:'햇빛이 강해서 모자를 썼어요.',ja:'日差しが強かったので、帽子をかぶりました。',en:'The sunlight was strong, so I put on a hat.',zh:'阳光很强，所以我戴上了帽子。'
+  },{
+    ko:'“모자”는 머리에 착용하는 물건이므로 이 문장의 “쓰다”가 맞습니다.',
+    ja:'「帽子」は頭にかぶる物なので、この文では「쓰다」が合います。',
+    en:'A hat is worn on the head, so 쓰다 is the correct wearing verb in this sentence.',
+    zh:'“帽子”是戴在头上的物品，所以本句应使用“쓰다”。'
+  }),
+  reviewedWearingActionItem('S04-I-W-WEAR-04','끼다','gloves','손이 시려서 장갑을 꼈어요.',{
+    ko:'손이 시려서 장갑을 꼈어요.',ja:'手が冷たかったので、手袋をはめました。',en:'My hands were cold, so I put on gloves.',zh:'手很冷，所以我戴上了手套。'
+  },{
+    ko:'“장갑”은 손에 밀착시켜 착용하는 물건이므로 착용 동사 “끼다”가 맞습니다.',
+    ja:'「手袋」は手に密着させて身につける物なので、着用動詞「끼다」が合います。',
+    en:'Gloves fit onto the hands, so 끼다 is the correct wearing verb.',
+    zh:'“手套”是贴合戴在手上的物品，所以应使用穿戴动词“끼다”。'
   })
 ];
 
