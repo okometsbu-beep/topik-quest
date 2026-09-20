@@ -29,20 +29,21 @@ these facts from conversation history or the large TOPIK source bundle.
 - Source of truth: [release blueprint #110](https://github.com/okometsbu-beep/topik-quest/issues/110).
   It supersedes #76 map expansion until core learning quality gates pass. A01–A12 remain audit findings,
   not resolved items; existing feature/visual checks do not certify translation or teaching accuracy.
-- Production is v124 at `10bb264f48b75754c10456f33236d3352f6ba5a0` (PR #158), adding four
-  bounded TOPIK II degree/comparison cards separating an explicit baseline difference, a degree not
-  inferior to the reference, equal degree, and a result-demonstrated extreme degree. Current candidate v125
-  adds four bounded TOPIK I basic-connective cards separating simultaneous actions, a reason before a
-  judgment/request, movement purpose, and discourse background. Candidate inventory is 380 rows / 254
+- Production is v125 at `91923d31206dfbe8695f5348050ab9834dafc478` (PR #160), adding four
+  bounded TOPIK I basic-connective cards separating simultaneous actions, a reason before a
+  judgment/request, movement purpose, and discourse background. Production inventory is 380 rows / 254
   exact families (I 128, II 126); local focused vocabulary+inventory checks pass 28/28, content checks
   31/31, and the full release check 125/125 with the v125 45-file runtime contract. PR #160 CI
-  `35469665976` covers Linux Chrome 320/375/390/430px light/dark, selected-wrong feedback,
+  `35469665976` and final CI `35470007260` cover Linux Chrome 320/375/390/430px light/dark, selected-wrong feedback,
   expanded coaching, next-first flow, and reload restoration. Artifact `10592252454` screens
-  `00da`/`00db` were inspected. Local Chrome/Chromium and physical devices remain unavailable;
-  merge, Pages, and live gates are pending.
+  `00da`/`00db` were inspected. Main CI `35470201592` and Pages `35470200959` succeeded. Live HTTP
+  smoke reports v125 with 3 base + 45 runtime files; public Chrome verified the Japanese `-(으)면서`
+  card, deliberate `-(으)니까` wrong answer, detailed coaching, and reload restoration. `index.html`,
+  `site-patch.js`, `sw.js`, and `data/shorts-levels.js` hashes match main. Local Chrome/Chromium and
+  physical devices remain unavailable.
   TOPIK II writing 51/52 keeps the v110 separate labelled ㄱ/ㄴ fields through input, scoring, save,
-  Review, recovery, and compatible legacy migration. Product rollback is v123
-  `cdefae5b00748f2df360f99050d66ea0c079495d`.
+  Review, recovery, and compatible legacy migration. Product rollback is v124
+  `10bb264f48b75754c10456f33236d3352f6ba5a0`.
 - Production v124 separates an explicit comparison baseline (`-에 비해(서)`), a degree not inferior
   to the reference (`-에 못지않게`), equal degree (`-만큼`), and an extreme degree demonstrated by
   a result (`-(으)ㄹ 정도로`). It appends four stable IDs without changing the original bank or
@@ -73,9 +74,9 @@ these facts from conversation history or the large TOPIK source bundle.
   v111 with 3 base + 45 runtime files; the four IDs and `data/shorts-levels.js` hash match main.
 - Latest #110 instruction: C01–C06 content quality, first applied as S01–S05 Shorts, outranks A08/#76.
   S01 adds `docs/qa/shorts-audit.md`, generated ID/content-hash inventory and `scripts/audit-shorts.cjs`.
-  Production v124 has 376 runtime rows but only 250 distinct question-choice sets (I 124, II 126),
+  Production v125 has 380 runtime rows but only 254 distinct question-choice sets (I 128, II 126),
   retaining 30 duplicate groups and 15 structural review candidates. Comprehensive content approvals
-  remain 0/376, not 376 passed questions.
+  remain 0/380, not 380 passed questions.
   Audit-only curated IDs must NOT replace saved numeric indices without the S03 migration contract.
 - Production v123 extends the bounded S04 lane with four TOPIK I basic-negation cards (`안`, `못`,
   `아니에요`, `없어요`). It uses stable IDs, fixed choice-specific ko/ja/en/zh feedback, bundled

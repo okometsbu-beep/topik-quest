@@ -14,16 +14,16 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 실제 검사: Linux Node v24.19.0, 집중 10/10·quick 95/95·전체 `npm run check` 110/110. 로컬 HTTP 3개 기본+45개 런타임 통과. PR CI와 main CI `34702111845`에서 Linux Chrome 320/375/390/430px×라이트/다크, 두 칸 터치 입력·독립 저장·새로고침 복원·참고 점수·복습 분리·구형 단일 답안 안내를 통과했다. main CI 첫 시도는 Chrome target 종료로 실패했으나 동일 커밋 재실행은 통과했다.
 - 라이브 공개 브라우저: v110을 새로 불러온 TOPIK II → 쓰기만 → 51번에서 `ㄱ(기역) 답안`과 `ㄴ(니은) 답안` 두 textbox를 확인했다. 서로 다른 값을 입력하고 다음→이전 뒤에도 각각 유지됐다. HTTP smoke는 3개 기본+45개 런타임을 통과했다.
 - 시각 증거: CI artifact `10300595038`의 `00bu-writing-two-blanks-light.png`, `00bv-writing-two-blanks-dark.png`, `00bw-writing-two-blanks-review-dark.png` 직접 확인. 실제 iPhone/Android 및 실제 IME는 미검증이며 에뮬레이션과 구별한다.
-- 다음 한 작업: v125 TOPIK I 기본 연결 표현 후보의 검사·시각 증거·배포 검증.
-- 현재 라이브/복귀 기준: v124 `10bb264f48b75754c10456f33236d3352f6ba5a0`,
-  https://okometsbu-beep.github.io/topik-quest/ . 제품 복귀 기준은 v123
-  `cdefae5b00748f2df360f99050d66ea0c079495d`이다.
+- 다음 한 작업: 새 P0·명백한 정답 오류가 없으면 TOPIK II 부족 유형 4문항 제한 검수.
+- 현재 라이브/복귀 기준: v125 `91923d31206dfbe8695f5348050ab9834dafc478`,
+  https://okometsbu-beep.github.io/topik-quest/ . 제품 복귀 기준은 v124
+  `10bb264f48b75754c10456f33236d3352f6ba5a0`이다.
 
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v124 · four bounded TOPIK II degree/comparison Shorts (`10bb264f48b75754c10456f33236d3352f6ba5a0`)
-- Current candidate: v125 · four bounded TOPIK I basic-connective Shorts
+- Production release: v125 · four bounded TOPIK I basic-connective Shorts (`91923d31206dfbe8695f5348050ab9834dafc478`)
+- Current candidate: none
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -35,14 +35,14 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - TOPIK I·II, Shorts, Random Practice, full mock exams, Review, Vocabulary, Statistics
 - Beginner grammar covers core sentence order and major particle, tense, politeness, negation, connective,
   modifier, irregular, and speech-level transformations with per-rule writing practice.
-- Production v124 has 212 TOPIK I / 164 TOPIK II rows and only 124 / 126 distinct
+- Production v125 has 216 TOPIK I / 164 TOPIK II rows and only 128 / 126 distinct
   question-choice sets. These are inventory counts, not educational approvals.
 - Production v124 adds four TOPIK II degree/comparison cards (`-에 비해(서)`, `-에 못지않게`,
   `-만큼`, `-(으)ㄹ 정도로`). Its generated inventory is 376 rows / 250 exact families
   (I 124, II 126), with the existing 15 structural flags unchanged.
   Fixed mock composition remains intact.
-- Candidate v125 adds four TOPIK I clause-relation cards (`-(으)면서`, `-(으)니까`,
-  `-(으)러`, `-는데`). Candidate inventory is 380 rows / 254 exact families (I 128, II 126),
+- Production v125 adds four TOPIK I clause-relation cards (`-(으)면서`, `-(으)니까`,
+  `-(으)러`, `-는데`). Production inventory is 380 rows / 254 exact families (I 128, II 126),
   with 126 redundant rows, 30 duplicate groups, 15 structural flags, and 0 approvals.
 - v120 adds four TOPIK II temporal-relation cards (`-자마자`, `-고 나서`, `-는 동안`,
   `-기 전에`). Its generated inventory is 360 rows / 234 exact families (I 116, II 118),
@@ -186,23 +186,29 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-#129 긴급 작문 입력 분리와 v111–v124의 제한 검수 문항 배포·운영 문서 동기화는 완료됐다.
-현재 한 작업은 v125 TOPIK I 기본 연결 표현 4문항 후보의 검사·시각 증거·배포 검증이다.
-수량 자체를 교육 승인이나 출시 진척으로 보지 않는다.
+#129 긴급 작문 입력 분리와 v111–v125의 제한 검수 문항 배포·운영 문서 동기화는 완료됐다.
+새 P0·명백한 정답 오류가 없으면 다음 한 작업은 서로 다른 검수 세트 수가 더 적은
+TOPIK II(126)의 부족 유형 4문항 제한 검수다. 수량 자체를 교육 승인이나 출시 진척으로 보지 않는다.
 
-## 진행 중 · S04 TOPIK I 기본 연결 표현 숏츠 4문항
+## 완료 작업 · S04 TOPIK I 기본 연결 표현 숏츠 4문항
 
-- v125 후보는 `-(으)면서·-(으)니까·-(으)러·-는데`를 동시 행동·이유 뒤 판단/요청·
+- v125는 `-(으)면서·-(으)니까·-(으)러·-는데`를 동시 행동·이유 뒤 판단/요청·
   이동 목적·뒤말의 배경으로 구분한다. 기존 ID, 원본 은행과 `topikQuestShortsV1` 저장 구조는
   변경하지 않고 기존 TOPIK I 행 뒤에만 추가한다.
 - ko/ja/en/zh 예문·선택 오답별 설명과 `결정적 근거 → 네 함정 → 절 관계` 풀이법을 내장했다.
-- 후보 재고는 380행/254 정확 질문-보기군, I 128·II 126개다. 기존 중복 126행·30군,
+- production 재고는 380행/254 정확 질문-보기군, I 128·II 126개다. 기존 중복 126행·30군,
   구조 후보 15개, 정답 충돌 0은 증가하지 않았고 전체 승인 수는 0/380이다.
 - Node 24 집중 vocabulary+inventory 28/28, 콘텐츠 31/31, 전체 release check 125/125와
   v125 런타임 45개 계약을 통과했다. 로컬 Chrome/Chromium은 없지만 PR #160 CI
-  `35469665976`이 Linux Chrome 320·375·390·430px 라이트/다크, 일본어 선택 오답 설명,
+  `35469665976`과 최종 CI `35470007260`이 Linux Chrome 320·375·390·430px 라이트/다크, 일본어 선택 오답 설명,
   상세 해설, 다음 문제 우선, 새로고침 복원을 통과했다. artifact `10592252454`의
-  `00da`/`00db` 화면을 직접 확인했다. 병합·Pages·라이브 검증은 진행 전이다.
+  `00da`/`00db` 화면을 직접 확인했다. PR #160을 squash merge한 production v125 제품 커밋은
+  `91923d31206dfbe8695f5348050ab9834dafc478`이다. main CI `35470201592`와 Pages
+  `35470200959`도 성공했다. 라이브 HTTP smoke는 v125 기본 3개+런타임 45개를 통과했고
+  `index.html`, `site-patch.js`, `sw.js`, `data/shorts-levels.js` 해시가 main과 일치했다.
+  공개 브라우저에서 일본어 TOPIK I Shorts의 신규 `-(으)면서` 카드에 의도적 `-(으)니까`
+  오답을 제출한 뒤 선택별 피드백·정답·예문·상세 해설과 새로고침 잠금 상태 복구를 확인했다.
+  제품 복귀 기준은 v124 `10bb264f48b75754c10456f33236d3352f6ba5a0`이다.
   실제 일본어 모어 화자, 학습자 풀이시간/D1·D7 회상, 실제 iPhone/Android는 미검증이다.
   검수대장은 `docs/qa/shorts-review-s04-topik1-basic-connectives.md`다.
 
