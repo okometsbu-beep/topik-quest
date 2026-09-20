@@ -860,6 +860,69 @@ const reviewedDegreeComparisonItem=(id,term,key,example,exampleI18n,evidence)=>{
   });
 };
 
+const STANCE_ADVERBS=Object.freeze({
+  barely:Object.freeze({
+    meaning:Object.freeze({ko:'어려움을 겪은 뒤 겨우 해냄',ja:'苦労の末、かろうじて実現する',en:'barely succeeding after difficulty',zh:'克服困难后勉强做到'}),
+    selected:Object.freeze({
+      ko:'“간신히”는 어려운 과정이나 아슬아슬한 상황을 거쳐 결과를 겨우 이루었음을 나타냅니다.',
+      ja:'「간신히」は、困難な過程やぎりぎりの状況を経て、結果をかろうじて実現したことを表します。',
+      en:'“간신히” means a result was achieved only after difficulty or by a narrow margin.',
+      zh:'“간신히”表示经历困难或在千钧一发之际才勉强实现结果。'
+    })
+  }),
+  prefer:Object.freeze({
+    meaning:Object.freeze({ko:'덜 나쁜 대안을 선택함',ja:'よりましな選択肢を選ぶ',en:'choosing the preferable alternative',zh:'选择相对更好的方案'}),
+    selected:Object.freeze({
+      ko:'“차라리”는 마음에 들지 않는 상황을 계속하기보다 다른 대안이 더 낫다고 선택할 때 씁니다.',
+      ja:'「차라리」は、好ましくない状況を続けるより、別の選択肢のほうがましだと選ぶときに使います。',
+      en:'“차라리” chooses another option as preferable to continuing an undesirable situation.',
+      zh:'“차라리”用于表示与其继续不理想的情况，不如选择另一个方案。'
+    })
+  }),
+  absolute:Object.freeze({
+    meaning:Object.freeze({ko:'부정 표현과 함께 전혀·도저히',ja:'否定表現とともに「まったく・どうしても」',en:'not at all with a negative expression',zh:'与否定表达搭配，表示怎么也、完全不'}),
+    selected:Object.freeze({
+      ko:'“도무지”는 보통 부정 표현과 함께 써서 아무리 해도 전혀 되지 않음을 강조합니다.',
+      ja:'「도무지」は普通、否定表現とともに使い、どうしてもまったくできないことを強調します。',
+      en:'“도무지” normally pairs with a negative expression to emphasize that something cannot be done or understood at all.',
+      zh:'“도무지”通常与否定表达搭配，强调无论如何都完全做不到或不明白。'
+    })
+  }),
+  notInTime:Object.freeze({
+    meaning:Object.freeze({ko:'때를 놓쳐 하지 못함',ja:'間に合わず、することができない',en:'failing to do something in time',zh:'因来不及而没能做'}),
+    selected:Object.freeze({
+      ko:'“미처”는 예상하지 못한 일이나 시간 부족 때문에 필요한 행동을 제때 하지 못했음을 나타냅니다.',
+      ja:'「미처」は、予想外の出来事や時間不足のため、必要な行動を間に合うようにできなかったことを表します。',
+      en:'“미처” means an expected or necessary action was not completed in time, often because events moved too quickly.',
+      zh:'“미처”表示因突发情况或时间不足，没能及时完成本来要做的动作。'
+    })
+  })
+});
+const STANCE_ADVERB_ORDER=['barely','prefer','absolute','notInTime'];
+const STANCE_ADVERB_METHOD=Object.freeze({
+  ko:'결과와 뒤 표현을 함께 보세요. 어려움 끝의 성취=간신히, 더 나은 대안 선택=차라리, 부정의 절대 강조=도무지, 제때 못 한 행동=미처입니다.',
+  ja:'結果と後ろの表現を一緒に見ます。苦労の末の実現＝간신히、よりましな選択＝차라리、否定の強調＝도무지、間に合わなかった行動＝미처です。',
+  en:'Read the result and following expression together: achievement after difficulty = 간신히, preferable alternative = 차라리, emphatic negation = 도무지, and an action not done in time = 미처.',
+  zh:'结合结果和后续表达判断：历经困难后实现＝간신히，选择相对更好的方案＝차라리，强化否定＝도무지，没能及时完成＝미처。'
+});
+const reviewedStanceAdverbItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=STANCE_ADVERBS[key];
+  return Object.freeze({
+    id,level:2,type:'word',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:STANCE_ADVERB_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(STANCE_ADVERB_ORDER.map(choiceKey=>Object.freeze({
+      meaning:STANCE_ADVERBS[choiceKey].meaning,
+      explanationI18n:STANCE_ADVERBS[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】간신히=어려움 끝의 성취, 차라리=더 나은 대안 선택, 도무지=부정의 절대 강조, 미처=제때 못 한 행동으로 문장 기능이 다릅니다.\n【재사용 풀이】${STANCE_ADVERB_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】간신히＝苦労の末の実現、차라리＝よりましな選択、도무지＝否定の強調、미처＝間に合わなかった行動で、文中の働きが異なります。\n【再利用できる解き方】${STANCE_ADVERB_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 간신히 marks achievement after difficulty, 차라리 a preferable alternative, 도무지 emphatic negation, and 미처 an action not completed in time.\n[Reusable method] ${STANCE_ADVERB_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】간신히表示历经困难后实现，차라리表示选择相对更好的方案，도무지强化否定，미처表示没能及时完成，句中作用各不相同。\n【通用解法】${STANCE_ADVERB_METHOD.zh}`
+    })
+  });
+};
+
 const BASIC_CONNECTIVES=Object.freeze({
   simultaneous:Object.freeze({
     meaning:Object.freeze({ko:'두 행동이 같은 시간에 진행됨',ja:'二つの動作が同時に進む',en:'two actions happen at the same time',zh:'两个动作同时进行'}),
@@ -2346,6 +2409,39 @@ const TOPIK_II=[
     ja:'「外でも聞こえる」という結果が、声がどれほど大きかったかを示すので「-(으)ㄹ 정도로」が合います。',
     en:'The result “could be heard outside” shows how loud the voice was, so -(으)ㄹ 정도로 fits.',
     zh:'“连外面都能听见”这一结果体现了声音有多大，所以应选“-(으)ㄹ 정도로”。'
+  }),
+
+  reviewedStanceAdverbItem('S04-II-W-STANCE-01','간신히','barely','막차가 출발하기 직전에 간신히 역에 도착했습니다.',{
+    ko:'막차가 출발하기 직전에 간신히 역에 도착했습니다.',ja:'終電が出る直前に、かろうじて駅に着きました。',en:'I barely reached the station just before the last train departed.',zh:'我在末班车出发前一刻勉强赶到了车站。'
+  },{
+    ko:'막차 출발 직전이라는 아슬아슬한 상황에서 역 도착을 겨우 이루었으므로 “간신히”가 맞습니다.',
+    ja:'終電の出発直前というぎりぎりの状況で、駅への到着をかろうじて実現したので「간신히」が合います。',
+    en:'Reaching the station just before the last train left was a narrow success, so 간신히 fits.',
+    zh:'在末班车出发前一刻才勉强到站，表示惊险地实现了结果，所以应选“간신히”。'
+  }),
+  reviewedStanceAdverbItem('S04-II-W-STANCE-02','차라리','prefer','계속 기다리느니 차라리 걸어가겠습니다.',{
+    ko:'계속 기다리느니 차라리 걸어가겠습니다.',ja:'待ち続けるくらいなら、むしろ歩いて行きます。',en:'Rather than keep waiting, I would rather walk.',zh:'与其一直等下去，我还不如走路去。'
+  },{
+    ko:'계속 기다리는 것보다 걸어가는 대안을 더 낫다고 선택하므로 “차라리”가 맞습니다.',
+    ja:'待ち続けるより歩くという別の選択肢のほうがましだと選んでいるので「차라리」が合います。',
+    en:'Walking is chosen as preferable to continuing to wait, so 차라리 fits.',
+    zh:'句子认为走路比继续等待更好，是在选择替代方案，所以应选“차라리”。'
+  }),
+  reviewedStanceAdverbItem('S04-II-W-STANCE-03','도무지','absolute','설명을 여러 번 읽어도 도무지 이해할 수 없습니다.',{
+    ko:'설명을 여러 번 읽어도 도무지 이해할 수 없습니다.',ja:'説明を何度読んでも、どうしても理解できません。',en:'Even after reading the explanation several times, I cannot understand it at all.',zh:'即使把说明读了好几遍，我还是怎么也理解不了。'
+  },{
+    ko:'“이해할 수 없습니다”라는 부정을 “여러 번 읽어도” 전혀 해결되지 않는다고 강조하므로 “도무지”가 맞습니다.',
+    ja:'「理解できません」という否定を、「何度読んでも」まったく解決しないと強めているので「도무지」が合います。',
+    en:'The negative “cannot understand” remains true even after repeated reading, so emphatic 도무지 fits.',
+    zh:'“无法理解”这一否定即使在反复阅读后仍完全没有改变，因此应选强调否定的“도무지”。'
+  }),
+  reviewedStanceAdverbItem('S04-II-W-STANCE-04','미처','notInTime','갑자기 불려서 인사도 미처 못 하고 나왔습니다.',{
+    ko:'갑자기 불려서 인사도 미처 못 하고 나왔습니다.',ja:'急に呼ばれて、挨拶もできないまま出てきました。',en:'I was called away suddenly and left without even having time to say goodbye.',zh:'突然被叫走，连招呼都没来得及打就出来了。'
+  },{
+    ko:'갑자기 불려 나가느라 인사를 제때 하지 못했으므로 “미처”가 맞습니다.',
+    ja:'急に呼ばれて出たため、挨拶を間に合うようにできなかったので「미처」が合います。',
+    en:'Being called away suddenly prevented the greeting from being done in time, so 미처 fits.',
+    zh:'因为突然被叫走，没能及时打招呼，所以应选“미처”。'
   })
 ];
 

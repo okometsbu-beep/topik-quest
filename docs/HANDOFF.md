@@ -77,6 +77,13 @@ these facts from conversation history or the large TOPIK source bundle.
   Production v125 has 380 runtime rows but only 254 distinct question-choice sets (I 128, II 126),
   retaining 30 duplicate groups and 15 structural review candidates. Comprehensive content approvals
   remain 0/380, not 380 passed questions.
+  Candidate v126 appends four stable TOPIK II stance-adverb IDs for `간신히`, `차라리`, `도무지`,
+  and `미처`. The candidate has 384 runtime rows / 258 exact sets (I 128, II 130), while the existing
+  126 redundant rows, 30 duplicate groups, 15 structural candidates, and 0 approvals remain unchanged.
+  Local focused checks pass 29/29, content 32/32, and full release 126/126. PR #162 CI `35501505213`
+  passes Linux Chrome 320/375/390/430px light/dark, Japanese wrong-answer feedback, expanded coaching,
+  next-first flow, and reload restoration. Artifact `10602636471` screens `00dc`/`00dd` were inspected.
+  Final CI, merge, Pages, and public-browser gates remain; production and rollback remain v125.
   Audit-only curated IDs must NOT replace saved numeric indices without the S03 migration contract.
 - Production v123 extends the bounded S04 lane with four TOPIK I basic-negation cards (`안`, `못`,
   `아니에요`, `없어요`). It uses stable IDs, fixed choice-specific ko/ja/en/zh feedback, bundled
