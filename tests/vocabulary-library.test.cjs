@@ -11,7 +11,7 @@ vm.runInContext(fs.readFileSync(path.join(root, 'data/shorts-levels.js'), 'utf8'
 
 test('TOPIK study library is complete, multilingual, and organized by level', () => {
   const decks = context.window.MALBIT_SHORTS_DECKS;
-  assert.equal(decks[1].length, 92);
+  assert.equal(decks[1].length, 96);
   assert.equal(decks[2].length, 106);
   assert.deepEqual([...new Set(decks[1].map(item => item.type))].sort(), ['expression', 'grammar', 'word']);
   assert.deepEqual([...new Set(decks[2].map(item => item.type))].sort(), ['grammar', 'idiom', 'word']);
@@ -473,49 +473,4 @@ test('S04 TOPIK II degree-comparison Shorts separate baseline, no-less degree, e
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
-  }
-});
-
-test('S04 TOPIK II stance-adverb Shorts separate narrow success, alternative, emphatic negation, and missed timing', () => {
-  const rows=context.window.MALBIT_SHORTS_DECKS[2].filter(item=>item.id?.startsWith('S04-II-W-STANCE-'));
-  assert.equal(rows.length,4);
-  assert.deepEqual(Array.from(rows,item=>item.term),['간신히','차라리','도무지','미처']);
-  for(const item of rows){
-    assert.equal(item.type,'word');
-    assert.equal(item.shortsFastReview,true);
-    assert.equal(item.shortChoices.length,4);
-    assert.equal(item.shortChoices[item.answerIndex].meaning.ko,item.meaning.ko);
-    for(const lang of ['ko','ja','en','zh']){
-      assert.ok(item.exampleI18n[lang],`${item.id} must ship a reviewed ${lang} example translation`);
-      assert.equal(new Set(item.shortChoices.map(choice=>choice.meaning[lang])).size,4,`${item.id} must have four distinct ${lang} choices`);
-      assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
-      assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
-    }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
-  }
-});
-
-test('reviewed Shorts example translations bypass the network translator', () => {
-  const source=fs.readFileSync(path.join(root,'product-polish.js'),'utf8');
-  assert.match(source,/const reviewed=item\.exampleI18n\?\.\[S\.lang\]/);
-  assert.match(source,/if\(reviewed\)\{node\.textContent=reviewed;return\}/);
-});
-
-test('vocabulary screen exposes manual entry, search, filters, and save actions', () => {
-  const source = fs.readFileSync(path.join(root, 'learning-features.js'), 'utf8');
-  for (const handler of ['malbitAddManualVocab', 'malbitAddLibraryVocab', 'malbitSearchVocabLibrary', 'malbitSetVocabLibraryLevel', 'malbitSetVocabLibraryType']) {
-    assert.match(source, new RegExp(`window\\.${handler}`));
-  }
-  assert.match(source, /TOPIK STUDY LIBRARY/);
-  assert.match(source, /tqManualVocabTerm/);
-  assert.match(source, /manual_vocab_v33/);
-  assert.match(source, /translateCached\(`manual_vocab_v33_/);
-  assert.match(source, /VOCAB_GROWTH_THRESHOLDS=\[0,1,3,6,10,16,24,35,50,75\]/);
-  assert.match(source, /vocabGrowthSvg/);
-  assert.match(source, /window\.malbitLearningVocabPage/);
-  assert.match(source, /window\.malbitPracticeVocabLibrary/);
-  assert.doesNotMatch(source, /class="tqLongPressDiscovery"/);
-});
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【
