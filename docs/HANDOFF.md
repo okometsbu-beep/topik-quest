@@ -24,25 +24,24 @@ these facts from conversation history or the large TOPIK source bundle.
   passed all 110 checks. Live public UI shows two labelled fields and preserves different ㄱ/ㄴ values after
   next/back navigation. Physical iPhone/Android and real IME remain unverified.
 
-## Current release priority · 2026-09-20
+## Current release priority · 2026-09-21
 
 - Source of truth: [release blueprint #110](https://github.com/okometsbu-beep/topik-quest/issues/110).
   It supersedes #76 map expansion until core learning quality gates pass. A01–A12 remain audit findings,
   not resolved items; existing feature/visual checks do not certify translation or teaching accuracy.
-- Production is v126 at `39e2ac7d305d5e5acbfdd8308bf1075994c00d1c` (PR #162), adding four
-  bounded TOPIK II stance-adverb cards separating narrow success after difficulty, a less-bad alternative,
-  emphatic negation, and an action missed in time. Production inventory is 384 rows / 258 exact families
-  (I 128, II 130); local focused vocabulary+inventory checks pass 29/29, content checks 32/32, and the
-  full release check 126/126 with the v126 45-file runtime contract. PR #162 evidence CI `35501505213`
-  and final CI `35501808421` cover Linux Chrome 320/375/390/430px light/dark, selected-wrong feedback,
-  expanded coaching, next-first flow, and reload restoration. Artifact `10602636471` screens `00dc`/`00dd`
-  were inspected. Main CI `35502032804` and Pages `35502032361` succeeded. Live HTTP smoke reports v126
-  with 3 base + 45 runtime files; public Chrome verified Japanese `도무지`, a deliberate `미처` error,
-  detailed coaching, and reload restoration. `index.html`, `site-patch.js`, `sw.js`, and
-  `data/shorts-levels.js` hashes match main. Local Chrome/Chromium and physical devices remain unavailable.
+- Production is v127 at `b1d9140dc9b06ecfd63bbf92dfbdaf8d056a9ac5` (PR #164), adding four
+  bounded TOPIK I wearing-action cards separating clothes on the body, footwear on the feet, hats on the
+  head, and gloves on the hands. Production inventory is 388 rows / 262 exact families (I 132, II 130);
+  local focused vocabulary+inventory checks pass 30/30, content checks 33/33, and the full release check
+  127/127 with the v127 45-file runtime contract. PR #164 evidence CI `35518597198` and final CI
+  `35518989721` cover Linux Chrome 320/375/390/430px light/dark, selected-wrong feedback, expanded
+  coaching, next-first flow, and reload restoration. Artifact `10606903965` screens `00de`/`00df` were
+  inspected. Main CI `35519244108` and Pages `35519243649` succeeded. Live HTTP reports v127;
+  `index.html`, `site-patch.js`, `sw.js`, and `data/shorts-levels.js` hashes match main and all four new
+  IDs are present. Local Chrome/Chromium and physical devices remain unavailable.
   TOPIK II writing 51/52 keeps the v110 separate labelled ㄱ/ㄴ fields through input, scoring, save,
-  Review, recovery, and compatible legacy migration. Product rollback is v125
-  `91923d31206dfbe8695f5348050ab9834dafc478`.
+  Review, recovery, and compatible legacy migration. Product rollback is v126
+  `39e2ac7d305d5e5acbfdd8308bf1075994c00d1c`.
 - Production v124 separates an explicit comparison baseline (`-에 비해(서)`), a degree not inferior
   to the reference (`-에 못지않게`), equal degree (`-만큼`), and an extreme degree demonstrated by
   a result (`-(으)ㄹ 정도로`). It appends four stable IDs without changing the original bank or
@@ -73,9 +72,9 @@ these facts from conversation history or the large TOPIK source bundle.
   v111 with 3 base + 45 runtime files; the four IDs and `data/shorts-levels.js` hash match main.
 - Latest #110 instruction: C01–C06 content quality, first applied as S01–S05 Shorts, outranks A08/#76.
   S01 adds `docs/qa/shorts-audit.md`, generated ID/content-hash inventory and `scripts/audit-shorts.cjs`.
-  Production v126 has 384 runtime rows but only 258 distinct question-choice sets (I 128, II 130),
+  Production v127 has 388 runtime rows but only 262 distinct question-choice sets (I 132, II 130),
   retaining 30 duplicate groups and 15 structural review candidates. Comprehensive content approvals
-  remain 0/384, not 384 passed questions.
+  remain 0/388, not 388 passed questions.
   Production v126 appends four stable TOPIK II stance-adverb IDs for `간신히`, `차라리`, `도무지`,
   and `미처`. It has 384 runtime rows / 258 exact sets (I 128, II 130), while the existing
   126 redundant rows, 30 duplicate groups, 15 structural candidates, and 0 approvals remain unchanged.
@@ -83,16 +82,18 @@ these facts from conversation history or the large TOPIK source bundle.
   passes Linux Chrome 320/375/390/430px light/dark, Japanese wrong-answer feedback, expanded coaching,
   next-first flow, and reload restoration. Artifact `10602636471` screens `00dc`/`00dd` were inspected.
   Final CI `35501808421`, main CI `35502032804`, and Pages `35502032361` passed. Live HTTP smoke and
-  public-browser verification passed; product rollback is v125. The next bounded review target is TOPIK I,
-  which has fewer distinct sets (128) than TOPIK II (130).
-  Candidate v127 appends four stable TOPIK I wearing-action IDs for `입다`, `신다`, `쓰다`, and
-  `끼다`. The candidate has 388 runtime rows / 262 exact sets (I 132, II 130), while the existing
+  public-browser verification passed; product rollback was v125.
+  Production v127 appends four stable TOPIK I wearing-action IDs for `입다`, `신다`, `쓰다`, and
+  `끼다`. It has 388 runtime rows / 262 exact sets (I 132, II 130), while the existing
   126 redundant rows, 30 duplicate groups, 15 structural candidates, and 0 approvals remain unchanged.
   Local focused checks pass 30/30, content 33/33, and full release 127/127 with the v127 45-file
   runtime contract. PR #164 CI `35518597198` passes Linux Chrome 320/375/390/430px light/dark,
   Japanese wrong-answer feedback, expanded coaching, next-first flow, and reload restoration. Artifact
-  `10606903965` screens `00de`/`00df` were inspected. Final CI, merge, Pages, and public-browser gates
-  remain; production and rollback remain v126.
+  `10606903965` screens `00de`/`00df` were inspected. Final CI `35518989721`, main CI `35519244108`,
+  and Pages `35519243649` passed. PR #164 was squash merged as
+  `b1d9140dc9b06ecfd63bbf92dfbdaf8d056a9ac5`. Live HTTP and four core-asset hash checks passed;
+  product rollback is v126. The next bounded review target is TOPIK II, which has fewer distinct sets
+  (130) than TOPIK I (132).
   Audit-only curated IDs must NOT replace saved numeric indices without the S03 migration contract.
 - Production v123 extends the bounded S04 lane with four TOPIK I basic-negation cards (`안`, `못`,
   `아니에요`, `없어요`). It uses stable IDs, fixed choice-specific ko/ja/en/zh feedback, bundled
