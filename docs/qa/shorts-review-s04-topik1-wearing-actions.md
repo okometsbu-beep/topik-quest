@@ -1,7 +1,7 @@
 # S04 · TOPIK I wearing-action Shorts pilot
 
-Candidate: v127. Production remains v126 `39e2ac7d305d5e5acbfdd8308bf1075994c00d1c`.
-Product rollback remains v126 until deployment completes.
+Production: v127 `b1d9140dc9b06ecfd63bbf92dfbdaf8d056a9ac5`.
+Product rollback: v126 `39e2ac7d305d5e5acbfdd8308bf1075994c00d1c`.
 Scope: four new TOPIK I word cards only. This is an AI content review plus automated QA record,
 not native-speaker approval, learner timing evidence, or approval of the other 384 Shorts rows.
 
@@ -25,7 +25,7 @@ shuffled and restored through the existing stable-ID storage contract.
 | `S04-I-W-WEAR-03` | `cad2896ed922afaf40608930d96a176a842424efd91332dcbaa16787e23da1c3` | `햇빛이 강해서 모자를 썼어요.` |
 | `S04-I-W-WEAR-04` | `83d30e8cb7cd5e022cc0e19595073ac4fa49b0b9aee145f4b79a9ba55c601b5f` | `손이 시려서 장갑을 꼈어요.` |
 
-## Candidate verdict and evidence boundary
+## Production verdict and evidence boundary
 
 | Gate | Result | Evidence / limitation |
 |---|---|---|
@@ -39,9 +39,9 @@ shuffled and restored through the existing stable-ID storage contract.
 | Full release checks | pass | Node 24 `npm run check` passes 127/127; runtime contract reports v127, 45 ordered files, and valid bank hashes. |
 | Emulated mobile | pass | PR #164 CI `35518597198` covers 320/375/390/430px light/dark, selected-wrong feedback, expanded coaching, next-first flow, and reload restoration. Artifact `10606903965` screens `00de`/`00df` were inspected. Local Chrome remains unavailable. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
-| Deployment | pending | PR CI, merge, Pages release, and public-browser verification are not complete. |
+| Deployment | pass | PR #164 final CI `35518989721`, main CI `35519244108`, and Pages `35519243649` passed. Live HTTP reports v127; four core public assets match main by SHA-256 and all four stable IDs are present. |
 
-Candidate inventory is 388 rows / 262 exact question-choice families (TOPIK I 132, TOPIK II 130).
+Production inventory is 388 rows / 262 exact question-choice families (TOPIK I 132, TOPIK II 130).
 The existing 126 redundant rows, 30 duplicate groups, and 15 structural review candidates do not
 increase. These totals are not content approvals: the generated inventory remains `approved: 0`, and
 only the four IDs above have this bounded AI review record. No existing Shorts row, original bank item,
