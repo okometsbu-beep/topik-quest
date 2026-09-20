@@ -14,7 +14,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 실제 검사: Linux Node v24.19.0, 집중 10/10·quick 95/95·전체 `npm run check` 110/110. 로컬 HTTP 3개 기본+45개 런타임 통과. PR CI와 main CI `34702111845`에서 Linux Chrome 320/375/390/430px×라이트/다크, 두 칸 터치 입력·독립 저장·새로고침 복원·참고 점수·복습 분리·구형 단일 답안 안내를 통과했다. main CI 첫 시도는 Chrome target 종료로 실패했으나 동일 커밋 재실행은 통과했다.
 - 라이브 공개 브라우저: v110을 새로 불러온 TOPIK II → 쓰기만 → 51번에서 `ㄱ(기역) 답안`과 `ㄴ(니은) 답안` 두 textbox를 확인했다. 서로 다른 값을 입력하고 다음→이전 뒤에도 각각 유지됐다. HTTP smoke는 3개 기본+45개 런타임을 통과했다.
 - 시각 증거: CI artifact `10300595038`의 `00bu-writing-two-blanks-light.png`, `00bv-writing-two-blanks-dark.png`, `00bw-writing-two-blanks-review-dark.png` 직접 확인. 실제 iPhone/Android 및 실제 IME는 미검증이며 에뮬레이션과 구별한다.
-- 다음 한 작업: v126 TOPIK II 태도 부사 4문항의 CI 모바일 증거를 확인한 뒤 합격할 때만 배포.
+- 다음 한 작업: v126 TOPIK II 태도 부사 4문항의 최종 CI를 확인한 뒤 합격할 때만 병합·배포.
 - 현재 라이브/복귀 기준: v125 `91923d31206dfbe8695f5348050ab9834dafc478`,
   https://okometsbu-beep.github.io/topik-quest/ . 제품 복귀 기준은 v124
   `10bb264f48b75754c10456f33236d3352f6ba5a0`이다.
@@ -47,7 +47,10 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - Candidate v126 adds four TOPIK II stance-adverb cards (`간신히`, `차라리`, `도무지`, `미처`).
   Candidate inventory is 384 rows / 258 exact families (I 128, II 130), with the existing 126
   redundant rows, 30 duplicate groups, 15 structural flags, and 0 approvals unchanged. Native review,
-  learner timing/recall, physical devices, and deployment remain unverified.
+  learner timing/recall, physical devices, and deployment remain unverified. Local focused checks pass
+  29/29, content 32/32, and full release 126/126. PR #162 CI `35501505213` passed Linux Chrome
+  320/375/390/430px light/dark, Japanese wrong-answer feedback, detailed coaching, next-first flow, and
+  reload restoration; artifact `10602636471` screens `00dc`/`00dd` were inspected.
 - v120 adds four TOPIK II temporal-relation cards (`-자마자`, `-고 나서`, `-는 동안`,
   `-기 전에`). Its generated inventory is 360 rows / 234 exact families (I 116, II 118),
   with the existing 15 structural flags unchanged.
