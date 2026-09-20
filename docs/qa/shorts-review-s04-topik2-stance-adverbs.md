@@ -1,7 +1,7 @@
 # S04 · TOPIK II stance-adverb Shorts pilot
 
-Candidate: v126. Production remains v125 `91923d31206dfbe8695f5348050ab9834dafc478`.
-Product rollback remains v125 until deployment completes.
+Production: v126 `39e2ac7d305d5e5acbfdd8308bf1075994c00d1c` via PR #162.
+Product rollback: v125 `91923d31206dfbe8695f5348050ab9834dafc478`.
 Scope: four new TOPIK II word cards only. This is an AI content review plus automated QA record,
 not native-speaker approval, learner timing evidence, or approval of the other 380 Shorts rows.
 
@@ -26,7 +26,7 @@ existing stable-ID storage contract.
 | `S04-II-W-STANCE-03` | `0227f1b7f8ffc9f894bb63c61950e6f34fcd8cf6c30c0b394d37d427f4db5f5e` | `설명을 여러 번 읽어도 도무지 이해할 수 없습니다.` |
 | `S04-II-W-STANCE-04` | `ac76a4be0aad8d47dcdb2e35cb1d7a8ce5353073e146b1d7f23c20efb26b66be` | `갑자기 불려서 인사도 미처 못 하고 나왔습니다.` |
 
-## Candidate verdict and evidence boundary
+## Production verdict and evidence boundary
 
 | Gate | Result | Evidence / limitation |
 |---|---|---|
@@ -40,9 +40,9 @@ existing stable-ID storage contract.
 | Full release checks | pass | Node 24 `npm run check` passes 126/126; runtime contract reports v126, 45 ordered files, and valid bank hashes. |
 | Emulated mobile | pass | PR #162 CI `35501505213` covers 320/375/390/430px light/dark, selected-wrong feedback, expanded coaching, next-first flow, and reload restoration. Artifact `10602636471` screens `00dc`/`00dd` were inspected. Local Chrome remains unavailable. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
-| Deployment | pending | PR #162 final CI, merge, Pages release, and public-browser verification are not complete. |
+| Deployment | pass | PR #162 final CI `35501808421`, main CI `35502032804`, and Pages `35502032361` passed. Live HTTP smoke reports v126 with 3 base + 45 runtime files; public Chrome verified Japanese `도무지`, deliberate `미처` wrong-answer feedback, detailed coaching, and reload restoration. |
 
-Candidate inventory is 384 rows / 258 exact question-choice families (TOPIK I 128, TOPIK II 130).
+Production inventory is 384 rows / 258 exact question-choice families (TOPIK I 128, TOPIK II 130).
 The 15 existing structural review candidates do not increase. These totals are not content approvals:
 the generated inventory remains `approved: 0`, and only the four IDs above have this bounded AI review record.
 No existing Shorts row, original bank item, answer, or stable ID is altered.
