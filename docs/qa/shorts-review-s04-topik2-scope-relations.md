@@ -1,6 +1,6 @@
 # S04 · TOPIK II scope-relation Shorts pilot
 
-Candidate: v128. Production remains v127 `b1d9140dc9b06ecfd63bbf92dfbdaf8d056a9ac5` until CI, mobile evidence, merge, and live verification pass.
+Production: v128 `6840bd478937ebb524f59ec8b68c203f41a1fb46` (PR #166).
 Product rollback: v127 `b1d9140dc9b06ecfd63bbf92dfbdaf8d056a9ac5`.
 Scope: four new TOPIK II grammar cards only. This is an AI content review plus automated QA record,
 not native-speaker approval, learner timing evidence, or approval of the other 388 Shorts rows.
@@ -25,7 +25,7 @@ Fixed choices are shuffled and restored through the existing stable-ID storage c
 | `S04-II-G-SCOPE-03` | `0a091573f7262d4e51d0485c98950e7f9a89206302acac850cb9db5bbe47bed4` | `나이에 관계없이 누구나 신청할 수 있습니다.` |
 | `S04-II-G-SCOPE-04` | `6bffce9517d3b5ae81fb9c23b48dd5e3380bb26352fcb5c71f27074026b91753` | `서울을 비롯해서 여러 도시에서 행사가 열렸습니다.` |
 
-## Candidate verdict and evidence boundary
+## Production verdict and evidence boundary
 
 | Gate | Result | Evidence / limitation |
 |---|---|---|
@@ -39,9 +39,9 @@ Fixed choices are shuffled and restored through the existing stable-ID storage c
 | Full release checks | pass | Node 24 `npm run check` passes 128/128; runtime contract reports v128, 45 ordered files, and valid bank hashes. |
 | Emulated mobile | pass | PR #166 evidence CI `35556820642` covers Linux Chrome 320/375/390/430px light/dark, wrong-answer feedback, expanded coaching, next-first flow, and reload restoration. Artifact `10621001103` screens `00dg`/`00dh` were inspected. Local Chrome remains unavailable. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
-| Deployment | pending | Evidence CI passed; final PR CI, merge, main CI, Pages, and live verification remain. |
+| Deployment | pass | Final PR CI `35557160438`, main CI `35557469515`, and Pages `35557469072` passed. PR #166 was squash merged as `6840bd478937ebb524f59ec8b68c203f41a1fb46`. Live HTTP reports v128; four core assets match main and include all four IDs. Public Chrome verified TOPIK II Shorts entry, the new `-에 관계없이` card, deliberate wrong-answer feedback, expanded coaching, and reload restoration. |
 
-Candidate inventory is 392 rows / 266 exact question-choice families (TOPIK I 132, TOPIK II 134).
+Production inventory is 392 rows / 266 exact question-choice families (TOPIK I 132, TOPIK II 134).
 The existing 126 redundant rows, 30 duplicate groups, and 15 structural review candidates do not
 increase. These totals are not content approvals: the generated inventory remains `approved: 0`, and
 only the four IDs above have this bounded AI review record. No existing Shorts row, original bank item,
