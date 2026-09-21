@@ -797,6 +797,69 @@ const reviewedFormalRelationItem=(id,term,key,example,exampleI18n,evidence)=>{
   });
 };
 
+const SCOPE_RELATION=Object.freeze({
+  exclusion:Object.freeze({
+    meaning:Object.freeze({ko:'앞 대상을 전체 범위에서 뺌',ja:'全体から前の対象を除く',en:'excluding one item from a group',zh:'把前面的对象排除在整体范围之外'}),
+    selected:Object.freeze({
+      ko:'“-을/를 제외하고”는 앞의 대상을 전체 범위에서 빼고 나머지만 포함합니다.',
+      ja:'「-을/를 제외하고」は、前の対象を全体の範囲から外し、残りだけを含めます。',
+      en:'“-을/를 제외하고” removes the preceding item from the full set and includes the remainder.',
+      zh:'“-을/를 제외하고”把前面的对象从整体范围中排除，只包含其余部分。'
+    })
+  }),
+  substitution:Object.freeze({
+    meaning:Object.freeze({ko:'앞 사람의 역할을 다른 사람이 맡음',ja:'前の人の役割を別の人が担う',en:'taking another person’s role',zh:'由别人代替前面的人承担职责'}),
+    selected:Object.freeze({
+      ko:'“-을/를 대신해(서)”는 앞사람이 할 역할을 다른 사람이나 대상이 맡음을 나타냅니다.',
+      ja:'「-을/를 대신해(서)」は、前の人がする役割を別の人や物が担うことを表します。',
+      en:'“-을/를 대신해(서)” means another person or thing takes the role of the preceding one.',
+      zh:'“-을/를 대신해(서)”表示由另一个人或事物代替前者承担其职责。'
+    })
+  }),
+  regardless:Object.freeze({
+    meaning:Object.freeze({ko:'앞 조건이 결과에 영향을 주지 않음',ja:'前の条件が結果に影響しない',en:'unaffected by the preceding condition',zh:'前面的条件不影响结果'}),
+    selected:Object.freeze({
+      ko:'“-에 관계없이”는 앞의 조건이 달라도 뒤의 결과나 자격이 바뀌지 않음을 나타냅니다.',
+      ja:'「-에 관계없이」は、前の条件が違っても、後ろの結果や資格が変わらないことを表します。',
+      en:'“-에 관계없이” means the result or eligibility stays the same even when the preceding condition differs.',
+      zh:'“-에 관계없이”表示即使前面的条件不同，后面的结果或资格也不改变。'
+    })
+  }),
+  representative:Object.freeze({
+    meaning:Object.freeze({ko:'앞 대상을 대표 예로 포함해 범위를 넓힘',ja:'前の対象を代表例として含める',en:'including a representative example',zh:'把前面的对象作为代表例纳入'}),
+    selected:Object.freeze({
+      ko:'“-을/를 비롯해(서)”는 앞 대상을 대표적인 예로 포함하고 같은 부류의 다른 대상까지 범위를 넓힙니다.',
+      ja:'「-을/를 비롯해(서)」は、前の対象を代表例として含め、同じ種類のほかの対象まで範囲を広げます。',
+      en:'“-을/를 비롯해(서)” includes the preceding item as a representative example and extends the scope to similar items.',
+      zh:'“-을/를 비롯해(서)”把前面的对象作为代表性例子纳入，并把范围扩展到同类的其他对象。'
+    })
+  })
+});
+const SCOPE_RELATION_ORDER=['exclusion','substitution','regardless','representative'];
+const SCOPE_RELATION_METHOD=Object.freeze({
+  ko:'앞 명사와 뒤 범위의 관계를 보세요. 전체에서 뺌=제외하고, 역할을 바꿈=대신해서, 조건과 무관=관계없이, 대표 예부터 포함=비롯해서입니다.',
+  ja:'前の名詞と後ろの範囲の関係を見ます。全体から外す＝제외하고、役割を替える＝대신해서、条件に左右されない＝관계없이、代表例から含める＝비롯해서です。',
+  en:'Read how the preceding noun relates to the following scope: remove it = 제외하고, replace its role = 대신해서, ignore the condition = 관계없이, and include it as a representative example = 비롯해서.',
+  zh:'判断前面名词与后面范围的关系：从整体中排除＝제외하고，替代其职责＝대신해서，不受条件影响＝관계없이，以代表性例子纳入＝비롯해서。'
+});
+const reviewedScopeRelationItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=SCOPE_RELATION[key];
+  return Object.freeze({
+    id,level:2,type:'grammar',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:SCOPE_RELATION_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(SCOPE_RELATION_ORDER.map(choiceKey=>Object.freeze({
+      meaning:SCOPE_RELATION[choiceKey].meaning,
+      explanationI18n:SCOPE_RELATION[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】-을/를 제외하고=범위에서 뺌, -을/를 대신해(서)=역할 대체, -에 관계없이=조건이 결과에 영향 없음, -을/를 비롯해(서)=대표 예를 포함한 확장으로 관계가 다릅니다.\n【재사용 풀이】${SCOPE_RELATION_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】-을/를 제외하고＝範囲から除く、-을/를 대신해(서)＝役割を替える、-에 관계없이＝条件が結果に影響しない、-을/를 비롯해(서)＝代表例を含めて広げることで、関係が異なります。\n【再利用できる解き方】${SCOPE_RELATION_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] -을/를 제외하고 removes an item from a scope, -을/를 대신해(서) replaces its role, -에 관계없이 makes a condition irrelevant, and -을/를 비롯해(서) includes a representative example in a wider set.\n[Reusable method] ${SCOPE_RELATION_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】-을/를 제외하고表示从范围中排除，-을/를 대신해(서)表示替代职责，-에 관계없이表示条件不影响结果，-을/를 비롯해(서)表示以代表性例子纳入更大范围，关系各不相同。\n【通用解法】${SCOPE_RELATION_METHOD.zh}`
+    })
+  });
+};
+
 const DEGREE_COMPARISON=Object.freeze({
   baseline:Object.freeze({
     meaning:Object.freeze({ko:'기준 대상과 비교한 차이',ja:'基準となる対象と比べた差',en:'a difference from an explicit baseline',zh:'与明确基准对象相比的差异'}),
@@ -2504,6 +2567,39 @@ const TOPIK_II=[
     ja:'「外でも聞こえる」という結果が、声がどれほど大きかったかを示すので「-(으)ㄹ 정도로」が合います。',
     en:'The result “could be heard outside” shows how loud the voice was, so -(으)ㄹ 정도로 fits.',
     zh:'“连外面都能听见”这一结果体现了声音有多大，所以应选“-(으)ㄹ 정도로”。'
+  }),
+
+  reviewedScopeRelationItem('S04-II-G-SCOPE-01','-을/를 제외하고','exclusion','월요일을 제외하고 매일 문을 엽니다.',{
+    ko:'월요일을 제외하고 매일 문을 엽니다.',ja:'月曜日を除いて毎日営業しています。',en:'We are open every day except Monday.',zh:'除星期一外，每天营业。'
+  },{
+    ko:'“매일”의 전체 영업일 범위에서 월요일만 빼므로 “-을/를 제외하고”가 맞습니다.',
+    ja:'「毎日」という営業日の全体から月曜日だけを外すので「-을/를 제외하고」が合います。',
+    en:'Monday alone is removed from the full “every day” opening schedule, so -을/를 제외하고 fits.',
+    zh:'句子从“每天”这一完整营业日范围中只排除星期一，所以应选“-을/를 제외하고”。'
+  }),
+  reviewedScopeRelationItem('S04-II-G-SCOPE-02','-을/를 대신해(서)','substitution','부모님을 대신해서 제가 회의에 참석했습니다.',{
+    ko:'부모님을 대신해서 제가 회의에 참석했습니다.',ja:'両親に代わって、私が会議に出席しました。',en:'I attended the meeting on behalf of my parents.',zh:'我代替父母参加了会议。'
+  },{
+    ko:'부모님이 맡을 회의 참석 역할을 “제가” 맡았으므로 “-을/를 대신해(서)”가 맞습니다.',
+    ja:'両親が担うはずの会議出席の役割を「私」が担ったので「-을/를 대신해(서)」が合います。',
+    en:'“I” took the meeting-attendance role that belonged to the parents, so -을/를 대신해(서) fits.',
+    zh:'“我”承担了原本由父母承担的参会职责，所以应选“-을/를 대신해(서)”。'
+  }),
+  reviewedScopeRelationItem('S04-II-G-SCOPE-03','-에 관계없이','regardless','나이에 관계없이 누구나 신청할 수 있습니다.',{
+    ko:'나이에 관계없이 누구나 신청할 수 있습니다.',ja:'年齢に関係なく、誰でも応募できます。',en:'Anyone can apply regardless of age.',zh:'不论年龄，任何人都可以申请。'
+  },{
+    ko:'“누구나”가 나이가 달라도 신청 자격이 바뀌지 않음을 보여 주므로 “-에 관계없이”가 맞습니다.',
+    ja:'「誰でも」が、年齢が違っても応募資格が変わらないことを示すので「-에 관계없이」が合います。',
+    en:'“Anyone” shows that eligibility does not change with age, so -에 관계없이 fits.',
+    zh:'“任何人”表明申请资格不因年龄不同而改变，所以应选“-에 관계없이”。'
+  }),
+  reviewedScopeRelationItem('S04-II-G-SCOPE-04','-을/를 비롯해(서)','representative','서울을 비롯해서 여러 도시에서 행사가 열렸습니다.',{
+    ko:'서울을 비롯해서 여러 도시에서 행사가 열렸습니다.',ja:'ソウルをはじめ、さまざまな都市で行事が開かれました。',en:'Events were held in several cities, including Seoul.',zh:'包括首尔在内，多个城市都举办了活动。'
+  },{
+    ko:'서울을 대표 예로 먼저 포함한 뒤 “여러 도시”로 범위를 넓히므로 “-을/를 비롯해(서)”가 맞습니다.',
+    ja:'ソウルを代表例として先に含め、「さまざまな都市」へ範囲を広げるので「-을/를 비롯해(서)」が合います。',
+    en:'Seoul is included first as a representative example before the scope expands to several cities, so -을/를 비롯해(서) fits.',
+    zh:'句子先把首尔作为代表性例子纳入，再把范围扩展到“多个城市”，所以应选“-을/를 비롯해(서)”。'
   }),
 
   reviewedStanceAdverbItem('S04-II-W-STANCE-01','간신히','barely','막차가 출발하기 직전에 간신히 역에 도착했습니다.',{

@@ -42,6 +42,13 @@ these facts from conversation history or the large TOPIK source bundle.
   TOPIK II writing 51/52 keeps the v110 separate labelled ㄱ/ㄴ fields through input, scoring, save,
   Review, recovery, and compatible legacy migration. Product rollback is v126
   `39e2ac7d305d5e5acbfdd8308bf1075994c00d1c`.
+- Candidate v128 adds four stable TOPIK II scope-relation IDs for exclusion, role substitution,
+  an irrelevant condition, and representative inclusion. Candidate inventory is 392 rows / 266 exact
+  sets (I 132, II 134), with 126 redundant rows, 30 duplicate groups, 15 structural candidates, and
+  0 approvals. Local focused checks pass 31/31, content 34/34, and full release 128/128 with the v128
+  45-file runtime contract. PR Linux Chrome evidence, merge, and live deployment are still pending;
+  physical devices, native review, learner timing/recall, audio, and full offline recovery remain unverified.
+  The bounded ledger is `docs/qa/shorts-review-s04-topik2-scope-relations.md`.
 - Production v124 separates an explicit comparison baseline (`-에 비해(서)`), a degree not inferior
   to the reference (`-에 못지않게`), equal degree (`-만큼`), and an extreme degree demonstrated by
   a result (`-(으)ㄹ 정도로`). It appends four stable IDs without changing the original bank or

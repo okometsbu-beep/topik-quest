@@ -23,7 +23,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 - Production: GitHub Pages static PWA
 - Production release: v127 · four bounded TOPIK I wearing-action Shorts (`b1d9140dc9b06ecfd63bbf92dfbdaf8d056a9ac5`)
-- Current candidate: none
+- Current candidate: v128 · four bounded TOPIK II scope-relation Shorts; local 128/128 passed, PR/mobile evidence pending
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -210,8 +210,21 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 다음 한 작업
 
 #129 긴급 작문 입력 분리와 v111–v127의 제한 검수 문항 배포·운영 문서 동기화는 완료됐다.
-새 P0·명백한 정답 오류가 없으면 다음 한 작업은 서로 다른 검수 세트 수가 더 적은
-TOPIK II(130)의 부족 유형 4문항 제한 검수다. 수량 자체를 교육 승인이나 출시 진척으로 보지 않는다.
+v128 후보는 TOPIK II 명사 범위 관계 4문항을 검수·추가했고 로컬 128/128을 통과했다.
+남은 같은 작업은 PR Linux Chrome 네 폭·두 테마 증거 확인, 병합, Pages 라이브 검증이다.
+수량 자체를 교육 승인이나 출시 진척으로 보지 않는다.
+
+## 후보 작업 · S04 TOPIK II 범위 관계 숏츠 4문항
+
+- v128 후보는 `-을/를 제외하고·-을/를 대신해(서)·-에 관계없이·-을/를 비롯해(서)`를
+  범위 제외·역할 대체·조건 무관·대표 예 포함으로 구분한다. 기존 ID, 원본 은행과
+  `topikQuestShortsV1` 저장 구조는 보존했다.
+- 후보 재고는 392행/266 정확 질문-보기군, I 132·II 134개다. 기존 중복 126행·30군,
+  구조 후보 15개, 정답 충돌 0은 증가하지 않았고 전체 승인 수는 0/392다.
+- Node 24 집중 vocabulary+inventory 31/31, 콘텐츠 34/34, 전체 release check 128/128과
+  v128 런타임 45개 계약을 통과했다. 실제 일본어 모어 화자, 학습자 풀이시간/D1·D7 회상,
+  실제 iPhone/Android는 아직 미검증이다. 검수대장은
+  `docs/qa/shorts-review-s04-topik2-scope-relations.md`다.
 
 ## 완료 작업 · S04 TOPIK I 착용 동사 숏츠 4문항
 
