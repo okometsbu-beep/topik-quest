@@ -14,16 +14,16 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 실제 검사: Linux Node v24.19.0, 집중 10/10·quick 95/95·전체 `npm run check` 110/110. 로컬 HTTP 3개 기본+45개 런타임 통과. PR CI와 main CI `34702111845`에서 Linux Chrome 320/375/390/430px×라이트/다크, 두 칸 터치 입력·독립 저장·새로고침 복원·참고 점수·복습 분리·구형 단일 답안 안내를 통과했다. main CI 첫 시도는 Chrome target 종료로 실패했으나 동일 커밋 재실행은 통과했다.
 - 라이브 공개 브라우저: v110을 새로 불러온 TOPIK II → 쓰기만 → 51번에서 `ㄱ(기역) 답안`과 `ㄴ(니은) 답안` 두 textbox를 확인했다. 서로 다른 값을 입력하고 다음→이전 뒤에도 각각 유지됐다. HTTP smoke는 3개 기본+45개 런타임을 통과했다.
 - 시각 증거: CI artifact `10300595038`의 `00bu-writing-two-blanks-light.png`, `00bv-writing-two-blanks-dark.png`, `00bw-writing-two-blanks-review-dark.png` 직접 확인. 실제 iPhone/Android 및 실제 IME는 미검증이며 에뮬레이션과 구별한다.
-- 다음 한 작업: v129 배포 뒤 STATUS/HANDOFF와 검수대장을 production 증거에 동기화.
-- 현재 라이브/복귀 기준: v128 `6840bd478937ebb524f59ec8b68c203f41a1fb46`,
-  https://okometsbu-beep.github.io/topik-quest/ . 제품 복귀 기준은 v127
-  `b1d9140dc9b06ecfd63bbf92dfbdaf8d056a9ac5`다.
+- 다음 한 작업: 새 P0·명백한 정답 오류가 없으면 검수 수가 더 적은 TOPIK II 부족 유형 4문항 제한 검수.
+- 현재 라이브/복귀 기준: v129 `8a33bd6025243187d3f569e3ddd85f432ed4cc94`,
+  https://okometsbu-beep.github.io/topik-quest/ . 제품 복귀 기준은 v128
+  `6840bd478937ebb524f59ec8b68c203f41a1fb46`이다.
 
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v128 · four bounded TOPIK II scope-relation Shorts (`6840bd478937ebb524f59ec8b68c203f41a1fb46`)
-- Current candidate: v129 · four bounded TOPIK I transit-action Shorts; local and PR/mobile evidence passed, merge pending
+- Production release: v129 · four bounded TOPIK I transit-action Shorts (`8a33bd6025243187d3f569e3ddd85f432ed4cc94`)
+- Current candidate: none
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -35,7 +35,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - TOPIK I·II, Shorts, Random Practice, full mock exams, Review, Vocabulary, Statistics
 - Beginner grammar covers core sentence order and major particle, tense, politeness, negation, connective,
   modifier, irregular, and speech-level transformations with per-rule writing practice.
-- Production v128 has 220 TOPIK I / 172 TOPIK II rows and only 132 / 134 distinct
+- Production v129 has 224 TOPIK I / 172 TOPIK II rows and only 136 / 134 distinct
   question-choice sets. These are inventory counts, not educational approvals.
 - Production v124 adds four TOPIK II degree/comparison cards (`-에 비해(서)`, `-에 못지않게`,
   `-만큼`, `-(으)ㄹ 정도로`). Its generated inventory is 376 rows / 250 exact families
@@ -82,6 +82,20 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
   TOPIK II Shorts entry, the new `-에 관계없이` card, deliberate wrong-answer feedback, expanded
   coaching, and reload restoration. Product rollback is v127
   `b1d9140dc9b06ecfd63bbf92dfbdaf8d056a9ac5`.
+- Production v129 adds four TOPIK I transit-action cards (`타다`, `내리다`, `갈아타다`, `건너다`).
+  Production inventory is 396 rows / 270 exact families (I 136, II 134), with the existing 126
+  redundant rows, 30 duplicate groups, 15 structural flags, and 0 approvals unchanged. Native review,
+  learner timing/recall, and physical devices remain unverified. Local focused checks pass 32/32,
+  content 35/35, and full release 129/129 with the v129 45-file runtime contract. PR #168 evidence CI
+  `35617795816` and final CI `35618582704` passed Linux Chrome 320/375/390/430px light/dark,
+  Japanese wrong-answer feedback, detailed coaching, next-first flow, and reload restoration; artifact
+  `10647651432` screens `00di`/`00dj` were inspected. PR #168 was squash merged as
+  `8a33bd6025243187d3f569e3ddd85f432ed4cc94`; main CI `35619144734` and Pages
+  `35619143631` succeeded. Live HTTP reports v129, and `index.html`, `site-patch.js`, `sw.js`, and
+  `data/shorts-levels.js` hashes match main with all four new IDs present. Public Chrome verified
+  TOPIK I Shorts entry, the new `타다` card, deliberate Japanese wrong-answer feedback, expanded
+  coaching, and reload restoration. Product rollback is v128
+  `6840bd478937ebb524f59ec8b68c203f41a1fb46`.
 - v120 adds four TOPIK II temporal-relation cards (`-자마자`, `-고 나서`, `-는 동안`,
   `-기 전에`). Its generated inventory is 360 rows / 234 exact families (I 116, II 118),
   with the existing 15 structural flags unchanged.
@@ -224,22 +238,27 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-#129 긴급 작문 입력 분리와 v111–v128의 제한 검수 문항 배포·운영 문서 동기화는 완료됐다.
-v129 후보의 TOPIK I 교통 이동 동사 4문항을 검수 중이다. 배포가 확인되면 STATUS/HANDOFF와
-검수대장을 production 증거에 동기화한다. 수량 자체를 교육 승인이나 출시 진척으로 보지 않는다.
+#129 긴급 작문 입력 분리와 v111–v129의 제한 검수 문항 배포·운영 문서 동기화는 완료됐다.
+새 P0·명백한 정답 오류가 없으면 검수 수가 더 적은 TOPIK II 부족 유형 4문항을 제한 검수한다.
+수량 자체를 교육 승인이나 출시 진척으로 보지 않는다.
 
-## 진행 작업 · S04 TOPIK I 교통 이동 동사 숏츠 4문항
+## 완료 작업 · S04 TOPIK I 교통 이동 동사 숏츠 4문항
 
-- v129 후보는 `타다·내리다·갈아타다·건너다`를 승차·하차·환승·횡단의 이동 단계로
+- v129 production은 `타다·내리다·갈아타다·건너다`를 승차·하차·환승·횡단의 이동 단계로
   구분한다. 기존 ID, 원본 은행과 `topikQuestShortsV1` 저장 구조는 보존한다.
-- 후보 재고는 396행/270 정확 질문-보기군, I 136·II 134개다. 기존 중복 126행·30군,
+- production 재고는 396행/270 정확 질문-보기군, I 136·II 134개다. 기존 중복 126행·30군,
   구조 후보 15개, 정답 충돌 0은 증가하지 않았고 전체 승인 수는 0/396이다.
 - Node 24 집중 vocabulary+inventory 32/32, 콘텐츠 35/35, 전체 release check 129/129와
   v129 런타임 45개 계약을 통과했다. PR #168 evidence CI `35617795816`은 Linux Chrome
   320/375/390/430px 라이트/다크, 일본어 선택 오답 설명, 상세 해설, 다음 문제 우선,
   새로고침 복원을 통과했다. artifact `10647651432`의 `00di`/`00dj` 화면을 직접 확인했다.
-  최종 CI, 병합과 배포는 아직 남았다. 실제 일본어 모어 화자, 학습자 풀이시간/D1·D7 회상,
-  실제 iPhone/Android는 미검증이다.
+  최종 PR CI `35618582704`도 성공했다. 실제 일본어 모어 화자·교육 전문가, 학습자
+  풀이시간/D1·D7 회상, 실제 iPhone/Android는 미검증이다.
+- PR #168을 squash merge한 production 커밋은 `8a33bd6025243187d3f569e3ddd85f432ed4cc94`다.
+  main CI `35619144734`와 Pages `35619143631`도 성공했다. 라이브 HTTP는 v129를 반환하고
+  핵심 자산 4개 해시와 신규 ID 4개가 main과 일치했다. 공개 Chrome에서 TOPIK I 숏츠 진입,
+  신규 `타다` 카드의 일본어 오답 피드백·상세 해설·새로고침 복원을 확인했다. 제품 복귀
+  기준은 v128 `6840bd478937ebb524f59ec8b68c203f41a1fb46`이다.
 - 검수대장: `docs/qa/shorts-review-s04-topik1-transit-actions.md`.
 
 ## 완료 작업 · S04 TOPIK II 범위 관계 숏츠 4문항
