@@ -46,6 +46,16 @@ these facts from conversation history or the large TOPIK source bundle.
   `b1d9140dc9b06ecfd63bbf92dfbdaf8d056a9ac5`. Physical devices, native review, learner timing/recall,
   audio, and full offline recovery remain unverified. The bounded ledger is
   `docs/qa/shorts-review-s04-topik2-scope-relations.md`.
+- Candidate v129 adds four stable TOPIK I transit-action IDs for boarding (`타다`), exiting
+  (`내리다`), transferring (`갈아타다`), and crossing (`건너다`). Candidate inventory is 396 rows /
+  270 exact sets (I 136, II 134), with 126 redundant rows, 30 duplicate groups, 15 structural
+  candidates, and 0 approvals. Local focused checks pass 32/32 and content checks pass 35/35.
+  Node 24 release checks pass 129/129 with the v129 45-file runtime contract. PR #168 evidence CI
+  `35617795816` passes Linux Chrome 320/375/390/430px light/dark, Japanese wrong-answer feedback,
+  expanded coaching, next-first flow, and reload restoration. Artifact `10647651432` screens
+  `00di`/`00dj` were inspected. Final CI, merge, and live deployment remain pending; physical devices,
+  native review, learner timing/recall, audio, and full offline recovery remain unverified. The bounded
+  ledger is `docs/qa/shorts-review-s04-topik1-transit-actions.md`.
 - Production v124 separates an explicit comparison baseline (`-에 비해(서)`), a degree not inferior
   to the reference (`-에 못지않게`), equal degree (`-만큼`), and an extreme degree demonstrated by
   a result (`-(으)ㄹ 정도로`). It appends four stable IDs without changing the original bank or
@@ -106,8 +116,8 @@ these facts from conversation history or the large TOPIK source bundle.
   expanded coaching, next-first flow, and reload restoration. Artifact `10621001103` screens `00dg`/`00dh`
   were inspected. PR #166 was squash merged as `6840bd478937ebb524f59ec8b68c203f41a1fb46`;
   main CI `35557469515` and Pages `35557469072` passed. Live HTTP, four core-asset hash checks, and
-  public-browser verification passed; product rollback is v127. The next bounded review target is
-  TOPIK I, which has fewer distinct sets (132) than TOPIK II (134).
+  public-browser verification passed; product rollback is v127. Candidate v129 now adds four bounded
+  TOPIK I transit-action sets; after deployment, the next task is to synchronize its production evidence.
   Audit-only curated IDs must NOT replace saved numeric indices without the S03 migration contract.
 - Production v123 extends the bounded S04 lane with four TOPIK I basic-negation cards (`안`, `못`,
   `아니에요`, `없어요`). It uses stable IDs, fixed choice-specific ko/ja/en/zh feedback, bundled
