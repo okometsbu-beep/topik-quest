@@ -23,7 +23,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 - Production: GitHub Pages static PWA
 - Production release: v127 · four bounded TOPIK I wearing-action Shorts (`b1d9140dc9b06ecfd63bbf92dfbdaf8d056a9ac5`)
-- Current candidate: v128 · four bounded TOPIK II scope-relation Shorts; local 128/128 passed, PR/mobile evidence pending
+- Current candidate: v128 · four bounded TOPIK II scope-relation Shorts; local and PR/mobile evidence passed, merge pending
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -222,8 +222,10 @@ v128 후보는 TOPIK II 명사 범위 관계 4문항을 검수·추가했고 로
 - 후보 재고는 392행/266 정확 질문-보기군, I 132·II 134개다. 기존 중복 126행·30군,
   구조 후보 15개, 정답 충돌 0은 증가하지 않았고 전체 승인 수는 0/392다.
 - Node 24 집중 vocabulary+inventory 31/31, 콘텐츠 34/34, 전체 release check 128/128과
-  v128 런타임 45개 계약을 통과했다. 실제 일본어 모어 화자, 학습자 풀이시간/D1·D7 회상,
-  실제 iPhone/Android는 아직 미검증이다. 검수대장은
+  v128 런타임 45개 계약을 통과했다. PR #166 evidence CI `35556820642`는 Linux Chrome
+  320/375/390/430px 라이트/다크, 일본어 선택 오답 설명, 상세 해설, 다음 문제 우선,
+  새로고침 복원을 통과했다. artifact `10621001103`의 `00dg`/`00dh` 화면을 직접 확인했다.
+  실제 일본어 모어 화자, 학습자 풀이시간/D1·D7 회상, 실제 iPhone/Android는 미검증이다. 검수대장은
   `docs/qa/shorts-review-s04-topik2-scope-relations.md`다.
 
 ## 완료 작업 · S04 TOPIK I 착용 동사 숏츠 4문항

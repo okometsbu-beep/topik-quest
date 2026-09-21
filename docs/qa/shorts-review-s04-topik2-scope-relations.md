@@ -37,12 +37,16 @@ Fixed choices are shuffled and restored through the existing stable-ID storage c
 | Storage | designed-pass | Existing `topikQuestShortsV1` and earlier IDs remain; cards are appended after existing TOPIK II rows. |
 | Focused local checks | pass | Node 24 vocabulary + generated-inventory checks pass 31/31; content checks pass 34/34. |
 | Full release checks | pass | Node 24 `npm run check` passes 128/128; runtime contract reports v128, 45 ordered files, and valid bank hashes. |
-| Emulated mobile | pending | The PR must pass Linux Chrome 320/375/390/430px light/dark, wrong-answer feedback, expanded coaching, next-first flow, and reload restoration before merge. |
+| Emulated mobile | pass | PR #166 evidence CI `35556820642` covers Linux Chrome 320/375/390/430px light/dark, wrong-answer feedback, expanded coaching, next-first flow, and reload restoration. Artifact `10621001103` screens `00dg`/`00dh` were inspected. Local Chrome remains unavailable. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
-| Deployment | pending | Do not merge or deploy until PR CI and required mobile evidence pass. |
+| Deployment | pending | Evidence CI passed; final PR CI, merge, main CI, Pages, and live verification remain. |
 
 Candidate inventory is 392 rows / 266 exact question-choice families (TOPIK I 132, TOPIK II 134).
 The existing 126 redundant rows, 30 duplicate groups, and 15 structural review candidates do not
 increase. These totals are not content approvals: the generated inventory remains `approved: 0`, and
 only the four IDs above have this bounded AI review record. No existing Shorts row, original bank item,
 answer, or stable ID is altered.
+The inspected light screenshot shows the deliberately wrong role-substitution choice, the correct
+exclusion answer, and choice-specific Japanese feedback. The dark screenshot shows next-first flow and
+the complete evidence → traps → scope-relation method without horizontal clipping. This is Linux Chrome
+emulation rather than physical-device evidence.

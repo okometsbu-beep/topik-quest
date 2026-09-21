@@ -46,7 +46,9 @@ these facts from conversation history or the large TOPIK source bundle.
   an irrelevant condition, and representative inclusion. Candidate inventory is 392 rows / 266 exact
   sets (I 132, II 134), with 126 redundant rows, 30 duplicate groups, 15 structural candidates, and
   0 approvals. Local focused checks pass 31/31, content 34/34, and full release 128/128 with the v128
-  45-file runtime contract. PR Linux Chrome evidence, merge, and live deployment are still pending;
+  45-file runtime contract. PR #166 evidence CI `35556820642` passes Linux Chrome 320/375/390/430px
+  light/dark, Japanese wrong-answer feedback, expanded coaching, next-first flow, and reload restoration.
+  Artifact `10621001103` screens `00dg`/`00dh` were inspected. Final CI, merge, and live deployment remain;
   physical devices, native review, learner timing/recall, audio, and full offline recovery remain unverified.
   The bounded ledger is `docs/qa/shorts-review-s04-topik2-scope-relations.md`.
 - Production v124 separates an explicit comparison baseline (`-에 비해(서)`), a degree not inferior
