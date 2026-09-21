@@ -1286,6 +1286,35 @@ try{
   assert.match(degreeRestored.summary,/-에 못지않게[\s\S]*劣らない/u,'degree-comparison selected feedback must survive reload');
   assert.match(degreeRestored.answer,/基準となる対象と比べた差/u,'reviewed degree-comparison answer must survive reload');
 
+  const scopeRelation=await evaluate(`(()=>{const lv=2,deck=[...window.MALBIT_SHORTS_DECKS[lv],...window.MALBIT_BANK.shorts(lv)],index=deck.findIndex(item=>item.id==='S04-II-G-SCOPE-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','2');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:2,levels:{1:blank,2:active},daily:{}}));return{index,id:identity.id}})()`);
+  assert.equal(scopeRelation.id,'S04-II-G-SCOPE-01','reviewed scope-relation card must have its explicit stable ID');
+  await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsWord');
+  const scopeBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['2'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
+  assert.equal(scopeBefore.term,'-을/를 제외하고');assert.equal(scopeBefore.cardId,scopeRelation.id);assert.equal(scopeBefore.orderId,scopeRelation.id);
+  assert.deepEqual(scopeBefore.choiceOrder,[2,1,0,3]);
+  assert.deepEqual(scopeBefore.labels,['前の条件が結果に影響しない','前の人の役割を別の人が担う','全体から前の対象を除く','前の対象を代表例として含める'],'fixed scope-relation choices must keep the saved shuffle');
+  await submitShortsLabel('前の人の役割を別の人が担う');
+  const scopeReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
+  assert.match(scopeReview.summary,/대신해[\s\S]*役割/u,'selected Japanese feedback must explain the substitution trap');
+  assert.match(scopeReview.answer,/全体から前の対象を除く/u);assert.equal(scopeReview.closed,true);
+  assert.equal(scopeReview.nextBeforeDetails,true,'Next question must precede optional scope-relation coaching');
+  assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'月曜日を除いて毎日営業しています。','reviewed Japanese scope-relation example must render locally');
+  await evaluate(`malbitSetTheme('light')`);await sleep(100);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK II scope relation light ${width}px`,'light')}
+  await setViewport(390,844);await shot('00dg-shorts-topik2-scope-relation-wrong-light.png');
+  await evaluate(`malbitSetTheme('dark');const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK II scope relation expanded dark ${width}px`,'dark')}
+  await setViewport(390,844);await shot('00dh-shorts-topik2-scope-relation-full-dark.png');
+  await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsFeedbackSummary');
+  const scopeRestored=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['2'];return{cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder,locked:state.locked,summary:document.querySelector('.shortsFeedbackSummary')?.innerText,answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
+  assert.equal(scopeRestored.cardId,scopeRelation.id,'reviewed scope-relation ID must survive reload');
+  assert.equal(scopeRestored.orderId,scopeRelation.id,'reviewed scope-relation choice-order ID must survive reload');
+  assert.deepEqual(scopeRestored.choiceOrder,[2,1,0,3],'saved scope-relation choice order must survive reload');
+  assert.equal(scopeRestored.locked,true,'graded scope-relation state must survive reload');
+  assert.match(scopeRestored.summary,/대신해[\s\S]*役割/u,'scope-relation selected feedback must survive reload');
+  assert.match(scopeRestored.answer,/全体から前の対象を除く/u,'reviewed scope-relation answer must survive reload');
+
   const stanceAdverb=await evaluate(`(()=>{const lv=2,deck=[...window.MALBIT_SHORTS_DECKS[lv],...window.MALBIT_BANK.shorts(lv)],index=deck.findIndex(item=>item.id==='S04-II-W-STANCE-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','2');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:2,levels:{1:blank,2:active},daily:{}}));return{index,id:identity.id}})()`);
   assert.equal(stanceAdverb.id,'S04-II-W-STANCE-01','reviewed stance-adverb card must have its explicit stable ID');
   await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsWord');
