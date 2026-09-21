@@ -23,7 +23,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 - Production: GitHub Pages static PWA
 - Production release: v128 · four bounded TOPIK II scope-relation Shorts (`6840bd478937ebb524f59ec8b68c203f41a1fb46`)
-- Current candidate: v129 · four bounded TOPIK I transit-action Shorts; local release checks passed, mobile/deployment gates pending
+- Current candidate: v129 · four bounded TOPIK I transit-action Shorts; local and PR/mobile evidence passed, merge pending
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -235,9 +235,11 @@ v129 후보의 TOPIK I 교통 이동 동사 4문항을 검수 중이다. 배포�
 - 후보 재고는 396행/270 정확 질문-보기군, I 136·II 134개다. 기존 중복 126행·30군,
   구조 후보 15개, 정답 충돌 0은 증가하지 않았고 전체 승인 수는 0/396이다.
 - Node 24 집중 vocabulary+inventory 32/32, 콘텐츠 35/35, 전체 release check 129/129와
-  v129 런타임 45개 계약을 통과했다. Linux Chrome 320/375/390/430px 라이트/다크,
-  일본어 오답 설명·상세 해설·새로고침 복원, PR CI와 배포는 아직 진행 전이다. 실제 일본어
-  모어 화자, 학습자 풀이시간/D1·D7 회상, 실제 iPhone/Android는 미검증이다.
+  v129 런타임 45개 계약을 통과했다. PR #168 evidence CI `35617795816`은 Linux Chrome
+  320/375/390/430px 라이트/다크, 일본어 선택 오답 설명, 상세 해설, 다음 문제 우선,
+  새로고침 복원을 통과했다. artifact `10647651432`의 `00di`/`00dj` 화면을 직접 확인했다.
+  최종 CI, 병합과 배포는 아직 남았다. 실제 일본어 모어 화자, 학습자 풀이시간/D1·D7 회상,
+  실제 iPhone/Android는 미검증이다.
 - 검수대장: `docs/qa/shorts-review-s04-topik1-transit-actions.md`.
 
 ## 완료 작업 · S04 TOPIK II 범위 관계 숏츠 4문항

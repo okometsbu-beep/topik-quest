@@ -38,9 +38,9 @@ choices are shuffled and restored through the existing stable-ID storage contrac
 | Storage | designed-pass | Existing `topikQuestShortsV1` and earlier IDs remain; cards are appended after existing TOPIK I rows. |
 | Focused local checks | pass | Node 24 vocabulary + generated-inventory checks pass 32/32; content checks pass 35/35. |
 | Full release checks | pass | Node 24 release check passes 129/129; the v129 runtime contract covers 45 ordered files and valid generated-bank hashes. |
-| Emulated mobile | pending | Required at 320/375/390/430px in light/dark with wrong-answer, expanded coaching, and reload restoration. |
+| Emulated mobile | pass | PR #168 evidence CI `35617795816` covers Linux Chrome 320/375/390/430px light/dark, Japanese wrong-answer feedback, expanded coaching, next-first flow, and reload restoration. Artifact `10647651432` screens `00di`/`00dj` were inspected. Local Chrome remains unavailable. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
-| Deployment | pending | PR CI, merge, main CI, Pages, and live verification remain. |
+| Deployment | pending | Evidence CI passed; final PR CI, merge, main CI, Pages, and live verification remain. |
 
 Candidate inventory is 396 rows / 270 exact question-choice families (TOPIK I 136, TOPIK II 134).
 The existing 126 redundant rows, 30 duplicate groups, and 15 structural review candidates do not

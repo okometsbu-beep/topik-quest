@@ -50,9 +50,11 @@ these facts from conversation history or the large TOPIK source bundle.
   (`내리다`), transferring (`갈아타다`), and crossing (`건너다`). Candidate inventory is 396 rows /
   270 exact sets (I 136, II 134), with 126 redundant rows, 30 duplicate groups, 15 structural
   candidates, and 0 approvals. Local focused checks pass 32/32 and content checks pass 35/35.
-  Node 24 release checks pass 129/129 with the v129 45-file runtime contract. Emulated mobile, CI,
-  merge, and live deployment remain pending; physical devices, native review, learner timing/recall,
-  audio, and full offline recovery remain unverified. The bounded
+  Node 24 release checks pass 129/129 with the v129 45-file runtime contract. PR #168 evidence CI
+  `35617795816` passes Linux Chrome 320/375/390/430px light/dark, Japanese wrong-answer feedback,
+  expanded coaching, next-first flow, and reload restoration. Artifact `10647651432` screens
+  `00di`/`00dj` were inspected. Final CI, merge, and live deployment remain pending; physical devices,
+  native review, learner timing/recall, audio, and full offline recovery remain unverified. The bounded
   ledger is `docs/qa/shorts-review-s04-topik1-transit-actions.md`.
 - Production v124 separates an explicit comparison baseline (`-에 비해(서)`), a degree not inferior
   to the reference (`-에 못지않게`), equal degree (`-만큼`), and an extreme degree demonstrated by
