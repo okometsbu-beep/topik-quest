@@ -1679,6 +1679,69 @@ const reviewedWearingActionItem=(id,term,key,example,exampleI18n,evidence)=>{
   });
 };
 
+const TRANSIT_ACTIONS=Object.freeze({
+  board:Object.freeze({
+    meaning:Object.freeze({ko:'교통수단에 올라 이용함',ja:'乗り物に乗る',en:'board or ride transport',zh:'乘坐交通工具'}),
+    selected:Object.freeze({
+      ko:'“타다”는 버스·지하철 같은 교통수단에 올라 이용할 때 씁니다.',
+      ja:'「타다」は、バスや地下鉄などの乗り物に乗って利用するときに使います。',
+      en:'“타다” is used when boarding and using transport such as a bus or subway.',
+      zh:'“타다”用于登上并乘坐公交车、地铁等交通工具。'
+    })
+  }),
+  exit:Object.freeze({
+    meaning:Object.freeze({ko:'교통수단에서 밖으로 나옴',ja:'乗り物から降りる',en:'get off transport',zh:'从交通工具下来'}),
+    selected:Object.freeze({
+      ko:'“내리다”는 타고 있던 버스·지하철 같은 교통수단에서 밖으로 나올 때 씁니다.',
+      ja:'「내리다」は、乗っていたバスや地下鉄などの乗り物から外へ出るときに使います。',
+      en:'“내리다” is used when leaving a bus, subway, or other transport you were riding.',
+      zh:'“내리다”用于从正在乘坐的公交车、地铁等交通工具下来。'
+    })
+  }),
+  transfer:Object.freeze({
+    meaning:Object.freeze({ko:'다른 노선·교통수단으로 바꾸어 탐',ja:'別の路線・乗り物に乗り換える',en:'transfer to another line or vehicle',zh:'换乘其他线路或交通工具'}),
+    selected:Object.freeze({
+      ko:'“갈아타다”는 타고 있던 교통수단에서 내려 다른 노선이나 교통수단으로 바꾸어 탈 때 씁니다.',
+      ja:'「갈아타다」は、今の乗り物を降りて、別の路線や乗り物に乗り換えるときに使います。',
+      en:'“갈아타다” is used when leaving one vehicle or line and boarding another.',
+      zh:'“갈아타다”用于下车后换乘另一条线路或另一种交通工具。'
+    })
+  }),
+  cross:Object.freeze({
+    meaning:Object.freeze({ko:'길·강의 한쪽에서 반대쪽으로 감',ja:'道・川などを渡る',en:'cross a road, river, or similar space',zh:'穿过道路、河流等'}),
+    selected:Object.freeze({
+      ko:'“건너다”는 길·횡단보도·강의 한쪽에서 반대쪽으로 이동할 때 씁니다.',
+      ja:'「건너다」は、道・横断歩道・川などの一方から反対側へ移動するときに使います。',
+      en:'“건너다” is used when moving from one side of a road, crosswalk, or river to the other.',
+      zh:'“건너다”用于从道路、人行横道或河流的一侧移动到另一侧。'
+    })
+  })
+});
+const TRANSIT_ACTION_ORDER=['board','exit','transfer','cross'];
+const TRANSIT_ACTION_METHOD=Object.freeze({
+  ko:'이동 전후의 위치와 바뀌는 대상을 보세요. 교통수단에 올라감=타다, 밖으로 나옴=내리다, 다른 노선·교통수단으로 바꿈=갈아타다, 길의 반대쪽으로 감=건너다입니다.',
+  ja:'移動の前後の位置と、何が変わるかを見ます。乗り物に乗る＝타다、乗り物から出る＝내리다、別の路線・乗り物に変える＝갈아타다、道の反対側へ行く＝건너다です。',
+  en:'Track the before-and-after position and what changes: enter transport = 타다, leave it = 내리다, change to another line or vehicle = 갈아타다, and move to the other side of a road = 건너다.',
+  zh:'看移动前后的位置以及更换的对象：登上交通工具＝타다，从交通工具下来＝내리다，换到其他线路或交通工具＝갈아타다，走到道路另一侧＝건너다。'
+});
+const reviewedTransitActionItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=TRANSIT_ACTIONS[key];
+  return Object.freeze({
+    id,level:1,type:'word',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:TRANSIT_ACTION_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(TRANSIT_ACTION_ORDER.map(choiceKey=>Object.freeze({
+      meaning:TRANSIT_ACTIONS[choiceKey].meaning,
+      explanationI18n:TRANSIT_ACTIONS[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】타다=교통수단에 올라감, 내리다=교통수단에서 나옴, 갈아타다=다른 노선·교통수단으로 바꿈, 건너다=길의 반대쪽으로 감으로 이동의 단계가 다릅니다.\n【재사용 풀이】${TRANSIT_ACTION_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】타다＝乗り物に乗る、내리다＝乗り物から降りる、갈아타다＝別の路線・乗り物に乗り換える、건너다＝道の反対側へ渡る、という移動の段階が異なります。\n【再利用できる解き方】${TRANSIT_ACTION_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 타다 boards transport, 내리다 leaves it, 갈아타다 changes to another line or vehicle, and 건너다 crosses to the other side of a road.\n[Reusable method] ${TRANSIT_ACTION_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】타다表示登上交通工具，내리다表示从交通工具下来，갈아타다表示换乘其他线路或交通工具，건너다表示走到道路另一侧，移动阶段各不相同。\n【通用解法】${TRANSIT_ACTION_METHOD.zh}`
+    })
+  });
+};
+
 const TOPIK_I=[
   item(1,'word','가게','상점','店','store; shop','商店','집 앞 가게에서 우유를 샀어요.'),
   item(1,'word','약속','만나기로 정한 일','約束','promise; appointment','约定','친구와 세 시에 만날 약속이 있어요.'),
@@ -2114,6 +2177,39 @@ const TOPIK_I=[
     ja:'「手袋」は手に密着させて身につける物なので、着用動詞「끼다」が合います。',
     en:'Gloves fit onto the hands, so 끼다 is the correct wearing verb.',
     zh:'“手套”是贴合戴在手上的物品，所以应使用穿戴动词“끼다”。'
+  }),
+
+  reviewedTransitActionItem('S04-I-W-TRANSIT-01','타다','board','집 앞 정류장에서 버스를 탔어요.',{
+    ko:'집 앞 정류장에서 버스를 탔어요.',ja:'家の前の停留所でバスに乗りました。',en:'I got on the bus at the stop in front of my home.',zh:'我在家门前的车站上了公交车。'
+  },{
+    ko:'“버스를” 이용하려고 정류장에서 교통수단에 올라갔으므로 “타다”가 맞습니다.',
+    ja:'停留所で「バス」に乗って利用し始めたので「타다」が合います。',
+    en:'The speaker boards the bus at a stop to begin using it, so 타다 fits.',
+    zh:'句子表示在车站登上公交车开始乘坐，所以应选“타다”。'
+  }),
+  reviewedTransitActionItem('S04-I-W-TRANSIT-02','내리다','exit','지하철에서 내린 뒤 출구로 갔어요.',{
+    ko:'지하철에서 내린 뒤 출구로 갔어요.',ja:'地下鉄を降りた後、出口へ行きました。',en:'After getting off the subway, I went to the exit.',zh:'下地铁后，我去了出口。'
+  },{
+    ko:'타고 있던 “지하철에서” 밖으로 나온 뒤 출구로 갔으므로 “내리다”가 맞습니다.',
+    ja:'乗っていた「地下鉄」から外へ出た後に出口へ行ったので「내리다」が合います。',
+    en:'The speaker leaves the subway they were riding before going to the exit, so 내리다 fits.',
+    zh:'句子表示从正在乘坐的“地铁”下来后前往出口，所以应选“내리다”。'
+  }),
+  reviewedTransitActionItem('S04-I-W-TRANSIT-03','갈아타다','transfer','서울역에서 4호선으로 갈아탔어요.',{
+    ko:'서울역에서 4호선으로 갈아탔어요.',ja:'ソウル駅で4号線に乗り換えました。',en:'I transferred to Line 4 at Seoul Station.',zh:'我在首尔站换乘了4号线。'
+  },{
+    ko:'서울역에서 타던 노선을 “4호선으로” 바꾸어 탔으므로 “갈아타다”가 맞습니다.',
+    ja:'ソウル駅で、それまでの路線から「4号線」に変えて乗ったので「갈아타다」が合います。',
+    en:'The rider changes from the previous line to Line 4 at Seoul Station, so 갈아타다 fits.',
+    zh:'句子表示在首尔站从原来的线路换到“4号线”，所以应选“갈아타다”。'
+  }),
+  reviewedTransitActionItem('S04-I-W-TRANSIT-04','건너다','cross','신호가 바뀐 뒤 횡단보도를 건넜어요.',{
+    ko:'신호가 바뀐 뒤 횡단보도를 건넜어요.',ja:'信号が変わった後、横断歩道を渡りました。',en:'After the light changed, I crossed the crosswalk.',zh:'信号灯变化后，我穿过了人行横道。'
+  },{
+    ko:'신호가 바뀐 뒤 “횡단보도”의 한쪽에서 반대쪽으로 갔으므로 “건너다”가 맞습니다.',
+    ja:'信号が変わった後、「横断歩道」の一方から反対側へ移動したので「건너다」が合います。',
+    en:'The person moves across the crosswalk from one side to the other after the light changes, so 건너다 fits.',
+    zh:'信号灯变化后从“人行横道”的一侧走到另一侧，所以应选“건너다”。'
   })
 ];
 

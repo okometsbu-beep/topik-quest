@@ -14,7 +14,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 실제 검사: Linux Node v24.19.0, 집중 10/10·quick 95/95·전체 `npm run check` 110/110. 로컬 HTTP 3개 기본+45개 런타임 통과. PR CI와 main CI `34702111845`에서 Linux Chrome 320/375/390/430px×라이트/다크, 두 칸 터치 입력·독립 저장·새로고침 복원·참고 점수·복습 분리·구형 단일 답안 안내를 통과했다. main CI 첫 시도는 Chrome target 종료로 실패했으나 동일 커밋 재실행은 통과했다.
 - 라이브 공개 브라우저: v110을 새로 불러온 TOPIK II → 쓰기만 → 51번에서 `ㄱ(기역) 답안`과 `ㄴ(니은) 답안` 두 textbox를 확인했다. 서로 다른 값을 입력하고 다음→이전 뒤에도 각각 유지됐다. HTTP smoke는 3개 기본+45개 런타임을 통과했다.
 - 시각 증거: CI artifact `10300595038`의 `00bu-writing-two-blanks-light.png`, `00bv-writing-two-blanks-dark.png`, `00bw-writing-two-blanks-review-dark.png` 직접 확인. 실제 iPhone/Android 및 실제 IME는 미검증이며 에뮬레이션과 구별한다.
-- 다음 한 작업: 새 P0·명백한 정답 오류가 없으면 TOPIK I 부족 유형 4문항 제한 검수.
+- 다음 한 작업: v129 배포 뒤 STATUS/HANDOFF와 검수대장을 production 증거에 동기화.
 - 현재 라이브/복귀 기준: v128 `6840bd478937ebb524f59ec8b68c203f41a1fb46`,
   https://okometsbu-beep.github.io/topik-quest/ . 제품 복귀 기준은 v127
   `b1d9140dc9b06ecfd63bbf92dfbdaf8d056a9ac5`다.
@@ -23,7 +23,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 - Production: GitHub Pages static PWA
 - Production release: v128 · four bounded TOPIK II scope-relation Shorts (`6840bd478937ebb524f59ec8b68c203f41a1fb46`)
-- Current candidate: none
+- Current candidate: v129 · four bounded TOPIK I transit-action Shorts; local release checks passed, mobile/deployment gates pending
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -225,8 +225,20 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 다음 한 작업
 
 #129 긴급 작문 입력 분리와 v111–v128의 제한 검수 문항 배포·운영 문서 동기화는 완료됐다.
-새 P0·명백한 정답 오류가 없으면 서로 다른 검수 세트가 더 적은 TOPIK I(132)의 부족 유형
-4문항을 다음 제한 검수 대상으로 고른다. 수량 자체를 교육 승인이나 출시 진척으로 보지 않는다.
+v129 후보의 TOPIK I 교통 이동 동사 4문항을 검수 중이다. 배포가 확인되면 STATUS/HANDOFF와
+검수대장을 production 증거에 동기화한다. 수량 자체를 교육 승인이나 출시 진척으로 보지 않는다.
+
+## 진행 작업 · S04 TOPIK I 교통 이동 동사 숏츠 4문항
+
+- v129 후보는 `타다·내리다·갈아타다·건너다`를 승차·하차·환승·횡단의 이동 단계로
+  구분한다. 기존 ID, 원본 은행과 `topikQuestShortsV1` 저장 구조는 보존한다.
+- 후보 재고는 396행/270 정확 질문-보기군, I 136·II 134개다. 기존 중복 126행·30군,
+  구조 후보 15개, 정답 충돌 0은 증가하지 않았고 전체 승인 수는 0/396이다.
+- Node 24 집중 vocabulary+inventory 32/32, 콘텐츠 35/35, 전체 release check 129/129와
+  v129 런타임 45개 계약을 통과했다. Linux Chrome 320/375/390/430px 라이트/다크,
+  일본어 오답 설명·상세 해설·새로고침 복원, PR CI와 배포는 아직 진행 전이다. 실제 일본어
+  모어 화자, 학습자 풀이시간/D1·D7 회상, 실제 iPhone/Android는 미검증이다.
+- 검수대장: `docs/qa/shorts-review-s04-topik1-transit-actions.md`.
 
 ## 완료 작업 · S04 TOPIK II 범위 관계 숏츠 4문항
 

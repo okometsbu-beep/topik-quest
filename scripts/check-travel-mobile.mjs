@@ -1402,6 +1402,35 @@ try{
   assert.match(wearingRestored.summary,/신다[\s\S]*靴や靴下/u,'wearing-action selected feedback must survive reload');
   assert.match(wearingRestored.answer,/服を着る/u,'reviewed wearing-action answer must survive reload');
 
+  const transitAction=await evaluate(`(()=>{const lv=1,deck=[...window.MALBIT_SHORTS_DECKS[lv],...window.MALBIT_BANK.shorts(lv)],index=deck.findIndex(item=>item.id==='S04-I-W-TRANSIT-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','1');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:1,levels:{1:active,2:blank},daily:{}}));return{index,id:identity.id}})()`);
+  assert.equal(transitAction.id,'S04-I-W-TRANSIT-01','reviewed transit-action card must have its explicit stable ID');
+  await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsWord');
+  const transitBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['1'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
+  assert.equal(transitBefore.term,'타다');assert.equal(transitBefore.cardId,transitAction.id);assert.equal(transitBefore.orderId,transitAction.id);
+  assert.deepEqual(transitBefore.choiceOrder,[2,1,0,3]);
+  assert.deepEqual(transitBefore.labels,['別の路線・乗り物に乗り換える','乗り物から降りる','乗り物に乗る','道・川などを渡る'],'fixed transit-action choices must keep the saved shuffle');
+  await submitShortsLabel('乗り物から降りる');
+  const transitReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
+  assert.match(transitReview.summary,/내리다[\s\S]*乗っていた/u,'selected Japanese feedback must explain the getting-off trap');
+  assert.match(transitReview.answer,/乗り物に乗る/u);assert.equal(transitReview.closed,true);
+  assert.equal(transitReview.nextBeforeDetails,true,'Next question must precede optional transit-action coaching');
+  assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'家の前の停留所でバスに乗りました。','reviewed Japanese transit-action example must render locally');
+  await evaluate(`malbitSetTheme('light')`);await sleep(100);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK I transit action light ${width}px`,'light')}
+  await setViewport(390,844);await shot('00di-shorts-topik1-transit-action-wrong-light.png');
+  await evaluate(`malbitSetTheme('dark');const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK I transit action expanded dark ${width}px`,'dark')}
+  await setViewport(390,844);await shot('00dj-shorts-topik1-transit-action-full-dark.png');
+  await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsFeedbackSummary');
+  const transitRestored=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['1'];return{cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder,locked:state.locked,summary:document.querySelector('.shortsFeedbackSummary')?.innerText,answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
+  assert.equal(transitRestored.cardId,transitAction.id,'reviewed transit-action ID must survive reload');
+  assert.equal(transitRestored.orderId,transitAction.id,'reviewed transit-action choice-order ID must survive reload');
+  assert.deepEqual(transitRestored.choiceOrder,[2,1,0,3],'saved transit-action choice order must survive reload');
+  assert.equal(transitRestored.locked,true,'graded transit-action state must survive reload');
+  assert.match(transitRestored.summary,/내리다[\s\S]*乗っていた/u,'transit-action selected feedback must survive reload');
+  assert.match(transitRestored.answer,/乗り物に乗る/u,'reviewed transit-action answer must survive reload');
+
   const basicNegation=await evaluate(`(()=>{const lv=1,deck=[...window.MALBIT_SHORTS_DECKS[lv],...window.MALBIT_BANK.shorts(lv)],index=deck.findIndex(item=>item.id==='S04-I-G-NEGATION-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','1');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:1,levels:{1:active,2:blank},daily:{}}));return{index,id:identity.id}})()`);
   assert.equal(basicNegation.id,'S04-I-G-NEGATION-01','reviewed basic-negation card must have its explicit stable ID');
   await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsWord');
