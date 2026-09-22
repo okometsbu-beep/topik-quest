@@ -34,8 +34,10 @@ these facts from conversation history or the large TOPIK source bundle.
   Candidate inventory is 404 rows / 278 exact families (I 140, II 138), with 126 redundant rows,
   30 duplicate groups, 15 structural candidates, 0 answer conflicts, and 0 approvals. Local focused
   vocabulary+inventory checks pass 34/34, content checks pass 37/37, and the full release check passes
-  131/131 with the v131 45-file runtime contract. PR CI mobile evidence, merge, Pages, and live
-  verification remain pending; production stays v130. Ledger:
+  131/131 with the v131 45-file runtime contract. PR #172 evidence CI `35745761618` passes Linux
+  Chrome 320/375/390/430px light/dark, Japanese wrong-answer feedback, expanded coaching, next-first
+  flow, and reload restoration. Artifact `10702339056` screens `00dm`/`00dn` were inspected. Final PR
+  CI, merge, Pages, and live verification remain pending; production stays v130. Ledger:
   `docs/qa/shorts-review-s04-topik1-housework-actions.md`.
 - Production v130 appends four bounded TOPIK II change-adverb cards (`점차`, `일시적으로`,
   `지속적으로`, `급격히`) without changing earlier IDs, the original bank, or Shorts storage.

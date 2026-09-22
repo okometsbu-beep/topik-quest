@@ -39,7 +39,7 @@ contract.
 | Storage | designed-pass | Existing `topikQuestShortsV1` and earlier IDs remain; cards are appended after existing TOPIK I rows. |
 | Focused local checks | pass | Node 24 vocabulary + generated-inventory checks pass 34/34; content checks pass 37/37. |
 | Full release checks | pass | Node 24 `npm run check` passes 131/131; runtime contract reports v131, 45 ordered files, and valid bank hashes. |
-| Emulated mobile | pending | PR CI must cover 320/375/390/430px light/dark, Japanese wrong-answer feedback, expanded coaching, next-first flow, and reload restoration. |
+| Emulated mobile | pass | PR #172 evidence CI `35745761618` covers Linux Chrome 320/375/390/430px light/dark, Japanese wrong-answer feedback, expanded coaching, next-first flow, and reload restoration. Artifact `10702339056` screens `00dm`/`00dn` were inspected. Local Chrome remains unavailable. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
 | Deployment | pending | No PR merge or GitHub Pages deployment has been claimed for v131. |
 
@@ -47,3 +47,7 @@ Candidate inventory is 404 rows / 278 exact question-choice families (TOPIK I 14
 The existing 126 redundant rows, 30 duplicate groups, 15 structural review candidates, 0 answer
 conflicts, and 0 approvals do not change. These totals are not content approvals, and no existing
 Shorts row, original bank item, answer, or stable ID is altered.
+The inspected light screenshot shows the deliberately wrong laundry choice, the correct room-cleaning
+answer, and choice-specific Japanese feedback. The dark screenshot shows next-first flow and the
+complete evidence → traps → object/result method without horizontal clipping. This is Linux Chrome
+emulation rather than physical-device evidence.
