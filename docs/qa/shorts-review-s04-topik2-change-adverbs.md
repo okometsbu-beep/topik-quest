@@ -1,6 +1,6 @@
 # S04 · TOPIK II change-adverb Shorts pilot
 
-Candidate: v130. Product rollback baseline: v129
+Production: v130 `bfc3f89121f3477a964f474ec378391b3c37dbf8`. Product rollback baseline: v129
 `8a33bd6025243187d3f569e3ddd85f432ed4cc94`.
 Scope: four new TOPIK II word cards only. This is an AI content review plus automated QA record,
 not native-speaker approval, learner timing evidence, or approval of the other 396 Shorts rows.
@@ -26,7 +26,7 @@ through the existing stable-ID storage contract.
 | `S04-II-W-CHANGE-03` | `0b85527bc65d2775e31890e7a5f083418313916cfec90d1cf1096d07885e4a33` | `이 지역의 관광객 수는 5년 동안 지속적으로 증가했습니다.` |
 | `S04-II-W-CHANGE-04` | `1e20a61d34c17a2356045922dff194b2ea40ce452cac6491365d07a6488d2082` | `폭우가 시작된 뒤 강물의 수위가 급격히 높아졌습니다.` |
 
-## Candidate verdict and evidence boundary
+## Production verdict and evidence boundary
 
 | Gate | Result | Evidence / limitation |
 |---|---|---|
@@ -40,9 +40,9 @@ through the existing stable-ID storage contract.
 | Full release checks | pass | Node 24 `npm run check` passes 130/130; runtime contract reports v130, 45 ordered files, and valid bank hashes. |
 | Emulated mobile | pass | PR #170 CI `35682292167` covers Linux Chrome 320/375/390/430px light/dark, Japanese wrong-answer feedback, expanded coaching, next-first flow, and reload restoration. Artifact `10675775494` screens `00dk`/`00dl` were inspected. Local Chrome remains unavailable. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
-| Deployment | pending | No production change until PR CI, visual evidence inspection, merge, Pages, and live smoke pass. |
+| Deployment | pass | PR #170 final CI `35683030397`, main CI `35683433183`, and Pages `35683432875` passed. Live HTTP returned 200; `index.html`, `site-patch.js`, `sw.js`, and `data/shorts-levels.js` matched main by SHA-256 with all four new IDs present. |
 
-Candidate inventory is 400 rows / 274 exact question-choice families (TOPIK I 136, TOPIK II 138).
+Production inventory is 400 rows / 274 exact question-choice families (TOPIK I 136, TOPIK II 138).
 The 15 existing structural review candidates do not increase. These totals are not content approvals:
 the generated inventory remains `approved: 0`, and only the four IDs above have this bounded AI review record.
 No existing Shorts row, original bank item, answer, or stable ID is altered.

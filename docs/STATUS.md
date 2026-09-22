@@ -14,16 +14,17 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 실제 검사: Linux Node v24.19.0, 집중 10/10·quick 95/95·전체 `npm run check` 110/110. 로컬 HTTP 3개 기본+45개 런타임 통과. PR CI와 main CI `34702111845`에서 Linux Chrome 320/375/390/430px×라이트/다크, 두 칸 터치 입력·독립 저장·새로고침 복원·참고 점수·복습 분리·구형 단일 답안 안내를 통과했다. main CI 첫 시도는 Chrome target 종료로 실패했으나 동일 커밋 재실행은 통과했다.
 - 라이브 공개 브라우저: v110을 새로 불러온 TOPIK II → 쓰기만 → 51번에서 `ㄱ(기역) 답안`과 `ㄴ(니은) 답안` 두 textbox를 확인했다. 서로 다른 값을 입력하고 다음→이전 뒤에도 각각 유지됐다. HTTP smoke는 3개 기본+45개 런타임을 통과했다.
 - 시각 증거: CI artifact `10300595038`의 `00bu-writing-two-blanks-light.png`, `00bv-writing-two-blanks-dark.png`, `00bw-writing-two-blanks-review-dark.png` 직접 확인. 실제 iPhone/Android 및 실제 IME는 미검증이며 에뮬레이션과 구별한다.
-- 다음 한 작업: v130 TOPIK II 변화 양상 부사 4문항 후보의 전체 검사와 모바일 증거를 확보하고, 합격할 때만 배포한다.
-- 현재 라이브/복귀 기준: v129 `8a33bd6025243187d3f569e3ddd85f432ed4cc94`,
-  https://okometsbu-beep.github.io/topik-quest/ . 제품 복귀 기준은 v128
-  `6840bd478937ebb524f59ec8b68c203f41a1fb46`이다.
+- 다음 한 작업: 새 P0·명백한 정답 오류가 없으면 검수 수가 더 적은 TOPIK I 부족 유형
+  4문항을 제한 검수한다.
+- 현재 라이브: v130 `bfc3f89121f3477a964f474ec378391b3c37dbf8`,
+  https://okometsbu-beep.github.io/topik-quest/ . 제품 복귀 기준은 v129
+  `8a33bd6025243187d3f569e3ddd85f432ed4cc94`다.
 
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v129 · four bounded TOPIK I transit-action Shorts (`8a33bd6025243187d3f569e3ddd85f432ed4cc94`)
-- Current candidate: v130 · four bounded TOPIK II change-adverb Shorts
+- Production release: v130 · four bounded TOPIK II change-adverb Shorts (`bfc3f89121f3477a964f474ec378391b3c37dbf8`)
+- Current candidate: none
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -35,7 +36,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - TOPIK I·II, Shorts, Random Practice, full mock exams, Review, Vocabulary, Statistics
 - Beginner grammar covers core sentence order and major particle, tense, politeness, negation, connective,
   modifier, irregular, and speech-level transformations with per-rule writing practice.
-- Production v129 has 224 TOPIK I / 172 TOPIK II rows and only 136 / 134 distinct
+- Production v130 has 224 TOPIK I / 176 TOPIK II rows and only 136 / 138 distinct
   question-choice sets. These are inventory counts, not educational approvals.
 - Production v124 adds four TOPIK II degree/comparison cards (`-에 비해(서)`, `-에 못지않게`,
   `-만큼`, `-(으)ㄹ 정도로`). Its generated inventory is 376 rows / 250 exact families
@@ -96,6 +97,19 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
   TOPIK I Shorts entry, the new `타다` card, deliberate Japanese wrong-answer feedback, expanded
   coaching, and reload restoration. Product rollback is v128
   `6840bd478937ebb524f59ec8b68c203f41a1fb46`.
+- Production v130 adds four TOPIK II change-adverb cards (`점차`, `일시적으로`, `지속적으로`,
+  `급격히`). Production inventory is 400 rows / 274 exact families (I 136, II 138), with the
+  existing 126 redundant rows, 30 duplicate groups, 15 structural flags, 0 answer conflicts, and
+  0 approvals unchanged. Local focused checks pass 33/33, content 36/36, and full release 130/130
+  with the v130 45-file runtime contract. PR #170 evidence CI `35682292167` and final CI
+  `35683030397` passed Linux Chrome 320/375/390/430px light/dark, Japanese wrong-answer feedback,
+  detailed coaching, next-first flow, and reload restoration; artifact `10675775494` screens
+  `00dk`/`00dl` were inspected. PR #170 was squash merged as
+  `bfc3f89121f3477a964f474ec378391b3c37dbf8`; main CI `35683433183` and Pages
+  `35683432875` succeeded. Live HTTP returns 200, and `index.html`, `site-patch.js`, `sw.js`, and
+  `data/shorts-levels.js` hashes match main with all four new IDs present. Product rollback is v129
+  `8a33bd6025243187d3f569e3ddd85f432ed4cc94`. Native review, learner timing/recall, physical devices,
+  audio, and full offline recovery remain unverified.
 - v120 adds four TOPIK II temporal-relation cards (`-자마자`, `-고 나서`, `-는 동안`,
   `-기 전에`). Its generated inventory is 360 rows / 234 exact families (I 116, II 118),
   with the existing 15 structural flags unchanged.
@@ -238,23 +252,26 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-#129 긴급 작문 입력 분리와 v111–v129의 제한 검수 문항 배포·운영 문서 동기화는 완료됐다.
-v130 후보는 `점차·일시적으로·지속적으로·급격히` 4문항만 추가한다. 전체 검사와 Linux Chrome
-320/375/390/430px 라이트/다크 증거를 확보하고 직접 확인한 뒤에만 병합·배포한다. 수량 자체를
-교육 승인이나 출시 진척으로 보지 않는다.
+#129 긴급 작문 입력 분리와 v111–v130의 제한 검수 문항 배포·운영 문서 동기화는 완료됐다.
+새 P0·명백한 정답 오류가 없으면 검수 수가 더 적은 TOPIK I 부족 유형 4문항을 제한 검수한다.
+수량 자체를 교육 승인이나 출시 진척으로 보지 않는다.
 
-## 진행 중 · S04 TOPIK II 변화 양상 부사 숏츠 4문항
+## 완료 작업 · S04 TOPIK II 변화 양상 부사 숏츠 4문항
 
-- v130 후보는 시간 경과에 따른 점진 변화, 짧은 한시 상태, 긴 기간 지속, 짧은 시간의 큰 폭
+- v130 production은 시간 경과에 따른 점진 변화, 짧은 한시 상태, 긴 기간 지속, 짧은 시간의 큰 폭
   변화를 구분한다. 기존 ID, 원본 은행과 `topikQuestShortsV1` 저장 구조는 보존한다.
-- 후보 재고는 400행/274 정확 질문-보기군, I 136·II 138개다. 기존 중복 126행·30군,
+- production 재고는 400행/274 정확 질문-보기군, I 136·II 138개다. 기존 중복 126행·30군,
   구조 후보 15개, 정답 충돌 0은 증가하지 않았고 전체 승인 수는 0/400이다.
 - Node 24 집중 vocabulary+inventory 33/33, 콘텐츠 36/36, 전체 release check 130/130과
-  v130 런타임 45개 계약을 통과했다. PR #170 CI `35682292167`은 Linux Chrome
+  v130 런타임 45개 계약을 통과했다. PR #170 evidence CI `35682292167`은 Linux Chrome
   320/375/390/430px 라이트/다크, 일본어 선택 오답 설명, 상세 해설, 다음 문제 우선,
   새로고침 복원을 통과했다. artifact `10675775494`의 `00dk`/`00dl` 화면을 직접 확인했다.
-- 실제 일본어 모어 화자·교육 전문가, 학습자 풀이시간/D1·D7 회상, 실제 iPhone/Android는
-  미검증이다. 제품 복귀 기준은 v129 `8a33bd6025243187d3f569e3ddd85f432ed4cc94`다.
+  최종 PR CI `35683030397`도 성공했다. PR #170을 squash merge한 production 커밋은
+  `bfc3f89121f3477a964f474ec378391b3c37dbf8`이다. main CI `35683433183`과 Pages
+  `35683432875`도 성공했다. 라이브 HTTP는 200을 반환했고 핵심 자산 4개 해시와 신규 ID
+  4개가 main과 일치했다. 실제 일본어 모어 화자·교육 전문가, 학습자 풀이시간/D1·D7 회상,
+  실제 iPhone/Android는 미검증이다. 제품 복귀 기준은 v129
+  `8a33bd6025243187d3f569e3ddd85f432ed4cc94`다.
 - 검수대장: `docs/qa/shorts-review-s04-topik2-change-adverbs.md`.
 
 ## 완료 작업 · S04 TOPIK I 교통 이동 동사 숏츠 4문항
