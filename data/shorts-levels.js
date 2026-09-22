@@ -986,6 +986,69 @@ const reviewedStanceAdverbItem=(id,term,key,example,exampleI18n,evidence)=>{
   });
 };
 
+const CHANGE_ADVERBS=Object.freeze({
+  gradual:Object.freeze({
+    meaning:Object.freeze({ko:'시간이 지나며 조금씩 변함',ja:'時間の経過とともに少しずつ変化する',en:'changing little by little over time',zh:'随着时间逐渐变化'}),
+    selected:Object.freeze({
+      ko:'“점차”는 시간이 흐르면서 상태나 수치가 조금씩 달라지는 과정을 나타냅니다.',
+      ja:'「점차」は、時間の経過とともに状態や数値が少しずつ変わる過程を表します。',
+      en:'“점차” describes a state or value changing little by little as time passes.',
+      zh:'“점차”表示状态或数值随着时间一点点发生变化。'
+    })
+  }),
+  temporary:Object.freeze({
+    meaning:Object.freeze({ko:'짧은 기간에만 잠시 나타남',ja:'短い期間だけ一時的に現れる',en:'lasting only for a short period',zh:'只在短时间内暂时出现'}),
+    selected:Object.freeze({
+      ko:'“일시적으로”는 상태가 짧은 기간에만 나타나고 이후에는 끝나거나 원래대로 돌아감을 나타냅니다.',
+      ja:'「일시적으로」は、状態が短い期間だけ現れ、その後は終わるか元に戻ることを表します。',
+      en:'“일시적으로” marks a state that lasts only briefly and then ends or returns to normal.',
+      zh:'“일시적으로”表示某种状态只持续较短时间，之后会结束或恢复正常。'
+    })
+  }),
+  continuous:Object.freeze({
+    meaning:Object.freeze({ko:'긴 기간 동안 계속 이어짐',ja:'長い期間にわたって続く',en:'continuing over an extended period',zh:'在较长时间内持续进行'}),
+    selected:Object.freeze({
+      ko:'“지속적으로”는 변화나 활동이 한 번으로 끝나지 않고 일정 기간 계속 이어짐을 나타냅니다.',
+      ja:'「지속적으로」は、変化や活動が一度で終わらず、一定の期間にわたって続くことを表します。',
+      en:'“지속적으로” means a change or activity continues over a period instead of ending after one occurrence.',
+      zh:'“지속적으로”表示变化或活动不是一次就结束，而是在一段时间内继续进行。'
+    })
+  }),
+  sharp:Object.freeze({
+    meaning:Object.freeze({ko:'짧은 시간에 큰 폭으로 변함',ja:'短時間で大きく変化する',en:'changing sharply in a short time',zh:'在短时间内发生大幅变化'}),
+    selected:Object.freeze({
+      ko:'“급격히”는 짧은 시간 안에 상태나 수치가 큰 폭으로 변함을 나타냅니다.',
+      ja:'「급격히」は、短い時間のうちに状態や数値が大きく変わることを表します。',
+      en:'“급격히” describes a state or value changing by a large amount in a short time.',
+      zh:'“급격히”表示状态或数值在短时间内发生大幅变化。'
+    })
+  })
+});
+const CHANGE_ADVERB_ORDER=['gradual','temporary','continuous','sharp'];
+const CHANGE_ADVERB_METHOD=Object.freeze({
+  ko:'기간과 변화 폭을 함께 보세요. 시간에 따라 조금씩=점차, 잠깐만=일시적으로, 긴 기간 계속=지속적으로, 짧은 시간에 큰 폭=급격히입니다.',
+  ja:'期間と変化の幅を一緒に見ます。時間とともに少しずつ＝점차、短期間だけ＝일시적으로、長期間続く＝지속적으로、短時間で大幅に＝급격히です。',
+  en:'Read duration and size of change together: little by little over time = 점차, only briefly = 일시적으로, continuing over a long period = 지속적으로, and a large change in a short time = 급격히.',
+  zh:'同时判断持续时间和变化幅度：随时间一点点变化＝점차，只短暂出现＝일시적으로，长时间持续＝지속적으로，短时间大幅变化＝급격히。'
+});
+const reviewedChangeAdverbItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=CHANGE_ADVERBS[key];
+  return Object.freeze({
+    id,level:2,type:'word',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:CHANGE_ADVERB_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(CHANGE_ADVERB_ORDER.map(choiceKey=>Object.freeze({
+      meaning:CHANGE_ADVERBS[choiceKey].meaning,
+      explanationI18n:CHANGE_ADVERBS[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】점차=시간에 따라 조금씩, 일시적으로=짧은 기간만, 지속적으로=긴 기간 계속, 급격히=짧은 시간에 큰 폭으로 변화의 시간과 폭이 다릅니다.\n【재사용 풀이】${CHANGE_ADVERB_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】점차＝時間とともに少しずつ、일시적으로＝短期間だけ、지속적으로＝長期間続く、급격히＝短時間で大幅に、という時間と変化幅の違いがあります。\n【再利用できる解き方】${CHANGE_ADVERB_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 점차 means little by little over time, 일시적으로 only briefly, 지속적으로 continuing over a long period, and 급격히 a large change in a short time.\n[Reusable method] ${CHANGE_ADVERB_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】점차表示随时间一点点变化，일시적으로表示只持续短时间，지속적으로表示长时间持续，급격히表示短时间内大幅变化，时间和幅度各不相同。\n【通用解法】${CHANGE_ADVERB_METHOD.zh}`
+    })
+  });
+};
+
 const BASIC_CONNECTIVES=Object.freeze({
   simultaneous:Object.freeze({
     meaning:Object.freeze({ko:'두 행동이 같은 시간에 진행됨',ja:'二つの動作が同時に進む',en:'two actions happen at the same time',zh:'两个动作同时进行'}),
@@ -2729,6 +2792,39 @@ const TOPIK_II=[
     ja:'急に呼ばれて出たため、挨拶を間に合うようにできなかったので「미처」が合います。',
     en:'Being called away suddenly prevented the greeting from being done in time, so 미처 fits.',
     zh:'因为突然被叫走，没能及时打招呼，所以应选“미처”。'
+  }),
+
+  reviewedChangeAdverbItem('S04-II-W-CHANGE-01','점차','gradual','처음에는 적었지만 이용자가 점차 늘고 있습니다.',{
+    ko:'처음에는 적었지만 이용자가 점차 늘고 있습니다.',ja:'最初は少なかったものの、利用者が次第に増えています。',en:'There were few at first, but the number of users is gradually increasing.',zh:'起初人数很少，但用户正在逐渐增加。'
+  },{
+    ko:'“처음에는 적었지만”과 현재 진행 중인 “늘고 있습니다”가 시간에 따른 조금씩의 변화를 보여 주므로 “점차”가 맞습니다.',
+    ja:'「最初は少なかった」と進行中の「増えています」が、時間とともに少しずつ進む変化を示すので「점차」が合います。',
+    en:'“Few at first” plus the ongoing “is increasing” shows a gradual change over time, so 점차 fits.',
+    zh:'“起初很少”和正在进行的“增加”表明变化随着时间一点点发生，所以应选“점차”。'
+  }),
+  reviewedChangeAdverbItem('S04-II-W-CHANGE-02','일시적으로','temporary','시설 점검 때문에 오늘 오전에 서비스가 일시적으로 중단되었습니다.',{
+    ko:'시설 점검 때문에 오늘 오전에 서비스가 일시적으로 중단되었습니다.',ja:'設備点検のため、今日の午前中はサービスが一時的に停止しました。',en:'The service was temporarily suspended this morning for facility maintenance.',zh:'由于设施检修，服务今天上午暂时中断。'
+  },{
+    ko:'“오늘 오전”으로 중단 기간이 짧게 한정되고 점검 뒤 다시 운영될 상황이므로 “일시적으로”가 맞습니다.',
+    ja:'停止期間が「今日の午前中」に短く限定され、点検後に再開する状況なので「일시적으로」が合います。',
+    en:'The suspension is limited to “this morning” and service can resume after maintenance, so 일시적으로 fits.',
+    zh:'中断时间被限定为“今天上午”，检修后可恢复，因此应选“일시적으로”。'
+  }),
+  reviewedChangeAdverbItem('S04-II-W-CHANGE-03','지속적으로','continuous','이 지역의 관광객 수는 5년 동안 지속적으로 증가했습니다.',{
+    ko:'이 지역의 관광객 수는 5년 동안 지속적으로 증가했습니다.',ja:'この地域の観光客数は5年間にわたって継続的に増加しました。',en:'The number of tourists in this area increased continuously over five years.',zh:'该地区的游客人数在五年间持续增加。'
+  },{
+    ko:'“5년 동안”이 증가가 한 번이 아니라 긴 기간 계속되었음을 밝히므로 “지속적으로”가 맞습니다.',
+    ja:'「5年間にわたって」が、増加が一度ではなく長期間続いたことを示すので「지속적으로」が合います。',
+    en:'“Over five years” shows that the increase continued across an extended period, so 지속적으로 fits.',
+    zh:'“五年间”表明增长并非只发生一次，而是在较长时期内持续，所以应选“지속적으로”。'
+  }),
+  reviewedChangeAdverbItem('S04-II-W-CHANGE-04','급격히','sharp','폭우가 시작된 뒤 강물의 수위가 급격히 높아졌습니다.',{
+    ko:'폭우가 시작된 뒤 강물의 수위가 급격히 높아졌습니다.',ja:'豪雨が始まった後、川の水位が急激に上がりました。',en:'After the downpour began, the river level rose sharply.',zh:'暴雨开始后，河水水位急剧上升。'
+  },{
+    ko:'폭우가 시작된 직후 강물의 수위가 큰 폭으로 높아진 변화이므로 “급격히”가 맞습니다.',
+    ja:'豪雨が始まった直後に川の水位が大きく上がる変化なので「급격히」が合います。',
+    en:'The river level made a large rise soon after the downpour began, so 급격히 fits.',
+    zh:'暴雨开始后河水水位在短时间内大幅上升，所以应选“급격히”。'
   })
 ];
 

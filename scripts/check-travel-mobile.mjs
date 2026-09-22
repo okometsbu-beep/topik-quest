@@ -1431,6 +1431,35 @@ try{
   assert.match(transitRestored.summary,/내리다[\s\S]*乗っていた/u,'transit-action selected feedback must survive reload');
   assert.match(transitRestored.answer,/乗り物に乗る/u,'reviewed transit-action answer must survive reload');
 
+  const changeAdverb=await evaluate(`(()=>{const lv=2,deck=[...window.MALBIT_SHORTS_DECKS[lv],...window.MALBIT_BANK.shorts(lv)],index=deck.findIndex(item=>item.id==='S04-II-W-CHANGE-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','2');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:2,levels:{1:blank,2:active},daily:{}}));return{index,id:identity.id}})()`);
+  assert.equal(changeAdverb.id,'S04-II-W-CHANGE-01','reviewed change-adverb card must have its explicit stable ID');
+  await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsWord');
+  const changeBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['2'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
+  assert.equal(changeBefore.term,'점차');assert.equal(changeBefore.cardId,changeAdverb.id);assert.equal(changeBefore.orderId,changeAdverb.id);
+  assert.deepEqual(changeBefore.choiceOrder,[2,1,0,3]);
+  assert.deepEqual(changeBefore.labels,['長い期間にわたって続く','短い期間だけ一時的に現れる','時間の経過とともに少しずつ変化する','短時間で大きく変化する'],'fixed change-adverb choices must keep the saved shuffle');
+  await submitShortsLabel('短い期間だけ一時的に現れる');
+  const changeReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
+  assert.match(changeReview.summary,/일시적으로[\s\S]*短い期間/u,'selected Japanese feedback must explain the temporary-change trap');
+  assert.match(changeReview.answer,/時間の経過とともに少しずつ/u);assert.equal(changeReview.closed,true);
+  assert.equal(changeReview.nextBeforeDetails,true,'Next question must precede optional change-adverb coaching');
+  assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'最初は少なかったものの、利用者が次第に増えています。','reviewed Japanese change-adverb example must render locally');
+  await evaluate(`malbitSetTheme('light')`);await sleep(100);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK II change adverb light ${width}px`,'light')}
+  await setViewport(390,844);await shot('00dk-shorts-topik2-change-adverb-wrong-light.png');
+  await evaluate(`malbitSetTheme('dark');const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK II change adverb expanded dark ${width}px`,'dark')}
+  await setViewport(390,844);await shot('00dl-shorts-topik2-change-adverb-full-dark.png');
+  await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsFeedbackSummary');
+  const changeRestored=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['2'];return{cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder,locked:state.locked,summary:document.querySelector('.shortsFeedbackSummary')?.innerText,answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
+  assert.equal(changeRestored.cardId,changeAdverb.id,'reviewed change-adverb ID must survive reload');
+  assert.equal(changeRestored.orderId,changeAdverb.id,'reviewed change-adverb choice-order ID must survive reload');
+  assert.deepEqual(changeRestored.choiceOrder,[2,1,0,3],'saved change-adverb choice order must survive reload');
+  assert.equal(changeRestored.locked,true,'graded change-adverb state must survive reload');
+  assert.match(changeRestored.summary,/일시적으로[\s\S]*短い期間/u,'change-adverb selected feedback must survive reload');
+  assert.match(changeRestored.answer,/時間の経過とともに少しずつ/u,'reviewed change-adverb answer must survive reload');
+
   const basicNegation=await evaluate(`(()=>{const lv=1,deck=[...window.MALBIT_SHORTS_DECKS[lv],...window.MALBIT_BANK.shorts(lv)],index=deck.findIndex(item=>item.id==='S04-I-G-NEGATION-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','1');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:1,levels:{1:active,2:blank},daily:{}}));return{index,id:identity.id}})()`);
   assert.equal(basicNegation.id,'S04-I-G-NEGATION-01','reviewed basic-negation card must have its explicit stable ID');
   await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsWord');
