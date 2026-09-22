@@ -24,7 +24,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 - Production: GitHub Pages static PWA
 - Production release: v130 · four bounded TOPIK II change-adverb Shorts (`bfc3f89121f3477a964f474ec378391b3c37dbf8`)
-- Current candidate: none
+- Current candidate: v131 · four bounded TOPIK I housework-action Shorts
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -253,8 +253,25 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 다음 한 작업
 
 #129 긴급 작문 입력 분리와 v111–v130의 제한 검수 문항 배포·운영 문서 동기화는 완료됐다.
-새 P0·명백한 정답 오류가 없으면 검수 수가 더 적은 TOPIK I 부족 유형 4문항을 제한 검수한다.
-수량 자체를 교육 승인이나 출시 진척으로 보지 않는다.
+현재 단일 후보는 TOPIK I 일상 집안일 동사 4문항 v131이다. 전체 검사와 CI 모바일 증거를
+통과해 배포되면 다음 한 작업은 STATUS/HANDOFF와 검수대장을 실제 production v131 증거에
+동기화한다. 수량 자체를 교육 승인이나 출시 진척으로 보지 않는다.
+
+## 진행 작업 · S04 TOPIK I 집안일 동사 숏츠 4문항
+
+- v131 후보는 `청소하다·빨래하다·설거지하다·요리하다`를 방·장소, 옷·수건, 식사 뒤 그릇,
+  재료로 음식 만들기의 대상과 결과로 구분한다. 기존 ID, 원본 은행과
+  `topikQuestShortsV1` 저장 구조는 보존한다.
+- 후보 재고는 404행/278 정확 질문-보기군, I 140·II 138개다. 기존 중복 126행·30군,
+  구조 후보 15개, 정답 충돌 0은 증가하지 않았고 전체 승인 수는 0/404다.
+- Node 24 집중 vocabulary+inventory 34/34, 콘텐츠 37/37, 전체 release check 131/131과
+  v131 런타임 45개 계약을 통과했다. PR #172 evidence CI `35745761618`은 Linux Chrome
+  320/375/390/430px 라이트/다크, 일본어 선택 오답 설명, 상세 해설, 다음 문제 우선,
+  새로고침 복원을 통과했다. artifact `10702339056`의 `00dm`/`00dn` 화면을 직접 확인했다.
+  최종 PR CI, 병합·Pages·라이브 검증은 아직 수행 전이다.
+  실제 일본어 모어 화자·교육 전문가, 학습자 풀이시간/D1·D7 회상, 실제 iPhone/Android도
+  미검증이다. production은 v130이며 제품 복귀 기준은 v129다.
+- 검수대장: `docs/qa/shorts-review-s04-topik1-housework-actions.md`.
 
 ## 완료 작업 · S04 TOPIK II 변화 양상 부사 숏츠 4문항
 

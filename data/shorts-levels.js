@@ -1805,6 +1805,69 @@ const reviewedTransitActionItem=(id,term,key,example,exampleI18n,evidence)=>{
   });
 };
 
+const HOUSEWORK_ACTIONS=Object.freeze({
+  clean:Object.freeze({
+    meaning:Object.freeze({ko:'방이나 장소를 깨끗하게 함',ja:'部屋や場所を掃除する',en:'clean a room or place',zh:'打扫房间或场所'}),
+    selected:Object.freeze({
+      ko:'“청소하다”는 방이나 장소의 먼지·쓰레기를 치워 깨끗하게 할 때 씁니다.',
+      ja:'「청소하다」は、部屋や場所のほこり・ごみを片づけて、きれいにするときに使います。',
+      en:'“청소하다” is used when removing dust or trash to make a room or place clean.',
+      zh:'“청소하다”用于清除房间或场所的灰尘、垃圾，使其变干净。'
+    })
+  }),
+  laundry:Object.freeze({
+    meaning:Object.freeze({ko:'옷 등을 물로 빨아 깨끗하게 함',ja:'服などを洗濯する',en:'wash clothes or other laundry',zh:'清洗衣物等'}),
+    selected:Object.freeze({
+      ko:'“빨래하다”는 입은 옷·수건 같은 천을 물로 빨아 깨끗하게 할 때 씁니다.',
+      ja:'「빨래하다」は、着た服やタオルなどの布類を水で洗って、きれいにするときに使います。',
+      en:'“빨래하다” is used when washing worn clothes, towels, or other fabric items.',
+      zh:'“빨래하다”用于用水清洗穿过的衣服、毛巾等织物。'
+    })
+  }),
+  dishes:Object.freeze({
+    meaning:Object.freeze({ko:'먹고 난 그릇을 씻어 정리함',ja:'食後の食器を洗う',en:'wash and put away used dishes',zh:'清洗并整理用过的餐具'}),
+    selected:Object.freeze({
+      ko:'“설거지하다”는 식사 뒤에 사용한 그릇·컵·수저를 씻어 정리할 때 씁니다.',
+      ja:'「설거지하다」は、食事の後に使った皿・コップ・箸などを洗って片づけるときに使います。',
+      en:'“설거지하다” is used when washing and putting away dishes, cups, and utensils after a meal.',
+      zh:'“설거지하다”用于饭后清洗并整理用过的碗盘、杯子和餐具。'
+    })
+  }),
+  cook:Object.freeze({
+    meaning:Object.freeze({ko:'재료를 이용해 음식을 만듦',ja:'材料を使って料理を作る',en:'make food from ingredients',zh:'用食材制作饭菜'}),
+    selected:Object.freeze({
+      ko:'“요리하다”는 재료를 손질하고 익혀 음식을 만들 때 씁니다.',
+      ja:'「요리하다」は、材料を下ごしらえしたり加熱したりして、料理を作るときに使います。',
+      en:'“요리하다” is used when preparing or heating ingredients to make food.',
+      zh:'“요리하다”用于处理、烹调食材来制作饭菜。'
+    })
+  })
+});
+const HOUSEWORK_ACTION_ORDER=['clean','laundry','dishes','cook'];
+const HOUSEWORK_ACTION_METHOD=Object.freeze({
+  ko:'무엇을 깨끗하게 하거나 만드는지 보세요. 방·장소=청소하다, 옷·수건=빨래하다, 식사 뒤 그릇=설거지하다, 재료로 음식 만들기=요리하다입니다.',
+  ja:'何をきれいにするか、または何を作るかを見ます。部屋・場所＝청소하다、服・タオル＝빨래하다、食後の食器＝설거지하다、材料から料理を作る＝요리하다です。',
+  en:'Identify what is cleaned or made: room or place = 청소하다, clothes or towels = 빨래하다, dishes after a meal = 설거지하다, and food from ingredients = 요리하다.',
+  zh:'看清洁或制作的对象：房间、场所＝청소하다，衣服、毛巾＝빨래하다，饭后的餐具＝설거지하다，用食材做饭＝요리하다。'
+});
+const reviewedHouseworkActionItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=HOUSEWORK_ACTIONS[key];
+  return Object.freeze({
+    id,level:1,type:'word',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:HOUSEWORK_ACTION_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(HOUSEWORK_ACTION_ORDER.map(choiceKey=>Object.freeze({
+      meaning:HOUSEWORK_ACTIONS[choiceKey].meaning,
+      explanationI18n:HOUSEWORK_ACTIONS[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】청소하다=방·장소, 빨래하다=옷·수건, 설거지하다=식사 뒤 그릇, 요리하다=재료로 음식을 만드는 일로 대상과 결과가 다릅니다.\n【재사용 풀이】${HOUSEWORK_ACTION_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】청소하다＝部屋・場所、빨래하다＝服・タオル、설거지하다＝食後の食器、요리하다＝材料から料理を作ることで、対象と結果が異なります。\n【再利用できる解き方】${HOUSEWORK_ACTION_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 청소하다 targets a room or place, 빨래하다 clothes or towels, 설거지하다 dishes after a meal, and 요리하다 ingredients turned into food.\n[Reusable method] ${HOUSEWORK_ACTION_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】청소하다针对房间或场所，빨래하다针对衣服或毛巾，설거지하다针对饭后的餐具，요리하다用食材制作饭菜，对象和结果各不相同。\n【通用解法】${HOUSEWORK_ACTION_METHOD.zh}`
+    })
+  });
+};
+
 const TOPIK_I=[
   item(1,'word','가게','상점','店','store; shop','商店','집 앞 가게에서 우유를 샀어요.'),
   item(1,'word','약속','만나기로 정한 일','約束','promise; appointment','约定','친구와 세 시에 만날 약속이 있어요.'),
@@ -2273,6 +2336,39 @@ const TOPIK_I=[
     ja:'信号が変わった後、「横断歩道」の一方から反対側へ移動したので「건너다」が合います。',
     en:'The person moves across the crosswalk from one side to the other after the light changes, so 건너다 fits.',
     zh:'信号灯变化后从“人行横道”的一侧走到另一侧，所以应选“건너다”。'
+  }),
+
+  reviewedHouseworkActionItem('S04-I-W-HOUSEWORK-01','청소하다','clean','손님이 오기 전에 거실을 청소했어요.',{
+    ko:'손님이 오기 전에 거실을 청소했어요.',ja:'お客さんが来る前に、リビングを掃除しました。',en:'I cleaned the living room before the guest arrived.',zh:'客人来之前，我打扫了客厅。'
+  },{
+    ko:'손님이 올 “거실”을 깨끗하게 했으므로 장소를 정리하는 “청소하다”가 맞습니다.',
+    ja:'お客さんが来る「リビング」をきれいにしたので、場所を片づける「청소하다」が合います。',
+    en:'The living room is made clean before a guest arrives, so 청소하다 fits.',
+    zh:'句子表示在客人来之前把“客厅”打扫干净，所以应选“청소하다”。'
+  }),
+  reviewedHouseworkActionItem('S04-I-W-HOUSEWORK-02','빨래하다','laundry','입을 옷이 없어서 주말에 빨래했어요.',{
+    ko:'입을 옷이 없어서 주말에 빨래했어요.',ja:'着る服がなかったので、週末に洗濯しました。',en:'I had no clothes to wear, so I did the laundry on the weekend.',zh:'因为没有衣服穿，我周末洗了衣服。'
+  },{
+    ko:'“입을 옷”을 깨끗하게 빨았으므로 옷·수건을 씻는 “빨래하다”가 맞습니다.',
+    ja:'着る「服」をきれいに洗ったので、服やタオルを洗う「빨래하다」が合います。',
+    en:'The speaker washes clothes because none are ready to wear, so 빨래하다 fits.',
+    zh:'句子表示清洗要穿的“衣服”，所以应选“빨래하다”。'
+  }),
+  reviewedHouseworkActionItem('S04-I-W-HOUSEWORK-03','설거지하다','dishes','저녁을 먹은 뒤 설거지했어요.',{
+    ko:'저녁을 먹은 뒤 설거지했어요.',ja:'夕食を食べた後、食器を洗いました。',en:'I washed the dishes after dinner.',zh:'吃完晚饭后，我洗了餐具。'
+  },{
+    ko:'“저녁을 먹은 뒤” 사용한 그릇을 씻는 일이므로 “설거지하다”가 맞습니다.',
+    ja:'「夕食を食べた後」に使った食器を洗うことなので、「설거지하다」が合います。',
+    en:'The action is washing the used dishes after dinner, so 설거지하다 fits.',
+    zh:'句子表示“吃完晚饭后”清洗用过的餐具，所以应选“설거지하다”。'
+  }),
+  reviewedHouseworkActionItem('S04-I-W-HOUSEWORK-04','요리하다','cook','냉장고에 있는 재료로 요리했어요.',{
+    ko:'냉장고에 있는 재료로 요리했어요.',ja:'冷蔵庫にある材料で料理しました。',en:'I cooked with ingredients from the refrigerator.',zh:'我用冰箱里的食材做了饭。'
+  },{
+    ko:'냉장고의 “재료로” 음식을 만들었으므로 “요리하다”가 맞습니다.',
+    ja:'冷蔵庫の「材料で」料理を作ったので、「요리하다」が合います。',
+    en:'Ingredients from the refrigerator are turned into food, so 요리하다 fits.',
+    zh:'句子表示用冰箱里的“食材”制作饭菜，所以应选“요리하다”。'
   })
 ];
 
