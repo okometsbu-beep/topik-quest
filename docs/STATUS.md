@@ -14,17 +14,17 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 실제 검사: Linux Node v24.19.0, 집중 10/10·quick 95/95·전체 `npm run check` 110/110. 로컬 HTTP 3개 기본+45개 런타임 통과. PR CI와 main CI `34702111845`에서 Linux Chrome 320/375/390/430px×라이트/다크, 두 칸 터치 입력·독립 저장·새로고침 복원·참고 점수·복습 분리·구형 단일 답안 안내를 통과했다. main CI 첫 시도는 Chrome target 종료로 실패했으나 동일 커밋 재실행은 통과했다.
 - 라이브 공개 브라우저: v110을 새로 불러온 TOPIK II → 쓰기만 → 51번에서 `ㄱ(기역) 답안`과 `ㄴ(니은) 답안` 두 textbox를 확인했다. 서로 다른 값을 입력하고 다음→이전 뒤에도 각각 유지됐다. HTTP smoke는 3개 기본+45개 런타임을 통과했다.
 - 시각 증거: CI artifact `10300595038`의 `00bu-writing-two-blanks-light.png`, `00bv-writing-two-blanks-dark.png`, `00bw-writing-two-blanks-review-dark.png` 직접 확인. 실제 iPhone/Android 및 실제 IME는 미검증이며 에뮬레이션과 구별한다.
-- 다음 한 작업: 새 P0·명백한 정답 오류가 없으면 검수 수가 더 적은 TOPIK I 부족 유형
+- 다음 한 작업: 새 P0·명백한 정답 오류가 없으면 검수 수가 더 적은 TOPIK II 부족 유형
   4문항을 제한 검수한다.
-- 현재 라이브: v130 `bfc3f89121f3477a964f474ec378391b3c37dbf8`,
-  https://okometsbu-beep.github.io/topik-quest/ . 제품 복귀 기준은 v129
-  `8a33bd6025243187d3f569e3ddd85f432ed4cc94`다.
+- 현재 라이브: v131 `fadd25392e75f055c6deebf026ec77b8d597c96b`,
+  https://okometsbu-beep.github.io/topik-quest/ . 제품 복귀 기준은 v130
+  `bfc3f89121f3477a964f474ec378391b3c37dbf8`다.
 
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v130 · four bounded TOPIK II change-adverb Shorts (`bfc3f89121f3477a964f474ec378391b3c37dbf8`)
-- Current candidate: v131 · four bounded TOPIK I housework-action Shorts
+- Production release: v131 · four bounded TOPIK I housework-action Shorts (`fadd25392e75f055c6deebf026ec77b8d597c96b`)
+- Current candidate: none; next bounded review is TOPIK II
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
@@ -36,7 +36,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - TOPIK I·II, Shorts, Random Practice, full mock exams, Review, Vocabulary, Statistics
 - Beginner grammar covers core sentence order and major particle, tense, politeness, negation, connective,
   modifier, irregular, and speech-level transformations with per-rule writing practice.
-- Production v130 has 224 TOPIK I / 176 TOPIK II rows and only 136 / 138 distinct
+- Production v131 has 228 TOPIK I / 176 TOPIK II rows and only 140 / 138 distinct
   question-choice sets. These are inventory counts, not educational approvals.
 - Production v124 adds four TOPIK II degree/comparison cards (`-에 비해(서)`, `-에 못지않게`,
   `-만큼`, `-(으)ㄹ 정도로`). Its generated inventory is 376 rows / 250 exact families
@@ -97,6 +97,20 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
   TOPIK I Shorts entry, the new `타다` card, deliberate Japanese wrong-answer feedback, expanded
   coaching, and reload restoration. Product rollback is v128
   `6840bd478937ebb524f59ec8b68c203f41a1fb46`.
+- Production v131 adds four TOPIK I housework-action cards (`청소하다`, `빨래하다`, `설거지하다`,
+  `요리하다`). Production inventory is 404 rows / 278 exact families (I 140, II 138), with the
+  existing 126 redundant rows, 30 duplicate groups, 15 structural flags, 0 answer conflicts, and
+  0 approvals unchanged. Local focused checks pass 34/34, content 37/37, and full release 131/131
+  with the v131 45-file runtime contract. PR #172 evidence CI `35745761618` and final CI
+  `35746609645` passed Linux Chrome 320/375/390/430px light/dark, Japanese wrong-answer feedback,
+  detailed coaching, next-first flow, and reload restoration; artifact `10702339056` screens
+  `00dm`/`00dn` were inspected. PR #172 was squash merged as
+  `fadd25392e75f055c6deebf026ec77b8d597c96b`; main CI `35747146849` and Pages
+  `35747145718` succeeded. Live HTTP smoke reports v131 with 3 base + 45 runtime files;
+  `index.html`, `site-patch.js`, `sw.js`, and `data/shorts-levels.js` match main with all four new IDs.
+  Public cloud Chrome verified Japanese wrong-answer feedback, next CTA, and reload restoration.
+  Product rollback is v130 `bfc3f89121f3477a964f474ec378391b3c37dbf8`. Native review, learner
+  timing/recall, physical devices, audio, and full offline recovery remain unverified.
 - Production v130 adds four TOPIK II change-adverb cards (`점차`, `일시적으로`, `지속적으로`,
   `급격히`). Production inventory is 400 rows / 274 exact families (I 136, II 138), with the
   existing 126 redundant rows, 30 duplicate groups, 15 structural flags, 0 answer conflicts, and
@@ -252,25 +266,28 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 ## 다음 한 작업
 
-#129 긴급 작문 입력 분리와 v111–v130의 제한 검수 문항 배포·운영 문서 동기화는 완료됐다.
-현재 단일 후보는 TOPIK I 일상 집안일 동사 4문항 v131이다. 전체 검사와 CI 모바일 증거를
-통과해 배포되면 다음 한 작업은 STATUS/HANDOFF와 검수대장을 실제 production v131 증거에
-동기화한다. 수량 자체를 교육 승인이나 출시 진척으로 보지 않는다.
+#129 긴급 작문 입력 분리와 v111–v131의 제한 검수 문항 배포·운영 문서 동기화는 완료됐다.
+새 P0·명백한 정답 오류가 없으면 검수 수가 더 적은 TOPIK II 부족 유형 4문항을 제한 검수한다.
+수량 자체를 교육 승인이나 출시 진척으로 보지 않는다.
 
-## 진행 작업 · S04 TOPIK I 집안일 동사 숏츠 4문항
+## 완료 작업 · S04 TOPIK I 집안일 동사 숏츠 4문항
 
-- v131 후보는 `청소하다·빨래하다·설거지하다·요리하다`를 방·장소, 옷·수건, 식사 뒤 그릇,
+- v131 production은 `청소하다·빨래하다·설거지하다·요리하다`를 방·장소, 옷·수건, 식사 뒤 그릇,
   재료로 음식 만들기의 대상과 결과로 구분한다. 기존 ID, 원본 은행과
   `topikQuestShortsV1` 저장 구조는 보존한다.
-- 후보 재고는 404행/278 정확 질문-보기군, I 140·II 138개다. 기존 중복 126행·30군,
+- production 재고는 404행/278 정확 질문-보기군, I 140·II 138개다. 기존 중복 126행·30군,
   구조 후보 15개, 정답 충돌 0은 증가하지 않았고 전체 승인 수는 0/404다.
 - Node 24 집중 vocabulary+inventory 34/34, 콘텐츠 37/37, 전체 release check 131/131과
   v131 런타임 45개 계약을 통과했다. PR #172 evidence CI `35745761618`은 Linux Chrome
   320/375/390/430px 라이트/다크, 일본어 선택 오답 설명, 상세 해설, 다음 문제 우선,
   새로고침 복원을 통과했다. artifact `10702339056`의 `00dm`/`00dn` 화면을 직접 확인했다.
-  최종 PR CI, 병합·Pages·라이브 검증은 아직 수행 전이다.
+  최종 PR CI `35746609645`도 성공했다. PR #172를 squash merge한 production 커밋은
+  `fadd25392e75f055c6deebf026ec77b8d597c96b`다. main CI `35747146849`와 Pages
+  `35747145718`은 성공했다. 라이브 HTTP smoke는 v131, 기본 3개+런타임 45개를 확인했고
+  핵심 자산 4개는 main과 일치하며 신규 ID 4개가 모두 존재한다. 공개 cloud Chrome에서
+  일본어 오답 피드백·정답·다음 문제 CTA와 새로고침 복원을 확인했다.
   실제 일본어 모어 화자·교육 전문가, 학습자 풀이시간/D1·D7 회상, 실제 iPhone/Android도
-  미검증이다. production은 v130이며 제품 복귀 기준은 v129다.
+  미검증이다. 제품 복귀 기준은 v130 `bfc3f89121f3477a964f474ec378391b3c37dbf8`다.
 - 검수대장: `docs/qa/shorts-review-s04-topik1-housework-actions.md`.
 
 ## 완료 작업 · S04 TOPIK II 변화 양상 부사 숏츠 4문항
