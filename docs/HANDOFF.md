@@ -34,8 +34,10 @@ these facts from conversation history or the large TOPIK source bundle.
   Candidate inventory is 400 rows / 274 exact families (I 136, II 138), with 126 redundant rows,
   30 duplicate groups, 15 structural candidates, 0 answer conflicts, and 0 approvals. Local focused
   vocabulary+inventory checks pass 33/33, content checks pass 36/36, and the full release check passes
-  130/130 with the v130 45-file runtime contract. Linux Chrome 320/375/390/430px light/dark evidence
-  is pending, so it is not yet production. Physical devices,
+  130/130 with the v130 45-file runtime contract. PR #170 CI `35682292167` passes Linux Chrome
+  320/375/390/430px light/dark, Japanese wrong-answer feedback, expanded coaching, next-first flow,
+  and reload restoration. Artifact `10675775494` screens `00dk`/`00dl` were inspected. Final PR CI,
+  merge, and live deployment remain pending, so it is not yet production. Physical devices,
   native review, learner timing, and D1/D7 recall remain unverified. Ledger:
   `docs/qa/shorts-review-s04-topik2-change-adverbs.md`; product rollback baseline remains v129
   `8a33bd6025243187d3f569e3ddd85f432ed4cc94`.
