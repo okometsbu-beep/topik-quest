@@ -226,8 +226,9 @@ try{
     assert.deepEqual(fit.outside,[],`${label}: interactive element leaves viewport`);
     assert.deepEqual(fit.small,[],`${label}: enabled touch target below 44px`);
     assert.deepEqual(fit.offCenter,[],`${label}: asymmetric Home surface`);
-    await assertThemeSurfaces(label,theme,'.tqHomeScreen',':scope>.t1level,.tqV9Mode,.tqV9Utility button,.tqV9Week');
+    await assertThemeSurfaces(label,theme,'.tqHomeScreen',':scope>.t1level,.tqTodayLesson,.tqHomeReview,.tqTravelFeature,.tqV9Mode,.tqV9Utility button,.tqV9Week');
     assert.deepEqual(fit.tinyCopy,[],`${label}: Home copy below 10px`);
+    assert.equal(await evaluate(`[...document.querySelectorAll('.tqHomeScreen>.t1level button')].every(el=>parseFloat(getComputedStyle(el).fontSize)>=12)`),true,`${label}: goal labels below 12px`);
   };
   const assertBeginnerGrammarFits=async(label,theme)=>{
     const fit=await evaluate(`(()=>{const root=document.querySelector('.bgScreen');if(!root)return{missing:true};const visible=el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)!==0&&r.width>0&&r.height>0};const rect=el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),right:Math.round(r.right),width:Math.round(r.width),height:Math.round(r.height)}};const controls=[...root.querySelectorAll('button:not(:disabled)')].filter(visible);const surfaces=[...root.querySelectorAll(':scope>.bgHero,:scope>.bgMethod,:scope>.bgResume,:scope>.bgChapterIntro,:scope>.bgLessonList,:scope>.bgScope,:scope>.bgLessonHero,:scope>.bgFormula,:scope>.bgRuleCard,:scope>.bgExamples,:scope>.bgTrap,:scope>.bgDrill,:scope>.bgWriting,:scope>.bgLessonFinish,:scope>.bgLessonNav')].filter(visible);const copy=[...root.querySelectorAll('small,em,p,.bgMethod span,.bgVariant code')].filter(visible);return{missing:false,theme:document.documentElement.dataset.theme,innerWidth,rootWidth:document.documentElement.scrollWidth,bodyWidth:document.body.scrollWidth,screenOverflow:root.scrollWidth-root.clientWidth,outside:controls.filter(el=>!el.closest('.bgChapterStrip,.bgUnitStrip')).filter(el=>{const r=el.getBoundingClientRect();return r.left<-1||r.right>innerWidth+1}).map(rect),small:controls.filter(el=>{const r=el.getBoundingClientRect();return r.width<43||r.height<43}).map(rect),offCenter:surfaces.filter(el=>{const r=el.getBoundingClientRect();return Math.abs(r.left-(innerWidth-r.right))>2}).map(el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),rightGap:Math.round(innerWidth-r.right)}}),tinyCopy:copy.map(el=>({class:el.className,size:parseFloat(getComputedStyle(el).fontSize),text:el.textContent.trim().slice(0,24)})).filter(row=>row.size<9.9)}})()`);
@@ -308,12 +309,12 @@ try{
   const startFresh=async(seedMetrics=false)=>{
     await evaluate(`localStorage.removeItem('malbitStoryV1');${seedMetrics?"localStorage.setItem('malbitStoryV1',JSON.stringify({version:1,activePackId:'route-001-airport-myeongdong',episodes:{},metrics:{version:2,routeStarts:5,routeCompletions:4,myeongdongEntries:3,exchangeSessions:2,priceQuestStarts:4,priceQuestCompletions:3,priceQuestWrongSubmissions:2,priceQuestWalletTotal:180000}}));":''}S.lang='ja';S.view='home';save();render()`);
     let homeReady=false;
-    for(let wait=0;wait<40;wait++){if(await evaluate(`!!document.querySelector('.tqV9Mode.travel img[src*="airport-map.webp"]')`)){homeReady=true;break}await sleep(50)}
+    for(let wait=0;wait<40;wait++){if(await evaluate(`!!document.querySelector('.tqTravelFeature img[src*="bg-airport-t1.webp"]')`)){homeReady=true;break}await sleep(50)}
     assert.ok(homeReady,'Travel entry must use generated art instead of emoji');
     let opened=false;
     if(seedMetrics){
       for(let attempt=0;attempt<3&&!opened;attempt++){
-        if(await evaluate(`!!document.querySelector('.tqV9Mode.travel:not([disabled])')`))await tap('.tqV9Mode.travel');
+        if(await evaluate(`!!document.querySelector('.tqTravelFeature:not([disabled])')`))await tap('.tqTravelFeature');
         for(let wait=0;wait<20;wait++){if(await evaluate(`document.querySelector('.travelHubHead h1')?.textContent==='旅行モード'`)){opened=true;break}await sleep(50)}
       }
     }else{
@@ -602,10 +603,10 @@ try{
 
   assert.ok(await evaluate(`!!document.querySelector('#malbitHomeVisualSystem')`),'Home visual system must load after compatibility layers');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);
-  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertHomeFits(`Home light ${width}px`,'light')}
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertHomeFits(`Home light ${width}px`,'light');await shot(`00renewal-home-light-${width}.png`)}
   await setViewport(390,844);await shot('00ea-home-light-theme.png');
   await evaluate(`malbitSetTheme('dark')`);await sleep(100);
-  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertHomeFits(`Home dark ${width}px`,'dark')}
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertHomeFits(`Home dark ${width}px`,'dark');await shot(`00renewal-home-dark-${width}.png`)}
   await setViewport(390,844);await shot('00e-home-visual-contract.png');
   assert.equal(await evaluate(`document.querySelectorAll('.tqHomeScreen>.t1level button').length`),3,'Home must keep beginner, TOPIK I, and TOPIK II entries');
   assert.match(await evaluate(`document.querySelector('.tqHomeScreen>.t1level button.on')?.textContent`),/入門/,'a fresh learner must see Beginner as the selected path');

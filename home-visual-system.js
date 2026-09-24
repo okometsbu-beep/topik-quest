@@ -72,12 +72,13 @@ body.tq-home-active .tqTravelFeature strong{font-size:14px;color:var(--home-high
 body.tq-home-active .tqExtraPractice{margin:22px 0}
 body.tq-home-active .tqExtraPractice summary{min-height:44px;padding:12px 0;cursor:pointer;font-size:14px;font-weight:800;color:var(--home-muted)}
 body.tq-home-active .tqHomeScreen :is(button,summary):focus-visible{outline:3px solid var(--home-accent);outline-offset:3px}
+body.tq-home-active .tqHomeScreen>.t1level.v35ThreeLevels button{font-size:12px!important}
 /* Fixed compatibility bridge for the earlier Home overrides. */
 body.tq-home-active .tqHomeScreen>.t1level{margin:0 0 14px!important}
 body.tq-home-active .tqV9Utility button{border:1px solid var(--home-border)!important;background:var(--home-surface)!important;box-shadow:0 7px 18px var(--home-shadow)!important}
 body.tq-home-active .tqV9Utility b{color:var(--home-ink)!important}
 body.tq-home-active .tqV9Utility small{color:var(--home-muted)!important}
-@media(max-width:380px){body.tq-home-active{--ui-page-pad:12px}body.tq-home-active .tqHomeLogo{font-size:18px}body.tq-home-active .tqStreak{padding:7px 9px;font-size:12px}body.tq-home-active .tqHomeScreen>.t1level.v35ThreeLevels button{font-size:12px!important}body.tq-home-active .tqV9Hero,body.tq-home-active .tqV9HeroContent{min-height:300px}body.tq-home-active .tqV9Mode{min-height:140px;padding:11px 7px}body.tq-home-active .tqV9Utility button{min-height:110px;padding:11px 7px}}
+@media(max-width:380px){body.tq-home-active{--ui-page-pad:12px}body.tq-home-active .tqHomeLogo{font-size:18px}body.tq-home-active .tqStreak{padding:7px 9px;font-size:12px}body.tq-home-active .tqV9Hero,body.tq-home-active .tqV9HeroContent{min-height:300px}body.tq-home-active .tqV9Mode{min-height:140px;padding:11px 7px}body.tq-home-active .tqV9Utility button{min-height:110px;padding:11px 7px}}
 `;
 document.head.appendChild(style);
 })();
