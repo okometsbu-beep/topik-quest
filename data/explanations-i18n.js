@@ -265,27 +265,27 @@ const BANK_COACH={
 ...Object.fromEntries(['M04-II-R-02','M05-II-R-01','M10-II-R-02','M11-II-R-01'].map(id=>[id,{
   ko:{
     reason:'“길어질”은 앞으로 일어날 가능성이고, “미리 … 준비해 두었다”는 그 가능성에 대한 사전 준비입니다. 예상 상황에 준비한다는 “것에 대비해”가 연결됩니다.',
-    trap:'“듯이”는 비유·유사성으로 사전 준비의 이유를 나타내지 않습니다. “뿐더러”는 정보를 더하며 여기서는 “길어질뿐더러”로 연결할 수 없습니다. “바람에”는 “길어지는 바람에”처럼 원인과 결과를 연결하므로, 아직 일어나지 않은 일에 대비하는 이 문맥과 다릅니다.',
+    trap:'“듯이”는 비유·유사성으로 사전 준비의 이유를 나타내지 않습니다. “뿐더러”는 사실에 다른 사실을 더합니다. 여기서는 정보의 추가가 아니라 예상 상황에 미리 대비한 관계가 필요합니다. “바람에”는 “길어지는 바람에”처럼 원인과 결과를 연결하므로, 아직 일어나지 않은 일에 대비하는 이 문맥과 다릅니다.',
     strategy:'“미리·준비하다”를 찾고 앞절이 이미 일어난 원인인지 앞으로 예상하는 상황인지 구분하세요. 예상 상황에 대한 사전 준비라면 “-(으)ㄹ 것에 대비해”를 검토합니다.',
-    choices:{'듯이':'비유·유사성을 나타냅니다. 여기서는 회의가 길어질 가능성에 대비해 준비한 이유가 필요합니다.','뿐더러':'정보를 추가하는 표현입니다. 이 자리의 “길어질” 뒤에 그대로 붙일 수 없고, 사전 대비의 관계도 나타내지 못합니다.','바람에':'“길어지는 바람에”처럼 원인과 결과를 연결합니다. 이 문장은 앞으로의 가능성에 대한 사전 준비입니다.'}
+    choices:{'듯이':'비유·유사성을 나타냅니다. 여기서는 회의가 길어질 가능성에 대비해 준비한 이유가 필요합니다.','뿐더러':'사실에 다른 사실을 추가하는 표현입니다. 이 문장에서 필요한 예상 상황과 사전 준비의 관계를 나타내지 못합니다.','바람에':'“길어지는 바람에”처럼 원인과 결과를 연결합니다. 이 문장은 앞으로의 가능성에 대한 사전 준비입니다.'}
   },
   ja:{
     reason:'「길어질」は今後の可能性、「미리 … 준비해 두었다」はその可能性への事前準備です。予想される状況に備える「것에 대비해」がつながります。',
-    trap:'「듯이」はたとえ・類似で、事前準備の理由を表しません。「뿐더러」は情報の追加で、ここでは「길어질뿐더러」と接続できません。「바람에」は「길어지는 바람에」のように原因と結果を結び、まだ起きていないことへの備えとは異なります。',
+    trap:'「듯이」はたとえ・類似で、事前準備の理由を表しません。「뿐더러」は事実の追加です。ここでは情報を加える関係ではなく、予想される状況への事前準備を結ぶ必要があります。「바람에」は「길어지는 바람에」のように原因と結果を結び、まだ起きていないことへの備えとは異なります。',
     strategy:'「미리・준비하다」を手掛かりに、前半がすでに起きた原因か、今後予想される状況かを区別します。予想される状況への事前準備なら「-(으)ㄹ 것에 대비해」を検討します。',
-    choices:{'듯이':'たとえ・類似を表します。ここでは会議が長引く可能性に備えて準備した理由が必要です。','뿐더러':'情報を追加する表現です。この空欄直前の「길어질」にはそのまま接続できず、事前に備える関係も表しません。','바람에':'「길어지는 바람에」のように原因と結果を表します。この文は今後の可能性への事前準備です。'}
+    choices:{'듯이':'たとえ・類似を表します。ここでは会議が長引く可能性に備えて準備した理由が必要です。','뿐더러':'ある事実に別の事実を加える表現です。この文で必要な、予想される状況と事前準備の関係を表しません。','바람에':'「길어지는 바람에」のように原因と結果を表します。この文は今後の可能性への事前準備です。'}
   },
   en:{
     reason:'길어질 describes a future possibility; 미리 … 준비해 두었다 describes advance preparation. 것에 대비해 connects the anticipated situation to preparing for it.',
-    trap:'듯이 expresses likeness, not the reason for preparation. 뿐더러 adds information and cannot attach here as 길어질뿐더러. 바람에 links cause and result, as in 길어지는 바람에; this sentence instead prepares for a future possibility.',
+    trap:'듯이 expresses likeness, not the reason for preparation. 뿐더러 adds another fact. This sentence needs preparation for an anticipated situation, not an additional fact. 바람에 links cause and result, as in 길어지는 바람에; this sentence instead prepares for a future possibility.',
     strategy:'Find 미리 and 준비하다. Distinguish an existing cause from a future possibility. For preparation for an anticipated situation, consider -(으)ㄹ 것에 대비해.',
-    choices:{'듯이':'This expresses likeness, not the reason for preparing for a possible long meeting.','뿐더러':'This adds information. It cannot attach directly to 길어질 here or express preparing for a possibility.','바람에':'A form such as 길어지는 바람에 links cause and result. Here the preparation precedes a possible future event.'}
+    choices:{'듯이':'This expresses likeness, not the reason for preparing for a possible long meeting.','뿐더러':'This adds another fact. It does not express the relation between the anticipated situation and the advance preparation required here.','바람에':'A form such as 길어지는 바람에 links cause and result. Here the preparation precedes a possible future event.'}
   },
   zh:{
     reason:'“길어질”表示将来的可能性，“미리 … 준비해 두었다”表示提前准备。因此应使用表示为预期情况做准备的“것에 대비해”。',
-    trap:'“듯이”表示比喻或相似，不能说明提前准备的原因。“뿐더러”表示追加信息，此处不能接成“길어질뿐더러”。“바람에”以“길어지는 바람에”等形式连接原因与结果，与为尚未发生的情况提前准备不同。',
+    trap:'“듯이”表示比喻或相似，不能说明提前准备的原因。“뿐더러”表示追加另一事实，而此处需要表达为预期情况提前准备的关系。“바람에”以“길어지는 바람에”等形式连接原因与结果，与为尚未发生的情况提前准备不同。',
     strategy:'找出“미리、준비하다”，区分已经发生的原因与将来可能发生的情况。为预期情况提前准备时，考虑“-(으)ㄹ 것에 대비해”。',
-    choices:{'듯이':'表示比喻或相似，不能说明为会议可能延长而提前准备的原因。','뿐더러':'表示追加信息，不能直接接在此处的“길어질”后，也不表示提前应对预期情况。','바람에':'以“길어지는 바람에”等形式连接原因与结果。此句表达为将来的可能情况提前准备。'}
+    choices:{'듯이':'表示比喻或相似，不能说明为会议可能延长而提前准备的原因。','뿐더러':'表示在一个事实之外追加另一个事实，不能表达此句所需的预期情况与提前准备之间的关系。','바람에':'以“길어지는 바람에”等形式连接原因与结果。此句表达为将来的可能情况提前准备。'}
   }
 }])),
 ...Object.fromEntries(MEETING_HOME_IDS.map(id=>[id,MEETING_HOME_COACH])),

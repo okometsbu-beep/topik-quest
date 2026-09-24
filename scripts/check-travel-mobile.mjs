@@ -817,6 +817,19 @@ try{
   assert.match(randomCoach,/慣用句全体/);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertRandomPracticeFits(`TOPIK II graded Random Practice dark ${width}px`,'dark')}
   await setViewport(390,844);await shot('00i-random-practice-topik2-coaching.png');
+  // The user's reported meeting-preparation item, rendered through the real Random Practice owner.
+  for(const [lang,theme] of [['ko','dark'],['ja','light']]){
+    await evaluate(`(()=>{S.lang='${lang}';S.view='infinity';S.infinity={active:true,examLevel:2,count:0,graded:0,correct:0,writing:0,totalSec:0,targetSec:0,last:null,feedback:null,seenIds:[],current:{type:'read',id:2,bankId:'M04-II-R-02',choiceOrder:[3,1,0,2]}};save();render();malbitSetTheme('${theme}')})()`);await sleep(200);
+    const choice=await evaluate(`MALBIT_BANK.present('M04-II-R-02',[3,1,0,2]).answerIndex`);
+    await tap('.choice',choice,100);await tap('.choice',choice,200);await tap('.malbitExplanationToggle',0,100);
+    const copy=await evaluate(`document.querySelector('.malbitRandomExplanation')?.innerText`);
+    assert.match(copy,/미리/u);assert.match(copy,/뿐더러/u);assert.match(copy,lang==='ko'?/사전 준비|사전 대비/u:/事前準備/u);
+    if(lang==='ko')assert.equal(await evaluate(`!!document.querySelector('.malbitQuestionTranslation')`),false,'Korean must not duplicate the original as a translation');
+    for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertRandomPracticeFits(`reported meeting item ${theme} ${width}px`,theme)}
+    await setViewport(390,844);await evaluate(`document.querySelector('.malbitRandomExplanation').scrollIntoView({block:'center',behavior:'auto'})`);await shot(`00renewal-reported-grammar-${lang}-${theme}.png`);
+  }
+  await evaluate(`S.lang='ja';malbitSetTheme('dark')`);
+
   await evaluate(`S.infinity=null;S.view='home';save();render()`);await sleep(300);
 
   const curatedIndex=await evaluate(`window.MALBIT_SHORTS_DECKS[2].findIndex(item=>item.term==='갈피를 못 잡다')`);

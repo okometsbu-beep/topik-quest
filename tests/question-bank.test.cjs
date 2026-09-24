@@ -147,6 +147,9 @@ for(const id of ['M04-II-R-02','M05-II-R-01','M10-II-R-02','M11-II-R-01']){
     assert.match(presented.explanationI18n[lang],/미리/u);
     const wrong=presented.choices.map((choice,i)=>choice==='것에 대비해'?null:presented.choiceExplanationsI18n[lang][i]).filter(Boolean);
     assert.equal(new Set(wrong).size,3,`${id}/${lang}: each shuffled distractor needs its own rationale`);
+    assert.doesNotMatch(presented.explanationI18n[lang],/길어질뿐더러.*(?:연결할 수 없|接続できません|cannot attach|不能接成)/u,'do not reject a valid additive ending as morphologically impossible');
+    const additive=presented.choiceExplanationsI18n[lang][presented.choices.indexOf('뿐더러')];
+    assert.doesNotMatch(additive,/붙일 수 없|接続でき|cannot attach|不能直接接/u,'explain why addition misses advance preparation, not a false conjugation ban');
   }
 }
 assert.equal(entranceQuestion.choices[entranceQuestion.answerIndex], '출입 안내');
