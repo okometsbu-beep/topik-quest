@@ -23,6 +23,14 @@ function usable(source,value,target){
   return true;
 }
 
+// Post-answer sentence meaning plus glosses follow the actual shuffled Korean choices.
+function formatReviewedQuestion(question,translation){
+  if(!translation?.sentence||!translation.sentenceLabel||!translation.choiceLabel||!Array.isArray(question?.choices)||!question.choices.length)return '';
+  const choices=question.choices.map(choice=>String(choice).replace(/^[①②③④]\s*/u,'').trim());
+  if(choices.some(choice=>!translation.glosses?.[choice]))return '';
+  return `${translation.sentenceLabel}\n${translation.sentence}\n\n${translation.choiceLabel}\n${choices.map((choice,index)=>`${index+1}. ${choice} — ${translation.glosses[choice]}`).join('\n')}`;
+}
+
 async function resolve({source,target,reviewed,translate}){
   const original=String(source??'');
   if(target==='ko')return{status:'original',text:original};
@@ -38,5 +46,5 @@ async function resolve({source,target,reviewed,translate}){
   }
 }
 
-window.MALBIT_RANDOM_TRANSLATION=Object.freeze({resolve,usable,unavailableText});
+window.MALBIT_RANDOM_TRANSLATION=Object.freeze({resolve,usable,unavailableText,formatReviewedQuestion});
 })();

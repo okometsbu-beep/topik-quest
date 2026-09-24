@@ -84,3 +84,19 @@ test('source-echo rejection preserves real translations and recovery without tra
   assert.equal(original.status,'original');assert.equal(original.text,source);assert.equal(calls,0);
   assert.equal(policy.usable('교통카드를 찍으세요.','“찍다” means to tap here.','en'),true,'Korean quotations in a translation must remain valid');
 });
+
+
+test('reported preparation-item translations preserve grammatical meaning and shuffled option alignment',async()=>{
+  const context={window:{}};require('node:vm').runInNewContext(read('data/explanations-i18n.js'),context);
+  const policy=translationPolicy(),question={choices:['바람에','뿐더러','듯이','것에 대비해']};
+  for(const id of ['M04-II-R-02','M05-II-R-01','M10-II-R-02','M11-II-R-01'])for(const lang of ['ja','en','zh']){
+    const translation=context.window.MALBIT_EXPLANATIONS.bankCoach[id][lang].translation;
+    const text=policy.formatReviewedQuestion(question,translation);
+    assert.ok(text.includes(translation.sentence));
+    question.choices.forEach((choice,index)=>assert.ok(text.includes(`${index+1}. ${choice} — ${translation.glosses[choice]}`)));
+    assert.doesNotMatch(text,/風の中|in the wind|风中/u);
+    let calls=0;const resolved=await policy.resolve({source:'회의가 길어질 ( ) 미리 필요한 자료를 모두 준비해 두었다.',target:lang,reviewed:text,translate:async()=>{calls++;throw new Error('must use the authored context')}});
+    assert.equal(resolved.status,'reviewed');assert.equal(calls,0);
+    assert.equal(policy.formatReviewedQuestion({choices:['unmapped']},translation),'','incomplete mappings must not invent glosses');
+  }
+});

@@ -94,8 +94,9 @@ function originalQuestionText(state){
 
 async function translatedQuestion(state,source){
   const lang=appState()?.lang||'ko';if(lang==='ko')return{status:'original',text:source};
-  const reviewed=window.MALBIT_REVIEWED_TRANSLATIONS?.[state.level]?.[state.type]?.[state.id]?.[lang];
   const policy=window.MALBIT_RANDOM_TRANSLATION;
+  const authored=window.MALBIT_EXPLANATIONS?.bankCoach?.[state.id]?.[lang]?.translation;
+  const reviewed=policy?.formatReviewedQuestion(state.q,authored)||window.MALBIT_REVIEWED_TRANSLATIONS?.[state.level]?.[state.type]?.[state.id]?.[lang];
   if(!policy)return{status:'unavailable',text:L('이 문제의 전체 번역은 현재 제공되지 않습니다. 한국어 원문은 위에 표시되어 있습니다.','この問題の全文翻訳は現在利用できません。韓国語の原文は上に表示されています。','A full translation is not available for this question. The Korean original is shown above.','这道题暂时无法提供全文翻译。上方显示的是韩语原文。')};
   return policy.resolve({source,target:lang,reviewed,translate:typeof window.translateCached==='function'?(value,target)=>window.translateCached(`random_whole_v24_${state.level}_${state.type}_${state.id}_${target}`,value,'ko',target):null});
 }

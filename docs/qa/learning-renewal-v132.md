@@ -23,7 +23,7 @@ This is not a claim of whole-bank explanation or native-language approval.
 ## Actual verification
 
 Recovered environment lacked the previous 082517c/fb22900 objects; reconstructed from the issue record.
-Local checkpoint: 2073709. Linux Node v24.19.0: quick 122/122; content 37/37; full 137/137.
+Local checkpoint: 2073709. Linux Node v24.19.0: quick 122/122; content 37/37; full 138/138.
 84 JS syntax checks, v132/45 ordered runtime files, immutable original bank hashes pass.
 Generated Shorts inventory hashes refreshed; counts and human approvals unchanged.
 Meaningful regressions cover draft restoration, separate assisted/unaided history, duplicate submit,
@@ -57,3 +57,15 @@ https://okometsbu-beep.github.io/topik-quest/
 Candidate baseline: 5ae66838620f6ce822ae5a42330332d31dbe0578. Product rollback after v132: v131.
 Physical iPhone/Android, native-language/educator review, actual first success and D1/D7 recall,
 all-bank teaching quality, microphone behavior, and complete offline recovery remain unverified.
+
+## Final screen findings
+
+PR CI 36074805842 at 0f97d2e passed; artifact 10840166037 has 176 screens.
+The ko screenshot confirmed the duplicate original is not visible (its hidden layout anchor remains).
+The ja screenshot exposed automatic translation of grammatical 바람에 as 風の中で. Merge was held.
+All four preparation-item IDs now use authored ja/en/zh sentence meanings labelled as the completed
+correct sentence, with Korean expression glosses rebuilt in the actual shuffled order. No unsupported
+mapping is invented. This avoids machine translation for those items. Native/editorial approval of
+the entire bank is still not asserted. Regression covers all four IDs × three languages, shuffled
+alignment, no wind mistranslation, and no automatic call; full local check now passes 138/138.
+The final PR CI must verify the corrected Japanese translation screenshot before merge.

@@ -11,7 +11,7 @@ restores the prior environment's lost v132 work: goal-led Home, correct TOPIK se
 eight localized Travel coaches, and answer-hidden phrase practice with persisted drafts and
 24-hour unaided / 10-minute assisted recall. Existing modes and durable roots remain intact.
 The prior screenshot translation/readability repairs are included. Full-bank pedagogy is not complete.
-Linux Node 24.19.0: quick 122/122, content 37/37, full 137/137, v132 runtime45, original bank hashes pass.
+Linux Node 24.19.0: quick 122/122, content 37/37, full 138/138, v132 runtime45, original bank hashes pass.
 Branch CI 36073840735 at 69e2ad4 passes Ubuntu/Node 22/Chrome mobile emulation; artifact
 10839034278 contains 174 screens. Home and recall at all four widths/two themes, Travel feedback
 and Random Practice were inspected. Final review corrected a false morphological rejection of
