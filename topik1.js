@@ -675,7 +675,7 @@ home=function(sc){
     :T(`TOPIK ${lv===1?'I':'II'}, 한 문제부터`,`TOPIK ${lv===1?'I':'II'}、まず1問から`,`TOPIK ${lv===1?'I':'II'}, one question at a time`,`TOPIK ${lv===1?'I':'II'}，从一道题开始`);
   const lessonMeta=beginnerPath?T('소리와 글자를 만나고 직접 써보세요.','音と文字に触れて、自分で書いてみましょう。','Meet the sounds and letters, then try writing.','认识发音和文字，再亲手写一写。'):T('풀고, 근거를 이해하고, 틀린 문제를 다시 만나요.','解いて、理由を理解して、間違えた問題をもう一度。','Answer, understand why, then revisit mistakes.','作答、理解依据，再复习错题。');
   const continueLabel=beginnerPath?(resumeBeginner?T('입문 학습 이어가기','入門学習の続きから','Continue beginner course','继续入门学习'):T('입문 학습 시작','入門学習を始める','Start beginner course','开始入门学习')):(matchingSession||activeExam||activeRandom?T('이어서 학습','続きから学習','Continue learning','继续学习'):T('한 문제 시작하기','1問から始める','Start one question','开始一道题'));
-  const reviewCount=(window.MALBIT_REVIEW?.items?.()||[]).filter(x=>!x.resolved).length,recall=window.MALBIT_TRAVEL?.recallSummary?.();
+  const reviewCount=Object.values(window.MALBIT_REVIEW?.items?.()||{}).filter(x=>x&&x.active).length,recall=window.MALBIT_TRAVEL?.recallSummary?.();
   sc.innerHTML=`
     <div class="tqHomeHeader"><div class="tqHomeLogo">MALBIT · 말빛</div><div class="tqHomeMeta"><button class="tqLang" aria-label="${T('설명 언어 변경','説明言語を変更','Change explanation language','更改说明语言')}" onclick="event.stopPropagation();flagMenu()">${LANGS[S.lang].flag}</button></div></div>
     <div class="tqV9Greeting"><small>${T('이해에서 한마디까지','わかる、から。話せる、へ。','From understanding to your own words','从理解到亲口表达')}</small><h1>${T('한국어, 오늘 한마디부터.','韓国語、今日のひと言から。','Korean starts with one phrase.','韩语，从今天的一句话开始。')}</h1><p>${T('뜻을 이해하고, 직접 써보고, 다시 기억해요.','日本語で理解して、韓国語で使って、もう一度思い出す。','Understand it, use it, and recall it again.','理解意思，亲自运用，再次回想。')}</p></div>
