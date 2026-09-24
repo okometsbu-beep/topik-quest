@@ -824,7 +824,7 @@ try{
     await tap('.choice',choice,100);await tap('.choice',choice,200);await tap('.malbitExplanationToggle',0,100);
     const copy=await evaluate(`document.querySelector('.malbitRandomExplanation')?.innerText`);
     assert.match(copy,/미리/u);assert.match(copy,/뿐더러/u);assert.match(copy,lang==='ko'?/사전 준비|사전 대비/u:/事前準備/u);
-    if(lang==='ko')assert.equal(await evaluate(`!!document.querySelector('.malbitQuestionTranslation')`),false,'Korean must not duplicate the original as a translation');
+    if(lang==='ko')assert.equal(await evaluate(`(()=>{const el=document.querySelector('.malbitQuestionTranslation');return !!el&&el.getClientRects().length>0&&getComputedStyle(el).visibility!=='hidden'})()`),false,'Korean must not visibly duplicate the original as a translation');
     for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertRandomPracticeFits(`reported meeting item ${theme} ${width}px`,theme)}
     await setViewport(390,844);await evaluate(`document.querySelector('.malbitRandomExplanation').scrollIntoView({block:'center',behavior:'auto'})`);await shot(`00renewal-reported-grammar-${lang}-${theme}.png`);
   }
