@@ -1,5 +1,8 @@
 # Travel feedback item audit — 2026-09-25
 
+Status: this is the pre-repair audit. The v132 candidate implements the eight structured coaches;
+current verification and remaining release gates are in `learning-renewal-v132.md`.
+
 Scope: the first Seoul route's six question scenes, including route-dependent taxi variants.
 This is a source/data audit, not browser or learner evidence.
 
