@@ -220,7 +220,7 @@ try{
     assert.deepEqual(fit.tinyCopy,[],`${label}: Game copy below 10px`);
   };
   const assertHomeFits=async(label,theme)=>{
-    const fit=await evaluate(`(()=>{const root=document.querySelector('.tqHomeScreen');if(!root)return{missing:true};const visible=el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)!==0&&r.width>0&&r.height>0};const rect=el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),right:Math.round(r.right),width:Math.round(r.width),height:Math.round(r.height)}};const controls=[...root.querySelectorAll('button:not(:disabled)')].filter(visible);const surfaces=[...root.querySelectorAll(':scope>.t1level,.tqV9Hero,.tqV9Modes,.tqV9Utility,.tqV9Week')].filter(visible);const tiles=[...root.querySelectorAll('.tqV9Mode,.tqV9Utility button,.tqV9Week')].filter(visible);const copy=[...root.querySelectorAll('.tqV9Greeting small,.tqV9SectionHead span,.tqV9Mode small,.tqV9Utility small,.tqV9Week p,.tqV9Day small')].filter(visible);const channels=color=>(color.match(/[\d.]+/g)||[]).slice(0,3).map(Number);return{missing:false,innerWidth,rootWidth:document.documentElement.scrollWidth,bodyWidth:document.body.scrollWidth,outside:controls.filter(el=>{const r=el.getBoundingClientRect();return r.left<-1||r.right>innerWidth+1}).map(rect),small:controls.filter(el=>{const r=el.getBoundingClientRect();return r.width<43||r.height<43}).map(rect),offCenter:surfaces.filter(el=>{const r=el.getBoundingClientRect();return Math.abs(r.left-(innerWidth-r.right))>2}).map(el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),rightGap:Math.round(innerWidth-r.right)}}),darkTiles:tiles.map(el=>({class:el.className,color:getComputedStyle(el).backgroundColor,rgb:channels(getComputedStyle(el).backgroundColor)})).filter(row=>row.rgb.length===3&&row.rgb.reduce((sum,value)=>sum+value,0)/3<170),tinyCopy:copy.map(el=>({class:el.className,size:parseFloat(getComputedStyle(el).fontSize)})).filter(row=>row.size<9.9)}})()`);
+    const fit=await evaluate(`(()=>{const root=document.querySelector('.tqHomeScreen');if(!root)return{missing:true};const visible=el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)!==0&&r.width>0&&r.height>0};const rect=el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),right:Math.round(r.right),width:Math.round(r.width),height:Math.round(r.height)}};const controls=[...root.querySelectorAll('button:not(:disabled)')].filter(visible);const surfaces=[...root.querySelectorAll(':scope>.t1level,.tqTodayLesson,.tqHomeReview,.tqTravelFeature,.tqV9Modes,.tqV9Utility,.tqV9Week')].filter(visible);const tiles=[...root.querySelectorAll('.tqV9Mode,.tqV9Utility button,.tqV9Week')].filter(visible);const copy=[...root.querySelectorAll('.tqV9Greeting small,.tqV9SectionHead span,.tqV9Mode small,.tqV9Utility small,.tqV9Week p,.tqV9Day small')].filter(visible);const channels=color=>(color.match(/[\d.]+/g)||[]).slice(0,3).map(Number);return{missing:false,innerWidth,rootWidth:document.documentElement.scrollWidth,bodyWidth:document.body.scrollWidth,outside:controls.filter(el=>{const r=el.getBoundingClientRect();return r.left<-1||r.right>innerWidth+1}).map(rect),small:controls.filter(el=>{const r=el.getBoundingClientRect();return r.width<43||r.height<43}).map(rect),offCenter:surfaces.filter(el=>{const r=el.getBoundingClientRect();return Math.abs(r.left-(innerWidth-r.right))>2}).map(el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),rightGap:Math.round(innerWidth-r.right)}}),darkTiles:tiles.map(el=>({class:el.className,color:getComputedStyle(el).backgroundColor,rgb:channels(getComputedStyle(el).backgroundColor)})).filter(row=>row.rgb.length===3&&row.rgb.reduce((sum,value)=>sum+value,0)/3<170),tinyCopy:copy.map(el=>({class:el.className,size:parseFloat(getComputedStyle(el).fontSize)})).filter(row=>row.size<9.9)}})()`);
     assert.equal(fit.missing,false,`${label}: Home root missing`);
     assert.ok(fit.rootWidth<=fit.innerWidth+1&&fit.bodyWidth<=fit.innerWidth+1,`${label}: horizontal overflow ${fit.rootWidth}/${fit.bodyWidth}/${fit.innerWidth}`);
     assert.deepEqual(fit.outside,[],`${label}: interactive element leaves viewport`);
@@ -609,10 +609,10 @@ try{
   await setViewport(390,844);await shot('00e-home-visual-contract.png');
   assert.equal(await evaluate(`document.querySelectorAll('.tqHomeScreen>.t1level button').length`),3,'Home must keep beginner, TOPIK I, and TOPIK II entries');
   assert.match(await evaluate(`document.querySelector('.tqHomeScreen>.t1level button.on')?.textContent`),/入門/,'a fresh learner must see Beginner as the selected path');
-  assert.match(await evaluate(`document.querySelector('.tqV9HeroBottom h2')?.textContent`),/ハングルから始める韓国語/,'the primary lesson must name the visible beginner destination');
-  assert.match(await evaluate(`document.querySelector('.tqV9Continue')?.textContent`),/入門学習を始める/);
+  assert.match(await evaluate(`document.querySelector('.tqTodayLesson h2')?.textContent`),/ハングルから始める韓国語/,'the primary lesson must name the visible beginner destination');
+  assert.match(await evaluate(`document.querySelector('.tqLessonStart')?.textContent`),/入門学習を始める/);
   assert.equal(await evaluate(`localStorage.getItem('topikQuestExamLevel')`),null,'selecting beginner by default must not invent an exam level');
-  await tap('.tqV9Continue',0,120);
+  await tap('.tqLessonStart',0,120);
   assert.equal(await evaluate(`S.view`),'beginner','fresh learner CTA must enter the beginner course');
   await evaluate(`setView('home')`);await sleep(100);
   await tap('.tqHomeScreen>.t1level button',2,120);
@@ -626,12 +626,26 @@ try{
   assert.match(await evaluate(`document.querySelector('.tqHomeScreen>.t1level button.on')?.textContent`),/TOPIK I/);
   await evaluate(`(()=>{const prefs=JSON.parse(localStorage.getItem('malbitProductPrefsV1')||'{}');prefs.listeningMode='off';localStorage.setItem('malbitProductPrefsV1',JSON.stringify(prefs));tqStartMode('random')})()`);await sleep(120);assert.equal(await evaluate(`S.view`),'t1quiz');
   await evaluate(`setView('home')`);await sleep(120);
-  assert.match(await evaluate(`document.querySelector('.tqV9Continue')?.textContent`),/続きから学習/,'a matching interrupted TOPIK session must be resumable');
-  await tap('.tqV9Continue',0,120);assert.equal(await evaluate(`S.view`),'t1quiz');
+  assert.match(await evaluate(`document.querySelector('.tqLessonStart')?.textContent`),/続きから学習/,'a matching interrupted TOPIK session must be resumable');
+  await tap('.tqLessonStart',0,120);assert.equal(await evaluate(`S.view`),'t1quiz');
   await evaluate(`setView('home');tqSetLevel(2)`);await sleep(120);
-  assert.doesNotMatch(await evaluate(`document.querySelector('.tqV9Continue')?.textContent`),/続きから学習/,'a TOPIK I session must not label the TOPIK II destination as resumable');
+  assert.doesNotMatch(await evaluate(`document.querySelector('.tqLessonStart')?.textContent`),/続きから学習/,'a TOPIK I session must not label the TOPIK II destination as resumable');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);await shot('00ec-home-topik2-path-light.png');
   await evaluate(`malbitSetTheme('dark')`);await sleep(100);
+
+  // Synthetic QA fixtures: never counted as learner evidence.
+  await evaluate(`(()=>{const pack=MALBIT_TRAVEL.packs[0];malbitTravelStart(pack.id,false);const key=MALBIT_TRAVEL.storageKey,store=JSON.parse(localStorage.getItem(key)),state=store.episodes[pack.id];state.sceneId='q-ticket';state.route='all-stop';state.answers['q-ticket']={selected:0,correct:true,earned:2000,bankId:'TRAVEL-A4'};localStorage.setItem(key,JSON.stringify(store));malbitTravelPracticeOpen()})()`);await sleep(100);
+  for(const theme of ['light','dark']){await evaluate(`malbitSetTheme('${theme}')`);for(const width of [320,375,390,430]){
+    await setViewport(width,width===320?700:844);
+    const fit=await evaluate(`(()=>{const root=document.querySelector('.travelPractice');return{present:!!root,overflow:document.documentElement.scrollWidth>innerWidth+1,leaked:root?.textContent.includes('교통카드를 찍어요.'),small:[...root.querySelectorAll('button,input')].filter(el=>el.getBoundingClientRect().height<44).length}})()`);
+    assert.deepEqual(fit,{present:true,overflow:false,leaked:false,small:0});await shot(`00renewal-recall-${theme}-${width}.png`);
+  }}
+  await tap('#travel-phrase',0,80);await send('Input.insertText',{text:'교통카드를 찍어요.'});await sleep(100);
+  await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('#travel-phrase');
+  assert.equal(await evaluate(`document.querySelector('#travel-phrase').value`),'교통카드를 찍어요.','recall draft survives reload');
+  await tap('.travelPractice form button',0,100);assert.match(await evaluate(`document.querySelector('.travelPracticeResult').textContent`),/24時間/);await shot('00renewal-recall-compared-dark.png');
+  await tap('.travelPractice .travelTextButton',0,100);assert.equal(await evaluate('S.view'),'travelPlay');
+  await evaluate(`setView('home');document.querySelector('.tqExtraPractice').open=true`);await assertHomeFits('Home expanded dark','dark');await shot('00renewal-home-expanded-dark.png');
 
   await evaluate(`(()=>{S.lang='ja';localStorage.setItem('topikQuestExamLevel','2');beginReal('write')})()`);await sleep(180);
   assert.equal(await evaluate(`S.real?.phase`),'write','writing-only exam must enter the writing section');

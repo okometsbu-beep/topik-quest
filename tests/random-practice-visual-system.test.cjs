@@ -53,4 +53,34 @@ test('Random Practice never presents a Korean source fallback as a translation',
   const automatic=await policy.resolve({source,target:'ja',translate:async()=> '次の文を読んでください。'});
   assert.deepEqual({...automatic},{status:'automatic',text:'次の文を読んでください。'});
   assert.equal(policy.usable(source,'공사 중입니다。','ja'),false,'Hangul-only fallback with changed punctuation is still unavailable');
+  const falseReview=await policy.resolve({source,target:'ja',reviewed:source});
+  assert.equal(falseReview.status,'unavailable','A reviewed label must not bypass source-echo rejection');
+  const original=await policy.resolve({source,target:'ko'});
+  assert.equal(original.status,'original');
+  assert.equal(original.text,source);
+});
+
+test('all foreign-language translation paths reject punctuation and Unicode source echoes',async()=>{
+  const policy=translationPolicy(),source='교통카드를 찍으세요.';
+  const echoes=['교통카드를 찍으세요!','교통카드를\n찍으세요。',source.normalize('NFD'),'교통카드를\u200b 찍으세요.'];
+  for(const target of ['ja','en','zh'])for(const value of echoes){
+    assert.equal((await policy.resolve({source,target,reviewed:value})).status,'unavailable',`${target} reviewed echo: ${JSON.stringify(value)}`);
+    assert.equal((await policy.resolve({source,target,translate:async()=>value})).status,'unavailable',`${target} automatic echo: ${JSON.stringify(value)}`);
+  }
+});
+
+test('source-echo rejection preserves real translations and recovery without translating Korean',async()=>{
+  const policy=translationPolicy(),source='교통카드를 찍으세요.';
+  const translations={ja:'交通カードをタッチしてください。',en:'Tap your transit card.',zh:'请刷交通卡。'};
+  for(const [target,value] of Object.entries(translations)){
+    assert.equal((await policy.resolve({source,target,reviewed:value})).status,'reviewed');
+    const recovered=await policy.resolve({source,target,reviewed:source+'!',translate:async()=>value});
+    assert.equal(recovered.status,'automatic');
+    assert.equal(recovered.text,value);
+    assert.equal((await policy.resolve({source,target,translate:async()=>{throw new Error('offline')}})).status,'unavailable');
+  }
+  let calls=0;
+  const original=await policy.resolve({source,target:'ko',translate:async()=>{calls++;return 'unexpected'}});
+  assert.equal(original.status,'original');assert.equal(original.text,source);assert.equal(calls,0);
+  assert.equal(policy.usable('교통카드를 찍으세요.','“찍다” means to tap here.','en'),true,'Korean quotations in a translation must remain valid');
 });

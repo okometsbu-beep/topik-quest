@@ -2,6 +2,19 @@
 
 Keep this file compact. Replace stale detail instead of appending an endless diary.
 
+## 최우선 사용자 요청 · 제품·마케팅·UI 통합 개편
+
+- 사용자가 대규모 업데이트와 UI 재개편을 직접 요청. 과거 Shorts 추가보다 우선하며 #110 정확성·저장 보존·모바일 게이트는 유지한다.
+- 후보 v132: 가치 제안 → 오늘 학습 → 오답/여행 표현 복습 → 여행 활용 → TOPIK 준비. 보조 모드는 펼치기로 보존하고 숏츠 기록을 전체 학습 성과로 표시하지 않는다.
+- 여행 첫 코스 8개 payload/9개 맥락의 4언어 근거·선택별 오답 이유·재사용 풀이, 예문 → 답 가리고 쓰기 → 비교 → 24시간/10분 복습을 구현. 예문 불일치를 문법 오답으로 판정하지 않는다.
+- 기존 스크린샷 결함의 공통 여행 가독성·원문 echo/중복 번역·문법 4문항 해설 수정 포함. 전체 은행 해설 완료가 아니다.
+- 복원 체크포인트 `2073709`, 브랜치 `agent/learning-renewal-20260925`. 이전 환경의 `082517c`/`fb22900` 객체는 현재 환경에 없어 설계 기록을 바탕으로 복원했다.
+- 실제 검사: Linux Node v24.19.0, quick 122/122, content 37/37, 전체 137/137, JS 84파일 문법, v132 런타임 45파일·원본 은행 해시 통과. 초안 복원·예문 공개/독립 입력 구별·중복 제출·여행 재시작 시 기록 보존·TOPIK II 중단 재개 검사 포함.
+- 모바일 검증: 로컬 Chrome 없음. 기존 agent/** push CI를 이용해 네 폭/두 테마·터치·새로고침·복귀·콘솔을 확인할 예정이며 아직 통과 아님. PR/병합/배포 전 필수.
+- 현재 production: v131 `fadd25392e75f055c6deebf026ec77b8d597c96b`, https://okometsbu-beep.github.io/topik-quest/ . 후보 복귀점 main `5ae66838620f6ce822ae5a42330332d31dbe0578`; 배포 후 제품 복귀 기준 v131.
+- 미검증: 실제 iPhone/Android, 일본어 모어 화자/교육 전문가, 실제 첫 학습 성공·D1/D7 회상. 합성 QA 기록은 실사용 지표가 아니다.
+- 다음: 같은 후보의 모바일 증거를 확보·직접 검수하고 PR/CI/Pages 순서로 진행. 상세 범위 `docs/qa/learning-renewal-v132.md`.
+
 ## 긴급 사용자 요청 · #129
 
 - 대상: TOPIK II 작문 51·52번 ㄱ/ㄴ 입력 완전 분리. Shorts 확충보다 우선.
@@ -24,7 +37,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 - Production: GitHub Pages static PWA
 - Production release: v131 · four bounded TOPIK I housework-action Shorts (`fadd25392e75f055c6deebf026ec77b8d597c96b`)
-- Current candidate: none; next bounded review is TOPIK II
+- Current candidate: v132 learning renewal; mobile verification pending
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning

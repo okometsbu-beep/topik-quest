@@ -2,10 +2,69 @@
 (function(){
   'use strict';
   const t=(ko,ja,en,zh)=>Object.freeze({ko,ja,en,zh});
+  const coach=(evidence,traps,method,prompt,phrase)=>Object.freeze({evidence,traps:Object.freeze([null,...traps]),method,recall:Object.freeze({prompt,phrase})});
+  const coaches={
+    'TRAVEL-A1':coach(
+      t('직원은 서울로 가려면 “교통센터”로 내려가라고 했습니다. 빈칸은 센터 앞의 “교통”입니다.','スタッフはソウルへ行くなら「교통센터」へ下りるよう案内しました。空欄はセンターの前の「교통」です。','The worker said to go down to 교통센터. The missing part before 센터 is 교통.','工作人员让你下到“교통센터”。空格应填“센터”前面的“교통”。'),[
+      t('수하물은 짐입니다. 짐을 찾았는지는 앞서 확인했지만, 이제 묻는 이동 장소가 아닙니다.','수하물は手荷物です。受け取ったかは確認済みで、今向かう交通施設ではありません。','수하물 means baggage. Collecting it was discussed earlier; it is not the transport facility.','수하물是行李。前面已确认领取情况，不是现在要去的交通设施。'),
+      t('출국은 나라 밖으로 나가는 것입니다. 지금은 한국에 도착해 서울로 가는 상황입니다.','출국は出国です。今は韓国に到着し、ソウルへ向かう場面です。','출국 means leaving the country. You have just arrived in Korea and are heading to Seoul.','출국是出境。现在是抵达韩国后前往首尔。'),
+      t('환전은 돈을 바꾸는 일입니다. 직원은 환전소가 아니라 이동 수단이 있는 곳을 안내했습니다.','환전は両替です。スタッフが案内したのは両替所ではなく交通機関のある場所です。','환전 means currency exchange. The directions lead to transport, not a currency desk.','환전是换钱。工作人员指的是乘坐交通工具的地方，而不是兑换处。')],
+      t('들은 장소 이름을 나누어 보세요: 교통 + 센터. 빈칸 뒤에 남은 부분과 연결합니다.','聞いた施設名を「교통＋센터」に分け、空欄の後ろにつなげます。','Split the place name into 교통 + 센터 and match the part after the blank.','把地点名称拆成“교통＋센터”，与空格后的部分对应。'),
+      t('공항철도가 어디 있는지 물어보세요.','空港鉄道の場所を尋ねてみましょう。','Ask where the airport railroad is.','问一下机场铁路在哪里。'),'공항철도가 어디예요?'),
+    'TRAVEL-A2':coach(
+      t('질문이 찾는 곳은 “공항철도”입니다. 같은 이름이 적힌 표지가 길 안내 단서입니다.','探しているのは「공항철도」です。同じ名前の標識が道案内の手掛かりです。','The question names 공항철도. A sign with that name points to the requested railway.','问题要找“공항철도”。写有同样名称的标志才是路线线索。'),[
+      t('택시 표지는 자동차 승차장입니다. 질문에 나온 철도와 이동 수단이 다릅니다.','택시の標識はタクシー乗り場です。質問の鉄道とは交通手段が違います。','The taxi sign points to road transport, not the railway in the question.','出租车标志指向出租车乘车点，与问题中的铁路不同。'),
+      t('안내 지도는 공항 전체 정보입니다. 여기서는 공항철도를 직접 가리키는 표지를 고릅니다.','案内図は空港全体の情報です。ここでは空港鉄道を直接示す標識を選びます。','The map covers the whole airport. Here the task asks for the sign specifically marking the railroad.','地图显示整个机场的信息。此处应选择直接指向机场铁路的标志。'),
+      t('여행 가방은 소지품입니다. 철도의 위치를 알려 주는 표지가 아닙니다.','旅行かばんは持ち物で、鉄道の場所を示す標識ではありません。','Your suitcase is luggage, not a sign showing the railway location.','旅行箱是随身物品，不是表示铁路位置的标志。')],
+      t('“어디예요?” 앞의 장소 이름을 표지의 글자와 맞춰 보세요.','「어디예요?」の前の場所名を、標識の文字と照合します。','Match the place before 어디예요? with the words on the sign.','把“어디예요?”前的地点名称与标志上的文字对应。'),
+      t('공항철도의 위치를 물어보세요.','空港鉄道の場所を聞いてみましょう。','Ask where the airport railroad is.','询问机场铁路的位置。'),'공항철도가 어디예요?'),
+    'TRAVEL-A3':coach(
+      t('이번 여행의 최종 목적지는 명동입니다. 서울역은 철도 경로에서 갈아타는 곳입니다.','今回の最終目的地は明洞です。ソウル駅は鉄道ルートの乗換地点です。','Myeongdong is the final destination. Seoul Station is a transfer point on the rail route.','最终目的地是明洞。首尔站是铁路路线上的换乘点。'),[
+      t('서울역은 중간 환승역이므로 최종 목적지가 아닙니다.','ソウル駅は途中の乗換駅で、最終目的地ではありません。','Seoul Station is an intermediate transfer, not the final destination.','首尔站是中途换乘站，不是最终目的地。'),
+      t('인천공항은 이번 여행의 출발지입니다.','仁川空港は今回の出発地です。','Incheon Airport is where this trip starts.','仁川机场是这次旅程的出发地。'),
+      t('홍대입구는 다른 역입니다. 이번 코스의 도착 지역은 명동입니다.','弘大入口は別の駅です。このコースの到着地は明洞です。','Hongik Univ. is a different station. This course ends in Myeongdong.','弘大入口是另一站，本课程的终点是明洞。')],
+      t('최종 목적지를 묻는다면 출발지·환승지를 제외하고 마지막 도착지를 찾습니다.','最終目的地を聞かれたら、出発地・乗換地点と最後の到着地を区別します。','For a final destination, distinguish the starting point and transfer from the last stop.','询问最终目的地时，区分出发地、换乘点和最后到达的地方。'),
+      t('명동까지 가 달라고 부탁해 보세요.','明洞まで行ってほしいとお願いしましょう。','Ask to be taken to Myeongdong.','请对方带你去明洞。'),'명동까지 가 주세요.'),
+    'TRAVEL-A4':coach(
+      t('“교통카드를 찍으세요”는 카드를 단말기에 대라는 요청입니다. “교통카드를 찍어요”가 그 행동입니다.','「교통카드를 찍으세요」はカードを端末にタッチする依頼です。「교통카드를 찍어요」がその動作です。','교통카드를 찍으세요 asks you to tap the card on the reader. 교통카드를 찍어요 describes that action.','“교통카드를 찍으세요”要求把卡贴在读卡器上。“교통카드를 찍어요”表示这个动作。'),[
+      t('표를 두 장 사는 것은 표 구매입니다. 이미 받은 교통카드를 대는 행동과 다릅니다.','切符を2枚買うことです。すでに受け取ったカードをタッチする動作ではありません。','Buying two tickets is a purchase, not tapping the card you already have.','买两张票是购票，不是刷已经拿到的交通卡。'),
+      t('공항으로 돌아가는 것은 이동입니다. 개찰구에서 요청받은 조작이 아닙니다.','空港へ戻る移動です。改札で求められた操作ではありません。','Returning to the airport is travel, not the requested action at the gate.','返回机场是移动，不是检票口要求的操作。'),
+      t('택시를 기다리는 것은 대기입니다. 카드를 단말기에 대지 않습니다.','タクシーを待つことです。カードを端末にタッチしていません。','Waiting for a taxi does not tap the card on the reader.','等出租车并没有把卡贴在读卡器上。')],
+      t('찍으세요는 요청, 찍어요는 행동 서술입니다. 같은 동사 찍다와 대상 교통카드를 연결합니다.','찍으세요は依頼、찍어요は動作の説明です。同じ動詞찍다と対象교통카드を結び付けます。','찍으세요 requests an action; 찍어요 describes it. Match the verb 찍다 and its object 교통카드.','찍으세요是请求，찍어요是动作说明。对应同一动词찍다和对象교통카드。'),
+      t('교통카드를 대는 행동을 한국어로 써보세요.','交通カードをタッチする動作を韓国語で書きましょう。','Write how you tap your transit card in Korean.','用韩语写出刷交通卡的动作。'),'교통카드를 찍어요.'),
+    'TRAVEL-A4-TAXI':coach(
+      t('“어디까지 가세요?”는 목적지를 묻습니다. “명동까지 가 주세요”가 목적지와 요청을 함께 전합니다.','「어디까지 가세요?」は行き先を聞いています。「명동까지 가 주세요」で目的地と依頼を伝えます。','어디까지 가세요? asks your destination. 명동까지 가 주세요 names it and makes a request.','“어디까지 가세요?”询问目的地。“명동까지 가 주세요”同时说出目的地和请求。'),[
+      t('서울역에서 갈아타라는 안내입니다. 택시 기사에게 목적지를 말하는 답이 아닙니다.','ソウル駅で乗り換える案内です。運転手へ行き先を伝える返答ではありません。','This gives transfer instructions at Seoul Station; it does not tell the driver your destination.','这是在首尔站换乘的指示，不是告诉司机目的地。'),
+      t('철도의 위치를 되묻습니다. 기사가 물은 목적지에 답하지 않습니다.','鉄道の場所を聞き返しています。運転手の行き先の質問に答えていません。','This asks where the railway is instead of answering the destination question.','这是反问铁路在哪里，没有回答目的地。'),
+      t('표 한 장을 요청합니다. 택시의 목적지를 전하지 않습니다.','切符を1枚頼んでいます。タクシーの行き先を伝えていません。','This requests a ticket without giving the taxi destination.','这是要一张票，没有说出出租车目的地。')],
+      t('어디까지라는 질문에는 목적지 + 까지로 답하고, 이동 요청은 가 주세요로 전합니다.','어디까지には「目的地＋까지」で答え、「가 주세요」で移動をお願いします。','Answer 어디까지 with destination + 까지; add 가 주세요 to request the ride.','用“目的地＋까지”回答어디까지，再用가 주세요提出前往的请求。'),
+      t('택시 기사에게 명동까지 가 달라고 해보세요.','運転手に明洞までお願いしましょう。','Ask the taxi driver to take you to Myeongdong.','请出租车司机去明洞。'),'명동까지 가 주세요.'),
+    'TRAVEL-A5':coach(
+      t('“갈아타세요”는 타고 있던 교통수단에서 다른 교통수단으로 옮겨 타라는 뜻입니다.','「갈아타세요」は乗っていた交通機関から別の交通機関へ乗り換える指示です。','갈아타세요 tells you to transfer from one vehicle or service to another.','“갈아타세요”要求从一个交通工具换乘到另一个。'),[
+      t('기다리세요는 기다리라는 뜻이며, 다른 열차로 옮겨 타는 행동이 아닙니다.','기다리세요は待つ指示で、別の列車へ乗り換える動作ではありません。','기다리세요 means wait, not transfer to another train.','기다리세요是等待，不是换乘其他列车。'),
+      t('사진을 찍으세요는 촬영 요청입니다. 환승 안내와 다릅니다.','사진을 찍으세요は撮影の依頼で、乗換案内ではありません。','사진을 찍으세요 asks you to take a photo, not transfer.','사진을 찍으세요要求拍照，不是换乘。'),
+      t('표를 사세요는 표 구매 지시입니다. 이미 이동 중인 환승 행동과 다릅니다.','표를 사세요は切符を買う指示で、移動中の乗換とは違います。','표를 사세요 tells you to buy a ticket, not change trains during the journey.','표를 사세요要求买票，与途中换乘不同。')],
+      t('모든 보기에 여기에서가 있어도 행동은 다릅니다. 마지막 동사로 기다림·촬영·구매·환승을 구별합니다.','どの選択肢も여기에서ですが、動作は違います。最後の動詞で待機・撮影・購入・乗換を区別します。','All options start with 여기에서. Use the final verb to distinguish waiting, photography, buying, and transferring.','各选项都以여기에서开头，要用最后的动词区分等待、拍照、购买和换乘。'),
+      t('여기서 갈아타라고 안내해 보세요.','ここで乗り換えるよう案内しましょう。','Tell someone to transfer here.','告诉对方在这里换乘。'),'여기에서 갈아타세요.'),
+    'TRAVEL-A5-TAXI':coach(
+      t('“어디에서 내려요?”는 내릴 장소를 묻습니다. 이번 목적지인 명동역에서 내린다고 답합니다.','「어디에서 내려요?」は降りる場所を聞いています。今回の目的地である明洞駅と答えます。','어디에서 내려요? asks where you get out. The destination on this route is Myeongdong Station.','“어디에서 내려요?”询问下车地点，应回答本次目的地明洞站。'),[
+      t('인천공항에서 내린다는 문장은 자연스럽지만 이번 여행의 목적지와 반대입니다.','仁川空港で降りるという文は自然ですが、今回の行き先とは違います。','Getting out at Incheon Airport is grammatical, but it is not this trip’s destination.','在仁川机场下车这句话语法自然，但不符合本次目的地。'),
+      t('갈아타라는 지시입니다. 택시에서 내릴 장소를 알려 주지 않습니다.','乗り換える指示で、タクシーを降りる場所を伝えていません。','This instructs someone to transfer without naming where to leave the taxi.','这是换乘指示，没有说明出租车下车地点。'),
+      t('표 두 장을 부탁합니다. 어디에서 내리는지에 답하지 않습니다.','切符を2枚頼んでいて、降りる場所に答えていません。','This asks for two tickets, not where to get out.','这是要两张票，没有回答下车地点。')],
+      t('어디에서 + 행동을 묻는다면 장소 + 에서 + 같은 행동으로 답합니다.','어디에서＋動作の質問には「場所＋에서＋同じ動作」で答えます。','For 어디에서 + action, answer with place + 에서 + that action.','遇到어디에서＋动作的提问，用“地点＋에서＋该动作”回答。'),
+      t('명동역에서 내린다고 말해 보세요.','明洞駅で降りると伝えましょう。','Say you get out at Myeongdong Station.','说你在明洞站下车。'),'명동역에서 내려요.'),
+    'TRAVEL-A6':coach(
+      t('도움을 받은 뒤 고마움을 전하는 말은 “감사합니다”입니다.','助けてもらったあと、お礼を伝える言葉は「감사합니다」です。','After receiving help, 감사합니다 expresses thanks.','得到帮助后，用“감사합니다”表达感谢。'),[
+      t('안녕하세요는 만났을 때의 인사입니다. 도움에 대한 감사 표현과 다릅니다.','안녕하세요は出会ったときのあいさつで、助けへのお礼とは違います。','안녕하세요 is a greeting, not an expression of thanks for help.','안녕하세요是见面问候，不是对帮助的感谢。'),
+      t('괜찮아요는 괜찮다는 뜻입니다. 안심시키거나 사양할 때 쓰지만 여기서 요구한 감사가 아닙니다.','괜찮아요は大丈夫という意味で、安心させたり断ったりできますが、ここで求められるお礼ではありません。','괜찮아요 can reassure or decline. It does not express the thanks requested here.','괜찮아요表示没关系或可以婉拒，不是此处要求的感谢。'),
+      t('미안합니다는 잘못에 대한 사과입니다. 도움을 받은 감사와 다릅니다.','미안합니다は謝罪で、助けてもらったお礼とは違います。','미안합니다 apologizes for a mistake; it does not thank someone for help.','미안합니다是为过失道歉，不是感谢帮助。')],
+      t('인사·감사·사과·사양 중 지금 상대에게 전할 뜻부터 정합니다.','あいさつ・お礼・謝罪・辞退のうち、今伝えたい気持ちを先に決めます。','First decide whether the situation calls for a greeting, thanks, apology, or refusal.','先确定此时需要问候、感谢、道歉还是婉拒。'),
+      t('도와준 사람에게 감사 인사를 해보세요.','助けてくれた人にお礼を言いましょう。','Thank someone who helped you.','向帮助你的人表示感谢。'),'감사합니다.')
+  };
   const q=(id,section,script,prompt,choices,answerIndex,explanation)=>Object.freeze({
     bankId:id,level:1,section,script,prompt,
     instruction:t('가장 알맞은 뜻을 고르세요.','最も適切な意味を選んでください。','Choose the best meaning.','请选择最合适的意思。'),
-    choices:Object.freeze(choices),answerIndex,explanationI18n:explanation
+    choices:Object.freeze(choices),answerIndex,explanationI18n:explanation,coach:coaches[id]
   });
   const c=(ko,ja,en,zh)=>t(ko,ja,en,zh);
 

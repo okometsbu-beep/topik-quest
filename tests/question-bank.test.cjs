@@ -140,6 +140,15 @@ assert.match(idiomQuestion.explanationI18n.ja, /慣用句全体/u);
 assert.match(idiomQuestion.explanationI18n.ja, /タイプ別の解き方/u);
 
 const entranceQuestion = bank.present('M11-I-R-37', [2, 0, 3, 1]);
+for(const id of ['M04-II-R-02','M05-II-R-01','M10-II-R-02','M11-II-R-01']){
+  const presented=bank.present(id,[3,1,0,2]);
+  assert.equal(presented.choices[presented.answerIndex],'것에 대비해');
+  for(const lang of ['ko','ja','en','zh']){
+    assert.match(presented.explanationI18n[lang],/미리/u);
+    const wrong=presented.choices.map((choice,i)=>choice==='것에 대비해'?null:presented.choiceExplanationsI18n[lang][i]).filter(Boolean);
+    assert.equal(new Set(wrong).size,3,`${id}/${lang}: each shuffled distractor needs its own rationale`);
+  }
+}
 assert.equal(entranceQuestion.choices[entranceQuestion.answerIndex], '출입 안내');
 for (const language of ['ko', 'ja']) {
   assert.match(entranceQuestion.explanationI18n[language], /오른쪽 출입구를 이용해 주세요/u, `M11-I-R-37 ${language} should quote the decisive action`);
