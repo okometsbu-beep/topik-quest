@@ -42,4 +42,3 @@ inventory, and saved progress stay unchanged.
 No PR, merge, version bump, CI, or deployment is authorized from this audit alone. The existing
 candidate still requires 320/375/390/430px light/dark checks, console/touch/re-entry checks, and visual
 inspection. Physical iPhone/Android, Japanese native review, and learner comprehension remain unverified.
-
