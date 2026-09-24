@@ -24,21 +24,29 @@ these facts from conversation history or the large TOPIK source bundle.
   passed all 110 checks. Live public UI shows two labelled fields and preserves different ㄱ/ㄴ values after
   next/back navigation. Physical iPhone/Android and real IME remain unverified.
 
-## Current release priority · 2026-09-22
+## Current release priority · 2026-09-23
 
 - Source of truth: [release blueprint #110](https://github.com/okometsbu-beep/topik-quest/issues/110).
   It supersedes #76 map expansion until core learning quality gates pass. A01–A12 remain audit findings,
   not resolved items; existing feature/visual checks do not certify translation or teaching accuracy.
-- Candidate v131 appends four bounded TOPIK I housework-action cards (`청소하다`, `빨래하다`,
+- Production v131 appends four bounded TOPIK I housework-action cards (`청소하다`, `빨래하다`,
   `설거지하다`, `요리하다`) without changing earlier IDs, the original bank, or Shorts storage.
-  Candidate inventory is 404 rows / 278 exact families (I 140, II 138), with 126 redundant rows,
+  Production inventory is 404 rows / 278 exact families (I 140, II 138), with 126 redundant rows,
   30 duplicate groups, 15 structural candidates, 0 answer conflicts, and 0 approvals. Local focused
   vocabulary+inventory checks pass 34/34, content checks pass 37/37, and the full release check passes
   131/131 with the v131 45-file runtime contract. PR #172 evidence CI `35745761618` passes Linux
   Chrome 320/375/390/430px light/dark, Japanese wrong-answer feedback, expanded coaching, next-first
   flow, and reload restoration. Artifact `10702339056` screens `00dm`/`00dn` were inspected. Final PR
-  CI, merge, Pages, and live verification remain pending; production stays v130. Ledger:
-  `docs/qa/shorts-review-s04-topik1-housework-actions.md`.
+  CI `35746609645` passed. PR #172 was squash merged as
+  `fadd25392e75f055c6deebf026ec77b8d597c96b`; main CI `35747146849` and Pages
+  `35747145718` succeeded. Live HTTP smoke reports v131 with 3 base + 45 runtime files, the four
+  core assets match main, and all four new IDs are present. Public cloud Chrome verified Japanese
+  wrong-answer feedback, the next CTA, and reload restoration. Physical devices, native review,
+  learner timing, D1/D7 recall, audio, and full offline recovery remain unverified. Ledger:
+  `docs/qa/shorts-review-s04-topik1-housework-actions.md`; product rollback is v130
+  `bfc3f89121f3477a964f474ec378391b3c37dbf8`. With no new P0 or clear answer error, the next
+  bounded task is a four-card TOPIK II shortage review because it has fewer reviewed exact sets
+  (I 140, II 138).
 - Production v130 appends four bounded TOPIK II change-adverb cards (`점차`, `일시적으로`,
   `지속적으로`, `급격히`) without changing earlier IDs, the original bank, or Shorts storage.
   Production inventory is 400 rows / 274 exact families (I 136, II 138), with 126 redundant rows,
@@ -54,8 +62,6 @@ these facts from conversation history or the large TOPIK source bundle.
   offline recovery remain unverified. Ledger: `docs/qa/shorts-review-s04-topik2-change-adverbs.md`;
   product rollback is v129
   `8a33bd6025243187d3f569e3ddd85f432ed4cc94`.
-  With no new P0 or clear answer error, the next bounded task is a four-card TOPIK I shortage review
-  because it now has fewer reviewed exact sets (I 136, II 138).
 - Production v124 separates an explicit comparison baseline (`-에 비해(서)`), a degree not inferior
   to the reference (`-에 못지않게`), equal degree (`-만큼`), and an extreme degree demonstrated by
   a result (`-(으)ㄹ 정도로`). It appends four stable IDs without changing the original bank or

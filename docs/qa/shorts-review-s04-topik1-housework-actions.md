@@ -1,8 +1,7 @@
 # S04 · TOPIK I housework-action Shorts pilot
 
-Candidate: v131 on `agent/loop-20260922-topik1-bounded`. Production remains v130
-`bfc3f89121f3477a964f474ec378391b3c37dbf8`; product rollback baseline is v129
-`8a33bd6025243187d3f569e3ddd85f432ed4cc94`.
+Production: v131, merged from PR #172 as `fadd25392e75f055c6deebf026ec77b8d597c96b`.
+Product rollback baseline is v130 `bfc3f89121f3477a964f474ec378391b3c37dbf8`.
 Scope: four new TOPIK I word cards only. This is an AI content review plus automated QA record,
 not native-speaker approval, learner timing evidence, or approval of the other 400 Shorts rows.
 
@@ -27,7 +26,7 @@ contract.
 | `S04-I-W-HOUSEWORK-03` | `b387892b7b5b835686d4e541fed5b4eb0bb688bd001749f62f59f948d3ca3da4` | `저녁을 먹은 뒤 설거지했어요.` |
 | `S04-I-W-HOUSEWORK-04` | `eb12579565d6ac7f65466f278d47cb7ae44af2ed951585ae8c5d6a7118c6f159` | `냉장고에 있는 재료로 요리했어요.` |
 
-## Candidate verdict and evidence boundary
+## Production verdict and evidence boundary
 
 | Gate | Result | Evidence / limitation |
 |---|---|---|
@@ -41,9 +40,9 @@ contract.
 | Full release checks | pass | Node 24 `npm run check` passes 131/131; runtime contract reports v131, 45 ordered files, and valid bank hashes. |
 | Emulated mobile | pass | PR #172 evidence CI `35745761618` covers Linux Chrome 320/375/390/430px light/dark, Japanese wrong-answer feedback, expanded coaching, next-first flow, and reload restoration. Artifact `10702339056` screens `00dm`/`00dn` were inspected. Local Chrome remains unavailable. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
-| Deployment | pending | No PR merge or GitHub Pages deployment has been claimed for v131. |
+| Deployment | pass | Final PR CI `35746609645`, main CI `35747146849`, and Pages `35747145718` succeeded. Live HTTP smoke reports v131 with 3 base + 45 runtime files; four core assets match main and all four new IDs are present. Public cloud Chrome verified Japanese wrong-answer feedback, the next CTA, and reload restoration. |
 
-Candidate inventory is 404 rows / 278 exact question-choice families (TOPIK I 140, TOPIK II 138).
+Production inventory is 404 rows / 278 exact question-choice families (TOPIK I 140, TOPIK II 138).
 The existing 126 redundant rows, 30 duplicate groups, 15 structural review candidates, 0 answer
 conflicts, and 0 approvals do not change. These totals are not content approvals, and no existing
 Shorts row, original bank item, answer, or stable ID is altered.
