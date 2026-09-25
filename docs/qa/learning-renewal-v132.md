@@ -88,4 +88,14 @@ Chrome target after 38 screens; this is not visual approval. Branch agent/v133-w
 subsequently passed CI 36076910462 with the same product code. Artifact 10839744095 has 179 screens;
 1363×936 light/dark HUD/direction buttons and mobile Travel were directly inspected. Existing
 320/375/390/430px × light/dark checks and preservation checks pass. Final PR/deployment verification
-is separate. Narrow rollback: v132 c4045c8; whole-update rollback: v131 fadd253.
+then completed: PR #175 CI 36077342411 passed; squash cbbd1b5615f374a70708e4dde07000d942a2e8cc.
+Main CI 36077673880 and Pages 36077673424 succeed. Public v133 confirms 48 scripts at v133,
+six HUD/direction button centers hittable, click/arrow movement, NPC dialogue→correct answer→
+answer-hidden writing→draft reload restoration→model comparison→24h recall notice. This is
+synthetic QA, not actual learner evidence. Local v133 HTTP base3/runtime45 passes with server/check
+in one process session; cross-session attempts lost the dev server and returned ECONNREFUSED.
+Public shell HTTP remains a network timeout; no live byte/hash pass is claimed.
+Known separate accessibility follow-up: the pre-existing RPG global Enter handler prevents native
+activation of focused map/language buttons. Pointer controls and arrow movement are verified, not
+all keyboard use. Next bounded repair must add a focused activation regression.
+Narrow rollback: v132 c4045c8; whole-update rollback: v131 fadd253.

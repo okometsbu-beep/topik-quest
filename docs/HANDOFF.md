@@ -20,14 +20,21 @@ has a focused ko/ja browser gate. Final PR CI 36075457096 passes (177 screens; a
 grammar meaning/glosses inspected). Main CI 36075858880 and Pages 36075858066 succeed.
 Public Chrome 1363×936 verifies v132/48 script versions, ko/ja Home and beginner CTA→Hangul.
 It also exposes pre-existing wide-screen Travel clipping: full-viewport map inside 560px parents.
-Resume `agent/v133-wide-travel-20260925`, not Shorts expansion. The v133 candidate removes only
-RPG parent max-width and adds wide-screen hit-testing. Local 138/138/runtime pass. CI 36076470585
+Production v133 removes only RPG parent max-width and adds wide-screen hit-testing.
+Local 138/138/runtime and same-session HTTP base3/runtime45 pass. CI 36076470585
 lost its Chrome target; not a pass. Run 36076910462 passes the unchanged product code; artifact
 10839744095 has 179 screens. Both wide themes and mobile Travel visuals inspected; four-width
-mobile/preservation gates pass. Finish final PR CI and live verification after merge.
+mobile/preservation gates pass. PR #175 final CI 36077342411 passed before squash
+cbbd1b5615f374a70708e4dde07000d942a2e8cc; main CI 36077673880 and Pages 36077673424 succeed.
+Live v133: 48 scripts, all six HUD/direction hit-tests, clicking and arrow-key movement, NPC
+conversation→correct answer→hidden-model writing→draft reload→comparison→24h recall notice pass.
+The synthetic QA flow is not a real learner result. Public shell HTTP times out; local smoke is separate.
 Whole-renewal rollback: v131 fadd25392e75f055c6deebf026ec77b8d597c96b. Narrow v133 rollback: v132.
 See `docs/qa/learning-renewal-v132.md` and STATUS.
 Native review, physical devices, and actual learner success/retention remain unverified.
+Next bounded task: reproduce/fix the existing RPG global Enter shortcut intercepting native activation
+of focused map/language buttons; do not confuse pointer/arrow-key success with complete keyboard QA.
+Then validate consented first-learning/recall/return, not endless card-count expansion.
 
 ## Immediate user priority · #129
 
@@ -50,7 +57,7 @@ Native review, physical devices, and actual learner success/retention remain unv
   passed all 110 checks. Live public UI shows two labelled fields and preserves different ㄱ/ㄴ values after
   next/back navigation. Physical iPhone/Android and real IME remain unverified.
 
-## Current release priority · 2026-09-23
+## Prior release history · 2026-09-23 (next-task notes below are historical)
 
 - Source of truth: [release blueprint #110](https://github.com/okometsbu-beep/topik-quest/issues/110).
   It supersedes #76 map expansion until core learning quality gates pass. A01–A12 remain audit findings,

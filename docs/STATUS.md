@@ -8,18 +8,16 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 배포 v132: 가치 제안 → 오늘 학습 → 오답/여행 표현 복습 → 여행 활용 → TOPIK 준비. 보조 모드는 펼치기로 보존하고 숏츠 기록을 전체 학습 성과로 표시하지 않는다.
 - 여행 첫 코스 8개 payload/9개 맥락의 4언어 근거·선택별 오답 이유·재사용 풀이, 예문 → 답 가리고 쓰기 → 비교 → 24시간/10분 복습을 구현. 예문 불일치를 문법 오답으로 판정하지 않는다.
 - 기존 스크린샷 결함의 공통 여행 가독성·원문 echo/중복 번역·문법 4문항 해설 수정 포함. 전체 은행 해설 완료가 아니다.
-- 복원 체크포인트 `2073709`, 브랜치 `agent/learning-renewal-20260925`. 이전 환경의 `082517c`/`fb22900` 객체는 현재 환경에 없어 설계 기록을 바탕으로 복원했다.
-- 실제 검사: Linux Node v24.19.0, quick 122/122, content 37/37, 전체 138/138, JS 84파일 문법, v132 런타임 45파일·원본 은행 해시 통과. 초안 복원·예문 공개/독립 입력 구별·중복 제출·여행 재시작 시 기록 보존·TOPIK II 중단 재개 검사 포함.
-- 모바일 증거: GitHub Actions Ubuntu/Node 22/Chrome 에뮬레이션 CI `36073840735` 통과(후보 `69e2ad4`, artifact `10839034278`, 174장). 320/375/390/430px×두 테마, 터치·회상 초안 새로고침·여행 복귀·기존 경로·콘솔 검사. 홈/회상 8조합과 여행/Random Practice 주요 화면 직접 확인. 실제 기기 증거와 구별한다.
-- 최종 검수에서 문법 4문항의 “뿐더러는 형태상 불가”라는 후보 설명을 발견해 국립국어원 자료에 따라 정보 추가와 사전 대비의 의미 차이로 수정. 실패→통과 회귀 검사와 사용자 제보 문항의 한국어/일본어 모바일 검사를 추가했다. 최종 head CI는 병합 전 재확인한다.
-- 추가 화면 검수: PR CI `36074805842`는 통과했지만 일본어 자동번역이 문법 “바람에”를 “風の中で”로 표시함을 직접 발견. 해당 4문항의 ja/en/zh 문맥 번역과 섞인 보기 순서별 뜻을 작성해 자동번역 경로를 대체했고 최종 CI를 재실행한다.
+- 실제 검사: Linux Node v24.19.0 전체 138/138, content 37/37, JS 84파일 문법, v133 런타임 45파일·원본 은행 해시 통과. 로컬 서버/검사를 같은 세션에서 실행해 HTTP 3개 기본+45개 런타임 통과(세션 간 서버 종료로 생긴 연결 거부와 구별). 초안 복원·예문 공개/독립 입력 구별·중복 제출·여행 재시작 시 기록 보존·TOPIK II 중단 재개 검사 포함.
+- 모바일: GitHub Actions Ubuntu/Node22/Chrome 에뮬레이션 320/375/390/430px×두 테마, 터치·회상 초안 새로고침·여행 복귀·기존 경로·콘솔 검사. 홈/회상 8조합과 여행/Random Practice 주요 화면 직접 확인. 실제 기기 증거와 구별한다.
+- 최종 화면 검수로 “뿐더러 형태상 불가”와 “바람에→風の中で” 오류를 발견·수정. 동일 문법 4문항의 ja/en/zh 문맥 번역과 실제 섞인 보기 순서의 뜻을 제공한다. 전체 은행의 자동번역 정확성 인증은 아니다.
 - 최종 v132: PR #174 squash `c4045c8358acbfb505c9df01d70dbaa3c5e026e3`. 최종 PR CI `36075457096`(177장, 일본어 문맥 번역 직접 확인), main CI `36075858880`, Pages `36075858066` 성공. 앞의 후보 검사는 이 최종 증거로 대체한다.
-- 현재 production: v132 `c4045c8358acbfb505c9df01d70dbaa3c5e026e3`, https://okometsbu-beep.github.io/topik-quest/ . 전체 개편 복귀 기준 v131 `fadd25392e75f055c6deebf026ec77b8d597c96b`.
-- 공개 Chrome 1363×936: v132/48개 script 버전, 홈 한국어·일본어와 입문 CTA→한글 학습 확인. 라이브 여행에서 기존 560px 부모가 전체 너비 지도의 좌우 조작부를 자르는 결함 발견(해당 CSS는 v132에서 변경하지 않음). 여행 전체 동선 통과로 기록하지 않는다.
-- 후속 후보 v133 `agent/v133-wide-travel-20260925`: 여행 RPG에서만 부모 max-width 해제, 실패→통과 정적 회귀와 넓은 화면 버튼 hit-test/두 테마 시각 검사 추가. 로컬 전체 138/138·v133 런타임 계약 통과. 첫 CI `36076470585`는 Chrome target 종료로 실패(통과 아님); 최종 모바일 검증 전 PR/배포 보류.
-- 후속 재검증: 같은 제품 코드의 CI `36076910462` 통과. artifact `10839744095` 179장 중 1363×936 두 테마의 조작부와 모바일 여행 화면 직접 확인. 기존 320/375/390/430px×두 테마·138검사·저장 보존 게이트 통과. PR 최종 CI와 배포 후 공개 확인은 별도 진행한다.
+- 현재 production: v133, PR #175 `cbbd1b5615f374a70708e4dde07000d942a2e8cc`, https://okometsbu-beep.github.io/topik-quest/ . 최종 PR CI `36077342411`, main CI `36077673880`, Pages `36077673424` 성공.
+- v133은 라이브에서 드러난 기존 560px 부모의 여행 지도 조작부 잘림만 수정. 실패→통과 정적 회귀, 1363×936 두 테마 실제 버튼 hit-test와 모바일 회귀 통과. CI `36076910462` artifact `10839744095` 179장 중 관련 화면 직접 확인. 첫 CI `36076470585` Chrome target 종료는 실패로 보존한다.
+- 공개 Chrome 1363×936: v132 홈 ko/ja·입문 CTA→한글, v133/48개 script 버전·조작부6개 hit-test·실제 클릭/방향키 이동·NPC 대화→정답→답 가리고 쓰기→초안 새로고침 복원→예문 비교→24시간 뒤 복습 안내 확인. QA 입력이며 실제 학습자 성과가 아니다. 직접 shell 라이브 HTTP는 timeout으로 미완료.
+- 되돌리기: v133 좁은 수정은 v132 `c4045c8358acbfb505c9df01d70dbaa3c5e026e3`; 전체 개편은 v131 `fadd25392e75f055c6deebf026ec77b8d597c96b`.
 - 미검증: 실제 iPhone/Android, 일본어 모어 화자/교육 전문가, 실제 첫 학습 성공·D1/D7 회상. 합성 QA 기록은 실사용 지표가 아니다.
-- 다음: v133 넓은 화면/모바일 게이트 후 공개 여행 동선을 재확인한다. 이후 첫 코스의 실제 초보 학습 성공·회상·복습 복귀를 검증하며 신규 문항 수 확충을 우선하지 않는다. 상세 범위 `docs/qa/learning-renewal-v132.md`.
+- 다음 한 작업: 기존 RPG 전역 Enter 단축키가 초점 받은 지도/언어 버튼의 기본 키보드 동작을 가로채는 문제를 재현·회귀 검사 후 수정한다(포인터 클릭/방향키 이동 통과와 구별). 이후 동의한 초보 학습자의 첫 성공·회상·복습 복귀 검증이며 문항 수 확충을 우선하지 않는다. 상세 `docs/qa/learning-renewal-v132.md`.
 
 ## 긴급 사용자 요청 · #129
 
@@ -42,8 +40,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v132 · goal-led Home, Travel recall and honest feedback (`c4045c8358acbfb505c9df01d70dbaa3c5e026e3`)
-- Current candidate: v133 · narrow follow-up for wide-screen Travel control clipping
+- Production release: v133 · learning renewal plus wide-screen Travel control repair (`cbbd1b5615f374a70708e4dde07000d942a2e8cc`)
+- Current priority: bounded RPG keyboard accessibility follow-up; no new question-count expansion
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
