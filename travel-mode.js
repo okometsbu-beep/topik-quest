@@ -692,8 +692,8 @@
     if(!item)return'';
     return`<span class="travelRpgShadow ${h(kind)}" aria-hidden="true" data-foot-anchor="${h(footAnchor)}" style="${rpgShadowPoint(zone,item)}"></span>`;
   }
-  function rpgCameraValues(zone,progress){
-    const viewport=document.querySelector?.('.travelRpgViewport');
+  function rpgCameraValues(zone,progress,mountedViewport){
+    const viewport=mountedViewport||document.querySelector?.('.travelRpgViewport');
     const viewportWidth=Math.max(1,Number(viewport?.clientWidth)||Math.min(Number(window.innerWidth)||390,720));
     const viewportHeight=Math.max(1,Number(viewport?.clientHeight)||Number(window.innerHeight)||700);
     const boardHeight=viewportHeight*RPG_CAMERA_SCALE,boardWidth=boardHeight*4/3;
@@ -840,7 +840,12 @@
     const backLabel=l({ko:'여행 지도',ja:'旅マップ',en:'Travel map',zh:'旅行地图'});
     sc.innerHTML=`<div class="travelPlay travelRpgScreen"><article class="travelRpgCard travelRpgShell ${notice?.type==='poi'?'has-discovery':''}"><div class="travelRpgViewport" role="img" aria-label="${h(l(zone.title))}"><div class="travelRpgBoard" style="${rpgCamera(zone,progress)}"><div class="travelRpgGroundLayer"><span class="travelRpgMap" src="${h(zone.tilemap?.atlas?.image||zone.background)}" aria-hidden="true"></span>${rpgGroundMarkup(zone)}</div><div class="travelRpgEnvironmentLayer" data-effect-contract="bounded-light" aria-hidden="true">${rpgEnvironmentMarkup(zone)}</div><div class="travelRpgShadowLayer" data-depth-contract="foot-y" aria-hidden="true">${shadows}</div><div class="travelRpgActorLayer" data-depth-contract="foot-y">${pois}${portals}${target}${rpgPlayerMarkup(skin,zone,progress)}</div><div class="travelRpgUpperLayer" aria-hidden="true">${rpgForegroundMarkup(zone)}</div></div><header class="travelRpgTopHud"><button class="travelRpgBack" onclick="malbitTravelBack()" aria-label="${h(backLabel)}">‹</button><div class="travelRpgLocationHud"><small>SEOUL WORLD · ${h(progress.steps)} STEP</small><b>${h(l(zone.title))}</b></div><button class="travelRpgLang" onclick="event.stopPropagation();flagMenu()" aria-label="${h(l({ko:'설명 언어 바꾸기',ja:'説明言語を変更',en:'Change explanation language',zh:'切换解析语言'}))}">${flag()}</button></header><div class="travelRpgStatusHud" aria-label="${h(l({ko:'여행 상태',ja:'旅のステータス',en:'Travel status',zh:'旅行状态'}))}"><span><small>${h(l({ko:'여행 원',ja:'旅ウォン',en:'TRAVEL WON',zh:'旅行韩元'}))}</small><b>${h(won(state.wallet))}</b></span><span><small>${h(l({ko:'여행 시각',ja:'旅の時刻',en:'TRIP TIME',zh:'旅行时间'}))}</small><b>${h(clock(state.clockMinutes))}</b></span><span><small>${h(l({ko:'조사',ja:'調査',en:'FOUND',zh:'调查'}))}</small><b>${h(discoveryCount)}/${h(zone.pois.length)}</b></span></div>${staminaHudMarkup(progress)}<div class="travelRpgObjectiveHud"><small>${h(l({ko:'현재 목표',ja:'現在の目標',en:'CURRENT OBJECTIVE',zh:'当前目标'}))}</small><b>${h(l(scene.title))}</b></div>${rpgNoticeMarkup(scene,notice)}<div class="travelRpgControls"></div><p class="travelRpgSaveStatus">${h(l({ko:'이동과 조사는 이 기기에 자동 저장됩니다.',ja:'移動と調査はこの端末に自動保存されます。',en:'Movement and discoveries save on this device.',zh:'移动与调查会自动保存在此设备。'}))}</p></div></article></div>`;
     const board=sc.querySelector?.('.travelRpgBoard'),ground=sc.querySelector?.('.travelRpgGroundLayer');
-    if(board){board.style.cssText+=`;${rpgBoardScale(zone)}`;board.dataset.tilemapVersion=String(zone.tilemap?.version||0)}
+    if(board){
+      board.style.cssText+=`;${rpgBoardScale(zone)}`;board.dataset.tilemapVersion=String(zone.tilemap?.version||0);
+      const camera=rpgCameraValues(zone,progress,board.parentElement);
+      board.style.left=camera.left;board.style.top=camera.top;
+      requestAnimationFrame(syncRpgCamera);
+    }
     if(ground)ground.dataset.tileCount=String(zone.width*zone.height);
     const stepLabel=sc.querySelector?.('.travelRpgLocationHud small');
     if(stepLabel)stepLabel.innerHTML=`SEOUL WORLD · <span data-rpg-step>${h(progress.steps)}</span> STEP`;
