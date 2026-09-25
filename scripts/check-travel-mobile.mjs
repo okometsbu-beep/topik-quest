@@ -412,7 +412,7 @@ try{
     for(let wait=0;wait<40;wait++){if(await evaluate(`!!document.querySelector('.travelRpgViewport')`)){rpgReady=true;break}await sleep(50)}
     assert.ok(rpgReady,'fresh Travel route must render the RPG viewport after hub theme checks');
     await assertWideCameraCoverage('wide initial Travel RPG light');await shot('00renewal-wide-initial-camera-light.png');
-    await evaluate(`malbitSetTheme('dark')`);await send('Page.reload',{ignoreCache:true});await ready();
+    await evaluate(`malbitSetTheme('dark');malbitTravelBack();malbitTravelStart('route-001-airport-myeongdong',false)`);await sleep(100);
     await assertWideCameraCoverage('wide re-entry Travel RPG dark');await shot('00renewal-wide-reentry-camera-dark.png');
     await setViewport(390,844);
     const keyboardFit=await evaluate(`(()=>{const button=document.querySelector('.travelRpgLang'),menu=document.getElementById('flagMenu'),original=window.malbitTravelInteract;let interactions=0;window.malbitTravelInteract=()=>{interactions+=1};button.focus();const dispatch=(target,key)=>{const event=new KeyboardEvent('keydown',{key,bubbles:true,cancelable:true});target.dispatchEvent(event);return event.defaultPrevented};const enterPrevented=dispatch(button,'Enter'),spacePrevented=dispatch(button,' '),buttonInteractions=interactions,focused=document.activeElement===button;button.click();const clickOpened=menu.classList.contains('open');flagMenu();const mapEnterPrevented=dispatch(document,'Enter'),mapEPrevented=dispatch(document,'e'),mapInteractions=interactions-buttonInteractions;window.malbitTravelInteract=original;return{focused,enterPrevented,spacePrevented,buttonInteractions,clickOpened,mapEnterPrevented,mapEPrevented,mapInteractions,menuOpen:menu.classList.contains('open')}})()`);
