@@ -13,6 +13,13 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 최종 화면 검수로 “뿐더러 형태상 불가”와 “바람에→風の中で” 오류를 발견·수정. 동일 문법 4문항의 ja/en/zh 문맥 번역과 실제 섞인 보기 순서의 뜻을 제공한다. 전체 은행의 자동번역 정확성 인증은 아니다.
 - 최종 v132: PR #174 squash `c4045c8358acbfb505c9df01d70dbaa3c5e026e3`. 최종 PR CI `36075457096`(177장, 일본어 문맥 번역 직접 확인), main CI `36075858880`, Pages `36075858066` 성공. 앞의 후보 검사는 이 최종 증거로 대체한다.
 - 현재 production: v135, PR #179 `e57a7769861c7fe34b839335f356f6e62deaee47`, https://okometsbu-beep.github.io/topik-quest/ . 최종 PR CI `36117974374`, main CI `36118461882`, Pages `36118461431` 성공.
+- v136 release candidate는 저장 상태가 없는 첫 방문에서 `navigator.languages`의 첫 지원 언어
+  (ko/ja/en/zh)를 선택하고 지원하지 않는 언어는 한국어로 안전하게 되돌린다. 저장된 언어·게임·단어장
+  기록은 계속 브라우저 설정보다 우선한다. 실패 테스트로 ja-JP의 기존 한국어 시작을 재현한 뒤 수정했다.
+  Linux Node v24 전체 139/139와 v136 런타임 45파일·원본 은행 해시가 통과했다. GitHub Actions
+  `36191109531`은 Ubuntu/Node22/Chrome에서 320/375/390/430px×두 테마와 새 ja-JP 프로필의
+  일본어 홈·입문 CTA를 통과했고 artifact `10888805318` 183장 중 최초 화면 두 테마를 직접 확인했다.
+  이는 브라우저 에뮬레이션이며 실제 iPhone/Android 또는 일본어 모어 화자 검증이 아니다.
 - v133은 라이브에서 드러난 기존 560px 부모의 여행 지도 조작부 잘림만 수정. 실패→통과 정적 회귀, 1363×936 두 테마 실제 버튼 hit-test와 모바일 회귀 통과. CI `36076910462` artifact `10839744095` 179장 중 관련 화면 직접 확인. 첫 CI `36076470585` Chrome target 종료는 실패로 보존한다.
 - v134는 RPG 전역 Enter/Space 조사 단축키가 초점된 지도·언어·이동 버튼의 네이티브 활성화를 가로채던 P1 접근성 결함만 수정한다. 초점 버튼은 키 이벤트를 소비하지 않고 빈 지도 Enter/E는 계속 조사로 라우팅한다. CI artifact `10845017916` 179장 중 390px·1363px 라이트/다크 Travel 화면을 직접 확인했다. 첫 PR CI `36089091135`는 터치 에뮬레이션 CDP가 네이티브 클릭을 합성하지 않은 검증 방식 실패이며 제품 통과가 아니다. 계약을 직접 측정한 최종 CI가 통과했다.
 - v135는 최초 렌더가 존재하지 않는/아직 정착하지 않은 viewport 대신 720px fallback으로 카메라를 잡아 1363×936 오른쪽 약 208px를 비우던 P1만 수정한다. mounted viewport로 즉시 재계산하고 다음 animation frame에 다시 clamp한다. CI는 최초 진입·저장 재진입의 이동 전 보드 네 변 coverage를 수치로 검사한다. PR CI `36117974374` artifact `10856190822` 181장 중 두 넓은 화면과 320/375/390/430px×두 테마를 직접 확인했다. 앞선 `36116613167`·`36117009893`은 결함이 남아 실패했고, `36117342467` 두 시도는 카메라 통과 후 Chrome target 종료로 실패했으며 통과로 세지 않는다.
@@ -22,9 +29,9 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 실제 학습자 검증 계약: `docs/qa/beginner-validation-protocol.md`. 12명 표본, 10분 첫 성공,
   세 표현 10분/D1/D7 회상, 다음 학습·복습 발견, 실기기 iPhone/Android, 개입·결측·집계 규칙을
   고정했다. 모집·초대·관찰·연락처/결과 수집은 시작하지 않았고 사용자 승인 전 금지한다.
-- 다음 한 작업: 사용자가 초대·동의문·비공개 저장/접근/삭제·D1/D7 연락 방식과 녹화 여부를
-  명시 승인하면 위 프로토콜로 실제 검증을 시작한다. 승인 전에는 새 P0/정답 오류가 없을 때
-  다른 안전한 #110 품질 작업을 진행하되 문항 수·가상 사용자를 학습자 증거로 대체하지 않는다.
+- 다음 한 작업: v136 PR의 CI·모바일 증거를 확인해 병합하고 Pages v136 및 공개 자산 일치를 검증한다.
+  그 뒤 사용자 승인 전에는 새 P0/정답 오류가 없을 때 다른 안전한 #110 품질 작업을 진행하되
+  문항 수·가상 사용자를 학습자 증거로 대체하지 않는다.
 
 ## 긴급 사용자 요청 · #129
 
@@ -48,7 +55,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 - Production: GitHub Pages static PWA
 - Production release: v135 · initial and resumed wide Travel camera covers the viewport (`e57a7769861c7fe34b839335f356f6e62deaee47`)
-- Current priority: consent-safe real beginner validation preparation; no new question-count expansion
+- Release candidate: v136 · fresh supported browser language is used only when no saved core state exists
+- Current priority: deploy and verify the v136 first-visit language fix; no new question-count expansion
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning

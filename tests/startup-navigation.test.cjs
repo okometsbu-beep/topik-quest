@@ -14,6 +14,34 @@ test('startup opens the app directly without onboarding or level diagnostics', (
   assert.match(growth, /function retireStartupGates\(\)/);
 });
 
+test('a fresh visit follows a supported browser language without replacing saved learner state', () => {
+  const vm = require('node:vm');
+  const source = read('legacy-core.js');
+  const startup = source.slice(0, source.indexOf('function save()')) + '\nthis.__state=S;this.__default=DEFAULT;';
+  const boot = ({languages = [], language = '', stored = null} = {}) => {
+    const context = {
+      document: {getElementById() {}},
+      navigator: {languages, language},
+      localStorage: {getItem: key => key === 'topikQuestV8' ? stored : null},
+    };
+    vm.createContext(context);
+    vm.runInContext(startup, context);
+    return JSON.parse(JSON.stringify({state: context.__state, defaults: context.__default}));
+  };
+
+  assert.equal(boot({languages: ['ja-JP', 'en-US'], language: 'ja-JP'}).state.lang, 'ja');
+  assert.equal(boot({languages: ['fr-FR'], language: 'fr-FR'}).state.lang, 'ko', 'unsupported locales retain the existing Korean fallback');
+
+  const saved = boot({
+    languages: ['ja-JP'],
+    language: 'ja-JP',
+    stored: JSON.stringify({lang: 'zh', gameUnlock: 17, vocab: [{text: '여행'}]}),
+  }).state;
+  assert.equal(saved.lang, 'zh', 'an explicit saved language wins over browser preference');
+  assert.equal(saved.gameUnlock, 17);
+  assert.deepEqual(saved.vocab, [{text: '여행'}]);
+});
+
 test('Home keeps beginner and TOPIK selection independent and routes one explicit primary lesson', () => {
   const topik = read('topik1.js');
   const beginner = read('app-polish-v35.js');
