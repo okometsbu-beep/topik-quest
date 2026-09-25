@@ -1,4 +1,4 @@
-# v132 learning renewal candidate
+# v132 learning renewal release
 
 ## Scope and preservation
 
@@ -52,8 +52,9 @@ final-head CI and those newly added screenshots must be inspected before merge.
 
 ## Release boundary
 
-No PR, merge, or deployment yet. Production v131 fadd25392e75f055c6deebf026ec77b8d597c96b:
+Released via PR #174, squash c4045c8358acbfb505c9df01d70dbaa3c5e026e3:
 https://okometsbu-beep.github.io/topik-quest/
+Final PR CI 36075457096, main CI 36075858880 and Pages 36075858066 succeed.
 Candidate baseline: 5ae66838620f6ce822ae5a42330332d31dbe0578. Product rollback after v132: v131.
 Physical iPhone/Android, native-language/educator review, actual first success and D1/D7 recall,
 all-bank teaching quality, microphone behavior, and complete offline recovery remain unverified.
@@ -68,4 +69,23 @@ correct sentence, with Korean expression glosses rebuilt in the actual shuffled 
 mapping is invented. This avoids machine translation for those items. Native/editorial approval of
 the entire bank is still not asserted. Regression covers all four IDs × three languages, shuffled
 alignment, no wind mistranslation, and no automatic call; full local check now passes 138/138.
-The final PR CI must verify the corrected Japanese translation screenshot before merge.
+Final PR CI 36075457096 at f51a8b84fb1d3db364c6edcbab56e9c16f8038f7 passed before merge.
+Artifact 10840396345 has 177 screens; the corrected Japanese sentence/gloss panel and grammar
+coach were inspected. This supersedes the earlier pending-final-head notes.
+
+## Public verification and bounded v133 follow-up · 2026-09-25
+
+Public Chrome 1363×936: v132 and 48 versioned scripts, ko/ja Home, no broken Home images,
+and beginner CTA→Hangul confirmed. Direct shell HTTP to public Pages timed out at 12 seconds;
+do not confuse local HTTP smoke with a live shell/hash pass.
+Public Travel exposed six clipped HUD/direction buttons: DOM centers hit the body instead of
+their buttons. The map uses viewport width while .app/.travelScreen retain max-width:560px.
+Those rules were unchanged in v132; the prior v131 desktop UI was not separately reproduced.
+v133 only releases the RPG parents' max-width, adds a failing-then-passing source regression,
+and tests actual elementFromPoint hits at 1363×936 in both themes before existing four-width
+mobile gates. Local full 138/138 and runtime v133 pass. First CI 36076470585 terminated its
+Chrome target after 38 screens; this is not visual approval. Branch agent/v133-wide-travel-20260925
+subsequently passed CI 36076910462 with the same product code. Artifact 10839744095 has 179 screens;
+1363×936 light/dark HUD/direction buttons and mobile Travel were directly inspected. Existing
+320/375/390/430px × light/dark checks and preservation checks pass. Final PR/deployment verification
+is separate. Narrow rollback: v132 c4045c8; whole-update rollback: v131 fadd253.

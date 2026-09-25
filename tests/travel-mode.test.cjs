@@ -251,6 +251,7 @@ test('Travel Mode is independent from Full Mock and wired into the ordered runti
   assert.match(styles, /\.travelHubHead\{padding-top:calc\(5px \+ env\(safe-area-inset-top\)\)\}/);
   assert.match(styles, /body\.travel-rpg-active\{[^}]*overflow:hidden[^}]*padding-bottom:0\}/);
   assert.match(styles, /body\.travel-rpg-active \.travelScreen\{overflow:hidden;padding:0\}/);
+  assert.match(styles, /body\.travel-rpg-active \.app,body\.travel-rpg-active \.travelScreen\{[^}]*max-width:none/,'full-viewport RPG HUD must not be clipped by the 560px reading container');
   assert.match(styles, /\.travelRpgTopHud\{[^}]*top:calc\(10px \+ env\(safe-area-inset-top\)\)/);
   assert.match(runtime, /function resetTransient/);
   assert.match(runtime, /function normalizeMetrics/);
