@@ -413,6 +413,12 @@ try{
     await setViewport(390,844);await assertTravelTopSafe('Travel RPG after portrait restore');
     const captureRpgVisuals=!fs.existsSync(path.join(out,'00m-travel-rpg-light.png'));
     if(captureRpgVisuals){
+      for(const theme of ['light','dark']){
+        await evaluate(`malbitSetTheme('${theme}')`);await setViewport(1363,936);await sleep(120);
+        const clipped=await evaluate(`([...document.querySelectorAll('.travelRpgTopHud button,.travelRpgDpad button')].filter(el=>{const r=el.getBoundingClientRect(),hit=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);return !hit||!el.contains(hit)}).map(el=>el.getAttribute('aria-label')||el.textContent))`);
+        assert.deepEqual(clipped,[],`wide ${theme}: RPG controls clipped by the reading container`);
+        await shot(`00renewal-wide-travel-${theme}.png`);
+      }
       await evaluate(`malbitSetTheme('light')`);await sleep(120);
       for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertRpgFits(`Travel RPG light ${width}px`,'light');await assertFits(`Travel RPG light ${width}px`)}
       await setViewport(390,844);await shot('00m-travel-rpg-light.png');
