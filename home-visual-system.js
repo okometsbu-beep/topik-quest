@@ -18,6 +18,8 @@ body.tq-home-active .tqHomeScreen button{min-height:var(--ui-touch)}
 body.tq-home-active .tqHomeScreen>.t1level{min-height:52px;border:1px solid var(--home-border);border-radius:var(--ui-radius-control);background:var(--home-surface);padding:4px;box-shadow:0 6px 16px var(--home-shadow)}
 body.tq-home-active .tqHomeScreen>.t1level button{min-width:0;color:var(--home-muted);font-size:12px}
 body.tq-home-active .tqHomeScreen>.t1level button.on{background:linear-gradient(135deg,#5067e8,#7159e9);color:#fff;box-shadow:0 6px 14px rgba(80,103,232,.22)}
+body.tq-home-active .tqHomeScreen>.t1level.v35ThreeLevels .v35BeginnerLevel{width:100%;justify-self:stretch;overflow:visible}
+body.tq-home-active .tqHomeScreen>.t1level .v35BeginnerLevel b{display:block;color:inherit;opacity:1;visibility:visible}
 body.tq-home-active .tqV9Greeting{margin:0 2px var(--ui-space-3)}
 body.tq-home-active .tqV9Greeting small{color:var(--home-muted);font-size:12px}
 body.tq-home-active .tqV9Greeting h1{color:var(--home-ink);font-size:28px;line-height:1.3}
