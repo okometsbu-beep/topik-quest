@@ -29,7 +29,7 @@ try{
     chrome=launchChrome();
     await waitFor('http://127.0.0.1:9222/json/version');
   }
-  const target=await json('http://127.0.0.1:9222/json/new?http://127.0.0.1:4173',{method:'PUT'});
+  const target=await json('http://127.0.0.1:9222/json/new?about:blank',{method:'PUT'});
   socket=new WebSocket(target.webSocketDebuggerUrl);
   await new Promise((resolve,reject)=>{socket.addEventListener('open',resolve,{once:true});socket.addEventListener('error',reject,{once:true})});
   let id=0;const pending=new Map();const errors=[];
