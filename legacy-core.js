@@ -1,5 +1,13 @@
 const $=id=>document.getElementById(id);
 const LANGS={ko:{flag:'🇰🇷',name:'한국어'},ja:{flag:'🇯🇵',name:'日本語'},en:{flag:'🇺🇸',name:'English'},zh:{flag:'🇨🇳',name:'中文'}};
+function initialLanguage(nav=typeof navigator==='undefined'?null:navigator){
+  const candidates=[...(Array.isArray(nav?.languages)?nav.languages:[]),nav?.language];
+  for(const value of candidates){
+    const code=String(value||'').trim().toLowerCase().split(/[-_]/)[0];
+    if(Object.prototype.hasOwnProperty.call(LANGS,code))return code;
+  }
+  return'ko';
+}
 const UI={
  home:{ko:'홈',ja:'ホーム',en:'Home',zh:'首页'}, game:{ko:'게임',ja:'ゲーム',en:'Game',zh:'游戏'}, review:{ko:'복습',ja:'復習',en:'Review',zh:'复习'}, vocab:{ko:'단어장',ja:'単語帳',en:'Vocab',zh:'单词本'}, more:{ko:'더보기',ja:'その他',en:'More',zh:'更多'},
  real:{ko:'실전모드',ja:'実戦モード',en:'Real Exam',zh:'实战模式'}, infinity:{ko:'인피니티',ja:'インフィニティ',en:'Infinity',zh:'无限模式'}, audioLab:{ko:'듣기 제작실',ja:'聴解制作室',en:'Listening Lab',zh:'听力制作室'},
@@ -12,7 +20,7 @@ function tr(k){return (UI[k]&&UI[k][S.lang])||k}
 function ml(ko,ja,en,zh){return ({ko,ja,en,zh})[S.lang]||ko}
 function esc(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function fmt(sec){sec=Math.max(0,Math.round(sec||0));let m=Math.floor(sec/60),s=sec%60,h=Math.floor(m/60);m%=60;if(h)return `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;return `${m}:${String(s).padStart(2,'0')}`}
-const DEFAULT={lang:'ko',view:'home',gameUnlock:1,gameWorld:1,gameExamLevel:2,gameAnswers:{},realAnswers:{listen:{},read:{}},writing:{},vocab:[],rwAnswers:{},lsAnswers:{},transCache:{},infinity:null,speaking:{mode:'read',index:0,last:null}};
+const DEFAULT={lang:initialLanguage(),view:'home',gameUnlock:1,gameWorld:1,gameExamLevel:2,gameAnswers:{},realAnswers:{listen:{},read:{}},writing:{},vocab:[],rwAnswers:{},lsAnswers:{},transCache:{},infinity:null,speaking:{mode:'read',index:0,last:null}};
 let S=JSON.parse(JSON.stringify(DEFAULT));
 try{Object.assign(S,JSON.parse(localStorage.getItem('topikQuestV8')||'{}'))}catch(e){}
 function save(){try{localStorage.setItem('topikQuestV8',JSON.stringify(S))}catch(e){}}
