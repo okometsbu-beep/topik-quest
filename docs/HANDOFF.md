@@ -42,15 +42,19 @@ e57a7769861c7fe34b839335f356f6e62deaee47; main CI 36118461882 and Pages 36118461
 Live v135 HTTP passes base3/runtime45 and four core assets match main by SHA-256. Runs 36116613167
 and 36117009893 correctly failed while the gap remained; run 36117342467 passed camera coverage but
 lost its Chrome target twice later and is not a pass.
-The v136 release candidate fixes one first-session P1: a clean Japanese browser previously inherited
+Production v136 fixes one first-session P1: a clean Japanese browser previously inherited
 the hard-coded Korean default. With no saved core state, the first supported value from
 `navigator.languages` now selects ko/ja/en/zh and unsupported locales fall back to Korean. Any saved
 language, vocabulary, game unlock, and other learner progress remains authoritative. A failing ja-JP
 startup test preceded the fix. Local full checks pass 139/139 with runtime45 and bank hashes intact.
-GitHub Actions run 36191109531 passes Ubuntu Chrome at 320/375/390/430px in both themes and directly
-asserts a clean ja-JP Home heading and beginner CTA; artifact 10888805318 contains 183 screens and its
-fresh first-visit light/dark frames were inspected. This is emulation, not physical-device or native-
-speaker evidence. Production remains v135 until the candidate PR is merged and Pages is verified.
+PR #182 was squash merged as 92286d97ad0496058a2f9b31125d870b0678205f. PR CI 36192414083
+attempt 2, main CI 36193245892, and Pages 36193245705 pass. The first PR attempt failed the existing
+Myeongdong reload assertion once; the unchanged rerun passed, so the first attempt is not counted as a
+product pass. Final artifact 10888733726 has 183 screens; clean ja-JP first-visit light/dark frames were
+inspected in the same candidate's successful push artifact 10888805318. Live HTTP reports v136 with
+base3/runtime45, and index/site-patch/sw/legacy-core/home-visual-system match main by SHA-256. This is
+emulation, not physical-device or native-speaker evidence. Narrow rollback: v135
+e57a7769861c7fe34b839335f356f6e62deaee47.
 The synthetic QA flow is not a real learner result. Local and public HTTP checks are separate from browser interaction.
 Whole-renewal rollback: v131 fadd25392e75f055c6deebf026ec77b8d597c96b. Narrow v135 rollback: v134.
 See `docs/qa/learning-renewal-v132.md` and STATUS.
