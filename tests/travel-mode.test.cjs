@@ -262,7 +262,7 @@ test('Travel Mode is independent from Full Mock and wired into the ordered runti
   assert.match(runtime, /travelRpgGameOver/);
   assert.match(runtime, /window\.malbitTravelInteract/);
   assert.match(runtime, /activationKey&&target\?\.closest\?\.\('button,a\[href\],summary,\[role="button"\],\[role="link"\]'\)/,'RPG Enter/Space shortcuts must preserve focused native control activation');
-  assert.match(runtime, /const camera=rpgCameraValues\(zone,progress\);[\s\S]{0,100}board\.style\.left=camera\.left;board\.style\.top=camera\.top/,'initial RPG camera must use the mounted full-width viewport before first movement');
+  assert.match(runtime, /const camera=rpgCameraValues\(zone,progress,board\.parentElement\);[\s\S]{0,100}board\.style\.left=camera\.left;board\.style\.top=camera\.top/,'initial RPG camera must use its mounted full-width viewport before first movement');
   assert.match(runtime, /state\.exploration=RPG\.normalizeProgress/);
   assert.doesNotMatch(runtime, /document\.documentElement\.style\.colorScheme='dark'/);
   assert.match(runtime, /localOnly:true/);

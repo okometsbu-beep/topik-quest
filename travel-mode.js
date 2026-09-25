@@ -692,8 +692,8 @@
     if(!item)return'';
     return`<span class="travelRpgShadow ${h(kind)}" aria-hidden="true" data-foot-anchor="${h(footAnchor)}" style="${rpgShadowPoint(zone,item)}"></span>`;
   }
-  function rpgCameraValues(zone,progress){
-    const viewport=document.querySelector?.('.travelRpgViewport');
+  function rpgCameraValues(zone,progress,mountedViewport){
+    const viewport=mountedViewport||document.querySelector?.('.travelRpgViewport');
     const viewportWidth=Math.max(1,Number(viewport?.clientWidth)||Math.min(Number(window.innerWidth)||390,720));
     const viewportHeight=Math.max(1,Number(viewport?.clientHeight)||Number(window.innerHeight)||700);
     const boardHeight=viewportHeight*RPG_CAMERA_SCALE,boardWidth=boardHeight*4/3;
@@ -842,7 +842,7 @@
     const board=sc.querySelector?.('.travelRpgBoard'),ground=sc.querySelector?.('.travelRpgGroundLayer');
     if(board){
       board.style.cssText+=`;${rpgBoardScale(zone)}`;board.dataset.tilemapVersion=String(zone.tilemap?.version||0);
-      const camera=rpgCameraValues(zone,progress);
+      const camera=rpgCameraValues(zone,progress,board.parentElement);
       board.style.left=camera.left;board.style.top=camera.top;
     }
     if(ground)ground.dataset.tileCount=String(zone.width*zone.height);
