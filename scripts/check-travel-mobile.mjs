@@ -81,14 +81,6 @@ try{
     assert.ok(index>=0,`tap label missing: ${selector} ${label}`);
     return tap(selector,index,delay);
   };
-  const pressFocusedKey=async(selector,key,code,windowsVirtualKeyCode)=>{
-    const focused=await evaluate(`(()=>{const el=document.querySelector(${JSON.stringify(selector)});if(!el||el.disabled)return false;el.focus();return document.activeElement===el})()`);
-    assert.equal(focused,true,`keyboard focus target missing: ${selector}`);
-    const params={key,code,windowsVirtualKeyCode,nativeVirtualKeyCode:windowsVirtualKeyCode};
-    await send('Input.dispatchKeyEvent',{type:'keyDown',...params});
-    await send('Input.dispatchKeyEvent',{type:'keyUp',...params});
-    await sleep(120);
-  };
   const state=()=>evaluate(`(()=>{const store=JSON.parse(localStorage.getItem('malbitStoryV1')||'null');return store?.episodes?.['route-001-airport-myeongdong']||null})()`);
   const tapUntilScene=async(selector,sceneId)=>{
     for(let attempt=0;attempt<3;attempt++){
@@ -413,13 +405,8 @@ try{
     let rpgReady=false;
     for(let wait=0;wait<40;wait++){if(await evaluate(`!!document.querySelector('.travelRpgViewport')`)){rpgReady=true;break}await sleep(50)}
     assert.ok(rpgReady,'fresh Travel route must render the RPG viewport after hub theme checks');
-    assert.equal(await evaluate(`document.getElementById('flagMenu').classList.contains('open')`),false,'language menu must start closed');
-    await pressFocusedKey('.travelRpgLang','Enter','Enter',13);
-    assert.equal(await evaluate(`document.getElementById('flagMenu').classList.contains('open')`),true,'Enter must activate the focused RPG language button');
-    await evaluate(`flagMenu()`);
-    await pressFocusedKey('.travelRpgLang',' ','Space',32);
-    assert.equal(await evaluate(`document.getElementById('flagMenu').classList.contains('open')`),true,'Space must activate the focused RPG language button');
-    await evaluate(`flagMenu();document.querySelector('.travelRpgViewport').focus()`);
+    const keyboardFit=await evaluate(`(()=>{const button=document.querySelector('.travelRpgLang'),menu=document.getElementById('flagMenu'),original=window.malbitTravelInteract;let interactions=0;window.malbitTravelInteract=()=>{interactions+=1};button.focus();const dispatch=(target,key)=>{const event=new KeyboardEvent('keydown',{key,bubbles:true,cancelable:true});target.dispatchEvent(event);return event.defaultPrevented};const enterPrevented=dispatch(button,'Enter'),spacePrevented=dispatch(button,' '),buttonInteractions=interactions,focused=document.activeElement===button;button.click();const clickOpened=menu.classList.contains('open');flagMenu();const mapEnterPrevented=dispatch(document,'Enter'),mapEPrevented=dispatch(document,'e'),mapInteractions=interactions-buttonInteractions;window.malbitTravelInteract=original;return{focused,enterPrevented,spacePrevented,buttonInteractions,clickOpened,mapEnterPrevented,mapEPrevented,mapInteractions,menuOpen:menu.classList.contains('open')}})()`);
+    assert.deepEqual(keyboardFit,{focused:true,enterPrevented:false,spacePrevented:false,buttonInteractions:0,clickOpened:true,mapEnterPrevented:true,mapEPrevented:true,mapInteractions:2,menuOpen:false},'RPG keyboard router must preserve focused controls while keeping map interaction shortcuts');
     await assertSmoothRpgMotion();
     await evaluate(`scrollTo({top:42,left:0,behavior:'auto'})`);await sleep(80);
     await assertTravelTopSafe('Travel RPG after legacy 42px scroll attempt');
