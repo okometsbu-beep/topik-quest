@@ -35,13 +35,20 @@ main CI 36089816552 and Pages 36089816437 succeed. Public Chrome verifies v134/4
 language Enter/Space and map-back Enter; four core live assets match main by SHA-256. The first PR CI 36089091135 failed because its CDP touch
 emulation did not synthesize native button clicks; it is not a pass. The final gate directly asserts
 that focused controls are not prevented or rerouted and that map shortcuts remain consumed.
+Production v135 re-clamps the camera from the mounted full-bleed viewport immediately and after layout.
+PR #179 CI 36117974374 passes 138/138 plus Chrome; artifact 10856190822 has 181 screens and the
+1363×936 initial light/resumed dark frames have no uncovered edge. Squash
+e57a7769861c7fe34b839335f356f6e62deaee47; main CI 36118461882 and Pages 36118461431 pass.
+Live v135 HTTP passes base3/runtime45 and four core assets match main by SHA-256. Runs 36116613167
+and 36117009893 correctly failed while the gap remained; run 36117342467 passed camera coverage but
+lost its Chrome target twice later and is not a pass.
 The synthetic QA flow is not a real learner result. Local and public HTTP checks are separate from browser interaction.
-Whole-renewal rollback: v131 fadd25392e75f055c6deebf026ec77b8d597c96b. Narrow v134 rollback: v133.
+Whole-renewal rollback: v131 fadd25392e75f055c6deebf026ec77b8d597c96b. Narrow v135 rollback: v134.
 See `docs/qa/learning-renewal-v132.md` and STATUS.
 Native review, physical devices, and actual learner success/retention remain unverified.
-Next bounded task: reproduce/fix the public 1363×936 initial/re-entry camera clamp leaving about 208px
-of the right viewport uncovered before movement; add a pre-movement wide board-coverage gate.
-Then validate consented first-learning/recall/return, not endless card-count expansion.
+Next bounded task: within #110's consent/sample boundary, finalize the conditions for real Japanese
+beginner first-learning→10-minute recall→review-return validation. Do not invite or collect data
+without user approval, and do not substitute more question-count expansion for learner evidence.
 
 ## Immediate user priority · #129
 

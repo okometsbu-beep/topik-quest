@@ -99,3 +99,21 @@ Known separate accessibility follow-up: the pre-existing RPG global Enter handle
 activation of focused map/language buttons. Pointer controls and arrow movement are verified, not
 all keyboard use. Next bounded repair must add a focused activation regression.
 Narrow rollback: v132 c4045c8; whole-update rollback: v131 fadd253.
+
+## Wide camera closure · v135 · 2026-09-25
+
+Public v134 exposed a separate P1: at 1363×936, initial and resumed Travel entry used the 720px
+fallback camera before the full-bleed viewport existed, leaving about 208px uncovered on the right.
+v135 recomputes from the mounted viewport and re-clamps on the next animation frame. The regression
+measures all four board edges before movement on light initial entry and dark saved re-entry, then
+runs the existing 320/375/390/430px light/dark, touch, keyboard, route, tile and console gates.
+
+PR #179 final CI 36117974374 passes 138/138 plus Chrome. Artifact 10856190822 contains 181 screens;
+the two new 1363×936 frames were inspected and have no blank edge. Runs 36116613167 and 36117009893
+correctly failed while the gap remained. Run 36117342467 passed the new camera gate but later lost
+its Chrome target on both attempts; it is retained as failure, not approval. Squash
+e57a7769861c7fe34b839335f356f6e62deaee47; main CI 36118461882 and Pages 36118461431 pass.
+Public HTTP smoke reports v135, base 3 plus 45 runtime assets. index.html, site-patch.js, sw.js and
+travel-mode.js match main by SHA-256. Narrow rollback is v134
+c15309cda11259e6f190f6cd5be9f5a6e0ae60c5. Physical devices, native/educator review and actual
+learner first success/D1/D7 retention remain unverified; synthetic browser QA is not learner evidence.
