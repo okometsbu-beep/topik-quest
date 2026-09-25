@@ -28,12 +28,19 @@ mobile/preservation gates pass. PR #175 final CI 36077342411 passed before squas
 cbbd1b5615f374a70708e4dde07000d942a2e8cc; main CI 36077673880 and Pages 36077673424 succeed.
 Live v133: 48 scripts, all six HUD/direction hit-tests, clicking and arrow-key movement, NPC
 conversation→correct answer→hidden-model writing→draft reload→comparison→24h recall notice pass.
-The synthetic QA flow is not a real learner result. Public shell HTTP times out; local smoke is separate.
-Whole-renewal rollback: v131 fadd25392e75f055c6deebf026ec77b8d597c96b. Narrow v133 rollback: v132.
+Production v134 fixes only the RPG global keyboard router: focused native controls keep Enter/Space,
+while map Enter/E still performs interaction. PR #177 CI 36089328672 passes 138/138 plus Chrome;
+artifact 10845017916 contains 179 screens. Squash c15309cda11259e6f190f6cd5be9f5a6e0ae60c5,
+main CI 36089816552 and Pages 36089816437 succeed. Public Chrome verifies v134/48 scripts,
+language Enter/Space and map-back Enter; four core live assets match main by SHA-256. The first PR CI 36089091135 failed because its CDP touch
+emulation did not synthesize native button clicks; it is not a pass. The final gate directly asserts
+that focused controls are not prevented or rerouted and that map shortcuts remain consumed.
+The synthetic QA flow is not a real learner result. Local and public HTTP checks are separate from browser interaction.
+Whole-renewal rollback: v131 fadd25392e75f055c6deebf026ec77b8d597c96b. Narrow v134 rollback: v133.
 See `docs/qa/learning-renewal-v132.md` and STATUS.
 Native review, physical devices, and actual learner success/retention remain unverified.
-Next bounded task: reproduce/fix the existing RPG global Enter shortcut intercepting native activation
-of focused map/language buttons; do not confuse pointer/arrow-key success with complete keyboard QA.
+Next bounded task: reproduce/fix the public 1363×936 initial/re-entry camera clamp leaving about 208px
+of the right viewport uncovered before movement; add a pre-movement wide board-coverage gate.
 Then validate consented first-learning/recall/return, not endless card-count expansion.
 
 ## Immediate user priority · #129
