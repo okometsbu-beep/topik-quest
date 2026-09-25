@@ -46,9 +46,13 @@ The synthetic QA flow is not a real learner result. Local and public HTTP checks
 Whole-renewal rollback: v131 fadd25392e75f055c6deebf026ec77b8d597c96b. Narrow v135 rollback: v134.
 See `docs/qa/learning-renewal-v132.md` and STATUS.
 Native review, physical devices, and actual learner success/retention remain unverified.
-Next bounded task: within #110's consent/sample boundary, finalize the conditions for real Japanese
-beginner first-learning→10-minute recall→review-return validation. Do not invite or collect data
-without user approval, and do not substitute more question-count expansion for learner evidence.
+`docs/qa/beginner-validation-protocol.md` now fixes the consent-safe execution contract: 12 adults,
+10-minute first success, three-expression 10-minute/D1/D7 no-hint recall, next/review discovery,
+physical iPhone/Android coverage, interventions, missing data, aggregate reporting, and a public-repo
+raw-data ban. This is preparation only; no tester was contacted and no learner data was collected.
+Starting the test requires explicit user approval of invitation/consent, private storage/access/deletion,
+the D1/D7 reminder channel, and any recording (default none). Until then, continue only other safe #110
+quality work and never substitute more question counts or synthetic users for learner evidence.
 
 ## Immediate user priority · #129
 
