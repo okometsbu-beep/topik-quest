@@ -1193,6 +1193,8 @@
     if(S.view!=='travelPlay'||event.defaultPrevented||event.metaKey||event.ctrlKey||event.altKey)return;
     const target=event.target,tag=String(target?.tagName||'').toLowerCase();
     if(tag==='input'||tag==='textarea'||tag==='select'||target?.isContentEditable)return;
+    const activationKey=event.key==='Enter'||event.key===' ';
+    if(activationKey&&target?.closest?.('button,a[href],summary,[role="button"],[role="link"]'))return;
     const context=activeRpgContext();if(!context||RPG_EVENT_OPEN[context.scene.id]||RPG_CUE.active)return;
     const direction={ArrowUp:'up',w:'up',W:'up',ArrowDown:'down',s:'down',S:'down',ArrowLeft:'left',a:'left',A:'left',ArrowRight:'right',d:'right',D:'right'}[event.key];
     if(direction){event.preventDefault();window.malbitTravelStep(direction);return}

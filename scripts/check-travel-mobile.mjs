@@ -81,6 +81,14 @@ try{
     assert.ok(index>=0,`tap label missing: ${selector} ${label}`);
     return tap(selector,index,delay);
   };
+  const pressFocusedKey=async(selector,key,code,windowsVirtualKeyCode)=>{
+    const focused=await evaluate(`(()=>{const el=document.querySelector(${JSON.stringify(selector)});if(!el||el.disabled)return false;el.focus();return document.activeElement===el})()`);
+    assert.equal(focused,true,`keyboard focus target missing: ${selector}`);
+    const params={key,code,windowsVirtualKeyCode,nativeVirtualKeyCode:windowsVirtualKeyCode};
+    await send('Input.dispatchKeyEvent',{type:'keyDown',...params});
+    await send('Input.dispatchKeyEvent',{type:'keyUp',...params});
+    await sleep(120);
+  };
   const state=()=>evaluate(`(()=>{const store=JSON.parse(localStorage.getItem('malbitStoryV1')||'null');return store?.episodes?.['route-001-airport-myeongdong']||null})()`);
   const tapUntilScene=async(selector,sceneId)=>{
     for(let attempt=0;attempt<3;attempt++){
@@ -405,6 +413,13 @@ try{
     let rpgReady=false;
     for(let wait=0;wait<40;wait++){if(await evaluate(`!!document.querySelector('.travelRpgViewport')`)){rpgReady=true;break}await sleep(50)}
     assert.ok(rpgReady,'fresh Travel route must render the RPG viewport after hub theme checks');
+    assert.equal(await evaluate(`document.getElementById('flagMenu').classList.contains('open')`),false,'language menu must start closed');
+    await pressFocusedKey('.travelRpgLang','Enter','Enter',13);
+    assert.equal(await evaluate(`document.getElementById('flagMenu').classList.contains('open')`),true,'Enter must activate the focused RPG language button');
+    await evaluate(`flagMenu()`);
+    await pressFocusedKey('.travelRpgLang',' ','Space',32);
+    assert.equal(await evaluate(`document.getElementById('flagMenu').classList.contains('open')`),true,'Space must activate the focused RPG language button');
+    await evaluate(`flagMenu();document.querySelector('.travelRpgViewport').focus()`);
     await assertSmoothRpgMotion();
     await evaluate(`scrollTo({top:42,left:0,behavior:'auto'})`);await sleep(80);
     await assertTravelTopSafe('Travel RPG after legacy 42px scroll attempt');
