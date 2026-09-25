@@ -614,9 +614,10 @@ try{
     return end;
   };
 
-  await send('Page.enable');await send('Runtime.enable');await send('Log.enable');
+  await send('Page.enable');await send('Runtime.enable');await send('Log.enable');await send('Network.enable');
   await setViewport(390,844);
   await send('Emulation.setLocaleOverride',{locale:'ja-JP'});
+  await send('Network.setUserAgentOverride',{userAgent:await evaluate(`navigator.userAgent`),acceptLanguage:'ja-JP,ja;q=0.9,en;q=0.8'});
   await send('Page.navigate',{url:'http://127.0.0.1:4173/?visual-check=travel'});await ready();
   assert.equal(await evaluate(`S.lang`),'ja','a fresh Japanese browser must open in Japanese');
   assert.match(await evaluate(`document.querySelector('.tqV9Greeting h1')?.textContent||''`),/韓国語/,'the first Home heading must be localized before language-menu use');
