@@ -111,7 +111,7 @@ try{
     if(fit.rpg)assert.equal(fit.bodyOverflow,'hidden',`${label}: RPG page must own and lock its viewport`);
   };
   const assertWideCameraCoverage=async label=>{
-    const fit=await evaluate(`(()=>{const viewport=document.querySelector('.travelRpgViewport'),board=document.querySelector('.travelRpgBoard');if(!viewport||!board)return{missing:true};const vr=viewport.getBoundingClientRect(),br=board.getBoundingClientRect();return{missing:false,gaps:{left:Math.max(0,br.left-vr.left),right:Math.max(0,vr.right-br.right),top:Math.max(0,br.top-vr.top),bottom:Math.max(0,vr.bottom-br.bottom)}}})()`);
+    const fit=await evaluate(`(()=>{const viewport=document.querySelector('.travelRpgViewport'),board=document.querySelector('.travelRpgBoard');if(!viewport||!board)return{missing:true};const vr=viewport.getBoundingClientRect(),br=board.getBoundingClientRect();return{missing:false,innerWidth,viewportClientWidth:viewport.clientWidth,viewport:{left:vr.left,right:vr.right,width:vr.width},board:{left:br.left,right:br.right,width:br.width,styleLeft:board.style.left},gaps:{left:Math.max(0,br.left-vr.left),right:Math.max(0,vr.right-br.right),top:Math.max(0,br.top-vr.top),bottom:Math.max(0,vr.bottom-br.bottom)}}})()`);
     assert.equal(fit.missing,false,`${label}: RPG camera missing`);
     assert.ok(Object.values(fit.gaps).every(gap=>gap<=1),`${label}: camera board leaves an empty viewport edge (${JSON.stringify(fit.gaps)})`);
   };

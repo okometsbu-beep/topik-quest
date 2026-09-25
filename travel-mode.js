@@ -844,6 +844,7 @@
       board.style.cssText+=`;${rpgBoardScale(zone)}`;board.dataset.tilemapVersion=String(zone.tilemap?.version||0);
       const camera=rpgCameraValues(zone,progress,board.parentElement);
       board.style.left=camera.left;board.style.top=camera.top;
+      requestAnimationFrame(syncRpgCamera);
     }
     if(ground)ground.dataset.tileCount=String(zone.width*zone.height);
     const stepLabel=sc.querySelector?.('.travelRpgLocationHud small');
