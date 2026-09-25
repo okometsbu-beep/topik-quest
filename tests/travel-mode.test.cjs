@@ -261,6 +261,7 @@ test('Travel Mode is independent from Full Mock and wired into the ordered runti
   assert.match(runtime, /travelRpgStaminaHud/);
   assert.match(runtime, /travelRpgGameOver/);
   assert.match(runtime, /window\.malbitTravelInteract/);
+  assert.match(runtime, /activationKey&&target\?\.closest\?\.\('button,a\[href\],summary,\[role="button"\],\[role="link"\]'\)/,'RPG Enter/Space shortcuts must preserve focused native control activation');
   assert.match(runtime, /state\.exploration=RPG\.normalizeProgress/);
   assert.doesNotMatch(runtime, /document\.documentElement\.style\.colorScheme='dark'/);
   assert.match(runtime, /localOnly:true/);

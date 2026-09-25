@@ -405,6 +405,8 @@ try{
     let rpgReady=false;
     for(let wait=0;wait<40;wait++){if(await evaluate(`!!document.querySelector('.travelRpgViewport')`)){rpgReady=true;break}await sleep(50)}
     assert.ok(rpgReady,'fresh Travel route must render the RPG viewport after hub theme checks');
+    const keyboardFit=await evaluate(`(()=>{const button=document.querySelector('.travelRpgLang'),menu=document.getElementById('flagMenu'),original=window.malbitTravelInteract;let interactions=0;window.malbitTravelInteract=()=>{interactions+=1};button.focus();const dispatch=(target,key)=>{const event=new KeyboardEvent('keydown',{key,bubbles:true,cancelable:true});target.dispatchEvent(event);return event.defaultPrevented};const enterPrevented=dispatch(button,'Enter'),spacePrevented=dispatch(button,' '),buttonInteractions=interactions,focused=document.activeElement===button;button.click();const clickOpened=menu.classList.contains('open');flagMenu();const mapEnterPrevented=dispatch(document,'Enter'),mapEPrevented=dispatch(document,'e'),mapInteractions=interactions-buttonInteractions;window.malbitTravelInteract=original;return{focused,enterPrevented,spacePrevented,buttonInteractions,clickOpened,mapEnterPrevented,mapEPrevented,mapInteractions,menuOpen:menu.classList.contains('open')}})()`);
+    assert.deepEqual(keyboardFit,{focused:true,enterPrevented:false,spacePrevented:false,buttonInteractions:0,clickOpened:true,mapEnterPrevented:true,mapEPrevented:true,mapInteractions:2,menuOpen:false},'RPG keyboard router must preserve focused controls while keeping map interaction shortcuts');
     await assertSmoothRpgMotion();
     await evaluate(`scrollTo({top:42,left:0,behavior:'auto'})`);await sleep(80);
     await assertTravelTopSafe('Travel RPG after legacy 42px scroll attempt');
