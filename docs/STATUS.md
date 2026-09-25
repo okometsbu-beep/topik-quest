@@ -17,6 +17,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 현재 production: v132 `c4045c8358acbfb505c9df01d70dbaa3c5e026e3`, https://okometsbu-beep.github.io/topik-quest/ . 전체 개편 복귀 기준 v131 `fadd25392e75f055c6deebf026ec77b8d597c96b`.
 - 공개 Chrome 1363×936: v132/48개 script 버전, 홈 한국어·일본어와 입문 CTA→한글 학습 확인. 라이브 여행에서 기존 560px 부모가 전체 너비 지도의 좌우 조작부를 자르는 결함 발견(해당 CSS는 v132에서 변경하지 않음). 여행 전체 동선 통과로 기록하지 않는다.
 - 후속 후보 v133 `agent/v133-wide-travel-20260925`: 여행 RPG에서만 부모 max-width 해제, 실패→통과 정적 회귀와 넓은 화면 버튼 hit-test/두 테마 시각 검사 추가. 로컬 전체 138/138·v133 런타임 계약 통과. 첫 CI `36076470585`는 Chrome target 종료로 실패(통과 아님); 최종 모바일 검증 전 PR/배포 보류.
+- 후속 재검증: 같은 제품 코드의 CI `36076910462` 통과. artifact `10839744095` 179장 중 1363×936 두 테마의 조작부와 모바일 여행 화면 직접 확인. 기존 320/375/390/430px×두 테마·138검사·저장 보존 게이트 통과. PR 최종 CI와 배포 후 공개 확인은 별도 진행한다.
 - 미검증: 실제 iPhone/Android, 일본어 모어 화자/교육 전문가, 실제 첫 학습 성공·D1/D7 회상. 합성 QA 기록은 실사용 지표가 아니다.
 - 다음: v133 넓은 화면/모바일 게이트 후 공개 여행 동선을 재확인한다. 이후 첫 코스의 실제 초보 학습 성공·회상·복습 복귀를 검증하며 신규 문항 수 확충을 우선하지 않는다. 상세 범위 `docs/qa/learning-renewal-v132.md`.
 

@@ -85,4 +85,7 @@ v133 only releases the RPG parents' max-width, adds a failing-then-passing sourc
 and tests actual elementFromPoint hits at 1363×936 in both themes before existing four-width
 mobile gates. Local full 138/138 and runtime v133 pass. First CI 36076470585 terminated its
 Chrome target after 38 screens; this is not visual approval. Branch agent/v133-wide-travel-20260925
-awaits completed visual gates before PR/deploy. Narrow rollback: v132 c4045c8; whole-update rollback: v131 fadd253.
+subsequently passed CI 36076910462 with the same product code. Artifact 10839744095 has 179 screens;
+1363×936 light/dark HUD/direction buttons and mobile Travel were directly inspected. Existing
+320/375/390/430px × light/dark checks and preservation checks pass. Final PR/deployment verification
+is separate. Narrow rollback: v132 c4045c8; whole-update rollback: v131 fadd253.

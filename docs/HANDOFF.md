@@ -22,7 +22,9 @@ Public Chrome 1363×936 verifies v132/48 script versions, ko/ja Home and beginne
 It also exposes pre-existing wide-screen Travel clipping: full-viewport map inside 560px parents.
 Resume `agent/v133-wide-travel-20260925`, not Shorts expansion. The v133 candidate removes only
 RPG parent max-width and adds wide-screen hit-testing. Local 138/138/runtime pass. CI 36076470585
-lost its Chrome target; not a pass. Finish mobile/wide visuals before PR/merge and verify live afterward.
+lost its Chrome target; not a pass. Run 36076910462 passes the unchanged product code; artifact
+10839744095 has 179 screens. Both wide themes and mobile Travel visuals inspected; four-width
+mobile/preservation gates pass. Finish final PR CI and live verification after merge.
 Whole-renewal rollback: v131 fadd25392e75f055c6deebf026ec77b8d597c96b. Narrow v133 rollback: v132.
 See `docs/qa/learning-renewal-v132.md` and STATUS.
 Native review, physical devices, and actual learner success/retention remain unverified.
