@@ -293,6 +293,7 @@
   function normalizeState(pack,value){
     if(!value||value.packId!==pack.id||!sceneById(pack,value.sceneId))return null;
     value.answers=value.answers&&typeof value.answers==='object'?value.answers:{};
+    value.practice=value.practice&&typeof value.practice==='object'?value.practice:{};
     value.orders=value.orders&&typeof value.orders==='object'?value.orders:{};
     value.evidence=Array.isArray(value.evidence)?value.evidence.filter(id=>sceneById(pack,id)||String(id).startsWith('hub:')):[];
     value.visited=Array.isArray(value.visited)?value.visited.filter(id=>sceneById(pack,id)):[];
@@ -322,7 +323,7 @@
   function newState(pack,previous){
     const state={
       version:1,packId:pack.id,sceneId:pack.scenes[0].id,route:null,
-      answers:{},orders:{},dialogues:{},evidence:[],visited:[pack.scenes[0].id],
+      answers:{},orders:{},practice:{...(previous?.practice||{})},dialogues:{},evidence:[],visited:[pack.scenes[0].id],
       wallet:Number(pack.startWallet)||0,clockMinutes:new Date().getHours()*60+new Date().getMinutes(),inventory:Array.from(new Set(Array.isArray(previous?.inventory)?previous.inventory:[])),spent:[],
       completed:false,startedAt:now(),updatedAt:now(),completedAt:null,
       bestScore:Math.max(Number(previous?.bestScore)||0,previous?.completed?correctCount(previous):0),
@@ -388,22 +389,55 @@
     if(/(?:요[?.!]?|니다[?.!]?|세요[?.!]?|싶어요[?.!]?|왔어요[?.!]?|감사합니다[.!]?|안녕하세요[!]?)$/u.test(token))return'ending';
     return'word';
   }
-  function travelSolveTip(scene,q){
-    const interaction=scene.interaction||'quiz';
-    if(interaction==='dialogue')return l({ko:'대화 문제는 마지막 말이 인사·질문·요청 중 무엇인지 먼저 판별하고, 그 기능에 직접 답하는 표현만 남기세요.',ja:'会話問題は、最後の発話が「あいさつ・質問・依頼」のどれかを先に判断し、その働きに直接答える表現だけを残します。',en:'First identify whether the last line is a greeting, question, or request, then keep only the response that directly serves that function.',zh:'先判断最后一句属于问候、提问还是请求，再保留能直接回应其功能的表达。'});
-    if(interaction==='hotspot')return l({ko:'문장 전체를 번역하지 말고 ‘지하철역’처럼 장소를 결정하는 핵심 명사를 그림·표지와 연결하세요.',ja:'文全体を訳す前に、「지하철역」のように場所を決める核心語を絵や標識と結び付けます。',en:'Before translating everything, connect the location keyword, such as 지하철역, to the matching sign or picture.',zh:'不要先翻译整句，先把“지하철역”等决定地点的关键词与图标或标牌对应。'});
-    if(interaction==='machine')return l({ko:'기계 화면에서는 행동 동사와 목표 명사를 먼저 찾으세요. 이번에는 ‘찍다/선택하다’와 ‘교통카드/명동’이 단서입니다.',ja:'機械画面では、動作を表す語と目的の名詞を先に探します。今回は「찍다／선택하다」と「교통카드／명동」が手掛かりです。',en:'On a machine screen, find the action verb and target noun first; here 찍다/선택하다 and 교통카드/명동 are the clues.',zh:'在机器界面先找动作动词和目标名词；本题线索是“찍다/선택하다”和“교통카드/명동”。'});
-    return l({ko:'질문이 요구하는 행동·장소·대상을 하나씩 표시한 뒤, 모두 만족하는 보기만 남기세요.',ja:'設問が求める行動・場所・対象を一つずつ確認し、すべて満たす選択肢だけを残します。',en:'Mark the required action, place, and target, then keep only the option satisfying all three.',zh:'逐一确认题目要求的动作、地点和对象，只保留全部符合的选项。'});
-  }
   function travelCoachMarkup(scene,q,answer,explanation){
-    const correct=String(q.choices?.[q.answerIndex]?.ko||l(q.choices?.[q.answerIndex])||'').replace(/^[①②③④]\s*/u,''),selected=String(q.choices?.[answer.selected]?.ko||l(q.choices?.[answer.selected])||'').replace(/^[①②③④]\s*/u,'');
-    const contrast=answer.correct?l({ko:`‘${correct}’이 상황의 질문이나 행동에 바로 이어지는지 확인하면 됩니다.`,ja:`「${correct}」が場面の質問や行動にそのまま続くかを確認します。`,en:`Check that “${correct}” directly continues the situation’s question or action.`,zh:`确认“${correct}”能否直接承接情境中的提问或动作。`}):l({ko:`고른 ‘${selected}’은(는) 이 상황의 요구와 다릅니다. 정답 ‘${correct}’이(가) 질문의 핵심 행동에 직접 대응합니다.`,ja:`選んだ「${selected}」はこの場面の要求とずれます。正解の「${correct}」が質問の核心となる行動に直接対応します。`,en:`“${selected}” does not fit this situation. “${correct}” directly answers the key action in the prompt.`,zh:`所选“${selected}”不符合情境要求；正确答案“${correct}”直接回应了题目的核心动作。`});
-    return`<section class="travelTutor"><div><small>${h(l({ko:'① 정답 근거',ja:'① 正解の根拠',en:'① WHY IT WORKS',zh:'① 正确依据'}))}</small><p>${h(explanation)}</p></div><div><small>${h(l({ko:'② 함정 구별',ja:'② ひっかけの見分け方',en:'② DISTRACTOR CHECK',zh:'② 干扰项辨析'}))}</small><p>${h(contrast)}</p></div><div><small>${h(l({ko:'③ 쪽집게 풀이 요령',ja:'③ 解き方のコツ',en:'③ SOLVING TIP',zh:'③ 解题技巧'}))}</small><p>${h(travelSolveTip(scene,q))}</p></div></section>`;
+    const coach=q.coach;if(!coach)return `<p>${h(explanation)}</p>`;
+    const wrong=(q.choices||[]).map((choice,index)=>({choice,index,reason:coach.traps[q.choiceOrder?.[index]??index]})).filter(x=>x.index!==q.answerIndex&&x.reason);
+    const selected=wrong.find(x=>x.index===answer.selected),others=wrong.filter(x=>x!==selected);
+    const row=x=>`<div><b lang="ko">${h(x.choice.ko||l(x.choice))}</b><p>${h(l(x.reason))}</p></div>`;
+    return `<section class="travelTutor"><div><small>${h(l({ko:'정답 근거',ja:'正解の根拠',en:'Why this answer',zh:'正确依据'}))}</small><p>${h(l(coach.evidence))}</p></div>${selected?`<div><small>${h(l({ko:'내가 고른 답',ja:'選んだ答え',en:'Your chosen answer',zh:'你选的答案'}))}</small>${row(selected)}</div>`:''}<div><small>${h(l({ko:'다음에도 쓰는 풀이',ja:'次にも使える考え方',en:'Use this next time',zh:'下次也能用的解题方法'}))}</small><p>${h(l(coach.method))}</p></div><details><summary>${h(l({ko:'다른 보기와 비교',ja:'ほかの選択肢と比較',en:'Compare other choices',zh:'比较其他选项'}))}</summary>${others.map(row).join('')}</details></section>`;
   }
   function assetPath(pack,group,key){
     if(!key)return'';
     return pack.assets?.[group]?.[key]||hubByRoute(pack.id)?.assets?.[group]?.[key]||'';
   }
+  function practiceQuestion(pack,id){
+    for(const scene of pack.scenes)for(const item of [scene,...Object.values(scene.routeVariants||{})])if(item.question?.bankId===id)return item.question;
+    return null;
+  }
+  function normalizePhrase(value){return String(value||'').normalize('NFC').replace(/[\p{P}\p{Z}\s]/gu,'')}
+  function recallEntries(){
+    const store=readStore(),entries=[];
+    for(const pack of PACKS)for(const [id,item] of Object.entries(store.episodes[pack.id]?.practice||{}))if(practiceQuestion(pack,id)?.coach&&Number.isFinite(item?.nextDueAt))entries.push({pack,id,...item});
+    return entries.sort((a,b)=>a.nextDueAt-b.nextDueAt);
+  }
+  function recallSummary(){const entries=recallEntries();return{total:entries.length,due:entries.filter(x=>x.nextDueAt<=Date.now()).length}}
+  function practiceContext(){const pack=activePack(),state=readState(pack),session=state?.practiceSession,q=practiceQuestion(pack,session?.bankId);return{pack,state,session,q}}
+  function recordPractice(state,session,outcome){
+    const old=state.practice[session.bankId]||{},unaided=outcome==='match'&&!session.revealed;
+    state.practice[session.bankId]={attempts:(Number(old.attempts)||0)+(session.recorded?0:1),unaidedMatches:(Number(old.unaidedMatches)||0)+(unaided?1:0),lastPracticedAt:Date.now(),nextDueAt:Date.now()+(unaided?86400000:600000),lastOutcome:unaided?'unaided':'with-example'};
+    session.recorded=true;
+  }
+  function renderPractice(sc){
+    const {state,session,q}=practiceContext();
+    if(!q?.coach||!session){sc.innerHTML=`<button class="travelPrimary" onclick="setView('travel')">${h(l({ko:'여행 코스로',ja:'旅のコースへ',en:'Travel course',zh:'旅行课程'}))}</button>`;return}
+    const answered=!!session.outcome,shown=session.revealed||answered,unaided=session.outcome==='match'&&!session.revealed;
+    sc.innerHTML=`<section class="travelPractice"><small>${h(l({ko:'답을 가리고 떠올리기',ja:'答えを隠して思い出す',en:'Recall without the answer',zh:'隐藏答案后回想'}))}</small><h1>${h(l(q.coach.recall.prompt))}</h1><p>${h(l({ko:'예문을 떠올려 써보세요. 다른 자연스러운 표현도 가능합니다. 이 비교는 문법 채점이 아닙니다.',ja:'例文を思い出して書きましょう。ほかの自然な表現も使えます。この比較は文法の採点ではありません。',en:'Try recalling the example. Other natural expressions are possible; this comparison is not a grammar grade.',zh:'试着回想例句。也可以使用其他自然的表达；此比较不是语法评分。'}))}</p><form onsubmit="event.preventDefault();malbitTravelPracticeCheck()"><label for="travel-phrase">${h(l({ko:'한국어로 써보기',ja:'韓国語で書いてみる',en:'Try writing in Korean',zh:'试着用韩语写'}))}</label><input id="travel-phrase" lang="ko" maxlength="120" autocomplete="off" value="${h(session.draft||'')}" oninput="malbitTravelPracticeDraft(this.value)" ${answered?'disabled':''}><button class="travelPrimary" type="submit" ${answered?'disabled':''}>${h(l({ko:'예문과 비교하기',ja:'例文と比べる',en:'Compare with the example',zh:'与例句比较'}))}</button></form>${shown?`<div class="travelPracticeResult" role="status"><b>${h(answered?(session.outcome==='match'?l({ko:'예문과 같아요',ja:'例文と一致しました',en:'Matches the example',zh:'与例句一致'}):l({ko:'예문과 표현을 비교해 보세요',ja:'例文と表現を比べてみましょう',en:'Compare your wording with the example',zh:'请比较你的表达与例句'})):l({ko:'예문을 확인했어요',ja:'例文を確認しました',en:'Example revealed',zh:'已查看例句'}))}</b><p lang="ko">${h(q.coach.recall.phrase)}</p><small>${h(unaided?l({ko:'도움 없이 입력했어요. 24시간 뒤 홈에서 다시 떠올려요.',ja:'自力で入力できました。24時間後、ホームでもう一度。',en:'Recalled unaided. Revisit it from Home in 24 hours.',zh:'已独立输入。24小时后从首页再次回想。'}):l({ko:'예문을 참고한 연습으로 기록해요. 10분 뒤 홈에서 다시 만나요.',ja:'例文を参考にした練習として記録します。10分後、ホームでもう一度。',en:'Recorded as practice with the example. Revisit from Home in 10 minutes.',zh:'记录为参考例句的练习。10分钟后从首页再次练习。'}))}</small></div>`:''}${!shown?`<button class="travelTextButton" onclick="malbitTravelPracticeReveal()">${h(l({ko:'아직 어렵다면 예문 보기',ja:'難しければ例文を見る',en:'Need help? Show the example',zh:'有困难？查看例句'}))}</button>`:''}<button class="travelTextButton" onclick="malbitTravelPracticeClose()">${h(session.kind==='inline'?l({ko:'여행으로 돌아가기',ja:'旅に戻る',en:'Return to the trip',zh:'返回旅程'}):l({ko:'홈으로',ja:'ホームへ',en:'Back home',zh:'返回首页'}))}</button></section>`;
+  }
+  window.malbitTravelPracticeOpen=()=>{
+    const {pack,state,scene}=current();if(!state.answers[scene.id]||!scene.question?.coach)return;
+    state.practiceSession={bankId:scene.question.bankId,kind:'inline',draft:'',revealed:false,outcome:null};
+    writeState(state);cancelAudio();setView('travelRecall');resetViewport();
+  };
+  window.malbitTravelRecallOpen=()=>{
+    const entry=recallEntries().find(x=>x.nextDueAt<=Date.now());if(!entry)return setView('travel');
+    const state=readState(entry.pack);if(!state)return;
+    state.practiceSession={bankId:entry.id,kind:'review',draft:'',revealed:false,outcome:null};
+    writeState(state);cancelAudio();setView('travelRecall');resetViewport();
+  };
+  window.malbitTravelPracticeDraft=value=>{const {state,session}=practiceContext();if(!session||session.outcome)return;session.draft=String(value).slice(0,120);writeState(state)};
+  window.malbitTravelPracticeCheck=()=>{const {state,session,q}=practiceContext();if(!q?.coach||!session||session.outcome||!session.draft?.trim())return;session.outcome=normalizePhrase(session.draft)===normalizePhrase(q.coach.recall.phrase)?'match':'compare';recordPractice(state,session,session.outcome);writeState(state);render()};
+  window.malbitTravelPracticeReveal=()=>{const {state,session,q}=practiceContext();if(!q?.coach||!session||session.outcome||session.revealed)return;session.revealed=true;recordPractice(state,session,'reveal');writeState(state);render()};
+  window.malbitTravelPracticeClose=()=>{const {state,session}=practiceContext();if(!state)return setView('travel');const inline=session?.kind==='inline';delete state.practiceSession;writeState(state);if(inline)RPG_EVENT_OPEN[state.sceneId]=true;setView(inline?'travelPlay':'home');resetViewport()};
   function propImage(pack,key,className=''){
     const src=assetPath(pack,'props',key);
     return src?`<img class="${h(className)}" src="${h(src)}" alt="" loading="eager">`:'';
@@ -422,7 +456,7 @@
     const store=readStore(),skin=skinById(pack,store.avatar.equipped),background=assetPath(pack,'backgrounds',world.background),npc=assetPath(pack,'npcs',world.npc);
     const props=(world.props||[]).map((key,index)=>propImage(pack,key,`travelWorldProp prop-${String(key).replace(/[^a-z0-9-]/gi,'').toLowerCase()} prop-${index}`)).join('');
     const reaction=answer?l(answer.correct?scene.success:scene.recovery):'';
-    const reward=answer?.correct&&answer.earned?`<div class="travelWorldReward">${propImage(pack,'travelWon','')}<b>+${h(won(answer.earned))}</b></div>`:'';
+    const reward=!scene.question&&answer?.correct&&answer.earned?`<div class="travelWorldReward">${propImage(pack,'travelWon','')}<b>+${h(won(answer.earned))}</b></div>`:'';
     const item=answer?.correct&&answer.itemReward?`<div class="travelWorldItem">${propImage(pack,answer.itemReward,'')}<small>${h(l({ko:'수집품 획득',ja:'コレクション獲得',en:'COLLECTED',zh:'获得收藏品'}))}</small></div>`:'';
     return `<div class="travelWorld ${answer?answer.correct?'is-success':'is-recovery':''}" data-background="${h(world.background||'')}">${background?`<img class="travelWorldBg" src="${h(background)}" alt="">`:''}${props}${npc?`<img class="travelWorldNpc" src="${h(npc)}" alt="">`:''}${skin?.image?`<img class="travelWorldPlayer" src="${h(skin.image)}" alt="">`:''}<div class="travelWorldFloor"></div>${reward}${item}${reaction?`<p class="travelWorldReaction">${h(reaction)}</p>`:''}</div>`;
   }
@@ -500,7 +534,7 @@
     }).join('');
     const visibleTurns=lesson?lesson.turns.slice(Math.max(0,dialogue.step-3),dialogue.step):[];
     const dialogueMaterial=lesson?`<section class="travelDialogueLesson" data-dialogue-step="${dialogue.step}" data-dialogue-attempts="${dialogue.attempts}"><div class="travelDialogueFlow">${visibleTurns.map((turn,index)=>`<div class="${turn.role==='player'?'player':'npc'} ${index===visibleTurns.length-1?'current':''}"><small>${h(turn.role==='player'?l({ko:'나',ja:'あなた',en:'YOU',zh:'你'}):l(lesson.speaker))}</small><p lang="ko">${h(turn.korean)}</p>${dialogue.translation?`<span>${h(l(turn.support))}</span>`:''}</div>`).join('')}</div><div class="travelDialogueTools"><button class="travelTextButton" onclick="malbitTravelDialogueTranslation()">${h(dialogue.translation?l({ko:'번역 숨기기',ja:'訳を隠す',en:'Hide translation',zh:'隐藏翻译'}):l({ko:'필요할 때 번역 보기',ja:'必要なときだけ訳を見る',en:'Show translation when needed',zh:'需要时查看翻译'}))}</button>${dialogueReady?'':`<button class="travelPrimary travelDialogueNext" onclick="malbitTravelLessonNext()">${h(l({ko:'대화 계속',ja:'会話を続ける',en:'Continue conversation',zh:'继续对话'}))} <b>→</b></button>`}</div>${dialogue.attempts?`<div class="travelDialogueHint" role="status"><small>${h(l({ko:`단서 ${Math.min(dialogue.attempts,lesson.hints.length)}단계`,ja:`ヒント ${Math.min(dialogue.attempts,lesson.hints.length)}`,en:`Hint ${Math.min(dialogue.attempts,lesson.hints.length)}`,zh:`提示 ${Math.min(dialogue.attempts,lesson.hints.length)}`}))}</small><p lang="ko">${h(lesson.hints[Math.min(dialogue.attempts,lesson.hints.length)-1].ko)}</p>${dialogue.translation?`<span>${h(l(lesson.hints[Math.min(dialogue.attempts,lesson.hints.length)-1]))}</span>`:''}</div>`:''}</section>`:(listening?`<div class="travelListen"><button onclick="malbitTravelSpeak()"><span>▶</span><b>${h(l({ko:'한국어 듣기',ja:'韓国語を聞く',en:'Play Korean audio',zh:'播放韩语'}))}</b></button><button class="transcript" onclick="malbitTravelToggleTranscript()">${showTranscript?h(l({ko:'대본 닫기',ja:'スクリプトを閉じる',en:'Hide transcript',zh:'隐藏文本'})):h(l({ko:'대본 보기',ja:'スクリプトを見る',en:'Show transcript',zh:'查看文本'}))}</button>${showTranscript?`<p lang="ko">${h(script)}</p>`:''}</div>`:`${q.passage?`<div class="travelPassage" lang="ko">${h(q.passage)}</div>`:''}`);
-    const feedback=answer?`<div class="travelFeedback ${answer.correct?'good':'bad'}" role="status"><div><b>${h(answer.correct?l({ko:`성공 · +${won(answer.earned)}`,ja:`成功・+${won(answer.earned)}`,en:`Success · +${won(answer.earned)}`,zh:`成功 · +${won(answer.earned)}`}):l({ko:`힌트로 해결 · ${answer.delayMinutes}분 경과`,ja:`ヒントで解決・${answer.delayMinutes}分経過`,en:`Solved with hints · ${answer.delayMinutes} min passed`,zh:`借助提示解决 · 经过${answer.delayMinutes}分钟`}))}</b>${travelCoachMarkup(scene,q,answer,explanation)}</div></div>${clueMarkup(scene,answer)}<button class="travelPrimary" onclick="malbitTravelNext()">${scene.next==='ending'?h(l({ko:'명동에 도착하기',ja:'明洞に到着',en:'Reach Myeongdong',zh:'抵达明洞'})):h(l({ko:'다음 행동',ja:'次の行動',en:'Next action',zh:'下一步行动'}))} <b>→</b></button>`:dialogueReady?`<button class="travelPrimary ${Number.isInteger(picked)?'ready':''}" onclick="malbitTravelSubmit()">${h(l({ko:'핵심어 확인',ja:'キーワードを確認',en:'Check keyword',zh:'确认关键词'}))}</button>`:'';
+    const feedback=answer?`<div class="travelFeedback ${answer.correct?'good':'bad'}" role="status"><div><b>${h(answer.correct?l({ko:`성공 · +${won(answer.earned)}`,ja:`成功・+${won(answer.earned)}`,en:`Success · +${won(answer.earned)}`,zh:`成功 · +${won(answer.earned)}`}):l({ko:`힌트로 해결 · ${answer.delayMinutes}분 경과`,ja:`ヒントで解決・${answer.delayMinutes}分経過`,en:`Solved with hints · ${answer.delayMinutes} min passed`,zh:`借助提示解决 · 经过${answer.delayMinutes}分钟`}))}</b>${travelCoachMarkup(scene,q,answer,explanation)}${q.coach?.recall?`<div class="travelPracticePreview"><small>${h(l(q.coach.recall.prompt))}</small><p lang="ko">${h(q.coach.recall.phrase)}</p></div><button class="travelPracticeLaunch" onclick="malbitTravelPracticeOpen()">${h(l({ko:'답을 가리고 한 문장 써보기',ja:'答えを隠して1文書いてみる',en:'Hide the answer and try a sentence',zh:'隐藏答案，试写一句话'}))}</button>`:''}</div></div>${clueMarkup(scene,answer)}<button class="travelPrimary" onclick="malbitTravelNext()">${scene.next==='ending'?h(l({ko:'명동에 도착하기',ja:'明洞に到着',en:'Reach Myeongdong',zh:'抵达明洞'})):h(l({ko:'다음 행동',ja:'次の行動',en:'Next action',zh:'下一步行动'}))} <b>→</b></button>`:dialogueReady?`<button class="travelPrimary ${Number.isInteger(picked)?'ready':''}" onclick="malbitTravelSubmit()">${h(l({ko:'핵심어 확인',ja:'キーワードを確認',en:'Check keyword',zh:'确认关键词'}))}</button>`:'';
     sc.innerHTML=`<div class="travelPlay travelQuestionPlay">${commonTop(pack,state,scene)}<article class="travelQuestionCard ${lesson?'travelDialogueQuestion':''}"><div class="travelQuestionNo"><span>MISSION ${questionNumber(pack,scene)} / ${pack.questionCount}</span><em>${h(lesson?'NPC TALK':interaction.toUpperCase())}</em></div><h1>${h(l(scene.title))}</h1>${lesson?'':`${worldMarkup(pack,state,scene,answer)}<p class="travelContext">${h(l(scene.context))}</p>`}${dialogueMaterial}${dialogueReady?`<div class="travelPrompt"><small>${h(l(scene.instruction||q.instruction))}</small><b lang="ko">${h(q.prompt)}</b></div><div class="travelAnswers ${h(interaction)} ${answer?'answered':''}">${choices}</div>`:''}${feedback}</article>${notebook(pack,state)}</div>`;
   }
   function activeHubEvent(hub,state){
@@ -1187,7 +1221,7 @@
 
   const baseRender=window.render;
   window.render=function(){
-    const travelView=S.view==='travel'||S.view==='travelPlay';
+    const travelView=S.view==='travel'||S.view==='travelPlay'||S.view==='travelRecall';
     document.body.classList.toggle('travel-active',travelView);
     document.body.classList.remove('travel-rpg-active');
     if(!travelView)return baseRender.apply(this,arguments);
@@ -1195,10 +1229,11 @@
     try{hideSelection()}catch(error){}try{renderShell()}catch(error){}
     const sc=document.getElementById('screen');sc.className='screen travelScreen';sc.innerHTML='';
     if(S.view==='travel')return renderHub(sc);
+    if(S.view==='travelRecall')return renderPractice(sc);
     navActive('home');
     return renderPlay(sc);
   };
 
-  window.MALBIT_TRAVEL=Object.freeze({storageKey:STORAGE_KEY,packs:PACKS,hubs:HUBS,rpg:RPG,open:window.malbitTravelOpen,metrics:window.malbitTravelMetrics});
+  window.MALBIT_TRAVEL=Object.freeze({storageKey:STORAGE_KEY,packs:PACKS,hubs:HUBS,rpg:RPG,open:window.malbitTravelOpen,metrics:window.malbitTravelMetrics,recallSummary});
   window.MALBIT_STORY=window.MALBIT_TRAVEL;
 })();

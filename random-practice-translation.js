@@ -2,7 +2,9 @@
 (function(){
 'use strict';
 
-const clean=value=>String(value??'').replace(/\s+/gu,' ').trim();
+const clean=value=>String(value??'').normalize('NFC').replace(/\s+/gu,' ').trim();
+// Compare content, not punctuation or invisible formatting. Preserve display text.
+const echoKey=value=>clean(value).replace(/[\p{P}\p{S}\p{Z}\p{C}]/gu,'');
 const hasHangul=value=>/[\uac00-\ud7a3]/u.test(String(value??''));
 const hasJapanese=value=>/[\u3040-\u30ff]/u.test(String(value??''));
 
@@ -16,15 +18,23 @@ function unavailableText(target){
 
 function usable(source,value,target){
   const original=clean(source),translated=clean(value);
-  if(!translated||translated===original)return false;
+  if(!translated||translated===original||echoKey(translated)===echoKey(original))return false;
   if(target==='ja'&&hasHangul(translated)&&!hasJapanese(translated))return false;
   return true;
+}
+
+// Post-answer sentence meaning plus glosses follow the actual shuffled Korean choices.
+function formatReviewedQuestion(question,translation){
+  if(!translation?.sentence||!translation.sentenceLabel||!translation.choiceLabel||!Array.isArray(question?.choices)||!question.choices.length)return '';
+  const choices=question.choices.map(choice=>String(choice).replace(/^[①②③④]\s*/u,'').trim());
+  if(choices.some(choice=>!translation.glosses?.[choice]))return '';
+  return `${translation.sentenceLabel}\n${translation.sentence}\n\n${translation.choiceLabel}\n${choices.map((choice,index)=>`${index+1}. ${choice} — ${translation.glosses[choice]}`).join('\n')}`;
 }
 
 async function resolve({source,target,reviewed,translate}){
   const original=String(source??'');
   if(target==='ko')return{status:'original',text:original};
-  if(clean(reviewed))return{status:'reviewed',text:String(reviewed)};
+  if(usable(original,reviewed,target))return{status:'reviewed',text:String(reviewed)};
   if(typeof translate!=='function')return{status:'unavailable',text:unavailableText(target)};
   try{
     const value=await translate(original,target);
@@ -36,5 +46,5 @@ async function resolve({source,target,reviewed,translate}){
   }
 }
 
-window.MALBIT_RANDOM_TRANSLATION=Object.freeze({resolve,usable,unavailableText});
+window.MALBIT_RANDOM_TRANSLATION=Object.freeze({resolve,usable,unavailableText,formatReviewedQuestion});
 })();

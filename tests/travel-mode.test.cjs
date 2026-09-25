@@ -233,9 +233,9 @@ test('Travel Mode is independent from Full Mock and wired into the ordered runti
   const styles = read('styles.css');
 
   assert.match(topik, /mode==='travel'/);
-  assert.match(topik, /class="tqV9Mode travel"/);
-  assert.match(topik, /<button onclick="tqStartMode\('real'\)">[\s\S]{0,500}전체 모의고사/);
-  assert.match(topik, /class="tqV9Mode travel" onclick="tqStartMode\('travel'\)"/);
+  assert.match(topik, /class="tqTravelFeature"/);
+  assert.match(topik, /<button class="tqV9Mode real" onclick="tqStartMode\('real'\)">[\s\S]{0,500}전체 모의고사/);
+  assert.match(topik, /class="tqTravelFeature" onclick="tqStartMode\('travel'\)"/);
   assert.ok(bootstrap.indexOf("'data/travel-pack-seoul-001.js'") < bootstrap.indexOf("'travel-mode.js'"));
   assert.ok(bootstrap.indexOf("'data/travel-map-seoul-v1.js'") < bootstrap.indexOf("'travel-rpg-engine.js'"));
   assert.ok(bootstrap.indexOf("'travel-rpg-engine.js'") < bootstrap.indexOf("'travel-mode.js'"));

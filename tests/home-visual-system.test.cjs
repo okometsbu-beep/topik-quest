@@ -23,10 +23,10 @@ test('Home visual contract keeps readable copy and a fixed compatibility bridge'
   const visual=read('home-visual-system.js');
   const sizes=[...visual.matchAll(/font-size:(\d+)px/g)].map(match=>Number(match[1]));
   assert.ok(sizes.length>0);
-  assert.ok(sizes.every(size=>size>=10),`Home visual system contains sub-10px text: ${sizes.filter(size=>size<10)}`);
+  assert.ok(sizes.every(size=>size>=12),`Home visual system contains sub-12px text: ${sizes.filter(size=>size<12)}`);
   assert.doesNotMatch(visual,/position:absolute/);
   assert.equal((visual.match(/!important/g)||[]).length,7,'Home compatibility bridge must stay fixed');
   assert.match(visual,/\.tqHomeScreen button\{min-height:var\(--ui-touch\)\}/);
-  assert.match(visual,/\.tqV9Mode small\{[^}]*font-size:10px/);
-  assert.match(visual,/\.tqV9Utility small\{font-size:10px/);
+  assert.match(visual,/\.tqV9Mode small\{[^}]*font-size:12px/);
+  assert.match(visual,/\.tqV9Utility small\{font-size:12px/);
 });

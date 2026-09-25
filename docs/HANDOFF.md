@@ -3,6 +3,24 @@
 This is the short continuity record for future work. Use it with `AGENTS.md`; do not reconstruct
 these facts from conversation history or the large TOPIK source bundle.
 
+## Current user priority · learning renewal v132
+
+The user explicitly authorized a major product/marketing/UI update. Resume
+`agent/learning-renewal-20260925`, not Shorts expansion. Candidate checkpoint `2073709`
+restores the prior environment's lost v132 work: goal-led Home, correct TOPIK session resume,
+eight localized Travel coaches, and answer-hidden phrase practice with persisted drafts and
+24-hour unaided / 10-minute assisted recall. Existing modes and durable roots remain intact.
+The prior screenshot translation/readability repairs are included. Full-bank pedagogy is not complete.
+Linux Node 24.19.0: quick 122/122, content 37/37, full 138/138, v132 runtime45, original bank hashes pass.
+Branch CI 36073840735 at 69e2ad4 passes Ubuntu/Node 22/Chrome mobile emulation; artifact
+10839034278 contains 174 screens. Home and recall at all four widths/two themes, Travel feedback
+and Random Practice were inspected. Final review corrected a false morphological rejection of
+뿐더러 using the National Institute of Korean Language dictionary; the same reported item now
+has a focused ko/ja browser gate. Verify final-head PR CI before merge and Pages/live afterward.
+Production remains v131 fadd25392e75f055c6deebf026ec77b8d597c96b. Candidate baseline main
+5ae66838620f6ce822ae5a42330332d31dbe0578. See `docs/qa/learning-renewal-v132.md` and STATUS.
+Native review, physical devices, and actual learner success/retention remain unverified.
+
 ## Immediate user priority · #129
 
 - Completed in v110 through PR #130. Product commit is `a0f852517ae72b3371ca9ab6c6fc3936c09ddda3`;

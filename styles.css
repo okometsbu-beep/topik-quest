@@ -127,7 +127,8 @@ body.travel-active .app{max-width:560px}
 .travelSecondary{width:100%;min-height:46px;margin-top:8px;border:1px solid rgba(151,211,227,.38);border-radius:14px;background:#102e4e;color:#d8f5ff;font-size:11px;font-weight:900}
 .travelAnswer,.travelRoutes button,.travelNotebook,.travelReward,.travelExchangeCard,.travelPurchaseBurst{border:8px solid transparent;border-image:url("assets/art/travel/layers/ui-tile-reward.webp") 130 fill/12px stretch;background:#fff2c4;background-image:none}
 .travelAnswer{border-image-source:url("assets/art/travel/layers/ui-tile-answer.webp")}.travelAnswer.selected{background-image:none}.travelAnswer.correct{border-image-source:url("assets/art/travel/layers/ui-tile-correct.webp");background:#5fd6aa}.travelAnswer.wrong{border-image-source:url("assets/art/travel/layers/ui-tile-recovery.webp");background:#f28672}
-.travelFeedback{border:8px solid transparent;border-image:url("assets/art/travel/layers/ui-tile-correct.webp") 130 fill/12px stretch;background:#5fd6aa}.travelFeedback.bad{border-image-source:url("assets/art/travel/layers/ui-tile-recovery.webp");background:#f28672}
+.travelFeedback.good,.travelFeedback.bad{border:1px solid var(--ui-border);border-image:none;background:var(--ui-surface);color:var(--ui-ink);box-shadow:none}.travelFeedback.good>div>b{color:var(--ui-ink)}.travelFeedback.bad>div>b{color:var(--ui-ink)}
+.travelFeedback.good p,.travelFeedback.bad p{color:var(--ui-ink);font-size:14px;line-height:1.7;opacity:1}
 .travelWorld{max-width:calc(100% + (var(--travel-frame-x,17px) * 2));contain:layout paint}
 .travelEndingCard{padding:0;text-align:center}.travelEndingCard>.travelWorld{width:100%;max-width:100%;margin:0;aspect-ratio:3/2;border-top:0}.travelEndingBody{position:relative;width:100%;padding:18px var(--travel-frame-x) 20px}.travelEndingBody>small{display:block;color:#7ce0c8;font-size:8px;font-weight:1000;letter-spacing:.14em;margin-top:8px}.travelEndingBody>h1{font-size:27px;margin:7px 0 6px}.travelEndingBody>p{color:#aab6ce;font-size:10px;line-height:1.55;margin:0 auto 12px;max-width:360px}.travelEndingCard .travelEndingIcon{margin-top:0}.travelEndingBody .travelReward{width:100%;margin-inline:0;padding:12px 14px;display:grid;grid-template-columns:58px minmax(0,1fr);gap:10px}.travelEndingBody .travelReward>img{width:58px;height:70px}.travelReward>div{min-width:0}.travelReward :where(b,p,small){max-width:100%;overflow-wrap:anywhere}.travelEndingBody .travelKorean{margin-top:12px}.travelEndingBody .travelSupport{margin-bottom:13px}.travelNotebook{width:100%;margin-inline:0}.travelNotebook summary{width:100%;padding:11px 13px}.travelNotebook summary b{min-width:0;overflow-wrap:anywhere}.travelNotebook summary em{flex:0 0 auto;white-space:nowrap}.travelNotebook>div{max-width:100%;overflow:hidden}.travelNotebook p{max-width:100%}.travelNotebook p b{min-width:0;overflow-wrap:anywhere}.travelNotebook p small{flex:0 0 auto;white-space:nowrap}
 
@@ -161,8 +162,8 @@ body.travel-active .app{max-width:560px}
 .travelAnswerCopy>b,.travelAnswerCopy>small{max-width:100%;overflow-wrap:anywhere;word-break:keep-all}
 .travelAnswerCopy>b{font-size:13px;line-height:1.42}.travelAnswerCopy>small{margin-top:4px;font-size:9px;line-height:1.4}
 .travelAnswers.hotspot{align-items:stretch}.travelAnswers.hotspot .travelAnswer{display:flex;width:100%;height:100%;min-width:0;border-width:8px}.travelAnswers.hotspot .travelAnswer>img{width:62px;max-width:62px}
-.travelFeedback{width:100%;min-width:0;border-width:9px;padding:13px 14px;overflow:hidden}.travelFeedback>div{min-width:0}.travelFeedback>div>b{display:block;line-height:1.45}
-.travelTutor{display:grid;gap:7px;margin-top:9px;text-align:left}.travelTutor>div{border-top:1px solid color-mix(in srgb,currentColor 24%,transparent);padding-top:7px}.travelTutor small{display:block;color:inherit;font-size:7px;font-weight:1000;letter-spacing:.04em;opacity:.82}.travelTutor p,.travelFeedback .travelTutor p{margin:3px 0 0;color:inherit;font-size:9px;font-weight:700;line-height:1.55;opacity:.88}
+.travelFeedback{width:100%;min-width:0;border-width:1px;padding:16px;overflow:hidden}.travelFeedback>div{min-width:0}.travelFeedback>div>b{display:block;line-height:1.45;font-size:14px}
+.travelTutor{display:grid;gap:12px;margin-top:12px;text-align:left}.travelTutor>div{border-top:1px solid var(--ui-border);padding-top:10px}.travelFeedback .travelTutor small{display:block;color:var(--ui-muted);font-size:12px;font-weight:700;letter-spacing:0;opacity:1}.travelFeedback.good .travelTutor p,.travelFeedback.bad .travelTutor p{margin:6px 0 0;color:var(--ui-ink);font-size:14px;font-weight:400;line-height:1.7;opacity:1}
 .travelDialogueFlow>div{min-width:0;width:calc(100% - 24px);opacity:.72;transition:opacity .2s,transform .2s}.travelDialogueFlow>div.current{opacity:1;animation:travelDialogueTurn .25s ease-out}.travelDialogueFlow .npc{justify-self:start;margin-right:24px}.travelDialogueFlow .player{justify-self:end;margin-left:24px}.travelDialogueFlow p,.travelDialogueFlow span{overflow-wrap:anywhere;word-break:keep-all}
 @keyframes travelDialogueTurn{from{opacity:.2;transform:translateY(5px)}to{opacity:1;transform:none}}
 .travelComposeCard .travelPrompt b{font-size:11px}.travelCompositionPreview{display:grid;gap:4px;margin:9px 0;border:1px solid rgba(126,224,200,.42);border-radius:14px;background:#0b2844;padding:10px 12px}.travelCompositionPreview small{color:#7ce0c8;font-size:7px;font-weight:1000;letter-spacing:.06em}.travelCompositionPreview b{color:#fff;font-size:14px;line-height:1.55;overflow-wrap:anywhere}
@@ -338,3 +339,22 @@ body.travel-rpg-active .travelScreen{overflow:hidden;padding:0}
 .writingMigration{padding:12px;border-radius:10px;background:var(--ui-warning-soft);color:var(--ui-warning)}
 .writingReview details{padding:14px;margin:12px 0;border:1px solid var(--ui-border);border-radius:14px;background:var(--ui-surface);color:var(--ui-ink)}
 .writingReview summary{cursor:pointer;min-height:44px;font-weight:700}
+
+/* Learning renewal: reading and recall share solid semantic surfaces. */
+.travelTutor details{margin-top:16px;border-top:1px solid var(--ui-border)}
+.travelTutor summary{min-height:44px;padding:12px 0;font-size:14px;cursor:pointer;font-weight:800}
+.travelTutor details>div{padding:10px 0}.travelTutor details b{font-size:15px}
+.travelPracticePreview{margin-top:18px;padding:16px;border:1px solid var(--ui-border);border-radius:var(--ui-radius-control);background:var(--ui-surface)}
+.travelPracticePreview small{font-size:14px;line-height:1.6;color:var(--ui-muted)}
+.travelPracticePreview p{font-size:18px;line-height:1.6;color:var(--ui-ink);margin:8px 0 0}
+.travelPracticeLaunch,.travelTextButton{width:100%;min-height:48px;padding:14px;margin-top:12px;border:1px solid var(--ui-border);border-radius:var(--ui-radius-control);background:var(--ui-surface);color:var(--ui-ink);font-size:15px;font-weight:800}
+.travelPractice{padding:22px;background:var(--ui-surface);color:var(--ui-ink);border:1px solid var(--ui-border);border-radius:var(--ui-radius-card)}
+.travelPractice>small{font-size:14px;color:var(--ui-muted)}
+.travelPractice h1{font-size:24px;line-height:1.5;margin:14px 0}
+.travelPractice p{font-size:15px;line-height:1.75;color:var(--ui-muted)}
+.travelPractice label{display:block;font-size:15px;font-weight:800;margin:22px 0 10px}
+.travelPractice input{width:100%;min-width:0;min-height:52px;padding:14px;font-size:18px;background:var(--ui-surface-soft);color:var(--ui-ink);border:1px solid var(--ui-border);border-radius:var(--ui-radius-control)}
+.travelPracticeResult{padding:18px;margin-top:20px;border:1px solid var(--ui-border);border-radius:var(--ui-radius-control);background:var(--ui-surface-soft)}
+.travelPracticeResult b{font-size:16px;line-height:1.5}.travelPracticeResult p{font-size:20px;line-height:1.6;color:var(--ui-ink)}
+.travelPracticeResult small{font-size:14px;line-height:1.7;color:var(--ui-muted)}
+.travelPractice :is(input,button):focus-visible,.travelPracticeLaunch:focus-visible,.travelTutor summary:focus-visible{outline:3px solid var(--ui-accent);outline-offset:3px}

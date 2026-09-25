@@ -50,6 +50,7 @@ body.tq-random-practice-active .t1TutorCoach small{font-size:10px;line-height:1.
 body.tq-random-practice-active .t1TutorCoach p{font-size:12px;line-height:1.65}
 body.tq-random-practice-active .malbitQuestionTranslation{margin-top:var(--ui-space-3);border-color:var(--random-border);border-radius:var(--ui-radius-control);background:var(--random-surface-raised);color:var(--random-ink);padding:var(--ui-space-3)}
 body.tq-random-practice-active .malbitQuestionTranslation small{color:var(--random-muted);font-size:10px;line-height:1.4}
+body.tq-random-practice-active .malbitQuestionTranslation b{color:var(--random-ink)}
 body.tq-random-practice-active .malbitQuestionTranslation p{color:var(--random-ink);font-size:12px;line-height:1.7}
 body.tq-random-practice-active .malbitQuestionTranslation.unavailable{border-style:dashed}
 body.tq-random-practice-active .malbitQuestionTranslation.unavailable p{color:var(--random-muted)}

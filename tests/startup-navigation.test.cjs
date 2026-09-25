@@ -124,3 +124,16 @@ test('v33 supplies theme, listening, stable trail, language and beginner afforda
   assert.match(v33, /HANGUL START/);
   assert.match(v33, /qno\{box-sizing:border-box/);
 });
+
+test('goal-led home follows the selected path and preserves interrupted TOPIK II practice',()=>{
+  const vm=require('node:vm'),source=read('topik1.js');
+  const homeSource=source.slice(source.lastIndexOf('home=function(sc){'),source.indexOf('\nfunction renderSetup',source.lastIndexOf('home=function(sc){')));
+  const actionSource=source.slice(source.indexOf('window.tqHomeContinue=()=>{'),source.indexOf('\nconst css=',source.indexOf('window.tqHomeContinue=()=>{')));
+  for(const language of ['ko','ja','en','zh'])for(const path of ['beginner','topik1','topik2']){
+    const c={S:{lang:language},learningPath:()=>path,level:()=>1,shortsStats:()=>({weekCount:0,week:[]}),restore:()=>null,beginnerStarted:()=>false,navActive(){},setProgress(){},syncStatsNav(){},LANGS:{[language]:{flag:'🌐'}},T:(...a)=>a[['ko','ja','en','zh'].indexOf(language)],setView:v=>c.destination=v,open:v=>c.destination=v,startPractice:()=>c.destination='t1quiz',startRandomPractice:()=>c.destination='infinity'};
+    c.MALBIT_REVIEW={items:()=>({pending:{active:true},done:{active:false}})};c.window=c;vm.createContext(c);vm.runInContext(homeSource+'\n'+actionSource,c);const sc={};c.home(sc);assert.equal((sc.innerHTML.match(/class="tqLessonStart"/g)||[]).length,1);
+    for(const item of ['tqTravelFeature','tqHomeReview','tqExtraPractice',"tqStartMode('real')","tqStartMode('game')","tqStartMode('shorts')"])assert.ok(sc.innerHTML.includes(item));
+    assert.doesNotMatch(sc.innerHTML,/undefined|NaN|STAGE|tqV9Ring/);c.tqHomeContinue();assert.equal(c.destination,path==='beginner'?'beginner':path==='topik1'?'t1quiz':'infinity');
+    if(path==='topik2'){c.S.infinity={active:true,examLevel:2};c.startRandomPractice=()=>{throw Error('must resume, not replace')};c.tqHomeContinue();assert.equal(c.destination,'infinity');}
+  }
+});

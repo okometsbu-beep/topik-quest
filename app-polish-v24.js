@@ -93,9 +93,10 @@ function originalQuestionText(state){
 }
 
 async function translatedQuestion(state,source){
-  const lang=appState()?.lang||'ko';if(lang==='ko')return source;
-  const reviewed=window.MALBIT_REVIEWED_TRANSLATIONS?.[state.level]?.[state.type]?.[state.id]?.[lang];if(reviewed)return reviewed;
+  const lang=appState()?.lang||'ko';if(lang==='ko')return{status:'original',text:source};
   const policy=window.MALBIT_RANDOM_TRANSLATION;
+  const authored=window.MALBIT_EXPLANATIONS?.bankCoach?.[state.id]?.[lang]?.translation;
+  const reviewed=policy?.formatReviewedQuestion(state.q,authored)||window.MALBIT_REVIEWED_TRANSLATIONS?.[state.level]?.[state.type]?.[state.id]?.[lang];
   if(!policy)return{status:'unavailable',text:L('이 문제의 전체 번역은 현재 제공되지 않습니다. 한국어 원문은 위에 표시되어 있습니다.','この問題の全文翻訳は現在利用できません。韓国語の原文は上に表示されています。','A full translation is not available for this question. The Korean original is shown above.','这道题暂时无法提供全文翻译。上方显示的是韩语原文。')};
   return policy.resolve({source,target:lang,reviewed,translate:typeof window.translateCached==='function'?(value,target)=>window.translateCached(`random_whole_v24_${state.level}_${state.type}_${state.id}_${target}`,value,'ko',target):null});
 }
@@ -118,6 +119,9 @@ function patchRandomFeedback(){
   const panel=document.createElement('section');panel.className='malbitRandomExplanation';panel.innerHTML=`<div class="malbitExplanationLoading">${L('해설을 준비하는 중…','解説を準備中…','Preparing explanation…','正在准备解析…')}</div>`;
   const toggle=document.createElement('button');toggle.className='malbitExplanationToggle';toggle.type='button';toggle.setAttribute('aria-expanded','false');toggle.setAttribute('onclick','malbitToggleRandomExplanation()');toggle.innerHTML=`<i>◉</i><span>${L('해설 보기','解説を見る','Show explanation','查看解析')}</span><b>⌄</b>`;
   translation.after(toggle,panel);
+  // Korean is the source language, not a translation. Keep the anchor for
+  // explanation placement but do not repeat the question or make a request.
+  if((appState()?.lang||'ko')==='ko')translation.hidden=true;
   if(inline){panel.replaceChildren(inline);if(detailed)panel.appendChild(detailed)}
   [...card.querySelectorAll('.closeBtn')].filter(button=>/\uD574설|\u89E3説|Explain|\u89E3析/.test(button.textContent)).forEach(button=>button.remove());
   const source=originalQuestionText(state);
