@@ -928,7 +928,7 @@ try{
   assert.equal(meetingReview.tools,false,'bank question must not inherit curated word tools from the same numeric index');
   assert.equal(meetingReview.exampleTranslation,false,'bank question must not start an unrelated curated example translation');
   assert.match(meetingReview.nextText,/次の問題/u,'Japanese Next label must remain visible');
-  assert.equal(meetingReview.nextColor,'rgb(255, 255, 255)','Next label must remain white in both themes');
+  assert.ok(['rgb(255, 255, 255)','rgb(16, 37, 35)'].includes(meetingReview.nextColor),'Next label must use the theme-specific contrasting ink');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`meeting/home Shorts light ${width}px`,'light')}
   await setViewport(390,844);await shot('00ba-shorts-meeting-wrong-light.png');
@@ -1959,6 +1959,23 @@ try{
   const durableAfter=await evaluate(`({vocab:JSON.parse(localStorage.getItem('topikQuestV8')).vocab,gameUnlock:JSON.parse(localStorage.getItem('topikQuestV8')).gameUnlock,game:localStorage.getItem('topikQuestTopik1GameV1'),review:localStorage.getItem('malbitWrongReviewV3')})`);
   assert.deepEqual(durableAfter,durableBefore,'travel play must not alter vocabulary, game, or review records');
   assert.deepEqual(errors,[]);
+  // HARUMAL: exercise the new information architecture through real controls.
+  for(const theme of ['light','dark']){
+    await evaluate(`malbitSetTheme('${theme}');setLang('ja');setView('home')`);
+    for(const width of [320,375,390,430]){
+      await setViewport(width,844);
+      for(const view of ['home','learn','more','review']){
+        await tap('#nav_'+view);
+        const fit=await evaluate(`({overflow:document.documentElement.scrollWidth>innerWidth+1,nav:[...document.querySelectorAll('.nav button')].map(b=>({h:b.getBoundingClientRect().height,w:b.getBoundingClientRect().width})),active:document.querySelector('.nav [aria-current="page"]')?.id,brand:document.title})`);
+        assert.equal(fit.overflow,false,`HARUMAL ${view} ${theme} ${width} overflow`);
+        assert.equal(fit.active,'nav_'+view);
+        assert.ok(fit.nav.length===5&&fit.nav.every(b=>b.h>=44&&b.w>=44));
+        assert.ok(fit.brand.startsWith('하루말'));
+        await evaluate('scrollTo(0,0)');
+        await shot(`harumal-${view}-${theme}-${width}.png`);
+      }
+    }
+  }
   const screenshotCount=fs.readdirSync(out).filter(file=>file.endsWith('.png')).length;
   console.log(`mobile QA: 320/375/390/430px Home + Beginner Grammar + split Writing + Game + Shorts + Random Practice + Review visual contracts, two-field Writing input/save/reload/score/review/migration, 9-chapter/64-lesson grammar catalog, transformation coaching, per-unit handwriting and preserved progress, Review queue/filter/retry/translation/type coaching/re-entry, TOPIK I/II random question/answer/type coaching, level re-entry, Shorts question/answer/instructor feedback + hit-tested Travel route + one-tap completed-route re-entry + NPC word order + Hangul sign build with decoys, day/evening events, travel-won exchange, reload/back-resume, durable records, screenshots=${screenshotCount}, errors=0`);
 }finally{

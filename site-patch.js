@@ -48,7 +48,8 @@
     'shorts-visual-system.js',
     'random-practice-visual-system.js',
     'review-visual-system.js',
-    'vocab-editor.js'
+    'vocab-editor.js',
+    'harumal-ui.js'
   ]);
   const versioned=src=>src+(src.includes('?')?'&':'?')+'v='+VERSION;
   const finishBoot=reason=>{

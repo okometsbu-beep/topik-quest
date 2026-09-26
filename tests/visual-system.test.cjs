@@ -21,8 +21,8 @@ test('Game Mode has one final visual owner and semantic UI tokens',()=>{
 
 test('shared learning surfaces resolve to complete dark and light themes',()=>{
   const styles=read('styles.css');
-  assert.match(styles,/html\[data-theme="dark"\]\{[^}]*--ui-canvas:#071321[^}]*--ui-surface:#0e2037[^}]*--ui-ink:#f4f8ff/);
-  assert.match(styles,/html\[data-theme="light"\]\{[^}]*--ui-canvas:#edf3fa[^}]*--ui-surface:#fff[^}]*--ui-ink:#18273d/);
+  assert.match(styles,/html\[data-theme="dark"\]\{[^}]*--ui-canvas:#102523[^}]*--ui-surface:#1d3532[^}]*--ui-ink:#f2f7f3/);
+  assert.match(styles,/html\[data-theme="light"\]\{[^}]*--ui-canvas:#f7f8f4[^}]*--ui-surface:#fff[^}]*--ui-ink:#142c2b/);
   assert.match(styles,/html\[data-theme="dark"\] \.card[^}]*background:var\(--ui-surface\)/);
   for(const [file,prefix] of [['home-visual-system.js','home'],['game-visual-system.js','game'],['shorts-visual-system.js','shorts'],['random-practice-visual-system.js','random'],['review-visual-system.js','review']]){
     const visual=read(file);
