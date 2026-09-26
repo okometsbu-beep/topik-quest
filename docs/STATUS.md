@@ -1,19 +1,21 @@
-## 2026-09-26 하루말 v139 배포
+## 2026-09-26 하루말 v140 배포
 
-- 빈 복습 이력에서 해결률을 `100%`로 만들던 분모 0 fallback을 제거하고, ko/ja/en/zh에서
-  각각 `기록 없음`/`記録なし`/`No data`/`暂无记录`으로 구분한다. 실제 기록은 기존 백분율을 유지한다.
-- PR #188 squash `3b9626a0fe9b48579df8cfbb96a155ab802054e1`; v139 런타임 46개와 은행 해시,
-  Linux Node24 전체 145/145 통과. 문항·저장 키·학습 기록·기존 모드는 변경하지 않았다.
-- 최종 PR CI `36232225370` 성공. 동일 후보 branch CI `36231939294` artifact `10902672716`
-  247장 중 빈 복습 320/375/390/430px×라이트/다크 8장을 직접 확인했다. 첫 시각 증거의 320px
-  줄바꿈을 발견해 한 줄 규칙을 추가한 뒤 최종 후보를 다시 검증했다.
-- Pages `36232494268` 성공. https://okometsbu-beep.github.io/topik-quest/ 에서 v139와
-  index/app-polish-v22/review-visual-system SHA-256 일치, 빈 큐 0개·`기록 없음`·nowrap을 공개 Chrome에서 확인했다.
-- main CI `36232494732`와 Pages `36232494268` 성공.
-- 복귀 기준: v138 제품 `f6259634e798e4164fe4e547c901ff68832c23ad`; 실패 배포는 revert PR.
+- production v139에서 clean ja-JP 입문 문법 첫 변형 답안 `저는 한국어`를 입력한 뒤 오늘로
+  이탈하고 hard reload·코스 재진입하면 빈 입력으로 돌아가던 P1 연속성 결함을 재현했다.
+- 기존 `malbitBeginnerV1.grammarV1` 아래에 문법별 초안을 additive 저장한다. 중도 이탈·새로고침은
+  복원하고 오답은 유지하며 정답 제출 때만 제거한다. 기존 root 필드·문항 ID·은행·학습 기록·모드는 보존한다.
+- PR #190 squash `cfb0209eac2f983abfc70c02eb3e5f02679da864`; Linux Node24 전체 146/146,
+  v140 런타임 46개와 2,088개 문제은행 해시가 통과했다.
+- 최종 PR CI `36251060265` 성공. artifact `10909650658` 255장 중 초안 재진입
+  320/375/390/430px×라이트/다크 8장을 직접 확인했다. `저는 한국어`·입력·확인 CTA·하단 내비게이션,
+  대비와 overflow가 정상이다. 최초 CI `36250924092`는 reload 뒤 앱 함수 대기 누락으로 실패했으며 통과로 세지 않는다.
+- main CI `36251490583`와 Pages `36251490375` 성공. 공개 HTTP smoke는 v140·기본 4개·런타임 46개를
+  확인했고 index/beginner-grammar/site-patch/sw SHA-256이 병합본과 일치한다. 공개 Chrome에서 동일 초안을
+  새로 입력하고 이탈·hard reload·학습→입문→문법→다음 학습 재진입 뒤 실제 값 복원을 확인했다.
+- 복귀 기준: v139 제품 `3b9626a642428f845c95f574d55fd4ec29361bd6`; 실패 배포는 revert PR.
 - 미검증: 실제 iPhone/Android, 일본어 모어 화자, 실제 첫 성공·10분/D1/D7 회상.
-  QA 화면 수를 학습 효과로 해석하지 않는다.
-- 다음: 새 P0·정답 오류가 없으면 clean ja-JP 입문 문법 첫 변형 답안의 중도 종료·재진입 초안 보존을 검증한다.
+  QA 화면 수와 자동 입력을 학습 효과로 해석하지 않는다.
+- 다음: 새 P0·정답 오류가 없으면 ja-JP 입문 문법 첫 손쓰기의 중도 종료·재진입에서 완료 단위와 현재 위치 보존을 검증한다.
 
 # MALBIT autonomous loop status
 
@@ -29,7 +31,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 모바일: GitHub Actions Ubuntu/Node22/Chrome 에뮬레이션 320/375/390/430px×두 테마, 터치·회상 초안 새로고침·여행 복귀·기존 경로·콘솔 검사. 홈/회상 8조합과 여행/Random Practice 주요 화면 직접 확인. 실제 기기 증거와 구별한다.
 - 최종 화면 검수로 “뿐더러 형태상 불가”와 “바람에→風の中で” 오류를 발견·수정. 동일 문법 4문항의 ja/en/zh 문맥 번역과 실제 섞인 보기 순서의 뜻을 제공한다. 전체 은행의 자동번역 정확성 인증은 아니다.
 - 최종 v132: PR #174 squash `c4045c8358acbfb505c9df01d70dbaa3c5e026e3`. 최종 PR CI `36075457096`(177장, 일본어 문맥 번역 직접 확인), main CI `36075858880`, Pages `36075858066` 성공. 앞의 후보 검사는 이 최종 증거로 대체한다.
-- 현재 production: v139, PR #188 `3b9626a0fe9b48579df8cfbb96a155ab802054e1`, https://okometsbu-beep.github.io/topik-quest/ . PR CI `36232225370`, main CI `36232494732`, Pages `36232494268` 성공.
+- 현재 production: v140, PR #190 `cfb0209eac2f983abfc70c02eb3e5f02679da864`, https://okometsbu-beep.github.io/topik-quest/ . PR CI `36251060265`, main CI `36251490583`, Pages `36251490375` 성공.
 - v136은 저장 상태가 없는 첫 방문에서 `navigator.languages`의 첫 지원 언어
   (ko/ja/en/zh)를 선택하고 지원하지 않는 언어는 한국어로 안전하게 되돌린다. 저장된 언어·게임·단어장
   기록은 계속 브라우저 설정보다 우선한다. 실패 테스트로 ja-JP의 기존 한국어 시작을 재현한 뒤 수정했다.
@@ -56,8 +58,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 실제 학습자 검증 계약: `docs/qa/beginner-validation-protocol.md`. 12명 표본, 10분 첫 성공,
   세 표현 10분/D1/D7 회상, 다음 학습·복습 발견, 실기기 iPhone/Android, 개입·결측·집계 규칙을
   고정했다. 모집·초대·관찰·연락처/결과 수집은 시작하지 않았고 사용자 승인 전 금지한다.
-- 다음 한 작업: 새 P0·정답 오류가 없으면 clean ja-JP 프로필에서 입문 문법 첫 변형 답안 작성 →
-  중도 종료·재진입의 초안 보존을 한 경로로 검증한다. 실제 학습자 검증은 사용자 승인 전 시작하지 않고
+- 다음 한 작업: 새 P0·정답 오류가 없으면 clean ja-JP 프로필에서 입문 문법 첫 손쓰기 →
+  중도 종료·재진입의 완료 단위·현재 위치 보존을 한 경로로 검증한다. 실제 학습자 검증은 사용자 승인 전 시작하지 않고
   문항 수·가상 사용자를 학습자 증거로 대체하지 않는다.
 
 ## 긴급 사용자 요청 · #129
@@ -81,8 +83,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v139 · empty Review history is labelled as no data instead of 100% (`3b9626a0fe9b48579df8cfbb96a155ab802054e1`)
-- Current priority: verify a Japanese beginner grammar draft through exit/re-entry; no new question-count expansion
+- Production release: v140 · Japanese beginner grammar drafts survive exit/re-entry (`cfb0209eac2f983abfc70c02eb3e5f02679da864`)
+- Current priority: verify Japanese beginner grammar handwriting position through exit/re-entry; no new question-count expansion
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
