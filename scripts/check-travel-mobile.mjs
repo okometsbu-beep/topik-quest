@@ -593,6 +593,7 @@ try{
     assert.equal(await waitForQuestionTitle(firstTitle),firstTitle,'route question must finish rendering before verification');
     if(reloadAtTransfer){
       await send('Page.reload',{ignoreCache:true});
+      await ready();
       let restored=false;
       for(let wait=0;wait<100;wait++){
         if(await evaluate(`document.readyState==='complete'&&!document.documentElement.classList.contains('tq-booting')&&document.querySelector('.travelQuestionCard h1')?.textContent===${JSON.stringify(firstTitle)}`)){restored=true;break}

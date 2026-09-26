@@ -12,6 +12,7 @@ export async function verifyAdventure({evaluate,tap,shot,setViewport,send,ready,
  assert.equal(await evaluate(`document.querySelectorAll('.advCourse').length`),2);
  for(const theme of ['light','dark']){await evaluate(`malbitSetTheme('${theme}')`);for(const width of [320,375,390,430]){await setViewport(width,844);await fit(`adventure hub ${theme} ${width}`);await shot(`adventure-hub-${width}-${theme}.png`)}}
  await setViewport(390,844);await tap('.advCourse .advPrimary',0);
+ for(const theme of ['light','dark']){await evaluate(`malbitSetTheme('${theme}')`);for(const width of [320,375,390,430]){await setViewport(width,844);await fit(`dialogue ${theme} ${width}`)}await setViewport(390,844);await shot(`adventure-dialogue-${theme}.png`)}
  assert.equal(await evaluate(`document.querySelectorAll('.advLine').length`),1);assert.equal(await evaluate(`document.querySelectorAll('.advChoice').length`),0);
  await tap('.advDialogue .advPrimary');await tap('.advDialogue .advPrimary');await tap('.advDialogue .advPrimary');
  assert.equal(await evaluate(`document.querySelectorAll('.advLine').length`),3);assert.equal(await evaluate(`document.querySelectorAll('.advChoice small').length`),0);
