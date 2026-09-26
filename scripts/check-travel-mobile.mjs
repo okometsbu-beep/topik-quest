@@ -635,6 +635,7 @@ try{
   await tap('.v33BeginnerTop>button',0,120);
   assert.match(await evaluate(`document.querySelector('.tqLessonStart')?.textContent||''`),/入門学習の続きから/,'the Home CTA must recognize saved beginner progress');
   await send('Page.reload',{ignoreCache:true});await ready();
+  await waitForSelector('.tqLessonStart');
   assert.equal(await evaluate(`S.lang`),'ja','the Japanese explanation language must survive beginner re-entry');
   assert.match(await evaluate(`document.querySelector('.tqLessonStart')?.textContent||''`),/入門学習の続きから/,'reload must keep the beginner continuation CTA');
   await tap('.tqLessonStart',0,120);
