@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import assert from 'node:assert/strict';
+import {verifyAdventure} from './travel-adventure-checks.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import {spawn} from 'node:child_process';
@@ -51,8 +52,9 @@ try{
     await send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1});
     await sleep(80);
   };
+  let legacyTravelChecks=false;
   const ready=async()=>{
-    for(let i=0;i<100;i++){if(await evaluate(`document.readyState==='complete'&&!!window.MALBIT_TRAVEL&&!document.documentElement.classList.contains('tq-booting')`))return;await sleep(100)}
+    for(let i=0;i<100;i++){if(await evaluate(`document.readyState==='complete'&&!!window.MALBIT_TRAVEL&&!document.documentElement.classList.contains('tq-booting')`)){if(legacyTravelChecks)await evaluate(`(()=>{if(window.__legacyTravelQA)return;window.__legacyTravelQA=true;const base=render;render=function(){if(S.view==='travel')S.view='travelLegacy';return base.apply(this,arguments)};window.malbitTravelOpen=()=>setView('travelLegacy')})()`);return;}await sleep(100)}
     throw new Error('MALBIT travel runtime did not become ready');
   };
   const waitForSelector=async selector=>{
@@ -629,6 +631,9 @@ try{
   assert.match(await evaluate(`document.querySelector('.tqLessonStart')?.textContent||''`),/入門学習を始める/,'the first primary CTA must be localized before language-menu use');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);await assertHomeFits('fresh Japanese browser Home light','light');await shot('00renewal-home-ja-locale-first-visit-light.png');
   await evaluate(`malbitSetTheme('dark')`);await sleep(100);await assertHomeFits('fresh Japanese browser Home dark','dark');await shot('00renewal-home-ja-locale-first-visit-dark.png');
+  await verifyAdventure({evaluate,tap,shot,setViewport,send,ready,sleep});
+  // Preserve old-course regressions through its explicit archive route, never the new default.
+  legacyTravelChecks=true;await ready();
   await tap('.tqLessonStart',0,120);
   assert.equal(await evaluate(`S.view`),'beginner','fresh Japanese learner must enter the beginner course');
   await tap('.v33BeginnerTabs button',1,100);
