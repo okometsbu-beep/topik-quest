@@ -627,6 +627,30 @@ try{
   assert.match(await evaluate(`document.querySelector('.tqLessonStart')?.textContent||''`),/入門学習を始める/,'the first primary CTA must be localized before language-menu use');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);await assertHomeFits('fresh Japanese browser Home light','light');await shot('00renewal-home-ja-locale-first-visit-light.png');
   await evaluate(`malbitSetTheme('dark')`);await sleep(100);await assertHomeFits('fresh Japanese browser Home dark','dark');await shot('00renewal-home-ja-locale-first-visit-dark.png');
+  await tap('.tqLessonStart',0,120);
+  assert.equal(await evaluate(`S.view`),'beginner','fresh Japanese learner must enter the beginner course');
+  await tap('.v33BeginnerTabs button',1,100);
+  await tap('.v33LetterGrid button',0,100);
+  assert.deepEqual(await evaluate(`(()=>{const value=JSON.parse(localStorage.getItem('malbitBeginnerV1'));return{activeTab:value.activeTab,known:value.known}})()`),{activeTab:'consonants',known:['c:ㄱ']},'the first learned consonant and its step must save together');
+  await tap('.v33BeginnerTop>button',0,120);
+  assert.match(await evaluate(`document.querySelector('.tqLessonStart')?.textContent||''`),/入門学習の続きから/,'the Home CTA must recognize saved beginner progress');
+  await send('Page.reload',{ignoreCache:true});await ready();
+  assert.equal(await evaluate(`S.lang`),'ja','the Japanese explanation language must survive beginner re-entry');
+  assert.match(await evaluate(`document.querySelector('.tqLessonStart')?.textContent||''`),/入門学習の続きから/,'reload must keep the beginner continuation CTA');
+  await tap('.tqLessonStart',0,120);
+  assert.equal(await evaluate(`S.view`),'beginner');
+  assert.match(await evaluate(`document.querySelector('.v33BeginnerTabs button.on')?.textContent||''`),/子音/,'Continue must restore the interrupted consonant step');
+  assert.match(await evaluate(`document.querySelector('.v33BeginnerHero p')?.textContent||''`),/1\/20/,'the learned-letter count must survive re-entry');
+  assert.match(await evaluate(`document.querySelector('.v33LetterGrid button.learned')?.textContent||''`),/ㄱ/,'the learned consonant must remain marked');
+  for(const theme of ['light','dark']){await evaluate(`malbitSetTheme('${theme}')`);await sleep(80);for(const width of [320,375,390,430]){
+    await setViewport(width,width===320?700:844);
+    const fit=await evaluate(`(()=>{const root=document.querySelector('.v33BeginnerScreen');if(!root)return{missing:true};const visible=el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)!==0&&r.width>0&&r.height>0};const controls=[...root.querySelectorAll('button:not(:disabled)')].filter(visible),small=controls.filter(el=>{const r=el.getBoundingClientRect();return r.width<43||r.height<43}).map(el=>el.textContent.trim().slice(0,20));return{missing:false,theme:document.documentElement.dataset.theme,innerWidth,rootWidth:document.documentElement.scrollWidth,bodyWidth:document.body.scrollWidth,small,active:root.querySelector('.v33BeginnerTabs button.on')?.textContent.trim(),learned:root.querySelector('.v33LetterGrid button.learned')?.textContent.includes('ㄱ')}})()`);
+    assert.equal(fit.missing,false,`Japanese beginner re-entry ${theme} ${width}px: screen missing`);
+    assert.equal(fit.theme,theme);assert.ok(fit.rootWidth<=fit.innerWidth+1&&fit.bodyWidth<=fit.innerWidth+1,`Japanese beginner re-entry ${theme} ${width}px: horizontal overflow`);
+    assert.deepEqual(fit.small,[],`Japanese beginner re-entry ${theme} ${width}px: touch target below 44px`);
+    assert.match(fit.active,/子音/);assert.equal(fit.learned,true);await shot(`00renewal-beginner-ja-reentry-${theme}-${width}.png`)
+  }}
+  await evaluate(`setView('home')`);await sleep(100);
   await evaluate(`localStorage.clear();S.lang='ja';S.vocab=[{text:'여행',meanings:{ja:'旅行'},repetitions:3}];S.gameUnlock=17;S.gameAnswers={16:{clear:true}};save();localStorage.setItem('topikQuestTopik1GameV1',JSON.stringify({profiles:{1:{unlock:6}}}));localStorage.setItem('malbitWrongReviewV3',JSON.stringify({items:[{id:'M01-I-L-11'}]}));render()`);
 
   assert.ok(await evaluate(`!!document.querySelector('#malbitHomeVisualSystem')`),'Home visual system must load after compatibility layers');

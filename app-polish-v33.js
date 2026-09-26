@@ -5,13 +5,14 @@
 const PREFS_KEY='malbitProductPrefsV1';
 const BEGINNER_KEY='malbitBeginnerV1';
 const LANG_INDEX={ko:0,ja:1,en:2,zh:3};
-let listeningContinuation=null,listeningGatePass=false,beginnerTab='vowels',beginnerAnswer=null;
+let listeningContinuation=null,listeningGatePass=false,beginnerTab=savedBeginnerTab(),beginnerAnswer=null;
 
 function appState(){return typeof S!=='undefined'?S:null}
 function L(ko,ja,en,zh){return[ko,ja,en,zh][LANG_INDEX[appState()?.lang]??0]||ko}
 function escapeHtml(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function read(key,fallback){try{return JSON.parse(localStorage.getItem(key)||'null')??fallback}catch(e){return fallback}}
 function write(key,value){try{localStorage.setItem(key,JSON.stringify(value))}catch(e){}}
+function savedBeginnerTab(){const tab=read(BEGINNER_KEY,{}).activeTab;return['vowels','consonants','reading'].includes(tab)?tab:'vowels'}
 function prefs(){return{dailyGoal:5,randomMix:'balanced',listeningMode:'ask',...read(PREFS_KEY,{})}}
 function listeningMode(){const value=prefs().listeningMode;return value==='on'||value==='off'?value:'ask'}
 window.MALBIT_LISTENING_ENABLED=()=>listeningMode()!=='off';
@@ -64,7 +65,7 @@ function saveBeginner(value){write(BEGINNER_KEY,value)}
 function beginnerSpeak(value){if(typeof window.malbitSpeak==='function')return window.malbitSpeak(value);try{speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(value);utterance.lang='ko-KR';utterance.rate=.72;speechSynthesis.speak(utterance)}catch(e){}}
 window.malbitBeginnerLearn=(id,sound,button)=>{const p=beginnerProgress();if(!p.known.includes(id)){p.known.push(id);saveBeginner(p)}button?.classList.add('learned');beginnerSpeak(sound)};
 window.malbitBeginnerSpeak=beginnerSpeak;
-window.malbitBeginnerTab=tab=>{beginnerTab=['vowels','consonants','reading'].includes(tab)?tab:'vowels';beginnerAnswer=null;window.render?.()};
+window.malbitBeginnerTab=tab=>{beginnerTab=['vowels','consonants','reading'].includes(tab)?tab:'vowels';const p=beginnerProgress();p.activeTab=beginnerTab;saveBeginner(p);beginnerAnswer=null;window.render?.()};
 function letterGrid(rows,prefix){const known=new Set(beginnerProgress().known);return `<div class="v33LetterGrid">${rows.map(([letter,sound,roman])=>`<button class="${known.has(`${prefix}:${letter}`)?'learned':''}" onclick='malbitBeginnerLearn(${JSON.stringify(`${prefix}:${letter}`)},${JSON.stringify(sound)},this)'><b>${letter}</b><span>${sound}</span><small>${roman} · 🔊</small></button>`).join('')}</div>`}
 function beginnerReading(){
   const p=beginnerProgress(),q=BEGINNER_WORDS[(Number(p.quiz)||0)%BEGINNER_WORDS.length],answer=BEGINNER_WORDS.indexOf(q),offset=(answer+3)%BEGINNER_WORDS.length,choiceIndexes=[answer,(answer+1)%8,(answer+5)%8,offset].filter((x,i,a)=>a.indexOf(x)===i).slice(0,4).sort((a,b)=>((a*7+p.quiz*3)%11)-((b*7+p.quiz*3)%11));

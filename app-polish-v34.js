@@ -9,7 +9,7 @@ const WRITE_TARGETS=[
   ['ㅏ','아','v:ㅏ'],['ㅓ','어','v:ㅓ'],['ㅗ','오','v:ㅗ'],['ㅜ','우','v:ㅜ'],['ㅡ','으','v:ㅡ'],['ㅣ','이','v:ㅣ'],['ㅑ','야','v:ㅑ'],['ㅕ','여','v:ㅕ'],['ㅛ','요','v:ㅛ'],['ㅠ','유','v:ㅠ'],
   ['ㄱ','가','c:ㄱ'],['ㄴ','나','c:ㄴ'],['ㄷ','다','c:ㄷ'],['ㄹ','라','c:ㄹ'],['ㅁ','마','c:ㅁ'],['ㅂ','바','c:ㅂ'],['ㅅ','사','c:ㅅ'],['ㅇ','아','c:ㅇ'],['ㅈ','자','c:ㅈ'],['ㅎ','하','c:ㅎ']
 ];
-let writingActive=false,writingIndex=0,canvasState={canvas:null,ctx:null,drawing:false,ink:false};
+let writingActive=read(BEGINNER_KEY,{}).activeTab==='writing',writingIndex=0,canvasState={canvas:null,ctx:null,drawing:false,ink:false};
 
 function appState(){return typeof S!=='undefined'?S:null}
 function L(ko,ja,en,zh){return[ko,ja,en,zh][LANG_INDEX[appState()?.lang]??0]||ko}
@@ -64,10 +64,10 @@ window.malbitBeginnerChooseWrite=index=>{writingIndex=Math.max(0,Math.min(WRITE_
 
 function installBeginnerTab(){
   const base=window.malbitBeginnerTab;if(typeof base!=='function'||base.__v34)return;
-  const wrapped=tab=>{if(tab==='writing'){writingActive=true;window.render?.();return}writingActive=false;return base(tab)};wrapped.__v34=true;window.malbitBeginnerTab=wrapped
+  const wrapped=tab=>{if(tab==='writing'){writingActive=true;const progress=beginnerProgress();progress.activeTab='writing';write(BEGINNER_KEY,progress);window.render?.();return}writingActive=false;return base(tab)};wrapped.__v34=true;window.malbitBeginnerTab=wrapped
 }
 function patchBeginnerWriting(){
-  if(appState()?.view!=='beginner'){writingActive=false;return}
+  if(appState()?.view!=='beginner')return
   const tabs=document.querySelector('.v33BeginnerTabs'),tip=document.querySelector('.v33BeginnerTip');if(!tabs||!tip)return;
   const buttons=[...tabs.querySelectorAll('button')];if(buttons[2])buttons[2].textContent=L('4. 읽기','4. 読み','4. Reading','4. 阅读');
   let writing=tabs.querySelector('.v34WritingTab');if(!writing){writing=document.createElement('button');writing.className='v34WritingTab';writing.textContent=L('3. 쓰기','3. 書き','3. Writing','3. 书写');writing.onclick=()=>window.malbitBeginnerTab('writing');tabs.insertBefore(writing,buttons[2]||null)}
