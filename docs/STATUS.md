@@ -1,3 +1,23 @@
+## 2026-09-27 v140 입문 문법 손쓰기 재진입 계약 고정
+
+- 공개 v140의 clean ja-JP 경로에서 첫 문법 변형 정답 `저는 한국어를 공부해요.`를 제출하고
+  첫 손쓰기 `한`을 완료한 뒤 오늘로 이탈·hard reload·재진입했다. 완료 단위 `1/8`, 현재 글자 `국`,
+  위치 `2/8`이 그대로 복원되어 제품 결함은 재현되지 않았다.
+- PR #192 squash `33e5764577b1024b977a84facb651c51a6bfc7ef`가 저장 계약과 실제 브라우저 재진입을
+  회귀검사로 고정했다. 로컬 전체 147/147, PR CI `36271774104`가 통과했고 320/375/390/430px×
+  라이트/다크에서 상태·레이아웃을 검사했다.
+- #192 병합 뒤 main CI `36272108773`은 Chrome target 종료로 두 번 실패해 통과로 세지 않는다.
+  같은 검증 범위에서 저장 화면을 대표 390px 두 테마만 남기도록 안정화한 PR #193 squash
+  `6e9c868280aa14dd0e51acbc66be23d755b13a41`의 PR CI `36272553741`, 최종 main CI
+  `36272893017`, Pages `36272892547`은 성공했다. 반응형 상태 assertion 8조합은 모두 유지한다.
+- 공개 앱은 제품 동작·버전·문항·저장 스키마를 바꾸지 않은 v140이다. HTTP 200이며
+  index/beginner-grammar/checker SHA-256이 병합본과 일치한다. 좁은 회귀검사 복귀점은
+  `a9835474d026a6a10de6b62439b021a9597cf71f`; 제품 복귀 기준은 v139
+  `3b9626a642428f845c95f574d55fd4ec29361bd6` 그대로다.
+- 미검증: 실제 iPhone/Android, 일본어 모어 화자·교육 전문가, 실제 첫 성공·10분/D1/D7 회상.
+  다음은 첫 문법 완주 뒤 완료 표시와 다음 학습 CTA가 같은 항목을 반복하지 않고 다음 문법으로
+  이어지는지 검증한다.
+
 ## 2026-09-26 하루말 v140 배포
 
 - production v139에서 clean ja-JP 입문 문법 첫 변형 답안 `저는 한국어`를 입력한 뒤 오늘로
@@ -31,7 +51,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 모바일: GitHub Actions Ubuntu/Node22/Chrome 에뮬레이션 320/375/390/430px×두 테마, 터치·회상 초안 새로고침·여행 복귀·기존 경로·콘솔 검사. 홈/회상 8조합과 여행/Random Practice 주요 화면 직접 확인. 실제 기기 증거와 구별한다.
 - 최종 화면 검수로 “뿐더러 형태상 불가”와 “바람에→風の中で” 오류를 발견·수정. 동일 문법 4문항의 ja/en/zh 문맥 번역과 실제 섞인 보기 순서의 뜻을 제공한다. 전체 은행의 자동번역 정확성 인증은 아니다.
 - 최종 v132: PR #174 squash `c4045c8358acbfb505c9df01d70dbaa3c5e026e3`. 최종 PR CI `36075457096`(177장, 일본어 문맥 번역 직접 확인), main CI `36075858880`, Pages `36075858066` 성공. 앞의 후보 검사는 이 최종 증거로 대체한다.
-- 현재 production: v140, PR #190 `cfb0209eac2f983abfc70c02eb3e5f02679da864`, https://okometsbu-beep.github.io/topik-quest/ . PR CI `36251060265`, main CI `36251490583`, Pages `36251490375` 성공.
+- 현재 production: v140, PR #190 `cfb0209eac2f983abfc70c02eb3e5f02679da864`, https://okometsbu-beep.github.io/topik-quest/ . 제품 PR CI `36251060265`; 손쓰기 재진입 회귀 PR #193 `6e9c868280aa14dd0e51acbc66be23d755b13a41`, 최종 main CI `36272893017`, Pages `36272892547` 성공.
 - v136은 저장 상태가 없는 첫 방문에서 `navigator.languages`의 첫 지원 언어
   (ko/ja/en/zh)를 선택하고 지원하지 않는 언어는 한국어로 안전하게 되돌린다. 저장된 언어·게임·단어장
   기록은 계속 브라우저 설정보다 우선한다. 실패 테스트로 ja-JP의 기존 한국어 시작을 재현한 뒤 수정했다.
@@ -58,8 +78,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 실제 학습자 검증 계약: `docs/qa/beginner-validation-protocol.md`. 12명 표본, 10분 첫 성공,
   세 표현 10분/D1/D7 회상, 다음 학습·복습 발견, 실기기 iPhone/Android, 개입·결측·집계 규칙을
   고정했다. 모집·초대·관찰·연락처/결과 수집은 시작하지 않았고 사용자 승인 전 금지한다.
-- 다음 한 작업: 새 P0·정답 오류가 없으면 clean ja-JP 프로필에서 입문 문법 첫 손쓰기 →
-  중도 종료·재진입의 완료 단위·현재 위치 보존을 한 경로로 검증한다. 실제 학습자 검증은 사용자 승인 전 시작하지 않고
+- 다음 한 작업: 새 P0·정답 오류가 없으면 clean ja-JP 프로필에서 입문 문법 첫 항목을 완주한 뒤
+  완료 표시와 다음 학습 CTA가 같은 항목을 반복하지 않고 다음 문법으로 이어지는지 한 경로로 검증한다. 실제 학습자 검증은 사용자 승인 전 시작하지 않고
   문항 수·가상 사용자를 학습자 증거로 대체하지 않는다.
 
 ## 긴급 사용자 요청 · #129
@@ -84,7 +104,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 
 - Production: GitHub Pages static PWA
 - Production release: v140 · Japanese beginner grammar drafts survive exit/re-entry (`cfb0209eac2f983abfc70c02eb3e5f02679da864`)
-- Current priority: verify Japanese beginner grammar handwriting position through exit/re-entry; no new question-count expansion
+- Current priority: verify that completing the first Japanese beginner grammar lesson advances its CTA to the next lesson; no new question-count expansion
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
