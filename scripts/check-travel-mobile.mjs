@@ -760,6 +760,21 @@ try{
   await setViewport(390,844);await evaluate(`document.querySelectorAll('.bgExample')[1]?.scrollIntoView({block:'center',behavior:'auto'})`);await sleep(80);await shot('00bd-a05-grammar-translation-light.png');
   await evaluate(`malbitSetTheme('dark')`);await sleep(100);
 
+  await evaluate(`document.querySelector('#malbitGrammarAnswer').scrollIntoView({block:'center',behavior:'auto'})`);await sleep(80);
+  await tap('#malbitGrammarAnswer',0,80);await send('Input.insertText',{text:'저는 한국어'});await sleep(100);
+  assert.deepEqual(await evaluate(`(()=>{const value=JSON.parse(localStorage.getItem('malbitBeginnerV1'));return{draft:value.grammarV1.drafts['sentence-order'],lastLesson:value.grammarV1.lastLesson,known:value.known,legacyScore:value.legacyScore}})()`),{draft:'저는 한국어',lastLesson:'sentence-order',known:['v:ㅏ'],legacyScore:7},'unfinished grammar draft must save without replacing older beginner progress');
+  await evaluate(`setView('home')`);await sleep(100);
+  await send('Page.reload',{ignoreCache:true});await ready();
+  for(let i=0;i<100&&!(await evaluate(`typeof tqSetLearningPath==='function'`));i++)await sleep(100);
+  await evaluate(`tqSetLearningPath('beginner');setView('beginner')`);await sleep(120);await tap('.bgLaunch',0,120);await tap('.bgResume',0,120);
+  assert.equal(await evaluate(`document.querySelector('#malbitGrammarAnswer')?.value`),'저는 한국어','Japanese beginner grammar draft must survive exit, reload, and course re-entry');
+  for(const theme of ['light','dark']){await evaluate(`malbitSetTheme('${theme}')`);await sleep(80);for(const width of [320,375,390,430]){
+    await setViewport(width,width===320?700:844);await assertBeginnerGrammarFits(`Beginner grammar draft re-entry ${theme} ${width}px`,theme);
+    await evaluate(`document.querySelector('#malbitGrammarAnswer').scrollIntoView({block:'center',behavior:'auto'})`);await sleep(60);
+    await shot(`00renewal-beginner-grammar-draft-${theme}-${width}.png`)
+  }}
+  assert.equal(await evaluate(`document.querySelector('#malbitGrammarAnswer')?.value`),'저는 한국어','viewport and theme changes must not clear the restored draft');
+
   await evaluate(`malbitGrammarLesson('copula')`);await sleep(120);
   assert.deepEqual(await evaluate(`({variants:document.querySelectorAll('.bgVariant').length,examples:document.querySelectorAll('.bgExample').length,canvas:!!document.querySelector('#malbitGrammarCanvas'),input:!!document.querySelector('#malbitGrammarAnswer')})`),{variants:2,examples:2,canvas:true,input:true},'grammar lesson must show rules, examples, typing, and handwriting');
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertBeginnerGrammarFits(`Beginner grammar lesson dark ${width}px`,'dark')}

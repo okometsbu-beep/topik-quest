@@ -77,6 +77,35 @@ test('opening the course preserves old beginner data', () => {
   assert.deepEqual(stored.attempts, { old: 3 });
 });
 
+test('an unfinished transformation draft survives exit and a fresh runtime', () => {
+  const first = runtime({
+    malbitBeginnerV1: JSON.stringify({
+      activeTab: 'consonants',
+      known: ['c:ㄱ'],
+      legacyScore: 7
+    })
+  });
+  first.context.malbitGrammarLesson('sentence-order');
+  first.context.malbitGrammarDraft('저는 한국어');
+
+  const stored = JSON.parse(first.values.get('malbitBeginnerV1'));
+  assert.equal(stored.grammarV1.lastLesson, 'sentence-order');
+  assert.equal(stored.grammarV1.drafts['sentence-order'], '저는 한국어');
+  assert.equal(stored.activeTab, 'consonants');
+  assert.deepEqual(stored.known, ['c:ㄱ']);
+  assert.equal(stored.legacyScore, 7);
+
+  const second = runtime(Object.fromEntries(first.values));
+  second.context.malbitGrammarLesson('sentence-order');
+  assert.equal(second.context.MALBIT_BEGINNER_GRAMMAR_INTERNALS.currentDraft(), '저는 한국어');
+
+  second.context.malbitGrammarDraft('저는 한국어를 공부해요');
+  assert.equal(second.context.malbitGrammarSubmit(), true);
+  const completed = JSON.parse(second.values.get('malbitBeginnerV1'));
+  assert.equal(completed.grammarV1.drafts['sentence-order'], undefined);
+  assert.equal(completed.grammarV1.quizCorrect['sentence-order'], true);
+});
+
 test('example translations and teaching notes render as separate fields', () => {
   const source = fs.readFileSync(path.join(root, 'beginner-grammar.js'), 'utf8');
   assert.match(source, /class="bgExampleMeaning"/u);
