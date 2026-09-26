@@ -779,7 +779,14 @@ try{
   await evaluate(`document.querySelector('.bgWriting').scrollIntoView({block:'start',behavior:'auto'})`);await sleep(80);await shot('00bd-beginner-grammar-handwriting-complete.png');
   await evaluate(`S.view='home';save();render()`);await sleep(180);
 
+  await evaluate(`(()=>{S.lang='ko';S.view='review';save();render()})()`);await sleep(300);
+  assert.deepEqual(await evaluate(`(()=>{const stats=[...document.querySelectorAll('.tqReviewStats>div')];return{queue:document.querySelectorAll('.tqReviewItem').length,value:stats[2]?.querySelector('b')?.textContent,label:stats[2]?.querySelector('small')?.textContent}})()`),{queue:0,value:'기록 없음',label:'해결률'},'empty Review history must not claim a perfect resolution rate');
+  await evaluate(`malbitSetTheme('light')`);await sleep(100);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertReviewFits(`Empty Review light ${width}px`,'light');await shot(`00iz-empty-review-light-${width}.png`)}
+  await evaluate(`malbitSetTheme('dark')`);await sleep(100);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertReviewFits(`Empty Review dark ${width}px`,'dark');await shot(`00iz-empty-review-dark-${width}.png`)}
   await evaluate(`(()=>{MALBIT_REVIEW.record(1,'read','P01-I-R-09',-1,'random',{choiceOrder:[0,1,2,3]});MALBIT_REVIEW.record(2,'read','P01-II-R-06',-1,'random',{choiceOrder:[0,1,2,3]});S.lang='ja';S.view='review';save();render()})()`);await sleep(300);
+  assert.equal(await evaluate(`document.querySelectorAll('.tqReviewStats>div')[2]?.querySelector('b')?.textContent`),'0%','an unresolved Review queue must report its actual resolution rate');
   assert.ok(await evaluate(`!!document.querySelector('#malbitReviewVisualSystem')`),'Review visual system must load after compatibility layers');
   assert.equal(await evaluate(`document.querySelectorAll('.tqReviewItem').length`),2,'Review queue must show both seeded TOPIK levels');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);
