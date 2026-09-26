@@ -58,3 +58,19 @@ html body.harumal :is(.travelChoice.correct,.travelChoices button.correct){backg
 html body.harumal .travelHubHead h1{font-size:28px;color:var(--ui-ink)}
 @media(max-width:380px){html body.harumal .screen{padding-left:16px;padding-right:16px}.harumalPageHead h1,html body.harumal .tqV9Greeting h1{font-size:26px}.harumalPracticeGrid{gap:8px}.harumalPracticeGrid .harumalCourse{padding:14px}.harumalCourse b{font-size:15px}html body.harumal .tqTodayLesson{padding:20px}.harumalLessonArt{gap:2px}.harumalLessonArt span{width:30px;height:42px;font-size:22px}}
 @media(prefers-reduced-motion:reduce){html body.harumal *,html body.harumal *:before,html body.harumal *:after{animation:none!important;scroll-behavior:auto!important;transition:none!important}}
+html body.harumal .tqLang{width:auto;min-width:72px;padding:8px 12px;font-size:13px;font-weight:650;white-space:nowrap}
+html body.harumal :is(.stem,.t1stem){font-size:18px;line-height:1.85}
+html body.harumal .choice{border-radius:16px;min-height:56px;line-height:1.65}
+html body.harumal :is(.malbitQuestionTranslation,.malbitExplanationToggle,.malbitRandomExplanation){border-radius:18px}
+html body.harumal :is(.shortsChoice.selected i){background:var(--ui-accent);color:var(--harumal-on-accent)}
+html body.harumal :is(.malbitQuestionTranslation p,.tqInlineExplanation p,.malbitExplanationBody){font-size:14px!important;line-height:1.8!important}
+
+/* The RPG owns the viewport; reading-width constraints must never clip its controls. */
+html body.harumal.travel-rpg-active{padding-bottom:0}
+html body.harumal.travel-rpg-active .app,html body.harumal.travel-rpg-active .travelScreen{max-width:none;padding:0}
+html[data-theme="light"] body.harumal.tq-home-active,html[data-theme="light"] body.harumal.tq-home-active .app,html[data-theme="dark"] body.harumal.tq-home-active .app{background:var(--ui-canvas)!important;color:var(--ui-ink)!important}
+html body.harumal .tqV9Greeting{margin-top:20px}
+html body.harumal .tqV9Greeting h1{font-size:26px;max-width:none}
+html body.harumal .tqV9Greeting p{margin:10px 0 18px;line-height:1.65}
+html body.harumal .tqTodayLesson h2{max-width:none;font-size:23px}
+html body.harumal .tqTodayLesson p{max-width:none}

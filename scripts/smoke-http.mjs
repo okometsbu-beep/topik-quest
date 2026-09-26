@@ -19,7 +19,7 @@ function frozenList(source, name) {
 
 const indexUrl = new URL(`index.html?smoke=${Date.now()}`, base);
 const index = await text(indexUrl, 'index.html');
-assert.match(index, /<title>MALBIT · Korean Learning<\/title>/);
+assert.match(index, /<title>하루말 · HARUMAL<\/title>/);
 const version = index.match(/const appVersion=['"](\d+)['"]/)?.[1];
 assert.ok(version, 'index release version is missing');
 

@@ -37,12 +37,14 @@ function shell(){
  const selected=activeTab(S.view),names=labels[S.lang]||labels.en;
  const key=`${S.lang}:${selected}`;
  if(nav.dataset.harumal!==key){nav.innerHTML=tabs.map((id,i)=>`<button type="button" id="nav_${id}" class="${id===selected?'active':''}" ${id===selected?'aria-current="page"':''} onclick="harumalGo('${id}')">${icon(i)}<span>${names[i]}</span></button>`).join('');nav.dataset.harumal=key}
- nav.querySelectorAll('button').forEach(button=>{const active=button.id==='nav_'+selected;button.classList.toggle('active',active);if(active)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current')});
+ nav.querySelectorAll('button').forEach((button,i)=>{const label=button.querySelector('span');if(label)label.textContent=names[i];const active=button.id==='nav_'+selected;button.classList.toggle('active',active);if(active)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current')});
+ const language=document.querySelector('.tqLang');if(language)language.textContent=({ko:'한국어',ja:'日本語',en:'English',zh:'中文'}[S.lang]||'English')+' ⌄';
  const badge=document.querySelector('.top .brand');if(badge)badge.textContent='하';
  const title=document.querySelector('.top .title b');if(title)title.textContent='하루말 · HARUMAL';
  document.title=`하루말 · ${names[tabs.indexOf(selected)]}`;
  const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=document.documentElement.dataset.theme==='dark'?'#102523':'#f7f8f4';
 }
+const originalShell=renderShell;renderShell=function(){const result=originalShell.apply(this,arguments);shell();return result};
 const base=render;
 render=function(){const result=base.apply(this,arguments);const sc=document.getElementById('screen');if(S.view==='learn')learn(sc);if(S.view==='more')personal(sc);shell();requestAnimationFrame(shell);return result};
 shell();

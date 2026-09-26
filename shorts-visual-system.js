@@ -30,8 +30,8 @@ body.tq-shorts-active .shortsInstruction{margin:0 0 var(--ui-space-4);color:var(
 body.tq-shorts-active .shortsChoices{display:grid;gap:var(--ui-space-2)}
 body.tq-shorts-active .shortsChoice{grid-template-columns:32px minmax(0,1fr);min-height:52px;gap:10px;border:1px solid var(--shorts-border);border-radius:var(--ui-radius-control);background:var(--shorts-surface-raised);color:var(--shorts-ink);padding:9px 11px;font-size:13px;line-height:1.45;box-shadow:0 3px 9px var(--shorts-shadow)}
 body.tq-shorts-active .shortsChoice i{width:32px;height:32px;border-radius:10px;background:var(--shorts-surface-soft);color:var(--shorts-muted);font-size:10px}
-body.tq-shorts-active .shortsChoice.selected{border-color:#657ce5;background:var(--shorts-selected-soft);color:var(--shorts-selected-ink);box-shadow:0 0 0 2px rgba(82,104,232,.18)}
-body.tq-shorts-active .shortsChoice.selected i{background:#5268e8;color:#fff}
+body.tq-shorts-active .shortsChoice.selected{border-color:var(--ui-accent);background:var(--shorts-selected-soft);color:var(--shorts-selected-ink);box-shadow:0 0 0 2px rgba(82,104,232,.18)}
+body.tq-shorts-active .shortsChoice.selected i{background:var(--ui-accent);color:#fff}
 body.tq-shorts-active .shortsChoice.correct{border-color:color-mix(in srgb,var(--shorts-success) 60%,var(--shorts-border));background:var(--shorts-success-soft);color:var(--shorts-success)}
 body.tq-shorts-active .shortsChoice.correct i{background:#238a6c;color:#fff}
 body.tq-shorts-active .shortsChoice.wrong{border-color:color-mix(in srgb,var(--shorts-error) 58%,var(--shorts-border));background:var(--shorts-error-soft);color:var(--shorts-error)}
