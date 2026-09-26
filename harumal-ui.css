@@ -85,3 +85,12 @@ html body.harumal .flagBtn{width:auto;min-width:72px;padding:8px 12px;font-size:
 html body.harumal :is(.malbitLangGrid,.malbitChoiceRow,.malbitMixGrid,.malbitDataButtons) button{background:var(--ui-surface-soft);color:var(--ui-ink);border:1px solid var(--ui-border);border-radius:12px;font-size:14px;box-shadow:none}
 html body.harumal :is(.malbitLangGrid,.malbitChoiceRow,.malbitMixGrid) button:is(.active,.on){background:var(--ui-accent-soft);border-color:var(--ui-accent);color:var(--ui-accent)}
 html body.harumal .malbitDataButtons button.danger{background:var(--ui-error-soft);color:var(--ui-error);border-color:var(--ui-error)}
+/* Vocabulary and speaking use the same surfaces as the learning hubs. */
+html body.harumal :is(.tqVocabPageTabs,.tqVocabGarden,.tqManualVocab,.tqVocabCompactTip,.tqLibraryHero,.tqLibraryCard,.tqSavedVocabCard,.tqVocabCoach,.malbitSpeakingNote){background:var(--ui-surface);color:var(--ui-ink);border:1px solid var(--ui-border);border-radius:20px;box-shadow:none}
+html body.harumal :is(.tqManualVocab,.tqVocabGarden,.tqLibraryHero,.tqLibraryCard,.tqSavedVocabCard) :is(p,small,label){font-size:12px;line-height:1.7;color:var(--ui-muted)}
+html body.harumal :is(.tqVocabPageTabs,.tqLibraryLevels,.speakTabs) button{background:var(--ui-surface-soft);color:var(--ui-muted);border-color:var(--ui-border);box-shadow:none;font-size:13px}
+html body.harumal :is(.tqVocabPageTabs,.tqLibraryLevels,.speakTabs) button:is(.on,.active),html body.harumal :is(.tqManualVocab form button,.tqLibraryHero button,.tqLibraryCard button,.vocabActions .reveal,.tqVocabAdd,.examNav .next,.micBtn){background:var(--ui-accent);color:var(--harumal-on-accent);box-shadow:none;border-color:var(--ui-accent)}
+html body.harumal .micBtn.recording{background:var(--ui-error);color:var(--ui-surface)}
+html body.harumal :is(.speakPrompt .roman,.tqVocabCompactTip,.malbitSpeakingNote){font-size:12px;line-height:1.7;color:var(--ui-muted)}
+html body.harumal .tqVocabGardenProgress{background:var(--ui-surface-soft)}
+html body.harumal .tqVocabGardenProgress i{background:var(--ui-accent)}
