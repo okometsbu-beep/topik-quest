@@ -1,25 +1,19 @@
-## 2026-09-26 하루말 v138 배포
+## 2026-09-26 하루말 v139 배포
 
-- 사용자 승인: MALBIT → **하루말 · HARUMAL**, 크림/청록 시안 기반 공통 UI와 주요 화면 개편.
-- PR #186 squash `f6259634e798e4164fe4e547c901ff68832c23ad`.
-- 오늘/학습/여행/복습/내 기록 5개 메뉴, 실제 코스 학습 허브와 내 기록, 브랜드·아이콘,
-  라이트/다크·설정·단어장·말하기·해설 표면을 통일했다. 모든 기존 모드와 저장 키는 유지한다.
-- Linux Node24 전체 144/144, v138 런타임 46개·은행 2,088개 해시 및 로컬 HTTP 통과.
-- 최종 PR CI `36229036055` 성공: Ubuntu/Node22/Chrome 에뮬레이션,
-  320/375/390/430px×두 테마, 학습/복습/여행 회귀 및 새 6개 화면의 메뉴·44px·넘침·콘솔 검사.
-  artifact `10902091939` 239장 생성. 핵심 허브 4개×8조합과 단어장·말하기 최종 화면을 직접 검토했다.
-- 첫 CI의 RPG 너비 회귀는 수정. 카메라 초기 배치 다음 프레임을 기다리지 않은 검사 경합은
-  제한된 대기로 수정했으며 보간 검사 기준은 유지했다. 실패 실행은 통과로 세지 않는다.
-- main CI `36229311810` 및 Pages `36229311803` 성공. https://okometsbu-beep.github.io/topik-quest/ 에서 v138 확인.
-  기본4+런타임46 HTTP smoke 및 index/styles/harumal-ui.css/harumal-ui.js/bootstrap/sw/manifest/icon
-  8개 공개 자산 SHA-256이 병합본과 일치한다.
-- 공개 Chrome: 기존 ja 설정·자음 탭·1/20 진도 복원, 학습→TOPIK II 선택,
-  내 기록·언어/테마 변경, 여행 진입→뒤로→빈 복습을 실제 UI로 확인했다.
-- 복귀 기준: v137 `3f6b0cf39d57fbb6ef8569d36acbf14d05880d6f`. 실패 배포는 revert PR.
-- 미검증: 실제 iPhone/Android, 음성 입력 실기기, 일본어 모어 화자, 실제 첫 성공·10분/D1/D7 회상.
-  QA 기록/화면 수를 학습 효과로 해석하지 않는다. 시안의 가상 콘텐츠·성과는 추가하지 않았다.
-- 다음: 라이브 빈 복습의 오답 0개 상태가 해결률 100%를 표시하는 기존 통계 표현을
-  ‘기록 없음’으로 구분하는 최소 작업. 이후 미검증 화면/오프라인·복구 범위를 순환한다.
+- 빈 복습 이력에서 해결률을 `100%`로 만들던 분모 0 fallback을 제거하고, ko/ja/en/zh에서
+  각각 `기록 없음`/`記録なし`/`No data`/`暂无记录`으로 구분한다. 실제 기록은 기존 백분율을 유지한다.
+- PR #188 squash `3b9626a0fe9b48579df8cfbb96a155ab802054e1`; v139 런타임 46개와 은행 해시,
+  Linux Node24 전체 145/145 통과. 문항·저장 키·학습 기록·기존 모드는 변경하지 않았다.
+- 최종 PR CI `36232225370` 성공. 동일 후보 branch CI `36231939294` artifact `10902672716`
+  247장 중 빈 복습 320/375/390/430px×라이트/다크 8장을 직접 확인했다. 첫 시각 증거의 320px
+  줄바꿈을 발견해 한 줄 규칙을 추가한 뒤 최종 후보를 다시 검증했다.
+- Pages `36232494268` 성공. https://okometsbu-beep.github.io/topik-quest/ 에서 v139와
+  index/app-polish-v22/review-visual-system SHA-256 일치, 빈 큐 0개·`기록 없음`·nowrap을 공개 Chrome에서 확인했다.
+- main CI `36232494732`와 Pages `36232494268` 성공.
+- 복귀 기준: v138 제품 `f6259634e798e4164fe4e547c901ff68832c23ad`; 실패 배포는 revert PR.
+- 미검증: 실제 iPhone/Android, 일본어 모어 화자, 실제 첫 성공·10분/D1/D7 회상.
+  QA 화면 수를 학습 효과로 해석하지 않는다.
+- 다음: 새 P0·정답 오류가 없으면 clean ja-JP 입문 문법 첫 변형 답안의 중도 종료·재진입 초안 보존을 검증한다.
 
 # MALBIT autonomous loop status
 
@@ -35,7 +29,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 모바일: GitHub Actions Ubuntu/Node22/Chrome 에뮬레이션 320/375/390/430px×두 테마, 터치·회상 초안 새로고침·여행 복귀·기존 경로·콘솔 검사. 홈/회상 8조합과 여행/Random Practice 주요 화면 직접 확인. 실제 기기 증거와 구별한다.
 - 최종 화면 검수로 “뿐더러 형태상 불가”와 “바람에→風の中で” 오류를 발견·수정. 동일 문법 4문항의 ja/en/zh 문맥 번역과 실제 섞인 보기 순서의 뜻을 제공한다. 전체 은행의 자동번역 정확성 인증은 아니다.
 - 최종 v132: PR #174 squash `c4045c8358acbfb505c9df01d70dbaa3c5e026e3`. 최종 PR CI `36075457096`(177장, 일본어 문맥 번역 직접 확인), main CI `36075858880`, Pages `36075858066` 성공. 앞의 후보 검사는 이 최종 증거로 대체한다.
-- 현재 production: v137, PR #184 `3f6b0cf39d57fbb6ef8569d36acbf14d05880d6f`, https://okometsbu-beep.github.io/topik-quest/ . PR CI `36214614737`, main CI `36214920852`, Pages `36214920326` 성공.
+- 현재 production: v139, PR #188 `3b9626a0fe9b48579df8cfbb96a155ab802054e1`, https://okometsbu-beep.github.io/topik-quest/ . PR CI `36232225370`, main CI `36232494732`, Pages `36232494268` 성공.
 - v136은 저장 상태가 없는 첫 방문에서 `navigator.languages`의 첫 지원 언어
   (ko/ja/en/zh)를 선택하고 지원하지 않는 언어는 한국어로 안전하게 되돌린다. 저장된 언어·게임·단어장
   기록은 계속 브라우저 설정보다 우선한다. 실패 테스트로 ja-JP의 기존 한국어 시작을 재현한 뒤 수정했다.
@@ -87,7 +81,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v137 · interrupted beginner tabs resume with accessible 44px controls (`3f6b0cf39d57fbb6ef8569d36acbf14d05880d6f`)
+- Production release: v139 · empty Review history is labelled as no data instead of 100% (`3b9626a0fe9b48579df8cfbb96a155ab802054e1`)
 - Current priority: verify a Japanese beginner grammar draft through exit/re-entry; no new question-count expansion
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
