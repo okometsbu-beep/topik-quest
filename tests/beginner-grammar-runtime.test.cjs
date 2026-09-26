@@ -30,7 +30,14 @@ function runtime(seed = {}) {
   context.window = context;
   vm.createContext(context);
   for (const file of ['data/beginner-grammar-v1.js', 'beginner-grammar.js']) {
-    vm.runInContext(fs.readFileSync(path.join(root, file), 'utf8'), context, { filename: file });
+    let source = fs.readFileSync(path.join(root, file), 'utf8');
+    if (file === 'beginner-grammar.js') {
+      source = source.replace(
+        'refreshCompletion};',
+        'refreshCompletion,currentWritingIndex:()=>writingIndex};'
+      );
+    }
+    vm.runInContext(source, context, { filename: file });
   }
   return { context, values };
 }
@@ -104,6 +111,37 @@ test('an unfinished transformation draft survives exit and a fresh runtime', () 
   const completed = JSON.parse(second.values.get('malbitBeginnerV1'));
   assert.equal(completed.grammarV1.drafts['sentence-order'], undefined);
   assert.equal(completed.grammarV1.quizCorrect['sentence-order'], true);
+});
+
+test('completed handwriting units and the next position survive a fresh runtime', () => {
+  const previous = {
+    activeTab: 'writing',
+    known: ['c:ㄱ'],
+    legacyScore: 7,
+    grammarV1: {
+      completed: [],
+      quizCorrect: { 'sentence-order': true },
+      writingDone: {},
+      writingUnits: { 'sentence-order': [0] },
+      writingCount: { 'sentence-order': 1 },
+      lastLesson: 'sentence-order'
+    }
+  };
+  const first = runtime({ malbitBeginnerV1: JSON.stringify(previous) });
+  first.context.malbitGrammarLesson('sentence-order');
+  assert.equal(first.context.MALBIT_BEGINNER_GRAMMAR_INTERNALS.currentWritingIndex(), 1);
+
+  const second = runtime(Object.fromEntries(first.values));
+  second.context.malbitGrammarLesson('sentence-order');
+  assert.equal(second.context.MALBIT_BEGINNER_GRAMMAR_INTERNALS.currentWritingIndex(), 1);
+
+  const restored = JSON.parse(second.values.get('malbitBeginnerV1'));
+  assert.deepEqual(restored.grammarV1.writingUnits['sentence-order'], [0]);
+  assert.equal(restored.grammarV1.writingCount['sentence-order'], 1);
+  assert.equal(restored.grammarV1.writingDone['sentence-order'], undefined);
+  assert.equal(restored.activeTab, 'writing');
+  assert.deepEqual(restored.known, ['c:ㄱ']);
+  assert.equal(restored.legacyScore, 7);
 });
 
 test('example translations and teaching notes render as separate fields', () => {
