@@ -36,7 +36,7 @@ test('all eight answers complete a course and recall stores self-assessment sepa
  for(const level of [1,2]){c.harumalAdventureStart(level);for(const q of c.HARUMAL_ADVENTURE_DATA.levels[level]){solve(c,q.answer);c.harumalAdventureAdvance()}assert.equal(p(level).index,4);assert.match(screen.innerHTML,/4\/4/)}
  const before=structuredClone(store().adventureV1.levels[1].answers);c.harumalAdventureReview(1);assert.doesNotMatch(screen.innerHTML,/서울역에 두 시까지 가야 해요\./);c.harumalAdventureDraft('<img src=x onerror=alert(1)>');c.render();assert.match(screen.innerHTML,/&lt;img/);assert.doesNotMatch(screen.innerHTML,/<img src=x/);c.harumalAdventureReveal();assert.match(screen.innerHTML,/서울역에 두 시까지 가야 해요\./);
  c.harumalAdventureRate(false);assert.ok(p(1).recall['ADV-I-01'].nextDueAt>Date.now()+590000);assert.equal(p(1).recall['ADV-I-01'].selfReportedRecall,false);assert.deepEqual(p(1).answers,before);
- const reload=harness(store());reload.ctx.harumalAdventureReview(1);assert.ok(!reload.screen.innerHTML.includes('onerror=alert(1)'));
+ c.harumalAdventurePickReview('ADV-I-03');c.harumalAdventureDraft('호텔은 어디예요?');const reload=harness(store());reload.ctx.harumalAdventureReview(1);assert.match(reload.screen.innerHTML,/호텔은 어디예요/);assert.match(reload.screen.innerHTML,/ホテルへ行く出口/);assert.ok(!reload.screen.innerHTML.includes('onerror=alert(1)'));
 });
 test('unreadable existing storage is never overwritten by starting an adventure',()=>{
  const {ctx:c,storage,screen}=harness('{broken');c.harumalAdventureStart(1);assert.equal(storage.get('malbitStoryV1'),'{broken');c.setView('travel');assert.match(screen.innerHTML,/上書きしていません/);

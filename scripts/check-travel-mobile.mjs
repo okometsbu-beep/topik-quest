@@ -54,7 +54,7 @@ try{
   };
   let legacyTravelChecks=false;
   const ready=async()=>{
-    for(let i=0;i<100;i++){if(await evaluate(`document.readyState==='complete'&&!!window.MALBIT_TRAVEL&&!document.documentElement.classList.contains('tq-booting')`)){if(legacyTravelChecks)await evaluate(`(()=>{if(window.__legacyTravelQA)return;window.__legacyTravelQA=true;const base=render;render=function(){if(S.view==='travel')S.view='travelLegacy';return base.apply(this,arguments)};window.malbitTravelOpen=()=>setView('travelLegacy')})()`);return;}await sleep(100)}
+    for(let i=0;i<100;i++){if(await evaluate(`document.readyState==='complete'&&!!window.MALBIT_TRAVEL&&!!window.HARUMAL_ADVENTURE&&!document.documentElement.classList.contains('tq-booting')`)){if(legacyTravelChecks)await evaluate(`(()=>{if(window.__legacyTravelQA)return;window.__legacyTravelQA=true;const base=render;render=function(){if(S.view==='travel')S.view='travelLegacy';return base.apply(this,arguments)};window.malbitTravelOpen=()=>setView('travelLegacy')})()`);return;}await sleep(100)}
     throw new Error('MALBIT travel runtime did not become ready');
   };
   const waitForSelector=async selector=>{

@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 
 // Synthetic interaction fixtures. These are browser regressions, never learner outcomes.
 export async function verifyAdventure({evaluate,tap,shot,setViewport,send,ready,sleep}){
+ const reload=async()=>{const previous=await evaluate('performance.timeOrigin');await send('Page.reload',{ignoreCache:true});let changed=false;for(let i=0;i<100;i++){try{changed=await evaluate('performance.timeOrigin')!==previous}catch{}if(changed)break;await sleep(50)}assert.ok(changed,'reload must reach a new document');await ready();};
  const fit=async(label)=>{
   const result=await evaluate(`(()=>{const sc=document.querySelector('.adventureScreen');return{overflow:document.documentElement.scrollWidth-innerWidth,buttons:[...sc.querySelectorAll('button')].filter(b=>b.getBoundingClientRect().height>0).every(b=>b.getBoundingClientRect().height>=44),nav:getComputedStyle(document.querySelector('.bottom')).display,active:document.querySelector('#nav_travel')?.getAttribute('aria-current'),images:[...sc.querySelectorAll('img')].every(i=>i.complete&&i.naturalWidth>0)}})()`);
   assert.ok(result.overflow<=1,`${label}: overflow ${result.overflow}`);assert.ok(result.buttons,`${label}: touch targets`);assert.notEqual(result.nav,'none');assert.equal(result.active,'page');assert.ok(result.images,`${label}: image load`);
@@ -17,7 +18,8 @@ export async function verifyAdventure({evaluate,tap,shot,setViewport,send,ready,
  await tap('.advChoice',1);await tap('.advQuestion .advPrimary');
  assert.match(await evaluate(`document.querySelector('.advFeedback').innerText`),/15分遅れ/);
  const storedBefore=await evaluate(`localStorage.getItem('malbitStoryV1')`);
- await send('Page.reload',{ignoreCache:true});await ready();assert.equal(await evaluate(`localStorage.getItem('malbitStoryV1')`),storedBefore);
+ await reload();assert.equal(await evaluate(`localStorage.getItem('malbitStoryV1')`),storedBefore);
+ assert.equal(await evaluate('S.view'),'travelAdventure','reload must restore the active adventure view');
  await tap('.advFeedback .advPrimary');await tap('.advChoice',2);await tap('.advQuestion .advPrimary');await tap('.advFeedback .advPrimary');
  assert.equal(await evaluate(`document.querySelector('.advTitle').textContent`),'忘れたかばん');
  await tap('#nav_home');await tap('#nav_travel');await tap('.advCourse .advPrimary',0);assert.equal(await evaluate(`document.querySelector('.advTitle').textContent`),'忘れたかばん');
@@ -43,7 +45,7 @@ export async function verifyAdventure({evaluate,tap,shot,setViewport,send,ready,
  await tap('.advFinish .advPrimary');assert.equal(await evaluate(`document.querySelector('#advDraft').value`),'');
  assert.ok(!await evaluate(`document.querySelector('.advClue')`));
  await evaluate(`document.querySelector('#advDraft').value='예약표를 환불하겠습니다.';document.querySelector('#advDraft').dispatchEvent(new Event('input',{bubbles:true}))`);
- await send('Page.reload',{ignoreCache:true});await ready();assert.equal(await evaluate(`document.querySelector('#advDraft').value`),'예약표를 환불하겠습니다.');
+ await reload();assert.equal(await evaluate(`document.querySelector('#advDraft').value`),'예약표를 환불하겠습니다.');
  for(const theme of ['light','dark']){await evaluate(`malbitSetTheme('${theme}')`);for(const width of [320,375,390,430]){await setViewport(width,844);await fit(`recall ${theme} ${width}`)}await setViewport(390,844);await shot(`adventure-recall-${theme}.png`)}
  await tap('.adventureScreen>.advPrimary');await tap('.advRecallActions .advSecondary');
  assert.equal(await evaluate(`JSON.parse(localStorage.getItem('malbitStoryV1')).adventureV1.levels[2].recall['ADV-II-01'].selfReportedRecall`),false);
