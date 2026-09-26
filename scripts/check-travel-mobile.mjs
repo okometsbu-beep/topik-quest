@@ -765,6 +765,7 @@ try{
   assert.deepEqual(await evaluate(`(()=>{const value=JSON.parse(localStorage.getItem('malbitBeginnerV1'));return{draft:value.grammarV1.drafts['sentence-order'],lastLesson:value.grammarV1.lastLesson,known:value.known,legacyScore:value.legacyScore}})()`),{draft:'저는 한국어',lastLesson:'sentence-order',known:['v:ㅏ'],legacyScore:7},'unfinished grammar draft must save without replacing older beginner progress');
   await evaluate(`setView('home')`);await sleep(100);
   await send('Page.reload',{ignoreCache:true});await ready();
+  for(let i=0;i<100&&!(await evaluate(`typeof tqSetLearningPath==='function'`));i++)await sleep(100);
   await evaluate(`tqSetLearningPath('beginner');setView('beginner')`);await sleep(120);await tap('.bgLaunch',0,120);await tap('.bgResume',0,120);
   assert.equal(await evaluate(`document.querySelector('#malbitGrammarAnswer')?.value`),'저는 한국어','Japanese beginner grammar draft must survive exit, reload, and course re-entry');
   for(const theme of ['light','dark']){await evaluate(`malbitSetTheme('${theme}')`);await sleep(80);for(const width of [320,375,390,430]){
