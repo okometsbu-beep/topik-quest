@@ -1,0 +1,47 @@
+/* A quiet reading surface for scene-led travel; no textures beneath lesson text. */
+body.travel-adventure-active .app{max-width:720px}
+body.travel-adventure-active .top{display:block}
+body.travel-adventure-active>.bottom{display:block}
+.adventureScreen{color:var(--ui-ink);padding:12px 20px 110px;background:var(--ui-canvas);min-height:80vh}
+.adventureScreen *{box-sizing:border-box;min-width:0}
+.adventureScreen h1,.adventureScreen h2,.adventureScreen h3,.adventureScreen p{overflow-wrap:anywhere}
+.adventureScreen h1{font-size:clamp(24px,6vw,32px);line-height:1.3;letter-spacing:-.025em;margin:20px 0 12px}
+.adventureScreen h2{font-size:19px;line-height:1.5;margin:24px 0 12px}
+.adventureScreen h3{font-size:17px;line-height:1.5;margin:16px 0 8px}
+.adventureScreen p{font-size:16px;line-height:1.7;margin:8px 0 16px}
+.advHead{display:flex;align-items:center;justify-content:space-between;gap:12px;color:var(--ui-muted)}
+.advHead>span,.advKicker,.advCourse>small{font-size:12px;font-weight:700;letter-spacing:.06em}
+.adventureScreen button,.adventureScreen summary{font:inherit;cursor:pointer;touch-action:manipulation}
+.adventureScreen button{min-height:48px;border-radius:14px;padding:13px 16px;border:1px solid var(--ui-border);white-space:normal;text-align:left;line-height:1.5;box-shadow:none;background:var(--ui-surface);color:var(--ui-ink)}
+.adventureScreen .advPrimary{display:block;width:100%;background:var(--ui-accent);color:var(--harumal-on-accent);border-color:var(--ui-accent);font-weight:750;text-align:center;margin-top:16px}
+.adventureScreen .advSecondary{display:block;width:100%;margin-top:12px;text-align:center}
+.adventureScreen .advText{padding:8px 0;background:transparent;border:0;min-width:70px;color:var(--ui-muted)}
+.adventureScreen :is(button,summary,textarea):focus-visible{outline:3px solid var(--ui-accent);outline-offset:3px}
+.adventureScreen button:disabled{cursor:default;opacity:.6}
+.advLead,.advRoute,.advNote{color:var(--ui-muted)}
+.advCover{position:relative;overflow:hidden;border-radius:20px;margin-top:24px;aspect-ratio:2.4}
+.advCover img{width:100%;height:100%;object-fit:cover}
+.advCover span{position:absolute;bottom:14px;left:14px;background:var(--ui-surface);color:var(--ui-ink);padding:8px 12px;border-radius:10px;font-size:14px;font-weight:700}
+.adventureScreen .advRoute{font-size:13px;margin:12px 0 24px}
+.advCourses{display:grid;gap:16px}.advCourse,.advFinish{padding:20px;border:1px solid var(--ui-border);border-radius:20px;background:var(--ui-surface)}
+.advCourse>small{color:var(--ui-accent)}.advCourse h3{font-size:21px}.advCourse p{color:var(--ui-muted);font-size:15px}.advCourse .advProgress{color:var(--ui-ink);font-size:13px}
+.adventureScreen .advNote{font-size:12px;margin:24px 0}.advArchive{border-top:1px solid var(--ui-border);padding:16px 0}.advArchive p{font-size:14px;color:var(--ui-muted)}
+.adventureScreen summary{min-height:44px;display:flex;align-items:center;gap:8px;line-height:1.6;font-size:14px;color:var(--ui-accent)}
+.adventureScreen summary::before{content:'+'}.adventureScreen details[open]>summary::before{content:'−'}
+.advKicker{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;color:var(--ui-muted)}
+.advScene{position:relative;height:170px;border-radius:18px;overflow:hidden;margin:18px 0}
+.advBackground{width:100%;height:100%;object-fit:cover}.advCharacter{position:absolute;right:18px;bottom:-8px;height:95%;width:auto;max-width:42%;object-fit:contain;object-position:bottom}
+.advDialogue{border-radius:18px;background:var(--ui-surface);border:1px solid var(--ui-border);padding:8px 18px 18px}
+.advLine{padding:14px 0;border-bottom:1px solid var(--ui-border)}.advLine:last-of-type{border:0}.advLine>b{display:flex;justify-content:space-between;color:var(--ui-muted);font-size:12px}.advLine>b small{font-weight:400}
+.advLine p{font-size:18px;line-height:1.7;margin:8px 0 0}.advLine.traveler{padding-left:14px;border-left:2px solid var(--ui-accent);margin-top:12px}.advLine .advTranslation p{font-size:15px;color:var(--ui-muted);margin:0 0 10px}
+.advClue{border:1px solid var(--ui-border);border-left:4px solid var(--ui-accent);border-radius:14px;padding:4px 18px 12px;background:var(--ui-surface);margin:22px 0}.advClue h2{font-size:14px;color:var(--ui-muted);margin:16px 0 8px}.advClue>p{white-space:pre-line}
+.advChoices{display:grid;gap:10px}.adventureScreen .advChoice{display:grid;grid-template-columns:24px 1fr;gap:10px;width:100%;font-size:17px}.advChoice>span:first-child{font-size:12px;font-weight:700;padding-top:4px;color:var(--ui-muted)}.advChoice small{display:block;font-size:14px;line-height:1.65;color:var(--ui-muted);margin-top:8px}
+.adventureScreen .advChoice.selected{border:2px solid var(--ui-accent);padding:12px 15px}.adventureScreen .advChoice:disabled{opacity:1}.adventureScreen .advChoice.correct{border:2px solid var(--ui-accent)}.advChoice.correct>span:first-child::after{content:' ✓'}.advChoice.wrong>span:first-child::after{content:' ×'}
+.advFeedback{border:1px solid var(--ui-border);border-top:4px solid var(--ui-accent);border-radius:16px;padding:4px 18px 18px;background:var(--ui-surface);margin-top:24px}.advFeedback h2{font-size:20px}.advFeedback h3{font-size:14px;color:var(--ui-accent)}.advFeedback p{font-size:16px}.advFeedback.retry{border-top-style:dashed}
+.advRecap{padding-left:24px}.advRecap li{margin:24px 0}.advRecap p:last-child{font-size:13px;color:var(--ui-muted)}
+.advRecallPrompt{display:block;font-size:18px;line-height:1.7;margin:24px 0 16px}.adventureScreen textarea{width:100%;font:inherit;font-size:18px;line-height:1.7;color:var(--ui-ink);background:var(--ui-surface);padding:16px;border:1px solid var(--ui-border);border-radius:14px;resize:vertical;min-height:140px}.advError{border:2px solid var(--ui-accent);padding:16px;background:var(--ui-surface)}
+@media(min-width:620px){.advCourses{grid-template-columns:1fr 1fr}.advScene{height:240px}.adventureScreen{padding-inline:28px}}
+@media(max-width:350px){.adventureScreen{padding-inline:14px}.advCourse{padding:16px}.advScene{height:140px}.advLine p{font-size:17px}.adventureScreen .advChoice{font-size:16px}}
+
+body.travel-adventure-active .top .progress{display:none}
+.advHistory{border-bottom:1px solid var(--ui-border)}.advHistory>.advLine{padding:10px 0}.advHistory>.advLine p{font-size:16px}

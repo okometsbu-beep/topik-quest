@@ -1,3 +1,26 @@
+## 2026-09-27 v141 scene-led travel · #195
+
+- Direct user instruction replaces the default travel RPG with a dialogue adventure. New owners:
+  `travel-adventure.js`, `travel-adventure.css`, `data/travel-adventure-seoul-v1.js`.
+- Four scenes per TOPIK I/II level: airport, train, station, lodging. Three dialogue turns, optional
+  translation, clue, chosen reply, specific evidence/traps/method, retry and self-assessed recall.
+- `malbitStoryV1.adventureV1` is additive. Keep old episodes/avatar/wallet/inventory/metrics and
+  bank IDs. The old course is archived for users with records. Older backups without the new
+  field retain it through `HARUMAL_ADVENTURE.mergeImport`; supplied adventure records restore.
+- `scripts/travel-adventure-checks.mjs` verifies the new default; old mobile fixtures explicitly
+  enter the archive. Reload readiness now observes the new document, not the departing DOM.
+- Candidate CI `36278924981` passes 153/153 tests, the full mobile regression and tile asset check;
+  console errors 0. Of 273 artifact images, the 16 adventure images were manually reviewed.
+  PR #196 tracks the final merge gate; do not count all artifact images as manually reviewed.
+- Evidence boundary and content map: `docs/qa/travel-adventure-v141.md`. Final CI, screenshots,
+  deployment SHA and live checks: https://github.com/okometsbu-beep/topik-quest/issues/195.
+  Live: https://okometsbu-beep.github.io/topik-quest/ ; rollback v140 main
+  `adef36a5565a4260f8545ea6c7c2e6ee0fd7c255`.
+- No official difficulty certification, physical-device/native educator/real learner retention
+  result is claimed. No external tester invitation or personal-data collection occurred.
+- Next: verify dialogue length, clue discovery and recall return. Do not resume #76 map expansion;
+  this instruction and #110 learning-quality gates take precedence.
+
 ## 2026-09-27 v140 handwriting resume evidence
 
 - Public v140 clean ja-JP Chrome completed the first grammar transformation, traced `한`, exited to

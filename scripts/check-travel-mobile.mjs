@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import assert from 'node:assert/strict';
+import {verifyAdventure} from './travel-adventure-checks.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import {spawn} from 'node:child_process';
@@ -39,7 +40,8 @@ try{
     if(message.method==='Runtime.exceptionThrown')errors.push(message.params.exceptionDetails.text||'runtime exception');
     if(message.method==='Log.entryAdded'&&message.params.entry.level==='error')errors.push(message.params.entry.text);
   });
-  const send=(method,params={})=>new Promise((resolve,reject)=>{const callId=++id;pending.set(callId,{resolve,reject});socket.send(JSON.stringify({id:callId,method,params}))});
+  let expectedNewDocument=false,lastReadyOrigin=null;
+  const send=(method,params={})=>new Promise((resolve,reject)=>{if(method==='Page.reload'||method==='Page.navigate')expectedNewDocument=true;const callId=++id;pending.set(callId,{resolve,reject});socket.send(JSON.stringify({id:callId,method,params}))});
   const evaluate=async expression=>{
     const result=await send('Runtime.evaluate',{expression,awaitPromise:true,returnByValue:true});
     if(result.exceptionDetails)throw new Error(result.exceptionDetails.exception?.description||result.exceptionDetails.text||expression);
@@ -51,8 +53,12 @@ try{
     await send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1});
     await sleep(80);
   };
+  let legacyTravelChecks=false;
   const ready=async()=>{
-    for(let i=0;i<100;i++){if(await evaluate(`document.readyState==='complete'&&!!window.MALBIT_TRAVEL&&!document.documentElement.classList.contains('tq-booting')`))return;await sleep(100)}
+    for(let i=0;i<100;i++){
+      const origin=await evaluate(`(()=>{if(!(document.readyState==='complete'&&!!window.MALBIT_TRAVEL&&!!window.HARUMAL_ADVENTURE&&!document.documentElement.classList.contains('tq-booting')))return null;if(${expectedNewDocument}&&performance.timeOrigin===${lastReadyOrigin})return null;if(${legacyTravelChecks}&&!window.__legacyTravelQA){window.__legacyTravelQA=true;const base=render;render=function(){if(S.view==='travel')S.view='travelLegacy';return base.apply(this,arguments)};window.malbitTravelOpen=()=>setView('travelLegacy')}return performance.timeOrigin})()`);
+      if(origin){lastReadyOrigin=origin;expectedNewDocument=false;return}await sleep(100);
+    }
     throw new Error('MALBIT travel runtime did not become ready');
   };
   const waitForSelector=async selector=>{
@@ -587,6 +593,7 @@ try{
     assert.equal(await waitForQuestionTitle(firstTitle),firstTitle,'route question must finish rendering before verification');
     if(reloadAtTransfer){
       await send('Page.reload',{ignoreCache:true});
+      await ready();
       let restored=false;
       for(let wait=0;wait<100;wait++){
         if(await evaluate(`document.readyState==='complete'&&!document.documentElement.classList.contains('tq-booting')&&document.querySelector('.travelQuestionCard h1')?.textContent===${JSON.stringify(firstTitle)}`)){restored=true;break}
@@ -629,6 +636,9 @@ try{
   assert.match(await evaluate(`document.querySelector('.tqLessonStart')?.textContent||''`),/入門学習を始める/,'the first primary CTA must be localized before language-menu use');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);await assertHomeFits('fresh Japanese browser Home light','light');await shot('00renewal-home-ja-locale-first-visit-light.png');
   await evaluate(`malbitSetTheme('dark')`);await sleep(100);await assertHomeFits('fresh Japanese browser Home dark','dark');await shot('00renewal-home-ja-locale-first-visit-dark.png');
+  await verifyAdventure({evaluate,tap,shot,setViewport,send,ready,sleep});
+  // Preserve old-course regressions through its explicit archive route, never the new default.
+  legacyTravelChecks=true;await ready();
   await tap('.tqLessonStart',0,120);
   assert.equal(await evaluate(`S.view`),'beginner','fresh Japanese learner must enter the beginner course');
   await tap('.v33BeginnerTabs button',1,100);

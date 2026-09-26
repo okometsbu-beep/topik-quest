@@ -6,7 +6,7 @@ const tabs=['home','learn','travel','review','more'];
 const paths=['M3 10 12 3l9 7v11H3z M9 21v-8h6v8','M3 4h7l2 2 2-2h7v16h-7l-2 2-2-2H3z M12 6v16','m12 3 8 18-8-4-8 4z','M4 9a8 8 0 1 1 0 7 M4 3v6h6','M16 7a4 4 0 1 1-8 0 4 4 0 1 1 8 0 M4 21v-3a8 8 0 0 1 16 0v3'];
 const L=(ko,ja,en,zh)=>({ko,ja,en,zh}[S.lang]||en);
 const icon=i=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${paths[i]}"/></svg>`;
-function activeTab(view){return view==='home'?'home':view==='travel'?'travel':view==='review'?'review':['more','stats','vocab'].includes(view)?'more':'learn'}
+function activeTab(view){return view==='home'?'home':['travel','travelAdventure','travelAdventureReview','travelLegacy','travelPlay','travelRecall'].includes(view)?'travel':view==='review'?'review':['more','stats','vocab'].includes(view)?'more':'learn'}
 window.HARUMAL_UI=Object.freeze({activeTab});
 window.harumalGo=function(view){if(!tabs.includes(view))return;if(view==='travel')tqStartMode('travel');else setView(view)};
 window.harumalCourse=function(path){if(path==='beginner'){tqSetLearningPath('beginner');setView('beginner')}else if(path==='topik1'||path==='topik2'){tqSetLevel(path==='topik2'?2:1);setView('home')}};
