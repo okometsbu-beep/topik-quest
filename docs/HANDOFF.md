@@ -55,8 +55,22 @@ inspected in the same candidate's successful push artifact 10888805318. Live HTT
 base3/runtime45, and index/site-patch/sw/legacy-core/home-visual-system match main by SHA-256. This is
 emulation, not physical-device or native-speaker evidence. Narrow rollback: v135
 e57a7769861c7fe34b839335f356f6e62deaee47.
+Production v137 fixes the next first-session P1: beginner progress survived, but the last Hangul
+sub-step did not, so a Japanese learner returning from consonants, writing, or reading landed on
+vowels. The existing `malbitBeginnerV1` root now stores only an additive `activeTab`; no key, item ID,
+or learner record was replaced. CI also exposed and then verified a related accessibility defect:
+all four beginner tabs are now at least 44px high. Local full checks pass 141/141 with runtime45 and
+bank hashes intact. PR #184 CI 36214614737 passes Ubuntu/Node22/Chrome at 320/375/390/430px in both
+themes; artifact 10897265326 has 191 screens and the eight Japanese re-entry frames were inspected.
+Squash 3f6b0cf39d57fbb6ef8569d36acbf14d05880d6f, main CI 36214920852, and Pages 36214920326 pass.
+Live HTTP reports v137/base3/runtime45; index/site-patch/sw/app-polish-v33/app-polish-v34 match main.
+Public Chrome restores `2. 子音`, `文字 1/20 習得`, learned `ㄱ`, and a 44px active tab after reload.
+The failed CI runs remain evidence: 36214079062 found the small targets; 36214262897 and 36214515877
+found reload-render races in the checker and are not product passes. Narrow rollback is v136
+92286d97ad0496058a2f9b31125d870b0678205f. Next, if no P0 or answer error appears, verify one
+Japanese beginner grammar transformation draft through exit/re-entry.
 The synthetic QA flow is not a real learner result. Local and public HTTP checks are separate from browser interaction.
-Whole-renewal rollback: v131 fadd25392e75f055c6deebf026ec77b8d597c96b. Narrow v135 rollback: v134.
+Whole-renewal rollback: v131 fadd25392e75f055c6deebf026ec77b8d597c96b. Narrow v137 rollback: v136.
 See `docs/qa/learning-renewal-v132.md` and STATUS.
 Native review, physical devices, and actual learner success/retention remain unverified.
 `docs/qa/beginner-validation-protocol.md` now fixes the consent-safe execution contract: 12 adults,

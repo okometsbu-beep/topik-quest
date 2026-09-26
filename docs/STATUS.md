@@ -8,11 +8,11 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 배포 v132: 가치 제안 → 오늘 학습 → 오답/여행 표현 복습 → 여행 활용 → TOPIK 준비. 보조 모드는 펼치기로 보존하고 숏츠 기록을 전체 학습 성과로 표시하지 않는다.
 - 여행 첫 코스 8개 payload/9개 맥락의 4언어 근거·선택별 오답 이유·재사용 풀이, 예문 → 답 가리고 쓰기 → 비교 → 24시간/10분 복습을 구현. 예문 불일치를 문법 오답으로 판정하지 않는다.
 - 기존 스크린샷 결함의 공통 여행 가독성·원문 echo/중복 번역·문법 4문항 해설 수정 포함. 전체 은행 해설 완료가 아니다.
-- 실제 검사: Linux Node v24.19.0 전체 139/139, content 37/37, JS 84파일 문법, v136 런타임 45파일·원본 은행 해시 통과. 로컬 서버/검사를 같은 세션에서 실행해 HTTP 3개 기본+45개 런타임 통과(세션 간 서버 종료로 생긴 연결 거부와 구별). 초안 복원·예문 공개/독립 입력 구별·중복 제출·여행 재시작 시 기록 보존·TOPIK II 중단 재개 검사 포함.
+- 실제 검사: Linux Node v24.19.0 전체 141/141, content 37/37, JS 84파일 문법, v137 런타임 45파일·원본 은행 해시 통과. 로컬 서버/검사를 같은 세션에서 실행해 HTTP 3개 기본+45개 런타임 통과(세션 간 서버 종료로 생긴 연결 거부와 구별). 입문 학습 위치·초안 복원·예문 공개/독립 입력 구별·중복 제출·여행 재시작 시 기록 보존·TOPIK II 중단 재개 검사 포함.
 - 모바일: GitHub Actions Ubuntu/Node22/Chrome 에뮬레이션 320/375/390/430px×두 테마, 터치·회상 초안 새로고침·여행 복귀·기존 경로·콘솔 검사. 홈/회상 8조합과 여행/Random Practice 주요 화면 직접 확인. 실제 기기 증거와 구별한다.
 - 최종 화면 검수로 “뿐더러 형태상 불가”와 “바람에→風の中で” 오류를 발견·수정. 동일 문법 4문항의 ja/en/zh 문맥 번역과 실제 섞인 보기 순서의 뜻을 제공한다. 전체 은행의 자동번역 정확성 인증은 아니다.
 - 최종 v132: PR #174 squash `c4045c8358acbfb505c9df01d70dbaa3c5e026e3`. 최종 PR CI `36075457096`(177장, 일본어 문맥 번역 직접 확인), main CI `36075858880`, Pages `36075858066` 성공. 앞의 후보 검사는 이 최종 증거로 대체한다.
-- 현재 production: v136, PR #182 `92286d97ad0496058a2f9b31125d870b0678205f`, https://okometsbu-beep.github.io/topik-quest/ . PR CI `36192414083` attempt 2, main CI `36193245892`, Pages `36193245705` 성공.
+- 현재 production: v137, PR #184 `3f6b0cf39d57fbb6ef8569d36acbf14d05880d6f`, https://okometsbu-beep.github.io/topik-quest/ . PR CI `36214614737`, main CI `36214920852`, Pages `36214920326` 성공.
 - v136은 저장 상태가 없는 첫 방문에서 `navigator.languages`의 첫 지원 언어
   (ko/ja/en/zh)를 선택하고 지원하지 않는 언어는 한국어로 안전하게 되돌린다. 저장된 언어·게임·단어장
   기록은 계속 브라우저 설정보다 우선한다. 실패 테스트로 ja-JP의 기존 한국어 시작을 재현한 뒤 수정했다.
@@ -22,18 +22,26 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
   후보 push artifact `10888805318`에서 직접 확인했다. 첫 PR 시도는 기존 명동 허브 reload assertion이
   한 번 실패했고 동일 커밋 재실행이 통과했으므로 최초 실패를 제품 통과로 세지 않는다. 이는 브라우저
   에뮬레이션이며 실제 iPhone/Android 또는 일본어 모어 화자 검증이 아니다.
+- v137은 일본어 입문자가 자음·쓰기·읽기에서 중단하고 홈/새로고침 뒤 `입문 학습의 계속`으로
+  돌아오면 진도만 남고 첫 모음 탭으로 되돌아가던 P1 연속성 결함을 수정한다. 기존
+  `malbitBeginnerV1`에 마지막 탭만 추가 저장하며 기존 키·문항·학습 기록은 보존한다. CI가 발견한
+  입문 탭 4개의 44px 미만 터치 영역도 같은 화면 범위에서 수정했다. PR CI는 141/141 및
+  320/375/390/430px×두 테마를 통과했고 artifact `10897265326` 191장 중 관련 8장을 직접 확인했다.
+  앞선 CI `36214079062`는 작은 터치 영역을, `36214262897`·`36214515877`은 새로고침 뒤 DOM을
+  기다리지 않은 검사 경합을 각각 실패로 보존하며 제품 통과로 세지 않는다. 공개 Chrome에서
+  `site-patch.js?v=137`, `2. 子音`, `文字 1/20 習得`, 학습한 `ㄱ`, 44px 탭 복원을 확인했다.
 - v133은 라이브에서 드러난 기존 560px 부모의 여행 지도 조작부 잘림만 수정. 실패→통과 정적 회귀, 1363×936 두 테마 실제 버튼 hit-test와 모바일 회귀 통과. CI `36076910462` artifact `10839744095` 179장 중 관련 화면 직접 확인. 첫 CI `36076470585` Chrome target 종료는 실패로 보존한다.
 - v134는 RPG 전역 Enter/Space 조사 단축키가 초점된 지도·언어·이동 버튼의 네이티브 활성화를 가로채던 P1 접근성 결함만 수정한다. 초점 버튼은 키 이벤트를 소비하지 않고 빈 지도 Enter/E는 계속 조사로 라우팅한다. CI artifact `10845017916` 179장 중 390px·1363px 라이트/다크 Travel 화면을 직접 확인했다. 첫 PR CI `36089091135`는 터치 에뮬레이션 CDP가 네이티브 클릭을 합성하지 않은 검증 방식 실패이며 제품 통과가 아니다. 계약을 직접 측정한 최종 CI가 통과했다.
 - v135는 최초 렌더가 존재하지 않는/아직 정착하지 않은 viewport 대신 720px fallback으로 카메라를 잡아 1363×936 오른쪽 약 208px를 비우던 P1만 수정한다. mounted viewport로 즉시 재계산하고 다음 animation frame에 다시 clamp한다. CI는 최초 진입·저장 재진입의 이동 전 보드 네 변 coverage를 수치로 검사한다. PR CI `36117974374` artifact `10856190822` 181장 중 두 넓은 화면과 320/375/390/430px×두 테마를 직접 확인했다. 앞선 `36116613167`·`36117009893`은 결함이 남아 실패했고, `36117342467` 두 시도는 카메라 통과 후 Chrome target 종료로 실패했으며 통과로 세지 않는다.
-- 공개 HTTP: v136, 기본 3개와 런타임 45개 smoke 통과. `index.html`·`site-patch.js`·`sw.js`·`legacy-core.js`·`home-visual-system.js` SHA-256이 main과 일치한다. 공개 저장소를 지우지 않고 PR Chrome의 clean-profile ja-JP 측정과 화면을 첫 방문 근거로 사용한다. 기존 여행 이동·학습 흐름도 자동 회귀로 유지된다. QA 입력이며 실제 학습자 성과가 아니다.
-- 되돌리기: v136 좁은 수정은 v135 `e57a7769861c7fe34b839335f356f6e62deaee47`; 전체 개편은 v131 `fadd25392e75f055c6deebf026ec77b8d597c96b`.
+- 공개 HTTP: v137, 기본 3개와 런타임 45개 smoke 통과. `index.html`·`site-patch.js`·`sw.js`·`app-polish-v33.js`·`app-polish-v34.js` SHA-256이 main과 일치한다. 공개 저장소를 지우지 않고 PR Chrome의 clean-profile ja-JP 측정과 화면을 첫 방문 근거로 사용한다. 기존 여행 이동·학습 흐름도 자동 회귀로 유지된다. QA 입력이며 실제 학습자 성과가 아니다.
+- 되돌리기: v137 좁은 수정은 v136 `92286d97ad0496058a2f9b31125d870b0678205f`; 전체 개편은 v131 `fadd25392e75f055c6deebf026ec77b8d597c96b`.
 - 미검증: 실제 iPhone/Android, 일본어 모어 화자/교육 전문가, 실제 첫 학습 성공·D1/D7 회상. 합성 QA 기록은 실사용 지표가 아니다.
 - 실제 학습자 검증 계약: `docs/qa/beginner-validation-protocol.md`. 12명 표본, 10분 첫 성공,
   세 표현 10분/D1/D7 회상, 다음 학습·복습 발견, 실기기 iPhone/Android, 개입·결측·집계 규칙을
   고정했다. 모집·초대·관찰·연락처/결과 수집은 시작하지 않았고 사용자 승인 전 금지한다.
-- 다음 한 작업: 새 P0·정답 오류가 없으면 clean ja-JP 프로필에서 입문 CTA → 첫 학습 → 중도 종료·재진입의
-  상태 보존을 한 경로로 검증한다. 실제 학습자 검증은 사용자 승인 전 시작하지 않고 문항 수·가상 사용자를
-  학습자 증거로 대체하지 않는다.
+- 다음 한 작업: 새 P0·정답 오류가 없으면 clean ja-JP 프로필에서 입문 문법 첫 변형 답안 작성 →
+  중도 종료·재진입의 초안 보존을 한 경로로 검증한다. 실제 학습자 검증은 사용자 승인 전 시작하지 않고
+  문항 수·가상 사용자를 학습자 증거로 대체하지 않는다.
 
 ## 긴급 사용자 요청 · #129
 
@@ -56,8 +64,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v136 · a fresh supported browser language is used only when no saved core state exists (`92286d97ad0496058a2f9b31125d870b0678205f`)
-- Current priority: verify the clean Japanese beginner CTA → lesson → re-entry path; no new question-count expansion
+- Production release: v137 · interrupted beginner tabs resume with accessible 44px controls (`3f6b0cf39d57fbb6ef8569d36acbf14d05880d6f`)
+- Current priority: verify a Japanese beginner grammar draft through exit/re-entry; no new question-count expansion
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
