@@ -80,3 +80,8 @@ test('v33 restores the last Hangul step after a browser reload', () => {
   assert.match(screen.innerHTML, /音と一緒に覚える子音/);
   assert.match(screen.innerHTML, /文字 1\/20 習得/);
 });
+
+test('v33 beginner step tabs keep a 44px touch target', () => {
+  const source = fs.readFileSync('app-polish-v33.js', 'utf8');
+  assert.match(source, /\.v33BeginnerTabs button\{min-height:44px/);
+});
