@@ -1,14 +1,19 @@
 {
-  "name": "MALBIT · Korean Learning",
-  "short_name": "MALBIT",
-  "description": "Independent Korean learning with TOPIK practice, Shorts review, and a dice expedition.",
+  "name": "하루말 · HARUMAL",
+  "short_name": "하루말",
+  "description": "하루 한마디, 내 말이 되는 한국어. Learn, use and recall Korean.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#071528",
-  "theme_color": "#07101d",
+  "background_color": "#F7F8F4",
+  "theme_color": "#F7F8F4",
   "lang": "ko",
   "icons": [
-    {"src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
   ]
 }

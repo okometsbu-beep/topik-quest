@@ -1,3 +1,23 @@
+# 하루말 · HARUMAL UI direction — 2026-09-26
+
+사용자가 승인한 전체 UI 개편: 브랜드는 하루말/HARUMAL, 일본어 표기는 ハルマル.
+오늘 → 학습 → 여행 → 복습 → 내 기록의 5개 목적 기반 메뉴를 사용한다.
+오늘 화면의 첫 CTA는 저장된 입문/TOPIK 경로와 진행 중인 학습을 이어야 한다.
+시안의 예시 학습량·체크마크·카페 수업을 실제 성취/콘텐츠로 만들어 표시하지 않는다.
+
+- Light: cream #F7F8F4, white cards, ink #142C2B, teal #087E78.
+- Dark: canvas #102523, cards #1D3532, mint #82DCC6 with dark action ink.
+- Owner: `harumal-ui.js` navigation/learn/My composition, `harumal-ui.css` shared brand shell;
+  existing mode visual modules retain correctness/error/selection states and learning engines.
+- Rounded cards, 44px minimum controls, opaque feedback surfaces, restrained coral accents.
+- RPG alone owns the full viewport; reading container widths must never clip map controls.
+- No learner-record migration. `MALBIT_*` APIs, durable storage keys and legacy backup
+  `app: MALBIT` marker deliberately remain for compatibility. Visible product brand changes.
+- Release requires 320/375/390/430px × light/dark plus wide RPG, preserved-record regression,
+  all mode navigation, and actual screenshot review. Generated mockups are not test evidence.
+
+---
+
 # MALBIT product design north star
 
 ## 현재 개편 방향 · 사용자 직접 요청

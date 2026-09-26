@@ -19,11 +19,11 @@ function frozenList(source, name) {
 
 const indexUrl = new URL(`index.html?smoke=${Date.now()}`, base);
 const index = await text(indexUrl, 'index.html');
-assert.match(index, /<title>MALBIT · Korean Learning<\/title>/);
+assert.match(index, /<title>하루말 · HARUMAL<\/title>/);
 const version = index.match(/const appVersion=['"](\d+)['"]/)?.[1];
 assert.ok(version, 'index release version is missing');
 
-const baseFiles = ['styles.css', 'legacy-data.js', 'legacy-core.js'];
+const baseFiles = ['styles.css', 'harumal-ui.css', 'legacy-data.js', 'legacy-core.js'];
 const basePayloads = await Promise.all(baseFiles.map(async (file) => {
   assert.ok(index.includes(`${file}?v=${version}`), `${file} is missing from index.html`);
   const response = await fetch(new URL(`${file}?v=${version}`, base), { cache: 'no-store' });

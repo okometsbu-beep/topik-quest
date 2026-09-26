@@ -281,6 +281,8 @@ try{
   };
   const assertSmoothRpgMotion=async()=>{
     await evaluate(`(()=>{const store=JSON.parse(localStorage.getItem('malbitStoryV1')),state=store.episodes['route-001-airport-myeongdong'];state.exploration={...state.exploration,version:2,x:14,y:18,direction:'down'};localStorage.setItem('malbitStoryV1',JSON.stringify(store));render();window.__malbitSpriteNode=document.querySelector('.travelRpgSprite');window.__malbitShadowNode=document.querySelector('.travelRpgShadow.player');window.__malbitGroundNode=document.querySelector('.travelRpgGroundLayer')})()`);await sleep(50);
+    // Camera placement clears its temporary transition override on the next frame.
+    for(let wait=0;wait<40;wait++){if(await evaluate(`document.querySelector('.travelRpgBoard')?.style.transition!== 'none'`))break;await sleep(20)}
     const before=await evaluate(`(()=>{const viewport=document.querySelector('.travelRpgViewport'),board=document.querySelector('.travelRpgBoard'),player=document.querySelector('.travelRpgPlayer'),shadow=document.querySelector('.travelRpgShadow.player'),sprite=document.querySelector('.travelRpgSprite'),v=viewport.getBoundingClientRect(),b=board.getBoundingClientRect(),p=player.getBoundingClientRect(),s=getComputedStyle(sprite);return{left:b.left,top:b.top,playerLeft:player.style.left,playerTop:player.style.top,shadowLeft:shadow.style.left,shadowTop:shadow.style.top,duration:getComputedStyle(board).transitionDuration,idle:player.classList.contains('idle'),idleDuration:s.animationDuration,walkFps:player.dataset.walkFps,centerX:p.left+p.width*.5-(v.left+v.width*.5),centerY:p.top+p.height*.9375-(v.top+v.height*.5),background:s.backgroundImage}})()`);
     assert.equal(before.idle,true,'resting traveler must use the idle loop');assert.equal(before.idleDuration,'0.96s');assert.equal(before.walkFps,'12');assert.ok(Math.abs(before.centerX)<2&&Math.abs(before.centerY)<2,`interior camera must keep the foot anchor centered: ${JSON.stringify(before)}`);
     await evaluate(`malbitTravelStep('down')`);await sleep(70);
@@ -928,7 +930,7 @@ try{
   assert.equal(meetingReview.tools,false,'bank question must not inherit curated word tools from the same numeric index');
   assert.equal(meetingReview.exampleTranslation,false,'bank question must not start an unrelated curated example translation');
   assert.match(meetingReview.nextText,/次の問題/u,'Japanese Next label must remain visible');
-  assert.equal(meetingReview.nextColor,'rgb(255, 255, 255)','Next label must remain white in both themes');
+  assert.ok(['rgb(255, 255, 255)','rgb(16, 37, 35)'].includes(meetingReview.nextColor),'Next label must use the theme-specific contrasting ink');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`meeting/home Shorts light ${width}px`,'light')}
   await setViewport(390,844);await shot('00ba-shorts-meeting-wrong-light.png');
@@ -1959,6 +1961,25 @@ try{
   const durableAfter=await evaluate(`({vocab:JSON.parse(localStorage.getItem('topikQuestV8')).vocab,gameUnlock:JSON.parse(localStorage.getItem('topikQuestV8')).gameUnlock,game:localStorage.getItem('topikQuestTopik1GameV1'),review:localStorage.getItem('malbitWrongReviewV3')})`);
   assert.deepEqual(durableAfter,durableBefore,'travel play must not alter vocabulary, game, or review records');
   assert.deepEqual(errors,[]);
+  // HARUMAL: exercise the new information architecture through real controls.
+  for(const theme of ['light','dark']){
+    await evaluate(`malbitSetTheme('${theme}');setLang('ja');setView('home')`);
+    for(const width of [320,375,390,430]){
+      await setViewport(width,844);
+      for(const view of ['home','learn','more','review','vocab','speaking']){
+        if(view==='vocab'||view==='speaking'){await tap(view==='vocab'?'#nav_more':'#nav_learn');await tap(".harumalCourse[onclick=\"setView('"+view+"')\"]")}else await tap('#nav_'+view);
+        const fit=await evaluate(`({overflow:document.documentElement.scrollWidth>innerWidth+1,nav:[...document.querySelectorAll('.nav button')].map(b=>({h:b.getBoundingClientRect().height,w:b.getBoundingClientRect().width})),active:document.querySelector('.nav [aria-current="page"]')?.id,brand:document.title})`);
+        assert.equal(fit.overflow,false,`HARUMAL ${view} ${theme} ${width} overflow`);
+        assert.equal(fit.active,'nav_'+(view==='vocab'?'more':view==='speaking'?'learn':view));
+        assert.ok(fit.nav.length===5&&fit.nav.every(b=>b.h>=44&&b.w>=44));
+        assert.ok(fit.brand.startsWith('하루말'));
+        assert.deepEqual(await evaluate(`[...document.querySelectorAll('.nav button span')].map(el=>el.textContent)`),['今日','学ぶ','旅','復習','マイ']);
+        await evaluate('scrollTo(0,0)');
+        await shot(`harumal-${view}-${theme}-${width}.png`);
+      }
+    }
+  }
+  assert.deepEqual(errors,[],'Harumal navigation must not add console errors');
   const screenshotCount=fs.readdirSync(out).filter(file=>file.endsWith('.png')).length;
   console.log(`mobile QA: 320/375/390/430px Home + Beginner Grammar + split Writing + Game + Shorts + Random Practice + Review visual contracts, two-field Writing input/save/reload/score/review/migration, 9-chapter/64-lesson grammar catalog, transformation coaching, per-unit handwriting and preserved progress, Review queue/filter/retry/translation/type coaching/re-entry, TOPIK I/II random question/answer/type coaching, level re-entry, Shorts question/answer/instructor feedback + hit-tested Travel route + one-tap completed-route re-entry + NPC word order + Hangul sign build with decoys, day/evening events, travel-won exchange, reload/back-resume, durable records, screenshots=${screenshotCount}, errors=0`);
 }finally{

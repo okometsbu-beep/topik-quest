@@ -5,8 +5,8 @@ if(document.getElementById('malbitHomeVisualSystem'))return;
 const style=document.createElement('style');
 style.id='malbitHomeVisualSystem';
 style.textContent=`
-body.tq-home-active{--home-canvas:var(--ui-canvas);--home-surface:var(--ui-surface);--home-surface-raised:var(--ui-surface-raised);--home-surface-soft:var(--ui-surface-soft);--home-border:var(--ui-border);--home-ink:var(--ui-ink);--home-muted:var(--ui-muted);--home-accent:var(--ui-accent);--home-accent-soft:var(--ui-accent-soft);--home-streak:#f1a07c;--home-highlight:#8fb7ff;--home-shadow:var(--ui-shadow);--home-shadow-strong:var(--ui-shadow-strong);background:var(--home-canvas);color:var(--home-ink)}
-html[data-theme="light"] body.tq-home-active{--home-streak:#b34d27;--home-highlight:#315da9}
+body.tq-home-active{--home-canvas:var(--ui-canvas);--home-surface:var(--ui-surface);--home-surface-raised:var(--ui-surface-raised);--home-surface-soft:var(--ui-surface-soft);--home-border:var(--ui-border);--home-ink:var(--ui-ink);--home-muted:var(--ui-muted);--home-accent:var(--ui-accent);--home-accent-soft:var(--ui-accent-soft);--home-streak:#f1a07c;--home-highlight:var(--ui-accent);--home-shadow:var(--ui-shadow);--home-shadow-strong:var(--ui-shadow-strong);background:var(--home-canvas);color:var(--home-ink)}
+html[data-theme="light"] body.tq-home-active{--home-streak:#b34d27;--home-highlight:var(--ui-accent)}
 body.tq-home-active .app{max-width:480px;background:var(--home-canvas)}
 body.tq-home-active .screen{max-width:480px;padding:calc(var(--ui-space-3) + env(safe-area-inset-top)) var(--ui-page-pad) calc(var(--ui-space-6) + env(safe-area-inset-bottom))}
 body.tq-home-active .tqHomeHeader{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:var(--ui-space-2);margin:0 0 var(--ui-space-3)}
@@ -17,7 +17,7 @@ body.tq-home-active .tqLang{width:var(--ui-touch);height:var(--ui-touch);border:
 body.tq-home-active .tqHomeScreen button{min-height:var(--ui-touch)}
 body.tq-home-active .tqHomeScreen>.t1level{min-height:52px;border:1px solid var(--home-border);border-radius:var(--ui-radius-control);background:var(--home-surface);padding:4px;box-shadow:0 6px 16px var(--home-shadow)}
 body.tq-home-active .tqHomeScreen>.t1level button{min-width:0;color:var(--home-muted);font-size:12px}
-body.tq-home-active .tqHomeScreen>.t1level button.on{background:linear-gradient(135deg,#5067e8,#7159e9);color:#fff;box-shadow:0 6px 14px rgba(80,103,232,.22)}
+body.tq-home-active .tqHomeScreen>.t1level button.on{background:var(--ui-accent);color:#fff;box-shadow:0 6px 14px rgba(80,103,232,.22)}
 body.tq-home-active .tqHomeScreen>.t1level.v35ThreeLevels .v35BeginnerLevel{width:100%;justify-self:stretch;overflow:visible}
 body.tq-home-active .tqHomeScreen>.t1level .v35BeginnerLevel b{display:block;color:inherit;opacity:1;visibility:visible}
 body.tq-home-active .tqV9Greeting{margin:0 2px var(--ui-space-3)}
@@ -59,7 +59,7 @@ body.tq-home-active .tqTodayLesson{padding:22px;border:1px solid var(--home-bord
 body.tq-home-active .tqLessonEyebrow{color:var(--home-highlight);font-size:12px;font-weight:800}
 body.tq-home-active .tqTodayLesson h2{font-size:23px;line-height:1.35;margin:12px 0}
 body.tq-home-active .tqTodayLesson p{font-size:14px;line-height:1.65;color:var(--home-muted);margin:0 0 18px}
-body.tq-home-active .tqLessonStart{width:100%;border:0;background:#345bd7;color:white;border-radius:var(--ui-radius-control);font-size:16px;font-weight:800;padding:16px}
+body.tq-home-active .tqLessonStart{width:100%;border:0;background:var(--ui-accent);color:var(--harumal-on-accent);border-radius:var(--ui-radius-control);font-size:16px;font-weight:800;padding:16px}
 body.tq-home-active .tqLessonSteps{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;margin-top:18px;font-size:12px;color:var(--home-muted)}
 body.tq-home-active .tqHomeReview{display:flex;align-items:center;justify-content:space-between;gap:14px;text-align:left;width:100%;padding:16px;margin-top:10px;border:1px solid var(--home-border);border-radius:var(--ui-radius-control);background:var(--home-surface-soft);color:var(--home-ink)}
 body.tq-home-active .tqHomeReview b{display:block;font-size:15px;line-height:1.5}
