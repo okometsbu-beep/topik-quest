@@ -40,7 +40,8 @@ try{
     if(message.method==='Runtime.exceptionThrown')errors.push(message.params.exceptionDetails.text||'runtime exception');
     if(message.method==='Log.entryAdded'&&message.params.entry.level==='error')errors.push(message.params.entry.text);
   });
-  const send=(method,params={})=>new Promise((resolve,reject)=>{const callId=++id;pending.set(callId,{resolve,reject});socket.send(JSON.stringify({id:callId,method,params}))});
+  let expectedNewDocument=false,lastReadyOrigin=null;
+  const send=(method,params={})=>new Promise((resolve,reject)=>{if(method==='Page.reload'||method==='Page.navigate')expectedNewDocument=true;const callId=++id;pending.set(callId,{resolve,reject});socket.send(JSON.stringify({id:callId,method,params}))});
   const evaluate=async expression=>{
     const result=await send('Runtime.evaluate',{expression,awaitPromise:true,returnByValue:true});
     if(result.exceptionDetails)throw new Error(result.exceptionDetails.exception?.description||result.exceptionDetails.text||expression);
@@ -54,7 +55,10 @@ try{
   };
   let legacyTravelChecks=false;
   const ready=async()=>{
-    for(let i=0;i<100;i++){if(await evaluate(`document.readyState==='complete'&&!!window.MALBIT_TRAVEL&&!!window.HARUMAL_ADVENTURE&&!document.documentElement.classList.contains('tq-booting')`)){if(legacyTravelChecks)await evaluate(`(()=>{if(window.__legacyTravelQA)return;window.__legacyTravelQA=true;const base=render;render=function(){if(S.view==='travel')S.view='travelLegacy';return base.apply(this,arguments)};window.malbitTravelOpen=()=>setView('travelLegacy')})()`);return;}await sleep(100)}
+    for(let i=0;i<100;i++){
+      const origin=await evaluate(`(()=>{if(!(document.readyState==='complete'&&!!window.MALBIT_TRAVEL&&!!window.HARUMAL_ADVENTURE&&!document.documentElement.classList.contains('tq-booting')))return null;if(${expectedNewDocument}&&performance.timeOrigin===${lastReadyOrigin})return null;if(${legacyTravelChecks}&&!window.__legacyTravelQA){window.__legacyTravelQA=true;const base=render;render=function(){if(S.view==='travel')S.view='travelLegacy';return base.apply(this,arguments)};window.malbitTravelOpen=()=>setView('travelLegacy')}return performance.timeOrigin})()`);
+      if(origin){lastReadyOrigin=origin;expectedNewDocument=false;return}await sleep(100);
+    }
     throw new Error('MALBIT travel runtime did not become ready');
   };
   const waitForSelector=async selector=>{
