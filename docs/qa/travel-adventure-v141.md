@@ -42,6 +42,11 @@ it does not unlock the next scene or award currency. All attempts remain recorde
 
 ## Verification
 
+- [Candidate CI 36278924981](https://github.com/okometsbu-beep/topik-quest/actions/runs/36278924981)
+  passes 153/153 tests, full mobile regression (console errors 0) and the tile asset check.
+  Artifact `10917986576` contains 273 images; 16 new adventure images were manually reviewed.
+  The remaining images are regression artifacts, not a claim of manual review. PR #196 is the
+  final merge gate; final deployment evidence is linked below.
 - Node 22: full suite and unchanged bank hashes are required. Focused tests cover dialogue gates,
   all eight answers, per-level isolation, wrong-answer retry, double submission, escaped drafts,
   selected recall prompt after a fresh runtime, malformed storage and older backup import.

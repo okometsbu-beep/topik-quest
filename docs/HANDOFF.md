@@ -9,6 +9,9 @@
   field retain it through `HARUMAL_ADVENTURE.mergeImport`; supplied adventure records restore.
 - `scripts/travel-adventure-checks.mjs` verifies the new default; old mobile fixtures explicitly
   enter the archive. Reload readiness now observes the new document, not the departing DOM.
+- Candidate CI `36278924981` passes 153/153 tests, the full mobile regression and tile asset check;
+  console errors 0. Of 273 artifact images, the 16 adventure images were manually reviewed.
+  PR #196 tracks the final merge gate; do not count all artifact images as manually reviewed.
 - Evidence boundary and content map: `docs/qa/travel-adventure-v141.md`. Final CI, screenshots,
   deployment SHA and live checks: https://github.com/okometsbu-beep/topik-quest/issues/195.
   Live: https://okometsbu-beep.github.io/topik-quest/ ; rollback v140 main
