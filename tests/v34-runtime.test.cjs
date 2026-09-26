@@ -35,6 +35,7 @@ test('v34 listening preference is saved without requiring a rerender', () => {
     S: { view: 'more', lang: 'ko' }, setTimeout, clearTimeout,
     requestAnimationFrame: callback => callback(), devicePixelRatio: 1
   };
+  context.malbitBeginnerTab = tab => { context.baseBeginnerTab = tab; };
   context.window = context;
   vm.createContext(context);
   vm.runInContext(fs.readFileSync('app-polish-v34.js', 'utf8'), context);
@@ -47,4 +48,6 @@ test('v34 listening preference is saved without requiring a rerender', () => {
   assert.equal(JSON.parse(storage.get('malbitProductPrefsV1')).listeningMode, 'on');
   assert.equal(typeof context.malbitBeginnerWritingClear, 'function');
   assert.equal(typeof context.malbitBeginnerWritingDone, 'function');
+  context.malbitBeginnerTab('writing');
+  assert.equal(JSON.parse(storage.get('malbitBeginnerV1')).activeTab, 'writing', 'the writing step must survive a reload');
 });
