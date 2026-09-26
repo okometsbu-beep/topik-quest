@@ -59,7 +59,7 @@ function patchReview(){
   const introText=L('문제의 핵심 근거와 각 선택지를 확인하고, 다시 맞히면 해결 처리됩니다.','問題の根拠と各選択肢を確認し、解き直して正解すると解決済みになります。','Check the key evidence and every option; a correct retry marks the question resolved.','查看关键依据与每个选项，重做答对后即标记为已掌握。');
   if(intro&&intro.textContent!==introText)intro.textContent=introText;
   const stats=document.querySelectorAll('.tqReviewStats>div');
-  if(stats.length>=3){const active=Number(document.querySelector('.tqReviewHero strong')?.childNodes?.[0]?.textContent)||0,mastered=Number(stats[1].querySelector('b')?.textContent)||0,total=active+mastered,rate=total?Math.round(mastered/total*100):100,rateNode=stats[2].querySelector('b'),labelNode=stats[2].querySelector('small'),label=L('해결률','解決率','Resolution rate','掌握率');if(rateNode&&rateNode.textContent!==`${rate}%`)rateNode.textContent=`${rate}%`;if(labelNode&&labelNode.textContent!==label)labelNode.textContent=label}
+  if(stats.length>=3){const active=Number(document.querySelector('.tqReviewHero strong')?.childNodes?.[0]?.textContent)||0,mastered=Number(stats[1].querySelector('b')?.textContent)||0,total=active+mastered,rateNode=stats[2].querySelector('b'),labelNode=stats[2].querySelector('small'),value=total?`${Math.round(mastered/total*100)}%`:L('기록 없음','記録なし','No data','暂无记录'),label=L('해결률','解決率','Resolution rate','掌握率');if(rateNode){if(rateNode.textContent!==value)rateNode.textContent=value;rateNode.classList.toggle('isEmpty',!total)}if(labelNode&&labelNode.textContent!==label)labelNode.textContent=label}
   if(S.lang==='ko')document.querySelectorAll('.tqTranslationToggle').forEach(x=>{if(!x.hidden)x.hidden=true});
 }
 

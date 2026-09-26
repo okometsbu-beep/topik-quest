@@ -30,6 +30,7 @@ test('Review contract keeps readable theme-aware surfaces and a fixed compatibil
   assert.equal((visual.match(/!important/g)||[]).length,31,'Review compatibility bridge must stay fixed');
   assert.match(visual,/\.tqReviewScreen button:not\(:disabled\)[^}]*min-height:var\(--ui-touch\)/);
   assert.match(visual,/\.tqReviewFilters\{[^}]*grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
+  assert.match(visual,/\.tqReviewStats b\.isEmpty\{font-size:15px;white-space:nowrap\}/);
   assert.match(visual,/\.tqReviewChoices \.choice\{[^}]*min-height:52px/);
   assert.match(visual,/\.tqReviewDeep p\{[^}]*white-space:pre-line/);
   assert.match(visual,/\.tqReviewChoiceAnalysis span\{[^}]*font-size:12px/);
@@ -41,4 +42,10 @@ test('Review ships a complete offline Japanese translation for the CI idiom retr
   assert.match(product,/年末で注文が殺到し、「눈코 뜰 새 없이」忙しかった。/);
   for(const choice of ['長い時間眠った','とても暇だった','目が回るほど忙しかった','周囲を詳しく見た'])assert.match(product,new RegExp(choice));
   assert.ok(features.indexOf('if(reviewed)return{fullText:reviewed,reviewed:true}')<features.indexOf("translateCached(base+'_body_full'"));
+});
+
+test('empty Review history is not presented as a perfect resolution rate',()=>{
+  const polish=read('app-polish-v22.js');
+  assert.match(polish,/value=total\?`\$\{Math\.round\(mastered\/total\*100\)\}%`:L\('기록 없음','記録なし','No data','暂无记录'\)/);
+  assert.doesNotMatch(polish,/rate=total\?Math\.round\(mastered\/total\*100\):100/);
 });

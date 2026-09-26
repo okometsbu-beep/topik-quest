@@ -20,6 +20,7 @@ body.tq-review-active .tqReviewHero>strong small{font-size:12px}
 body.tq-review-active .tqReviewStats{grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--ui-space-2);margin:var(--ui-space-3) 0}
 body.tq-review-active .tqReviewStats>div{min-height:76px;border:1px solid var(--review-border);border-radius:var(--ui-radius-control);padding:11px 8px;background:var(--review-surface);color:var(--review-ink);box-shadow:0 5px 14px var(--review-shadow);text-align:center}
 body.tq-review-active .tqReviewStats b{font-size:19px}
+body.tq-review-active .tqReviewStats b.isEmpty{font-size:15px;white-space:nowrap}
 body.tq-review-active .tqReviewStats small{color:var(--review-muted);font-size:12px;line-height:1.35}
 body.tq-review-active .tqReviewFilters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--ui-space-2);margin-bottom:var(--ui-space-4)}
 body.tq-review-active .tqReviewFilters button{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:5px;border:1px solid var(--review-border);border-radius:var(--ui-radius-control);background:var(--review-surface);color:var(--review-muted);padding:8px 10px;font-size:12px;font-weight:900;box-shadow:0 4px 12px var(--review-shadow)}
