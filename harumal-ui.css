@@ -80,3 +80,8 @@ html body.harumal :is(.malbitVocabGuide p,.malbitVocabCard small,.malbitVocabCar
 html body.harumal :is(.malbitVocabScreen .malbitPageTitle,.malbitVocabCard h2,.malbitVocabCard h3){color:var(--ui-ink)}
 html body.harumal :is(.v33BeginnerTabs button,.v33LetterGrid button small,.bgLaunch em,.bgLaunch strong){font-size:12px}
 html body.harumal :is(.bgLaunchIcon,.malbitVocabCard .primary){background:var(--ui-accent);color:var(--harumal-on-accent)}
+html body.harumal.harumal-hub .top .progress{display:none}
+html body.harumal .flagBtn{width:auto;min-width:72px;padding:8px 12px;font-size:13px;font-weight:650;white-space:nowrap}
+html body.harumal :is(.malbitLangGrid,.malbitChoiceRow,.malbitMixGrid,.malbitDataButtons) button{background:var(--ui-surface-soft);color:var(--ui-ink);border:1px solid var(--ui-border);border-radius:12px;font-size:14px;box-shadow:none}
+html body.harumal :is(.malbitLangGrid,.malbitChoiceRow,.malbitMixGrid) button:is(.active,.on){background:var(--ui-accent-soft);border-color:var(--ui-accent);color:var(--ui-accent)}
+html body.harumal .malbitDataButtons button.danger{background:var(--ui-error-soft);color:var(--ui-error);border-color:var(--ui-error)}

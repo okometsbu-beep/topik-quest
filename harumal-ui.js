@@ -32,13 +32,13 @@ function personal(sc){
  sc.insertAdjacentHTML('afterbegin',`<section class="harumalPersonal"><header class="harumalPageHead"><small>HARUMAL / ${L('내 기록','マイ','MY LEARNING','我的学习')}</small><h1>${L('쌓여가는 나의 한국어','少しずつ、私の韓国語に。','Your Korean, growing daily','一点一滴，积累韩语')}</h1><p>${L('학습 기록은 이 기기에 저장돼요.','学習記録はこの端末に保存されます。','Your progress is stored on this device.','学习记录保存在此设备上。')}</p></header><div class="harumalPracticeGrid">${card('▤',L('내 단어장','単語帳','Vocabulary','单词本'),L(`${vocab}개 저장`,`${vocab}語を保存`,`${vocab} saved`,`${vocab}个已保存`),"setView('vocab')")}${card('↗',L('학습 기록','学習記録','Learning record','学习记录'),L('실제 연습 기록 보기','練習の記録を見る','See your practice history','查看练习记录'),"setView('stats')")}</div></section>`);
 }
 function shell(){
- document.body.classList.add('harumal');
+ document.body.classList.add('harumal');document.body.classList.toggle('harumal-hub',['home','learn','more','vocab','stats','review'].includes(S.view));
  const nav=document.querySelector('.nav');if(!nav)return;
  const selected=activeTab(S.view),names=labels[S.lang]||labels.en;
  const key=`${S.lang}:${selected}`;
  if(nav.dataset.harumal!==key){nav.innerHTML=tabs.map((id,i)=>`<button type="button" id="nav_${id}" class="${id===selected?'active':''}" ${id===selected?'aria-current="page"':''} onclick="harumalGo('${id}')">${icon(i)}<span>${names[i]}</span></button>`).join('');nav.dataset.harumal=key}
  nav.querySelectorAll('button').forEach((button,i)=>{const label=button.querySelector('span');if(label)label.textContent=names[i];const active=button.id==='nav_'+selected;button.classList.toggle('active',active);if(active)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current')});
- const language=document.querySelector('.tqLang');if(language)language.textContent=({ko:'한국어',ja:'日本語',en:'English',zh:'中文'}[S.lang]||'English')+' ⌄';
+ for(const language of document.querySelectorAll('.tqLang,#flagBtn'))language.textContent=({ko:'한국어',ja:'日本語',en:'English',zh:'中文'}[S.lang]||'English')+' ⌄';
  const badge=document.querySelector('.top .brand');if(badge)badge.textContent='하';
  const title=document.querySelector('.top .title b');if(title)title.textContent='하루말 · HARUMAL';
  document.title=`하루말 · ${names[tabs.indexOf(selected)]}`;
