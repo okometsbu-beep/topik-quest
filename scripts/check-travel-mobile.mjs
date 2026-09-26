@@ -1947,7 +1947,12 @@ try{
   await shot('16-myeongdong-hub-evening.png');
   await send('Page.reload',{ignoreCache:true});await ready();await sleep(160);
   assert.equal((await state()).completed,true);assert.equal((await state()).route,'taxi');
-  assert.ok(await evaluate(`document.body.innerText.includes('明洞トラベルハブ')`),'Myeongdong hub state must survive reload');
+  let restoredHub=false;
+  for(let wait=0;wait<100;wait++){
+    if(await evaluate(`document.body.innerText.includes('明洞トラベルハブ')`)){restoredHub=true;break}
+    await sleep(100);
+  }
+  assert.ok(restoredHub,'Myeongdong hub state must survive reload');
   assert.ok((await state()).inventory.includes('namsanCharm'),'hub collectibles must survive reload');
 
   const durableAfter=await evaluate(`({vocab:JSON.parse(localStorage.getItem('topikQuestV8')).vocab,gameUnlock:JSON.parse(localStorage.getItem('topikQuestV8')).gameUnlock,game:localStorage.getItem('topikQuestTopik1GameV1'),review:localStorage.getItem('malbitWrongReviewV3')})`);
