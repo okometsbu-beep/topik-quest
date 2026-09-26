@@ -788,7 +788,7 @@ try{
   for(const theme of ['light','dark']){await evaluate(`malbitSetTheme('${theme}')`);await sleep(80);for(const width of [320,375,390,430]){
     await setViewport(width,width===320?700:844);await assertBeginnerGrammarFits(`Beginner grammar handwriting resume ${theme} ${width}px`,theme);
     await evaluate(`document.querySelector('.bgWriting').scrollIntoView({block:'start',behavior:'auto'})`);await sleep(60);
-    await shot(`00renewal-beginner-grammar-writing-resume-${theme}-${width}.png`)
+    if(width===390)await shot(`00renewal-beginner-grammar-writing-resume-${theme}-${width}.png`)
   }}
 
   await evaluate(`malbitGrammarLesson('copula')`);await sleep(120);
