@@ -32,8 +32,8 @@ export async function verifyAdventure({evaluate,tap,shot,setViewport,send,ready,
    if(level===2&&index===0){
     for(const theme of ['light','dark']){await evaluate(`malbitSetTheme('${theme}')`);for(const width of [320,375,390,430]){await setViewport(width,844);await fit(`II reply ${theme} ${width}`)}await evaluate(`document.querySelector('.advQuestion').scrollIntoView({block:'start'})`);await shot(`adventure-topik2-reply-${theme}.png`)}
     // Native Enter activation; no map key handler may intercept it.
-    await evaluate(`document.querySelectorAll('.advChoice')[2].focus()`);
-    await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Enter',code:'Enter',windowsVirtualKeyCode:13});await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Enter',code:'Enter',windowsVirtualKeyCode:13});
+    await send('Page.bringToFront');await evaluate(`document.querySelectorAll('.advChoice')[2].focus()`);assert.equal(await evaluate(`document.activeElement===document.querySelectorAll('.advChoice')[2]`),true,'reply button must own focus');
+    await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Enter',code:'Enter',text:'\r',unmodifiedText:'\r',windowsVirtualKeyCode:13});await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Enter',code:'Enter',windowsVirtualKeyCode:13});
     assert.equal(await evaluate(`document.querySelector('.advChoice.selected')?.textContent.trim().startsWith('3')`),true);
    }else{const answer=await evaluate(`HARUMAL_ADVENTURE_DATA.levels[${level}][${index}].answer`);await tap('.advChoice',answer,30)}
    await tap('.advQuestion .advPrimary',0,30);assert.ok(await evaluate(`!!document.querySelector('.advFeedback.success')`));

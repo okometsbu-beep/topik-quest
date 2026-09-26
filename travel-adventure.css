@@ -42,3 +42,6 @@ body.travel-adventure-active>.bottom{display:block}
 .advRecallPrompt{display:block;font-size:18px;line-height:1.7;margin:24px 0 16px}.adventureScreen textarea{width:100%;font:inherit;font-size:18px;line-height:1.7;color:var(--ui-ink);background:var(--ui-surface);padding:16px;border:1px solid var(--ui-border);border-radius:14px;resize:vertical;min-height:140px}.advError{border:2px solid var(--ui-accent);padding:16px;background:var(--ui-surface)}
 @media(min-width:620px){.advCourses{grid-template-columns:1fr 1fr}.advScene{height:240px}.adventureScreen{padding-inline:28px}}
 @media(max-width:350px){.adventureScreen{padding-inline:14px}.advCourse{padding:16px}.advScene{height:140px}.advLine p{font-size:17px}.adventureScreen .advChoice{font-size:16px}}
+
+body.travel-adventure-active .top .progress{display:none}
+.advHistory{border-bottom:1px solid var(--ui-border)}.advHistory>.advLine{padding:10px 0}.advHistory>.advLine p{font-size:16px}
