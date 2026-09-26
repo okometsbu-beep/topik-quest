@@ -1,3 +1,22 @@
+## 2026-09-27 v140 handwriting resume evidence
+
+- Public v140 clean ja-JP Chrome completed the first grammar transformation, traced `한`, exited to
+  Today, hard-reloaded, and re-entered Beginner → Grammar. It restored `1/8`, current `국`, and `2/8`;
+  no product defect reproduced.
+- PR #192 squash `33e5764577b1024b977a84facb651c51a6bfc7ef` locks the storage and browser contract.
+  Local full checks pass 147/147; PR CI `36271774104` passes all four mobile widths in both themes.
+  Its post-merge main run `36272108773` lost the Chrome target twice and is not a pass.
+- PR #193 squash `6e9c868280aa14dd0e51acbc66be23d755b13a41` keeps all eight responsive assertions while
+  retaining only representative 390px light/dark images. PR CI `36272553741`, final main CI
+  `36272893017`, and Pages `36272892547` pass. Live v140 is HTTP 200 and its index,
+  beginner-grammar runtime, and checker hashes match main.
+- No runtime behavior, version, item, durable key, or learner record changed. Regression-only rollback
+  is `a9835474d026a6a10de6b62439b021a9597cf71f`; product rollback remains v139
+  `3b9626a642428f845c95f574d55fd4ec29361bd6`.
+- Physical iPhone/Android, native Japanese/educator review, and real learner 10-minute/D1/D7 recall
+  remain unverified. Next: complete the first grammar lesson and verify its completion marker and
+  next-learning CTA advance to the next grammar rather than repeating the same item.
+
 ## 2026-09-26 하루말 v140 배포
 
 - v139에서 ja-JP 입문 문법 변형 답안을 입력한 뒤 오늘로 이탈·hard reload·코스 재진입하면 초안이 사라지는 P1을 재현했다.
@@ -8,7 +27,7 @@
 - main CI `36251490583`, Pages `36251490375`, 라이브 v140 HTTP smoke와 핵심 4자산 해시가 통과했다.
   공개 Chrome에서 `저는 한국어` 입력→이탈→hard reload→학습/입문/문법 재진입 뒤 동일 값을 확인했다.
 - 데이터·문항·모드 불변. 복귀 기준은 v139 제품 `3b9626a642428f845c95f574d55fd4ec29361bd6`.
-- 실제 iPhone/Android·일본어 모어 화자·실학습자 회상은 미검증이다. 다음은 ja-JP 입문 문법 손쓰기 재진입 위치 검증이다.
+- 실제 iPhone/Android·일본어 모어 화자·실학습자 회상은 미검증이다. 손쓰기 재진입 위치는 위 2026-09-27 회귀 증거로 고정했다.
 
 # MALBIT compact handoff
 
