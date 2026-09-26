@@ -775,6 +775,22 @@ try{
   }}
   assert.equal(await evaluate(`document.querySelector('#malbitGrammarAnswer')?.value`),'저는 한국어','viewport and theme changes must not clear the restored draft');
 
+  await evaluate(`(()=>{const input=document.querySelector('#malbitGrammarAnswer');input.value='저는 한국어를 공부해요.';malbitGrammarDraft(input.value);return malbitGrammarSubmit()})()`);await sleep(80);
+  assert.ok(await evaluate(`!!document.querySelector('.bgFeedback.correct')`),'sentence-order transformation must be correct before handwriting resume verification');
+  const savedFirstGrammarUnit=await evaluate(`(()=>{const canvas=document.querySelector('#malbitGrammarCanvas'),r=canvas.getBoundingClientRect(),point=(type,x,y)=>canvas.dispatchEvent(new PointerEvent(type,{bubbles:true,cancelable:true,pointerId:1,pointerType:'touch',clientX:r.left+x,clientY:r.top+y}));point('pointerdown',r.width*.3,r.height*.3);point('pointermove',r.width*.7,r.height*.7);point('pointerup',r.width*.7,r.height*.7);const wrote=malbitGrammarWritingDone(),value=JSON.parse(localStorage.getItem('malbitBeginnerV1'));return{wrote,units:value.grammarV1.writingUnits['sentence-order'],count:value.grammarV1.writingCount['sentence-order'],done:value.grammarV1.writingDone['sentence-order'],visibleCount:document.querySelector('.bgWriting header>span')?.textContent,current:document.querySelector('.bgCurrent b')?.textContent,position:document.querySelector('.bgCurrent small')?.textContent,known:value.known,legacyScore:value.legacyScore}})()`);
+  assert.deepEqual(savedFirstGrammarUnit,{wrote:true,units:[0],count:1,visibleCount:'1/8',current:'국',position:'2/8',known:['v:ㅏ'],legacyScore:7},'the first handwriting unit must save and advance without changing older beginner progress');
+  await evaluate(`setView('home')`);await sleep(100);
+  await send('Page.reload',{ignoreCache:true});await ready();
+  for(let i=0;i<100&&!(await evaluate(`typeof tqSetLearningPath==='function'`));i++)await sleep(100);
+  await evaluate(`tqSetLearningPath('beginner');setView('beginner')`);await sleep(120);await tap('.bgLaunch',0,120);await tap('.bgResume',0,120);
+  const restoredFirstGrammarUnit=await evaluate(`(()=>{const value=JSON.parse(localStorage.getItem('malbitBeginnerV1'));return{units:value.grammarV1.writingUnits['sentence-order'],count:value.grammarV1.writingCount['sentence-order'],done:value.grammarV1.writingDone['sentence-order'],visibleCount:document.querySelector('.bgWriting header>span')?.textContent,current:document.querySelector('.bgCurrent b')?.textContent,position:document.querySelector('.bgCurrent small')?.textContent,firstDone:document.querySelectorAll('.bgUnitStrip button')[0]?.classList.contains('done'),secondActive:document.querySelectorAll('.bgUnitStrip button')[1]?.classList.contains('on'),known:value.known,legacyScore:value.legacyScore}})()`);
+  assert.deepEqual(restoredFirstGrammarUnit,{units:[0],count:1,visibleCount:'1/8',current:'국',position:'2/8',firstDone:true,secondActive:true,known:['v:ㅏ'],legacyScore:7},'completed handwriting units and the next position must survive exit, reload, and course re-entry');
+  for(const theme of ['light','dark']){await evaluate(`malbitSetTheme('${theme}')`);await sleep(80);for(const width of [320,375,390,430]){
+    await setViewport(width,width===320?700:844);await assertBeginnerGrammarFits(`Beginner grammar handwriting resume ${theme} ${width}px`,theme);
+    await evaluate(`document.querySelector('.bgWriting').scrollIntoView({block:'start',behavior:'auto'})`);await sleep(60);
+    await shot(`00renewal-beginner-grammar-writing-resume-${theme}-${width}.png`)
+  }}
+
   await evaluate(`malbitGrammarLesson('copula')`);await sleep(120);
   assert.deepEqual(await evaluate(`({variants:document.querySelectorAll('.bgVariant').length,examples:document.querySelectorAll('.bgExample').length,canvas:!!document.querySelector('#malbitGrammarCanvas'),input:!!document.querySelector('#malbitGrammarAnswer')})`),{variants:2,examples:2,canvas:true,input:true},'grammar lesson must show rules, examples, typing, and handwriting');
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertBeginnerGrammarFits(`Beginner grammar lesson dark ${width}px`,'dark')}
@@ -2003,7 +2019,7 @@ try{
   }
   assert.deepEqual(errors,[],'Harumal navigation must not add console errors');
   const screenshotCount=fs.readdirSync(out).filter(file=>file.endsWith('.png')).length;
-  console.log(`mobile QA: 320/375/390/430px Home + Beginner Grammar + split Writing + Game + Shorts + Random Practice + Review visual contracts, two-field Writing input/save/reload/score/review/migration, 9-chapter/64-lesson grammar catalog, transformation coaching, per-unit handwriting and preserved progress, Review queue/filter/retry/translation/type coaching/re-entry, TOPIK I/II random question/answer/type coaching, level re-entry, Shorts question/answer/instructor feedback + hit-tested Travel route + one-tap completed-route re-entry + NPC word order + Hangul sign build with decoys, day/evening events, travel-won exchange, reload/back-resume, durable records, screenshots=${screenshotCount}, errors=0`);
+  console.log(`mobile QA: 320/375/390/430px Home + Beginner Grammar + split Writing + Game + Shorts + Random Practice + Review visual contracts, two-field Writing input/save/reload/score/review/migration, 9-chapter/64-lesson grammar catalog, transformation coaching, per-unit handwriting exit/reload/re-entry and preserved progress, Review queue/filter/retry/translation/type coaching/re-entry, TOPIK I/II random question/answer/type coaching, level re-entry, Shorts question/answer/instructor feedback + hit-tested Travel route + one-tap completed-route re-entry + NPC word order + Hangul sign build with decoys, day/evening events, travel-won exchange, reload/back-resume, durable records, screenshots=${screenshotCount}, errors=0`);
 }finally{
   try{socket?.close()}catch(error){}
   chrome?.kill('SIGTERM');server.kill('SIGTERM');
