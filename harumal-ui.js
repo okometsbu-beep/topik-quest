@@ -42,6 +42,7 @@ function shell(){
  const badge=document.querySelector('.top .brand');if(badge)badge.textContent='하';
  const title=document.querySelector('.top .title b');if(title)title.textContent='하루말 · HARUMAL';
  document.title=`하루말 · ${names[tabs.indexOf(selected)]}`;
+ const subtitle=document.querySelector('.top .title small');if(subtitle)subtitle.textContent=names[tabs.indexOf(selected)]+' · '+L('하루 한마디','今日のひと言','One phrase today','每天一句');
  const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=document.documentElement.dataset.theme==='dark'?'#102523':'#f7f8f4';
 }
 const originalShell=renderShell;renderShell=function(){const result=originalShell.apply(this,arguments);shell();return result};

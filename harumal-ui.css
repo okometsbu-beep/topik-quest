@@ -74,3 +74,9 @@ html body.harumal .tqV9Greeting h1{font-size:26px;max-width:none}
 html body.harumal .tqV9Greeting p{margin:10px 0 18px;line-height:1.65}
 html body.harumal .tqTodayLesson h2{max-width:none;font-size:23px}
 html body.harumal .tqTodayLesson p{max-width:none}
+html[data-theme] body.harumal .app,html[data-theme] body.harumal .screen{background:var(--ui-canvas)!important;color:var(--ui-ink)}
+html body.harumal :is(.malbitVocabGuide,.malbitVocabStats>div,.malbitVocabCard,.speakPrompt,.speakCard,.speakResult,.malbitSpeakingTools button,.bgRuleCard,.bgLessonHero,.bgHero,.bgResume){background:var(--ui-surface);color:var(--ui-ink);border:1px solid var(--ui-border);border-radius:20px;box-shadow:none}
+html body.harumal :is(.malbitVocabGuide p,.malbitVocabCard small,.malbitVocabCard p,.bgResume small){color:var(--ui-muted);font-size:14px;line-height:1.65}
+html body.harumal :is(.malbitVocabScreen .malbitPageTitle,.malbitVocabCard h2,.malbitVocabCard h3){color:var(--ui-ink)}
+html body.harumal :is(.v33BeginnerTabs button,.v33LetterGrid button small,.bgLaunch em,.bgLaunch strong){font-size:12px}
+html body.harumal :is(.bgLaunchIcon,.malbitVocabCard .primary){background:var(--ui-accent);color:var(--harumal-on-accent)}

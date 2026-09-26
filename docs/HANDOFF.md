@@ -1,3 +1,17 @@
+## 2026-09-26 하루말 전체 UI 개편 — 후보, 미배포
+
+- 최신 직접 사용자 요청: MALBIT → **하루말 · HARUMAL**, 승인된 크림/청록 시안으로 전체 UI 개편.
+- `agent/harumal-ui-renewal`: 오늘/학습/여행/복습/내 기록, 학습 코스 허브,
+  실제 단어장 수를 쓰는 내 기록, 새 아이콘, 공통 두 테마 및 읽기/해설 표면.
+- 기존 학습·단어장·복습·여행·게임·설정·백업 키, 2,088문항 은행 불변.
+- Linux Node24 검사 144/144, 런타임 46개 및 은행 해시 통과. v138 로컬 HTTP 통과.
+- 첫 push CI 36227898870은 넓은 RPG의 읽기 컨테이너 제약을 실패로 검출했다.
+  첫 artifact 10900964713의 홈/입문/랜덤/복습 화면을 검토하고 기존 파란 배경,
+  메뉴명 덮어쓰기, RPG viewport 제약을 수정 중이다. 실패를 통과로 세지 않는다.
+- 제품은 아직 v137. 출시 복귀 기준 `3f6b0cf39d57fbb6ef8569d36acbf14d05880d6f`.
+- 다음: 최종 후보 CI/모바일 화면 확인 후 PR; 실패 또는 미검증 상태에서는 병합 금지.
+- 실제 iPhone/Android, 일본어 모어 화자, 실제 첫 성공·10분/D1/D7 회상 미검증.
+
 # MALBIT compact handoff
 
 This is the short continuity record for future work. Use it with `AGENTS.md`; do not reconstruct

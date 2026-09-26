@@ -1964,18 +1964,20 @@ try{
     await evaluate(`malbitSetTheme('${theme}');setLang('ja');setView('home')`);
     for(const width of [320,375,390,430]){
       await setViewport(width,844);
-      for(const view of ['home','learn','more','review']){
-        await tap('#nav_'+view);
+      for(const view of ['home','learn','more','review','vocab','speaking']){
+        if(view==='vocab'||view==='speaking'){await tap(view==='vocab'?'#nav_more':'#nav_learn');await tap(".harumalCourse[onclick=\"setView('"+view+"')\"]")}else await tap('#nav_'+view);
         const fit=await evaluate(`({overflow:document.documentElement.scrollWidth>innerWidth+1,nav:[...document.querySelectorAll('.nav button')].map(b=>({h:b.getBoundingClientRect().height,w:b.getBoundingClientRect().width})),active:document.querySelector('.nav [aria-current="page"]')?.id,brand:document.title})`);
         assert.equal(fit.overflow,false,`HARUMAL ${view} ${theme} ${width} overflow`);
-        assert.equal(fit.active,'nav_'+view);
+        assert.equal(fit.active,'nav_'+(view==='vocab'?'more':view==='speaking'?'learn':view));
         assert.ok(fit.nav.length===5&&fit.nav.every(b=>b.h>=44&&b.w>=44));
         assert.ok(fit.brand.startsWith('하루말'));
+        assert.deepEqual(await evaluate(`[...document.querySelectorAll('.nav button span')].map(el=>el.textContent)`),['今日','学ぶ','旅','復習','マイ']);
         await evaluate('scrollTo(0,0)');
         await shot(`harumal-${view}-${theme}-${width}.png`);
       }
     }
   }
+  assert.deepEqual(errors,[],'Harumal navigation must not add console errors');
   const screenshotCount=fs.readdirSync(out).filter(file=>file.endsWith('.png')).length;
   console.log(`mobile QA: 320/375/390/430px Home + Beginner Grammar + split Writing + Game + Shorts + Random Practice + Review visual contracts, two-field Writing input/save/reload/score/review/migration, 9-chapter/64-lesson grammar catalog, transformation coaching, per-unit handwriting and preserved progress, Review queue/filter/retry/translation/type coaching/re-entry, TOPIK I/II random question/answer/type coaching, level re-entry, Shorts question/answer/instructor feedback + hit-tested Travel route + one-tap completed-route re-entry + NPC word order + Hangul sign build with decoys, day/evening events, travel-won exchange, reload/back-resume, durable records, screenshots=${screenshotCount}, errors=0`);
 }finally{

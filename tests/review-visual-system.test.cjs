@@ -26,13 +26,13 @@ test('Review contract keeps readable theme-aware surfaces and a fixed compatibil
   const visual=read('review-visual-system.js');
   const sizes=[...visual.matchAll(/font-size:(\d+)px/g)].map(match=>Number(match[1]));
   assert.ok(sizes.length>0);
-  assert.ok(sizes.every(size=>size>=10),`Review visual system contains sub-10px text: ${sizes.filter(size=>size<10)}`);
+  assert.ok(sizes.every(size=>size>=12),`Review visual system contains sub-12px text: ${sizes.filter(size=>size<12)}`);
   assert.equal((visual.match(/!important/g)||[]).length,31,'Review compatibility bridge must stay fixed');
   assert.match(visual,/\.tqReviewScreen button:not\(:disabled\)[^}]*min-height:var\(--ui-touch\)/);
   assert.match(visual,/\.tqReviewFilters\{[^}]*grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
   assert.match(visual,/\.tqReviewChoices \.choice\{[^}]*min-height:52px/);
   assert.match(visual,/\.tqReviewDeep p\{[^}]*white-space:pre-line/);
-  assert.match(visual,/\.tqReviewChoiceAnalysis span\{[^}]*font-size:10px/);
+  assert.match(visual,/\.tqReviewChoiceAnalysis span\{[^}]*font-size:12px/);
 });
 
 test('Review ships a complete offline Japanese translation for the CI idiom retry',()=>{
