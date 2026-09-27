@@ -292,6 +292,51 @@ const BANK_COACH={
   }
 }])),
 ...Object.fromEntries(MEETING_HOME_IDS.map(id=>[id,MEETING_HOME_COACH])),
+'M09-I-R-34':{
+  ko:{
+    reason:'“친구를 만나기”는 카페에 간 목적입니다. 동사 뒤의 “-기 위해서”는 어떤 행동을 하는 목적을 나타내므로 “친구를 만나기 위해서 카페에 갔습니다”가 자연스럽습니다.',
+    trap:'“부터”는 시작점을, “처럼”은 유사·비교를 나타냅니다. “때문에만”은 원인에 “오직”이라는 제한까지 더하므로, 만나려는 목적을 말하는 이 문장과 맞지 않습니다.',
+    strategy:'뒤 절의 행동에 “왜?”라고 물어보세요. 앞 절이 아직 이루려는 목표라면 “V-기 위해서”, 이미 생긴 원인이라면 “-기 때문에”처럼 목적과 원인을 구분합니다.',
+    choices:{
+      '부터':'시간·장소의 시작점을 나타냅니다. 여기서는 카페에 간 시작점이 아니라 목적이 필요합니다.',
+      '처럼':'대상과 비슷함을 나타냅니다. “친구를 만나기”와 “카페에 가기” 사이의 목적 관계를 만들지 못합니다.',
+      '때문에만':'원인 표현 “때문에”에 제한의 “만”을 더해 “오직 그것 때문”이라는 뜻입니다. 친구를 만나려는 목적을 나타내지 못합니다.'
+    }
+  },
+  ja:{
+    translation:{sentenceLabel:'正解を入れた文の意味',sentence:'友達に会うためにカフェへ行きました。',choiceLabel:'選択肢の意味（表示順）',glosses:{'부터':'〜から','위해서':'〜するために','처럼':'〜のように','때문에만':'〜のせいだけで／〜だけが理由で'}},
+    reason:'「친구를 만나기」はカフェへ行った目的です。動詞の後ろの「-기 위해서」は行動の目的を表すため、「친구를 만나기 위해서 카페에 갔습니다」が自然です。',
+    trap:'「부터」は始点、「처럼」は類似・比較を表します。「때문에만」は原因に「それだけ」という限定まで加えるため、友達に会うという目的を表すこの文には合いません。',
+    strategy:'後半の行動に「なぜ？」と問い、前半がこれから達成したい目標なら「V-기 위해서」、すでに生じた原因なら「-기 때문에」のように、目的と原因を区別します。',
+    choices:{
+      '부터':'時間・場所の始点を表します。ここではカフェへ行った始点ではなく、目的が必要です。',
+      '처럼':'対象との類似を表します。「友達に会うこと」と「カフェへ行くこと」の間に目的関係を作れません。',
+      '때문에만':'原因の「때문에」に限定の「만」を加え、「それだけが理由で」という意味になります。友達に会おうとする目的は表せません。'
+    }
+  },
+  en:{
+    translation:{sentenceLabel:'Meaning with the correct answer inserted',sentence:'I went to a cafe in order to meet a friend.',choiceLabel:'Option meanings (in display order)',glosses:{'부터':'from / starting at','위해서':'in order to','처럼':'like / as','때문에만':'only because of'}},
+    reason:'친구를 만나기 is the purpose of going to the cafe. V-기 위해서 marks the purpose of an action, so 친구를 만나기 위해서 카페에 갔습니다 is natural.',
+    trap:'부터 marks a starting point, while 처럼 marks similarity. 때문에만 adds the restriction “only” to a cause, so it does not express the intended purpose of meeting a friend.',
+    strategy:'Ask “why?” about the action in the second clause. Use V-기 위해서 when the first clause is a goal to achieve; distinguish it from a cause already in effect, such as -기 때문에.',
+    choices:{
+      '부터':'This marks a starting point in time or place. The sentence needs the purpose of going to the cafe, not a starting point.',
+      '처럼':'This marks similarity. It cannot connect meeting a friend to going to the cafe as purpose and action.',
+      '때문에만':'This adds the restrictive 만 to the cause marker 때문에, meaning “only because of that.” It does not express the goal of meeting a friend.'
+    }
+  },
+  zh:{
+    translation:{sentenceLabel:'填入正确答案后的句意',sentence:'为了见朋友，我去了咖啡馆。',choiceLabel:'选项含义（按显示顺序）',glosses:{'부터':'从……开始','위해서':'为了……','처럼':'像……一样','때문에만':'只是因为……'}},
+    reason:'“친구를 만나기”是去咖啡馆的目的。动词后的“-기 위해서”表示做某事的目的，因此“친구를 만나기 위해서 카페에 갔습니다”最自然。',
+    trap:'“부터”表示起点，“처럼”表示相似或比较。“때문에만”在原因表达上又加了“仅仅”的限制，不能表示为了见朋友这一目的。',
+    strategy:'对后半句的动作问“为什么”。如果前半句是尚待实现的目标，就考虑“V-기 위해서”；如果是已经发生的原因，则考虑“-기 때문에”等原因表达，区分目的与原因。',
+    choices:{
+      '부터':'表示时间或地点的起点。这里需要的是去咖啡馆的目的，而不是起点。',
+      '처럼':'表示与某对象相似，不能把“见朋友”和“去咖啡馆”连接成目的与行动的关系。',
+      '때문에만':'在原因表达“때문에”后加限制助词“만”，意为“只是因为这个”。它不能表示想见朋友这一目的。'
+    }
+  }
+},
 'M11-I-R-37':{
   ko:{
     reason:'“오른쪽 출입구를 이용해 주세요”가 사용할 출입구를 직접 지시하므로 글의 목적은 출입 안내입니다. “공사 중입니다”는 그 안내가 필요한 배경입니다.',
