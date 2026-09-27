@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import assert from 'node:assert/strict';
+import {verifyHaruman} from './haruman-checks.mjs';
 import {verifyAdventure} from './travel-adventure-checks.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -38,7 +39,7 @@ try{
     const message=JSON.parse(typeof event.data==='string'?event.data:await event.data.text());
     if(message.id&&pending.has(message.id)){const handlers=pending.get(message.id);pending.delete(message.id);message.error?handlers.reject(new Error(message.error.message)):handlers.resolve(message.result)}
     if(message.method==='Runtime.exceptionThrown')errors.push(message.params.exceptionDetails.text||'runtime exception');
-    if(message.method==='Log.entryAdded'&&message.params.entry.level==='error')errors.push(message.params.entry.text);
+    if(message.method==='Log.entryAdded'&&message.params.entry.level==='error')errors.push(message.params.entry.text+' '+(message.params.entry.url||''));
   });
   let expectedNewDocument=false,lastReadyOrigin=null;
   const send=(method,params={})=>new Promise((resolve,reject)=>{if(method==='Page.reload'||method==='Page.navigate')expectedNewDocument=true;const callId=++id;pending.set(callId,{resolve,reject});socket.send(JSON.stringify({id:callId,method,params}))});
@@ -636,6 +637,7 @@ try{
   assert.match(await evaluate(`document.querySelector('.tqLessonStart')?.textContent||''`),/入門学習を始める/,'the first primary CTA must be localized before language-menu use');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);await assertHomeFits('fresh Japanese browser Home light','light');await shot('00renewal-home-ja-locale-first-visit-light.png');
   await evaluate(`malbitSetTheme('dark')`);await sleep(100);await assertHomeFits('fresh Japanese browser Home dark','dark');await shot('00renewal-home-ja-locale-first-visit-dark.png');
+  await verifyHaruman({evaluate,tap,shot,setViewport,sleep});
   await verifyAdventure({evaluate,tap,shot,setViewport,send,ready,sleep});
   // Preserve old-course regressions through its explicit archive route, never the new default.
   legacyTravelChecks=true;await ready();

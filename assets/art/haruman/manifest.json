@@ -1,0 +1,112 @@
+{
+  "name": "하루만",
+  "identity": "Round apricot body, three attached rounded rays, bent tall centre ray, teal limbs; approved pre-ABC reference.",
+  "source": "assets/source/haruman-emotions-v1.png",
+  "sourceSHA256": "4284322c983659d1e302ab073ad8d62e9a923dc8ea40ae4f5b7eec4d5a9665d6",
+  "frames": [
+    {
+      "emotion": "welcome",
+      "file": "welcome-v1.webp",
+      "width": 320,
+      "height": 320,
+      "sourceRect": [
+        31,
+        90,
+        423,
+        483
+      ],
+      "bytes": 18352
+    },
+    {
+      "emotion": "thinking",
+      "file": "thinking-v1.webp",
+      "width": 320,
+      "height": 320,
+      "sourceRect": [
+        442,
+        109,
+        714,
+        472
+      ],
+      "bytes": 17876
+    },
+    {
+      "emotion": "correct",
+      "file": "correct-v1.webp",
+      "width": 320,
+      "height": 320,
+      "sourceRect": [
+        821,
+        109,
+        1093,
+        471
+      ],
+      "bytes": 18854
+    },
+    {
+      "emotion": "retry",
+      "file": "retry-v1.webp",
+      "width": 320,
+      "height": 320,
+      "sourceRect": [
+        1144,
+        216,
+        1513,
+        464
+      ],
+      "bytes": 14404
+    },
+    {
+      "emotion": "celebrate",
+      "file": "celebrate-v1.webp",
+      "width": 320,
+      "height": 320,
+      "sourceRect": [
+        23,
+        527,
+        394,
+        882
+      ],
+      "bytes": 19134
+    },
+    {
+      "emotion": "encourage",
+      "file": "encourage-v1.webp",
+      "width": 320,
+      "height": 320,
+      "sourceRect": [
+        432,
+        533,
+        785,
+        902
+      ],
+      "bytes": 20752
+    },
+    {
+      "emotion": "journey",
+      "file": "journey-v1.webp",
+      "width": 320,
+      "height": 320,
+      "sourceRect": [
+        779,
+        542,
+        1151,
+        902
+      ],
+      "bytes": 19484
+    },
+    {
+      "emotion": "rest",
+      "file": "rest-v1.webp",
+      "width": 320,
+      "height": 320,
+      "sourceRect": [
+        1224,
+        630,
+        1503,
+        904
+      ],
+      "bytes": 18582
+    }
+  ]
+}

@@ -1,3 +1,18 @@
+## 2026-09-27 하루만 이모션 후보 v142 · #197
+
+- 추가 검증: 전체 자동검사 155/155 및 전용 모바일 화면 30장 확인. 첫 CI의 오프라인 오류 4건은
+  8종 캐시가 존재하지만 hard reload로 worker 제어가 해제된 상태에서 발생했다. 일반 재진입 뒤
+  worker 제어·8종 캐시·오프라인 축하 이미지 로드를 명시적으로 검사한다. 최종 CI/공개 결과는 #197.
+
+- 최신 사용자 교정을 반영해 B안 대신 기존 둥근 몸·세 갈래 머리 디자인의 8종을 분리했다.
+- `haruman-mascot.js`가 오늘/학습/복습/내 기록/여행과 채점 피드백에 장식만 붙인다.
+  팔다리 대비는 국소 크림 표면으로 해결. 두 테마·기존 문항/저장/모드 불변.
+- 분리 중 이웃 손 조각을 발견해 연결 성분으로 다시 분리했다. PNG+WebP/원본/분리 스크립트 보존.
+- Node quick135/135, 로더 검사 보정 뒤 집중5/5. 최종 CI·모바일 화면·배포는 #197에서 추적한다.
+  현재 단계는 후보이며 실기기와 학습자 반응은 미검증. `docs/qa/haruman-emotions-v142.md` 참조.
+- 복귀점 v141 `26efe0da7eee5d05812d3802ef8ada82151bdc3d`; 공개 https://okometsbu-beep.github.io/topik-quest/ .
+- 다음: 후보 모바일 검수 후 공개 반영·캐시/라이브 자산 확인. 실제 기기 미검증은 유지한다.
+
 ## 2026-09-27 v141 scene-led travel · #195
 
 - Direct user instruction replaces the default travel RPG with a dialogue adventure. New owners:
@@ -712,3 +727,7 @@ quality work and never substitute more question counts or synthetic users for le
 Before editing, reduce each request internally to four lines: outcome, owning files, acceptance
 check, and whether release is requested. If those are inferable, proceed without a clarification
 round trip.
+
+- 2026-09-27 후보 271a04e: 전체 155/155, 모바일/오프라인/타일 검사 성공.
+  CI 36289452148은 모든 검사·증거 업로드 성공 후 5분 제한으로 cancelled.
+  검사를 삭제하지 않고 job 한도만 8분으로 조정한다. 최종 병합/배포 증거는 #197에서 확인.
