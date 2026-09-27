@@ -815,6 +815,20 @@ try{
   }}
   await tap('.bgLessonNav button:last-child',0,120);
   assert.equal(await evaluate(`document.querySelector('.bgHeader h1')?.textContent`),'文脈による主語・目的語の省略','the completion CTA must open the second grammar item, not repeat the first');
+  assert.deepEqual(await evaluate(`(()=>({goal:document.querySelector('.bgLessonHero p')?.textContent,formula:document.querySelector('.bgFormula b')?.textContent,meanings:[...document.querySelectorAll('.bgExampleMeaning')].map(node=>node.textContent),notes:[...document.querySelectorAll('.bgExampleNote p')].map(node=>node.textContent),writingUnits:document.querySelectorAll('.bgUnitStrip button').length,writingCount:document.querySelector('.bgWriting header>span')?.textContent,coach:window.MALBIT_BEGINNER_GRAMMAR_V1.lessons.find(item=>item.id==='sentence-omission')?.drill.coach.ja}))()`),{
+    goal:'文脈から誰・何のことかが明らかな場合、主語や目的語を省略できます。',
+    formula:'([주어/목적어] 생략) + 핵심 내용',
+    meanings:['A：どこへ行きますか。B：会社へ行きます。','A：ご飯は食べましたか。B：はい、食べました。'],
+    notes:['質問に答えるB本人が主語だと文脈で分かるため、「저는」を省略できます。','何を食べたかは質問に出ているため、Bでは目的語「밥을」を省略できます。'],
+    writingUnits:7,
+    writingCount:'0/7',
+    coach:'出発するのが「私たち」だと会話の文脈で分かるため、「저희는」を省略できます。文脈から分からない場合は省略しません。'
+  },'the second grammar item must separate full Japanese translations from notes and keep a bounded seven-unit handwriting task');
+  for(const theme of ['light','dark']){await evaluate(`malbitSetTheme('${theme}')`);await sleep(80);for(const width of [320,375,390,430]){
+    await setViewport(width,width===320?700:844);await assertBeginnerGrammarFits(`Sentence omission translation ${theme} ${width}px`,theme);
+    await evaluate(`document.querySelector('.bgExamples').scrollIntoView({block:'start',behavior:'auto'})`);await sleep(60);
+    if(width===390)await shot(`00renewal-sentence-omission-translation-${theme}-${width}.png`)
+  }}
   await evaluate(`malbitGrammarBack()`);await sleep(100);
   assert.equal(await evaluate(`document.querySelector('.bgResume b')?.textContent`),'文脈による主語・目的語の省略','the catalog next-learning CTA must point to the second grammar item');
   assert.match(await evaluate(`document.querySelector('.bgLessonRow.done')?.textContent||''`),/基本語順 S-O-V[\s\S]*完了/,'the completed first grammar item must remain visibly marked in the catalog');

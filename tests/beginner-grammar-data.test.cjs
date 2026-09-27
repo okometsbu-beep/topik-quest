@@ -79,6 +79,26 @@ test('sentence-order library example separates its full translation from teachin
   assert.equal(item.drill.writing, '한국어를 공부해요');
 });
 
+test('sentence-omission keeps full Japanese translations separate from omission coaching', () => {
+  const item = loadData().lessons.find(lesson => lesson.id === 'sentence-omission');
+  assert.match(item.goal.ja, /文脈/u);
+  assert.match(item.goal.ja, /主語や目的語/u);
+  assert.match(item.goal.ja, /明らか/u);
+  assert.equal(item.examples[0].meaning.ja, 'A：どこへ行きますか。B：会社へ行きます。');
+  assert.equal(item.examples[1].meaning.ja, 'A：ご飯は食べましたか。B：はい、食べました。');
+  assert.doesNotMatch(item.examples[0].meaning.ja, /省略/u);
+  assert.doesNotMatch(item.examples[1].meaning.ja, /文脈/u);
+  localized(item.examples[0].note, 'sentence-omission.subject-example.note');
+  localized(item.examples[1].note, 'sentence-omission.object-example.note');
+  assert.match(item.examples[0].note.ja, /主語/u);
+  assert.match(item.examples[0].note.ja, /저는/u);
+  assert.match(item.examples[1].note.ja, /目的語/u);
+  assert.match(item.examples[1].note.ja, /밥을/u);
+  assert.match(item.drill.coach.ja, /文脈/u);
+  assert.match(item.drill.coach.ja, /省略/u);
+  assert.equal(Array.from(item.drill.writing).filter(character => /[가-힣]/u.test(character)).length, 7);
+});
+
 test('high-risk conjugations keep reviewed answers and exceptions explicit', () => {
   const byId = Object.fromEntries(loadData().lessons.map(item => [item.id, item]));
   const answers = {
