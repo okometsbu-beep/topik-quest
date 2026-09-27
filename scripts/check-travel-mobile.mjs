@@ -938,6 +938,22 @@ try{
     for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertRandomPracticeFits(`reported meeting item ${theme} ${width}px`,theme)}
     await setViewport(390,844);await evaluate(`document.querySelector('.malbitRandomExplanation').scrollIntoView({block:'center',behavior:'auto'})`);await shot(`00renewal-reported-grammar-${lang}-${theme}.png`);
   }
+  // The reported TOPIK I purpose item must retain distinct distractor coaching in both themes.
+  for(const [lang,theme] of [['ko','light'],['ko','dark'],['ja','light'],['ja','dark']]){
+    await evaluate(`(()=>{S.lang='${lang}';S.view='infinity';S.infinity={active:true,examLevel:1,count:0,graded:0,correct:0,writing:0,totalSec:0,targetSec:0,last:null,feedback:null,seenIds:[],current:{type:'read',id:179,bankId:'M09-I-R-34',choiceOrder:[1,3,2,0]}};save();render();malbitSetTheme('${theme}')})()`);await sleep(200);
+    const choice=await evaluate(`MALBIT_BANK.present('M09-I-R-34',[1,3,2,0]).answerIndex`);
+    await tap('.choice',choice,100);await tap('.choice',choice,200);await tap('.malbitExplanationToggle',0,100);
+    const copy=await evaluate(`document.querySelector('.malbitRandomExplanation')?.innerText`);
+    assert.match(copy,/위해서/u);assert.match(copy,/부터/u);assert.match(copy,/처럼/u);assert.match(copy,/때문에만/u);
+    assert.match(copy,lang==='ko'?/시작점/u:/始点/u);assert.match(copy,lang==='ko'?/유사/u:/類似/u);assert.match(copy,lang==='ko'?/오직 그것 때문/u:/それだけが理由/u);
+    if(lang==='ko')assert.equal(await evaluate(`(()=>{const el=document.querySelector('.malbitQuestionTranslation');return !!el&&el.getClientRects().length>0&&getComputedStyle(el).visibility!=='hidden'})()`),false,'Korean purpose item must not duplicate the original as a translation');
+    if(lang==='ja'){
+      const translated=await evaluate(`({status:document.querySelector('.malbitQuestionTranslation').dataset.translationStatus,text:document.querySelector('.malbitQuestionTranslation p').innerText})`);
+      assert.equal(translated.status,'reviewed');assert.match(translated.text,/友達に会うためにカフェへ行きました/u);assert.match(translated.text,/1\. 부터 — 〜から/u);
+    }
+    for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertRandomPracticeFits(`M09 purpose item ${lang} ${theme} ${width}px`,theme)}
+    await setViewport(390,844);await evaluate(`document.querySelector('.malbitRandomExplanation').scrollIntoView({block:'center',behavior:'auto'})`);await shot(`00renewal-purpose-${lang}-${theme}.png`);
+  }
   await evaluate(`S.lang='ja';malbitSetTheme('dark')`);
 
   await evaluate(`S.infinity=null;S.view='home';save();render()`);await sleep(300);
