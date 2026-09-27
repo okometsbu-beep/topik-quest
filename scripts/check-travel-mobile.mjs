@@ -803,6 +803,29 @@ try{
     if(width===390)await shot(`00renewal-beginner-grammar-writing-resume-${theme}-${width}.png`)
   }}
 
+  for(let unit=1;unit<8;unit++){
+    const wrote=await evaluate(`(()=>{const canvas=document.querySelector('#malbitGrammarCanvas'),r=canvas.getBoundingClientRect(),point=(type,x,y)=>canvas.dispatchEvent(new PointerEvent(type,{bubbles:true,cancelable:true,pointerId:1,pointerType:'touch',clientX:r.left+x,clientY:r.top+y}));point('pointerdown',r.width*.3,r.height*.3);point('pointermove',r.width*.7,r.height*.7);point('pointerup',r.width*.7,r.height*.7);return malbitGrammarWritingDone()})()`);
+    assert.equal(wrote,true,`first grammar handwriting unit ${unit+1} did not save`);await sleep(60);
+  }
+  assert.deepEqual(await evaluate(`(()=>{const value=JSON.parse(localStorage.getItem('malbitBeginnerV1')),next=document.querySelector('.bgLessonNav button:last-child');return{completed:value.grammarV1.completed,quiz:value.grammarV1.quizCorrect['sentence-order'],writing:value.grammarV1.writingDone['sentence-order'],hero:document.querySelector('.bgLessonHero small')?.textContent,finish:document.querySelector('.bgLessonFinish.complete p')?.textContent,nextDisabled:next?.disabled,nextLabel:next?.textContent.trim()}})()`),{completed:['sentence-order'],quiz:true,writing:true,hero:'✓ COMPLETE',finish:'この文法を完了しました。次へ進みましょう。',nextDisabled:false,nextLabel:'次へ ›'},'the first grammar completion state must expose an enabled Japanese next-learning CTA');
+  for(const theme of ['light','dark']){await evaluate(`malbitSetTheme('${theme}')`);await sleep(80);for(const width of [320,375,390,430]){
+    await setViewport(width,width===320?700:844);await assertBeginnerGrammarFits(`First grammar complete ${theme} ${width}px`,theme);
+    await evaluate(`document.querySelector('.bgLessonFinish').scrollIntoView({block:'center',behavior:'auto'})`);await sleep(60);
+    if(width===390)await shot(`00renewal-beginner-grammar-first-complete-${theme}-${width}.png`)
+  }}
+  await tap('.bgLessonNav button:last-child',0,120);
+  assert.equal(await evaluate(`document.querySelector('.bgHeader h1')?.textContent`),'文脈による主語・目的語の省略','the completion CTA must open the second grammar item, not repeat the first');
+  await evaluate(`malbitGrammarBack()`);await sleep(100);
+  assert.equal(await evaluate(`document.querySelector('.bgResume b')?.textContent`),'文脈による主語・目的語の省略','the catalog next-learning CTA must point to the second grammar item');
+  assert.match(await evaluate(`document.querySelector('.bgLessonRow.done')?.textContent||''`),/基本語順 S-O-V[\s\S]*完了/,'the completed first grammar item must remain visibly marked in the catalog');
+  await evaluate(`setView('home')`);await sleep(100);
+  await send('Page.reload',{ignoreCache:true});await ready();
+  for(let i=0;i<100&&!(await evaluate(`typeof tqSetLearningPath==='function'`));i++)await sleep(100);
+  await evaluate(`tqSetLearningPath('beginner');setView('beginner')`);await sleep(120);await tap('.bgLaunch',0,120);
+  assert.equal(await evaluate(`document.querySelector('.bgResume b')?.textContent`),'文脈による主語・目的語の省略','reload must preserve the next grammar destination');
+  await tap('.bgResume',0,120);
+  assert.equal(await evaluate(`document.querySelector('.bgHeader h1')?.textContent`),'文脈による主語・目的語の省略','the restored next-learning CTA must not repeat the completed first item');
+
   await evaluate(`malbitGrammarLesson('copula')`);await sleep(120);
   assert.deepEqual(await evaluate(`({variants:document.querySelectorAll('.bgVariant').length,examples:document.querySelectorAll('.bgExample').length,canvas:!!document.querySelector('#malbitGrammarCanvas'),input:!!document.querySelector('#malbitGrammarAnswer')})`),{variants:2,examples:2,canvas:true,input:true},'grammar lesson must show rules, examples, typing, and handwriting');
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertBeginnerGrammarFits(`Beginner grammar lesson dark ${width}px`,'dark')}
