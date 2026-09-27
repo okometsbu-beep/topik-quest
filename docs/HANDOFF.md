@@ -731,3 +731,18 @@ round trip.
 - 2026-09-27 후보 271a04e: 전체 155/155, 모바일/오프라인/타일 검사 성공.
   CI 36289452148은 모든 검사·증거 업로드 성공 후 5분 제한으로 cancelled.
   검사를 삭제하지 않고 job 한도만 8분으로 조정한다. 최종 병합/배포 증거는 #197에서 확인.
+## 2026-09-28 v143 M09 purpose coaching
+
+- Production v143 fixes only `M09-I-R-34`: `위해서` is purpose via `V-기 위해서`; `부터`,
+  `처럼`, and `때문에만` now have distinct start-point, similarity, and cause-plus-restriction
+  traps in ko/ja/en/zh, followed by a reusable purpose-vs-cause method.
+- Original item ID, answer, bank, durable roots, and modes are unchanged. Local and CI checks pass
+  155/155 with runtime v143 (49 files) and valid bank hashes. Chrome emulation covers ko/ja,
+  light/dark, and 320/375/390/430px; four representative 390px frames were manually reviewed.
+- PR #199 squash `c9f6df6610dd829d575f26c377b5a3b02c705a17`; PR CI `36330127258`, main CI
+  `36330472495`, and Pages `36330472634` pass. Live core/explanation hashes match main. Rollback:
+  v142 `9496f84c7f0a405cf1311e3f8e8a8aa78cdd5a7c`.
+- One branch attempt lost the Chrome target; the unchanged retry passed and is the evidence. Physical
+  iPhone/Android, native Japanese/educator review, and real learner 10-minute/D1/D7 recall remain unverified.
+- Next bounded task: if no P0 or answer error appears, verify ja-JP first grammar completion advances
+  completion state and the next-learning CTA instead of repeating the same item.
