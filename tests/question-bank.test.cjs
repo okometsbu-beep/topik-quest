@@ -139,6 +139,20 @@ assert.match(idiomQuestion.explanationI18n.ko, /잠깐 쉴 틈도 없을 만큼/
 assert.match(idiomQuestion.explanationI18n.ja, /慣用句全体/u);
 assert.match(idiomQuestion.explanationI18n.ja, /タイプ別の解き方/u);
 
+const purposeQuestion=bank.present('M09-I-R-34',[1,3,2,0]);
+assert.deepEqual(Array.from(purposeQuestion.choices),['부터','처럼','위해서','때문에만']);
+assert.equal(purposeQuestion.answerIndex,2);
+for(const lang of ['ko','ja','en','zh']){
+  assert.match(purposeQuestion.explanationI18n[lang],/위해서/u,`M09-I-R-34 ${lang} should name the purpose marker`);
+  const wrong=purposeQuestion.choices.map((choice,index)=>choice==='위해서'?null:purposeQuestion.choiceExplanationsI18n[lang][index]).filter(Boolean);
+  assert.equal(new Set(wrong).size,3,`M09-I-R-34/${lang}: each shuffled distractor needs its own rationale`);
+}
+assert.match(purposeQuestion.explanationI18n.ko,/V-기 위해서/u);
+assert.match(purposeQuestion.explanationI18n.ja,/目的と原因/u);
+assert.match(purposeQuestion.choiceExplanationsI18n.ko[purposeQuestion.choices.indexOf('부터')],/시작점/u);
+assert.match(purposeQuestion.choiceExplanationsI18n.ja[purposeQuestion.choices.indexOf('처럼')],/類似/u);
+assert.match(purposeQuestion.choiceExplanationsI18n.ko[purposeQuestion.choices.indexOf('때문에만')],/오직 그것 때문/u);
+
 const entranceQuestion = bank.present('M11-I-R-37', [2, 0, 3, 1]);
 for(const id of ['M04-II-R-02','M05-II-R-01','M10-II-R-02','M11-II-R-01']){
   const presented=bank.present(id,[3,1,0,2]);
