@@ -34,7 +34,7 @@ function runtime(seed = {}) {
     if (file === 'beginner-grammar.js') {
       source = source.replace(
         'refreshCompletion};',
-        'refreshCompletion,currentWritingIndex:()=>writingIndex};'
+        'refreshCompletion,nextIncomplete,draftResume,currentWritingIndex:()=>writingIndex};'
       );
     }
     vm.runInContext(source, context, { filename: file });
@@ -68,6 +68,23 @@ test('grammar completion requires both transformation and handwriting', () => {
   assert.deepEqual(Array.from(value.grammarV1.completed), ['copula']);
   assert.deepEqual(value.legacyReadingProgress, ['r1']);
   assert.deepEqual(value.known, ['v:ㅏ']);
+});
+
+test('a completed first lesson resumes at the next grammar item', () => {
+  const firstLessonComplete = {
+    grammarV1: {
+      completed: ['sentence-order'],
+      quizCorrect: { 'sentence-order': true },
+      writingDone: { 'sentence-order': true },
+      lastLesson: 'sentence-order',
+      drafts: {}
+    }
+  };
+  const { context } = runtime({ malbitBeginnerV1: JSON.stringify(firstLessonComplete) });
+  const api = context.MALBIT_BEGINNER_GRAMMAR_INTERNALS;
+
+  assert.equal(api.nextIncomplete().id, 'sentence-omission');
+  assert.equal(api.draftResume().id, 'sentence-omission');
 });
 
 test('opening the course preserves old beginner data', () => {
