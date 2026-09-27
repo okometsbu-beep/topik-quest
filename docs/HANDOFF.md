@@ -746,3 +746,23 @@ round trip.
   iPhone/Android, native Japanese/educator review, and real learner 10-minute/D1/D7 recall remain unverified.
 - Next bounded task: if no P0 or answer error appears, verify ja-JP first grammar completion advances
   completion state and the next-learning CTA instead of repeating the same item.
+
+## 2026-09-28 v143 first grammar completion continuity
+
+- A clean ja-JP Chrome journey now completes every requirement in `sentence-order`: transformation,
+  quiz, and all eight handwriting units. It asserts the completion banner and enabled `次へ`, opens
+  `sentence-omission`, then verifies the catalog and hard-reload re-entry keep that second lesson as
+  the next target instead of repeating the completed first lesson.
+- No runtime defect reproduced, so product files, item IDs, durable roots, and public version remain
+  v143. PR #201 squash `2132a7e31f80a6fb6ea18bea563775a84c4cf6e8` changes tests only.
+- Local and PR CI checks pass 156/156 with runtime v143 (49 files) and valid bank hashes. GitHub Ubuntu
+  headless Chrome covers 320/375/390/430px in light and dark; the 390px completion frames were directly
+  reviewed. Pages and live HTTP smoke pass at v143 with 4 base and 49 runtime files.
+- One initial assertion still expected only the later copula completion and was corrected to preserve
+  both completed IDs. One PR attempt and the first main attempt lost the Chrome target; unchanged reruns
+  are retained as the final evidence, not the failed attempts.
+- Physical iPhone/Android, native Japanese/educator review, and real learner 10-minute/D1/D7 recall
+  remain unverified. Narrow rollback is a revert of #201; product rollback remains v142
+  `9496f84c7f0a405cf1311e3f8e8a8aa78cdd5a7c`.
+- Next bounded task: if no P0 or answer error appears, audit only `sentence-omission` Japanese goals,
+  examples, coaching, transformation, and handwriting workload before any content expansion.
