@@ -948,7 +948,7 @@ try{
     await tap('.choice',choice,100);await tap('.choice',choice,200);
     const copy=await evaluate(`document.querySelector('.t1TutorCoach')?.innerText`);
     assert.match(copy,/위해서/u);assert.match(copy,/부터/u);assert.match(copy,/처럼/u);assert.match(copy,/때문에만/u);
-    assert.match(copy,lang==='ko'?/시작점/u:/始点/u);assert.match(copy,lang==='ko'?/유사/u:/類似/u);assert.match(copy,lang==='ko'?/오직 그것 때문/u:/それだけが理由/u);
+    assert.match(copy,lang==='ko'?/시작점/u:/始点/u);assert.match(copy,lang==='ko'?/유사/u:/類似/u);assert.match(copy,lang==='ko'?/원인에 “오직”이라는 제한/u:/原因に「それだけ」という限定/u);
     if(lang==='ko')assert.equal(await evaluate(`(()=>{const el=document.querySelector('.malbitQuestionTranslation');return !!el&&el.getClientRects().length>0&&getComputedStyle(el).visibility!=='hidden'})()`),false,'Korean purpose item must not duplicate the original as a translation');
     if(lang==='ja'){
       const translated=await evaluate(`({status:document.querySelector('.malbitQuestionTranslation').dataset.translationStatus,text:document.querySelector('.malbitQuestionTranslation p').innerText})`);
