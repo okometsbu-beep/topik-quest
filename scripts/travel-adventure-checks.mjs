@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 
 // Synthetic interaction fixtures. These are browser regressions, never learner outcomes.
 export async function verifyAdventure({evaluate,tap,shot,setViewport,send,ready,sleep}){
- const reload=async()=>{const previous=await evaluate('performance.timeOrigin');await send('Page.reload',{ignoreCache:true});let changed=false;for(let i=0;i<100;i++){try{changed=await evaluate('performance.timeOrigin')!==previous}catch{}if(changed)break;await sleep(50)}assert.ok(changed,'reload must reach a new document');await ready();};
+ const reload=async(ignoreCache=true)=>{const previous=await evaluate('performance.timeOrigin');await send('Page.reload',{ignoreCache});let changed=false;for(let i=0;i<100;i++){try{changed=await evaluate('performance.timeOrigin')!==previous}catch{}if(changed)break;await sleep(50)}assert.ok(changed,'reload must reach a new document');await ready();};
  const fit=async(label)=>{
   const result=await evaluate(`(()=>{const sc=document.querySelector('.adventureScreen');return{overflow:document.documentElement.scrollWidth-innerWidth,buttons:[...sc.querySelectorAll('button')].filter(b=>b.getBoundingClientRect().height>0).every(b=>b.getBoundingClientRect().height>=44),nav:getComputedStyle(document.querySelector('.bottom')).display,active:document.querySelector('#nav_travel')?.getAttribute('aria-current'),images:[...sc.querySelectorAll('img')].every(i=>i.complete&&i.naturalWidth>0)}})()`);
   assert.ok(result.overflow<=1,`${label}: overflow ${result.overflow}`);assert.ok(result.buttons,`${label}: touch targets`);assert.notEqual(result.nav,'none');assert.equal(result.active,'page');assert.ok(result.images,`${label}: image load`);
@@ -55,10 +55,14 @@ export async function verifyAdventure({evaluate,tap,shot,setViewport,send,ready,
  for(const theme of ['light','dark']){await evaluate(`malbitSetTheme('${theme}')`);for(const width of [320,375,390,430]){await setViewport(width,844);await fit(`recall ${theme} ${width}`)}await setViewport(390,844);await shot(`adventure-recall-${theme}.png`)}
  await tap('.adventureScreen>.advPrimary');await tap('.advRecallActions .advSecondary');
  assert.equal(await evaluate(`JSON.parse(localStorage.getItem('malbitStoryV1')).adventureV1.levels[2].recall['ADV-II-01'].selfReportedRecall`),false);
- console.log('Haruman offline cache',await evaluate(`(async()=>({controller:!!navigator.serviceWorker.controller,keys:await caches.keys(),images:await Promise.all(HARUMAN.emotions.map(async e=>({emotion:e,cached:!!await caches.match('assets/art/haruman/'+e+'-v1.webp')})))}))()`));
+ // Hard reload deliberately bypasses the worker; return to an ordinary visit before
+ // asserting the installed PWA's offline behavior. Do not suppress request errors.
+ await reload(false);
+ assert.equal(await evaluate(`!!navigator.serviceWorker.controller`),true,'offline visit must be controlled');
+ assert.equal(await evaluate(`(async()=> (await Promise.all(HARUMAN.emotions.map(e=>caches.match('assets/art/haruman/'+e+'-v1.webp')))).every(Boolean))()`),true,'all mascot cuts must be cached');
  // The previously visited scenes and packaged translations keep working when offline.
  await send('Network.emulateNetworkConditions',{offline:true,latency:0,downloadThroughput:0,uploadThroughput:0});
- for(const lang of ['ko','ja','en','zh']){await evaluate(`S.lang='${lang}';harumalAdventureStart(1)`);assert.ok(await evaluate(`!!document.querySelector('.advFinish')`));await tap('.advFinish .advPrimary');assert.ok(await evaluate(`!!document.querySelector('#advDraft')`))}
+ for(const lang of ['ko','ja','en','zh']){await evaluate(`S.lang='${lang}';harumalAdventureStart(1)`);assert.ok(await evaluate(`!!document.querySelector('.advFinish')`));await sleep(100);assert.equal(await evaluate(`document.querySelector('.advFinish [data-haruman] img')?.naturalWidth`),320,'offline celebration image');await tap('.advFinish .advPrimary');assert.ok(await evaluate(`!!document.querySelector('#advDraft')`))}
  await send('Network.emulateNetworkConditions',{offline:false,latency:0,downloadThroughput:-1,uploadThroughput:-1});
  await evaluate(`S.lang='ja';setView('home')`);await setViewport(390,844);
 }
