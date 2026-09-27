@@ -1,3 +1,19 @@
+## 2026-09-28 v143 입문 문법 첫 완주 → 다음 학습 계약
+
+- clean ja-JP 상태에서 첫 문법 `sentence-order`의 변형·퀴즈·손쓰기 8/8을 끝낸 뒤
+  완료 표시와 `次へ`가 두 번째 문법 `sentence-omission`으로 이동하는 실제 Chrome 경로를 고정했다.
+  오늘 화면의 다음 학습 카드·목록 완료 표시·hard reload 뒤 재진입도 같은 다음 항목을 가리킨다.
+- 제품 결함은 재현되지 않아 런타임·문항·저장 스키마·공개 버전은 v143 그대로다. PR #201 squash
+  `2132a7e31f80a6fb6ea18bea563775a84c4cf6e8`는 테스트만 보강했다.
+- 로컬과 PR CI에서 전체 156/156, v143 런타임 49개, 원본 은행 해시를 통과했다. GitHub Ubuntu의
+  headless Chrome에서 320/375/390/430px×라이트/다크 완료 상태를 검사했고 390px 두 테마 화면을
+  직접 확인했다. 실제 iPhone/Android·일본어 모어 화자·실제 학습자의 10분/D1/D7 회상은 미검증이다.
+- 배포 자산 변경은 없다. Pages와 공개 HTTP smoke(v143, 기본 4개+런타임 49개)는 성공했다.
+  좁은 되돌리기는 #201 revert이며 제품 복귀 기준은 v142
+  `9496f84c7f0a405cf1311e3f8e8a8aa78cdd5a7c`다.
+- 다음 한 작업: 새 P0·정답 오류가 없으면 두 번째 입문 문법 `sentence-omission`의 일본어 목표·예문·
+  코칭과 변형/손쓰기 부담을 한 항목만 교육 품질 관점에서 검수한다.
+
 ## 2026-09-27 하루만 이모션 후보 v142 · #197
 
 - 추가 검증: 전체 자동검사 155/155 및 전용 모바일 화면 30장 확인. 첫 CI의 오프라인 오류 4건은
@@ -85,7 +101,7 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 모바일: GitHub Actions Ubuntu/Node22/Chrome 에뮬레이션 320/375/390/430px×두 테마, 터치·회상 초안 새로고침·여행 복귀·기존 경로·콘솔 검사. 홈/회상 8조합과 여행/Random Practice 주요 화면 직접 확인. 실제 기기 증거와 구별한다.
 - 최종 화면 검수로 “뿐더러 형태상 불가”와 “바람에→風の中で” 오류를 발견·수정. 동일 문법 4문항의 ja/en/zh 문맥 번역과 실제 섞인 보기 순서의 뜻을 제공한다. 전체 은행의 자동번역 정확성 인증은 아니다.
 - 최종 v132: PR #174 squash `c4045c8358acbfb505c9df01d70dbaa3c5e026e3`. 최종 PR CI `36075457096`(177장, 일본어 문맥 번역 직접 확인), main CI `36075858880`, Pages `36075858066` 성공. 앞의 후보 검사는 이 최종 증거로 대체한다.
-- 현재 production: v140, PR #190 `cfb0209eac2f983abfc70c02eb3e5f02679da864`, https://okometsbu-beep.github.io/topik-quest/ . 제품 PR CI `36251060265`; 손쓰기 재진입 회귀 PR #193 `6e9c868280aa14dd0e51acbc66be23d755b13a41`, 최종 main CI `36272893017`, Pages `36272892547` 성공.
+- 현재 production: v143, PR #199 `c9f6df6610dd829d575f26c377b5a3b02c705a17`, https://okometsbu-beep.github.io/topik-quest/ . 첫 문법 완주→다음 학습 계약은 테스트 PR #201 `2132a7e31f80a6fb6ea18bea563775a84c4cf6e8`로 고정했으며 공개 자산 변경은 없다.
 - v136은 저장 상태가 없는 첫 방문에서 `navigator.languages`의 첫 지원 언어
   (ko/ja/en/zh)를 선택하고 지원하지 않는 언어는 한국어로 안전하게 되돌린다. 저장된 언어·게임·단어장
   기록은 계속 브라우저 설정보다 우선한다. 실패 테스트로 ja-JP의 기존 한국어 시작을 재현한 뒤 수정했다.
@@ -112,8 +128,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 - 실제 학습자 검증 계약: `docs/qa/beginner-validation-protocol.md`. 12명 표본, 10분 첫 성공,
   세 표현 10분/D1/D7 회상, 다음 학습·복습 발견, 실기기 iPhone/Android, 개입·결측·집계 규칙을
   고정했다. 모집·초대·관찰·연락처/결과 수집은 시작하지 않았고 사용자 승인 전 금지한다.
-- 다음 한 작업: 새 P0·정답 오류가 없으면 clean ja-JP 프로필에서 입문 문법 첫 항목을 완주한 뒤
-  완료 표시와 다음 학습 CTA가 같은 항목을 반복하지 않고 다음 문법으로 이어지는지 한 경로로 검증한다. 실제 학습자 검증은 사용자 승인 전 시작하지 않고
+- 다음 한 작업: 새 P0·정답 오류가 없으면 두 번째 입문 문법 `sentence-omission`의 일본어 목표·예문·
+  코칭과 변형/손쓰기 부담을 한 항목만 검수한다. 실제 학습자 검증은 사용자 승인 전 시작하지 않고
   문항 수·가상 사용자를 학습자 증거로 대체하지 않는다.
 
 ## 긴급 사용자 요청 · #129
@@ -137,8 +153,8 @@ Keep this file compact. Replace stale detail instead of appending an endless dia
 ## 현재 상태
 
 - Production: GitHub Pages static PWA
-- Production release: v140 · Japanese beginner grammar drafts survive exit/re-entry (`cfb0209eac2f983abfc70c02eb3e5f02679da864`)
-- Current priority: verify that completing the first Japanese beginner grammar lesson advances its CTA to the next lesson; no new question-count expansion
+- Production release: v143 · M09 purpose coaching (`c9f6df6610dd829d575f26c377b5a3b02c705a17`)
+- Current priority: audit the second Japanese beginner grammar lesson's teaching quality and workload; no new question-count expansion
 - Core content: 2,144 original items, including a 56-item set-0 practice expansion
 - Primary user: Japanese-speaking complete Korean beginner
 - First-session goal: Japanese beginner completes one appropriate learning step, recalls it, and finds review/next learning
