@@ -841,7 +841,7 @@ try{
     assert.equal(wrote,true,`handwriting unit ${unit+1} did not save`);await sleep(60);
   }
   const beginnerProgress=await evaluate(`(()=>{const value=JSON.parse(localStorage.getItem('malbitBeginnerV1'));return{known:value.known,legacyScore:value.legacyScore,completed:value.grammarV1.completed,quiz:value.grammarV1.quizCorrect.copula,writing:value.grammarV1.writingDone.copula}})()`);
-  assert.deepEqual(beginnerProgress,{known:['v:ㅏ'],legacyScore:7,completed:['copula'],quiz:true,writing:true},'grammar progress must nest without changing old beginner progress');
+  assert.deepEqual(beginnerProgress,{known:['v:ㅏ'],legacyScore:7,completed:['sentence-order','copula'],quiz:true,writing:true},'grammar progress must nest without changing old beginner progress');
   await evaluate(`document.querySelector('.bgWriting').scrollIntoView({block:'start',behavior:'auto'})`);await sleep(80);await shot('00bd-beginner-grammar-handwriting-complete.png');
   await evaluate(`S.view='home';save();render()`);await sleep(180);
 
