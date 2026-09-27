@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import assert from 'node:assert/strict';
+import {verifyHaruman} from './haruman-checks.mjs';
 import {verifyAdventure} from './travel-adventure-checks.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -636,6 +637,7 @@ try{
   assert.match(await evaluate(`document.querySelector('.tqLessonStart')?.textContent||''`),/入門学習を始める/,'the first primary CTA must be localized before language-menu use');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);await assertHomeFits('fresh Japanese browser Home light','light');await shot('00renewal-home-ja-locale-first-visit-light.png');
   await evaluate(`malbitSetTheme('dark')`);await sleep(100);await assertHomeFits('fresh Japanese browser Home dark','dark');await shot('00renewal-home-ja-locale-first-visit-dark.png');
+  await verifyHaruman({evaluate,tap,shot,setViewport,sleep});
   await verifyAdventure({evaluate,tap,shot,setViewport,send,ready,sleep});
   // Preserve old-course regressions through its explicit archive route, never the new default.
   legacyTravelChecks=true;await ready();

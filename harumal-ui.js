@@ -47,6 +47,6 @@ function shell(){
 }
 const originalShell=renderShell;renderShell=function(){const result=originalShell.apply(this,arguments);shell();return result};
 const base=render;
-render=function(){const result=base.apply(this,arguments);const sc=document.getElementById('screen');if(S.view==='learn')learn(sc);if(S.view==='more')personal(sc);shell();requestAnimationFrame(shell);return result};
+render=function(){const result=base.apply(this,arguments);const sc=document.getElementById('screen');if(S.view==='learn')learn(sc);if(S.view==='more')personal(sc);window.HARUMAN?.decorate(sc,S.view);shell();requestAnimationFrame(shell);return result};
 shell();
 })();

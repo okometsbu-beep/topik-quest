@@ -18,6 +18,8 @@ export async function verifyAdventure({evaluate,tap,shot,setViewport,send,ready,
  assert.equal(await evaluate(`document.querySelectorAll('.advLine').length`),3);assert.equal(await evaluate(`document.querySelectorAll('.advChoice small').length`),0);
  await tap('.advChoice',1);await tap('.advQuestion .advPrimary');
  assert.match(await evaluate(`document.querySelector('.advFeedback').innerText`),/15分遅れ/);
+ assert.equal(await evaluate(`document.querySelector('.advFeedback [data-haruman]')?.dataset.haruman`),'retry');
+ for(const theme of ['light','dark']){await evaluate(`malbitSetTheme('${theme}')`);for(const width of [320,375,390,430]){await setViewport(width,844);await fit(`retry mascot ${theme} ${width}`);await evaluate(`document.querySelector('.advFeedback').scrollIntoView({block:'start'})`);await shot(`haruman-retry-${width}-${theme}.png`)}}
  const storedBefore=await evaluate(`localStorage.getItem('malbitStoryV1')`);
  await reload();assert.equal(await evaluate(`localStorage.getItem('malbitStoryV1')`),storedBefore);
  assert.equal(await evaluate('S.view'),'travelAdventure','reload must restore the active adventure view');
@@ -42,6 +44,9 @@ export async function verifyAdventure({evaluate,tap,shot,setViewport,send,ready,
    await tap('.advFeedback .advPrimary',0,30);
   }
   assert.ok(await evaluate(`!!document.querySelector('.advFinish')`));
+  assert.equal(await evaluate(`document.querySelector('.advFinish [data-haruman]')?.dataset.haruman`),'celebrate');
+  if(level===2){for(const theme of ['light','dark']){await evaluate(`malbitSetTheme('${theme}')`);for(const width of [320,375,390,430]){await setViewport(width,844);await fit(`finish mascot ${theme} ${width}`);await shot(`haruman-finish-${width}-${theme}.png`)}}}
+
  }
  await tap('.advFinish .advPrimary');assert.equal(await evaluate(`document.querySelector('#advDraft').value`),'');
  assert.ok(!await evaluate(`document.querySelector('.advClue')`));
