@@ -39,7 +39,7 @@ try{
     const message=JSON.parse(typeof event.data==='string'?event.data:await event.data.text());
     if(message.id&&pending.has(message.id)){const handlers=pending.get(message.id);pending.delete(message.id);message.error?handlers.reject(new Error(message.error.message)):handlers.resolve(message.result)}
     if(message.method==='Runtime.exceptionThrown')errors.push(message.params.exceptionDetails.text||'runtime exception');
-    if(message.method==='Log.entryAdded'&&message.params.entry.level==='error')errors.push(message.params.entry.text);
+    if(message.method==='Log.entryAdded'&&message.params.entry.level==='error')errors.push(message.params.entry.text+' '+(message.params.entry.url||''));
   });
   let expectedNewDocument=false,lastReadyOrigin=null;
   const send=(method,params={})=>new Promise((resolve,reject)=>{if(method==='Page.reload'||method==='Page.navigate')expectedNewDocument=true;const callId=++id;pending.set(callId,{resolve,reject});socket.send(JSON.stringify({id:callId,method,params}))});

@@ -55,6 +55,7 @@ export async function verifyAdventure({evaluate,tap,shot,setViewport,send,ready,
  for(const theme of ['light','dark']){await evaluate(`malbitSetTheme('${theme}')`);for(const width of [320,375,390,430]){await setViewport(width,844);await fit(`recall ${theme} ${width}`)}await setViewport(390,844);await shot(`adventure-recall-${theme}.png`)}
  await tap('.adventureScreen>.advPrimary');await tap('.advRecallActions .advSecondary');
  assert.equal(await evaluate(`JSON.parse(localStorage.getItem('malbitStoryV1')).adventureV1.levels[2].recall['ADV-II-01'].selfReportedRecall`),false);
+ console.log('Haruman offline cache',await evaluate(`(async()=>({controller:!!navigator.serviceWorker.controller,keys:await caches.keys(),images:await Promise.all(HARUMAN.emotions.map(async e=>({emotion:e,cached:!!await caches.match('assets/art/haruman/'+e+'-v1.webp')})))}))()`));
  // The previously visited scenes and packaged translations keep working when offline.
  await send('Network.emulateNetworkConditions',{offline:true,latency:0,downloadThroughput:0,uploadThroughput:0});
  for(const lang of ['ko','ja','en','zh']){await evaluate(`S.lang='${lang}';harumalAdventureStart(1)`);assert.ok(await evaluate(`!!document.querySelector('.advFinish')`));await tap('.advFinish .advPrimary');assert.ok(await evaluate(`!!document.querySelector('#advDraft')`))}
