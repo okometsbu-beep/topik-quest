@@ -1,6 +1,7 @@
 {
   "name": "하루만",
   "identity": "Round apricot body, three attached rounded rays, bent tall centre ray, teal limbs; approved pre-ABC reference.",
+  "source": "assets/source/haruman-emotions-v1.png",
   "sourceSHA256": "4284322c983659d1e302ab073ad8d62e9a923dc8ea40ae4f5b7eec4d5a9665d6",
   "frames": [
     {
@@ -9,18 +10,12 @@
       "width": 320,
       "height": 320,
       "sourceRect": [
-        0,
-        0,
-        430,
-        505
+        31,
+        90,
+        423,
+        483
       ],
-      "trimRect": [
-        30,
-        89,
-        424,
-        484
-      ],
-      "bytes": 19242
+      "bytes": 18352
     },
     {
       "emotion": "thinking",
@@ -28,18 +23,12 @@
       "width": 320,
       "height": 320,
       "sourceRect": [
-        430,
-        0,
-        784,
-        505
+        442,
+        109,
+        714,
+        472
       ],
-      "trimRect": [
-        11,
-        108,
-        285,
-        473
-      ],
-      "bytes": 18422
+      "bytes": 17876
     },
     {
       "emotion": "correct",
@@ -47,18 +36,12 @@
       "width": 320,
       "height": 320,
       "sourceRect": [
-        784,
-        0,
-        1152,
-        505
+        821,
+        109,
+        1093,
+        471
       ],
-      "trimRect": [
-        36,
-        108,
-        368,
-        472
-      ],
-      "bytes": 20112
+      "bytes": 18854
     },
     {
       "emotion": "retry",
@@ -66,18 +49,12 @@
       "width": 320,
       "height": 320,
       "sourceRect": [
-        1152,
-        0,
-        1536,
-        505
+        1144,
+        216,
+        1513,
+        464
       ],
-      "trimRect": [
-        0,
-        215,
-        362,
-        465
-      ],
-      "bytes": 16238
+      "bytes": 14404
     },
     {
       "emotion": "celebrate",
@@ -85,18 +62,12 @@
       "width": 320,
       "height": 320,
       "sourceRect": [
-        0,
-        505,
-        430,
-        1024
+        23,
+        527,
+        394,
+        882
       ],
-      "trimRect": [
-        22,
-        21,
-        395,
-        378
-      ],
-      "bytes": 19728
+      "bytes": 19134
     },
     {
       "emotion": "encourage",
@@ -104,18 +75,12 @@
       "width": 320,
       "height": 320,
       "sourceRect": [
-        430,
-        505,
-        784,
-        1024
+        432,
+        533,
+        785,
+        902
       ],
-      "trimRect": [
-        1,
-        27,
-        354,
-        398
-      ],
-      "bytes": 21612
+      "bytes": 20752
     },
     {
       "emotion": "journey",
@@ -123,18 +88,12 @@
       "width": 320,
       "height": 320,
       "sourceRect": [
-        784,
-        505,
-        1152,
-        1024
+        779,
+        542,
+        1151,
+        902
       ],
-      "trimRect": [
-        0,
-        36,
-        368,
-        398
-      ],
-      "bytes": 20744
+      "bytes": 19484
     },
     {
       "emotion": "rest",
@@ -142,18 +101,12 @@
       "width": 320,
       "height": 320,
       "sourceRect": [
-        1152,
-        505,
-        1536,
-        1024
+        1224,
+        630,
+        1503,
+        904
       ],
-      "trimRect": [
-        71,
-        124,
-        352,
-        400
-      ],
-      "bytes": 19626
+      "bytes": 18582
     }
   ]
 }
