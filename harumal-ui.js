@@ -1,14 +1,24 @@
 // HARUMAL navigation and learning hub. Existing learning engines and storage own all progress.
 (function(){
 'use strict';
-const labels={ko:['오늘','학습','여행','복습','내 기록'],ja:['今日','学ぶ','旅','復習','マイ'],en:['Today','Learn','Travel','Review','My'],zh:['今天','学习','旅行','复习','我的']};
-const tabs=['home','learn','travel','review','more'];
-const paths=['M3 10 12 3l9 7v11H3z M9 21v-8h6v8','M3 4h7l2 2 2-2h7v16h-7l-2 2-2-2H3z M12 6v16','m12 3 8 18-8-4-8 4z','M4 9a8 8 0 1 1 0 7 M4 3v6h6','M16 7a4 4 0 1 1-8 0 4 4 0 1 1 8 0 M4 21v-3a8 8 0 0 1 16 0v3'];
+const labels={ko:['오늘','학습','단어장','복습','내 기록'],ja:['今日','学ぶ','単語帳','復習','マイ'],en:['Today','Learn','Words','Review','My'],zh:['今天','学习','单词本','复习','我的']};
+const tabs=['home','learn','vocab','review','more'];
+const paths=['M3 10 12 3l9 7v11H3z M9 21v-8h6v8','M3 4h7l2 2 2-2h7v16h-7l-2 2-2-2H3z M12 6v16','M7 3h14v16H7z M3 7v14h14 M10 8h8 M10 12h6','M4 9a8 8 0 1 1 0 7 M4 3v6h6','M16 7a4 4 0 1 1-8 0 4 4 0 1 1 8 0 M4 21v-3a8 8 0 0 1 16 0v3'];
 const L=(ko,ja,en,zh)=>({ko,ja,en,zh}[S.lang]||en);
+// Inline flags stay visible on desktop systems that do not support flag emoji.
+function languageFlag(lang){
+ const symbols={ko:'🇰🇷',ja:'🇯🇵',en:'🇺🇸',zh:'🇨🇳'};
+ const star=(x,y,r)=>`<path d="${Array.from({length:10},(_,i)=>{const a=i*Math.PI/5-Math.PI/2,n=i%2?r*.4:r;return `${i?'L':'M'}${x+Math.cos(a)*n},${y+Math.sin(a)*n}`}).join('')}Z"/>`;
+ const art={ja:'<circle cx="18" cy="12" r="7" fill="#bc002d"/>',
+  en:`<path stroke="#b22234" stroke-width="1.85" d="${[0,1,2,3,4,5,6].map(i=>`M0 ${.92+i*3.69}h36`).join(' ')}"/><path fill="#3c3b6e" d="M0 0h15v13H0z"/><g fill="white">${Array.from({length:9},(_,row)=>Array.from({length:row%2?5:6},(_,col)=>star(1.2+col*2.5+(row%2?1.25:0),1+row*1.4,.65)).join('')).join('')}</g>`,
+  zh:`<path fill="#de2910" d="M0 0h36v24H0z"/><g fill="#ffde00">${star(7,7,3.6)}${[[13,3],[15,6],[15,10],[12,13]].map(([x,y])=>star(x,y,1.3)).join('')}</g>`,
+  ko:'<circle cx="18" cy="12" r="5.5" fill="#0047a0"/><path d="M12.5 12a5.5 5.5 0 0 1 11 0a2.75 2.75 0 0 1-5.5 0a2.75 2.75 0 0 0-5.5 0" fill="#cd2e3a"/><g stroke="#161616" stroke-width="1"><path transform="rotate(-55 8 6)" d="M5 4h6M5 6h6M5 8h6"/><path transform="rotate(55 28 6)" d="M25 4h2.5m1 0H31M25 6h6M25 8h2.5m1 0H31"/><path transform="rotate(55 8 18)" d="M5 16h6M5 18h2.5m1 0H11M5 20h6"/><path transform="rotate(-55 28 18)" d="M25 16h2.5m1 0H31M25 18h2.5m1 0H31M25 20h2.5m1 0H31"/></g>'};
+ return `<svg class="harumalFlag" viewBox="0 0 36 24" aria-hidden="true"><title>${symbols[lang]||symbols.en}</title><rect width="36" height="24" fill="white"/>${art[lang]||art.en}</svg>`;
+}
 const icon=i=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${paths[i]}"/></svg>`;
-function activeTab(view){return view==='home'?'home':['travel','travelAdventure','travelAdventureReview','travelLegacy','travelPlay','travelRecall'].includes(view)?'travel':view==='review'?'review':['more','stats','vocab'].includes(view)?'more':'learn'}
+function activeTab(view){return view==='home'?'home':['travel','travelAdventure','travelAdventureReview','travelLegacy','travelPlay','travelRecall'].includes(view)?'home':view==='review'?'review':['vocab','vocabEditor','vocabTest'].includes(view)?'vocab':['more','stats'].includes(view)?'more':'learn'}
 window.HARUMAL_UI=Object.freeze({activeTab});
-window.harumalGo=function(view){if(!tabs.includes(view))return;if(view==='travel')tqStartMode('travel');else setView(view)};
+window.harumalGo=function(view){if(!tabs.includes(view))return;setView(view)};
 window.harumalCourse=function(path){if(path==='beginner'){tqSetLearningPath('beginner');setView('beginner')}else if(path==='topik1'||path==='topik2'){tqSetLevel(path==='topik2'?2:1);setView('home')}};
 function card(symbol,title,copy,action,extra=''){return `<button class="harumalCourse ${extra}" onclick="${action}"><i aria-hidden="true">${symbol}</i><span><b>${title}</b><small>${copy}</small></span><em aria-hidden="true">↗</em></button>`}
 function learn(sc){
@@ -32,13 +42,15 @@ function personal(sc){
  sc.insertAdjacentHTML('afterbegin',`<section class="harumalPersonal"><header class="harumalPageHead"><small>HARUMAL / ${L('내 기록','マイ','MY LEARNING','我的学习')}</small><h1>${L('쌓여가는 나의 한국어','少しずつ、私の韓国語に。','Your Korean, growing daily','一点一滴，积累韩语')}</h1><p>${L('학습 기록은 이 기기에 저장돼요.','学習記録はこの端末に保存されます。','Your progress is stored on this device.','学习记录保存在此设备上。')}</p></header><div class="harumalPracticeGrid">${card('▤',L('내 단어장','単語帳','Vocabulary','单词本'),L(`${vocab}개 저장`,`${vocab}語を保存`,`${vocab} saved`,`${vocab}个已保存`),"setView('vocab')")}${card('↗',L('학습 기록','学習記録','Learning record','学习记录'),L('실제 연습 기록 보기','練習の記録を見る','See your practice history','查看练习记录'),"setView('stats')")}</div></section>`);
 }
 function shell(){
+ document.documentElement.lang=S.lang==='zh'?'zh-CN':S.lang;
  document.body.classList.add('harumal');document.body.classList.toggle('harumal-hub',['home','learn','more','vocab','stats','review'].includes(S.view));
  const nav=document.querySelector('.nav');if(!nav)return;
  const selected=activeTab(S.view),names=labels[S.lang]||labels.en;
  const key=`${S.lang}:${selected}`;
  if(nav.dataset.harumal!==key){nav.innerHTML=tabs.map((id,i)=>`<button type="button" id="nav_${id}" class="${id===selected?'active':''}" ${id===selected?'aria-current="page"':''} onclick="harumalGo('${id}')">${icon(i)}<span>${names[i]}</span></button>`).join('');nav.dataset.harumal=key}
  nav.querySelectorAll('button').forEach((button,i)=>{const label=button.querySelector('span');if(label)label.textContent=names[i];const active=button.id==='nav_'+selected;button.classList.toggle('active',active);if(active)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current')});
- for(const language of document.querySelectorAll('.tqLang,#flagBtn'))language.textContent=({ko:'한국어',ja:'日本語',en:'English',zh:'中文'}[S.lang]||'English')+' ⌄';
+ for(const language of document.querySelectorAll('.tqLang,#flagBtn')){language.innerHTML=languageFlag(S.lang);language.setAttribute('aria-label',L('설명 언어 변경','説明言語を変更','Change explanation language','更改说明语言')+' · '+({ko:'한국어',ja:'日本語',en:'English',zh:'中文'}[S.lang]||'English'));language.setAttribute('aria-haspopup','true');}
+ for(const option of document.querySelectorAll('.flagOpt')){const flag=option.querySelector('.flag');if(flag)flag.innerHTML=languageFlag(option.dataset.lang)}
  const badge=document.querySelector('.top .brand');if(badge)badge.textContent='하';
  const title=document.querySelector('.top .title b');if(title)title.textContent='하루말 · HARUMAL';
  document.title=`하루말 · ${names[tabs.indexOf(selected)]}`;

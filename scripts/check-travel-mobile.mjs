@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import assert from 'node:assert/strict';
+import {verifyHomeVocabulary} from './home-vocabulary-checks.mjs';
 import {verifyHaruman} from './haruman-checks.mjs';
 import {verifyAdventure} from './travel-adventure-checks.mjs';
 import fs from 'node:fs';
@@ -8,12 +9,12 @@ import {spawn} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
-const out=path.join(root,'artifacts','travel-mobile');
+const out=path.join(root,'artifacts',process.env.HARUMAL_FOCUS_ONLY?'home-vocabulary':'travel-mobile');
 fs.mkdirSync(out,{recursive:true});
 for(const file of fs.readdirSync(out))if(file.endsWith('.png'))fs.unlinkSync(path.join(out,file));
 const chromePath=[process.env.CHROME_PATH,'/usr/bin/google-chrome','/usr/bin/google-chrome-stable','/usr/bin/chromium','/usr/bin/chromium-browser'].find(candidate=>candidate&&fs.existsSync(candidate));
 assert.ok(chromePath,'Chrome/Chromium not found; set CHROME_PATH to the browser executable');
-const server=spawn(process.execPath,['scripts/serve.mjs'],{cwd:root,stdio:'ignore'});
+const server=spawn(process.execPath,['scripts/serve.mjs'],{cwd:process.env.MALBIT_TEST_ROOT||root,stdio:'ignore'});
 const chromeArgs=['--headless','--no-sandbox','--disable-gpu','--disable-dev-shm-usage','--hide-scrollbars','--remote-debugging-address=127.0.0.1','--remote-debugging-port=9222',`--user-data-dir=/tmp/malbit-chrome-profile-${process.pid}`,'about:blank'];
 const launchChrome=()=>spawn(chromePath,chromeArgs,{stdio:['ignore','ignore','inherit']});
 let chrome=launchChrome();
@@ -631,12 +632,13 @@ try{
   await setViewport(390,844);
   await send('Emulation.setLocaleOverride',{locale:'ja-JP'});
   await send('Network.setUserAgentOverride',{userAgent:await evaluate(`navigator.userAgent`),acceptLanguage:'ja-JP,ja;q=0.9,en;q=0.8'});
-  await send('Page.navigate',{url:'http://127.0.0.1:4173/?visual-check=travel'});await ready();
+  await send('Page.navigate',{url:(process.env.MALBIT_TEST_URL||'http://127.0.0.1:4173/')+'?visual-check=travel'});await ready();
   assert.equal(await evaluate(`S.lang`),'ja','a fresh Japanese browser must open in Japanese');
   assert.match(await evaluate(`document.querySelector('.tqV9Greeting h1')?.textContent||''`),/韓国語/,'the first Home heading must be localized before language-menu use');
   assert.match(await evaluate(`document.querySelector('.tqLessonStart')?.textContent||''`),/入門学習を始める/,'the first primary CTA must be localized before language-menu use');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);await assertHomeFits('fresh Japanese browser Home light','light');await shot('00renewal-home-ja-locale-first-visit-light.png');
   await evaluate(`malbitSetTheme('dark')`);await sleep(100);await assertHomeFits('fresh Japanese browser Home dark','dark');await shot('00renewal-home-ja-locale-first-visit-dark.png');
+  if(process.env.HARUMAL_BASELINE){for(const theme of ['light','dark'])for(const width of [320,375,390,430]){await evaluate(`setLang('ko');malbitSetTheme('${theme}');setView('home')`);await setViewport(width,844);await shot(`baseline-home-${theme}-${width}.png`)}console.log('Baseline captured');}else if(process.env.HARUMAL_FOCUS_ONLY){await verifyHomeVocabulary({evaluate,tap,shot,setViewport,send,ready,sleep});assert.deepEqual(errors,[]);console.log('Home/vocabulary focused mobile checks passed');}else{
   await verifyHaruman({evaluate,tap,shot,setViewport,sleep});
   await verifyAdventure({evaluate,tap,shot,setViewport,send,ready,sleep});
   // Preserve old-course regressions through its explicit archive route, never the new default.
@@ -2079,7 +2081,7 @@ try{
         assert.equal(fit.active,'nav_'+(view==='vocab'?'more':view==='speaking'?'learn':view));
         assert.ok(fit.nav.length===5&&fit.nav.every(b=>b.h>=44&&b.w>=44));
         assert.ok(fit.brand.startsWith('하루말'));
-        assert.deepEqual(await evaluate(`[...document.querySelectorAll('.nav button span')].map(el=>el.textContent)`),['今日','学ぶ','旅','復習','マイ']);
+        assert.deepEqual(await evaluate(`[...document.querySelectorAll('.nav button span')].map(el=>el.textContent)`),['今日','学ぶ','単語帳','復習','マイ']);
         await evaluate('scrollTo(0,0)');
         await shot(`harumal-${view}-${theme}-${width}.png`);
       }
@@ -2088,6 +2090,7 @@ try{
   assert.deepEqual(errors,[],'Harumal navigation must not add console errors');
   const screenshotCount=fs.readdirSync(out).filter(file=>file.endsWith('.png')).length;
   console.log(`mobile QA: 320/375/390/430px Home + Beginner Grammar + split Writing + Game + Shorts + Random Practice + Review visual contracts, two-field Writing input/save/reload/score/review/migration, 9-chapter/64-lesson grammar catalog, transformation coaching, per-unit handwriting exit/reload/re-entry and preserved progress, Review queue/filter/retry/translation/type coaching/re-entry, TOPIK I/II random question/answer/type coaching, level re-entry, Shorts question/answer/instructor feedback + hit-tested Travel route + one-tap completed-route re-entry + NPC word order + Hangul sign build with decoys, day/evening events, travel-won exchange, reload/back-resume, durable records, screenshots=${screenshotCount}, errors=0`);
+  }
 }finally{
   try{socket?.close()}catch(error){}
   chrome?.kill('SIGTERM');server.kill('SIGTERM');
