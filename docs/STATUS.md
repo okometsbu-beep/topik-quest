@@ -1,10 +1,11 @@
-## 2026-09-28 v146 TOPIK II 분석 명사 숏츠 후보
+## 2026-09-28 v146 TOPIK II 분석 명사 숏츠 배포 완료 · #206
 
 - #110 S04의 부족 유형 한 묶음으로 `경향·요인·현상·전망` 4카드를 안정 ID로 추가했다. 반복 흐름·결과 원인·관찰된 일·미래 예상이라는 한 판단만 요구한다.
 - ko/ja/en/zh 예문·보기·선택별 오답 이유·정답 근거·재사용 풀이를 함께 제공한다. 기존 문항 ID, 원본 2,088문항, `topikQuestShortsV1`과 학습 기록은 변경하지 않는다.
 - 후보 재고는 408행/282 정확 질문-보기군(I 140, II 142). 중복 126행·30군, 구조 후보 15개, 정답 충돌 0, 종합 승인 0/408은 변하지 않았다.
 - 로컬 전체 162/162와 집중 vocabulary+inventory 35/35 통과. [PR #206 CI](https://github.com/okometsbu-beep/topik-quest/actions/runs/36372605082)의 Ubuntu/Node22/headless Chrome에서도 전체 검사와 320/375/390/430px·라이트/다크 모바일 회귀가 통과했다. artifact `10949651981` 중 새 일본어 오답 라이트·전체 해설 다크 2장을 직접 확인했으며 실제 기기로 세지 않는다. Pages·라이브는 병합 전이라 미검증이다.
-- 실제 iPhone/Android, 일본어 모어 화자·교육 전문가, 동의한 학습자의 풀이 시간·D1/D7 회상은 미검증이다. 세부 경계: `docs/qa/shorts-review-s04-topik2-analysis-nouns.md`.
+- 배포: [PR #206](https://github.com/okometsbu-beep/topik-quest/pull/206) squash `c2a7fdc0babbe3f4459d2890266643aa6bbb151e`, [main CI](https://github.com/okometsbu-beep/topik-quest/actions/runs/36373602998)와 [Pages](https://github.com/okometsbu-beep/topik-quest/actions/runs/36373602518) 성공. 라이브 v146은 기본 4개+런타임 51개 HTTP 정상이며 변경 11파일 SHA-256이 main과 일치한다.
+- 되돌리기: #206 revert 또는 직전 v145 `e6ecafa6a53edabcbe5304837660f6c76d5137a6`. 실제 iPhone/Android, 일본어 모어 화자·교육 전문가, 동의한 학습자의 풀이 시간·D1/D7 회상은 미검증이다. 세부 경계: `docs/qa/shorts-review-s04-topik2-analysis-nouns.md`.
 - 다음 한 작업: 새 P0·명백한 정답 오류가 없으면 검수 수가 더 적어진 TOPIK I 부족 유형 4문항을 제한 검수한다.
 
 ## 2026-09-28 v145 홈·단어장 배포 완료 · #204
