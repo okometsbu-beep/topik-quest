@@ -36,9 +36,13 @@ stable-ID storage contract.
 | Translation | AI-reviewed pass | Meaning, choices, feedback, example, and coaching are bundled in four languages; no network translation is required. |
 | Repeat/inventory | automated pass | Four stable IDs add four exact families with no new duplicate, structural flag, or conflicting-answer group. |
 | Storage | designed-pass | Existing `topikQuestShortsV1`, earlier IDs, original bank, and learner records are unchanged. |
-| Focused local checks | pass | Node 24 vocabulary and generated-inventory checks pass 35/35. Content/release/visual evidence is recorded after final verification. |
+| Automated checks | pass | Local Node 24 full 162/162 and focused vocabulary/inventory 35/35 pass. PR #206 CI run `36372605082` passes on Ubuntu/Node22. |
+| Browser visual | emulated pass | CI checks 320/375/390/430px in both themes. Artifact `10949651981` Japanese wrong-answer light and expanded-coaching dark screens were directly inspected; no clipping or overflow observed. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
 
 Candidate inventory is 408 rows / 282 exact question-choice families (TOPIK I 140, TOPIK II 142).
 The existing 126 redundant rows, 30 duplicate groups, 15 structural candidates, zero answer conflicts,
 and zero comprehensive approvals remain unchanged. These totals are inventory, not educational approval.
+
+PR candidate: https://github.com/okometsbu-beep/topik-quest/pull/206 . Pages and live behavior remain
+unverified until merge; do not count this candidate as deployed before those gates complete.
