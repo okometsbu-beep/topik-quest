@@ -44,5 +44,11 @@ Candidate inventory is 408 rows / 282 exact question-choice families (TOPIK I 14
 The existing 126 redundant rows, 30 duplicate groups, 15 structural candidates, zero answer conflicts,
 and zero comprehensive approvals remain unchanged. These totals are inventory, not educational approval.
 
-PR candidate: https://github.com/okometsbu-beep/topik-quest/pull/206 . Pages and live behavior remain
-unverified until merge; do not count this candidate as deployed before those gates complete.
+## Deployment record
+
+- PR #206 squash: `c2a7fdc0babbe3f4459d2890266643aa6bbb151e`
+- Final main CI: `36373602998` success
+- Pages: `36373602518` success
+- Live smoke: v146, four base plus 51 runtime files, all HTTP successful
+- Integrity: all 11 changed-file SHA-256 values match main
+- Rollback: revert #206 or restore v145 `e6ecafa6a53edabcbe5304837660f6c76d5137a6`
