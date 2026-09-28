@@ -3,7 +3,7 @@
 - Adds four bounded stable-ID cards for `경향`, `요인`, `현상`, and `전망`. They distinguish a repeated pattern, a causal factor, an observed event, and a future outlook.
 - ko/ja/en/zh meaning, example, fixed choices, selected-choice feedback, decisive evidence, all distractor traps, and a reusable role/time method are bundled locally.
 - Existing Shorts IDs, `topikQuestShortsV1`, the original 2,088-item bank, and learner records remain unchanged. Candidate inventory is 408 rows / 282 exact families (I 140, II 142); 126 redundant rows, 30 duplicate groups, 15 structural flags, no answer conflicts, and zero comprehensive approvals remain.
-- Focused vocabulary plus generated-inventory checks pass 35/35. Full release, mobile, CI, Pages, and live evidence must be recorded before deployment. Ledger: `docs/qa/shorts-review-s04-topik2-analysis-nouns.md`.
+- Local full checks pass 162/162 and focused vocabulary plus generated-inventory checks pass 35/35. [PR #206 CI](https://github.com/okometsbu-beep/topik-quest/actions/runs/36372605082) passes the full suite and 320/375/390/430px light/dark browser emulation. Artifact `10949651981` was inspected for the new Japanese wrong-answer light and full-coaching dark screens; this is not physical-device evidence. Pages and live remain unverified before merge. Ledger: `docs/qa/shorts-review-s04-topik2-analysis-nouns.md`.
 - Physical devices, native review, learner timing, delayed recall, and full offline recovery remain unverified. Next bounded shortage is TOPIK I because reviewed exact families are now I 140 / II 142.
 
 ## 2026-09-28 v145 홈·단어장 배포 완료 · #204
