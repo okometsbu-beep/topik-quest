@@ -2083,7 +2083,7 @@ try{
         if(view==='vocab'||view==='speaking'){await tap(view==='vocab'?'#nav_more':'#nav_learn');await tap(".harumalCourse[onclick=\"setView('"+view+"')\"]")}else await tap('#nav_'+view);
         const fit=await evaluate(`({overflow:document.documentElement.scrollWidth>innerWidth+1,nav:[...document.querySelectorAll('.nav button')].map(b=>({h:b.getBoundingClientRect().height,w:b.getBoundingClientRect().width})),active:document.querySelector('.nav [aria-current="page"]')?.id,brand:document.title})`);
         assert.equal(fit.overflow,false,`HARUMAL ${view} ${theme} ${width} overflow`);
-        assert.equal(fit.active,'nav_'+(view==='vocab'?'more':view==='speaking'?'learn':view));
+        assert.equal(fit.active,'nav_'+(view==='speaking'?'learn':view));
         assert.ok(fit.nav.length===5&&fit.nav.every(b=>b.h>=44&&b.w>=44));
         assert.ok(fit.brand.startsWith('하루말'));
         assert.deepEqual(await evaluate(`[...document.querySelectorAll('.nav button span')].map(el=>el.textContent)`),['今日','学ぶ','単語帳','復習','マイ']);
