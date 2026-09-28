@@ -11,7 +11,7 @@ User-requested UI batch. Does not change original question IDs or claim learning
 
 ## Evidence
 
-Local Node24 and Chromium153 with Noto CJK, 320/375/390/430px, both themes and four languages. Focused browser lane captures105 images and checks title/mascot separation, horizontal fit, nav, actual touch clicks, test input via browser, reload, result, retry, and reduced motion. Fixtures are synthetic and never represent learners.
+Local Node24 and Chromium153 with Noto CJK, 320/375/390/430px, both themes and four languages. Focused browser lane captures105 images and checks title/mascot separation, horizontal fit, nav, browser-dispatched pointer clicks with mobile touch emulation enabled, test input via browser, reload, result, retry, and reduced motion. Fixtures are synthetic and never represent learners.
 
 Quick145/145; focused unit and storage tests pass. Full local check first160/161: generated Shorts inventory's topik1.js source hash was stale after Home edits. Regeneration changes only that hash; inventory check then passes. CI confirms the full161/161 automated checks. Two mobile attempts stopped after125 captures at an explicit reload with a destroyed CDP context; ready() now retries only expected navigation-context errors within its existing bounded wait. Assertions and screenshot coverage are unchanged. Final PR CI36362486464 passed full161/161, the existing293-image mobile lane with zero app-console errors, the focused105-image lane and street tiles (416 artifact images including tiles). The legacy navigation expectation was also updated from My to Words as requested. A separate local full mobile run stopped after245 images on an external translation ERR_EMPTY_RESPONSE; it is not counted as a pass.
 
