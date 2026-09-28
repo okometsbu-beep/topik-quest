@@ -1868,6 +1868,69 @@ const reviewedHouseworkActionItem=(id,term,key,example,exampleI18n,evidence)=>{
   });
 };
 
+const DIRECTIONAL_ACTIONS=Object.freeze({
+  upward:Object.freeze({
+    meaning:Object.freeze({ko:'낮은 곳에서 높은 곳으로 이동하다',ja:'低い所から高い所へ上がる',en:'move upward to a higher place',zh:'从低处移动到高处'}),
+    selected:Object.freeze({
+      ko:'“올라가다”는 낮은 곳에서 계단 위·위층처럼 더 높은 곳으로 이동할 때 씁니다.',
+      ja:'「올라가다」は、低い所から階段の上・上の階など、より高い所へ移動するときに使います。',
+      en:'“올라가다” is used when moving from a lower place to a higher place, such as an upper floor.',
+      zh:'“올라가다”用于从低处移动到楼上等更高的位置。'
+    })
+  }),
+  downward:Object.freeze({
+    meaning:Object.freeze({ko:'높은 곳에서 낮은 곳으로 이동하다',ja:'高い所から低い所へ下りる',en:'move downward to a lower place',zh:'从高处移动到低处'}),
+    selected:Object.freeze({
+      ko:'“내려가다”는 높은 곳에서 아래층·아래쪽처럼 더 낮은 곳으로 이동할 때 씁니다.',
+      ja:'「내려가다」は、高い所から下の階・下の方など、より低い所へ移動するときに使います。',
+      en:'“내려가다” is used when moving from a higher place to a lower place, such as a lower floor.',
+      zh:'“내려가다”用于从高处移动到楼下等更低的位置。'
+    })
+  }),
+  inward:Object.freeze({
+    meaning:Object.freeze({ko:'바깥에서 안으로 이동하다',ja:'外から中へ入る',en:'move from outside to inside',zh:'从外面移动到里面'}),
+    selected:Object.freeze({
+      ko:'“들어가다”는 건물·방의 바깥에서 그 안쪽으로 이동할 때 씁니다.',
+      ja:'「들어가다」は、建物・部屋の外から、その中へ移動するときに使います。',
+      en:'“들어가다” is used when moving from outside a building or room to the inside.',
+      zh:'“들어가다”用于从建筑物或房间外面移动到里面。'
+    })
+  }),
+  outward:Object.freeze({
+    meaning:Object.freeze({ko:'안에서 바깥으로 이동하다',ja:'中から外へ出る',en:'move from inside to outside',zh:'从里面移动到外面'}),
+    selected:Object.freeze({
+      ko:'“나오다”는 건물·방의 안에서 그 바깥쪽으로 이동할 때 씁니다.',
+      ja:'「나오다」は、建物・部屋の中から、その外へ移動するときに使います。',
+      en:'“나오다” is used when moving from inside a building or room to the outside.',
+      zh:'“나오다”用于从建筑物或房间里面移动到外面。'
+    })
+  })
+});
+const DIRECTIONAL_ACTION_ORDER=['upward','downward','inward','outward'];
+const DIRECTIONAL_ACTION_METHOD=Object.freeze({
+  ko:'출발점과 도착점의 높이·안팎을 보세요. 낮은 곳→높은 곳=올라가다, 높은 곳→낮은 곳=내려가다, 밖→안=들어가다, 안→밖=나오다입니다.',
+  ja:'出発点と到着点の高さ・内外を見ます。低い所→高い所＝올라가다、高い所→低い所＝내려가다、外→中＝들어가다、中→外＝나오다です。',
+  en:'Track the start and destination: low to high = 올라가다, high to low = 내려가다, outside to inside = 들어가다, and inside to outside = 나오다.',
+  zh:'看出发点和目的地的高低、内外：低处→高处＝올라가다，高处→低处＝내려가다，外→内＝들어가다，内→外＝나오다。'
+});
+const reviewedDirectionalActionItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=DIRECTIONAL_ACTIONS[key];
+  return Object.freeze({
+    id,level:1,type:'word',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:DIRECTIONAL_ACTION_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(DIRECTIONAL_ACTION_ORDER.map(choiceKey=>Object.freeze({
+      meaning:DIRECTIONAL_ACTIONS[choiceKey].meaning,
+      explanationI18n:DIRECTIONAL_ACTIONS[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】올라가다=낮은 곳→높은 곳, 내려가다=높은 곳→낮은 곳, 들어가다=밖→안, 나오다=안→밖으로 출발점과 도착점이 다릅니다.\n【재사용 풀이】${DIRECTIONAL_ACTION_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】올라가다＝低い所→高い所、내려가다＝高い所→低い所、들어가다＝外→中、나오다＝中→外で、出発点と到着点が異なります。\n【再利用できる解き方】${DIRECTIONAL_ACTION_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 올라가다 moves low to high, 내려가다 high to low, 들어가다 outside to inside, and 나오다 inside to outside.\n[Reusable method] ${DIRECTIONAL_ACTION_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】올라가다表示低处→高处，내려가다表示高处→低处，들어가다表示外→内，나오다表示内→外，出发点和目的地各不相同。\n【通用解法】${DIRECTIONAL_ACTION_METHOD.zh}`
+    })
+  });
+};
+
 const ANALYSIS_NOUNS=Object.freeze({
   tendency:Object.freeze({
     meaning:Object.freeze({ko:'여러 사례에서 공통으로 나타나는 흐름',ja:'複数の事例に共通して現れる傾向',en:'a recurring pattern across cases',zh:'在多个事例中共同出现的趋势'}),
@@ -2432,6 +2495,38 @@ const TOPIK_I=[
     ja:'冷蔵庫の「材料で」料理を作ったので、「요리하다」が合います。',
     en:'Ingredients from the refrigerator are turned into food, so 요리하다 fits.',
     zh:'句子表示用冰箱里的“食材”制作饭菜，所以应选“요리하다”。'
+  }),
+  reviewedDirectionalActionItem('S04-I-W-DIRECTION-01','올라가다','upward','계단으로 2층에 올라갔어요.',{
+    ko:'계단으로 2층에 올라갔어요.',ja:'階段で2階に上がりました。',en:'I went up the stairs to the second floor.',zh:'我走楼梯上了二楼。'
+  },{
+    ko:'1층보다 높은 “2층”이 도착점이므로 “올라가다”가 맞습니다.',
+    ja:'1階より高い「2階」が到着点なので、「올라가다」が合います。',
+    en:'The destination is the second floor, higher than the starting point, so 올라가다 fits.',
+    zh:'目的地“二楼”比出发点高，所以应选“올라가다”。'
+  }),
+  reviewedDirectionalActionItem('S04-I-W-DIRECTION-02','내려가다','downward','수업이 끝나고 1층으로 내려갔어요.',{
+    ko:'수업이 끝나고 1층으로 내려갔어요.',ja:'授業が終わって、1階に下りました。',en:'After class, I went down to the first floor.',zh:'下课后，我下到了一楼。'
+  },{
+    ko:'위층에서 더 낮은 “1층”으로 이동하므로 “내려가다”가 맞습니다.',
+    ja:'上の階から、より低い「1階」へ移動するので、「내려가다」が合います。',
+    en:'The move is from an upper floor down to the lower first floor, so 내려가다 fits.',
+    zh:'从楼上移动到更低的“一楼”，所以应选“내려가다”。'
+  }),
+  reviewedDirectionalActionItem('S04-I-W-DIRECTION-03','들어가다','inward','비가 와서 카페 안으로 들어갔어요.',{
+    ko:'비가 와서 카페 안으로 들어갔어요.',ja:'雨が降ったので、カフェの中に入りました。',en:'Because it rained, I went inside the cafe.',zh:'因为下雨了，我走进了咖啡店。'
+  },{
+    ko:'바깥에서 “카페 안”으로 이동하므로 “들어가다”가 맞습니다.',
+    ja:'外から「カフェの中」へ移動するので、「들어가다」が合います。',
+    en:'The move is from outside to inside the cafe, so 들어가다 fits.',
+    zh:'从外面移动到“咖啡店里面”，所以应选“들어가다”。'
+  }),
+  reviewedDirectionalActionItem('S04-I-W-DIRECTION-04','나오다','outward','수업이 끝나서 교실 밖으로 나왔어요.',{
+    ko:'수업이 끝나서 교실 밖으로 나왔어요.',ja:'授業が終わったので、教室の外に出ました。',en:'After class ended, I came out of the classroom.',zh:'下课后，我走出了教室。'
+  },{
+    ko:'교실 안에서 “교실 밖”으로 이동하므로 “나오다”가 맞습니다.',
+    ja:'教室の中から「教室の外」へ移動するので、「나오다」が合います。',
+    en:'The move is from inside the classroom to outside it, so 나오다 fits.',
+    zh:'从教室里面移动到“教室外面”，所以应选“나오다”。'
   })
 ];
 
