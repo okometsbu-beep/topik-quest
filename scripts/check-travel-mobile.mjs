@@ -1719,6 +1719,35 @@ try{
   assert.match(houseworkRestored.summary,/빨래하다[\s\S]*服やタオル/u,'housework-action selected feedback must survive reload');
   assert.match(houseworkRestored.answer,/部屋や場所を掃除する/u,'reviewed housework-action answer must survive reload');
 
+  const directionalAction=await evaluate(`(()=>{const lv=1,deck=[...window.MALBIT_SHORTS_DECKS[lv],...window.MALBIT_BANK.shorts(lv)],index=deck.findIndex(item=>item.id==='S04-I-W-DIRECTION-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','1');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:1,levels:{1:active,2:blank},daily:{}}));return{index,id:identity.id}})()`);
+  assert.equal(directionalAction.id,'S04-I-W-DIRECTION-01','reviewed directional-action card must have its explicit stable ID');
+  await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsWord');
+  const directionalBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['1'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
+  assert.equal(directionalBefore.term,'올라가다');assert.equal(directionalBefore.cardId,directionalAction.id);assert.equal(directionalBefore.orderId,directionalAction.id);
+  assert.deepEqual(directionalBefore.choiceOrder,[2,1,0,3]);
+  assert.deepEqual(directionalBefore.labels,['外から中へ入る','高い所から低い所へ下りる','低い所から高い所へ上がる','中から外へ出る'],'fixed directional-action choices must keep the saved shuffle');
+  await submitShortsLabel('高い所から低い所へ下りる');
+  const directionalReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
+  assert.match(directionalReview.summary,/내려가다[\s\S]*高い所から/u,'selected Japanese feedback must explain the downward-action trap');
+  assert.match(directionalReview.answer,/低い所から高い所/u);assert.equal(directionalReview.closed,true);
+  assert.equal(directionalReview.nextBeforeDetails,true,'Next question must precede optional directional-action coaching');
+  assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'階段で2階に上がりました。','reviewed Japanese directional-action example must render locally');
+  await evaluate(`malbitSetTheme('light')`);await sleep(100);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK I directional action light ${width}px`,'light')}
+  await setViewport(390,844);await shot('00dq-shorts-topik1-directional-action-wrong-light.png');
+  await evaluate(`malbitSetTheme('dark');const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK I directional action expanded dark ${width}px`,'dark')}
+  await setViewport(390,844);await shot('00dr-shorts-topik1-directional-action-full-dark.png');
+  await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsFeedbackSummary');
+  const directionalRestored=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['1'];return{cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder,locked:state.locked,summary:document.querySelector('.shortsFeedbackSummary')?.innerText,answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
+  assert.equal(directionalRestored.cardId,directionalAction.id,'reviewed directional-action ID must survive reload');
+  assert.equal(directionalRestored.orderId,directionalAction.id,'reviewed directional-action choice-order ID must survive reload');
+  assert.deepEqual(directionalRestored.choiceOrder,[2,1,0,3],'saved directional-action choice order must survive reload');
+  assert.equal(directionalRestored.locked,true,'graded directional-action state must survive reload');
+  assert.match(directionalRestored.summary,/내려가다[\s\S]*高い所から/u,'directional-action selected feedback must survive reload');
+  assert.match(directionalRestored.answer,/低い所から高い所/u,'reviewed directional-action answer must survive reload');
+
   const basicNegation=await evaluate(`(()=>{const lv=1,deck=[...window.MALBIT_SHORTS_DECKS[lv],...window.MALBIT_BANK.shorts(lv)],index=deck.findIndex(item=>item.id==='S04-I-G-NEGATION-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','1');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:1,levels:{1:active,2:blank},daily:{}}));return{index,id:identity.id}})()`);
   assert.equal(basicNegation.id,'S04-I-G-NEGATION-01','reviewed basic-negation card must have its explicit stable ID');
   await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsWord');
