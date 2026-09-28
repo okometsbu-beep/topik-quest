@@ -1,12 +1,14 @@
-## 2026-09-28 v145 홈·단어장 직접 요청 반영
+## 2026-09-28 v145 홈·단어장 배포 완료 · #204
 
-- 국기 언어 선택, 하단 단어장 고정, 홈 여행 진입 유지·숏츠 바로가기 복원. 캐릭터를 제목 위 별도 줄에 놓고 크림 배경을 제거했다. 한국어 단어 단위 줄바꿈·작은 화면 제목 크기를 보정했다.
-- 저장 단어 최대 10개 뜻→한국어 입력 시험, 마지막 채점·오답 재시험·중단/새로고침 복구. `topikQuestV8.vocabExam`에만 추가 저장하며 기존 단어/SRS/백업/문항은 보존한다.
-- 네이티브 선택·컨텍스트·클립보드 이벤트를 차단하고 입력 필드의 정지한 길게 누르기만 blur 처리한다. 일반 입력·앱 단어 저장 제스처는 유지한다. 실제 iOS 완전 차단은 미검증이다.
-- 기존 프레임 영상 다운로드는 HTTP 502로 실패. 대문은 같은 투명 캐릭터의 임시 CSS 탄성 동작이며 기존 영상 이식 완료가 아니다. reduced-motion 정지·로딩 완료 즉시 해제.
-- 검사: Node 24, Chromium 153 에뮬레이션, 320/375/390/430px × 두 테마 × ko/ja/en/zh 홈·시험 및 허브 화면 overflow 검사, 입력/새로고침/오답 재시험 통과. 105장 캡처 중 홈 32장 접촉시트와 주요 단어장/시험 화면 직접 확인. quick145/145, 집중 회귀 통과. 전체 검사 첫 실행은160/161(홈 변경에 따른 Shorts 인벤토리 sourceHash만 stale); 재생성 후 해당 검사 통과. CI와 배포는 #110 결과 댓글에서 확정한다.
-- 대상: `agent/home-vocabulary-refresh`, v145. 공개 주소 https://okometsbu-beep.github.io/topik-quest/ . 이전 정상 공개 v144 및 되돌리기 기준 `d4647c8da2af6caf35a39e4d91bd0b605c41f524`.
-- 미검증: iPhone/Android 실기기, 네이티브 iOS 편집 메뉴, 원본 프레임 영상, 모어 화자/실학습자 성과. 다음: 원본 애니메이션 복구 후 교체 및 실기기 길게 누르기·IME 확인.
+- 국기 언어 선택, 하단 단어장 고정, 홈 여행·숏츠 바로가기. 캐릭터를 제목 위 별도 줄로 옮기고 크림 배경을 제거했다. 한국어 단어 단위 줄바꿈과 좁은 화면 제목 크기를 보정했다.
+- 저장 단어 최대 10개 뜻→한국어 입력 시험, 마지막 채점·오답 재시험·중단/새로고침 복구. `topikQuestV8.vocabExam`에 추가 저장하며 기존 단어·SRS·백업·문항을 보존한다.
+- 네이티브 선택·컨텍스트·클립보드 억제와 입력 필드 정지한 길게 누르기 처리를 추가했다. 일반 입력·앱 단어 저장 제스처는 유지하며 실제 iOS 편집 메뉴·IME는 미검증이다.
+- 기존 프레임 영상 다운로드는 HTTP 502로 실패했다. 대문은 같은 투명 캐릭터의 **임시 CSS 탄성 동작**이며 원본 영상 이식 완료가 아니다. reduced-motion 정지·로딩 완료 즉시 해제.
+- 검사: 로컬 Node24/Chromium153에서 320/375/390/430px × 두 테마 × ko/ja/en/zh 집중 경로 통과(105장). 홈32장 접촉시트와 주요 단어장/시험/복습 화면 직접 확인. GitHub Ubuntu/Node22/headless Chrome의 [PR CI](https://github.com/okometsbu-beep/topik-quest/actions/runs/36362486464) 전체161/161, 기존 모바일293장·오류0, 새 집중 경로·타일 검사가 통과했다. 전체 artifact416장을 모두 직접 검토했다고 주장하지 않는다.
+- 초기 CI의 명시적 reload 문맥 전환 오류와 이전 단어장 탭 기대값을 수정했다. 로컬 전체 모바일 실행은 외부 번역 서비스 ERR_EMPTY_RESPONSE로 245장에서 실패했으며 통과로 세지 않는다. 최종 전체 모바일 합격 증거는 위 CI다.
+- 배포: [PR #204](https://github.com/okometsbu-beep/topik-quest/pull/204) squash `4a6710761e8ed9bbad440e2ec86cc7e0d32881a6`, [Pages](https://github.com/okometsbu-beep/topik-quest/actions/runs/36362901464) 성공. main 회귀검사: https://github.com/okometsbu-beep/topik-quest/actions/runs/36362901730 .
+- 라이브 https://okometsbu-beep.github.io/topik-quest/ v145: 기본4개+런타임51개 HTTP 정상, 변경 핵심10자산 SHA-256 일치. 재방문 Chrome에서 로딩 해제·국기 메뉴·빈 단어장 시험 안내·숏츠·홈 여행 진입을 실제 클릭했다. 실학습자 데이터는 추가하지 않았다.
+- 되돌리기: #204 revert 또는 직전 v144 `d4647c8da2af6caf35a39e4d91bd0b605c41f524`. 미검증: 원본 애니메이션, iPhone/Android 실기기, iOS 편집 메뉴/IME, 모어 화자·실학습자 성과. 다음: 원본 영상 복구 후 교체 및 실기기 길게 누르기 확인. 세부 근거: `docs/qa/home-vocabulary-v145.md`, Issue #110.
 
 ## 2026-09-28 v144 문맥 생략 수업 번역·조건 정정
 
