@@ -4,10 +4,10 @@ import assert from 'node:assert/strict';
 export async function verifyAdventure({evaluate,tap,shot,setViewport,send,ready,sleep}){
  const reload=async(ignoreCache=true)=>{const previous=await evaluate('performance.timeOrigin');await send('Page.reload',{ignoreCache});let changed=false;for(let i=0;i<100;i++){try{changed=await evaluate('performance.timeOrigin')!==previous}catch{}if(changed)break;await sleep(50)}assert.ok(changed,'reload must reach a new document');await ready();};
  const fit=async(label)=>{
-  const result=await evaluate(`(()=>{const sc=document.querySelector('.adventureScreen');return{overflow:document.documentElement.scrollWidth-innerWidth,buttons:[...sc.querySelectorAll('button')].filter(b=>b.getBoundingClientRect().height>0).every(b=>b.getBoundingClientRect().height>=44),nav:getComputedStyle(document.querySelector('.bottom')).display,active:document.querySelector('#nav_travel')?.getAttribute('aria-current'),images:[...sc.querySelectorAll('img')].every(i=>i.complete&&i.naturalWidth>0)}})()`);
+  const result=await evaluate(`(()=>{const sc=document.querySelector('.adventureScreen');return{overflow:document.documentElement.scrollWidth-innerWidth,buttons:[...sc.querySelectorAll('button')].filter(b=>b.getBoundingClientRect().height>0).every(b=>b.getBoundingClientRect().height>=44),nav:getComputedStyle(document.querySelector('.bottom')).display,active:document.querySelector('#nav_home')?.getAttribute('aria-current'),images:[...sc.querySelectorAll('img')].every(i=>i.complete&&i.naturalWidth>0)}})()`);
   assert.ok(result.overflow<=1,`${label}: overflow ${result.overflow}`);assert.ok(result.buttons,`${label}: touch targets`);assert.notEqual(result.nav,'none');assert.equal(result.active,'page');assert.ok(result.images,`${label}: image load`);
  };
- await tap('#nav_travel');await sleep(200);
+ await tap('.tqTravelFeature');await sleep(200);
  assert.equal(await evaluate(`S.view`),'travel');
  assert.equal(await evaluate(`document.querySelectorAll('.advCourse').length`),2);
  for(const theme of ['light','dark']){await evaluate(`malbitSetTheme('${theme}')`);for(const width of [320,375,390,430]){await setViewport(width,844);await fit(`adventure hub ${theme} ${width}`);await shot(`adventure-hub-${width}-${theme}.png`)}}
@@ -25,7 +25,7 @@ export async function verifyAdventure({evaluate,tap,shot,setViewport,send,ready,
  assert.equal(await evaluate('S.view'),'travelAdventure','reload must restore the active adventure view');
  await tap('.advFeedback .advPrimary');await tap('.advChoice',2);await tap('.advQuestion .advPrimary');await tap('.advFeedback .advPrimary');
  assert.equal(await evaluate(`document.querySelector('.advTitle').textContent`),'忘れたかばん');
- await tap('#nav_home');await tap('#nav_travel');await tap('.advCourse .advPrimary',0);assert.equal(await evaluate(`document.querySelector('.advTitle').textContent`),'忘れたかばん');
+ await tap('#nav_home');await tap('.tqTravelFeature');await tap('.advCourse .advPrimary',0);assert.equal(await evaluate(`document.querySelector('.advTitle').textContent`),'忘れたかばん');
  // All scenes at both levels use the real dialogue/choice handlers. One intentional miss is above.
  for(const level of [1,2]){
   await evaluate(`harumalAdventureStart(${level})`);

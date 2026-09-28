@@ -15,7 +15,7 @@ function decorate(sc,view){
  if(!sc)return;
  if(view==='home'){
   const art=sc.querySelector('.harumalLessonArt');
-  if(art){art.classList.add('harumanHomeArt');if(!art.querySelector('[data-haruman]'))art.innerHTML=markup('welcome','hero')}
+  if(art){art.classList.add('harumanHomeArt');if(!art.querySelector('[data-haruman]'))art.innerHTML=markup('welcome','small')}
  }else if(view==='learn')mount(sc.querySelector('.harumalPageHead'),'encourage');
  else if(view==='more')mount(sc.querySelector('.harumalPageHead'),'rest');
  else if(view==='travel')mount(sc.querySelector('.advLead'),'journey');

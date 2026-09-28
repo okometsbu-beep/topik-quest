@@ -358,3 +358,17 @@ body.travel-rpg-active .travelScreen{overflow:hidden;padding:0}
 .travelPracticeResult b{font-size:16px;line-height:1.5}.travelPracticeResult p{font-size:20px;line-height:1.6;color:var(--ui-ink)}
 .travelPracticeResult small{font-size:14px;line-height:1.7;color:var(--ui-muted)}
 .travelPractice :is(input,button):focus-visible,.travelPracticeLaunch:focus-visible,.travelTutor summary:focus-visible{outline:3px solid var(--ui-accent);outline-offset:3px}
+
+/* Native text menus are disabled; app vocabulary holds and form typing remain active. */
+html body,html body *{-webkit-touch-callout:none!important;-webkit-user-select:none!important;user-select:none!important}html body img{-webkit-user-drag:none}
+
+/* Character loading shell; no artificial wait, sound, or motion when reduced motion is requested. */
+.harumanIntro{display:none}html.tq-booting body{background:#f7f8f4}html.tq-booting body:before,html.tq-booting body:after{display:none}
+html.tq-booting .harumanIntro{position:fixed;inset:0;z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:#f7f8f4;color:#173c38}
+.harumanIntroStage{width:180px;height:200px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:20px;position:relative}
+.harumanIntroStage:after{content:'';position:absolute;bottom:13px;width:90px;height:10px;border-radius:50%;background:#163c3820}
+.harumanIntroStage img{position:relative;z-index:1;width:160px;height:160px;object-fit:contain;transform-origin:50% 90%;animation:harumanHello 1.6s ease-in-out infinite}
+.harumanIntro>b{font:800 28px/1.3 system-ui,sans-serif;letter-spacing:-.04em}.harumanIntro>small{font:700 10px/1.5 system-ui,sans-serif;letter-spacing:.14em}
+@keyframes harumanHello{0%,100%{transform:translateY(0) scale(1,1) rotate(-5deg)}18%{transform:translateY(5px) scale(1.15,.85) rotate(-8deg)}38%{transform:translateY(-40px) scale(.9,1.12) rotate(10deg)}55%{transform:translateY(-44px) scale(1,1) rotate(7deg)}75%{transform:translateY(6px) scale(1.2,.8) rotate(-4deg)}88%{transform:translateY(-6px) scale(.98,1.02) rotate(0)}}
+@media(prefers-color-scheme:dark){html.tq-booting .harumanIntro{background:#102523;color:#eef6f2}.harumanIntroStage img{filter:drop-shadow(0 1px 0 #fff3da) drop-shadow(1px 0 0 #fff3da) drop-shadow(-1px 0 0 #fff3da)}}
+@media(prefers-reduced-motion:reduce){.harumanIntroStage img{animation:none}}

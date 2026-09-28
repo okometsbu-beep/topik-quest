@@ -1,8 +1,8 @@
-// MALBIT bootstrap v144
+// MALBIT bootstrap v145
 // Load the shared core, reviewed data, TOPIK I engine, then learning interactions.
 (function(){
   'use strict';
-  const VERSION='144';
+  const VERSION='145';
   const RUNTIME_FILES=Object.freeze([
     'writing-answers.js',
     'site-patch-core.js',
@@ -50,6 +50,8 @@
     'random-practice-visual-system.js',
     'review-visual-system.js',
     'vocab-editor.js',
+    'vocab-test.js',
+    'app-touch.js',
     'travel-adventure.js',
     'haruman-mascot.js',
     'harumal-ui.js'

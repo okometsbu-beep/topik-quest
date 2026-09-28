@@ -58,7 +58,7 @@ html body.harumal :is(.travelChoice.correct,.travelChoices button.correct){backg
 html body.harumal .travelHubHead h1{font-size:28px;color:var(--ui-ink)}
 @media(max-width:380px){html body.harumal .screen{padding-left:16px;padding-right:16px}.harumalPageHead h1,html body.harumal .tqV9Greeting h1{font-size:26px}.harumalPracticeGrid{gap:8px}.harumalPracticeGrid .harumalCourse{padding:14px}.harumalCourse b{font-size:15px}html body.harumal .tqTodayLesson{padding:20px}.harumalLessonArt{gap:2px}.harumalLessonArt span{width:30px;height:42px;font-size:22px}}
 @media(prefers-reduced-motion:reduce){html body.harumal *,html body.harumal *:before,html body.harumal *:after{animation:none!important;scroll-behavior:auto!important;transition:none!important}}
-html body.harumal .tqLang{width:auto;min-width:72px;padding:8px 12px;font-size:13px;font-weight:650;white-space:nowrap}
+html body.harumal :is(.tqLang,#flagBtn){width:44px;min-width:44px;height:44px;padding:6px;font-size:24px;font-weight:650;white-space:nowrap}
 html body.harumal :is(.stem,.t1stem){font-size:18px;line-height:1.85}
 html body.harumal .choice{border-radius:16px;min-height:56px;line-height:1.65}
 html body.harumal :is(.malbitQuestionTranslation,.malbitExplanationToggle,.malbitRandomExplanation){border-radius:18px}
@@ -81,7 +81,7 @@ html body.harumal :is(.malbitVocabScreen .malbitPageTitle,.malbitVocabCard h2,.m
 html body.harumal :is(.v33BeginnerTabs button,.v33LetterGrid button small,.bgLaunch em,.bgLaunch strong){font-size:12px}
 html body.harumal :is(.bgLaunchIcon,.malbitVocabCard .primary){background:var(--ui-accent);color:var(--harumal-on-accent)}
 html body.harumal.harumal-hub .top .progress{display:none}
-html body.harumal .flagBtn{width:auto;min-width:72px;padding:8px 12px;font-size:13px;font-weight:650;white-space:nowrap}
+html body.harumal .flagBtn{width:44px;min-width:44px;height:44px;padding:6px;font-size:24px;font-weight:650;white-space:nowrap}
 html body.harumal :is(.malbitLangGrid,.malbitChoiceRow,.malbitMixGrid,.malbitDataButtons) button{background:var(--ui-surface-soft);color:var(--ui-ink);border:1px solid var(--ui-border);border-radius:12px;font-size:14px;box-shadow:none}
 html body.harumal :is(.malbitLangGrid,.malbitChoiceRow,.malbitMixGrid) button:is(.active,.on){background:var(--ui-accent-soft);border-color:var(--ui-accent);color:var(--ui-accent)}
 html body.harumal .malbitDataButtons button.danger{background:var(--ui-error-soft);color:var(--ui-error);border-color:var(--ui-error)}
@@ -97,15 +97,45 @@ html body.harumal .tqVocabGardenProgress i{background:var(--ui-accent)}
 
 /* Haruman's cream stage separates dark limbs from both theme canvases. */
 :root{--haruman-stage:#fff3da;--haruman-stage-edge:#dfc9a5}
-.harumanStage{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;width:88px;height:88px;flex:none;box-sizing:border-box;padding:5px;background:var(--haruman-stage);border:1px solid var(--haruman-stage-edge);border-radius:28%;overflow:hidden;pointer-events:none;user-select:none}
-.harumanStage img{display:block;width:100%;height:100%;object-fit:contain;max-width:100%}
+.harumanStage{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;width:88px;height:88px;flex:none;box-sizing:border-box;padding:5px;background:transparent;border:0;overflow:visible;pointer-events:none;user-select:none}
+.harumanStage img{display:block;width:100%;height:100%;object-fit:contain;max-width:100%;filter:drop-shadow(0 1px 0 #fff3da) drop-shadow(1px 0 0 #fff3da) drop-shadow(-1px 0 0 #fff3da)}
 .harumanStage--hero{width:112px;height:112px}
 .harumanStage--mark{width:64px;height:64px;border-radius:20px;margin:0 10px 8px 0}
-.harumalPageHead>.harumanStage,.advLead>.harumanStage{float:right;margin:0 0 12px 16px}
+.harumalPageHead>.harumanStage,.advLead>.harumanStage{display:flex;margin:0 0 12px}
 .harumalPageHead:after,.advLead:after{content:'';display:block;clear:both}
-html body.harumal .harumalLessonArt.harumanHomeArt{transform:none;gap:0;margin:0 0 12px 12px}
-html body.harumal .harumanHomeArt .harumanStage{width:104px;height:104px;padding:5px;transform:none;background:var(--haruman-stage);border:1px solid var(--haruman-stage-edge);border-radius:28%}
+html body.harumal .harumalLessonArt.harumanHomeArt{transform:none;gap:0;margin:0}
+html body.harumal .harumanHomeArt .harumanStage{width:64px;height:64px;padding:0;transform:none;background:transparent;border:0}
 .advFinish>.harumanStage{display:flex;margin:0 auto 16px}
 @keyframes harumanCelebrate{0%{transform:translateY(0) scale(.94)}45%{transform:translateY(-6px) rotate(-4deg)}75%{transform:translateY(0) rotate(3deg)}100%{transform:none}}
 @media(prefers-reduced-motion:no-preference){.advFinish>[data-haruman="celebrate"] img{animation:harumanCelebrate .55s ease-out 1}}
-@media(max-width:380px){html body.harumal .harumanHomeArt .harumanStage{width:80px;height:80px}.harumalPageHead>.harumanStage,.advLead>.harumanStage{width:72px;height:72px;margin-left:12px}}
+@media(max-width:380px){html body.harumal .harumanHomeArt .harumanStage{width:56px;height:56px}.harumalPageHead>.harumanStage,.advLead>.harumanStage{width:72px;height:72px;margin-left:12px}}
+
+/* Headings keep whole Korean words; the mascot has its own row, never a text float. */
+html body.harumal :is(h1,h2,h3,.harumalCourse b,.tqHomeReview b,.tqTravelFeature b){word-break:keep-all;overflow-wrap:anywhere;text-wrap:balance}
+html body.harumal .harumalLessonTop{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:56px}
+html body.harumal .harumalLessonArt{float:none}
+html body.harumal .tqTodayLesson h2{font-size:clamp(21px,5.6vw,25px);margin:8px 0 12px;max-width:100%;line-height:1.4}
+html body.harumal .tqTodayLesson p{max-width:100%;word-break:keep-all;overflow-wrap:anywhere}
+html body.harumal .harumalShortsLaunch{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:18px;border:1px solid var(--ui-border);border-radius:22px;background:var(--ui-surface);color:var(--ui-ink);margin:12px 0}
+.harumalShortsLaunch i{display:grid;place-items:center;flex:none;width:44px;height:44px;border-radius:15px;background:var(--ui-accent-soft);color:var(--ui-accent);font-style:normal}
+.harumalShortsLaunch span{min-width:0;flex:1}.harumalShortsLaunch b{display:block;font-size:17px}.harumalShortsLaunch small{display:block;margin-top:4px;line-height:1.5;color:var(--ui-muted)}.harumalShortsLaunch em{font-style:normal}
+.harumalVocabModes{padding:16px;border:1px solid var(--ui-border);border-radius:20px;background:var(--ui-surface);margin:16px 0}
+.harumalVocabTabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:center;text-align:center;font-weight:800}
+.harumalVocabTabs button,.harumalTestPrimary{border:0;border-radius:14px;background:var(--ui-accent);color:var(--harumal-on-accent);min-height:48px;padding:12px;font:inherit;font-weight:800;cursor:pointer}
+.harumalVocabTabs button:disabled{opacity:.45;cursor:default}
+.harumalVocabModes p,.harumalVocabModes small,.harumalVocabTest p{font-size:14px;line-height:1.6;color:var(--ui-muted);overflow-wrap:anywhere}
+.harumalTextButton{background:transparent;color:var(--ui-accent);border:0;padding:12px 0;min-height:44px;font:inherit;text-align:left;cursor:pointer}
+.harumalVocabTest .harumalPageHead{margin-top:16px}.harumalVocabTest .harumalPageHead h1{font-size:26px}
+.harumalTestProgress{display:flex;gap:10px;justify-content:space-between;font-size:14px}.harumalTestProgress small{color:var(--ui-muted);text-align:right}
+.harumalVocabTest progress{width:100%;height:8px;accent-color:var(--ui-accent);margin:10px 0 24px}
+.harumalTestCard,.harumalTestResult{padding:24px 20px;border:1px solid var(--ui-border);border-radius:24px;background:var(--ui-surface)}
+.harumalTestCard label{font-size:13px;color:var(--ui-muted)}.harumalTestCard h2{font-size:23px;line-height:1.5;margin:18px 0 24px}
+.harumalTestCard input{box-sizing:border-box;width:100%;min-height:52px;font:inherit;font-size:18px;border:1px solid var(--ui-border);border-radius:12px;padding:12px;background:var(--ui-canvas);color:var(--ui-ink)}
+.harumalTestCard .harumalTestPrimary,.harumalVocabTest>.harumalTestPrimary{width:100%;margin-top:14px}
+.harumalTestResult>b{font-size:40px;color:var(--ui-accent)}.harumalTestResult h2{font-size:22px}
+.harumalTestAnswers{list-style:none;padding:0}.harumalTestAnswers li{padding:18px 0;border-bottom:1px solid var(--ui-border)}.harumalTestAnswers small{color:var(--ui-accent)}.harumalTestAnswers b{font-size:20px}
+.harumalFlag{display:block;width:28px;height:19px;flex:none;border-radius:3px;overflow:hidden}
+html body.harumal :is(.tqLang,#flagBtn){display:grid;place-items:center}
+.flagOpt .harumalFlag{width:30px;height:20px}
+
+html[lang="ko"] body.harumal :is(p,small){word-break:keep-all;overflow-wrap:anywhere}
