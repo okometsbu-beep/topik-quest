@@ -39,9 +39,11 @@ four. Fixed choices are shuffled and restored through the existing stable-ID sto
 | Full release checks | pass | Node 24 `npm run check` passes 163/163; runtime contract reports v147, 51 ordered files, and valid bank hashes. |
 | Emulated mobile | pass | PR #208 CI `36401590122` covers Linux Chrome 320/375/390/430px light/dark, Japanese wrong-answer feedback, expanded coaching, next-first flow, and reload restoration. Artifact `10961036393` screens `00dq`/`00dr` were inspected. This is not physical-device evidence. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
-| Deployment | pending | PR #208 passes its release gates. Public GitHub Pages remains v146 until merge, main CI, Pages, live smoke, and asset-integrity checks pass. |
+| Deployment | pass | PR #208 squash `390eb8d36a8cd00b71d40bfb4c6e24fb02ff53a9`; main CI `36403169176` and Pages `36403167908` succeeded. Live smoke reports v147 with 4 base + 51 runtime files; index, bootstrap, worker, and Shorts data hashes match main and all four new IDs are present. |
 
 Candidate inventory is 412 rows / 286 exact question-choice families (TOPIK I 144, TOPIK II 142).
 The existing 126 redundant rows, 30 duplicate groups, 15 structural review candidates, 0 answer
 conflicts, and 0 comprehensive approvals do not change. These totals are not content approvals, and
 no existing Shorts row, original 2,088-item bank entry, answer, or stable ID is altered.
+
+Rollback is PR #208 revert or v146 `3cf9154b38a54f1cd9e0200912b98055ca82eb52`.
