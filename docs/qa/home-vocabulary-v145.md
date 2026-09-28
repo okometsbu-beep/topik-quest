@@ -13,7 +13,7 @@ User-requested UI batch. Does not change original question IDs or claim learning
 
 Local Node24 and Chromium153 with Noto CJK, 320/375/390/430px, both themes and four languages. Focused browser lane captures105 images and checks title/mascot separation, horizontal fit, nav, actual touch clicks, test input via browser, reload, result, retry, and reduced motion. Fixtures are synthetic and never represent learners.
 
-Quick145/145; focused unit and storage tests pass. Full local check first160/161: generated Shorts inventory's topik1.js source hash was stale after Home edits. Regeneration changes only that hash; inventory check then passes. Final PR CI is the release gate.
+Quick145/145; focused unit and storage tests pass. Full local check first160/161: generated Shorts inventory's topik1.js source hash was stale after Home edits. Regeneration changes only that hash; inventory check then passes. CI confirms the full161/161 automated checks. Two mobile attempts stopped after125 captures at an explicit reload with a destroyed CDP context; ready() now retries only expected navigation-context errors within its existing bounded wait. Assertions and screenshot coverage are unchanged. Final full mobile CI remains the release gate.
 
 Before screenshots were captured from v144. Home32 candidate screenshots were reviewed in four contact sheets; selected vocabulary and exam images were opened at original mobile size. Remaining captures are automated evidence, not claimed individually reviewed. Device Safari, Android and native long-press/IME are unverified.
 

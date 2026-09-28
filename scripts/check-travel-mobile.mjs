@@ -58,7 +58,12 @@ try{
   let legacyTravelChecks=false;
   const ready=async()=>{
     for(let i=0;i<100;i++){
-      const origin=await evaluate(`(()=>{if(!(document.readyState==='complete'&&!!window.MALBIT_TRAVEL&&!!window.HARUMAL_ADVENTURE&&!document.documentElement.classList.contains('tq-booting')))return null;if(${expectedNewDocument}&&performance.timeOrigin===${lastReadyOrigin})return null;if(${legacyTravelChecks}&&!window.__legacyTravelQA){window.__legacyTravelQA=true;const base=render;render=function(){if(S.view==='travel')S.view='travelLegacy';return base.apply(this,arguments)};window.malbitTravelOpen=()=>setView('travelLegacy')}return performance.timeOrigin})()`);
+      let origin;try{origin=await evaluate(`(()=>{if(!(document.readyState==='complete'&&!!window.MALBIT_TRAVEL&&!!window.HARUMAL_ADVENTURE&&!document.documentElement.classList.contains('tq-booting')))return null;if(${expectedNewDocument}&&performance.timeOrigin===${lastReadyOrigin})return null;if(${legacyTravelChecks}&&!window.__legacyTravelQA){window.__legacyTravelQA=true;const base=render;render=function(){if(S.view==='travel')S.view='travelLegacy';return base.apply(this,arguments)};window.malbitTravelOpen=()=>setView('travelLegacy')}return performance.timeOrigin})()`);
+      }catch(error){
+        // A requested reload may destroy the old execution context before the new DOM exists.
+        if(!expectedNewDocument||!/Inspected target navigated or closed|Execution context was destroyed|Cannot find context/u.test(error.message))throw error;
+        await sleep(100);continue;
+      }
       if(origin){lastReadyOrigin=origin;expectedNewDocument=false;return}await sleep(100);
     }
     throw new Error('MALBIT travel runtime did not become ready');
