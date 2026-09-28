@@ -1,3 +1,11 @@
+## 2026-09-28 v146 TOPIK II analysis-noun Shorts candidate
+
+- Adds four bounded stable-ID cards for `경향`, `요인`, `현상`, and `전망`. They distinguish a repeated pattern, a causal factor, an observed event, and a future outlook.
+- ko/ja/en/zh meaning, example, fixed choices, selected-choice feedback, decisive evidence, all distractor traps, and a reusable role/time method are bundled locally.
+- Existing Shorts IDs, `topikQuestShortsV1`, the original 2,088-item bank, and learner records remain unchanged. Candidate inventory is 408 rows / 282 exact families (I 140, II 142); 126 redundant rows, 30 duplicate groups, 15 structural flags, no answer conflicts, and zero comprehensive approvals remain.
+- Focused vocabulary plus generated-inventory checks pass 35/35. Full release, mobile, CI, Pages, and live evidence must be recorded before deployment. Ledger: `docs/qa/shorts-review-s04-topik2-analysis-nouns.md`.
+- Physical devices, native review, learner timing, delayed recall, and full offline recovery remain unverified. Next bounded shortage is TOPIK I because reviewed exact families are now I 140 / II 142.
+
 ## 2026-09-28 v145 홈·단어장 배포 완료 · #204
 
 - 국기 언어 선택, 하단 단어장 고정, 홈 여행·숏츠 바로가기. 캐릭터를 제목 위 별도 줄로 옮기고 크림 배경을 제거했다. 한국어 단어 단위 줄바꿈과 좁은 화면 제목 크기를 보정했다.
