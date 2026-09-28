@@ -23,7 +23,7 @@ window.harumalVocabTestSubmit=event=>{
  const a=attempt();if(!a||a.finishedAt)return false;
  const item=a.items[a.answers.length],answer=normalize(a.draft);if(!item||!answer)return false;
  a.answers.push({text:answer,ok:answer===normalize(item.term)});a.draft='';
- if(a.answers.length===a.items.length)a.finishedAt=Date.now();save();render();return false;
+ if(a.answers.length===a.items.length)a.finishedAt=Date.now();save();render();window.scrollTo?.({top:0,behavior:'auto'});return false;
 };
 window.harumalVocabTestRetry=()=>{const a=attempt();if(a?.finishedAt)start(a.items.filter((_,i)=>!a.answers[i]?.ok))};
 function toolbar(sc){
