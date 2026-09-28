@@ -37,9 +37,9 @@ four. Fixed choices are shuffled and restored through the existing stable-ID sto
 | Storage | designed-pass | Existing `topikQuestShortsV1` and earlier IDs remain; cards are appended after existing TOPIK I rows. |
 | Focused local checks | pass | Vocabulary plus generated-inventory checks pass 36/36. |
 | Full release checks | pass | Node 24 `npm run check` passes 163/163; runtime contract reports v147, 51 ordered files, and valid bank hashes. |
-| Emulated mobile | pending | The release gate covers 320/375/390/430px light/dark, Japanese wrong-answer feedback, expanded coaching, and reload restoration. |
+| Emulated mobile | pass | PR #208 CI `36401590122` covers Linux Chrome 320/375/390/430px light/dark, Japanese wrong-answer feedback, expanded coaching, next-first flow, and reload restoration. Artifact `10961036393` screens `00dq`/`00dr` were inspected. This is not physical-device evidence. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
-| Deployment | pending | Public GitHub Pages remains v146 until mobile emulation and CI pass. |
+| Deployment | pending | PR #208 passes its release gates. Public GitHub Pages remains v146 until merge, main CI, Pages, live smoke, and asset-integrity checks pass. |
 
 Candidate inventory is 412 rows / 286 exact question-choice families (TOPIK I 144, TOPIK II 142).
 The existing 126 redundant rows, 30 duplicate groups, 15 structural review candidates, 0 answer
