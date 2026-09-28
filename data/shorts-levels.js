@@ -1868,6 +1868,69 @@ const reviewedHouseworkActionItem=(id,term,key,example,exampleI18n,evidence)=>{
   });
 };
 
+const ANALYSIS_NOUNS=Object.freeze({
+  tendency:Object.freeze({
+    meaning:Object.freeze({ko:'여러 사례에서 공통으로 나타나는 흐름',ja:'複数の事例に共通して現れる傾向',en:'a recurring pattern across cases',zh:'在多个事例中共同出现的趋势'}),
+    selected:Object.freeze({
+      ko:'“경향”은 여러 사례나 시간의 흐름에서 같은 방향이 반복되어 나타날 때 씁니다.',
+      ja:'「경향」は、複数の事例や時間の流れの中で、同じ方向の動きが繰り返し現れる場合に使います。',
+      en:'“경향” describes the same directional pattern recurring across cases or over time.',
+      zh:'“경향”用于多个事例或一段时间内反复出现同一方向的变化。'
+    })
+  }),
+  factor:Object.freeze({
+    meaning:Object.freeze({ko:'결과에 영향을 주는 원인이나 요소',ja:'結果に影響を与える原因・要素',en:'a cause that affects a result',zh:'影响结果的原因或要素'}),
+    selected:Object.freeze({
+      ko:'“요인”은 어떤 결과가 생기거나 달라지게 하는 원인이나 구성 요소입니다.',
+      ja:'「요인」は、ある結果を生じさせたり変化させたりする原因・構成要素です。',
+      en:'“요인” is a cause or component that produces or changes an outcome.',
+      zh:'“요인”是促成某种结果或使结果发生变化的原因、构成要素。'
+    })
+  }),
+  phenomenon:Object.freeze({
+    meaning:Object.freeze({ko:'실제로 관찰되는 일이나 상태',ja:'実際に観察される出来事・状態',en:'an observable event or state',zh:'实际可以观察到的事情或状态'}),
+    selected:Object.freeze({
+      ko:'“현상”은 눈이나 측정으로 확인할 수 있게 실제로 나타난 일이나 상태를 가리킵니다.',
+      ja:'「현상」は、目や測定によって確認できる形で実際に現れた出来事・状態を指します。',
+      en:'“현상” refers to an event or state that actually appears and can be observed or measured.',
+      zh:'“현상”指实际出现、可以通过观察或测量确认的事情或状态。'
+    })
+  }),
+  outlook:Object.freeze({
+    meaning:Object.freeze({ko:'앞으로의 상태에 대한 예상이나 판단',ja:'今後の状態についての見通し・判断',en:'an expectation about future conditions',zh:'对未来状态的预测或判断'}),
+    selected:Object.freeze({
+      ko:'“전망”은 현재 자료를 바탕으로 앞으로 어떻게 될지를 예상하거나 판단한 내용입니다.',
+      ja:'「전망」は、現在の資料を基に、今後どうなるかを予想・判断した内容です。',
+      en:'“전망” is an expectation or judgment about what will happen, based on current information.',
+      zh:'“전망”是根据现有资料，对今后情况作出的预测或判断。'
+    })
+  })
+});
+const ANALYSIS_NOUN_ORDER=['tendency','factor','phenomenon','outlook'];
+const ANALYSIS_NOUN_METHOD=Object.freeze({
+  ko:'여러 사례의 반복 흐름=경향, 결과에 영향을 주는 원인=요인, 실제로 관찰된 일=현상, 미래에 대한 예상=전망으로 시간과 역할을 먼저 구분하세요.',
+  ja:'複数事例の反復する流れ＝경향、結果に影響する原因＝요인、実際に観察された出来事＝현상、未来についての予想＝전망、と時間と役割を先に分けます。',
+  en:'Classify time and role first: repeated pattern across cases = 경향, cause affecting a result = 요인, observed event = 현상, future expectation = 전망.',
+  zh:'先区分时间和作用：多个事例中反复出现的趋势＝경향，影响结果的原因＝요인，实际观察到的事情＝현상，对未来的预测＝전망。'
+});
+const reviewedAnalysisNounItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=ANALYSIS_NOUNS[key];
+  return Object.freeze({
+    id,level:2,type:'word',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:ANALYSIS_NOUN_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(ANALYSIS_NOUN_ORDER.map(choiceKey=>Object.freeze({
+      meaning:ANALYSIS_NOUNS[choiceKey].meaning,
+      explanationI18n:ANALYSIS_NOUNS[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】경향=반복되는 흐름, 요인=결과에 영향을 주는 원인, 현상=관찰된 일, 전망=미래 예상으로 시간과 역할이 다릅니다.\n【재사용 풀이】${ANALYSIS_NOUN_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】경향＝反復する流れ、요인＝結果に影響する原因、현상＝観察された出来事、전망＝未来の予想で、時間と役割が異なります。\n【再利用できる解き方】${ANALYSIS_NOUN_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 경향 is a repeated pattern, 요인 a cause affecting a result, 현상 an observed event, and 전망 a future expectation.\n[Reusable method] ${ANALYSIS_NOUN_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】경향是反复出现的趋势，요인是影响结果的原因，현상是观察到的事情，전망是对未来的预测，时间和作用各不相同。\n【通用解法】${ANALYSIS_NOUN_METHOD.zh}`
+    })
+  });
+};
+
 const TOPIK_I=[
   item(1,'word','가게','상점','店','store; shop','商店','집 앞 가게에서 우유를 샀어요.'),
   item(1,'word','약속','만나기로 정한 일','約束','promise; appointment','约定','친구와 세 시에 만날 약속이 있어요.'),
@@ -2921,6 +2984,39 @@ const TOPIK_II=[
     ja:'豪雨が始まった直後に川の水位が大きく上がる変化なので「급격히」が合います。',
     en:'The river level made a large rise soon after the downpour began, so 급격히 fits.',
     zh:'暴雨开始后河水水位在短时间内大幅上升，所以应选“급격히”。'
+  }),
+
+  reviewedAnalysisNounItem('S04-II-W-ANALYSIS-01','경향','tendency','최근에는 온라인 수업을 선택하는 학생이 늘어나는 경향이 있습니다.',{
+    ko:'최근에는 온라인 수업을 선택하는 학생이 늘어나는 경향이 있습니다.',ja:'最近はオンライン授業を選ぶ学生が増える傾向にあります。',en:'Recently, there has been a tendency for more students to choose online classes.',zh:'最近，选择在线课程的学生有增加的趋势。'
+  },{
+    ko:'“최근에는”과 여러 학생에게서 반복되는 증가 흐름이 있으므로 “경향”이 맞습니다.',
+    ja:'「最近は」と、複数の学生に繰り返し見られる増加の流れがあるので「경향」が合います。',
+    en:'“Recently” plus an increasing pattern across multiple students makes 경향 the right choice.',
+    zh:'“最近”以及多个学生中反复出现的增长趋势表明应选“경향”。'
+  }),
+  reviewedAnalysisNounItem('S04-II-W-ANALYSIS-02','요인','factor','충분한 수면은 집중력을 높이는 중요한 요인입니다.',{
+    ko:'충분한 수면은 집중력을 높이는 중요한 요인입니다.',ja:'十分な睡眠は、集中力を高める重要な要因です。',en:'Adequate sleep is an important factor in improving concentration.',zh:'充足的睡眠是提高注意力的重要因素。'
+  },{
+    ko:'충분한 수면이 집중력 향상이라는 결과에 영향을 주는 원인이므로 “요인”이 맞습니다.',
+    ja:'十分な睡眠が、集中力の向上という結果に影響する原因なので「요인」が合います。',
+    en:'Adequate sleep affects the outcome of improved concentration, so 요인 fits.',
+    zh:'充足睡眠会影响“注意力提高”这一结果，因此应选“요인”。'
+  }),
+  reviewedAnalysisNounItem('S04-II-W-ANALYSIS-03','현상','phenomenon','겨울에는 창문에 물방울이 맺히는 현상이 자주 나타납니다.',{
+    ko:'겨울에는 창문에 물방울이 맺히는 현상이 자주 나타납니다.',ja:'冬には、窓に水滴がつく現象がよく見られます。',en:'In winter, the phenomenon of water droplets forming on windows occurs often.',zh:'冬天，窗户上凝结水滴的现象经常出现。'
+  },{
+    ko:'창문에 물방울이 맺히는 모습은 겨울에 실제로 관찰되는 일이므로 “현상”이 맞습니다.',
+    ja:'窓に水滴がつく様子は、冬に実際に観察される出来事なので「현상」が合います。',
+    en:'Water droplets forming on a window are an event that can actually be observed, so 현상 fits.',
+    zh:'窗户上凝结水滴是冬天实际可以观察到的事情，因此应选“현상”。'
+  }),
+  reviewedAnalysisNounItem('S04-II-W-ANALYSIS-04','전망','outlook','보고서는 내년 관광객 수가 늘어날 것이라는 전망을 제시했습니다.',{
+    ko:'보고서는 내년 관광객 수가 늘어날 것이라는 전망을 제시했습니다.',ja:'報告書は、来年は観光客数が増えるという見通しを示しました。',en:'The report presented an outlook that tourist numbers will increase next year.',zh:'报告提出了明年游客人数将会增加的预测。'
+  },{
+    ko:'“내년” 관광객 수에 대해 앞으로 늘어날 것이라고 예상하므로 “전망”이 맞습니다.',
+    ja:'「来年」の観光客数が今後増えると予想しているので「전망」が合います。',
+    en:'The statement predicts a future increase in tourist numbers “next year,” so 전망 fits.',
+    zh:'句子预测“明年”的游客人数将增加，是对未来的判断，因此应选“전망”。'
   })
 ];
 
