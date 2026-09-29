@@ -650,6 +650,11 @@ try{
   assert.ok(introQA.some(e=>e.type==='ended'&&e.time>2.7&&e.time<3),'intro must naturally end before the watchdog');
   console.log('Haruman actual browser playback passed',JSON.stringify(introQA));
   if(!process.env.HARUMAL_FOCUS_ONLY)await verifyIntro({evaluate,send,setViewport,shot,ready,sleep,baseline:!!process.env.HARUMAN_INTRO_BASELINE});
+  // Complete/default/re-entry playback is checked above. Only unrelated bulk reloads
+  // use the existing data-saver opt-out; preserve all ordinary motion regressions.
+  // The separate Home suite keeps default media and tests reduced-motion itself.
+  if(!process.env.HARUMAL_FOCUS_ONLY&&!process.env.HARUMAN_INTRO_BASELINE)
+    await send('Page.addScriptToEvaluateOnNewDocument',{source:`Object.defineProperty(navigator,'connection',{value:{saveData:true},configurable:true})`});
   await setViewport(390,844);
   assert.equal(await evaluate(`S.lang`),'ja','a fresh Japanese browser must open in Japanese');
   assert.match(await evaluate(`document.querySelector('.tqV9Greeting h1')?.textContent||''`),/韓国語/,'the first Home heading must be localized before language-menu use');
