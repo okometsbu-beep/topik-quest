@@ -31,11 +31,12 @@ export async function verifyHomeVocabulary({evaluate,tap,shot,setViewport,send,r
  for(const view of ['learn','review','more','vocab']){await evaluate(`setView('${view}')`);await fit(view);await shot(`refresh-${view}-dark.png`)}
  await tap('#nav_home');await tap('.tqLang');await shot('refresh-language-menu.png');
  await evaluate(`document.querySelector('#flagMenu').classList.remove('show')`);
- // The splash must stop with boot, stay decorative, and honor reduced motion.
+ // Reduced motion skips decoding/downloading even outside the recent-launch window.
  await send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});
- await evaluate(`document.documentElement.classList.add('tq-booting')`);await shot('refresh-loading-reduced.png');
- assert.equal(await evaluate(`getComputedStyle(document.querySelector('.harumanIntroStage img')).animationName`),'none');
- await evaluate(`document.documentElement.classList.remove('tq-booting')`);
+ await evaluate(`sessionStorage.removeItem('harumalIntroSeenV1')`);
+ await send('Page.reload',{ignoreCache:true});await ready();await shot('refresh-loading-reduced.png');
+ assert.equal(await evaluate(`document.querySelector('.harumanIntro')===null`),true);
+ assert.equal(await evaluate(`performance.getEntriesByType('resource').some(e=>e.name.includes('/assets/video/'))`),false);
  await send('Emulation.setEmulatedMedia',{features:[]});
  await sleep(80);
 }
