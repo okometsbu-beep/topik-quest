@@ -1733,7 +1733,7 @@ try{
     assert.equal(await evaluate(`(()=>{const details=document.querySelector('.shortsExplanation');details.open=true;return details.open})()`),true,`S04 TOPIK II argument noun details must stay open in ${theme}`);
     for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK II argument noun expanded ${theme} ${width}px`,theme)}
   }
-  await evaluate(`malbitSetTheme('dark');const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);await setViewport(390,844);
+  await evaluate(`(()=>{malbitSetTheme('dark');const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})})()`);await sleep(100);await setViewport(390,844);
   assert.equal(await evaluate(`document.querySelector('.shortsExplanation')?.open`),true,'argument-noun evidence screenshot must keep detailed coaching open');
   await shot('00dt-shorts-topik2-argument-noun-full-dark.png');
   await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsFeedbackSummary');
