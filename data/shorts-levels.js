@@ -1931,6 +1931,69 @@ const reviewedDirectionalActionItem=(id,term,key,example,exampleI18n,evidence)=>
   });
 };
 
+const OBJECT_ACTIONS=Object.freeze({
+  find:Object.freeze({
+    meaning:Object.freeze({ko:'찾아보거나 살펴서 필요한 물건을 발견하다',ja:'探したり調べたりして必要な物を見つける',en:'find a needed object by looking for it',zh:'寻找或查看后找到需要的物品'}),
+    selected:Object.freeze({
+      ko:'“찾다”는 어디에 있는지 모르던 물건을 살펴서 발견할 때 씁니다.',
+      ja:'「찾다」は、どこにあるか分からなかった物を探して見つけるときに使います。',
+      en:'“찾다” is used when you look for and find an object whose location was unknown.',
+      zh:'“찾다”用于寻找并找到原来不知道放在哪里的物品。'
+    })
+  }),
+  lose:Object.freeze({
+    meaning:Object.freeze({ko:'가지고 있던 물건이 어디 있는지 모르게 되다',ja:'持っていた物がどこにあるか分からなくなる',en:'lose track of an object you had',zh:'不知道原来持有的物品在哪里了'}),
+    selected:Object.freeze({
+      ko:'“잃어버리다”는 가지고 있던 물건이 없어져서 어디 있는지 모를 때 씁니다.',
+      ja:'「잃어버리다」は、持っていた物がなくなり、どこにあるか分からないときに使います。',
+      en:'“잃어버리다” is used when an object you had is gone and you do not know where it is.',
+      zh:'“잃어버리다”用于原来持有的物品不见了、不知道在哪里。'
+    })
+  }),
+  bring:Object.freeze({
+    meaning:Object.freeze({ko:'물건을 가지고 말하는 사람 쪽으로 오다',ja:'物を持って話し手のいる方へ来る',en:'bring an object toward the speaker',zh:'拿着物品来到说话人这边'}),
+    selected:Object.freeze({
+      ko:'“가져오다”는 물건을 가지고 말하는 사람이나 기준 장소 쪽으로 올 때 씁니다.',
+      ja:'「가져오다」は、物を持って話し手や基準となる場所の方へ来るときに使います。',
+      en:'“가져오다” is used when someone brings an object toward the speaker or reference place.',
+      zh:'“가져오다”用于拿着物品来到说话人或作为基准的地点这边。'
+    })
+  }),
+  take:Object.freeze({
+    meaning:Object.freeze({ko:'물건을 가지고 말하는 사람에게서 다른 곳으로 가다',ja:'物を持って話し手の所から別の場所へ行く',en:'take an object away from the speaker',zh:'拿着物品从说话人这里去别处'}),
+    selected:Object.freeze({
+      ko:'“가져가다”는 물건을 가지고 말하는 사람이나 기준 장소에서 다른 곳으로 갈 때 씁니다.',
+      ja:'「가져가다」は、物を持って話し手や基準となる場所から別の所へ行くときに使います。',
+      en:'“가져가다” is used when someone takes an object away from the speaker or reference place.',
+      zh:'“가져가다”用于拿着物品从说话人或作为基准的地点去别处。'
+    })
+  })
+});
+const OBJECT_ACTION_ORDER=['find','lose','bring','take'];
+const OBJECT_ACTION_METHOD=Object.freeze({
+  ko:'물건의 상태와 이동 방향을 보세요. 찾던 물건을 발견=찾다, 가지고 있던 물건의 위치를 모름=잃어버리다, 물건을 들고 이쪽으로 옴=가져오다, 물건을 들고 이곳에서 감=가져가다입니다.',
+  ja:'物の状態と移動方向を見ます。探していた物を発見＝찾다、持っていた物の場所が不明＝잃어버리다、物を持ってこちらへ来る＝가져오다、物を持ってここから行く＝가져가다です。',
+  en:'Check the object state and direction: discover after searching = 찾다, no longer know where it is = 잃어버리다, bring it here = 가져오다, and take it away = 가져가다.',
+  zh:'看物品状态和移动方向：寻找后发现＝찾다，不知道原来持有的物品在哪里＝잃어버리다，拿到这边来＝가져오다，从这里拿走＝가져가다。'
+});
+const reviewedObjectActionItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=OBJECT_ACTIONS[key];
+  return Object.freeze({
+    id,level:1,type:'word',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:OBJECT_ACTION_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(OBJECT_ACTION_ORDER.map(choiceKey=>Object.freeze({
+      meaning:OBJECT_ACTIONS[choiceKey].meaning,
+      explanationI18n:OBJECT_ACTIONS[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】찾다=찾아서 발견, 잃어버리다=가지고 있던 물건의 위치를 모름, 가져오다=물건을 들고 이쪽으로 옴, 가져가다=물건을 들고 이곳에서 감으로 상태와 방향이 다릅니다.\n【재사용 풀이】${OBJECT_ACTION_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】찾다＝探して発見、잃어버리다＝持っていた物の場所が不明、가져오다＝物を持ってこちらへ来る、가져가다＝物を持ってここから行く、という状態・方向の違いがあります。\n【再利用できる解き方】${OBJECT_ACTION_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 찾다 means finding after looking, 잃어버리다 losing track of something you had, 가져오다 bringing it here, and 가져가다 taking it away.\n[Reusable method] ${OBJECT_ACTION_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】찾다表示寻找后发现，잃어버리다表示不知道原有物品在哪里，가져오다表示拿到这边来，가져가다表示从这里拿走，状态和方向不同。\n【通用解法】${OBJECT_ACTION_METHOD.zh}`
+    })
+  });
+};
+
 const ANALYSIS_NOUNS=Object.freeze({
   tendency:Object.freeze({
     meaning:Object.freeze({ko:'여러 사례에서 공통으로 나타나는 흐름',ja:'複数の事例に共通して現れる傾向',en:'a recurring pattern across cases',zh:'在多个事例中共同出现的趋势'}),
@@ -2590,6 +2653,38 @@ const TOPIK_I=[
     ja:'教室の中から「教室の外」へ移動するので、「나오다」が合います。',
     en:'The move is from inside the classroom to outside it, so 나오다 fits.',
     zh:'从教室里面移动到“教室外面”，所以应选“나오다”。'
+  }),
+  reviewedObjectActionItem('S04-I-W-OBJECT-01','찾다','find','서랍에서 잃어버린 열쇠를 찾았어요.',{
+    ko:'서랍에서 잃어버린 열쇠를 찾았어요.',ja:'引き出しで、なくした鍵を見つけました。',en:'I found the lost key in the drawer.',zh:'我在抽屉里找到了丢失的钥匙。'
+  },{
+    ko:'“서랍에서 … 열쇠를 찾았어요”는 어디 있는지 모르던 열쇠를 살펴서 발견했다는 뜻입니다.',
+    ja:'「引き出しで、なくした鍵を見つけました」は、場所が分からなかった鍵を探して発見したという意味です。',
+    en:'“Found the lost key in the drawer” says the missing key was discovered after looking for it.',
+    zh:'“在抽屉里找到了丢失的钥匙”表示寻找后发现了原来不知道在哪里的钥匙。'
+  }),
+  reviewedObjectActionItem('S04-I-W-OBJECT-02','잃어버리다','lose','버스에서 지갑을 잃어버렸어요.',{
+    ko:'버스에서 지갑을 잃어버렸어요.',ja:'バスで財布をなくしました。',en:'I lost my wallet on the bus.',zh:'我在公交车上丢了钱包。'
+  },{
+    ko:'“지갑을 잃어버렸어요”는 가지고 있던 지갑이 없어져서 어디 있는지 모른다는 뜻입니다.',
+    ja:'「財布をなくしました」は、持っていた財布がなくなり、どこにあるか分からないという意味です。',
+    en:'“I lost my wallet” means the wallet I had is gone and I do not know where it is.',
+    zh:'“丢了钱包”表示原来带着的钱包不见了，不知道在哪里。'
+  }),
+  reviewedObjectActionItem('S04-I-W-OBJECT-03','가져오다','bring','내일 수업에 여권을 가져오세요.',{
+    ko:'내일 수업에 여권을 가져오세요.',ja:'明日の授業にパスポートを持ってきてください。',en:'Please bring your passport to class tomorrow.',zh:'明天上课时请把护照带来。'
+  },{
+    ko:'“수업에 … 가져오세요”는 여권을 들고 수업이 있는 이쪽 장소로 오라는 뜻입니다.',
+    ja:'「授業に…持ってきてください」は、パスポートを持って授業のあるこちらの場所へ来るという意味です。',
+    en:'“Bring your passport to class” directs the passport toward the class location here.',
+    zh:'“上课时请把护照带来”表示拿着护照来到上课的这个地点。'
+  }),
+  reviewedObjectActionItem('S04-I-W-OBJECT-04','가져가다','take','이 우산을 집에 가져가세요.',{
+    ko:'이 우산을 집에 가져가세요.',ja:'この傘を家に持って帰ってください。',en:'Please take this umbrella home.',zh:'请把这把伞带回家。'
+  },{
+    ko:'“이 우산을 집에 가져가세요”는 우산을 들고 현재 장소에서 집으로 가라는 뜻입니다.',
+    ja:'「この傘を家に持って帰ってください」は、傘を持って今いる場所から家へ行くという意味です。',
+    en:'“Take this umbrella home” moves the umbrella away from the current place toward home.',
+    zh:'“把这把伞带回家”表示拿着伞从现在所在的地方去家里。'
   })
 ];
 
