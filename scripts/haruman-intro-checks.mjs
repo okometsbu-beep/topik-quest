@@ -2,14 +2,17 @@ import assert from 'node:assert/strict';
 
 export async function verifyIntro({evaluate,send,setViewport,shot,ready,sleep,baseline=false}){
   const watch=await send('Page.addScriptToEvaluateOnNewDocument',{source:`
-    window.__introCompletion={started:performance.now(),ended:null,removed:null};
+    window.__introCompletion={started:performance.now(),ended:null,whiteout:null,title:null,removed:null};
     document.addEventListener('ended',e=>{
       if(e.target.id==='harumanIntroVideo')window.__introCompletion.ended=performance.now();
     },true);
     new MutationObserver(records=>{
+      const panel=document.querySelector('.harumanIntro'),result=window.__introCompletion;
+      if(panel?.classList.contains('harumanIntroWhiteout')&&result.whiteout===null)result.whiteout=performance.now();
+      if(panel?.classList.contains('harumanIntroShowingTitle')&&result.title===null)result.title=performance.now();
       if(records.some(r=>[...r.removedNodes].some(n=>n.classList?.contains('harumanIntro'))))
         window.__introCompletion.removed=performance.now();
-    }).observe(document,{subtree:true,childList:true});
+    }).observe(document,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});
   `});
   const wait=async(predicate,label)=>{
     for(let i=0;i<200;i++){try{if(await evaluate(predicate))return}catch(_){}await sleep(100)}
@@ -27,6 +30,11 @@ export async function verifyIntro({evaluate,send,setViewport,shot,ready,sleep,ba
     const result=await evaluate('window.__introCompletion');
     assert.ok(result.ended!==null,'video must end naturally before removal');
     assert.ok(result.removed>=result.ended+150,'fade follows the final frame');
+    if(!baseline){
+      assert.ok(result.whiteout>=result.ended,'whiteout follows natural completion');
+      assert.ok(result.title>=result.whiteout+550,'title waits for whiteout');
+      assert.ok(result.removed>=result.title+1800,'title remains readable before home');
+    }
     await ready();return result;
   };
   try{
@@ -37,7 +45,19 @@ export async function verifyIntro({evaluate,send,setViewport,shot,ready,sleep,ba
       if(!baseline)assert.equal(layout.buttons,0,'no skip control');
       assert.equal(layout.leaving,false);assert.equal(layout.opacity,'1');assert.equal(layout.fit,'contain');
       assert.equal(layout.overflow,false);assert.equal(layout.inside,true);assert.ok(layout.center<1);
-      await shot(`intro-${width}-${theme}-playing.png`);await finish();
+      if(!baseline)assert.equal(await evaluate(`getComputedStyle(document.querySelector('.harumanIntroTitle')).visibility`),'hidden');
+      await shot(`intro-${width}-${theme}-playing.png`);
+      if(!baseline){
+        await wait(`document.querySelector('.harumanIntroWhiteout')&&!document.querySelector('.harumanIntroShowingTitle')`,'whiteout');
+        await shot(`intro-${width}-${theme}-whiteout.png`);
+        await wait(`document.querySelector('.harumanIntroShowingTitle')&&Number(getComputedStyle(document.querySelector('.harumanIntroTitle')).opacity)>.99`,'title reveal');
+        const title=await evaluate(`(()=>{const p=document.querySelector('.harumanIntro'),i=document.getElementById('harumanIntroTitle'),r=i.getBoundingClientRect();return{loaded:i.complete&&i.naturalWidth===1448,src:i.getAttribute('src'),white:getComputedStyle(p,':before').backgroundColor,covered:getComputedStyle(p,':before').opacity,inside:r.left>=0&&r.right<=innerWidth&&r.top>=0&&r.bottom<=innerHeight,center:Math.abs((r.left+r.right)/2-innerWidth/2),overflow:document.documentElement.scrollWidth>innerWidth+1}})()`);
+        assert.equal(title.loaded,true);assert.equal(title.src,'assets/branding/harumal-title-v1.png');
+        assert.equal(title.white,'rgb(255, 255, 255)');assert.equal(title.covered,'1');
+        assert.equal(title.inside,true);assert.ok(title.center<1);assert.equal(title.overflow,false);
+        await shot(`intro-${width}-${theme}-title.png`);
+      }
+      await finish();
       await shot(`intro-${width}-${theme}-home.png`);
     }
     if(!baseline){

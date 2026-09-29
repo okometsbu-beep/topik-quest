@@ -5,8 +5,16 @@
   const video=document.getElementById('harumanIntroVideo');
   if(!panel||!video)return;
   const root=document.documentElement;
+  const title=document.getElementById('harumanIntroTitle');
   let closed=false, fading=false, alphaChecked=false, sourceId=0;
-  let stallTimer, fadeTimer, lastTime=0;
+  let stallTimer, stageTimer, stageNext, stageDue=0, stageRemaining=0, lastTime=0;
+  // Pause both the stage clock and CSS animations while the app is hidden.
+  const scheduleStage=(next,delay)=>{
+    clearTimeout(stageTimer);stageNext=next;stageRemaining=delay;
+    if(document.hidden)return;
+    stageDue=performance.now()+delay;
+    stageTimer=setTimeout(()=>{stageNext=null;next()},delay);
+  };
   // Recovery is based on lack of progress, never elapsed playback duration.
   const watchProgress=()=>{
     clearTimeout(stallTimer);
@@ -14,26 +22,40 @@
   };
   const dispose=()=>{
     if(closed)return;
-    closed=true;clearTimeout(stallTimer);clearTimeout(fadeTimer);
+    closed=true;clearTimeout(stallTimer);clearTimeout(stageTimer);stageNext=null;
     video.pause();video.removeAttribute('src');video.load();panel.remove();
     root.classList.remove('haruman-intro-active');
     document.removeEventListener('visibilitychange',onVisibility);
   };
   const finish=(immediate=false)=>{
     if(closed||fading)return;
-    fading=true;clearTimeout(stallTimer);video.pause();
-    panel.style.pointerEvents='none';
+    fading=true;sourceId++;clearTimeout(stallTimer);video.pause();
     if(immediate){dispose();return}
-    panel.classList.add('harumanIntroLeaving');fadeTimer=setTimeout(dispose,220);
+    panel.classList.add('harumanIntroWhiteout');
+    scheduleStage(()=>{
+      panel.classList.add('harumanIntroShowingTitle');
+      scheduleStage(()=>{
+        panel.classList.add('harumanIntroLeaving');
+        scheduleStage(dispose,300);
+      },1600);
+    },600);
   };
   const onVisibility=()=>{
-    if(closed||fading)return;
-    if(document.hidden){sourceId++;clearTimeout(stallTimer);video.pause()}
-    else{watchProgress();play()}
+    if(closed)return;
+    panel.classList.toggle('harumanIntroPaused',document.hidden);
+    if(document.hidden){
+      sourceId++;clearTimeout(stallTimer);video.pause();
+      if(stageNext){stageRemaining=Math.max(0,stageDue-performance.now());clearTimeout(stageTimer)}
+    }else if(fading){
+      if(stageNext)scheduleStage(stageNext,stageRemaining);
+    }else{watchProgress();play()}
   };
   if(matchMedia('(prefers-reduced-motion: reduce)').matches||navigator.connection?.saveData){dispose();return}
   root.classList.add('haruman-intro-active');
   document.addEventListener('visibilitychange',onVisibility);
+  // Keep a readable wordmark if the optional image cannot load.
+  const revealTitleImage=()=>{if(title?.naturalWidth)panel.classList.add('harumanIntroTitleReady')};
+  title?.addEventListener('load',revealTitleImage);revealTitleImage();
   video.muted=true;video.defaultMuted=true;video.playsInline=true;
   const play=()=>{
     if(document.hidden||closed||fading)return;
