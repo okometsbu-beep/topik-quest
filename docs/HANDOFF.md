@@ -1,9 +1,11 @@
-## 2026-09-29 v150 인트로 화이트 아웃·타이틀 전환 후보
+## 2026-09-29 v150 인트로 화이트 아웃·타이틀 배포 완료
 
 - 사용자 지시 한 작업: 영상의 실제 `ended` → 500ms 화이트 아웃(600ms 뒤 다음 단계) → 첨부한 하루말/harumal 투명 PNG의 450ms 등장·총 1600ms 표시 → 300ms 페이드 → 홈. 스킵 없이 완주하며 영상 아래 중복 텍스트는 제거했다.
-- 제목 원본 PNG 1448×1086/419846 bytes를 그대로 사용한다. 영상·학습 데이터·테마는 보존한다. 앱 숨김 시 영상과 타이틀 단계의 남은 시간을 정지/복귀하며 이미지 실패에는 텍스트 대체를 표시한다.
-- Linux Node24: 집중 17/17, UI quick 164/164 통과. GitHub Chrome의 320/375/390/430px×라이트/다크 전후 시각 검사·배포는 아직 미검증이다. 실제 iPhone/Android로 세지 않는다.
-- 배포 게이트: 전체 검사·전후 화면·CI 통과 뒤 squash/Pages 및 실제 종료→화이트 아웃→타이틀→홈 검증. 라이브 https://okometsbu-beep.github.io/topik-quest/ 는 현재 v149이며 되돌리기 기준은 main `2455b14a8a0c7f6e10664787d43e2803e2ada55e`다.
+- 제목 원본 PNG 1448×1086/419846 bytes를 그대로 사용했다. 영상·학습 데이터·테마는 보존한다. 앱 숨김 시 영상과 타이틀 단계의 남은 시간을 정지/복귀하며 이미지 실패에는 텍스트 대체를 표시한다.
+- Linux Node24: 전체 180/180·집중 17/17·quick 164/164 통과. [브랜치 CI](https://github.com/okometsbu-beep/topik-quest/actions/runs/36566102824)의 Ubuntu/Node22/Chrome에서 320/375/390/430px×라이트/다크 전후 48장 직접 확인(artifact `11032810613`), 모바일 회귀 330장·앱 오류0·네 언어 홈/단어장 통과. 지연 시작+0.25배속 실제 재생은 약 12.58초 자연 종료→13.18초 타이틀→15.08초 해제다.
+- 배포: [PR #214](https://github.com/okometsbu-beep/topik-quest/pull/214) squash `9711a29fc8dbba17469ec5ce23520f39f37902d5`. [PR CI](https://github.com/okometsbu-beep/topik-quest/actions/runs/36567235015)·[Pages](https://github.com/okometsbu-beep/topik-quest/actions/runs/36568177772) 성공. [main CI](https://github.com/okometsbu-beep/topik-quest/actions/runs/36568178589).
+- 라이브 https://okometsbu-beep.github.io/topik-quest/ v150: 기본4개+런타임51개 HTTP 정상, 새 PNG 포함 핵심6자산 SHA-256 일치. Chrome DOM에서 영상 2.792/2.792 `ended=true`→화이트 아웃→타이틀 단계(원본 이미지 naturalWidth 1448)→패널 제거/홈과 스킵 버튼0을 확인했다. 전환 시각 합격 근거는 위 CI 캡처이며 실제 기기로 세지 않는다.
+- 되돌리기는 #214 revert 또는 v149 main `2455b14a8a0c7f6e10664787d43e2803e2ada55e`. 미검증: 실제 iPhone/Android 자동재생·숨김 복귀·시각 전환. 다음 한 작업은 실기기에서 같은 완주/화이트 아웃/타이틀/홈 흐름 확인이다.
 
 ## 2026-09-29 v149 인트로 완주·스킵 제거 배포 완료
 
