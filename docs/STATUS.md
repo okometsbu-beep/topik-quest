@@ -1,3 +1,12 @@
+## 2026-09-30 v151 TOPIK II 논증 명사 숏츠 배포 완료 · #216
+
+- #110 S04의 부족 유형 한 묶음으로 `주장·근거·반박·결론` 4카드를 안정 ID로 추가했다. 입장 제시·입장 뒷받침·다른 주장 반증·검토 뒤 최종 판단이라는 한 역할만 구분한다.
+- ko/ja/en/zh 뜻·예문·보기·선택별 오답 이유와 `정답 근거 → 오답 함정 → 재사용 풀이`를 로컬에 묶었다. 기존 문항 ID, 원본 2,088문항, `topikQuestShortsV1`과 학습 기록은 변경하지 않았다.
+- 재고는 416행/290 정확 질문-보기군(I 144, II 146). 기존 중복 126행·30군, 구조 후보 15개, 정답 충돌 0, 종합 승인 0/416은 변하지 않았다.
+- 로컬 content 47/47, 전체 181/181 통과. [PR #216 CI](https://github.com/okometsbu-beep/topik-quest/actions/runs/36590876365)의 Ubuntu/Node22/Chrome에서 320/375/390/430px×라이트/다크, 오답·펼친 해설·저장 복원을 포함한 473장을 생성했다. artifact `11043988217`의 새 일본어 오답 라이트와 펼친 해설 다크 2장을 직접 확인했으며 실기기로 세지 않는다.
+- 배포: [PR #216](https://github.com/okometsbu-beep/topik-quest/pull/216) squash `c91510535188b273f8177a449415c4b607773f6d`. [main CI](https://github.com/okometsbu-beep/topik-quest/actions/runs/36592147626)와 [Pages](https://github.com/okometsbu-beep/topik-quest/actions/runs/36592145973) 성공. 라이브 https://okometsbu-beep.github.io/topik-quest/ v151은 기본4개+런타임51개 HTTP 정상이며 `data/shorts-levels.js` SHA-256가 main과 일치한다.
+- 되돌리기는 #216 revert 또는 v150 main `69523389d740a5b3f4f0ad0c8c97d355f906d601`. 실제 iPhone/Android, 일본어 모어 화자·교육 전문가, 동의한 학습자의 풀이 시간·D1/D7 회상은 미검증이다. 다음 검사 가능한 한 작업은 새 P0·정답 오류가 없으면 더 적어진 TOPIK I 부족 유형 4문항의 제한 검수다.
+
 ## 2026-09-29 v150 인트로 화이트 아웃·타이틀 배포 완료
 
 - 사용자 지시 한 작업: 영상의 실제 `ended` → 500ms 화이트 아웃(600ms 뒤 다음 단계) → 첨부한 하루말/harumal 투명 PNG의 450ms 등장·총 1600ms 표시 → 300ms 페이드 → 홈. 스킵 없이 완주하며 영상 아래 중복 텍스트는 제거했다.

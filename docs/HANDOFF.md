@@ -1,3 +1,11 @@
+## 2026-09-30 v151 TOPIK II argument-role Shorts deployed · #216
+
+- Four stable-ID cards add `주장`, `근거`, `반박`, and `결론`, distinguishing a position, its support, a challenge, and a final judgment. ko/ja/en/zh selected-choice feedback and optional evidence/trap/method coaching are local.
+- Existing IDs, the original 2,088-item bank, `topikQuestShortsV1`, and learner records remain unchanged. Inventory is 416 rows / 290 exact families (I 144, II 146); pre-existing duplicate/structural counts remain and no answer conflict was added.
+- Local content 47/47 and full 181/181 pass. [PR #216 CI](https://github.com/okometsbu-beep/topik-quest/actions/runs/36590876365) passes four widths/two themes, wrong-answer, expanded coaching, and reload restore. Artifact `11043988217` has 473 screenshots; the two new representative states were inspected. This is browser emulation, not a physical device.
+- [PR #216](https://github.com/okometsbu-beep/topik-quest/pull/216) squash `c91510535188b273f8177a449415c4b607773f6d`; [main CI](https://github.com/okometsbu-beep/topik-quest/actions/runs/36592147626) and [Pages](https://github.com/okometsbu-beep/topik-quest/actions/runs/36592145973) pass. Live v151 serves 4 base + 51 runtime files, and the changed Shorts asset hash matches main.
+- Rollback is #216 revert or v150 `69523389d740a5b3f4f0ad0c8c97d355f906d601`. Physical iPhone/Android, native-language/educator review, learner timing, and D1/D7 recall remain unverified. If no P0/answer error appears, the next testable bounded shortage is four TOPIK I items.
+
 ## 2026-09-29 v150 인트로 화이트 아웃·타이틀 배포 완료
 
 - 사용자 지시 한 작업: 영상의 실제 `ended` → 500ms 화이트 아웃(600ms 뒤 다음 단계) → 첨부한 하루말/harumal 투명 PNG의 450ms 등장·총 1600ms 표시 → 300ms 페이드 → 홈. 스킵 없이 완주하며 영상 아래 중복 텍스트는 제거했다.
