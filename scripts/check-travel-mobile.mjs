@@ -3,13 +3,14 @@ import assert from 'node:assert/strict';
 import {verifyHomeVocabulary} from './home-vocabulary-checks.mjs';
 import {verifyHaruman} from './haruman-checks.mjs';
 import {verifyAdventure} from './travel-adventure-checks.mjs';
+import {verifyIntro} from './haruman-intro-checks.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import {spawn} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
-const out=path.join(root,'artifacts',process.env.HARUMAL_FOCUS_ONLY?'home-vocabulary':'travel-mobile');
+const out=path.join(root,'artifacts',process.env.HARUMAN_INTRO_BASELINE?'intro-baseline':process.env.HARUMAL_FOCUS_ONLY?'home-vocabulary':'travel-mobile');
 fs.mkdirSync(out,{recursive:true});
 for(const file of fs.readdirSync(out))if(file.endsWith('.png'))fs.unlinkSync(path.join(out,file));
 const chromePath=[process.env.CHROME_PATH,'/usr/bin/google-chrome','/usr/bin/google-chrome-stable','/usr/bin/chromium','/usr/bin/chromium-browser'].find(candidate=>candidate&&fs.existsSync(candidate));
@@ -648,12 +649,16 @@ try{
   assert.ok(introQA.some(e=>e.type==='playing'&&e.muted&&e.inline&&e.width===540&&e.height===540&&e.fit==='contain'),'intro must actually decode and play inline, muted and proportionally');
   assert.ok(introQA.some(e=>e.type==='ended'&&e.time>2.7&&e.time<3),'intro must naturally end before the watchdog');
   console.log('Haruman actual browser playback passed',JSON.stringify(introQA));
+  if(!process.env.HARUMAL_FOCUS_ONLY)await verifyIntro({evaluate,send,setViewport,shot,ready,sleep,baseline:!!process.env.HARUMAN_INTRO_BASELINE});
+  // Intro has its own real-media checks; unrelated reload tests use reduced motion.
+  await send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});
+  await setViewport(390,844);
   assert.equal(await evaluate(`S.lang`),'ja','a fresh Japanese browser must open in Japanese');
   assert.match(await evaluate(`document.querySelector('.tqV9Greeting h1')?.textContent||''`),/韓国語/,'the first Home heading must be localized before language-menu use');
   assert.match(await evaluate(`document.querySelector('.tqLessonStart')?.textContent||''`),/入門学習を始める/,'the first primary CTA must be localized before language-menu use');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);await assertHomeFits('fresh Japanese browser Home light','light');await shot('00renewal-home-ja-locale-first-visit-light.png');
   await evaluate(`malbitSetTheme('dark')`);await sleep(100);await assertHomeFits('fresh Japanese browser Home dark','dark');await shot('00renewal-home-ja-locale-first-visit-dark.png');
-  if(process.env.HARUMAL_BASELINE){for(const theme of ['light','dark'])for(const width of [320,375,390,430]){await evaluate(`setLang('ko');malbitSetTheme('${theme}');setView('home')`);await setViewport(width,844);await shot(`baseline-home-${theme}-${width}.png`)}console.log('Baseline captured');}else if(process.env.HARUMAL_FOCUS_ONLY){await verifyHomeVocabulary({evaluate,tap,shot,setViewport,send,ready,sleep});assert.deepEqual(errors,[]);console.log('Home/vocabulary focused mobile checks passed');}else{
+  if(process.env.HARUMAN_INTRO_BASELINE){assert.deepEqual(errors,[]);console.log('Intro baseline captured');}else if(process.env.HARUMAL_BASELINE){for(const theme of ['light','dark'])for(const width of [320,375,390,430]){await evaluate(`setLang('ko');malbitSetTheme('${theme}');setView('home')`);await setViewport(width,844);await shot(`baseline-home-${theme}-${width}.png`)}console.log('Baseline captured');}else if(process.env.HARUMAL_FOCUS_ONLY){await verifyHomeVocabulary({evaluate,tap,shot,setViewport,send,ready,sleep});assert.deepEqual(errors,[]);console.log('Home/vocabulary focused mobile checks passed');}else{
   await verifyHaruman({evaluate,tap,shot,setViewport,sleep});
   await verifyAdventure({evaluate,tap,shot,setViewport,send,ready,sleep});
   // Preserve old-course regressions through its explicit archive route, never the new default.

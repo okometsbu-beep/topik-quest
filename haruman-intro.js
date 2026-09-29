@@ -1,41 +1,49 @@
-// Optional decoration: app boot never waits for media or storage.
+// Boot runs underneath; a healthy intro stays visible until the video ends.
 (function(){
   'use strict';
   const panel=document.querySelector('.harumanIntro');
   const video=document.getElementById('harumanIntroVideo');
   if(!panel||!video)return;
-  const root=document.documentElement, key='harumalIntroSeenV1';
-  let closed=false, fading=false, alphaChecked=false;
-  const timers=[];
-  const later=(fn,ms)=>{const id=setTimeout(fn,ms);timers.push(id);return id};
+  const root=document.documentElement;
+  let closed=false, fading=false, alphaChecked=false, sourceId=0;
+  let stallTimer, fadeTimer, lastTime=0;
+  // Recovery is based on lack of progress, never elapsed playback duration.
+  const watchProgress=()=>{
+    clearTimeout(stallTimer);
+    if(!closed&&!fading&&!document.hidden)stallTimer=setTimeout(()=>finish(true),15000);
+  };
   const dispose=()=>{
     if(closed)return;
-    closed=true;timers.forEach(clearTimeout);
+    closed=true;clearTimeout(stallTimer);clearTimeout(fadeTimer);
     video.pause();video.removeAttribute('src');video.load();panel.remove();
     root.classList.remove('haruman-intro-active');
     document.removeEventListener('visibilitychange',onVisibility);
   };
   const finish=(immediate=false)=>{
     if(closed||fading)return;
-    fading=true;timers.forEach(clearTimeout);video.pause();
+    fading=true;clearTimeout(stallTimer);video.pause();
     panel.style.pointerEvents='none';
     if(immediate){dispose();return}
-    panel.classList.add('harumanIntroLeaving');later(dispose,220);
+    panel.classList.add('harumanIntroLeaving');fadeTimer=setTimeout(dispose,220);
   };
-  const onVisibility=()=>{if(document.hidden)finish(true)};
-  window.HARUMAN_INTRO={finish};
-  let recent=false;
-  try{const last=Number(sessionStorage.getItem(key));recent=last>0&&Date.now()-last<60000;sessionStorage.setItem(key,String(Date.now()))}catch(_){}
-  if(recent||matchMedia('(prefers-reduced-motion: reduce)').matches||navigator.connection?.saveData){dispose();return}
+  const onVisibility=()=>{
+    if(closed||fading)return;
+    if(document.hidden){sourceId++;clearTimeout(stallTimer);video.pause()}
+    else{watchProgress();play()}
+  };
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches||navigator.connection?.saveData){dispose();return}
   root.classList.add('haruman-intro-active');
-  panel.addEventListener('click',()=>finish());
-  panel.addEventListener('keydown',event=>{if(event.key==='Escape')finish()});
   document.addEventListener('visibilitychange',onVisibility);
   video.muted=true;video.defaultMuted=true;video.playsInline=true;
-  const play=()=>{try{const p=video.play();if(p?.catch)p.catch(()=>finish(true))}catch(_){finish(true)}};
+  const play=()=>{
+    if(document.hidden||closed||fading)return;
+    const requestSource=++sourceId;
+    const failed=()=>{if(requestSource===sourceId&&!document.hidden)finish(true)};
+    try{const p=video.play();if(p?.catch)p.catch(failed)}catch(_){failed()}
+  };
   const useMp4=()=>{
     if(closed||fading)return;
-    alphaChecked=true;video.style.opacity='0';
+    sourceId++;lastTime=0;watchProgress();alphaChecked=true;video.style.opacity='0';
     video.src='assets/video/haruman-intro-v1.mp4';play();
   };
   // canPlayType alone cannot establish that the decoder preserves alpha.
@@ -54,10 +62,10 @@
   });
   video.addEventListener('error',()=>finish(true));
   video.addEventListener('ended',()=>finish());
-  const loadTimer=later(()=>finish(true),800);
-  video.addEventListener('playing',()=>clearTimeout(loadTimer),{once:true});
-  // Covers stalled playback and autoplay implementations that never settle.
-  later(()=>finish(),3380);
+  video.addEventListener('timeupdate',()=>{
+    if(video.currentTime>lastTime){lastTime=video.currentTime;watchProgress()}
+  });
+  watchProgress();
   if(video.canPlayType('video/webm; codecs="vp9"')){
     video.src='assets/video/haruman-intro-v1.webm';play();
   }else{useMp4()}
