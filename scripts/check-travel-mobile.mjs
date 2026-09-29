@@ -1718,7 +1718,7 @@ try{
   await submitShortsLabel('主張・判断を裏づける資料や理由');
   const argumentReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
   assert.match(argumentReview.summary,/근거[\s\S]*裏づける/u,'selected Japanese feedback must explain the evidence trap');
-  assert.match(argumentReview.answer,/自分の考えや意見/u);assert.equal(argumentReview.closed,true);
+  assert.match(argumentReview.answer,/自分の考え・意見/u);assert.equal(argumentReview.closed,true);
   assert.equal(argumentReview.nextBeforeDetails,true,'Next question must precede optional argument-noun coaching');
   assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'専門家たちは、子ども保護区域の制限速度を維持すべきだと主張しました。','reviewed Japanese argument-noun example must render locally');
   for(const theme of ['light','dark']){
@@ -1740,7 +1740,7 @@ try{
   assert.deepEqual(argumentRestored.choiceOrder,[2,1,0,3],'saved argument-noun choice order must survive reload');
   assert.equal(argumentRestored.locked,true,'graded argument-noun state must survive reload');
   assert.match(argumentRestored.summary,/근거[\s\S]*裏づける/u,'argument-noun selected feedback must survive reload');
-  assert.match(argumentRestored.answer,/自分の考えや意見/u,'reviewed argument-noun answer must survive reload');
+  assert.match(argumentRestored.answer,/自分の考え・意見/u,'reviewed argument-noun answer must survive reload');
 
   const houseworkAction=await evaluate(`(()=>{const lv=1,deck=[...window.MALBIT_SHORTS_DECKS[lv],...window.MALBIT_BANK.shorts(lv)],index=deck.findIndex(item=>item.id==='S04-I-W-HOUSEWORK-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','1');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:1,levels:{1:active,2:blank},daily:{}}));return{index,id:identity.id}})()`);
   assert.equal(houseworkAction.id,'S04-I-W-HOUSEWORK-01','reviewed housework-action card must have its explicit stable ID');
