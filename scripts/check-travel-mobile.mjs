@@ -58,7 +58,7 @@ try{
   let legacyTravelChecks=false;
   const ready=async()=>{
     for(let i=0;i<100;i++){
-      let origin;try{origin=await evaluate(`(()=>{if(!(document.readyState==='complete'&&!!window.MALBIT_TRAVEL&&!!window.HARUMAL_ADVENTURE&&!document.documentElement.classList.contains('tq-booting')))return null;if(${expectedNewDocument}&&performance.timeOrigin===${lastReadyOrigin})return null;if(${legacyTravelChecks}&&!window.__legacyTravelQA){window.__legacyTravelQA=true;const base=render;render=function(){if(S.view==='travel')S.view='travelLegacy';return base.apply(this,arguments)};window.malbitTravelOpen=()=>setView('travelLegacy')}return performance.timeOrigin})()`);
+      let origin;try{origin=await evaluate(`(()=>{if(!(document.readyState==='complete'&&!!window.MALBIT_TRAVEL&&!!window.HARUMAL_ADVENTURE&&!document.documentElement.classList.contains('tq-booting')&&!document.querySelector('.harumanIntro')))return null;if(${expectedNewDocument}&&performance.timeOrigin===${lastReadyOrigin})return null;if(${legacyTravelChecks}&&!window.__legacyTravelQA){window.__legacyTravelQA=true;const base=render;render=function(){if(S.view==='travel')S.view='travelLegacy';return base.apply(this,arguments)};window.malbitTravelOpen=()=>setView('travelLegacy')}return performance.timeOrigin})()`);
       }catch(error){
         // A requested reload may destroy the old execution context before the new DOM exists.
         if(!expectedNewDocument||!/Inspected target navigated or closed|Execution context was destroyed|Cannot find context/u.test(error.message))throw error;
@@ -637,7 +637,17 @@ try{
   await setViewport(390,844);
   await send('Emulation.setLocaleOverride',{locale:'ja-JP'});
   await send('Network.setUserAgentOverride',{userAgent:await evaluate(`navigator.userAgent`),acceptLanguage:'ja-JP,ja;q=0.9,en;q=0.8'});
+  await send('Page.addScriptToEvaluateOnNewDocument',{source:`
+    window.__introQA=[];
+    for(const type of ['loadeddata','playing','ended'])document.addEventListener(type,e=>{
+      if(e.target.id==='harumanIntroVideo')window.__introQA.push({type,time:e.target.currentTime,width:e.target.videoWidth,height:e.target.videoHeight,muted:e.target.muted,inline:e.target.playsInline,fit:getComputedStyle(e.target).objectFit});
+    },true);
+  `});
   await send('Page.navigate',{url:(process.env.MALBIT_TEST_URL||'http://127.0.0.1:4173/')+'?visual-check=travel'});await ready();
+  const introQA=await evaluate('window.__introQA');
+  assert.ok(introQA.some(e=>e.type==='playing'&&e.muted&&e.inline&&e.width===540&&e.height===540&&e.fit==='contain'),'intro must actually decode and play inline, muted and proportionally');
+  assert.ok(introQA.some(e=>e.type==='ended'&&e.time>2.7&&e.time<3),'intro must naturally end before the watchdog');
+  console.log('Haruman actual browser playback passed',JSON.stringify(introQA));
   assert.equal(await evaluate(`S.lang`),'ja','a fresh Japanese browser must open in Japanese');
   assert.match(await evaluate(`document.querySelector('.tqV9Greeting h1')?.textContent||''`),/韓国語/,'the first Home heading must be localized before language-menu use');
   assert.match(await evaluate(`document.querySelector('.tqLessonStart')?.textContent||''`),/入門学習を始める/,'the first primary CTA must be localized before language-menu use');
