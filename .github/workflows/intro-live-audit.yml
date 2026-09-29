@@ -1,0 +1,38 @@
+name: Read-only live intro audit
+on:
+  push:
+    branches: ['audit/intro-v150-live']
+permissions:
+  contents: read
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: sudo apt-get update -qq && sudo apt-get install -y fonts-noto-cjk xvfb
+      - name: Read public v150 in headed Chrome
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/check-travel-mobile.mjs')
+          s=p.read_text()
+          old="if(process.env.HARUMAN_INTRO_BASELINE){assert.deepEqual(errors,[])"
+          assert old in s
+          s=s.replace(old,"if(true){assert.deepEqual(errors,[])",1)
+          s=s.replace("'--headless',","",1).replace("'--disable-gpu',","",1)
+          p.write_text(s)
+          p=Path('scripts/haruman-intro-checks.mjs')
+          s=p.read_text().replace('[320,375,390,430]','[375,1363]')
+          p.write_text(s)
+          PY
+          xvfb-run -a env MALBIT_TEST_URL=https://okometsbu-beep.github.io/topik-quest/ node scripts/check-travel-mobile.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: intro-v150-public-headed
+          path: artifacts/travel-mobile/intro-*.png
+          if-no-files-found: error
