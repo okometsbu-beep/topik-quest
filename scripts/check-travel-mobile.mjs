@@ -1803,6 +1803,38 @@ try{
   assert.match(directionalRestored.summary,/내려가다[\s\S]*高い所から/u,'directional-action selected feedback must survive reload');
   assert.match(directionalRestored.answer,/低い所から高い所/u,'reviewed directional-action answer must survive reload');
 
+  const objectAction=await evaluate(`(()=>{const lv=1,deck=[...window.MALBIT_SHORTS_DECKS[lv],...window.MALBIT_BANK.shorts(lv)],index=deck.findIndex(item=>item.id==='S04-I-W-OBJECT-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','1');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:1,levels:{1:active,2:blank},daily:{}}));return{index,id:identity.id}})()`);
+  assert.equal(objectAction.id,'S04-I-W-OBJECT-01','reviewed object-action card must have its explicit stable ID');
+  await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsWord');
+  const objectBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['1'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
+  assert.equal(objectBefore.term,'찾다');assert.equal(objectBefore.cardId,objectAction.id);assert.equal(objectBefore.orderId,objectAction.id);
+  assert.deepEqual(objectBefore.choiceOrder,[2,1,0,3]);
+  assert.deepEqual(objectBefore.labels,['物を持って話し手のいる方へ来る','持っていた物がどこにあるか分からなくなる','探したり調べたりして必要な物を見つける','物を持って話し手の所から別の場所へ行く'],'fixed object-action choices must keep the saved shuffle');
+  await submitShortsLabel('持っていた物がどこにあるか分からなくなる');
+  const objectReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
+  assert.match(objectReview.summary,/잃어버리다[\s\S]*持っていた物/u,'selected Japanese feedback must explain the losing trap');
+  assert.match(objectReview.answer,/探したり調べたりして/u);assert.equal(objectReview.closed,true);
+  assert.equal(objectReview.nextBeforeDetails,true,'Next question must precede optional object-action coaching');
+  assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'引き出しで、なくした鍵を見つけました。','reviewed Japanese object-action example must render locally');
+  await evaluate(`malbitSetTheme('light')`);await sleep(100);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK I object action light ${width}px`,'light')}
+  await setViewport(390,844);await shot('00du-shorts-topik1-object-action-wrong-light.png');
+  await evaluate(`(()=>{malbitSetTheme('dark');const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})})()`);await sleep(100);
+  assert.equal(await evaluate(`document.querySelector('.shortsExplanation')?.open`),true,'object-action evidence screenshot must keep detailed coaching open');
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK I object action expanded dark ${width}px`,'dark')}
+  await setViewport(390,844);await evaluate(`(()=>{const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})})()`);await sleep(100);
+  assert.equal(await evaluate(`document.querySelector('.shortsExplanation')?.open`),true,'object-action expanded state must survive evidence repositioning');
+  await shot('00dv-shorts-topik1-object-action-full-dark.png');
+  await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsFeedbackSummary');
+  const objectRestored=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['1'];return{cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder,locked:state.locked,summary:document.querySelector('.shortsFeedbackSummary')?.innerText,answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
+  assert.equal(objectRestored.cardId,objectAction.id,'reviewed object-action ID must survive reload');
+  assert.equal(objectRestored.orderId,objectAction.id,'reviewed object-action choice-order ID must survive reload');
+  assert.deepEqual(objectRestored.choiceOrder,[2,1,0,3],'saved object-action choice order must survive reload');
+  assert.equal(objectRestored.locked,true,'graded object-action state must survive reload');
+  assert.match(objectRestored.summary,/잃어버리다[\s\S]*持っていた物/u,'object-action selected feedback must survive reload');
+  assert.match(objectRestored.answer,/探したり調べたりして/u,'reviewed object-action answer must survive reload');
+
   const basicNegation=await evaluate(`(()=>{const lv=1,deck=[...window.MALBIT_SHORTS_DECKS[lv],...window.MALBIT_BANK.shorts(lv)],index=deck.findIndex(item=>item.id==='S04-I-G-NEGATION-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','1');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:1,levels:{1:active,2:blank},daily:{}}));return{index,id:identity.id}})()`);
   assert.equal(basicNegation.id,'S04-I-G-NEGATION-01','reviewed basic-negation card must have its explicit stable ID');
   await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsWord');
