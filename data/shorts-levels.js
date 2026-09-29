@@ -1994,6 +1994,69 @@ const reviewedAnalysisNounItem=(id,term,key,example,exampleI18n,evidence)=>{
   });
 };
 
+const ARGUMENT_NOUNS=Object.freeze({
+  claim:Object.freeze({
+    meaning:Object.freeze({ko:'자신의 생각이나 의견을 내세움',ja:'自分の考え・意見を述べること',en:'a stated position or opinion',zh:'提出自己的看法或意见'}),
+    selected:Object.freeze({
+      ko:'“주장”은 자신의 생각이나 의견을 분명하게 내세워 말하는 것입니다.',
+      ja:'「주장」は、自分の考えや意見をはっきり述べることです。',
+      en:'“주장” is a position or opinion that someone puts forward clearly.',
+      zh:'“주장”是明确提出自己的看法或意见。'
+    })
+  }),
+  evidence:Object.freeze({
+    meaning:Object.freeze({ko:'주장이나 판단을 뒷받침하는 자료나 이유',ja:'主張・判断を裏づける資料や理由',en:'supporting information or reasons',zh:'支持主张或判断的资料、理由'}),
+    selected:Object.freeze({
+      ko:'“근거”는 주장이나 판단이 타당하다는 것을 뒷받침하는 자료나 이유입니다.',
+      ja:'「근거」は、主張や判断が妥当だと裏づける資料や理由です。',
+      en:'“근거” is information or a reason that supports a claim or judgment.',
+      zh:'“근거”是用来支持某个主张或判断的资料、理由。'
+    })
+  }),
+  rebuttal:Object.freeze({
+    meaning:Object.freeze({ko:'다른 주장에 맞서 틀린 점을 밝힘',ja:'別の主張に反対し、その誤りを示すこと',en:'showing that another claim is wrong',zh:'针对另一主张指出其错误'}),
+    selected:Object.freeze({
+      ko:'“반박”은 다른 주장에 동의하지 않고 그 주장에 틀리거나 부족한 점이 있음을 밝히는 것입니다.',
+      ja:'「반박」は、別の主張に同意せず、その誤りや不十分な点を示すことです。',
+      en:'“반박” opposes another claim by pointing out what is wrong or insufficient.',
+      zh:'“반박”是不同意另一主张，并指出其中错误或不足之处。'
+    })
+  }),
+  conclusion:Object.freeze({
+    meaning:Object.freeze({ko:'검토나 논의를 거쳐 내린 최종 판단',ja:'検討・議論を経て下した最終的な判断',en:'a final judgment after review',zh:'经过分析、讨论得出的最终判断'}),
+    selected:Object.freeze({
+      ko:'“결론”은 자료를 검토하거나 논의한 뒤 마지막으로 내린 판단입니다.',
+      ja:'「결론」は、資料を検討したり議論したりした後、最後に下した判断です。',
+      en:'“결론” is the final judgment reached after reviewing information or discussing an issue.',
+      zh:'“결론”是分析资料或进行讨论之后最终得出的判断。'
+    })
+  })
+});
+const ARGUMENT_NOUN_ORDER=['claim','evidence','rebuttal','conclusion'];
+const ARGUMENT_NOUN_METHOD=Object.freeze({
+  ko:'글의 역할을 보세요. 내세운 생각=주장, 이를 뒷받침하는 자료·이유=근거, 다른 주장에 맞서 틀린 점을 밝힘=반박, 검토 뒤의 최종 판단=결론입니다.',
+  ja:'文中での役割を見ます。述べた考え＝주장、それを裏づける資料・理由＝근거、別の主張の誤りを示すこと＝반박、検討後の最終判断＝결론です。',
+  en:'Identify the role in the argument: stated position = 주장, supporting information or reason = 근거, challenge to another claim = 반박, and final judgment after review = 결론.',
+  zh:'看它在论述中的作用：提出的看法＝주장，支持看法的资料或理由＝근거，指出另一主张的错误＝반박，分析后的最终判断＝결론。'
+});
+const reviewedArgumentNounItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=ARGUMENT_NOUNS[key];
+  return Object.freeze({
+    id,level:2,type:'word',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:ARGUMENT_NOUN_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(ARGUMENT_NOUN_ORDER.map(choiceKey=>Object.freeze({
+      meaning:ARGUMENT_NOUNS[choiceKey].meaning,
+      explanationI18n:ARGUMENT_NOUNS[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】주장=내세운 생각, 근거=생각을 뒷받침하는 자료·이유, 반박=다른 주장의 오류 지적, 결론=검토 뒤의 최종 판단으로 글의 역할이 다릅니다.\n【재사용 풀이】${ARGUMENT_NOUN_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】주장＝述べた考え、근거＝考えを裏づける資料・理由、반박＝別の主張の誤りの指摘、결론＝検討後の最終判断で、文中での役割が異なります。\n【再利用できる解き方】${ARGUMENT_NOUN_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 주장 is a stated position, 근거 its supporting information or reason, 반박 a challenge to another claim, and 결론 a final judgment after review.\n[Reusable method] ${ARGUMENT_NOUN_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】주장是提出的看法，근거是支持看法的资料或理由，반박是指出另一主张的错误，결론是分析后的最终判断，作用各不相同。\n【通用解法】${ARGUMENT_NOUN_METHOD.zh}`
+    })
+  });
+};
+
 const TOPIK_I=[
   item(1,'word','가게','상점','店','store; shop','商店','집 앞 가게에서 우유를 샀어요.'),
   item(1,'word','약속','만나기로 정한 일','約束','promise; appointment','约定','친구와 세 시에 만날 약속이 있어요.'),
@@ -3112,6 +3175,39 @@ const TOPIK_II=[
     ja:'「来年」の観光客数が今後増えると予想しているので「전망」が合います。',
     en:'The statement predicts a future increase in tourist numbers “next year,” so 전망 fits.',
     zh:'句子预测“明年”的游客人数将增加，是对未来的判断，因此应选“전망”。'
+  }),
+
+  reviewedArgumentNounItem('S04-II-W-ARGUMENT-01','주장','claim','전문가들은 어린이 보호 구역의 제한 속도를 유지해야 한다는 주장을 폈습니다.',{
+    ko:'전문가들은 어린이 보호 구역의 제한 속도를 유지해야 한다는 주장을 폈습니다.',ja:'専門家たちは、子ども保護区域の制限速度を維持すべきだと主張しました。',en:'The experts argued that the speed limit in school zones should be maintained.',zh:'专家们主张应维持儿童保护区的限速规定。'
+  },{
+    ko:'전문가들이 제한 속도를 유지해야 한다는 자신의 의견을 내세우므로 “주장”이 맞습니다.',
+    ja:'専門家が制限速度を維持すべきだという自分たちの意見を述べているので「주장」が合います。',
+    en:'The experts put forward their position that the speed limit should be maintained, so 주장 fits.',
+    zh:'专家提出“应维持限速”这一看法，因此应选“주장”。'
+  }),
+  reviewedArgumentNounItem('S04-II-W-ARGUMENT-02','근거','evidence','연구팀은 설문 조사 결과를 정책 개선의 근거로 제시했습니다.',{
+    ko:'연구팀은 설문 조사 결과를 정책 개선의 근거로 제시했습니다.',ja:'研究チームは、アンケート調査の結果を政策改善の根拠として提示しました。',en:'The research team presented the survey results as evidence for improving the policy.',zh:'研究团队把问卷调查结果作为改善政策的依据。'
+  },{
+    ko:'설문 조사 결과가 정책을 개선해야 한다는 판단을 뒷받침하므로 “근거”가 맞습니다.',
+    ja:'アンケート調査の結果が、政策を改善すべきだという判断を裏づけているので「근거」が合います。',
+    en:'The survey results support the judgment that the policy should be improved, so 근거 fits.',
+    zh:'问卷调查结果为“应改善政策”这一判断提供支持，因此应选“근거”。'
+  }),
+  reviewedArgumentNounItem('S04-II-W-ARGUMENT-03','반박','rebuttal','회사의 해명은 사실과 다르다는 반박이 제기되었습니다.',{
+    ko:'회사의 해명은 사실과 다르다는 반박이 제기되었습니다.',ja:'会社の説明は事実と異なるという反論が出されました。',en:'A rebuttal was raised that the company’s explanation differed from the facts.',zh:'有人反驳说，公司的解释与事实不符。'
+  },{
+    ko:'회사의 해명에 맞서 그것이 사실과 다르다는 틀린 점을 밝히므로 “반박”이 맞습니다.',
+    ja:'会社の説明に対し、それが事実と異なるという誤りを示しているので「반박」が合います。',
+    en:'The response challenges the company’s explanation by saying it conflicts with the facts, so 반박 fits.',
+    zh:'这句话针对公司的解释指出其与事实不符，因此应选“반박”。'
+  }),
+  reviewedArgumentNounItem('S04-II-W-ARGUMENT-04','결론','conclusion','여러 자료를 검토한 뒤 위원회는 지원을 확대해야 한다는 결론을 내렸습니다.',{
+    ko:'여러 자료를 검토한 뒤 위원회는 지원을 확대해야 한다는 결론을 내렸습니다.',ja:'複数の資料を検討した後、委員会は支援を拡大すべきだという結論を出しました。',en:'After reviewing several sources, the committee concluded that support should be expanded.',zh:'委员会审查多项资料后，得出了应扩大支援的结论。'
+  },{
+    ko:'위원회가 여러 자료를 검토한 뒤 마지막 판단을 내렸으므로 “결론”이 맞습니다.',
+    ja:'委員会が複数の資料を検討した後、最後の判断を下しているので「결론」が合います。',
+    en:'The committee reached a final judgment after reviewing several sources, so 결론 fits.',
+    zh:'委员会审查多项资料后作出最终判断，因此应选“결론”。'
   })
 ];
 
