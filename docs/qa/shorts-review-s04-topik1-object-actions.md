@@ -35,8 +35,9 @@ all four. Fixed choices are shuffled and restored through the existing stable-ID
 | Translation | AI-reviewed pass | Meaning, choices, feedback, full example, and coaching are bundled in ko/ja/en/zh; no network translation is needed. |
 | Repeat/inventory | automated pass | Four stable IDs add four exact families with no new duplicate, structural flag, or conflicting-answer group. |
 | Storage | designed-pass | Existing `topikQuestShortsV1` and earlier IDs remain; cards are appended after existing TOPIK I rows. |
-| Focused local checks | pending | Vocabulary and generated-inventory checks must pass before release. |
-| Full release checks | pending | `npm run check`, CI, mobile emulation, and live deployment are not yet complete. |
+| Focused local checks | pass | `npm run test:content` passes 48/48; vocabulary plus generated-inventory checks pass 38/38. |
+| Full release checks | pass | Local and GitHub release checks pass 182/182 at v152. |
+| Browser visual | emulated-pass | PR CI checks Japanese wrong-answer and expanded coaching at 320/375/390/430px in both themes; the two representative screens were directly inspected. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
 
 Candidate inventory is 420 rows / 294 exact question-choice families (TOPIK I 148, TOPIK II 146).
@@ -44,5 +45,15 @@ The existing 126 redundant rows, 30 duplicate groups, 15 structural review candi
 conflicts, and 0 comprehensive approvals do not change. These totals are not content approvals, and
 no existing Shorts row, original 2,088-item bank entry, answer, or stable ID is altered.
 
-Rollback before release is the v151 main baseline
-`b6fa7c4bc670c6fabe3f608c6477e40d1b4c0672`.
+## Deployment record
+
+- PR: [#218](https://github.com/okometsbu-beep/topik-quest/pull/218), squash
+  `f2c80190290cb450a0f79abe59f76f2c1e2eee16`.
+- PR CI: [36631648511](https://github.com/okometsbu-beep/topik-quest/actions/runs/36631648511),
+  Ubuntu/Node22/Chrome, 182/182 plus 475 mobile screenshots. Artifact `11063266098`.
+- Main CI: [36632864545](https://github.com/okometsbu-beep/topik-quest/actions/runs/36632864545), pass.
+- Pages: [36632863379](https://github.com/okometsbu-beep/topik-quest/actions/runs/36632863379), pass.
+- Live: https://okometsbu-beep.github.io/topik-quest/ reports v152; 4 base + 51 runtime files pass HTTP smoke and the live `data/shorts-levels.js` SHA-256 matches the release file. All four new IDs are present.
+- Rollback: revert #218 or restore v151 main
+  `b6fa7c4bc670c6fabe3f608c6477e40d1b4c0672`.
+- Unverified: physical iPhone/Android, native Japanese or Korean educator review, consenting learner timing, D1/D7 recall, and full offline recovery.

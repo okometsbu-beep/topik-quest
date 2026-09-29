@@ -1,3 +1,11 @@
+## 2026-09-30 v152 TOPIK I object-action Shorts deployed · #218
+
+- Four stable-ID cards add `찾다`, `잃어버리다`, `가져오다`, and `가져가다`, distinguishing finding, losing, bringing here, and taking away. ko/ja/en/zh selected-choice feedback and optional evidence/trap/method coaching are local.
+- Existing IDs, the original 2,088-item bank, `topikQuestShortsV1`, and learner records remain unchanged. Inventory is 420 rows / 294 exact families (I 148, II 146); pre-existing duplicate/structural counts remain and no answer conflict was added.
+- Local content 48/48 and full 182/182 pass. [PR #218 CI](https://github.com/okometsbu-beep/topik-quest/actions/runs/36631648511) passes four widths/two themes, wrong-answer, expanded coaching, and reload restore. Artifact `11063266098` has 475 screenshots; the two new representative states were inspected. This is browser emulation, not a physical device.
+- [PR #218](https://github.com/okometsbu-beep/topik-quest/pull/218) squash `f2c80190290cb450a0f79abe59f76f2c1e2eee16`; [main CI](https://github.com/okometsbu-beep/topik-quest/actions/runs/36632864545) and [Pages](https://github.com/okometsbu-beep/topik-quest/actions/runs/36632863379) pass. Live v152 serves 4 base + 51 runtime files, and the changed Shorts asset hash matches main.
+- Rollback is #218 revert or v151 `b6fa7c4bc670c6fabe3f608c6477e40d1b4c0672`. Physical iPhone/Android, native-language/educator review, learner timing, and D1/D7 recall remain unverified. If no P0/answer error appears, the next testable bounded shortage is four TOPIK II items.
+
 ## 2026-09-30 v151 TOPIK II argument-role Shorts deployed · #216
 
 - Four stable-ID cards add `주장`, `근거`, `반박`, and `결론`, distinguishing a position, its support, a challenge, and a final judgment. ko/ja/en/zh selected-choice feedback and optional evidence/trap/method coaching are local.
