@@ -38,8 +38,8 @@ Fixed choices are shuffled and restored through the existing stable-ID storage c
 | Repeat/inventory | automated pass | Four stable IDs add four exact families with no new duplicate, structural flag, or conflicting-answer group. |
 | Storage | designed-pass | Existing `topikQuestShortsV1`, earlier IDs, original bank, and learner records are unchanged. |
 | Focused local checks | pass | `npm run test:content` passes 47/47. |
-| Full release checks | pending | Run once after the required version bump. |
-| Browser visual | pending | Check Japanese wrong-answer and expanded coaching at 320/375/390/430px in both themes. |
+| Full release checks | pass | Local and GitHub release checks pass 181/181 at v151. |
+| Browser visual | emulated-pass | PR CI checks Japanese wrong-answer and expanded coaching at 320/375/390/430px in both themes; the two representative screens were directly inspected. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
 
 Candidate inventory is 416 rows / 290 exact question-choice families (TOPIK I 144, TOPIK II 146).
@@ -49,4 +49,13 @@ educational approval.
 
 ## Deployment record
 
-Pending PR, CI, Pages, live smoke, integrity comparison, and rollback confirmation.
+- PR: [#216](https://github.com/okometsbu-beep/topik-quest/pull/216), squash
+  `c91510535188b273f8177a449415c4b607773f6d`.
+- PR CI: [36590876365](https://github.com/okometsbu-beep/topik-quest/actions/runs/36590876365),
+  Ubuntu/Node22/Chrome, 181/181 plus 473 mobile screenshots. Artifact `11043988217`.
+- Main CI: [36592147626](https://github.com/okometsbu-beep/topik-quest/actions/runs/36592147626), pass.
+- Pages: [36592145973](https://github.com/okometsbu-beep/topik-quest/actions/runs/36592145973), pass.
+- Live: https://okometsbu-beep.github.io/topik-quest/ reports v151; 4 base + 51 runtime files pass HTTP smoke and the live `data/shorts-levels.js` SHA-256 matches the release file.
+- Rollback: revert #216 or restore v150 main
+  `69523389d740a5b3f4f0ad0c8c97d355f906d601`.
+- Unverified: physical iPhone/Android, native Japanese or Korean educator review, consenting learner timing, D1/D7 recall, and full offline recovery.
