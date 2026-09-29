@@ -38,15 +38,25 @@
 - 로컬 Chrome 설치 손상/localhost 차단은 그대로이며 실제 시각 증거는 위 CI Chrome이다.
   실제 iPhone/Android의 자동재생, 백그라운드 복귀와 기기 성능은 미검증이다.
 
-## 게시 상태
+## 배포 결과 — 2026-09-29
 
-사용자의 명시적인 “반영해” 지시로 게시를 재개했다. 일반 git push는 터미널 인증
-정보 부재로 실패했고, 연결 GitHub API로 로컬과 동일한 트리를 게시했다.
-최종 브랜치 CI: https://github.com/okometsbu-beep/topik-quest/actions/runs/36558468041 .
-[PR #212](https://github.com/okometsbu-beep/topik-quest/pull/212)에서 최종 검증을 진행한다.
-집중 인트로 artifact를 별도로 저장해 수정 전·후 33장을 내려받아 비교할 수 있게 했다.
-병합·라이브 검사는 아직 하지 않았으며 완료 결과는 PR과 Issue #110에 이어 기록한다.
-공개 기준/되돌리기 지점: v148 `04ce35079aac54e3c4f0ee77154eaa7191d6a2cc`.
-공개 주소: https://okometsbu-beep.github.io/topik-quest/ .
+사용자의 “반영해” 지시로 연결 GitHub에 게시했고, 최종 PR CI와 모바일 시각 검수 후
+[PR #212](https://github.com/okometsbu-beep/topik-quest/pull/212)를 squash 병합했다.
 
-다음은 최종 CI·전후 화면 합격 후 PR→squash→Pages→라이브 버전/자산/완주 확인이다.
+- 배포 커밋: `d1462c0ec42b2130fe4943044c148c7351750f8c` (v149).
+- [PR CI 36559532619](https://github.com/okometsbu-beep/topik-quest/actions/runs/36559532619): 성공.
+  176/176, 모바일 314장·콘솔 오류0, 네 언어 Home/Vocabulary, 타일 검사 통과.
+- 최종 실제 지연 재생: 1.2초 지연+0.25배속, ended 12,567.7ms → 제거 12,788.9ms.
+- 최종 집중 artifact `11029069773`: 수정 전·후 네 폭/두 테마의 재생/홈 32장 직접 검수.
+  스킵 제거·중앙 배치·contain·넘침 없음·정상 홈 복귀 유지. 느린 재생 화면도 별도 확인했다.
+- [Pages 36560518105](https://github.com/okometsbu-beep/topik-quest/actions/runs/36560518105): 성공.
+- [main CI 36560519170](https://github.com/okometsbu-beep/topik-quest/actions/runs/36560519170).
+- 라이브 https://okometsbu-beep.github.io/topik-quest/ : v149, 기본4+런타임51 HTTP 정상.
+  index.html / haruman-intro.js / haruman-intro.css / site-patch.js / sw.js SHA-256이 커밋과 일치.
+- 재방문 Chrome에서 v149 영상이 실제 재생되고 스킵 버튼이 0개임을 확인했다.
+  다음 관찰에서 홈 표시·인트로 제거·부트 해제 정상. 앱 콘솔 오류 없음.
+  브라우저 확장 metadata 오류는 앱 오류와 구분했으며 실기기 증거로 세지 않는다.
+- 되돌리기: #212 revert 또는 v148 `04ce35079aac54e3c4f0ee77154eaa7191d6a2cc`.
+
+다음 한 작업: 실제 iPhone/Android에서 자동재생·완주·백그라운드 복귀 확인.
+새 앱 자산이나 영상 재편집은 이 배포 결과 문서에 포함하지 않는다.

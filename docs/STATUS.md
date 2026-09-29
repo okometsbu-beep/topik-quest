@@ -1,9 +1,11 @@
-## 2026-09-29 v149 인트로 완주·스킵 제거
+## 2026-09-29 v149 인트로 완주·스킵 제거 배포 완료
 
 - 사용자 지시로 정상 재생은 실제 `ended` 뒤에만 220ms 페이드한다. 800ms 로딩/3380ms 전체 제한과 버튼·터치·Escape·60초 재진입 스킵을 제거했다. 백그라운드는 일시정지 후 같은 위치에서 이어 재생한다.
 - 오류/자동재생 거부 또는 **15초간 재생 위치가 진행하지 않을 때**만 실패 복구한다. 모션 감소·데이터 절약 예외와 540px/2.833초 영상 자산, 모든 학습 기록은 유지한다.
 - Linux Node24 전체 176/176·집중 13/13 통과. GitHub Ubuntu/Node22/Chrome에서 실제 1.2초 지연 시작+0.25배속 재생이 약 12.6초 뒤 자연 종료하고 220ms 뒤 해제됐다. 터치/Escape 무시·빠른 재진입과 320/375/390/430px×두 테마를 검사하고 후보 재생/홈 16장을 직접 확인했다. [브랜치 CI](https://github.com/okometsbu-beep/topik-quest/actions/runs/36558468041) 전체 성공: 모바일 회귀 314장·콘솔 오류 0건, 네 언어 홈/단어장과 타일 검사.
-- 최종 CI·수정 전 비교·배포 결과는 `docs/qa/haruman-intro-completion-v149.md`와 Issue #110에서 추적한다. [PR #212](https://github.com/okometsbu-beep/topik-quest/pull/212)에서 최종 검증·배포를 진행한다. 병합 전 공개 기준/되돌리기는 v148 `04ce35079aac54e3c4f0ee77154eaa7191d6a2cc`, https://okometsbu-beep.github.io/topik-quest/ .
+- 배포 완료: [PR #212](https://github.com/okometsbu-beep/topik-quest/pull/212) squash `d1462c0ec42b2130fe4943044c148c7351750f8c`. [PR CI](https://github.com/okometsbu-beep/topik-quest/actions/runs/36559532619)와 [Pages](https://github.com/okometsbu-beep/topik-quest/actions/runs/36560518105) 성공. [main CI](https://github.com/okometsbu-beep/topik-quest/actions/runs/36560519170).
+- 라이브 https://okometsbu-beep.github.io/topik-quest/ v149: 기본4개+런타임51개 HTTP 정상, 핵심5자산 SHA-256 일치. 재방문 Chrome에서 영상 재생(currentTime 0.091/2.792, 스킵 버튼0)→홈 전환·부트 해제를 확인했다. 앱 콘솔 오류는 없고 브라우저 확장 metadata 오류는 별도로 구분했다.
+- 최종 집중 artifact `11029069773`의 수정 전·후 네 폭/두 테마 재생·홈 32장 직접 비교 완료. 실제 iPhone/Android로 세지 않는다. 되돌리기는 #212 revert 또는 v148 `04ce35079aac54e3c4f0ee77154eaa7191d6a2cc`.
 - 미검증: 실제 iPhone/Android의 자동재생·백그라운드 복귀. 다음 한 작업은 실제 기기에서 완주·복귀 확인이며, 원본 애니메이션 길이 재편집은 이번 변경에 포함하지 않는다.
 
 ## 2026-09-29 하루말 무료·무제한 TTS 후보 결정 · 구현 전
