@@ -1730,9 +1730,12 @@ try{
   assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
   for(const theme of ['light','dark']){
     await evaluate(`malbitSetTheme(${JSON.stringify(theme)})`);await sleep(100);
+    assert.equal(await evaluate(`(()=>{const details=document.querySelector('.shortsExplanation');details.open=true;return details.open})()`),true,`S04 TOPIK II argument noun details must stay open in ${theme}`);
     for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK II argument noun expanded ${theme} ${width}px`,theme)}
   }
-  await evaluate(`malbitSetTheme('dark')`);await sleep(100);await setViewport(390,844);await shot('00dt-shorts-topik2-argument-noun-full-dark.png');
+  await evaluate(`malbitSetTheme('dark');const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);await setViewport(390,844);
+  assert.equal(await evaluate(`document.querySelector('.shortsExplanation')?.open`),true,'argument-noun evidence screenshot must keep detailed coaching open');
+  await shot('00dt-shorts-topik2-argument-noun-full-dark.png');
   await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsFeedbackSummary');
   const argumentRestored=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['2'];return{cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder,locked:state.locked,summary:document.querySelector('.shortsFeedbackSummary')?.innerText,answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
   assert.equal(argumentRestored.cardId,argumentNoun.id,'reviewed argument-noun ID must survive reload');
