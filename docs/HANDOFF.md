@@ -1,3 +1,10 @@
+## 2026-09-29 하루말 무료·무제한 TTS 후보 결정 · 구현 전
+
+- `MALBIT_TTS`와 `neural-tts.js`를 확인한 결과, 현재 공통 파사드는 유지되지만 생성 오디오 캐시·한국어 표시/발화 정규화·native 실행기는 없다. Supertonic 3 FP16 웹 팩은 약 230MB이고 모바일/저메모리 세션을 차단한다.
+- 첫 프로토타입 후보는 **Supertonic 3 Korean INT8 + sherpa-onnx native**다. 공식 sherpa 경로의 Android APK·Swift/Kotlin API를 이용해 iOS/Android 실기기에서 cold/warm 생성, peak RAM, RTF, 오프라인 재생을 측정한다. Ppaso-TTS v8은 Apache-2.0 경량 비교군으로만 둔다.
+- OpenRAIL-M 제한과 Supertonic upstream archived 상태 때문에 상업·스토어 기본 엔진 채택은 법률/교육 품질/실기기 게이트 뒤로 미룬다. Qwen3-TTS 0.6B는 공식 CUDA 지향 경로라, Kokoro는 공식 카드에서 한국어가 확인되지 않아, Piper KSS는 확인된 모델이 비상업 라이선스라 1차 모바일 후보에서 제외한다.
+- 이번 변경은 문서-only이며 v147 자산·저장 데이터·문항은행·버전을 건드리지 않았다. 결정표와 공식 링크는 `docs/qa/tts-feasibility-20260929.md`, 다음 한 작업은 작은 native INT8 harness다. 실기기·모어 화자·법률 검수 전에는 오프라인/무제한을 통과로 표시하지 않는다.
+
 ## 2026-09-28 v147 TOPIK I directional-action Shorts deployed · #208
 
 - Adds four bounded stable-ID cards for `올라가다`, `내려가다`, `들어가다`, and `나오다`. They distinguish low→high, high→low, outside→inside, and inside→outside movement.

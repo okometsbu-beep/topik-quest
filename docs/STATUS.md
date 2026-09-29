@@ -1,3 +1,10 @@
+## 2026-09-29 하루말 무료·무제한 TTS 후보 결정 · 구현 전
+
+- 현재 `MALBIT_TTS`·`neural-tts.js`를 전수 확인했다. 기기 `speechSynthesis` fallback과 데스크톱 전용 약 230MB Supertonic 3 FP16 브라우저 팩은 유지되지만, 생성 오디오 캐시·한국어 숫자/날짜 정규화·native runtime은 아직 없다.
+- 첫 프로토타입 후보를 **Supertonic 3 Korean INT8 + sherpa-onnx native**로 고정했다. Android APK와 Swift/Kotlin API가 있는 공식 경로라 iOS/Android cold/warm/RAM/오프라인을 측정할 수 있다. 상업·스토어 채택은 OpenRAIL-M 제한, archived upstream, 실기기·법률 검수 전 보류한다. Ppaso-TTS v8은 Apache-2.0 경량 비교군, Qwen3/Kokoro/Piper는 1차 모바일 후보에서 제외했다.
+- 이번 회차는 docs-only 결정 작업이다. 모델 파일·의존성·공개 자산·버전·저장 스키마는 변경하지 않았다. 상세 비교/공식 근거/다음 harness 게이트는 `docs/qa/tts-feasibility-20260929.md`에 기록했다.
+- 미검증: 실제 iPhone/Android, 한국어 교정자 청취, INT8 모델 크기·peak RAM·RTF·배터리, 완전 오프라인 복구, 법률 자문. 다음 한 작업은 세 문장·숫자/날짜/단위·외래어·긴 문장과 캐시/취소를 측정하는 최소 native harness다.
+
 ## 2026-09-28 v147 TOPIK I 방향 이동 숏츠 배포 완료 · #208
 
 - #110 S04의 부족 유형 한 묶음으로 `올라가다·내려가다·들어가다·나오다` 4카드를 안정 ID로 추가했다. 낮음→높음, 높음→낮음, 밖→안, 안→밖이라는 한 판단만 요구한다.
