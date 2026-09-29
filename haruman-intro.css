@@ -3,8 +3,6 @@
 .harumanIntroStage{width:min(76vw,340px,55svh);height:auto;aspect-ratio:1;padding:0;display:block}
 .harumanIntroStage:after{display:none}
 .harumanIntroStage video{display:block;width:100%;height:100%;object-fit:contain;opacity:0;pointer-events:none}
-.harumanIntro button{margin-top:12px;padding:12px 20px;border:0;border-radius:24px;background:#e5eee8;color:#173c38;font:600 14px/1.5 system-ui;cursor:pointer}
-.harumanIntro button:focus-visible{outline:3px solid #087e78;outline-offset:4px}
 .harumanIntro.harumanIntroLeaving{opacity:0;pointer-events:none}
 html.haruman-intro-active body{overflow:hidden}
 /* If the optional controller cannot load, never strand the app behind its panel. */

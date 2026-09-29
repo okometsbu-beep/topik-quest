@@ -1,3 +1,9 @@
+## 2026-09-29 v149 인트로 완주·스킵 제거
+
+- 정상 재생은 `ended`→220ms 페이드로 종료한다. 버튼/터치/Escape/60초 재진입 생략과 800ms/3380ms 고정 제한 제거. 숨김→복귀는 일시정지→이어 재생이다. 15초간 실제 재생 위치 정지나 미디어 오류만 실패 복구하며 reduced-motion/save-data는 유지한다.
+- 로컬 전체 176/176·집중 13/13. GitHub Chrome 실제 지연 1.2초+0.25배속 약 12.6초 완주·터치/Escape 무시, 네 폭/두 테마 후보 재생·홈 16장 직접 검수. 브랜치 CI 36558468041 전체 성공: 모바일 회귀 314장·오류0, 네 언어 홈/단어장, 타일 검사.
+- [PR #212](https://github.com/okometsbu-beep/topik-quest/pull/212) 최종 검증/배포 기록: `docs/qa/haruman-intro-completion-v149.md`, Issue #110. 공개 기준/되돌리기 v148 `04ce35079aac54e3c4f0ee77154eaa7191d6a2cc`, https://okometsbu-beep.github.io/topik-quest/ . 실제 iPhone/Android 자동재생·숨김 복귀는 미검증. 다음은 실기기 확인. 영상 자체 540px/2.833초와 학습 저장은 불변.
+
 ## 2026-09-29 v148 영상 인트로
 
 - 제공된 하루만 영상의 15–82F를 540px/2.833초 무음 인트로로 적용. 알파 검사 WebM → 배경 합성 MP4, 터치 스킵, 800ms 로딩 제한, 220ms 페이드.
