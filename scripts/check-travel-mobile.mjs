@@ -650,8 +650,6 @@ try{
   assert.ok(introQA.some(e=>e.type==='ended'&&e.time>2.7&&e.time<3),'intro must naturally end before the watchdog');
   console.log('Haruman actual browser playback passed',JSON.stringify(introQA));
   if(!process.env.HARUMAL_FOCUS_ONLY)await verifyIntro({evaluate,send,setViewport,shot,ready,sleep,baseline:!!process.env.HARUMAN_INTRO_BASELINE});
-  // Intro has its own real-media checks; unrelated reload tests use reduced motion.
-  await send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});
   await setViewport(390,844);
   assert.equal(await evaluate(`S.lang`),'ja','a fresh Japanese browser must open in Japanese');
   assert.match(await evaluate(`document.querySelector('.tqV9Greeting h1')?.textContent||''`),/韓国語/,'the first Home heading must be localized before language-menu use');
