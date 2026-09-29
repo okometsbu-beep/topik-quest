@@ -46,3 +46,12 @@ jobs:
             artifacts/home-vocabulary/*.png
             artifacts/intro-baseline/*.png
           if-no-files-found: error
+      - name: Upload focused intro evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: intro-completion-${{ github.sha }}
+          path: |
+            artifacts/travel-mobile/intro-*.png
+            artifacts/intro-baseline/*.png
+          if-no-files-found: error
