@@ -1994,6 +1994,69 @@ const reviewedObjectActionItem=(id,term,key,example,exampleI18n,evidence)=>{
   });
 };
 
+const MORNING_ROUTINE_ACTIONS=Object.freeze({
+  wake:Object.freeze({
+    meaning:Object.freeze({ko:'잠자리에서 몸을 일으키다',ja:'寝床から起きる',en:'get up from bed',zh:'从床上起来'}),
+    selected:Object.freeze({
+      ko:'“일어나다”는 잠을 잔 뒤 침대나 이불에서 몸을 일으킬 때 씁니다.',
+      ja:'「일어나다」は、眠った後にベッドや布団から体を起こすときに使います。',
+      en:'“일어나다” is used when getting out of bed after sleeping.',
+      zh:'“일어나다”用于睡醒后从床或被窝里起身。'
+    })
+  }),
+  wash:Object.freeze({
+    meaning:Object.freeze({ko:'물로 몸이나 얼굴을 깨끗하게 하다',ja:'水で体や顔を洗う',en:'wash the body or face with water',zh:'用水清洗身体或脸'}),
+    selected:Object.freeze({
+      ko:'“씻다”는 물을 사용해 얼굴·손·몸의 더러움을 없앨 때 씁니다.',
+      ja:'「씻다」は、水を使って顔・手・体の汚れを落とすときに使います。',
+      en:'“씻다” is used when removing dirt from the face, hands, or body with water.',
+      zh:'“씻다”用于用水洗掉脸、手或身体上的污垢。'
+    })
+  }),
+  change:Object.freeze({
+    meaning:Object.freeze({ko:'입고 있던 옷을 다른 옷으로 바꾸어 입다',ja:'着ていた服を別の服に着替える',en:'change into different clothes',zh:'把身上的衣服换成另一套'}),
+    selected:Object.freeze({
+      ko:'“갈아입다”는 지금 입은 옷을 벗고 다른 옷을 입을 때 씁니다.',
+      ja:'「갈아입다」は、今着ている服を脱いで、別の服を着るときに使います。',
+      en:'“갈아입다” is used when taking off current clothes and putting on different ones.',
+      zh:'“갈아입다”用于脱下现在穿的衣服，换上别的衣服。'
+    })
+  }),
+  prepare:Object.freeze({
+    meaning:Object.freeze({ko:'필요한 것을 미리 갖추다',ja:'必要なものを前もって用意する',en:'get necessary things ready in advance',zh:'提前备好需要的东西'}),
+    selected:Object.freeze({
+      ko:'“준비하다”는 할 일에 필요한 물건이나 상태를 미리 갖출 때 씁니다.',
+      ja:'「준비하다」は、これからすることに必要な物や状態を前もって整えるときに使います。',
+      en:'“준비하다” is used when getting needed items or conditions ready beforehand.',
+      zh:'“준비하다”用于提前备好接下来做事所需的物品或条件。'
+    })
+  })
+});
+const MORNING_ROUTINE_ACTION_ORDER=['wake','wash','change','prepare'];
+const MORNING_ROUTINE_ACTION_METHOD=Object.freeze({
+  ko:'아침 행동의 대상과 결과를 보세요. 잠자리에서 몸을 일으킴=일어나다, 물로 몸을 깨끗하게 함=씻다, 다른 옷으로 바꿈=갈아입다, 필요한 것을 미리 갖춤=준비하다입니다.',
+  ja:'朝の行動の対象と結果を見ます。寝床から体を起こす＝일어나다、水で体をきれいにする＝씻다、別の服に替える＝갈아입다、必要なものを前もって整える＝준비하다です。',
+  en:'Identify the action and result: get out of bed = 일어나다, wash with water = 씻다, put on different clothes = 갈아입다, and get needed things ready = 준비하다.',
+  zh:'看早晨动作的对象和结果：从床上起身＝일어나다，用水清洗身体＝씻다，换上别的衣服＝갈아입다，提前备好所需物品＝준비하다。'
+});
+const reviewedMorningRoutineItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=MORNING_ROUTINE_ACTIONS[key];
+  return Object.freeze({
+    id,level:1,type:'word',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:MORNING_ROUTINE_ACTION_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(MORNING_ROUTINE_ACTION_ORDER.map(choiceKey=>Object.freeze({
+      meaning:MORNING_ROUTINE_ACTIONS[choiceKey].meaning,
+      explanationI18n:MORNING_ROUTINE_ACTIONS[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】일어나다=잠자리에서 몸을 일으킴, 씻다=물로 몸을 깨끗하게 함, 갈아입다=다른 옷으로 바꿈, 준비하다=필요한 것을 미리 갖춤으로 행동과 결과가 다릅니다.\n【재사용 풀이】${MORNING_ROUTINE_ACTION_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】일어나다＝寝床から体を起こす、씻다＝水で体をきれいにする、갈아입다＝別の服に替える、준비하다＝必要なものを前もって整える、という行動と結果の違いがあります。\n【再利用できる解き方】${MORNING_ROUTINE_ACTION_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 일어나다 gets out of bed, 씻다 washes with water, 갈아입다 changes clothes, and 준비하다 gets needed things ready.\n[Reusable method] ${MORNING_ROUTINE_ACTION_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】일어나다表示从床上起身，씻다表示用水清洗身体，갈아입다表示换衣服，준비하다表示提前备好所需物品，动作和结果各不相同。\n【通用解法】${MORNING_ROUTINE_ACTION_METHOD.zh}`
+    })
+  });
+};
+
 const ANALYSIS_NOUNS=Object.freeze({
   tendency:Object.freeze({
     meaning:Object.freeze({ko:'여러 사례에서 공통으로 나타나는 흐름',ja:'複数の事例に共通して現れる傾向',en:'a recurring pattern across cases',zh:'在多个事例中共同出现的趋势'}),
@@ -2748,6 +2811,38 @@ const TOPIK_I=[
     ja:'「この傘を家に持って帰ってください」は、傘を持って今いる場所から家へ行くという意味です。',
     en:'“Take this umbrella home” moves the umbrella away from the current place toward home.',
     zh:'“把这把伞带回家”表示拿着伞从现在所在的地方去家里。'
+  }),
+  reviewedMorningRoutineItem('S04-I-W-ROUTINE-01','일어나다','wake','저는 아침 일곱 시에 일어나요.',{
+    ko:'저는 아침 일곱 시에 일어나요.',ja:'私は朝7時に起きます。',en:'I get up at seven in the morning.',zh:'我早上七点起床。'
+  },{
+    ko:'“아침 일곱 시에 일어나요”는 잠을 잔 뒤 그 시각에 잠자리에서 몸을 일으킨다는 뜻입니다.',
+    ja:'「朝7時に起きます」は、眠った後、その時刻に寝床から体を起こすという意味です。',
+    en:'“Get up at seven” means rising from bed at that time after sleeping.',
+    zh:'“早上七点起床”表示睡醒后在那个时间从床上起身。'
+  }),
+  reviewedMorningRoutineItem('S04-I-W-ROUTINE-02','씻다','wash','일어나서 얼굴과 손을 씻었어요.',{
+    ko:'일어나서 얼굴과 손을 씻었어요.',ja:'起きて、顔と手を洗いました。',en:'After getting up, I washed my face and hands.',zh:'起床后，我洗了脸和手。'
+  },{
+    ko:'“얼굴과 손을 씻었어요”는 물을 사용해 얼굴과 손을 깨끗하게 했다는 뜻입니다.',
+    ja:'「顔と手を洗いました」は、水を使って顔と手をきれいにしたという意味です。',
+    en:'“Washed my face and hands” means cleaning them with water.',
+    zh:'“洗了脸和手”表示用水把脸和手洗干净。'
+  }),
+  reviewedMorningRoutineItem('S04-I-W-ROUTINE-03','갈아입다','change','운동이 끝난 뒤 새 옷으로 갈아입었어요.',{
+    ko:'운동이 끝난 뒤 새 옷으로 갈아입었어요.',ja:'運動が終わった後、新しい服に着替えました。',en:'After exercising, I changed into fresh clothes.',zh:'运动结束后，我换上了干净的衣服。'
+  },{
+    ko:'“새 옷으로 갈아입었어요”는 입고 있던 옷을 벗고 다른 옷을 입었다는 뜻입니다.',
+    ja:'「新しい服に着替えました」は、着ていた服を脱いで、別の服を着たという意味です。',
+    en:'“Changed into fresh clothes” means taking off current clothes and putting on different ones.',
+    zh:'“换上了干净的衣服”表示脱下原来的衣服，换上另一套。'
+  }),
+  reviewedMorningRoutineItem('S04-I-W-ROUTINE-04','준비하다','prepare','가방과 우산을 미리 준비했어요.',{
+    ko:'가방과 우산을 미리 준비했어요.',ja:'かばんと傘を前もって用意しました。',en:'I prepared my bag and umbrella in advance.',zh:'我提前准备好了包和雨伞。'
+  },{
+    ko:'“가방과 우산을 미리 준비했어요”는 나중에 필요할 물건을 앞서 갖추었다는 뜻입니다.',
+    ja:'「かばんと傘を前もって用意しました」は、後で必要になる物を先に整えたという意味です。',
+    en:'“Prepared my bag and umbrella in advance” means getting needed items ready beforehand.',
+    zh:'“提前准备好了包和雨伞”表示事先备好之后需要的物品。'
   })
 ];
 
