@@ -39,7 +39,7 @@ Fixed choices are shuffled and restored through the existing stable-ID storage c
 | Storage | designed-pass | Existing `topikQuestShortsV1`, earlier IDs, original bank, and learner records are unchanged. |
 | Focused local checks | pass | `npm run test:content` passes 49/49. |
 | Full release checks | pass | Local release checks pass 183/183 at v153. |
-| Browser visual | pending | Candidate CI must check Japanese wrong-answer and expanded coaching at 320/375/390/430px in both themes and preserve the graded state after reload. |
+| Browser visual | emulated-pass | PR CI checks Japanese wrong-answer and expanded coaching at 320/375/390/430px in both themes and preserves the graded state after reload; the two representative screens were directly inspected. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
 
 Candidate inventory is 424 rows / 298 exact question-choice families (TOPIK I 148, TOPIK II 150).
@@ -49,7 +49,16 @@ educational approval.
 
 ## Deployment record
 
-- PR/CI/Pages/live: pending.
-- Rollback: restore v152 main `efaf145a0c8be0430fcbeb4ebc10e295463fc8b7`.
+- PR: [#220](https://github.com/okometsbu-beep/topik-quest/pull/220), squash
+  `d21a6d6d27351c6c9b98d8a276d2fa82aaedb310`.
+- PR CI: [36663079992](https://github.com/okometsbu-beep/topik-quest/actions/runs/36663079992),
+  Ubuntu/Node22/Chrome, 183/183 plus 477 mobile screenshots. Artifact `11075044000`.
+- Main CI: [36663836834](https://github.com/okometsbu-beep/topik-quest/actions/runs/36663836834), pass.
+- Pages: [36663836084](https://github.com/okometsbu-beep/topik-quest/actions/runs/36663836084), pass.
+- Live: https://okometsbu-beep.github.io/topik-quest/ reports v153; 4 base + 51 runtime files
+  pass HTTP smoke, the live `data/shorts-levels.js` SHA-256 matches the release file, and all four
+  new IDs are present.
+- Rollback: revert #220 or restore v152 main
+  `efaf145a0c8be0430fcbeb4ebc10e295463fc8b7`.
 - Unverified: physical iPhone/Android, native Japanese or Korean educator review, consenting learner
   timing, D1/D7 recall, and full offline recovery.

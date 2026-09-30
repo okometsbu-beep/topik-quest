@@ -1,3 +1,12 @@
+## 2026-09-30 v153 TOPIK II 정책·검토 명사 숏츠 배포 완료 · #220
+
+- #110 S04의 부족 유형 한 묶음으로 `대책·효과·한계·과제` 4카드를 안정 ID로 추가했다. 문제에 대한 해결 행동·실행 뒤 결과·충분히 달성하지 못하는 경계·앞으로 해결할 일이라는 시간과 역할 한 판단만 구분한다.
+- ko/ja/en/zh 뜻·예문·보기·선택별 오답 이유와 `정답 근거 → 오답 함정 → 재사용 풀이`를 로컬에 묶었다. 기존 ID, 원본 2,088문항, `topikQuestShortsV1`과 학습 기록은 변경하지 않았다.
+- 재고는 424행/298 정확 질문-보기군(I 148, II 150). 기존 중복 126행·30군, 구조 후보 15개, 정답 충돌 0, 종합 승인 0/424는 변하지 않았다.
+- 로컬 content 49/49, 전체 183/183 통과. [PR #220 CI](https://github.com/okometsbu-beep/topik-quest/actions/runs/36663079992)의 Ubuntu/Node22/Chrome에서 320/375/390/430px×라이트/다크, 일본어 오답·펼친 해설·저장 복원을 포함한 477장을 생성했다. artifact `11075044000`의 새 오답 라이트와 펼친 해설 다크 2장을 직접 확인했으며 실기기로 세지 않는다.
+- 배포: [PR #220](https://github.com/okometsbu-beep/topik-quest/pull/220) squash `d21a6d6d27351c6c9b98d8a276d2fa82aaedb310`. [main CI](https://github.com/okometsbu-beep/topik-quest/actions/runs/36663836834)와 [Pages](https://github.com/okometsbu-beep/topik-quest/actions/runs/36663836084) 성공. 라이브 https://okometsbu-beep.github.io/topik-quest/ v153은 기본4개+런타임51개 HTTP 정상이고 Shorts 자산 SHA-256가 main과 일치하며 새 ID 4개가 존재한다.
+- 되돌리기는 #220 revert 또는 v152 main `efaf145a0c8be0430fcbeb4ebc10e295463fc8b7`. 실제 iPhone/Android, 일본어 모어 화자·교육 전문가, 동의한 학습자의 풀이 시간·D1/D7 회상은 미검증이다. 다음 검사 가능한 한 작업은 새 P0·정답 오류가 없으면 더 적어진 TOPIK I 부족 유형 4문항의 제한 검수다.
+
 ## 2026-09-30 v152 TOPIK I 물건 동작 숏츠 배포 완료 · #218
 
 - #110 S04의 부족 유형 한 묶음으로 `찾다·잃어버리다·가져오다·가져가다` 4카드를 안정 ID로 추가했다. 찾아 발견·소지품 분실·이쪽으로 가져오기·이곳에서 가져가기라는 물건 상태/방향 한 판단만 구분한다.
