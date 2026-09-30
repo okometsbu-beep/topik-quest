@@ -2246,6 +2246,69 @@ const reviewedPolicyReviewNounItem=(id,term,key,example,exampleI18n,evidence)=>{
   });
 };
 
+const SCALE_STATE_NOUNS=Object.freeze({
+  expansion:Object.freeze({
+    meaning:Object.freeze({ko:'규모·범위·수량을 더 크게 늘림',ja:'規模・範囲・数量を大きく広げること',en:'making scale, scope, or amount larger',zh:'扩大规模、范围或数量'}),
+    selected:Object.freeze({
+      ko:'“확대”는 대상의 규모나 적용 범위, 수량을 지금보다 더 크게 늘리는 것입니다.',
+      ja:'「확대」は、対象の規模・適用範囲・数量を今より大きく増やすことです。',
+      en:'“확대” means making the scale, coverage, or amount larger than it is now.',
+      zh:'“확대”是把对象的规模、适用范围或数量增加到比现在更大。'
+    })
+  }),
+  reduction:Object.freeze({
+    meaning:Object.freeze({ko:'규모·범위·수량을 더 작게 줄임',ja:'規模・範囲・数量を小さく縮めること',en:'making scale, scope, or amount smaller',zh:'缩小规模、范围或数量'}),
+    selected:Object.freeze({
+      ko:'“축소”는 대상의 규모나 적용 범위, 수량을 지금보다 더 작게 줄이는 것입니다.',
+      ja:'「축소」は、対象の規模・適用範囲・数量を今より小さく減らすことです。',
+      en:'“축소” means making the scale, coverage, or amount smaller than it is now.',
+      zh:'“축소”是把对象的规模、适用范围或数量减少到比现在更小。'
+    })
+  }),
+  maintenance:Object.freeze({
+    meaning:Object.freeze({ko:'현재 상태·수준을 바꾸지 않고 이어 감',ja:'現在の状態・水準を変えずに保つこと',en:'keeping the current state or level',zh:'保持当前状态或水平不变'}),
+    selected:Object.freeze({
+      ko:'“유지”는 현재의 상태나 수준을 크게 바꾸지 않고 계속 이어 가는 것입니다.',
+      ja:'「유지」は、現在の状態や水準を大きく変えず、そのまま保ち続けることです。',
+      en:'“유지” means continuing with the current state or level without a major change.',
+      zh:'“유지”是基本不改变当前状态或水平，并继续保持下去。'
+    })
+  }),
+  suspension:Object.freeze({
+    meaning:Object.freeze({ko:'하던 일이나 운영을 계속하지 않고 멈춤',ja:'続けていた活動・運営を止めること',en:'stopping an ongoing activity or service',zh:'停止正在进行的活动或运营'}),
+    selected:Object.freeze({
+      ko:'“중단”은 진행하던 활동이나 운영을 더 이어 가지 않고 멈추는 것입니다.',
+      ja:'「중단」は、進行していた活動や運営をそれ以上続けず、止めることです。',
+      en:'“중단” means stopping an activity or operation that had been in progress.',
+      zh:'“중단”是停止原本正在进行的活动或运营，不再继续。'
+    })
+  })
+});
+const SCALE_STATE_NOUN_ORDER=['expansion','reduction','maintenance','suspension'];
+const SCALE_STATE_NOUN_METHOD=Object.freeze({
+  ko:'변화의 방향을 보세요. 규모·범위를 키움=확대, 줄임=축소, 그대로 이어 감=유지, 진행을 멈춤=중단입니다.',
+  ja:'変化の方向を見ます。規模・範囲を大きくする＝확대、小さくする＝축소、そのまま保つ＝유지、進行を止める＝중단です。',
+  en:'Track the direction of change: make larger = 확대, make smaller = 축소, keep unchanged = 유지, and stop progress = 중단.',
+  zh:'看变化方向：扩大规模或范围＝확대，缩小＝축소，保持不变＝유지，停止进行＝중단。'
+});
+const reviewedScaleStateNounItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=SCALE_STATE_NOUNS[key];
+  return Object.freeze({
+    id,level:2,type:'word',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:SCALE_STATE_NOUN_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(SCALE_STATE_NOUN_ORDER.map(choiceKey=>Object.freeze({
+      meaning:SCALE_STATE_NOUNS[choiceKey].meaning,
+      explanationI18n:SCALE_STATE_NOUNS[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】확대=규모·범위를 키움, 축소=규모·범위를 줄임, 유지=현재 상태를 이어 감, 중단=진행을 멈춤으로 변화 방향이 다릅니다.\n【재사용 풀이】${SCALE_STATE_NOUN_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】확대＝規模・範囲を大きくする、축소＝規模・範囲を小さくする、유지＝現在の状態を保つ、중단＝進行を止める、という変化の方向の違いがあります。\n【再利用できる解き方】${SCALE_STATE_NOUN_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 확대 makes a scale or scope larger, 축소 makes it smaller, 유지 keeps the current state, and 중단 stops an ongoing activity.\n[Reusable method] ${SCALE_STATE_NOUN_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】확대表示扩大规模或范围，축소表示缩小，유지表示保持当前状态，중단表示停止进行，变化方向各不相同。\n【通用解法】${SCALE_STATE_NOUN_METHOD.zh}`
+    })
+  });
+};
+
 const TOPIK_I=[
   item(1,'word','가게','상점','店','store; shop','商店','집 앞 가게에서 우유를 샀어요.'),
   item(1,'word','약속','만나기로 정한 일','約束','promise; appointment','约定','친구와 세 시에 만날 약속이 있어요.'),
@@ -3494,6 +3557,39 @@ const TOPIK_II=[
     ja:'介護人材の確保は、すでに出た結果ではなく、高齢社会が今後解決すべき事柄なので「과제」が合います。',
     en:'Securing care workers is not a completed result but an issue that still must be solved, so 과제 fits.',
     zh:'确保护理人员不是已经完成的结果，而是老龄社会今后仍需解决的事项，所以应选“과제”。'
+  }),
+
+  reviewedScaleStateNounItem('S04-II-W-SCALE-01','확대','expansion','시는 늘어나는 돌봄 수요에 맞춰 지원 대상을 확대했습니다.',{
+    ko:'시는 늘어나는 돌봄 수요에 맞춰 지원 대상을 확대했습니다.',ja:'市は増加する介護需要に合わせて、支援対象を拡大しました。',en:'The city expanded eligibility for support to meet growing care needs.',zh:'市政府根据不断增长的照护需求，扩大了支援对象范围。'
+  },{
+    ko:'지원 대상을 전보다 더 넓게 늘렸으므로 “확대”가 맞습니다.',
+    ja:'支援対象を以前より広く増やしたので「확대」が合います。',
+    en:'The eligible group was made broader than before, so 확대 fits.',
+    zh:'支援对象范围比以前更广，所以应选“확대”。'
+  }),
+  reviewedScaleStateNounItem('S04-II-W-SCALE-02','축소','reduction','회사는 비용을 줄이기 위해 해외 지점 수를 축소했습니다.',{
+    ko:'회사는 비용을 줄이기 위해 해외 지점 수를 축소했습니다.',ja:'会社は費用を減らすため、海外支店の数を縮小しました。',en:'The company reduced the number of overseas branches to cut costs.',zh:'公司为了降低成本，缩减了海外分店的数量。'
+  },{
+    ko:'해외 지점 수를 전보다 더 적게 줄였으므로 “축소”가 맞습니다.',
+    ja:'海外支店の数を以前より少なく減らしたので「축소」が合います。',
+    en:'The number of overseas branches was made smaller than before, so 축소 fits.',
+    zh:'海外分店数量比以前更少，所以应选“축소”。'
+  }),
+  reviewedScaleStateNounItem('S04-II-W-SCALE-03','유지','maintenance','위원회는 안전 기준을 현재 수준으로 유지하기로 했습니다.',{
+    ko:'위원회는 안전 기준을 현재 수준으로 유지하기로 했습니다.',ja:'委員会は安全基準を現在の水準のまま維持することにしました。',en:'The committee decided to maintain the safety standard at its current level.',zh:'委员会决定把安全标准维持在当前水平。'
+  },{
+    ko:'안전 기준을 높이거나 낮추지 않고 현재 수준으로 이어 가므로 “유지”가 맞습니다.',
+    ja:'安全基準を上げたり下げたりせず、現在の水準のまま保つので「유지」が合います。',
+    en:'The safety standard stays at the current level instead of rising or falling, so 유지 fits.',
+    zh:'安全标准不提高也不降低，而是继续保持当前水平，所以应选“유지”。'
+  }),
+  reviewedScaleStateNounItem('S04-II-W-SCALE-04','중단','suspension','강한 비 때문에 야외 행사가 잠시 중단되었습니다.',{
+    ko:'강한 비 때문에 야외 행사가 잠시 중단되었습니다.',ja:'強い雨のため、屋外行事が一時中断されました。',en:'The outdoor event was temporarily suspended because of heavy rain.',zh:'由于大雨，户外活动暂时中断了。'
+  },{
+    ko:'진행 중이던 야외 행사가 비 때문에 멈췄으므로 “중단”이 맞습니다.',
+    ja:'進行中だった屋外行事が雨のため止まったので「중단」が合います。',
+    en:'The outdoor event had been in progress and then stopped because of rain, so 중단 fits.',
+    zh:'原本正在进行的户外活动因大雨而停止，所以应选“중단”。'
   })
 ];
 
