@@ -1,3 +1,11 @@
+## 2026-10-01 v155 TOPIK II scale/state Shorts deployed · #224
+
+- Four stable-ID cards add `확대`, `축소`, `유지`, and `중단`, distinguishing making a scale larger, making it smaller, keeping the current state, and stopping an activity in progress. ko/ja/en/zh selected-choice feedback and optional evidence/trap/method coaching are local.
+- Existing IDs, the original 2,088-item bank, `topikQuestShortsV1`, and learner records remain unchanged. Inventory is 432 rows / 306 exact families (I 152, II 154); pre-existing duplicate/structural counts remain and no answer conflict was added.
+- Local content 51/51 and full 185/185 pass. [PR #224 CI](https://github.com/okometsbu-beep/topik-quest/actions/runs/36777452399) passes four widths/two themes, wrong-answer, expanded coaching, and reload restore. Artifact `11126636409` has 481 screenshots; the new 390px light wrong-answer and dark full-coaching states were inspected. This is browser emulation, not a physical device.
+- [PR #224](https://github.com/okometsbu-beep/topik-quest/pull/224) squash `590eaaaf6bf8ff21b68b7f6c1548e9c97e670795`; [main CI](https://github.com/okometsbu-beep/topik-quest/actions/runs/36778602468) and [Pages](https://github.com/okometsbu-beep/topik-quest/actions/runs/36778601347) pass. Live v155 serves 4 base + 51 runtime files, the changed Shorts asset SHA-256 `bd07fb7f466efd024c05cea9f516a9691086b8d04d6c4facfd58a1c72ab99ffc` matches main, and all four new IDs are present.
+- Rollback is #224 revert or v154 `58e5251cfee99f2d650a7effc95c6b767d2d0703`. Physical iPhone/Android, native-language/educator review, learner timing, and D1/D7 recall remain unverified. If no P0/answer error appears, the next testable bounded shortage is four TOPIK I items.
+
 ## 2026-10-01 v154 TOPIK I morning-routine Shorts deployed · #222
 
 - Four stable-ID cards add `일어나다`, `씻다`, `갈아입다`, and `준비하다`, distinguishing rising from bed, washing with water, changing clothes, and getting needed things ready. ko/ja/en/zh selected-choice feedback and optional evidence/trap/method coaching are local.
