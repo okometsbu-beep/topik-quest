@@ -2120,6 +2120,69 @@ const reviewedArgumentNounItem=(id,term,key,example,exampleI18n,evidence)=>{
   });
 };
 
+const POLICY_REVIEW_NOUNS=Object.freeze({
+  measure:Object.freeze({
+    meaning:Object.freeze({ko:'문제를 해결·줄이는 계획이나 행동',ja:'問題を解決・軽減する計画や行動',en:'a plan or action addressing a problem',zh:'解决或减轻问题的计划、行动'}),
+    selected:Object.freeze({
+      ko:'“대책”은 이미 생긴 문제를 해결하거나 피해를 줄이기 위해 마련한 계획이나 행동입니다.',
+      ja:'「대책」は、起きている問題を解決したり被害を減らしたりするための計画・行動です。',
+      en:'“대책” is a plan or action prepared to solve an existing problem or reduce its harm.',
+      zh:'“대책”是为解决已经出现的问题或减轻其影响而制定的计划、行动。'
+    })
+  }),
+  effect:Object.freeze({
+    meaning:Object.freeze({ko:'행동·정책으로 나타난 결과',ja:'行動・政策で現れた結果',en:'a result from an action or policy',zh:'行动或政策带来的结果'}),
+    selected:Object.freeze({
+      ko:'“효과”는 계획이나 행동을 실행한 뒤 실제로 나타난 결과나 성과입니다.',
+      ja:'「효과」は、計画や行動を実行した後に実際に現れた結果・成果です。',
+      en:'“효과” is the result or benefit that actually appears after a plan or action is carried out.',
+      zh:'“효과”是实施计划或行动后实际出现的结果、成效。'
+    })
+  }),
+  limitation:Object.freeze({
+    meaning:Object.freeze({ko:'완전한 달성을 막는 범위·문제',ja:'完全な達成を妨げる範囲・問題',en:'a limit preventing full achievement',zh:'妨碍完全实现的范围或问题'}),
+    selected:Object.freeze({
+      ko:'“한계”는 방법이나 자료가 모든 경우에 충분하지 못한 범위나 문제점을 가리킵니다.',
+      ja:'「한계」は、方法や資料がすべての場合に十分ではない範囲・問題点を指します。',
+      en:'“한계” is the boundary or weakness that keeps a method or evidence from being sufficient in every case.',
+      zh:'“한계”指某种方法或资料无法适用于所有情况的范围或不足。'
+    })
+  }),
+  task:Object.freeze({
+    meaning:Object.freeze({ko:'앞으로 해결·달성해야 할 일',ja:'今後解決・達成すべき事柄',en:'a future issue or goal to address',zh:'今后要解决或完成的事项'}),
+    selected:Object.freeze({
+      ko:'“과제”는 현재 끝난 결과가 아니라 앞으로 해결하거나 이루어야 할 중요한 일입니다.',
+      ja:'「과제」は、すでに出た結果ではなく、今後解決・達成すべき重要な事柄です。',
+      en:'“과제” is not a completed result but an important issue or goal that still needs to be addressed.',
+      zh:'“과제”不是已经完成的结果，而是今后仍需解决或实现的重要事项。'
+    })
+  })
+});
+const POLICY_REVIEW_NOUN_ORDER=['measure','effect','limitation','task'];
+const POLICY_REVIEW_NOUN_METHOD=Object.freeze({
+  ko:'문제 뒤의 해결 행동=대책, 실행 뒤 나타난 결과=효과, 충분히 이루지 못하는 경계=한계, 앞으로 풀어야 할 일=과제로 시간과 역할을 나누세요.',
+  ja:'問題に対する解決行動＝대책、実行後に現れた結果＝효과、十分に達成できない境界＝한계、今後解くべき事柄＝과제、と時間と役割を分けます。',
+  en:'Separate time and role: response to a problem = 대책, result after action = 효과, boundary preventing full achievement = 한계, future issue to solve = 과제.',
+  zh:'按时间和作用区分：针对问题的解决行动＝대책，实施后出现的结果＝효과，无法完全实现的界限＝한계，今后要解决的事项＝과제。'
+});
+const reviewedPolicyReviewNounItem=(id,term,key,example,exampleI18n,evidence)=>{
+  const target=POLICY_REVIEW_NOUNS[key];
+  return Object.freeze({
+    id,level:2,type:'word',difficulty:'easy',term,meaning:target.meaning,example,exampleI18n:Object.freeze(exampleI18n),answerIndex:POLICY_REVIEW_NOUN_ORDER.indexOf(key),shortsFastReview:true,
+    shortChoices:Object.freeze(POLICY_REVIEW_NOUN_ORDER.map(choiceKey=>Object.freeze({
+      meaning:POLICY_REVIEW_NOUNS[choiceKey].meaning,
+      explanationI18n:POLICY_REVIEW_NOUNS[choiceKey].selected
+    }))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    explanationI18n:Object.freeze({
+      ko:`【정답 근거】${evidence.ko}\n【오답 함정】대책=문제 해결 행동, 효과=실행 뒤 결과, 한계=충분히 이루지 못하는 경계, 과제=앞으로 풀어야 할 일로 시간과 역할이 다릅니다.\n【재사용 풀이】${POLICY_REVIEW_NOUN_METHOD.ko}`,
+      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】대책＝問題を解決する行動、효과＝実行後の結果、한계＝十分に達成できない境界、과제＝今後解くべき事柄で、時間と役割が異なります。\n【再利用できる解き方】${POLICY_REVIEW_NOUN_METHOD.ja}`,
+      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 대책 is a response to a problem, 효과 a result after action, 한계 a boundary preventing full achievement, and 과제 a future issue to solve.\n[Reusable method] ${POLICY_REVIEW_NOUN_METHOD.en}`,
+      zh:`【正答依据】${evidence.zh}\n【错项陷阱】대책是解决问题的行动，효과是实施后的结果，한계是无法充分实现的界限，과제是今后要解决的事项，时间和作用各不相同。\n【通用解法】${POLICY_REVIEW_NOUN_METHOD.zh}`
+    })
+  });
+};
+
 const TOPIK_I=[
   item(1,'word','가게','상점','店','store; shop','商店','집 앞 가게에서 우유를 샀어요.'),
   item(1,'word','약속','만나기로 정한 일','約束','promise; appointment','约定','친구와 세 시에 만날 약속이 있어요.'),
@@ -3303,6 +3366,39 @@ const TOPIK_II=[
     ja:'委員会が複数の資料を検討した後、最後の判断を下しているので「결론」が合います。',
     en:'The committee reached a final judgment after reviewing several sources, so 결론 fits.',
     zh:'委员会审查多项资料后作出最终判断，因此应选“결론”。'
+  }),
+
+  reviewedPolicyReviewNounItem('S04-II-W-POLICY-01','대책','measure','시는 미세 먼지를 줄이기 위한 대책으로 버스 운행을 늘렸습니다.',{
+    ko:'시는 미세 먼지를 줄이기 위한 대책으로 버스 운행을 늘렸습니다.',ja:'市は微細粉じんを減らす対策として、バスの運行を増やしました。',en:'The city increased bus service as a measure to reduce fine dust.',zh:'市政府把增加公交班次作为减少细颗粒物的对策。'
+  },{
+    ko:'버스 운행을 늘린 것은 미세 먼지라는 문제를 줄이기 위해 마련한 행동이므로 “대책”이 맞습니다.',
+    ja:'バスの運行を増やすことは、微細粉じんという問題を減らすために講じた行動なので「대책」が合います。',
+    en:'Increasing bus service is an action prepared to reduce the fine-dust problem, so 대책 fits.',
+    zh:'增加公交班次是为了减轻细颗粒物问题而采取的行动，所以应选“대책”。'
+  }),
+  reviewedPolicyReviewNounItem('S04-II-W-POLICY-02','효과','effect','도서관의 운영 시간을 연장한 뒤 이용자가 늘어 정책의 효과가 나타났습니다.',{
+    ko:'도서관의 운영 시간을 연장한 뒤 이용자가 늘어 정책의 효과가 나타났습니다.',ja:'図書館の開館時間を延長した後、利用者が増え、政策の効果が現れました。',en:'After library hours were extended, user numbers rose, showing the policy’s effect.',zh:'图书馆延长开放时间后，使用人数增加，政策的成效显现出来。'
+  },{
+    ko:'운영 시간을 연장한 뒤 이용자가 늘어난 것은 정책을 실행한 후 나타난 결과이므로 “효과”가 맞습니다.',
+    ja:'開館時間を延長した後に利用者が増えたことは、政策の実行後に現れた結果なので「효과」が合います。',
+    en:'The rise in users appeared after the longer hours were introduced, so it is the policy’s 효과.',
+    zh:'延长开放时间后使用人数增加，这是政策实施后出现的结果，所以应选“효과”。'
+  }),
+  reviewedPolicyReviewNounItem('S04-II-W-POLICY-03','한계','limitation','이번 조사는 참여자가 적어 전체 시민의 의견으로 보기에는 한계가 있습니다.',{
+    ko:'이번 조사는 참여자가 적어 전체 시민의 의견으로 보기에는 한계가 있습니다.',ja:'今回の調査は参加者が少なく、市民全体の意見と見るには限界があります。',en:'This survey had few participants, so it has limitations as a representation of all citizens.',zh:'这次调查的参与者较少，因此将其视为全体市民的意见存在局限。'
+  },{
+    ko:'참여자가 적어서 조사 결과를 전체 시민에게 넓혀 적용하기 어렵다는 범위의 제약이므로 “한계”가 맞습니다.',
+    ja:'参加者が少なく、調査結果を市民全体へ広げて適用しにくいという範囲上の制約なので「한계」が合います。',
+    en:'Too few participants restrict how far the findings can represent all citizens, so 한계 fits.',
+    zh:'参与者过少限制了调查结果代表全体市民的范围，所以应选“한계”。'
+  }),
+  reviewedPolicyReviewNounItem('S04-II-W-POLICY-04','과제','task','돌봄 인력을 확보하는 것은 고령 사회가 앞으로 해결해야 할 과제입니다.',{
+    ko:'돌봄 인력을 확보하는 것은 고령 사회가 앞으로 해결해야 할 과제입니다.',ja:'介護人材の確保は、高齢社会が今後解決しなければならない課題です。',en:'Securing care workers is an issue that an aging society must address going forward.',zh:'确保护理人员是老龄社会今后必须解决的课题。'
+  },{
+    ko:'돌봄 인력 확보는 이미 끝난 결과가 아니라 고령 사회가 앞으로 해결해야 할 일이므로 “과제”가 맞습니다.',
+    ja:'介護人材の確保は、すでに出た結果ではなく、高齢社会が今後解決すべき事柄なので「과제」が合います。',
+    en:'Securing care workers is not a completed result but an issue that still must be solved, so 과제 fits.',
+    zh:'确保护理人员不是已经完成的结果，而是老龄社会今后仍需解决的事项，所以应选“과제”。'
   })
 ];
 
