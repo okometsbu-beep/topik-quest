@@ -1782,6 +1782,43 @@ try{
   assert.match(policyRestored.summary,/효과[\s\S]*実行した後/u,'policy-review selected feedback must survive reload');
   assert.match(policyRestored.answer,/問題を解決・軽減する計画/u,'reviewed policy-review answer must survive reload');
 
+  const scaleStateNoun=await evaluate(`(()=>{const lv=2,deck=[...window.MALBIT_SHORTS_DECKS[lv],...window.MALBIT_BANK.shorts(lv)],index=deck.findIndex(item=>item.id==='S04-II-W-SCALE-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','2');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:2,levels:{1:blank,2:active},daily:{}}));return{index,id:identity.id}})()`);
+  assert.equal(scaleStateNoun.id,'S04-II-W-SCALE-01','reviewed scale-state card must have its explicit stable ID');
+  await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsWord');
+  const scaleBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['2'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
+  assert.equal(scaleBefore.term,'확대');assert.equal(scaleBefore.cardId,scaleStateNoun.id);assert.equal(scaleBefore.orderId,scaleStateNoun.id);
+  assert.deepEqual(scaleBefore.choiceOrder,[2,1,0,3]);
+  assert.deepEqual(scaleBefore.labels,['現在の状態・水準を変えずに保つこと','規模・範囲・数量を小さく縮めること','規模・範囲・数量を大きく広げること','続けていた活動・運営を止めること'],'fixed scale-state choices must keep the saved shuffle');
+  await submitShortsLabel('規模・範囲・数量を小さく縮めること');
+  const scaleReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
+  assert.match(scaleReview.summary,/축소[\s\S]*今より小さく/u,'selected Japanese feedback must explain the reduction trap');
+  assert.match(scaleReview.answer,/大きく広げる/u);assert.equal(scaleReview.closed,true);
+  assert.equal(scaleReview.nextBeforeDetails,true,'Next question must precede optional scale-state coaching');
+  assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'市は増加する介護需要に合わせて、支援対象を拡大しました。','reviewed Japanese scale-state example must render locally');
+  for(const theme of ['light','dark']){
+    await evaluate(`malbitSetTheme(${JSON.stringify(theme)})`);await sleep(100);
+    for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK II scale state wrong ${theme} ${width}px`,theme)}
+  }
+  await evaluate(`malbitSetTheme('light')`);await sleep(100);await setViewport(390,844);await shot('00e0-shorts-topik2-scale-state-wrong-light.png');
+  await evaluate(`const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  for(const theme of ['light','dark']){
+    await evaluate(`malbitSetTheme(${JSON.stringify(theme)})`);await sleep(100);
+    assert.equal(await evaluate(`(()=>{const details=document.querySelector('.shortsExplanation');details.open=true;return details.open})()`),true,`S04 TOPIK II scale-state details must stay open in ${theme}`);
+    for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK II scale state expanded ${theme} ${width}px`,theme)}
+  }
+  await evaluate(`(()=>{malbitSetTheme('dark');const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})})()`);await sleep(100);await setViewport(390,844);
+  assert.equal(await evaluate(`document.querySelector('.shortsExplanation')?.open`),true,'scale-state evidence screenshot must keep detailed coaching open');
+  await shot('00e1-shorts-topik2-scale-state-full-dark.png');
+  await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsFeedbackSummary');
+  const scaleRestored=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['2'];return{cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder,locked:state.locked,summary:document.querySelector('.shortsFeedbackSummary')?.innerText,answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
+  assert.equal(scaleRestored.cardId,scaleStateNoun.id,'reviewed scale-state ID must survive reload');
+  assert.equal(scaleRestored.orderId,scaleStateNoun.id,'reviewed scale-state choice-order ID must survive reload');
+  assert.deepEqual(scaleRestored.choiceOrder,[2,1,0,3],'saved scale-state choice order must survive reload');
+  assert.equal(scaleRestored.locked,true,'graded scale-state state must survive reload');
+  assert.match(scaleRestored.summary,/축소[\s\S]*今より小さく/u,'scale-state selected feedback must survive reload');
+  assert.match(scaleRestored.answer,/大きく広げる/u,'reviewed scale-state answer must survive reload');
+
   const houseworkAction=await evaluate(`(()=>{const lv=1,deck=[...window.MALBIT_SHORTS_DECKS[lv],...window.MALBIT_BANK.shorts(lv)],index=deck.findIndex(item=>item.id==='S04-I-W-HOUSEWORK-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','1');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:1,levels:{1:active,2:blank},daily:{}}));return{index,id:identity.id}})()`);
   assert.equal(houseworkAction.id,'S04-I-W-HOUSEWORK-01','reviewed housework-action card must have its explicit stable ID');
   await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsWord');
