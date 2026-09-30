@@ -45,6 +45,23 @@ no existing Shorts row, original 2,088-item bank entry, answer, or stable ID is 
 
 ## Release record
 
-Fill after branch CI, merge, Pages, live smoke, and direct representative-screen inspection.
+- Product PR: [#222](https://github.com/okometsbu-beep/topik-quest/pull/222), squash
+  `99772e910a744f813ba8a0d8236ba694093103c6`.
+- Branch CI: [36738114875](https://github.com/okometsbu-beep/topik-quest/actions/runs/36738114875),
+  Ubuntu/Node 22/Chrome. Full 184/184 passes. The mobile artifact `11110255353` contains 479 PNGs,
+  including 320/375/390/430px light/dark checks, the Japanese selected washing distractor,
+  optional full coaching, and graded reload restore.
+- Direct inspection: `00dy-shorts-topik1-morning-routine-wrong-light.png` and
+  `00dz-shorts-topik1-morning-routine-full-dark.png` show readable selected feedback, Next before
+  optional coaching, and no observed horizontal clipping. These are browser-emulated screenshots,
+  not physical-device evidence.
+- Deployment: [main CI 36742809499](https://github.com/okometsbu-beep/topik-quest/actions/runs/36742809499)
+  and [Pages 36742810718](https://github.com/okometsbu-beep/topik-quest/actions/runs/36742810718) pass.
+  Live `https://okometsbu-beep.github.io/topik-quest/` reports v154 with 4 base + 51 runtime files;
+  live `data/shorts-levels.js` SHA-256 `5b3b144140a4cd1e7e02997d1197a4b293f4002191e01f5cd02746ceefc0b598`
+  matches main, and all four stable IDs are present.
+- Rollback: revert #222 or restore v153 main
+  `ace86c3600080693ac440dcaaf373f141fa1f960`.
+
 Physical iPhone/Android, native Japanese or Korean educator review, consenting learner timing,
 D1/D7 recall, and full offline recovery remain unverified.
