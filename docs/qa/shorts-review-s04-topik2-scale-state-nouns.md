@@ -1,4 +1,4 @@
-# S04 · TOPIK II scale/state-noun Shorts candidate
+# S04 · TOPIK II scale/state-noun Shorts release
 
 Candidate: v155. Product rollback baseline: v154
 `58e5251cfee99f2d650a7effc95c6b767d2d0703`.
@@ -39,7 +39,7 @@ through the existing stable-ID storage contract.
 | Storage | designed-pass | Existing `topikQuestShortsV1`, earlier IDs, original bank, and learner records are unchanged. |
 | Focused local checks | pass | Node 24 content checks pass 51/51; generated-inventory checks pass 2/2. |
 | Full release checks | pass | Local release checks pass 185/185 at v155 with 51 ordered runtime files and valid bank hashes. |
-| Browser visual | pending | CI must verify Japanese wrong-answer and expanded coaching at 320/375/390/430px in both themes and graded-state restoration. |
+| Browser visual | pass | PR CI verified Japanese wrong-answer and expanded coaching at 320/375/390/430px in both themes plus graded-state restoration. The new 390px light wrong-answer and dark full-coaching frames were inspected directly; this is browser emulation, not physical-device evidence. |
 | Human/learner/device | unverified | No native reviewer, consenting learner timing, delayed recall, or physical iPhone/Android evidence. |
 
 Candidate inventory is 432 rows / 306 exact question-choice families (TOPIK I 152, TOPIK II 154).
@@ -49,9 +49,18 @@ educational approval.
 
 ## Deployment record
 
-- Product PR/commit: pending.
-- PR CI/browser artifact: pending.
-- Main CI/Pages/live hash: pending.
-- Rollback until merge: v154 main `58e5251cfee99f2d650a7effc95c6b767d2d0703`.
+- Product: [PR #224](https://github.com/okometsbu-beep/topik-quest/pull/224), squash
+  `590eaaaf6bf8ff21b68b7f6c1548e9c97e670795`.
+- [PR CI](https://github.com/okometsbu-beep/topik-quest/actions/runs/36777452399) passed on
+  Ubuntu/Node 22/Chrome. Artifact `11126636409` contains 481 screenshots; only the two new
+  representative states above were directly inspected.
+- [Main CI](https://github.com/okometsbu-beep/topik-quest/actions/runs/36778602468) and
+  [Pages](https://github.com/okometsbu-beep/topik-quest/actions/runs/36778601347) passed.
+- Live https://okometsbu-beep.github.io/topik-quest/ serves v155 with 4 base + 51 runtime files.
+  `data/shorts-levels.js` SHA-256 is
+  `bd07fb7f466efd024c05cea9f516a9691086b8d04d6c4facfd58a1c72ab99ffc`, matching main, and all
+  four stable IDs are present.
+- Rollback: revert #224 or return to v154 main
+  `58e5251cfee99f2d650a7effc95c6b767d2d0703`.
 - Unverified: physical iPhone/Android, native Japanese or Korean educator review, consenting learner
   timing, D1/D7 recall, and full offline recovery.
