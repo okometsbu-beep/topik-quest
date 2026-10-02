@@ -1,0 +1,126 @@
+{
+  "name": "하루만",
+  "source": "User-approved transparent production sources, v3.2. Web delivery copies; source PNGs preserved separately.",
+  "frames": [
+    {
+      "pose": "home-study",
+      "file": "home-study-v2.webp",
+      "width": 480,
+      "height": 320,
+      "bytes": 21358,
+      "sourceSHA256": "15a7b845d558dc7eaf5e40e2af549c176a344c250dd3b7b7d042771d28a80475",
+      "sourceVersion": "ui-source-v3.2",
+      "usage": "홈 · 이어서 학습"
+    },
+    {
+      "pose": "shorts-quiz",
+      "file": "shorts-quiz-v2.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 16034,
+      "sourceSHA256": "7adefcf6bd2f3d28d2a4d7616e1e53d28bd5e955fbe098c019c6b64512077dd1",
+      "sourceVersion": "ui-source-v3.2",
+      "usage": "홈 · 숏츠 퀴즈"
+    },
+    {
+      "pose": "travel-journey",
+      "file": "travel-journey-v2.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 15244,
+      "sourceSHA256": "4fed53b606f7ea32e02129f74db015427d23b7b5a80d45ab0c1be579e5b0e63b",
+      "sourceVersion": "ui-source-v3.2",
+      "usage": "홈 · 여행 대화 / 여행 허브"
+    },
+    {
+      "pose": "vocab-reading",
+      "file": "vocab-reading-v2.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 16168,
+      "sourceSHA256": "870e358c689ef0d24e342d0daeb46e473cff1b1a5138da0fb9040211bf55b478",
+      "sourceVersion": "ui-source-v3.2",
+      "usage": "단어장 · 헤더"
+    },
+    {
+      "pose": "review-thinking",
+      "file": "review-thinking-v2.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 11940,
+      "sourceSHA256": "2d978d65f7ac1769376108b94071a459686163e41b1467109f06b78dc06d008d",
+      "sourceVersion": "ui-source-v3.2",
+      "usage": "복습 · 헤더 / 힌트"
+    },
+    {
+      "pose": "lesson-welcome",
+      "file": "lesson-welcome-v2.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 13650,
+      "sourceSHA256": "86be1682c589725b6cf35b36dd7ff796df5257b3884a1d6fd036c845b2dd9b4f",
+      "sourceVersion": "ui-source-v3.2",
+      "usage": "입문 · 인사 / 시작"
+    },
+    {
+      "pose": "progress-proud",
+      "file": "progress-proud-v2.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 14606,
+      "sourceSHA256": "a1f633d4c2208ff758dccdd02f4c7a3b2a68d006ac2bd12b40117dbc4513b3a3",
+      "sourceVersion": "ui-source-v3.2",
+      "usage": "내 기록 · 진행 코스"
+    },
+    {
+      "pose": "answer-correct",
+      "file": "answer-correct-v2.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 13800,
+      "sourceSHA256": "80eca0aa9c4a48b2b54d4fe57863fa827032458e275e3ab645ea2f70448260f0",
+      "sourceVersion": "ui-source-v3.2",
+      "usage": "문항 · 정답"
+    },
+    {
+      "pose": "answer-retry",
+      "file": "answer-retry-v2.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 14502,
+      "sourceSHA256": "53af49ecffe8f9f70f9ba80cafa214de193d1e72a06625abbb216c70647bc299",
+      "sourceVersion": "ui-source-v3.2",
+      "usage": "문항 · 오답 / 재도전"
+    },
+    {
+      "pose": "lesson-complete",
+      "file": "lesson-complete-v2.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 12900,
+      "sourceSHA256": "d64f89315b413612f6e3b334a0e6163a881c7123086b825a9a0f2328d7793232",
+      "sourceVersion": "ui-source-v3.2",
+      "usage": "수업 / 여행 · 완료"
+    },
+    {
+      "pose": "review-empty",
+      "file": "review-empty-v2.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 12644,
+      "sourceSHA256": "61201d1568afbac3f9428b77270c9719f81b69a6e632e2c230d6d557a95eb86a",
+      "sourceVersion": "ui-source-v3.2",
+      "usage": "복습 · 빈 상태 / 오늘 학습 완료"
+    },
+    {
+      "pose": "audio-listening",
+      "file": "audio-listening-v2.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 14192,
+      "sourceSHA256": "1372cca9c05cf4ce6d32b993c20b3308796943675cd43a0fd63032afb6d9c5f2",
+      "sourceVersion": "ui-source-v3.2",
+      "usage": "발음 · 듣기 / 말하기"
+    }
+  ]
+}

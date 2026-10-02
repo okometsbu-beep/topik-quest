@@ -1,3 +1,9 @@
+## 2026-10-02 최신 사용자 승인 UI / 작업 방향
+
+- #226의 전체 감사와 승인한 여섯 화면 UI를 기준으로 기능/UI 보완을 진행한다. 단순 문항 수 확대는 다음 작업이 아니다.
+- 확정 하루만 소스는 ui-source-v3.2, 공부 포즈는 귀여운 표정으로 책을 보는 최종 한 장. 12종 전달 자산 후보와 입문 레이아웃 후보는 docs/qa/approved-ui-haruman-v156-candidate.md / STATUS 참조.
+- 현재 공개 main은 v155 그대로. 후보 자동검사 합격과 모바일 화면 합격을 구분하며, 브라우저/로컬 서버 권한 차단 때문에 아직 PR/배포하지 않았다.
+
 ## 2026-10-01 v155 TOPIK II scale/state Shorts deployed · #224
 
 - Four stable-ID cards add `확대`, `축소`, `유지`, and `중단`, distinguishing making a scale larger, making it smaller, keeping the current state, and stopping an activity in progress. ko/ja/en/zh selected-choice feedback and optional evidence/trap/method coaching are local.
