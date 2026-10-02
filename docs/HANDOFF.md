@@ -1,3 +1,10 @@
+## 2026-10-02 v156 공통 UI 공개 완료 / 다음 범위
+
+- PR #227 → main 86697e6bf57f9ecfaf4ecc8b2e37713ae70c2ddc, Pages 성공 및 live v156 smoke4+51파일/Cloud Chrome 주요 동작 확인. 후보와 PR CI 모두 성공(모바일341장/오류0·baseline·네 언어 focus). 실제 실기기 확인은 아니다.
+- 로컬 EPERM을 우회하지 않고 기존 원격 검증을 사용했다. 전체 작업 차단 아님. 공개 버전의 검증 방법은 앞으로도 원격 CI artifact 시각 검수 + live smoke/직접 동작 확인.
+- 승인 28보드/84구성의 완전 일치는 미완료다. 공통 적용과 개별 완료를 분리해 기록하며 다음은 docs/qa/approved-ui-28-board-contract-20261002.md에 따른 남은 보드별 owner 수정/검수. 기존 데이터·모드·은행·인트로 완주/화이트아웃/타이틀/스킵 없음 유지.
+- 상세 증거 STATUS / docs/qa/approved-ui-shared-v156.md / #226. 되돌리기: PR #227 revert / v155 a201d0e35602b9430dbeabc3b2bf6983dcb4197b. #110 실제 학습자·14일 안정화 게이트는 아직 합격 아님.
+
 ## 2026-10-02 검사 환경 정정 / 앱 공통 UI v156 후보
 
 - 기존 로컬 HTTP/Chrome EPERM을 우회하지 않았다. 기존 GitHub Actions Ubuntu Node22/Chrome에서 후보 전체 모바일 341장/오류0 검증이 가능하며, 제품 PR을 금지하는 전체 차단은 해소됐다. 로컬 차단과 실제 iPhone/Android 미검증은 유지한다.
