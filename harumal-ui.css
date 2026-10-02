@@ -192,3 +192,10 @@ html body.harumal :is(.tqVocabTitle,.malbitPageTitle,.sectionTitle){margin-botto
 html body.harumal :is(.malbitVocabActions,.malbitDataButtons,.harumalVocabTabs) button{min-height:48px}
 html body.harumal .harumanStage--mark{width:40px;height:40px;padding:0;margin:0 8px 4px 0}
 @media(max-width:340px){html body.harumal .harumalHomeGreeting{grid-template-columns:minmax(0,1fr)}html body.harumal .harumalHomeGreeting>.harumalLessonArt{grid-column:1;grid-row:1;justify-self:end}html body.harumal .harumalHomeGreeting>:is(small,h1,p){grid-column:1}.harumalDiscover{gap:8px}html body.harumal .harumalDiscover :is(.harumalShortsLaunch,.tqTravelFeature){padding:12px}}
+/* Approved pose reserves a separate row below the full-width greeting. */
+html body.harumal .harumalHomeGreeting>:is(small,h1,p){grid-column:1/-1}
+html body.harumal .harumalHomeGreeting>small{grid-row:1}
+html body.harumal .harumalHomeGreeting>h1{grid-row:2}
+html body.harumal .harumalHomeGreeting>.harumalLessonArt{grid-column:1/-1;grid-row:3;justify-self:end}
+html body.harumal .harumalHomeGreeting>p{grid-row:4}
+@media(max-width:340px){html body.harumal .harumalPageHead{grid-template-columns:minmax(0,1fr)}html body.harumal .harumalPageHead>.harumanStage{grid-column:1;grid-row:1;justify-self:end}html body.harumal .harumalPageHead>:is(small,h1,p){grid-column:1}.harumalPageHead>small{grid-row:2}.harumalPageHead>h1{grid-row:3}.harumalPageHead>p{grid-row:4}}
