@@ -205,3 +205,7 @@ html body.harumal .tqV9Stats{flex-shrink:0;min-width:44px}
 html body.harumal .tqV9WeekTop>div{min-width:0}
 /* Japanese headings break at natural character boundaries, without a lone final glyph. */
 html[lang="ja"] body.harumal :is(.tqTodayLesson h2,.tqV9Greeting h1,.harumalPageHead h1){word-break:normal;overflow-wrap:normal;text-wrap:balance}
+/* Exam and grammar summaries use the same readable surfaces in both themes. */
+html body.harumal .examHeader{background:var(--ui-surface);color:var(--ui-ink);border:1px solid var(--ui-border);border-radius:20px;box-shadow:none;padding:20px}
+html body.harumal .examHeader :is(h2,.examTimer){color:var(--ui-ink)}
+html body.harumal .examHeader p,html body.harumal .bgHero :is(p,small){color:var(--ui-muted);font-size:12px;line-height:1.6}
