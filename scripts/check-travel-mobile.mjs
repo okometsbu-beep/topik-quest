@@ -2362,6 +2362,8 @@ try{
   await tap('#nav_learn');
   await tap(`.harumalCourse[onclick="harumalCourse('topik1')"]`);
   assert.equal(await evaluate('S.view'),'t1quiz','TOPIK I course starts real learning instead of returning home');
+  await tap('.t1RandomTop>button');
+  assert.equal(await evaluate('S.view'),'home','TOPIK I real back control returns to the hub');
   await tap('#nav_learn');
   await tap(`.harumalCourse[onclick="harumalCourse('topik2')"]`);
   assert.equal(await evaluate('S.view'),'infinity','TOPIK II course starts real learning');
