@@ -34,7 +34,7 @@ function decorate(sc,view){
    mount(hero,'lesson-welcome');
   }
   mount(sc.querySelector('.bgLessonHero'),'audio-listening');
- }
+ }else if(view==='beginnerGrammar')mount(sc.querySelector('.bgLessonHero'),'audio-listening');
  if(view==='review'){
   mount(sc.querySelector('.tqReviewHero>div'),'thinking');
   mount(sc.querySelector('.tqReviewEmpty'),'review-empty','hero');
