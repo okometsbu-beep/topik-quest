@@ -58,6 +58,10 @@ function compose(sc){
    travel.querySelector('img')?.remove();
   }
  }
+ if(S.view==='vocab'){
+  const tabs=sc.querySelector('.tqVocabPageTabs'),firstCard=sc.querySelector('.tqSavedVocabCard');
+  if(tabs&&firstCard)tabs.after(firstCard);
+ }
  sc.dataset.harumalView=S.view;
 }
 function shell(){

@@ -13,6 +13,7 @@ export async function verifyHomeVocabulary({evaluate,tap,shot,setViewport,send,r
   await tap('.harumalShortsLaunch');assert.equal(await evaluate('S.view'),'shorts');await tap('.shortsTop>button');
   await tap('.tqTravelFeature');assert.equal(await evaluate('S.view'),'travel');await tap('#nav_vocab');
   await evaluate(`S.vocab=[{text:'학교',ja:'学校',meanings:{ja:'学校',en:'school',zh:'学校'},dueAt:123,interval:3},{text:'사과',ja:'りんご',meanings:{ja:'りんご',en:'apple',zh:'苹果'},dueAt:456,interval:2}];save();render()`);
+  assert.equal(await evaluate(`(()=>{const card=document.querySelector('.tqSavedVocabCard'),garden=document.querySelector('.tqVocabGarden');return !!card&&!!garden&&card.getBoundingClientRect().top<garden.getBoundingClientRect().top})()`),true,'first flashcard precedes collection decoration');
   await tap('.harumalVocabTabs button');await fit('test '+lang+theme+width);await shot(`refresh-test-${lang}-${theme}-${width}.png`);
   for(const view of ['learn','review','more','vocab']){await evaluate(`setView('${view}')`);await fit(view+lang+theme+width);if(width===320)await shot(`refresh-${view}-${lang}-${theme}-${width}.png`)}
   await tap('#nav_home');
