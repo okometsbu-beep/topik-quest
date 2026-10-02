@@ -203,3 +203,5 @@ html body.harumal .harumalHomeGreeting>p{grid-row:4}
 html body.harumal .screen button{min-width:44px}
 html body.harumal .tqV9Stats{flex-shrink:0;min-width:44px}
 html body.harumal .tqV9WeekTop>div{min-width:0}
+/* Japanese headings break at natural character boundaries, without a lone final glyph. */
+html[lang="ja"] body.harumal :is(.tqTodayLesson h2,.tqV9Greeting h1,.harumalPageHead h1){word-break:normal;overflow-wrap:normal;text-wrap:balance}
