@@ -338,8 +338,8 @@ try{
   const startFresh=async(seedMetrics=false)=>{
     await evaluate(`localStorage.removeItem('malbitStoryV1');${seedMetrics?"localStorage.setItem('malbitStoryV1',JSON.stringify({version:1,activePackId:'route-001-airport-myeongdong',episodes:{},metrics:{version:2,routeStarts:5,routeCompletions:4,myeongdongEntries:3,exchangeSessions:2,priceQuestStarts:4,priceQuestCompletions:3,priceQuestWrongSubmissions:2,priceQuestWalletTotal:180000}}));":''}S.lang='ja';S.view='home';save();render()`);
     let homeReady=false;
-    for(let wait=0;wait<40;wait++){if(await evaluate(`!!document.querySelector('.tqTravelFeature img[src*="bg-airport-t1.webp"]')`)){homeReady=true;break}await sleep(50)}
-    assert.ok(homeReady,'Travel entry must use generated art instead of emoji');
+    for(let wait=0;wait<40;wait++){if(await evaluate(`!!document.querySelector('.tqTravelFeature [data-haruman-pose="travel-journey"] img[src$="travel-journey-v2.webp"]')`)){homeReady=true;break}await sleep(50)}
+    assert.ok(homeReady,'Travel entry must use the exact approved Haruman production art');
     let opened=false;
     if(seedMetrics){
       for(let attempt=0;attempt<3&&!opened;attempt++){
