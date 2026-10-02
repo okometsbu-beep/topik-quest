@@ -22,7 +22,7 @@ function decorate(sc,view){
   mount(sc.querySelector('.harumalShortsLaunch'),'shorts-quiz');
   mount(sc.querySelector('.tqTravelFeature'),'travel-journey');
  }else if(view==='learn')mount(sc.querySelector('.harumalPageHead'),'lesson-welcome');
- else if(view==='more')mount(sc.querySelector('.harumalPageHead'),'progress-proud');
+ else if(view==='more'||view==='stats')mount(sc.querySelector('.harumalPageHead'),'progress-proud');
  else if(view==='vocab')mount(sc.querySelector('.tqVocabTitle'),'vocab-reading');
  else if(view==='travel')mount(sc.querySelector('.advLead'),'journey');
  else if(view==='travelAdventureReview')mount(sc.querySelector('.advLead'),'thinking');
@@ -35,6 +35,9 @@ function decorate(sc,view){
   }
   mount(sc.querySelector('.bgLessonHero'),'audio-listening');
  }else if(view==='beginnerGrammar')mount(sc.querySelector('.bgLessonHero'),'audio-listening');
+ if(['speaking','vocabTest','vocabEditor','realSetup','t1setup','travelRecall'].includes(view)){
+  mount(sc.querySelector('.harumalPageHead,.malbitPageTitle,.sectionTitle,.speakHead'),view==='speaking'?'audio-listening':view==='vocabEditor'?'vocab-reading':'review-thinking','mark');
+ }
  if(view==='review'){
   mount(sc.querySelector('.tqReviewHero>div'),'thinking');
   mount(sc.querySelector('.tqReviewEmpty'),'review-empty','hero');

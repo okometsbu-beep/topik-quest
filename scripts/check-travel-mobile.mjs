@@ -2347,6 +2347,17 @@ try{
       }
     }
   }
+  await tap('#nav_more');
+  assert.equal(await evaluate(`document.querySelector('.harumalSettings').open`),false,'settings stay secondary to learning record');
+  await tap('.harumalSettings>summary');
+  assert.equal(await evaluate(`document.querySelector('.harumalSettings').open`),true,'settings remain accessible');
+  await shot('harumal-settings-open.png');
+  await tap('#nav_learn');
+  await tap(`.harumalCourse[onclick="harumalCourse('topik1')"]`);
+  assert.equal(await evaluate('S.view'),'t1quiz','TOPIK I course starts real learning instead of returning home');
+  await tap('#nav_learn');
+  await tap(`.harumalCourse[onclick="harumalCourse('topik2')"]`);
+  assert.equal(await evaluate('S.view'),'infinity','TOPIK II course starts real learning');
   assert.deepEqual(errors,[],'Harumal navigation must not add console errors');
   const screenshotCount=fs.readdirSync(out).filter(file=>file.endsWith('.png')).length;
   console.log(`mobile QA: 320/375/390/430px Home + Beginner Grammar + split Writing + Game + Shorts + Random Practice + Review visual contracts, two-field Writing input/save/reload/score/review/migration, 9-chapter/64-lesson grammar catalog, transformation coaching, per-unit handwriting exit/reload/re-entry and preserved progress, Review queue/filter/retry/translation/type coaching/re-entry, TOPIK I/II random question/answer/type coaching, level re-entry, Shorts question/answer/instructor feedback + hit-tested Travel route + one-tap completed-route re-entry + NPC word order + Hangul sign build with decoys, day/evening events, travel-won exchange, reload/back-resume, durable records, screenshots=${screenshotCount}, errors=0`);
