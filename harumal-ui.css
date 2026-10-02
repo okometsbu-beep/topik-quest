@@ -199,3 +199,7 @@ html body.harumal .harumalHomeGreeting>h1{grid-row:2}
 html body.harumal .harumalHomeGreeting>.harumalLessonArt{grid-column:1/-1;grid-row:3;justify-self:end}
 html body.harumal .harumalHomeGreeting>p{grid-row:4}
 @media(max-width:340px){html body.harumal .harumalPageHead{grid-template-columns:minmax(0,1fr)}html body.harumal .harumalPageHead>.harumanStage{grid-column:1;grid-row:1;justify-self:end}html body.harumal .harumalPageHead>:is(small,h1,p){grid-column:1}.harumalPageHead>small{grid-row:2}.harumalPageHead>h1{grid-row:3}.harumalPageHead>p{grid-row:4}}
+/* A wrapping heading must not shrink its adjacent action below a finger target. */
+html body.harumal .screen button{min-width:44px}
+html body.harumal .tqV9Stats{flex-shrink:0;min-width:44px}
+html body.harumal .tqV9WeekTop>div{min-width:0}
