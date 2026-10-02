@@ -36,10 +36,10 @@ function learn(sc){
  <h2>${L('이야기 속에서 연습','物語の中で練習','Learn through stories','在故事中练习')}</h2>
  ${card('✦',L('워드라이트 원정','ワードライト遠征','Wordlight Expedition','词光远征'),L('기존 원정과 기록 이어가기','これまでの冒険を続ける','Continue your expedition','继续你的冒险'),"tqStartMode('game')")}`;
 }
-function personal(sc){
+function personal(sc,expanded=false){
  if(sc.querySelector('.harumalPersonal'))return;
  const vocab=Array.isArray(S.vocab)?S.vocab.length:0;
- const settings=document.createElement('details');settings.className='harumalSettings';
+ const settings=document.createElement('details');settings.className='harumalSettings';settings.open=expanded===true;
  const summary=document.createElement('summary');summary.textContent=L('설정과 도움말','設定とヘルプ','Settings & help','设置与帮助');settings.append(summary);
  for(const node of [...sc.children])settings.append(node);sc.append(settings);
  sc.insertAdjacentHTML('afterbegin',`<section class="harumalPersonal"><header class="harumalPageHead"><small>HARUMAL / ${L('내 기록','マイ','MY LEARNING','我的学习')}</small><h1>${L('쌓여가는 나의 한국어','少しずつ、私の韓国語に。','Your Korean, growing daily','一点一滴，积累韩语')}</h1><p>${L('학습 기록은 이 기기에 저장돼요.','学習記録はこの端末に保存されます。','Your progress is stored on this device.','学习记录保存在此设备上。')}</p></header><div class="harumalPracticeGrid">${card('▤',L('내 단어장','単語帳','Vocabulary','单词本'),L(`${vocab}개 저장`,`${vocab}語を保存`,`${vocab} saved`,`${vocab}个已保存`),"setView('vocab')")}${card('↗',L('학습 기록','学習記録','Learning record','学习记录'),L('실제 연습 기록 보기','練習の記録を見る','See your practice history','查看练习记录'),"setView('stats')")}</div></section>`);
@@ -78,6 +78,6 @@ function shell(){
 }
 const originalShell=renderShell;renderShell=function(){const result=originalShell.apply(this,arguments);shell();return result};
 const base=render;
-render=function(){const result=base.apply(this,arguments);const sc=document.getElementById('screen');if(S.view==='learn')learn(sc);if(S.view==='more')personal(sc);compose(sc);window.HARUMAN?.decorate(sc,S.view);shell();requestAnimationFrame(shell);return result};
+render=function(){const expanded=document.getElementById('screen')?.querySelector('.harumalSettings')?.open;const result=base.apply(this,arguments);const sc=document.getElementById('screen');if(S.view==='learn')learn(sc);if(S.view==='more')personal(sc,expanded);compose(sc);window.HARUMAN?.decorate(sc,S.view);shell();requestAnimationFrame(shell);return result};
 shell();
 })();

@@ -2356,6 +2356,8 @@ try{
   assert.equal(await evaluate(`document.querySelector('.harumalSettings').open`),false,'settings stay secondary to learning record');
   await tap('.harumalSettings>summary');
   assert.equal(await evaluate(`document.querySelector('.harumalSettings').open`),true,'settings remain accessible');
+  await tap('.malbitChoiceRow button');
+  assert.equal(await evaluate(`document.querySelector('.harumalSettings').open`),true,'changing a preference keeps settings open');
   await shot('harumal-settings-open.png');
   await tap('#nav_learn');
   await tap(`.harumalCourse[onclick="harumalCourse('topik1')"]`);
