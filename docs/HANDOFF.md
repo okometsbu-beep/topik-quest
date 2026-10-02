@@ -1,3 +1,21 @@
+## 2026-10-02 검사 환경 정정 / 앱 공통 UI v156 후보
+
+- 기존 로컬 HTTP/Chrome EPERM을 우회하지 않았다. 기존 GitHub Actions Ubuntu Node22/Chrome에서 후보 전체 모바일 341장/오류0 검증이 가능하며, 제품 PR을 금지하는 전체 차단은 해소됐다. 로컬 차단과 실제 iPhone/Android 미검증은 유지한다.
+- 전체 공통 UI + 오늘/학습 CTA/내 기록 설정/단어장 첫 카드/작문·문법 대비 적용. 승인 28보드 계약을 축소하지 않으며 개별 완전 일치는 아직 미완료다. 검증 범위와 남은 범위는 docs/qa/approved-ui-shared-v156.md / STATUS / #226.
+- v156 후보를 CI 합격 뒤 Pages 배포하고 실제 버전/자산/동작 검증. 인트로 영상 완주→화이트아웃→타이틀/스킵 없음, 기존 저장 데이터와 모드 유지. 복귀 기준 v155 a201d0e35602b9430dbeabc3b2bf6983dcb4197b.
+
+## 2026-10-02 최종 승인 UI 범위: 28개 보드 / 하루만 12종
+
+- 사용자의 “딱 요대로 … 똑같이 업데이트”는 마지막 하루만 포함 28보드/84구성에 대한 구현 승인이다. 재디자인하거나 6화면으로 축소하지 않는다.
+- 기준: docs/qa/approved-ui-28-board-contract-20261002.md. 각 보드 해시, 원본 해시, owner, 포즈/위치 사양을 고정했다. 예시 점수/기록은 실제 저장 상태와 연결하며 기존 모드/2,088은행/진도/백업 보존.
+- 기존 v156 후보는 일부만 구현됐고 필수 모바일 검수가 차단됐다. 새 코드/PR/배포로 확장하지 않고 먼저 후보 시각/동작 검수 환경을 확보한다. 공개 v155 유지. 이번 문서 동기화는 구현 완료 증거가 아니다.
+
+## 2026-10-02 최신 사용자 승인 UI / 작업 방향
+
+- #226의 전체 감사와 승인한 여섯 화면 UI를 기준으로 기능/UI 보완을 진행한다. 단순 문항 수 확대는 다음 작업이 아니다.
+- 확정 하루만 소스는 ui-source-v3.2, 공부 포즈는 귀여운 표정으로 책을 보는 최종 한 장. 12종 전달 자산 후보와 입문 레이아웃 후보는 docs/qa/approved-ui-haruman-v156-candidate.md / STATUS 참조.
+- 현재 공개 main은 v155 그대로. 후보 자동검사 합격과 모바일 화면 합격을 구분하며, 브라우저/로컬 서버 권한 차단 때문에 아직 PR/배포하지 않았다.
+
 ## 2026-10-01 v155 TOPIK II scale/state Shorts deployed · #224
 
 - Four stable-ID cards add `확대`, `축소`, `유지`, and `중단`, distinguishing making a scale larger, making it smaller, keeping the current state, and stopping an activity in progress. ko/ja/en/zh selected-choice feedback and optional evidence/trap/method coaching are local.

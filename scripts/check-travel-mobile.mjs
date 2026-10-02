@@ -239,12 +239,19 @@ try{
     assert.deepEqual(fit.tinyCopy,[],`${label}: Game copy below 10px`);
   };
   const assertHomeFits=async(label,theme)=>{
-    const fit=await evaluate(`(()=>{const root=document.querySelector('.tqHomeScreen');if(!root)return{missing:true};const visible=el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)!==0&&r.width>0&&r.height>0};const rect=el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),right:Math.round(r.right),width:Math.round(r.width),height:Math.round(r.height)}};const controls=[...root.querySelectorAll('button:not(:disabled)')].filter(visible);const levels=[...root.querySelectorAll(':scope>.t1level button')].filter(visible);const surfaces=[...root.querySelectorAll(':scope>.t1level,.tqTodayLesson,.tqHomeReview,.tqTravelFeature,.tqV9Modes,.tqV9Utility,.tqV9Week')].filter(visible);const tiles=[...root.querySelectorAll('.tqV9Mode,.tqV9Utility button,.tqV9Week')].filter(visible);const copy=[...root.querySelectorAll('.tqV9Greeting small,.tqV9SectionHead span,.tqV9Mode small,.tqV9Utility small,.tqV9Week p,.tqV9Day small')].filter(visible);const channels=color=>(color.match(/[\d.]+/g)||[]).slice(0,3).map(Number);return{missing:false,innerWidth,rootWidth:document.documentElement.scrollWidth,bodyWidth:document.body.scrollWidth,levels:levels.map(el=>({...rect(el),text:el.textContent.trim(),labelVisible:el.matches('.v35BeginnerLevel')?visible(el.querySelector('b')):true})),outside:controls.filter(el=>{const r=el.getBoundingClientRect();return r.left<-1||r.right>innerWidth+1}).map(rect),small:controls.filter(el=>{const r=el.getBoundingClientRect();return r.width<43||r.height<43}).map(rect),offCenter:surfaces.filter(el=>{const r=el.getBoundingClientRect();return Math.abs(r.left-(innerWidth-r.right))>2}).map(el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),rightGap:Math.round(innerWidth-r.right)}}),darkTiles:tiles.map(el=>({class:el.className,color:getComputedStyle(el).backgroundColor,rgb:channels(getComputedStyle(el).backgroundColor)})).filter(row=>row.rgb.length===3&&row.rgb.reduce((sum,value)=>sum+value,0)/3<170),tinyCopy:copy.map(el=>({class:el.className,size:parseFloat(getComputedStyle(el).fontSize)})).filter(row=>row.size<9.9)}})()`);
+    const fit=await evaluate(`(()=>{const root=document.querySelector('.tqHomeScreen');if(!root)return{missing:true};const visible=el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)!==0&&r.width>0&&r.height>0};const rect=el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),right:Math.round(r.right),width:Math.round(r.width),height:Math.round(r.height)}};const controls=[...root.querySelectorAll('button:not(:disabled)')].filter(visible);const levels=[...root.querySelectorAll(':scope>.t1level button')].filter(visible);const surfaces=[...root.querySelectorAll(':scope>.t1level,.tqTodayLesson,.tqHomeReview,.harumalDiscover,.tqTravelFeature:not(.harumalDiscover .tqTravelFeature),.tqV9Modes,.tqV9Utility,.tqV9Week')].filter(visible);const tiles=[...root.querySelectorAll('.tqV9Mode,.tqV9Utility button,.tqV9Week')].filter(visible);const copy=[...root.querySelectorAll('.tqV9Greeting small,.tqV9SectionHead span,.tqV9Mode small,.tqV9Utility small,.tqV9Week p,.tqV9Day small')].filter(visible);const channels=color=>(color.match(/[\d.]+/g)||[]).slice(0,3).map(Number);return{missing:false,innerWidth,rootWidth:document.documentElement.scrollWidth,bodyWidth:document.body.scrollWidth,levels:levels.map(el=>({...rect(el),text:el.textContent.trim(),labelVisible:el.matches('.v35BeginnerLevel')?visible(el.querySelector('b')):true})),outside:controls.filter(el=>{const r=el.getBoundingClientRect();return r.left<-1||r.right>innerWidth+1}).map(rect),small:controls.filter(el=>{const r=el.getBoundingClientRect();return r.width<43||r.height<43}).map(rect),offCenter:surfaces.filter(el=>{const r=el.getBoundingClientRect();return Math.abs(r.left-(innerWidth-r.right))>2}).map(el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),rightGap:Math.round(innerWidth-r.right)}}),darkTiles:tiles.map(el=>({class:el.className,color:getComputedStyle(el).backgroundColor,rgb:channels(getComputedStyle(el).backgroundColor)})).filter(row=>row.rgb.length===3&&row.rgb.reduce((sum,value)=>sum+value,0)/3<170),tinyCopy:copy.map(el=>({class:el.className,size:parseFloat(getComputedStyle(el).fontSize)})).filter(row=>row.size<9.9)}})()`);
     assert.equal(fit.missing,false,`${label}: Home root missing`);
     assert.ok(fit.rootWidth<=fit.innerWidth+1&&fit.bodyWidth<=fit.innerWidth+1,`${label}: horizontal overflow ${fit.rootWidth}/${fit.bodyWidth}/${fit.innerWidth}`);
     assert.deepEqual(fit.outside,[],`${label}: interactive element leaves viewport`);
     assert.deepEqual(fit.small,[],`${label}: enabled touch target below 44px`);
     assert.deepEqual(fit.offCenter,[],`${label}: asymmetric Home surface`);
+    const discovery=await evaluate(`(()=>{const row=document.querySelector('.harumalDiscover');return row?[...row.children].map(el=>{const r=el.getBoundingClientRect();return{left:r.left,right:r.right,width:r.width,height:r.height}}):[]})()`);
+    if(discovery.length||process.env.HARUMAN_INTRO_BASELINE!=='1'){
+    assert.equal(discovery.length,2,`${label}: discovery keeps Shorts and Travel`);
+    assert.ok(Math.abs(discovery[0].width-discovery[1].width)<=2,`${label}: discovery columns have equal width`);
+    assert.ok(discovery[0].right<=discovery[1].left,`${label}: discovery cards cannot overlap`);
+    assert.ok(discovery.every(r=>r.left>=0&&r.right<=fit.innerWidth&&r.height>=44),`${label}: discovery cards fit and remain tappable`);
+    }
     assert.equal(fit.levels.length,3,`${label}: Home learning-path selector must keep three choices`);
     assert.ok(Math.max(...fit.levels.map(row=>row.width))-Math.min(...fit.levels.map(row=>row.width))<=2,`${label}: learning-path choices must fill equal columns`);
     assert.equal(fit.levels[0].labelVisible,true,`${label}: beginner label must remain visible`);
@@ -333,8 +340,8 @@ try{
   const startFresh=async(seedMetrics=false)=>{
     await evaluate(`localStorage.removeItem('malbitStoryV1');${seedMetrics?"localStorage.setItem('malbitStoryV1',JSON.stringify({version:1,activePackId:'route-001-airport-myeongdong',episodes:{},metrics:{version:2,routeStarts:5,routeCompletions:4,myeongdongEntries:3,exchangeSessions:2,priceQuestStarts:4,priceQuestCompletions:3,priceQuestWrongSubmissions:2,priceQuestWalletTotal:180000}}));":''}S.lang='ja';S.view='home';save();render()`);
     let homeReady=false;
-    for(let wait=0;wait<40;wait++){if(await evaluate(`!!document.querySelector('.tqTravelFeature img[src*="bg-airport-t1.webp"]')`)){homeReady=true;break}await sleep(50)}
-    assert.ok(homeReady,'Travel entry must use generated art instead of emoji');
+    for(let wait=0;wait<40;wait++){if(await evaluate(`!!document.querySelector('.tqTravelFeature [data-haruman-pose="travel-journey"] img[src$="travel-journey-v2.webp"]')`)){homeReady=true;break}await sleep(50)}
+    assert.ok(homeReady,'Travel entry must use the exact approved Haruman production art');
     let opened=false;
     if(seedMetrics){
       for(let attempt=0;attempt<3&&!opened;attempt++){
@@ -2347,6 +2354,21 @@ try{
       }
     }
   }
+  await tap('#nav_more');
+  assert.equal(await evaluate(`document.querySelector('.harumalSettings').open`),false,'settings stay secondary to learning record');
+  await tap('.harumalSettings>summary');
+  assert.equal(await evaluate(`document.querySelector('.harumalSettings').open`),true,'settings remain accessible');
+  await tap('.malbitChoiceRow button');
+  assert.equal(await evaluate(`document.querySelector('.harumalSettings').open`),true,'changing a preference keeps settings open');
+  await shot('harumal-settings-open.png');
+  await tap('#nav_learn');
+  await tap(`.harumalCourse[onclick="harumalCourse('topik1')"]`);
+  assert.equal(await evaluate('S.view'),'t1quiz','TOPIK I course starts real learning instead of returning home');
+  await tap('.t1RandomTop>button');
+  assert.equal(await evaluate('S.view'),'home','TOPIK I real back control returns to the hub');
+  await tap('#nav_learn');
+  await tap(`.harumalCourse[onclick="harumalCourse('topik2')"]`);
+  assert.equal(await evaluate('S.view'),'infinity','TOPIK II course starts real learning');
   assert.deepEqual(errors,[],'Harumal navigation must not add console errors');
   const screenshotCount=fs.readdirSync(out).filter(file=>file.endsWith('.png')).length;
   console.log(`mobile QA: 320/375/390/430px Home + Beginner Grammar + split Writing + Game + Shorts + Random Practice + Review visual contracts, two-field Writing input/save/reload/score/review/migration, 9-chapter/64-lesson grammar catalog, transformation coaching, per-unit handwriting exit/reload/re-entry and preserved progress, Review queue/filter/retry/translation/type coaching/re-entry, TOPIK I/II random question/answer/type coaching, level re-entry, Shorts question/answer/instructor feedback + hit-tested Travel route + one-tap completed-route re-entry + NPC word order + Hangul sign build with decoys, day/evening events, travel-won exchange, reload/back-resume, durable records, screenshots=${screenshotCount}, errors=0`);
