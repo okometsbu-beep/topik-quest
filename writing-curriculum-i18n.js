@@ -1667,5 +1667,143 @@ window.HARUMAL_WRITING_UI_I18N = {
     "ja": "今は終了する",
     "en": "Exit for now",
     "zh": "暂时退出"
+  },
+  "지금 하는 일을<br>한 문장으로": {
+    "ko": "지금 하는 일을<br>한 문장으로",
+    "ja": "今していることを<br>一文で書こう",
+    "en": "Write one sentence<br>about what you are doing",
+    "zh": "用一句话写出<br>现在做的事"
+  },
+  "장소와 행동을 넣어요. 아직 이유는 쓰지 않아요.": {
+    "ko": "장소와 행동을 넣어요. 아직 이유는 쓰지 않아요.",
+    "ja": "場所と行動を入れます。まだ理由は書きません。",
+    "en": "Include the place and action. Do not add a reason yet.",
+    "zh": "写出地点和行为。暂时不用写原因。"
+  },
+  "두 사실을<br>따로 써요": {
+    "ko": "두 사실을<br>따로 써요",
+    "ja": "二つの事実を<br>別々に書こう",
+    "en": "Write the two facts<br>as separate sentences",
+    "zh": "把两个事实<br>分别写成句子"
+  },
+  "문장을 두 개 써요. 아직 서로 연결하지 않아요.": {
+    "ko": "문장을 두 개 써요. 아직 서로 연결하지 않아요.",
+    "ja": "文を二つ書きます。まだつなぎません。",
+    "en": "Write two sentences. Do not join them yet.",
+    "zh": "写两个句子，暂时不要连接起来。"
+  },
+  "무엇이 이유인지<br>골라요": {
+    "ko": "무엇이 이유인지<br>골라요",
+    "ja": "理由にあたるものを<br>選ぼう",
+    "en": "Choose<br>the reason",
+    "zh": "选出<br>原因"
+  },
+  "상황을 읽고 맞는 답 하나를 골라요.": {
+    "ko": "상황을 읽고 맞는 답 하나를 골라요.",
+    "ja": "場面を読んで、合う答えを一つ選びます。",
+    "en": "Read the situation and choose one answer.",
+    "zh": "阅读情境，选择一个答案。"
+  },
+  "문장의 뜻을<br>골라요": {
+    "ko": "문장의 뜻을<br>골라요",
+    "ja": "文の意味を<br>選ぼう",
+    "en": "Choose<br>the meaning",
+    "zh": "选出<br>句子的意思"
+  },
+  "문장을 읽고 같은 뜻인 답을 골라요.": {
+    "ko": "문장을 읽고 같은 뜻인 답을 골라요.",
+    "ja": "文を読んで、同じ意味の答えを選びます。",
+    "en": "Read the sentence and choose the matching meaning.",
+    "zh": "阅读句子，选择意思相同的答案。"
+  },
+  "할 수 없었다는 뜻을<br>골라요": {
+    "ko": "할 수 없었다는 뜻을<br>골라요",
+    "ja": "できなかったことを表す<br>文を選ぼう",
+    "en": "Choose the sentence<br>that clearly means “could not”",
+    "zh": "选出更明确表示<br>“无法做到”的句子"
+  },
+  "불가능했다는 뜻이 더 분명한 문장을 골라요.": {
+    "ko": "불가능했다는 뜻이 더 분명한 문장을 골라요.",
+    "ja": "できなかったことが、よりはっきり伝わる文を選びます。",
+    "en": "Choose the sentence that makes the inability clearer.",
+    "zh": "选择更明确表达“无法做到”的句子。"
+  },
+  "어제 한 일을<br>한 문장으로": {
+    "ko": "어제 한 일을<br>한 문장으로",
+    "ja": "昨日したことを<br>一文で書こう",
+    "en": "Write one sentence<br>about yesterday",
+    "zh": "用一句话写出<br>昨天做的事"
+  },
+  "어제의 행동을 써요. 아직 이유는 넣지 않아요.": {
+    "ko": "어제의 행동을 써요. 아직 이유는 넣지 않아요.",
+    "ja": "昨日の行動を書きます。まだ理由は入れません。",
+    "en": "Write what you did yesterday. Do not add a reason yet.",
+    "zh": "写出昨天做的事。暂时不用写原因。"
+  },
+  "문장 쓰기 준비": {
+    "ko": "문장 쓰기 준비",
+    "ja": "文を書く前の確認",
+    "en": "Before writing sentences",
+    "zh": "写句子前的练习"
+  },
+  "문장 쓰기 준비 · 작성 기록": {
+    "ko": "문장 쓰기 준비 · 작성 기록",
+    "ja": "文を書く前の確認・書いた答え",
+    "en": "Sentence basics · your answer",
+    "zh": "句子基础 · 所写答案"
+  },
+  "배운 연결 표현과 필요한 말을 찾았어요.": {
+    "ko": "배운 연결 표현과 필요한 말을 찾았어요.",
+    "ja": "習ったつなぎ方と、必要な言葉が見つかりました。",
+    "en": "I found the linking form you learned and the required words.",
+    "zh": "找到了学过的连接表达和所需词语。"
+  },
+  "필요한 기본 표현을 찾았어요.": {
+    "ko": "필요한 기본 표현을 찾았어요.",
+    "ja": "必要な基本表現が見つかりました。",
+    "en": "I found the required basic expressions.",
+    "zh": "找到了所需的基本表达。"
+  },
+  "작성한 문장을 화면에 남겼어요.": {
+    "ko": "작성한 문장을 화면에 남겼어요.",
+    "ja": "書いた文をここに表示しています。",
+    "en": "Your sentence is shown here.",
+    "zh": "这里显示你写下的句子。"
+  },
+  "고른 뜻만 확인했어요. 문장 쓰기와는 별도예요.": {
+    "ko": "고른 뜻만 확인했어요. 문장 쓰기와는 별도예요.",
+    "ja": "選んだ意味だけを確認しました。文を書く力とは別の確認です。",
+    "en": "Only the meaning you selected was checked. This does not assess sentence writing.",
+    "zh": "只检查了你选择的意思。这不代表句子写作能力。"
+  },
+  "문장 전체의 뜻과 자연스러움은 아직 확인 전이에요.": {
+    "ko": "문장 전체의 뜻과 자연스러움은 아직 확인 전이에요.",
+    "ja": "文全体の意味と自然さは、まだ確認していません。",
+    "en": "The whole sentence’s meaning and naturalness are still unchecked.",
+    "zh": "句子整体的意思和自然程度尚未检查。"
+  },
+  "어디까지 확인했나요?": {
+    "ko": "어디까지 확인했나요?",
+    "ja": "どこまで確認したの？",
+    "en": "What was checked?",
+    "zh": "检查了哪些内容？"
+  },
+  "가장 최근에 쓴 답": {
+    "ko": "가장 최근에 쓴 답",
+    "ja": "最後に書いた答え",
+    "en": "Your latest answer",
+    "zh": "最近写下的答案"
+  },
+  "저장한 답": {
+    "ko": "저장한 답",
+    "ja": "保存した答え",
+    "en": "Saved answer",
+    "zh": "已保存的答案"
+  },
+  "이 답에서 확인한 내용": {
+    "ko": "이 답에서 확인한 내용",
+    "ja": "この答えで確認したこと",
+    "en": "Checks for this answer",
+    "zh": "这份答案的检查结果"
   }
 };

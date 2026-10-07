@@ -462,12 +462,6 @@
     "en": "Show where you study.",
     "zh": "写出学习的地点。"
   },
-  "공부하다를 해요체로 써 보세요.": {
-    "ko": "공부하다를 해요체(~아요·어요·해요)로 바꿔 써 보세요.",
-    "ja": "「공부하다」を丁寧な形（아요・어요・해요）で書いてみましょう。",
-    "en": "Write 공부하다 with a polite ending (아요, 어요, or 해요).",
-    "zh": "把공부하다改成礼貌形式（아요、어요、해요）。"
-  },
   "장소: 도서관": {
     "ko": "장소: 도서관",
     "ja": "場所：図書館",
@@ -1637,6 +1631,18 @@
     "ja": "理由と結果を1文にする",
     "en": "Write the reason and result in one sentence",
     "zh": "把理由和结果写成一句话"
+  },
+  "자동 확인 범위에서 ‘지금 도서관에서 공부하는 일’을 나타내는 문장을 찾지 못했어요. 문장 전체를 다시 읽어 보세요. 다른 자연스러운 표현일 수도 있어요.": {
+    "ko": "자동 확인 범위에서 ‘지금 도서관에서 공부하는 일’을 나타내는 문장을 찾지 못했어요. 문장 전체를 다시 읽어 보세요. 다른 자연스러운 표현일 수도 있어요.",
+    "ja": "自動確認の範囲では、「今、図書館で勉強していること」を表す文を確認できませんでした。文全体を読み直してみましょう。別の自然な表現である可能性もあります。",
+    "en": "The automatic check could not match a sentence about studying at the library now. Reread the whole sentence. Another natural expression may also work.",
+    "zh": "自动检查未能识别出“现在在图书馆学习”的句子。请再读一遍完整句子，也可能是另一种自然的表达。"
+  },
+  "공부하다를 해요체로 써 보세요.": {
+    "ko": "이전 자동 확인은 일부 표현만 찾았어요. 다른 자연스러운 표현도 있을 수 있어요.",
+    "ja": "以前の自動確認では、一部の表現だけを確認していました。別の自然な表現もありえます。",
+    "en": "The earlier automatic check recognized only a limited set of expressions. Other natural expressions may also work.",
+    "zh": "之前的自动检查只识别部分表达，也可能存在其他自然的表达。"
   }
 };
   Object.values(catalog).forEach(Object.freeze);
