@@ -44,7 +44,7 @@ export async function verifyWritingCurriculum({evaluate,tap,shot,setViewport,sen
   const assertUnseen=async id=>{
     const r=await evaluate(`(()=>{
       const root=document.querySelector('.wcScreen'),i=HARUMAL_WRITING.data.items.find(i=>i.id===${JSON.stringify(id)});
-      return{answer:root.querySelector('#wcAnswer')?.value,model:!!root.querySelector('.wcModel'),lesson:root.textContent.includes('연결 형태 도움'),leaks:i.models.filter(m=>root.textContent.includes(m)),target:root.textContent.includes(${JSON.stringify(id==='I01'?'넓어서':'재미있어서')}),attempts:HARUMAL_WRITING.engine.getState().attempts.filter(a=>a.itemId===i.id).length};
+      return{answer:root.querySelector('#wcAnswer')?.value,model:!!root.querySelector('.wcModel'),lesson:root.textContent.includes(HARUMAL_WRITING.localeText('연결 형태 도움')),leaks:i.models.filter(m=>root.textContent.includes(m)),target:root.textContent.includes(${JSON.stringify(id==='I01'?'넓어서':'재미있어서')}),attempts:HARUMAL_WRITING.engine.getState().attempts.filter(a=>a.itemId===i.id).length};
     })()`);
     assert.equal(r.model,false,id+': no pre-submit model component');
     assert.equal(r.lesson,false,id+': no conjugation lesson on an independent prompt');
@@ -154,7 +154,7 @@ export async function verifyWritingCurriculum({evaluate,tap,shot,setViewport,sen
     assert.equal((await state()).attempts.length,3,'reopening and resubmitting unchanged text cannot duplicate evidence');
     await tap('.wcTopline .wcButton--icon',0,100);await tap('.wcTopline .wcButton--icon',0,100);
     await click("harumalWritingGo('records')");await expectRoute('records');
-    assert.match(await evaluate(`document.querySelector('.wcEvidenceCards').textContent`),/새 상황 첫 답 1개/);
+    assert.equal(await evaluate(`document.querySelector('.wcEvidenceCards').textContent.includes(HARUMAL_WRITING.localeText('새 상황 첫 답 {0}개',1))`),true,'independent count is shown in the selected language');
     await capture('08-records');
     await tap('.wcTopline .wcButton--icon',0,100);await click("harumalWritingGo('unit')");
     await click("harumalWritingGo('group','delayed-new')");

@@ -1,8 +1,8 @@
-// MALBIT bootstrap v157
+// MALBIT bootstrap v158
 // Load the shared core, reviewed data, TOPIK I engine, then learning interactions.
 (function(){
   'use strict';
-  const VERSION='157';
+  const VERSION='158';
   const RUNTIME_FILES=Object.freeze([
     'writing-answers.js',
     'site-patch-core.js',
@@ -56,6 +56,8 @@
     'haruman-mascot.js',
     'harumal-ui.js',
     'data/writing-curriculum.js',
+    'data/writing-curriculum-locales.js',
+    'writing-curriculum-i18n.js',
     'writing-curriculum-engine.js',
     'writing-curriculum.js'
   ]);

@@ -9,6 +9,14 @@ const validDate=value=>typeof value==='string'&&Number.isFinite(Date.parse(value
 const now=()=>new Date().toISOString();
 const localDay=value=>{const d=new Date(value);return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`};
 function empty(){return{schema:SCHEMA,createdAt:now(),revision:0,drafts:{},attempts:[],readiness:{},route:{page:'course'},firstIndependentAt:null}}
+function mergeGuided(current,incoming){
+ if(!object(current))return incoming;
+ if(!object(incoming))return current;
+ const newest=String(incoming.updatedAt||'')>String(current.updatedAt||'')?incoming:current;
+ // Completion and access are monotonic; only the resume pointer follows the latest tab.
+ const union=key=>[...new Set([...(current[key]||[]),...(incoming[key]||[])])];
+ return{...incoming,...current,...newest,started:Boolean(current.started||incoming.started),unlockedIds:union('unlockedIds'),completedItemIds:union('completedItemIds'),confirmedStageIds:union('confirmedStageIds')};
+}
 function migrate(value){
  if(!object(value))throw new Error('invalid-storage');
  if(value.schema!=null&&value.schema!==0&&value.schema!==SCHEMA)throw new Error('newer-storage');
@@ -17,6 +25,11 @@ function migrate(value){
  if(value.readiness!=null&&(!object(value.readiness)||Object.entries(value.readiness).some(([id,r])=>!safeId(id)||!object(r))))throw new Error('invalid-storage');
  if(value.firstIndependentAt!=null&&!validDate(value.firstIndependentAt))throw new Error('invalid-storage');
  if(value.drafts!=null&&(!object(value.drafts)||Object.entries(value.drafts).some(([id,d])=>!safeId(id)||!object(d)||typeof d.text!=='string'||(d.helpTypes!=null&&!Array.isArray(d.helpTypes)))))throw new Error('invalid-storage');
+ if(value.guided!=null){
+  const g=value.guided;
+  if(!object(g)||(g.version!=null&&g.version!==1))throw new Error(object(g)&&g.version>1?'newer-storage':'invalid-storage');
+  if(['unlockedIds','completedItemIds','confirmedStageIds'].some(key=>g[key]!=null&&(!Array.isArray(g[key])||g[key].some(id=>!safeId(id))))||(g.route!=null&&(!object(g.route)||(g.route.page!=null&&typeof g.route.page!=='string')||['itemId','groupId'].some(key=>g.route[key]!=null&&!safeId(g.route[key]))))||(g.updatedAt!=null&&!validDate(g.updatedAt))||['started','active'].some(key=>g[key]!=null&&typeof g[key]!=='boolean'))throw new Error('invalid-storage');
+ }
  const result={...empty(),...value,schema:SCHEMA};
  result.drafts=object(value.drafts)?value.drafts:{};
  result.attempts=Array.isArray(value.attempts)?value.attempts.filter(object):[];
@@ -31,7 +44,7 @@ function combine(current,incoming){
  const readiness={...current.readiness};for(const[id,r]of Object.entries(incoming.readiness))if(safeId(id)&&(!readiness[id]||String(r.updatedAt||'')>String(readiness[id].updatedAt||'')))readiness[id]=r;
 
  const seen=new Set();const ordered=[...attempts.values()].sort((a,b)=>String(a.createdAt).localeCompare(String(b.createdAt))||a.id.localeCompare(b.id)).map(a=>{const repeated=seen.has(a.itemId);seen.add(a.itemId);return repeated?{...a,first:false,...(['independent','delayed'].includes(a.mode)?{originalMode:a.originalMode||a.mode,mode:'revision'}:{})}:a});
- return {...incoming,...current,attempts:ordered,drafts,readiness,firstIndependentAt:ordered.find(a=>a.mode==='independent'&&!a.helpUsed)?.createdAt||null,revision:Math.max(Number(current.revision)||0,Number(incoming.revision)||0)};
+ return {...incoming,...current,attempts:ordered,drafts,readiness,guided:mergeGuided(current.guided,incoming.guided),firstIndependentAt:ordered.find(a=>a.mode==='independent'&&!a.helpUsed)?.createdAt||null,revision:Math.max(Number(current.revision)||0,Number(incoming.revision)||0)};
 }
 function match(pattern,text){try{return new RegExp(pattern,'u').test(text)}catch{return false}}
 function evaluate(item,text){
@@ -58,10 +71,63 @@ function create(storage,data,clock=()=>Date.now()){
  const sessionId=Math.random().toString(36).slice(2,10);
  try{const raw=storage?.getItem(KEY);if(raw!=null)state=migrate(JSON.parse(raw))}catch(error){storageError=error.message==='newer-storage'?'newer-storage':'read-error';readOnly=true}
  const itemById=id=>(data.items||[]).find(item=>item.id===id);
+ const stages=(data.groups||[]).filter(g=>(g.itemIds||[]).some(id=>itemById(id)));
+ const coreStages=stages.filter(g=>!g.delayedOnly&&g.stage!=='delayed');
+ const stageById=id=>stages.find(g=>g.id===id);
+ const stageItems=g=>(g?.itemIds||[]).filter(id=>itemById(id));
  const iso=()=>new Date(clock()).toISOString();
+ function seedGuided(value){
+  if(object(value.guided)){
+   const g=value.guided,attempted=new Set(value.attempts.map(a=>a.itemId));
+   const unlockedIds=[...new Set([...(stages[0]?[stages[0].id]:[]),...(g.unlockedIds||[]).filter(id=>stageById(id))])];
+   const completedItemIds=[...new Set((g.completedItemIds||[]).filter(id=>itemById(id)&&attempted.has(id)))];
+   const done=stage=>stageItems(stage).every(id=>completedItemIds.includes(id));
+   const confirmedStageIds=[...new Set((g.confirmedStageIds||[]).filter(id=>stageById(id)&&done(stageById(id))))];
+   const complete=coreStages.length>0&&coreStages.every(done),next=stages.find(stage=>unlockedIds.includes(stage.id)&&!done(stage));
+   const fallback=complete?{page:'course'}:next?{page:'item',itemId:stageItems(next).find(id=>!completedItemIds.includes(id))}:{page:'course'};
+   let resume=object(g.route)?clone(g.route):fallback;
+   const current=itemById(resume.itemId),stage=stageById(resume.groupId);
+   if(['item','feedback'].includes(resume.page)){
+    if(!current||!unlockedIds.includes(current.groupId))resume=fallback;
+    else if(resume.page==='feedback'&&!attempted.has(current.id))resume={...resume,page:'item'};
+   }else if(resume.page==='stage-done'){
+    if(!stage||!unlockedIds.includes(stage.id)||!done(stage))resume=fallback;
+   }else if(resume.page!=='course'||!complete)resume=fallback;
+   value.guided={...g,version:1,started:Boolean(g.started||g.active),active:Boolean(g.active),unlockedIds,completedItemIds,confirmedStageIds,route:resume,stageId:itemById(resume.itemId)?.groupId||stageById(resume.groupId)?.id||stageById(g.stageId)?.id||next?.id||stages[0]?.id||null,updatedAt:g.updatedAt||null};
+   return value;
+  }
+  const attempted=new Set(value.attempts.map(a=>a.itemId)),unlockedIds=stages[0]?[stages[0].id]:[],completedItemIds=[],confirmedStageIds=[];
+  // Legacy visits did not mean completion. Infer only a contiguous submitted prefix;
+  // a later submitted stage is evidence that the learner continued the previous one.
+  for(let index=0;index<coreStages.length;index++){
+   const g=coreStages[index],ids=stageItems(g),next=stages[stages.indexOf(g)+1];
+   const continued=next&&stageItems(next).some(id=>attempted.has(id)||(value.route?.itemId===id&&Boolean(value.drafts[id]?.text)));
+   if(!ids.every(id=>attempted.has(id))||!continued)break;
+   completedItemIds.push(...ids);confirmedStageIds.push(g.id);unlockedIds.push(next.id);
+  }
+  const saved=value.route,hasWork=id=>attempted.has(id)||Boolean(value.drafts[id]?.text);
+  let resume=['item','feedback'].includes(saved?.page)&&itemById(saved.itemId)&&hasWork(saved.itemId)?clone(saved):null;
+  if(!resume){
+   const latestDraft=Object.entries(value.drafts).filter(([id,d])=>itemById(id)&&d.text).sort((a,b)=>String(a[1].updatedAt||'').localeCompare(String(b[1].updatedAt||''))).at(-1);
+   const latestAttempt=[...value.attempts].reverse().find(a=>itemById(a.itemId));
+   if(latestDraft&&(!latestAttempt||String(latestDraft[1].updatedAt||'')>latestAttempt.createdAt))resume={page:'item',itemId:latestDraft[0]};
+   else if(latestAttempt)resume={page:'feedback',itemId:latestAttempt.itemId};
+  }
+  const started=Boolean(resume);
+  if(resume?.page==='feedback'&&!attempted.has(resume.itemId))resume.page='item';
+  // Keep an old in-progress group revisitable without unlocking untouched gaps.
+  const resumeGroup=itemById(resume?.itemId)?.groupId;
+  if(resumeGroup&&!unlockedIds.includes(resumeGroup))unlockedIds.push(resumeGroup);
+  const currentIds=stageItems(stageById(resumeGroup));
+  for(const id of currentIds.slice(0,currentIds.indexOf(resume?.itemId))){if(!attempted.has(id))break;if(!completedItemIds.includes(id))completedItemIds.push(id)}
+  if(!resume)resume={page:'item',itemId:stageItems(stages[0])[0]||null};
+  value.guided={version:1,started,active:started&&['item','feedback'].includes(saved?.page),unlockedIds,completedItemIds,confirmedStageIds,route:resume,stageId:resumeGroup||stages[0]?.id||null,updatedAt:null};
+  return value;
+ }
+ state=seedGuided(state);
  function sync(){
   if(readOnly)return;
-  try{const raw=storage?.getItem(KEY);if(raw!=null)state=combine(state,migrate(JSON.parse(raw)))}catch(error){storageError=error.message==='newer-storage'?'newer-storage':'read-error';readOnly=true}
+  try{const raw=storage?.getItem(KEY);if(raw!=null)state=combine(state,seedGuided(migrate(JSON.parse(raw))))}catch(error){storageError=error.message==='newer-storage'?'newer-storage':'read-error';readOnly=true}
  }
  function persist(){
   sync();
@@ -94,13 +160,70 @@ function create(storage,data,clock=()=>Date.now()){
  function readiness(id,value){sync();if(!safeId(id))return;if(!['ready','needs_help'].includes(value))return;state.readiness[id]={value,source:'self_report',updatedAt:iso()};persist()}
  function selfCheck(id,value){sync();const attempt=state.attempts.find(a=>a.id===id);if(!attempt||!['checked','needs_review'].includes(value))return;attempt.selfCheck={value,source:'learner',updatedAt:iso()};persist()}
  function route(value){state.route={...value};persist()}
+ function guidedStamp(){
+  // A same-millisecond click is still newer than the saved pointer it follows.
+  const previous=Date.parse(state.guided.updatedAt||'');
+  return new Date(Math.max(clock(),Number.isFinite(previous)?previous+1:0)).toISOString();
+ }
+ function guidedWrite(values){state.guided={...state.guided,...values,updatedAt:guidedStamp()};persist();return clone(state.guided.route)}
+ function guidedDone(g){const completed=new Set(state.guided.completedItemIds||[]);return stageItems(g).every(id=>completed.has(id))}
+ function guidedProgress(){
+  sync();const g=state.guided,r=g.route||{},current=itemById(r.itemId),stage=stageById(current?.groupId||r.groupId||g.stageId)||stages[0];
+  const ids=stageItems(stage),itemId=current?.id||ids.at(-1)||null,completedIds=stages.filter(guidedDone).map(s=>s.id);
+  return{started:Boolean(g.started),active:Boolean(g.active),stageIndex:stages.indexOf(stage),stageId:stage?.id||null,stageTotal:stages.length,itemId,itemIndex:ids.indexOf(itemId),itemTotal:ids.length,route:clone(r),unlockedIds:[...(g.unlockedIds||[])],completedIds,completedStageIds:[...completedIds],completedItemIds:[...(g.completedItemIds||[])],confirmedStageIds:[...(g.confirmedStageIds||[])],complete:coreStages.length>0&&coreStages.every(guidedDone),delayedReady:delayedReady(),delayedComplete:stages.filter(g=>g.delayedOnly||g.stage==='delayed').every(guidedDone)};
+ }
+ function setGuidedRoute(value){
+  sync();const g=state.guided;if(!g.active||!object(value))return clone(g.route);
+  const i=itemById(value.itemId),stage=stageById(value.groupId);
+  if(['item','feedback'].includes(value.page)){
+   if(!i||!(g.unlockedIds||[]).includes(i.groupId)||((i.delayedOnly||i.evidence?.delayed)&&!delayedReady())||(value.page==='feedback'&&!state.attempts.some(a=>a.itemId===i.id)))return clone(g.route);
+   return guidedWrite({route:clone(value),stageId:i.groupId});
+  }
+  if(value.page==='stage-done'&&stage&&(g.unlockedIds||[]).includes(stage.id)&&guidedDone(stage))return guidedWrite({route:clone(value),stageId:stage.id});
+  return clone(g.route);
+ }
+ function resumeGuided(){sync();return guidedWrite({started:true,active:true})}
+ function startGuided(groupId){
+  sync();const stage=stageById(groupId);
+  if(!groupId)return resumeGuided();
+  if(!stage||!(state.guided.unlockedIds||[]).includes(stage.id))return clone(state.guided.route);
+  if((stage.delayedOnly||stage.stage==='delayed')&&!delayedReady())return{page:'group',groupId:stage.id};
+  const id=stageItems(stage).find(id=>!(state.guided.completedItemIds||[]).includes(id));
+  return guidedWrite({started:true,active:true,stageId:stage.id,route:id?{page:'item',itemId:id}:{page:'stage-done',groupId:stage.id}});
+ }
+ function leaveGuided(){sync();return guidedWrite({active:false})}
+ function continueGuided(displayedId){
+  sync();const g=state.guided,r=g.route||{};
+  if(!g.active)return clone(r);
+  if(['item','feedback'].includes(r.page)){
+   const i=itemById(r.itemId);
+   if(!i||(displayedId!=null&&displayedId!==i.id)||(displayedId==null&&r.page!=='feedback')||!state.attempts.some(a=>a.itemId===i.id)||!(g.unlockedIds||[]).includes(i.groupId))return clone(r);
+   const stage=stageById(i.groupId),completedItemIds=[...new Set([...(g.completedItemIds||[]),i.id])],next=stageItems(stage).find(id=>!completedItemIds.includes(id));
+   return guidedWrite({completedItemIds,stageId:stage.id,route:next?{page:'item',itemId:next}:{page:'stage-done',groupId:stage.id}});
+  }
+  if(r.page==='stage-done'){
+   const stage=stageById(r.groupId);
+   if(!stage||displayedId!==stage.id||!guidedDone(stage))return clone(r);
+   const confirmedStageIds=[...new Set([...(g.confirmedStageIds||[]),stage.id])],unlockedIds=[...(g.unlockedIds||[])];
+   const next=coreStages.find(s=>!guidedDone(s));
+   if(!next){
+    for(const s of stages.filter(s=>s.delayedOnly||s.stage==='delayed'))if(!unlockedIds.includes(s.id))unlockedIds.push(s.id);
+    return guidedWrite({confirmedStageIds,unlockedIds,active:false,route:{page:'course'}});
+   }
+   // Advancing returns to the first unfinished core stage; legacy gaps stay honest.
+   if(!unlockedIds.includes(next.id))unlockedIds.push(next.id);
+   const nextId=stageItems(next).find(id=>!(g.completedItemIds||[]).includes(id));
+   return guidedWrite({confirmedStageIds,unlockedIds,stageId:next.id,route:{page:'item',itemId:nextId}});
+  }
+  return clone(r);
+ }
  function evidence(){
   sync();const a=state.attempts,forms={};for(const name of ['아서','어서','해서'])forms[name]=a.filter(x=>itemById(x.itemId)?.targetForm===name&&x.evaluation.form==='observed').map(x=>x.itemId).filter((v,i,all)=>all.indexOf(v)===i).length;
   return{practice:a.filter(x=>['practice','revision'].includes(x.mode)).length,independent:a.filter(x=>x.mode==='independent').length,delayed:a.filter(x=>x.mode==='delayed').length,expansion:a.filter(x=>(data.groups||[]).find(g=>g.id===x.groupId)?.stage==='expansion').length,meaningReviewed:0,forms,delayedReady:delayedReady(),delayedAt:delayedAt()};
  }
- function mergeImport(raw){sync();const incoming=migrate(JSON.parse(raw));return JSON.stringify(combine(state,incoming))}
+ function mergeImport(raw){sync();const incoming=seedGuided(migrate(JSON.parse(raw)));return JSON.stringify(combine(state,incoming))}
 
- return Object.freeze({getState:()=>{sync();return clone(state)},getStorageError:()=>storageError,persist,draft:id=>{sync();return clone(draft(id))},setDraft,help,revealModel,submit,readiness,selfCheck,route,evidence,eligible,delayedReady,delayedAt,mergeImport,itemById});
+ return Object.freeze({getState:()=>{sync();return clone(state)},getStorageError:()=>storageError,persist,draft:id=>{sync();return clone(draft(id))},setDraft,help,revealModel,submit,readiness,selfCheck,route,evidence,eligible,delayedReady,delayedAt,mergeImport,itemById,guidedProgress,startGuided,resumeGuided,leaveGuided,setGuidedRoute,continueGuided,nextGuided:id=>{sync();return ['item','feedback'].includes(state.guided.route?.page)?continueGuided(id):clone(state.guided.route)},advanceGuided:id=>{sync();return state.guided.route?.page==='stage-done'?continueGuided(id||state.guided.route.groupId):clone(state.guided.route)}});
 }
 root.HARUMAL_WRITING_ENGINE=Object.freeze({KEY,SCHEMA,DAY,migrate,evaluate,create});
 })(typeof window!=='undefined'?window:globalThis);
