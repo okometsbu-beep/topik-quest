@@ -19,13 +19,14 @@ const guided=()=>E.guidedProgress?.()||{started:false,active:false,unlockedIds:[
 const courseFinished=p=>p.complete&&DATA.groups.filter(g=>!g.delayedOnly).every(g=>(p.confirmedStageIds||[]).includes(g.id));
 const flowArt=key=>`<img class="wcFlowArt" src="assets/art/writing/flow-${h(key)}-v1.webp" alt="" width="112" height="112" decoding="async">`;
 const korean=value=>`<span lang="ko">${h(value)}</span>`;
-const button=(label,action,kind='primary',extra='')=>`<button type="button" class="wcButton wcButton--${kind}" onclick="${action}" ${extra}>${T(label)}</button>`;
+const button=(label,action,kind='primary',extra='')=>`<button type="button" class="wcButton wcButton--${kind}" onclick="${action}" ${action==='harumalWritingLastAnswer()'?'data-wc-action="last-answer"':''} ${extra}>${T(label)}</button>`;
 const badge=(label,tone='quiet')=>`<span class="wcBadge wcBadge--${tone}">${t(label)}</span>`;
 const art=(key,cls='wcScenario')=>key?`<img class="${cls}" src="assets/art/writing/context-${h(key)}-v1.webp" alt="" width="120" height="120" decoding="async">`:'';
 const mascot=(pose='lesson-welcome')=>`<img class="wcMascot" src="assets/art/haruman/${pose}-v2.webp" alt="" width="112" height="112" decoding="async">`;
 const heading=(eyebrow,title,copy='',image='')=>`<header class="wcHeading"><p class="wcEyebrow">${T(eyebrow)}</p><div class="wcHeadingRow"><h1 tabindex="-1">${T(title)}</h1>${image}</div>${copy?`<p class="wcLead">${T(copy)}</p>`:''}</header>`;
 const linkCard=(number,title,copy,action,extra='')=>`<button type="button" class="wcRouteCard ${extra}" onclick="${action}"><span class="wcNumber">${T(number)}</span><span><strong>${T(title)}</strong><small>${T(copy)}</small></span><span class="wcArrow" aria-hidden="true">›</span></button>`;
 const crumbs=back=>`<div class="wcTopline">${button('‹',back,'icon',`aria-label="${t('이전 화면')}"`)}<strong>하루말 <small>HARUMAL / WRITING</small></strong><select class="wcLanguage" aria-label="${t('설명 언어')}" onchange="harumalWritingLanguage(this.value)">${[['ko','한국어'],['ja','日本語'],['en','English'],['zh','中文']].map(([code,name])=>`<option lang="${code==='zh'?'zh-CN':code}" value="${code}" ${language()===code?'selected':''}>${name}</option>`).join('')}</select>${button('×',"harumalWritingExit()",'icon',`aria-label="${t('작문 코너 닫기')}"`)}</div>`;
+const primaryAction=(label,action,extra='')=>`<div class="wcFooter wcPrimaryAction">${extra}${button(label,action)}</div>`;
 const footer=(label,action,note='')=>`<div class="wcFooter">${note?`<p>${T(note)}</p>`:''}${button(label,action)}</div>`;
 function localeDate(value){try{return new Date(value).toLocaleString({ko:'ko-KR',ja:'ja-JP',en:'en-US',zh:'zh-CN'}[language()],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}catch{return''}}
 function readinessMissing(g){return(g?.prerequisites||[]).filter(key=>key!=='reason_form'&&state().readiness[key]?.value!=='ready')}
@@ -34,7 +35,7 @@ function course(){
  const e=E.evidence(),p=guided(),g=group(p.stageId),resume=p.started,finished=courseFinished(p);
  return heading('나의 쓰기 과정','한 문장부터<br>조리 있는 글까지','수준을 고르면 한 문제씩 이어서 풀어요.')+
  `<section class="wcHero"><div><h2>${t('오늘도 한 문장씩 써요')}</h2><p>${t(E.getStorageError()?'기기에 저장되지 않았어요. 화면의 글을 따로 복사해 주세요.':'쓰던 문장과 풀이 위치는 이 기기에 저장돼요.')}</p></div>${flowArt('start')}</section>`+
- (resume?`<section class="wcResume"><small>${t(finished?'첫 원인 문장 연습을 마쳤어요':'이전에 하던 연습')}</small><h2>${g?t(g.titleKo):t('초급 · 원인 문장 연습')}</h2>${footer(finished?'마지막 기록 이어 보기':'이어서 풀기',finished?"harumalWritingGo('records')":"harumalWritingResume()")}</section>`:'')+
+ (resume?`<section class="wcResume"><small>${t(finished?'첫 원인 문장 연습을 마쳤어요':'이전에 하던 연습')}</small><h2>${g?t(g.titleKo):t('초급 · 원인 문장 연습')}</h2>${footer(finished?'마지막 기록 이어 보기':'이어서 풀기',finished?"harumalWritingLastAnswer()":"harumalWritingResume()")}</section>`:'')+
  `<h2 class="wcSectionTitle">${t('내 수준에서 시작해요')}</h2>`+
  linkCard('1','초급','짧은 문장부터 시작해 이유를 한 문장으로 써요.',"harumalWritingBegin()",'wcRouteCard--active')+
  `<p class="wcNote wcAvailable">${t('현재 첫 원인 문장 연습이 열려 있어요. 초급 전체 과정은 계속 준비 중이에요.')}</p>`+
@@ -56,7 +57,7 @@ function stageDone(id){
  return heading('한 단계 완료','이번 연습을 마쳤어요',E.getStorageError()?'기기에 저장되지 않았어요. 화면의 글을 따로 복사해 주세요.':'작성한 문장과 도움 사용 기록을 저장했어요.',flowArt('unlock'))+
  `<section class="wcPanel wcPanel--mint"><small>${t('초급 · 첫 원인 문장 연습')}</small><h2>${t(g.titleKo)}</h2><p>${t('{0}개 문제를 풀었어요. 모든 문장의 뜻이 맞다고 판정한 것은 아니에요.',count)}</p></section>`+
  (next?`<section class="wcNextStage"><small>${t('다음에 열릴 연습')}</small><h2>${t(next.titleKo)}</h2><p>${t('다음 단계로 가도 이전 문장을 다시 고칠 수 있어요.')}</p></section>`:`<section class="wcPanel"><h2>${t('다른 날 새 문장으로 다시 써요')}</h2><p>${t('첫 도움 없는 쓰기에서 24시간 이상 지나고 날짜가 바뀌면 새 상황이 열려요. 기다리는 동안 다른 연습을 해도 좋아요.')}</p>${flowArt('return')}</section>`)+
- footer(next?'다음 단계 열기':'첫 연습 마치기',`harumalWritingContinue('${id}')`)+button(E.getStorageError()?'지금 나가기':'지금 나가기 · 여기까지 저장됨',"harumalWritingExit()",'text');
+ primaryAction(next?'다음 단계 열기':'첫 연습 마치기',`harumalWritingContinue('${id}')`)+button(E.getStorageError()?'지금 나가기':'지금 나가기 · 여기까지 저장됨',"harumalWritingExit()",'text');
 }
 function guidedStrip(i){
  const p=guided();if(!p.active)return '';
@@ -117,18 +118,30 @@ function prerequisiteGate(i){
  if(!needs.length)return '';
  return heading('필요한 부분부터 준비해요','모르는 요소를<br>한꺼번에 얹지 않아요','도움이 필요하다고 표시한 기능부터 확인해요.')+prerequisiteMarkup({...g,prerequisites:needs})+`<p class="wcNote">${t('뜻이 미검토인 문장을 오답으로 막는 것이 아니에요. 직접 준비가 필요하다고 표시한 표현만 먼저 확인해요.')}</p>`+footer('기본 문장·뜻 확인',"harumalWritingGo('group','probe-basics')")+button('다른 준비된 연습 보기',"harumalWritingGo('unit')",'text');
 }
+function taskHeading(i,g){
+ const probes={
+  P01:['지금 하는 일을<br>한 문장으로','장소와 행동을 넣어요. 아직 이유는 쓰지 않아요.'],
+  P02:['두 사실을<br>따로 써요','문장을 두 개 써요. 아직 서로 연결하지 않아요.'],
+  P03:['무엇이 이유인지<br>골라요','상황을 읽고 맞는 답 하나를 골라요.'],
+  P04:['문장의 뜻을<br>골라요','문장을 읽고 같은 뜻인 답을 골라요.'],
+  P05:['할 수 없었다는 뜻을<br>골라요','불가능했다는 뜻이 더 분명한 문장을 골라요.'],
+  P06:['어제 한 일을<br>한 문장으로','어제의 행동을 써요. 아직 이유는 넣지 않아요.']
+ };
+ return probes[i.id]||null;
+}
 function itemPage(id){
  const i=item(id);if(!i)return unit();const gate=prerequisiteGate(i);if(gate)return gate;if(!E.eligible(id))return groupPage(i.groupId);
  const g=group(i.groupId),d=E.draft(id),prev=state().attempts.filter(a=>a.itemId===id),independent=i.evidence?.independent||i.evidence?.delayed;
- const title=g.stage==='correction'?'뜻은 유지하고,<br>필요한 부분을 고쳐요':g.stage==='expansion'?'길이보다,<br>전할 정보를 분명히':g.stage==='delayed'?'며칠 뒤에도<br>내 문장으로 써봐요':independent?'처음 보는 상황에서<br>혼자 써볼까요?':g.stage==='variation'?'바꾸는 조건은 하나,<br>뜻을 유지해요':'두 사실의 뜻을<br>그대로 이어 써요';
- return guidedStrip(i)+heading(T('원인 문장 · {0}',t(g.titleKo)),title,prev.length?'이전에 본 문항이에요. 다시 쓴 답은 연습으로 남겨요.':independent?'첫 답과 도움 사용을 별도로 기록해요.':'형태를 익힌 뒤 문장 전체를 직접 써요.')+
+ const task=taskHeading(i,g);
+ const title=task?task[0]:g.stage==='correction'?'뜻은 유지하고,<br>필요한 부분을 고쳐요':g.stage==='expansion'?'길이보다,<br>전할 정보를 분명히':g.stage==='delayed'?'며칠 뒤에도<br>내 문장으로 써봐요':independent?'처음 보는 상황에서<br>혼자 써볼까요?':g.stage==='variation'?'바꾸는 조건은 하나,<br>뜻을 유지해요':'두 사실의 뜻을<br>그대로 이어 써요';
+ return guidedStrip(i)+heading(g.stage==='probe'?'문장 쓰기 준비':T('원인 문장 · {0}',t(g.titleKo)),title,task?task[1]:prev.length?'이전에 본 문항이에요. 다시 쓴 답은 연습으로 남겨요.':independent?'첫 답과 도움 사용을 별도로 기록해요.':'형태를 익힌 뒤 문장 전체를 직접 써요.')+
  `<section class="wcFacts ${independent?'wcFacts--scene':''}">${art(i.image||i.imageKey)}<div lang="ko">${(i.facts||[]).map(f=>`<p>${h(f.ko)}</p>`).join('')}</div></section>`+
  (i.draftKo?`<section class="wcPanel wcPanel--warm"><small>${t('고쳐 볼 초고')}</small><p class="wcDraftText" lang="ko">${h(i.draftKo)}</p></section>`:'')+
  (g.stage==='form'&&i.evidence?.assistedByDesign?`<section class="wcPanel wcPanel--mint"><small>${t('연결 형태 도움')}</small><h2>${i.support?.lessonKo?korean(i.support.lessonKo):t('이번 연결 형태를 확인해요')}</h2><p>${t('완성된 해요체에 ‘서’를 바로 붙이지 않아요.')}</p></section>`:'')+
  `<p class="wcPrompt" id="wcPrompt">${t(i.promptKo)}</p>`+
  (i.kind==='relation'?`<fieldset class="wcChoices"><legend class="wcSrOnly">${t('뜻에 맞는 답 고르기')}</legend>${(i.choices||[]).map(c=>`<label><input type="radio" name="wcChoice" value="${h(c.id)}" ${d.text===c.id?'checked':''} onchange="harumalWritingDraft('${id}',this.value)"><span>${i.id==='P05'?korean(c.labelKo):t(c.labelKo)}</span></label>`).join('')}</fieldset>`:`<label class="wcSrOnly" for="wcAnswer">${t('내 문장')}</label><textarea id="wcAnswer" class="wcAnswer" rows="${independent?6:4}" maxlength="4000" aria-describedby="wcPrompt wcSaveState" lang="ko" placeholder="${t('여기에 내 문장을 써보세요')}" oninput="harumalWritingDraft('${id}',this.value)">${h(d.text)}</textarea><div class="wcSaveState" id="wcSaveState" role="status">${t(E.getStorageError()?'기기에 저장되지 않았어요. 화면의 글을 따로 복사해 주세요.':'이 기기에 초고 자동 저장')}</div>`)+
- support(i,d)+`<p class="wcNote" id="wcHelpState">${t(d.helpOpened?'뜻 도움 사용 기록 있음':independent?'도움을 열면 도움 사용 기록이 남아요.':'도움 있는 연습으로 기록될 수 있어요.')}</p><p id="wcInlineError" role="alert"></p>`+
- footer(i.kind==='relation'?'뜻 확인하기':i.draftKo?'고친 문장 확인하기':'작성한 문장 확인하기',`harumalWritingSubmit('${id}')`)+
+ support(i,d)+`<p class="wcNote" id="wcHelpState">${t(d.helpOpened?'뜻 도움 사용 기록 있음':independent?'도움을 열면 도움 사용 기록이 남아요.':'도움 있는 연습으로 기록될 수 있어요.')}</p>`+
+ primaryAction(i.kind==='relation'?'뜻 확인하기':i.draftKo?'고친 문장 확인하기':'작성한 문장 확인하기',`harumalWritingSubmit('${id}')`,'<p id="wcInlineError" role="alert"></p>')+
  (prev.length?button('지난 작성 기록 보기',`harumalWritingGo('feedback','${id}')`,'text'):'');
 }
 function feedback(id){
@@ -136,13 +149,21 @@ function feedback(id){
  const ev=attempt.evaluation,g=group(i.groupId),d=E.draft(id),idx=g.itemIds.indexOf(id),next=g.itemIds[idx+1],flow=guided().active;
  const label=ev.status==='needs_practice'?'한 부분만 다시 확인해요':ev.status==='interpretation_observed'?'이 문항의 뜻을 구별했어요':'문장을 남겼어요';
  const status={practice:'도움 있는 연습',revision:'수정·반복 연습',independent:'새 상황 첫 독립 작성',delayed:'다른 날 새 상황 작성',interpretation:'뜻 구별 문항'}[attempt.mode]||'연습';
- return guidedStrip(i)+heading('원인 문장 · 작성 기록',label,'첫 답과 수정한 답은 따로 남겨요.',mascot(ev.status==='needs_practice'?'review-thinking':'answer-correct'))+
+ return guidedStrip(i)+heading(g.stage==='probe'?'문장 쓰기 준비 · 작성 기록':'원인 문장 · 작성 기록',label,'첫 답과 수정한 답은 따로 남겨요.',mascot(ev.status==='needs_practice'?'review-thinking':'answer-correct'))+
  `<section class="wcPanel wcPanel--warm"><small>${t(i.kind==='relation'?'방금 쓴 답':'방금 쓴 문장')}</small><p class="wcDraftText">${i.kind==='relation'?(i.id==='P05'?korean((i.choices||[]).find(c=>c.id===attempt.text)?.labelKo||attempt.text):t((i.choices||[]).find(c=>c.id===attempt.text)?.labelKo||attempt.text)):korean(attempt.text)}</p>${badge(status,'mint')}</section>`+
- `<section class="wcFeedback" role="status"><h2>${t(ev.form==='observed'?'목표 형태 확인 · 의미 미검토':ev.status==='interpretation_observed'?'이 선택의 뜻 구별만 확인':'확인한 부분과 남은 부분')}</h2>${ev.messages.map(m=>`<p>${t(m)}</p>`).join('')}<p class="wcNote">${t('자동 규칙 확인, 자기점검, 사람의 의미 검토를 구분해요. 전체 문장의 정답이나 숙달 판정이 아니에요.')}</p></section>`+
+ `<section class="wcFeedback" role="status"><h2>${t(ev.form==='observed'?'목표 형태 확인 · 의미 미검토':ev.status==='interpretation_observed'?'이 선택의 뜻 구별만 확인':'확인한 부분과 남은 부분')}</h2>${ev.status==='form_observed'?`<p>${t('배운 연결 표현과 필요한 말을 찾았어요.')}</p>`:ev.status==='components_observed'?`<p>${t('필요한 기본 표현을 찾았어요.')}</p>`:ev.status==='saved'?`<p>${t('작성한 문장을 화면에 남겼어요.')}</p>`:ev.messages.map(m=>`<p>${t(m)}</p>`).join('')}<p class="wcAssessmentNote">${t(i.kind==='relation'?'고른 뜻만 확인했어요. 문장 쓰기와는 별도예요.':'문장 전체의 뜻과 자연스러움은 아직 확인 전이에요.')}</p><details class="wcAssessmentDetails"><summary>${t('어디까지 확인했나요?')}</summary><p>${t('자동 규칙 확인, 자기점검, 사람의 의미 검토를 구분해요. 전체 문장의 정답이나 숙달 판정이 아니에요.')}</p></details></section>`+
  (i.kind!=='relation'?`<section class="wcPanel"><h2>${t('내 문장 다시 읽기')}</h2><ul class="wcChecklist"><li>${t(g.stage==='probe'?'누가, 어디서, 무엇을 하는지 분명한가요?':'앞부분이 뒤 행동의 이유인가요?')}</li><li>${t('누가, 언제, 무엇을 하는지 뜻이 유지됐나요?')}</li><li>${t(g.stage==='expansion'?'더한 정보가 실제로 무엇을 알려 주나요?':'주어진 사실을 바꾸거나 빼지 않았나요?')}</li></ul><div class="wcFormTabs">${button('뜻을 다시 읽었어요',`harumalWritingSelfCheck('${attempt.id}','checked')`,attempt.selfCheck?.value==='checked'?'selected':'secondary')}${button('더 검토할래요',`harumalWritingSelfCheck('${attempt.id}','needs_review')`,attempt.selfCheck?.value==='needs_review'?'selected':'secondary')}</div><small>${t('자기점검은 사람의 의미 검토 완료로 기록되지 않아요.')}</small></section>`:'')+
  (i.models?.length?`<section class="wcModel">${d.modelViewed?`<h2>${t('가능한 문장 예시')}</h2>${i.models.map(m=>`<p lang="ko">${h(m)}</p>`).join('')}<small>${t('같은 뜻의 자연스러운 다른 답도 가능해요.')}</small>`:button('제출 후 가능한 문장 비교',`harumalWritingModel('${id}')`,'secondary')}</section>`:'')+
- (flow?footer(ev.status==='needs_practice'?'전체 문장 다시 써보기':'다음으로',ev.status==='needs_practice'?`harumalWritingGo('item','${id}')`:`harumalWritingContinue('${id}')`):footer(ev.status==='needs_practice'?'전체 문장 다시 써보기':next?'다음 문장 써보기':'이 묶음의 기록 보기',ev.status==='needs_practice'?`harumalWritingGo('item','${id}')`:next?`harumalWritingGo('item','${next}')`:"harumalWritingGo('records')"))+
+ (flow?primaryAction(ev.status==='needs_practice'?'전체 문장 다시 써보기':'다음으로',ev.status==='needs_practice'?`harumalWritingGo('item','${id}')`:`harumalWritingContinue('${id}')`):primaryAction(ev.status==='needs_practice'?'전체 문장 다시 써보기':next?'다음 문장 써보기':'이 묶음의 기록 보기',ev.status==='needs_practice'?`harumalWritingGo('item','${id}')`:next?`harumalWritingGo('item','${next}')`:"harumalWritingGo('records')"))+
  `<div class="wcSplitLinks">${button('다시 쓰기',`harumalWritingGo('item','${id}')`,'text')}${flow?(ev.status==='needs_practice'?button('기록을 남기고 다음으로',`harumalWritingContinue('${id}')`,'text'):''):button('필요한 형태만 보충',`harumalWritingGo('group','${i.targetForm==='아서'?'form-aseo':i.targetForm==='어서'?'form-eoseo':'form-haeseo'}')`,'text')}</div>`;
+}
+function savedAnswer(attemptId){
+ const a=state().attempts.find(a=>a.id===attemptId);if(!a)return records();
+ const i=item(a.itemId),g=group(a.groupId);
+ return heading(a.id===state().attempts.at(-1)?.id?'가장 최근에 쓴 답':'저장한 답',g?t(g.titleKo):'내 쓰기 기록',localeDate(a.createdAt))+
+ `<section class="wcPanel wcPanel--warm" data-attempt-id="${h(a.id)}"><small>${t('저장한 답')}</small><p class="wcDraftText" id="wcSavedAnswer">${historyAnswer(a)}</p></section>`+
+ `<section class="wcFeedback"><h2>${t('이 답에서 확인한 내용')}</h2>${(a.evaluation.messages||[]).map(m=>`<p>${t(m)}</p>`).join('')}<p class="wcAssessmentNote">${t(i?.kind==='relation'?'고른 뜻만 확인했어요. 문장 쓰기와는 별도예요.':'문장 전체의 뜻과 자연스러움은 아직 확인 전이에요.')}</p></section>`+
+ (i?footer('이 문항 다시 보기',`harumalWritingGo('item','${i.id}')`):'')+button('내 쓰기 기록',"harumalWritingGo('records')",'text');
 }
 function records(){
  const s=state(),e=E.evidence();const latestByItem=new Map(s.attempts.map(a=>[a.itemId,a]));const problems=[...latestByItem.values()].filter(a=>a.evaluation.status==='needs_practice');
@@ -156,30 +177,53 @@ function exam(id){const n=Number(id),copy={51:'생활 목적에 맞는 한 문�
 function renderPage(){
  const sc=document.getElementById('screen');if(!sc)return;const r=state().route||{page:'course'};
  sc.className='screen wcScreen';sc.dataset.harumalView=VIEW;sc.lang=language()==='zh'?'zh-CN':language();
- const content=r.page==='level'?levelPage(r.levelId):r.page==='stage-done'?stageDone(r.groupId):r.page==='map'?map():r.page==='node'?nodePage(r.nodeId):r.page==='unit'?unit():r.page==='group'?groupPage(r.groupId):r.page==='item'?itemPage(r.itemId):r.page==='feedback'?feedback(r.itemId):r.page==='records'?records():r.page==='exam'?exam(r.examId):course();
+ const content=r.page==='answer'?savedAnswer(r.attemptId):r.page==='level'?levelPage(r.levelId):r.page==='stage-done'?stageDone(r.groupId):r.page==='map'?map():r.page==='node'?nodePage(r.nodeId):r.page==='unit'?unit():r.page==='group'?groupPage(r.groupId):r.page==='item'?itemPage(r.itemId):r.page==='feedback'?feedback(r.itemId):r.page==='records'?records():r.page==='exam'?exam(r.examId):course();
  sc.innerHTML=crumbs(returnAction(r))+(E.getStorageError()?`<aside class="wcStorageWarning" role="alert">${t(E.getStorageError()==='newer-storage'?'이 기록은 더 새로운 버전에서 저장됐어요. 원본은 그대로 두고 이번 화면의 기록은 임시로만 보관해요.':'저장 공간을 사용할 수 없거나 기존 기록을 읽지 못했어요. 기존 원본은 지우지 않아요. 이번 문장을 따로 복사해 주세요.')}</aside>`:'')+content;
+ sc.classList?.toggle('wcHasPrimary',Boolean(sc.querySelector('.wcPrimaryAction')));
  document.body.classList.add('wcActive');document.body.classList.remove('tq-home-active');
- window.requestAnimationFrame?.(()=>{if(!document.activeElement?.classList?.contains('wcLanguage'))sc.querySelector('h1')?.focus({preventScroll:true})});
+ window.requestAnimationFrame?.(()=>{if(!document.activeElement?.classList?.contains('wcLanguage'))sc.querySelector('h1')?.focus({preventScroll:true});updateActionLayout()});
 }
+function updateActionLayout(){
+ const sc=document.getElementById('screen'),body=document.body;
+ if(!sc||S.view!==VIEW){body.classList.remove('wcKeyboardOpen');return}
+ const bar=sc.querySelector('.wcPrimaryAction');if(!bar){body.classList.remove('wcKeyboardOpen');return}
+ const vv=window.visualViewport,height=window.innerHeight||document.documentElement?.clientHeight||0;
+ const editing=/^(TEXTAREA|INPUT)$/.test(document.activeElement?.tagName||'');
+ const keyboard=Boolean(editing&&vv&&height-vv.height>120);
+ body.classList.toggle?.('wcKeyboardOpen',keyboard);
+ const nav=document.querySelector?.('.bottom'),navRect=nav?.getBoundingClientRect();
+ const keyboardInset=vv?Math.max(0,height-vv.height-vv.offsetTop):0;
+ const bottom=keyboard?keyboardInset+8:Math.max(0,navRect?height-navRect.top:80)+8;
+ const barHeight=bar.getBoundingClientRect?.().height||78;
+ sc.style?.setProperty('--wc-action-bottom',bottom+'px');
+ sc.style?.setProperty('--wc-action-space',(barHeight+(keyboard?16:bottom)+24)+'px');
+ if(keyboard&&document.activeElement?.getBoundingClientRect){const rect=document.activeElement.getBoundingClientRect(),edge=(vv.offsetTop+vv.height)-barHeight-16;if(rect.bottom>edge)window.scrollBy?.({top:rect.bottom-edge,behavior:'instant'})}
+}
+window.addEventListener?.('resize',updateActionLayout);
+window.visualViewport?.addEventListener('resize',updateActionLayout);
+window.visualViewport?.addEventListener('scroll',updateActionLayout);
+document.addEventListener?.('focusin',()=>window.requestAnimationFrame?.(updateActionLayout));
+document.addEventListener?.('focusout',()=>window.requestAnimationFrame?.(updateActionLayout));
 let changingHistory=false;
 const baseSetView=window.setView,baseRender=window.render;
 function rememberHistory(route,replace=false){try{const value={...(history.state||{}),harumalWritingRoute:route,harumalWritingGuided:Boolean(guided().active)};(replace?history.replaceState:history.pushState).call(history,value,'')}catch{}}
 function navigate(page='course',id='',replace=false){
- if(['course','map','node','unit','group','level','exam','records'].includes(page))E.leaveGuided?.();
- const route={page};if(page==='node')route.nodeId=id;if(page==='group'||page==='stage-done')route.groupId=id;if(page==='level')route.levelId=id;if(page==='item'||page==='feedback')route.itemId=id;if(page==='exam')route.examId=id;
+ if(['course','map','node','unit','group','level','exam','records','answer'].includes(page)&&guided().active)E.leaveGuided?.();
+ const route={page};if(page==='answer')route.attemptId=id;if(page==='node')route.nodeId=id;if(page==='group'||page==='stage-done')route.groupId=id;if(page==='level')route.levelId=id;if(page==='item'||page==='feedback')route.itemId=id;if(page==='exam')route.examId=id;
  if(S.view!==VIEW){try{history.replaceState({...(history.state||{}),harumalWritingRoute:null,harumalReturnView:S.view},'')}catch{}}
  if(guided().active&&['item','feedback','stage-done'].includes(page))E.setGuidedRoute?.(route);
  E.route(route);rememberHistory(route,replace);changingHistory=true;baseSetView.call(window,VIEW);changingHistory=false;window.scrollTo?.({top:0,behavior:'instant'});
 }
 window.setView=function(view){if(S.view===VIEW&&view!==VIEW&&!changingHistory){try{history.pushState({harumalWritingRoute:null,harumalReturnView:view},'')}catch{}}return baseSetView.apply(this,arguments)};
-window.render=function(){if(S.view!==VIEW){document.body.classList.remove('wcActive');return baseRender.apply(this,arguments)}if(typeof hideSelection==='function')hideSelection();if(typeof renderShell==='function')renderShell();renderPage()};
-function openRoute(route){if(route)navigate(route.page,route.itemId||route.groupId||route.levelId||'')}
+window.render=function(){if(S.view!==VIEW){document.body.classList.remove('wcActive');document.body.classList.remove('wcKeyboardOpen');return baseRender.apply(this,arguments)}if(typeof hideSelection==='function')hideSelection();if(typeof renderShell==='function')renderShell();renderPage()};
+function openRoute(route){if(route)navigate(route.page,route.attemptId||route.itemId||route.groupId||route.levelId||'')}
 window.harumalWritingLanguage=lang=>{
  const restoreFocus=document.activeElement?.classList?.contains('wcLanguage');
  if(typeof window.malbitSetLanguage==='function')window.malbitSetLanguage(lang);
  else if(typeof window.setLang==='function')window.setLang(lang);
  if(restoreFocus)document.querySelector?.('.wcLanguage')?.focus();
 };
+window.harumalWritingLastAnswer=()=>{const a=state().attempts.at(-1);navigate(a?'answer':'records',a?.id||'')};
 window.harumalWritingGo=navigate;
 window.harumalWritingBegin=()=>courseFinished(guided())?navigate('unit'):openRoute(E.startGuided?.()||{page:'item',itemId:'P01'});
 window.harumalWritingResume=()=>openRoute(E.resumeGuided?.()||state().route);
@@ -189,12 +233,12 @@ window.harumalWritingStart=id=>navigate('item',id);
 window.harumalWritingExit=()=>setView('learn');
 window.harumalWritingDraft=(id,text)=>{E.setDraft(id,text);const note=document.getElementById('wcSaveState');if(note)note.textContent=T(E.getStorageError()?'기기에 저장되지 않았어요. 글을 따로 복사해 주세요.':'이 기기에 초고 자동 저장')};
 window.harumalWritingHelp=(id,type)=>{E.help(id,type);const note=document.getElementById('wcHelpState');if(note)note.textContent=T('뜻 도움 사용 기록 있음 · 첫 답의 도움 여부를 따로 남겨요.')};
-window.harumalWritingSubmit=id=>{const result=E.submit(id);if(result.blocked)return navigate('group',item(id)?.groupId);if(result.empty){const error=document.getElementById('wcInlineError');if(error)error.textContent=T('답을 먼저 작성하거나 골라 주세요.');return}navigate('feedback',id)};
+window.harumalWritingSubmit=id=>{const result=E.submit(id);if(result.blocked)return navigate('group',item(id)?.groupId);if(result.empty){const error=document.getElementById('wcInlineError');if(error)error.textContent=T('답을 먼저 작성하거나 골라 주세요.');updateActionLayout();return}navigate('feedback',id)};
 window.harumalWritingReady=(id,value)=>{E.readiness(id,value);renderPage()};
 window.harumalWritingSelfCheck=(id,value)=>{E.selfCheck(id,value);renderPage()};
 window.harumalWritingModel=id=>{if(E.revealModel(id))renderPage()};
 window.harumalWritingOpenExam=()=>{if(typeof tqSetLevel==='function')tqSetLevel(2);setView('realSetup')};
-window.addEventListener?.('popstate',event=>{if(event.state?.harumalWritingRoute){if(event.state.harumalWritingGuided)E.resumeGuided?.();else if(event.state.harumalWritingGuided===false)E.leaveGuided?.();if(guided().active)E.setGuidedRoute?.(event.state.harumalWritingRoute);E.route(event.state.harumalWritingRoute);changingHistory=true;baseSetView(VIEW);changingHistory=false}else if(S.view===VIEW||event.state?.harumalReturnView){changingHistory=true;baseSetView(event.state?.harumalReturnView||'learn');changingHistory=false}});
-window.HARUMAL_WRITING=Object.freeze({engine:E,data:DATA,render:renderPage,localeText:T,mergeImport:raw=>E.mergeImport(raw)});
+window.addEventListener?.('popstate',event=>{if(event.state?.harumalWritingRoute){if(event.state.harumalWritingGuided)E.resumeGuided?.();else if(event.state.harumalWritingGuided===false&&guided().active)E.leaveGuided?.();if(guided().active)E.setGuidedRoute?.(event.state.harumalWritingRoute);E.route(event.state.harumalWritingRoute);changingHistory=true;baseSetView(VIEW);changingHistory=false}else if(S.view===VIEW||event.state?.harumalReturnView){changingHistory=true;baseSetView(event.state?.harumalReturnView||'learn');changingHistory=false}});
+window.HARUMAL_WRITING=Object.freeze({engine:E,data:DATA,render:renderPage,localeText:T,updateActionLayout,mergeImport:raw=>E.mergeImport(raw)});
 if(S.view===VIEW)rememberHistory(state().route,true);
 })();

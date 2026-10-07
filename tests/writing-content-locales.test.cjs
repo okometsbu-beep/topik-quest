@@ -46,7 +46,9 @@ test('writing content catalog covers every learner-facing field in all four lang
   assert.equal(data.items.flatMap(i => i.choices || []).length, 6);
   const entries = inventory(data);
   assert.equal(new Set(entries.map(e => e.source)).size, 272);
-  assert.equal(Object.keys(catalog).length, 272);
+  // Keep the old persisted P01 feedback key as well as its new bounded-check replacement.
+  assert.equal(Object.keys(catalog).length, 273);
+  assert.ok(catalog['공부하다를 해요체로 써 보세요.']);
   for (const { source, field } of entries) {
     assert.ok(catalog[source], `Missing source: ${field}: ${source}`);
     for (const lang of languages) {
