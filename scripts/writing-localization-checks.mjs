@@ -60,7 +60,7 @@ export async function verifyWritingLocalization({ evaluate, tap, shot, setViewpo
       const key = async (name,code) => { await send('Input.dispatchKeyEvent',{type:'keyDown',key:name,code:name,windowsVirtualKeyCode:code}); await send('Input.dispatchKeyEvent',{type:'keyUp',key:name,code:name,windowsVirtualKeyCode:code}); };
       await key('Home',36);
       for (let index=0;index<['ko','ja','en','zh'].indexOf(lang);index++) await key('ArrowDown',40);
-      await key('Enter',13); await sleep(100);
+      await key('Enter',13); await key('Escape',27); await sleep(100);
       assert.equal(await evaluate('S.lang'),lang,'in-place language selector changes current writing locale');
       assert.equal(await evaluate(`JSON.parse(localStorage.getItem('topikQuestV8')).lang`),lang,'in-place language selection is persisted');
       assert.deepEqual(await evaluate('HARUMAL_WRITING.engine.getState().route'),savedRoute,'in-place language change keeps current route');

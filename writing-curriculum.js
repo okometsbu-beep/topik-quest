@@ -25,7 +25,7 @@ const art=(key,cls='wcScenario')=>key?`<img class="${cls}" src="assets/art/writi
 const mascot=(pose='lesson-welcome')=>`<img class="wcMascot" src="assets/art/haruman/${pose}-v2.webp" alt="" width="112" height="112" decoding="async">`;
 const heading=(eyebrow,title,copy='',image='')=>`<header class="wcHeading"><p class="wcEyebrow">${T(eyebrow)}</p><div class="wcHeadingRow"><h1 tabindex="-1">${T(title)}</h1>${image}</div>${copy?`<p class="wcLead">${T(copy)}</p>`:''}</header>`;
 const linkCard=(number,title,copy,action,extra='')=>`<button type="button" class="wcRouteCard ${extra}" onclick="${action}"><span class="wcNumber">${T(number)}</span><span><strong>${T(title)}</strong><small>${T(copy)}</small></span><span class="wcArrow" aria-hidden="true">›</span></button>`;
-const crumbs=back=>`<div class="wcTopline">${button('‹',back,'icon',`aria-label="${t('이전 화면')}"`)}<strong>하루말 <small>HARUMAL / WRITING</small></strong><select class="wcLanguage" aria-label="${t('설명 언어')}" onchange="malbitSetLanguage(this.value)">${[['ko','한국어'],['ja','日本語'],['en','English'],['zh','中文']].map(([code,name])=>`<option lang="${code==='zh'?'zh-CN':code}" value="${code}" ${language()===code?'selected':''}>${name}</option>`).join('')}</select>${button('×',"harumalWritingExit()",'icon',`aria-label="${t('작문 코너 닫기')}"`)}</div>`;
+const crumbs=back=>`<div class="wcTopline">${button('‹',back,'icon',`aria-label="${t('이전 화면')}"`)}<strong>하루말 <small>HARUMAL / WRITING</small></strong><select class="wcLanguage" aria-label="${t('설명 언어')}" onchange="harumalWritingLanguage(this.value)">${[['ko','한국어'],['ja','日本語'],['en','English'],['zh','中文']].map(([code,name])=>`<option lang="${code==='zh'?'zh-CN':code}" value="${code}" ${language()===code?'selected':''}>${name}</option>`).join('')}</select>${button('×',"harumalWritingExit()",'icon',`aria-label="${t('작문 코너 닫기')}"`)}</div>`;
 const footer=(label,action,note='')=>`<div class="wcFooter">${note?`<p>${T(note)}</p>`:''}${button(label,action)}</div>`;
 function localeDate(value){try{return new Date(value).toLocaleString({ko:'ko-KR',ja:'ja-JP',en:'en-US',zh:'zh-CN'}[language()],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}catch{return''}}
 function readinessMissing(g){return(g?.prerequisites||[]).filter(key=>key!=='reason_form'&&state().readiness[key]?.value!=='ready')}
@@ -174,6 +174,12 @@ function navigate(page='course',id='',replace=false){
 window.setView=function(view){if(S.view===VIEW&&view!==VIEW&&!changingHistory){try{history.pushState({harumalWritingRoute:null,harumalReturnView:view},'')}catch{}}return baseSetView.apply(this,arguments)};
 window.render=function(){if(S.view!==VIEW){document.body.classList.remove('wcActive');return baseRender.apply(this,arguments)}if(typeof hideSelection==='function')hideSelection();if(typeof renderShell==='function')renderShell();renderPage()};
 function openRoute(route){if(route)navigate(route.page,route.itemId||route.groupId||route.levelId||'')}
+window.harumalWritingLanguage=lang=>{
+ const restoreFocus=document.activeElement?.classList?.contains('wcLanguage');
+ if(typeof window.malbitSetLanguage==='function')window.malbitSetLanguage(lang);
+ else if(typeof window.setLang==='function')window.setLang(lang);
+ if(restoreFocus)document.querySelector?.('.wcLanguage')?.focus();
+};
 window.harumalWritingGo=navigate;
 window.harumalWritingBegin=()=>courseFinished(guided())?navigate('unit'):openRoute(E.startGuided?.()||{page:'item',itemId:'P01'});
 window.harumalWritingResume=()=>openRoute(E.resumeGuided?.()||state().route);
