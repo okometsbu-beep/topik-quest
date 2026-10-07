@@ -7,3 +7,17 @@ html body.harumal .wcScreen{max-width:620px;margin:auto;padding:12px 24px 32px;c
 /* The course owns its compact header; a previous quiz percentage is not course progress. */
 html body.harumal.wcActive .top{display:none}
 html body.harumal.wcActive .wcScreen{padding-top:calc(12px + env(safe-area-inset-top))}
+
+/* Translated instructions must wrap at narrow widths without clipping controls. */
+.wcHeadingRow>h1,.wcHero>div,.wcFacts>div{min-width:0;overflow-wrap:anywhere}
+.wcScreen button,.wcPanel,.wcMapBlock,.wcReadiness,.wcBadge{overflow-wrap:anywhere}
+.wcNumber{flex-shrink:0;max-width:72px;height:auto;min-height:38px;text-align:center;line-height:1.25}
+.wcFormTabs{flex-wrap:wrap}.wcFormTabs .wcButton{min-width:70px}
+@media(max-width:390px){.wcMapColumns{grid-template-columns:1fr}.wcHero h2{font-size:23px}.wcHero .wcMascot{width:72px;height:72px}}
+
+.wcLanguage{max-width:85px;min-width:60px;min-height:44px;border:1px solid var(--ui-border);border-radius:12px;background:var(--ui-surface);color:var(--ui-ink);font-size:12px;padding:6px}
+.wcTopline strong{flex:1;min-width:0}.wcTopline small{display:none}.wcFlowArt{width:104px;height:104px;object-fit:contain;flex-shrink:0}.wcHeading .wcFlowArt{width:86px;height:86px}
+.wcResume{background:var(--ui-accent-soft);padding:20px;border-radius:20px;margin:0 0 24px}.wcResume h2{font-size:19px;line-height:1.5;margin:8px 0}.wcResume .wcFooter{margin:14px 0 0}.wcAvailable{margin:0 4px 18px}
+.wcNextStage{padding:18px 0}.wcNextStage h2{font-size:20px;margin:8px 0}.wcNextStage p{color:var(--ui-muted);font-size:14px;line-height:1.7}
+.wcGuidedProgress{background:var(--ui-accent-soft);border-radius:16px;padding:13px 16px;margin:0 0 20px;display:grid;gap:3px}.wcGuidedProgress span{font-size:12px;color:var(--ui-accent)}.wcGuidedProgress strong{font-size:16px}.wcGuidedProgress small{font-size:11px}
+@media(max-width:390px){.wcHero .wcFlowArt{width:78px;height:78px}.wcTopline{gap:4px}.wcTopline strong{font-size:17px}.wcLanguage{max-width:76px}}

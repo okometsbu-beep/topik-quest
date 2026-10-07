@@ -44,7 +44,7 @@ export async function verifyWritingCurriculum({evaluate,tap,shot,setViewport,sen
   const assertUnseen=async id=>{
     const r=await evaluate(`(()=>{
       const root=document.querySelector('.wcScreen'),i=HARUMAL_WRITING.data.items.find(i=>i.id===${JSON.stringify(id)});
-      return{answer:root.querySelector('#wcAnswer')?.value,model:!!root.querySelector('.wcModel'),lesson:root.textContent.includes('연결 형태 도움'),leaks:i.models.filter(m=>root.textContent.includes(m)),target:root.textContent.includes(${JSON.stringify(id==='I01'?'넓어서':'재미있어서')}),attempts:HARUMAL_WRITING.engine.getState().attempts.filter(a=>a.itemId===i.id).length};
+      return{answer:root.querySelector('#wcAnswer')?.value,model:!!root.querySelector('.wcModel'),lesson:root.textContent.includes(HARUMAL_WRITING.localeText('연결 형태 도움')),leaks:i.models.filter(m=>root.textContent.includes(m)),target:root.textContent.includes(${JSON.stringify(id==='I01'?'넓어서':'재미있어서')}),attempts:HARUMAL_WRITING.engine.getState().attempts.filter(a=>a.itemId===i.id).length};
     })()`);
     assert.equal(r.model,false,id+': no pre-submit model component');
     assert.equal(r.lesson,false,id+': no conjugation lesson on an independent prompt');
@@ -136,7 +136,7 @@ export async function verifyWritingCurriculum({evaluate,tap,shot,setViewport,sen
     await tap('.wcTopline .wcButton--icon',1,100);
     assert.equal(await evaluate('S.view'),'learn','Close leaves the writing corner');
     await tap(`.harumalCourse[onclick="harumalWritingGo('course')"]`,0,100);
-    await click("harumalWritingGo('unit')");await click("harumalWritingGo('group','independent-new')");await click("harumalWritingStart('I01')");
+    await click("harumalWritingGo('map')");await click("harumalWritingGo('unit')");await click("harumalWritingGo('group','independent-new')");await click("harumalWritingStart('I01')");
     assert.equal(await evaluate(`document.querySelector('#wcAnswer')?.value`),draft,'Close/reopen keeps the unfinished draft');
     await fill('공원이 넓어서 여기에서 산책해요.','I01');
     // Preserve the actual button to replay a second already-dispatched click even
@@ -154,9 +154,9 @@ export async function verifyWritingCurriculum({evaluate,tap,shot,setViewport,sen
     assert.equal((await state()).attempts.length,3,'reopening and resubmitting unchanged text cannot duplicate evidence');
     await tap('.wcTopline .wcButton--icon',0,100);await tap('.wcTopline .wcButton--icon',0,100);
     await click("harumalWritingGo('records')");await expectRoute('records');
-    assert.match(await evaluate(`document.querySelector('.wcEvidenceCards').textContent`),/새 상황 첫 답 1개/);
+    assert.equal(await evaluate(`document.querySelector('.wcEvidenceCards').textContent.includes(HARUMAL_WRITING.localeText('새 상황 첫 답 {0}개',1))`),true,'independent count is shown in the selected language');
     await capture('08-records');
-    await tap('.wcTopline .wcButton--icon',0,100);await click("harumalWritingGo('unit')");
+    await tap('.wcTopline .wcButton--icon',0,100);await click("harumalWritingGo('map')");await click("harumalWritingGo('unit')");
     await click("harumalWritingGo('group','delayed-new')");
     assert.equal((await evidence()).delayedReady,false,'same-day delayed gate stays closed');
     assert.equal(await evaluate(`!!document.querySelector('#wcAnswer')||document.querySelector('.wcScreen').textContent.includes('영화가 재미있어요.')`),false,'future prompt must stay held out');
