@@ -6,8 +6,8 @@ export async function verifyWritingCurriculum({evaluate,tap,shot,setViewport,sen
   const KEY='harumalWritingCurriculumV1';
   assert.equal(await evaluate(`['127.0.0.1','localhost','[::1]'].includes(location.hostname)`),true,'writing fixtures require the disposable local CI origin');
   assert.equal(await evaluate(`!!window.HARUMAL_WRITING&&!!window.HARUMAL_WRITING_ENGINE`),true,'writing runtime loaded');
-  const original=await evaluate(`({storage:Object.fromEntries(Object.keys(localStorage).map(k=>[k,localStorage.getItem(k)])),state:JSON.stringify(S),history:history.state,theme:document.documentElement.dataset.theme,width:innerWidth,height:innerHeight})`);
-  let screenshots=0;
+  const original=await evaluate(`({storage:Object.fromEntries(Object.keys(localStorage).map(k=>[k,localStorage.getItem(k)])),state:JSON.stringify(S),history:history.state,theme:document.documentElement.dataset.theme})`);
+  let screenshots=0,journeyFailure;
   const action=code=>`.wcScreen button[onclick=${JSON.stringify(code)}]`;
   const click=code=>tap(action(code),0,100);
   const state=()=>evaluate(`HARUMAL_WRITING.engine.getState()`);
@@ -175,12 +175,31 @@ export async function verifyWritingCurriculum({evaluate,tap,shot,setViewport,sen
     assert.equal((await evidence()).delayed,1);assert.equal((await evidence()).independent,1);await assertHonest('delayed new sentence');
     assert.deepEqual(await readLegacy(),legacyBefore,'writing preserves legacy vocabulary/favorites, SRS, old writing, game, review, travel and durable learner roots');
     assert.equal(screenshots,72,'nine writing states × four widths × two themes');
+  }catch(error){
+    journeyFailure=error;
+    throw error;
   }finally{
     // Restore byte-for-byte storage (including the recovery snapshot) even when
-    // an assertion fails. This helper neither clears nor adopts another suite's data.
-    await evaluate(`(()=>{stopTimer();S=JSON.parse(${JSON.stringify(original.state)});document.documentElement.dataset.theme=${JSON.stringify(original.theme)};history.replaceState(${JSON.stringify(original.history)},'');render();const previous=${JSON.stringify(original.storage)};for(const k of Object.keys(localStorage))if(!Object.prototype.hasOwnProperty.call(previous,k))localStorage.removeItem(k);for(const[k,v]of Object.entries(previous))localStorage.setItem(k,v);delete window.__writingSubmitQA})()`);
-    await setViewport(original.width,original.height);
-    assert.deepEqual(await evaluate(`Object.fromEntries(Object.keys(localStorage).map(k=>[k,localStorage.getItem(k)]))`),original.storage,'writing test restores all original CI storage snapshots');
+    // an assertion fails. Read the restored bytes in the same browser task: a
+    // render/resize here would queue fresh navigation analytics after restoration.
+    // This helper is last in the harness, so no further UI work is needed.
+    try{
+      const restored=await evaluate(`(()=>{
+        stopTimer();S=JSON.parse(${JSON.stringify(original.state)});
+        document.documentElement.dataset.theme=${JSON.stringify(original.theme)};
+        history.replaceState(${JSON.stringify(original.history)},'');
+        const previous=${JSON.stringify(original.storage)};
+        for(const k of Object.keys(localStorage))if(!Object.prototype.hasOwnProperty.call(previous,k))localStorage.removeItem(k);
+        for(const[k,v]of Object.entries(previous))localStorage.setItem(k,v);
+        delete window.__writingSubmitQA;
+        return Object.fromEntries(Object.keys(localStorage).map(k=>[k,localStorage.getItem(k)]));
+      })()`);
+      assert.deepEqual(restored,original.storage,'writing test restores all original CI storage snapshots');
+    }catch(error){
+      if(!journeyFailure)throw error;
+      // Keep the original failing flow and stack as the primary CI diagnostic.
+      console.error('Writing cleanup also failed:',error.message);
+    }
   }
   console.log(`Writing curriculum: real input/reload/back/close/reopen, correction + independent + delayed evidence, legacy records preserved; screenshots=${screenshots}`);
 }
