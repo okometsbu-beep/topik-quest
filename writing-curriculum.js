@@ -159,7 +159,7 @@ function renderPage(){
  const content=r.page==='level'?levelPage(r.levelId):r.page==='stage-done'?stageDone(r.groupId):r.page==='map'?map():r.page==='node'?nodePage(r.nodeId):r.page==='unit'?unit():r.page==='group'?groupPage(r.groupId):r.page==='item'?itemPage(r.itemId):r.page==='feedback'?feedback(r.itemId):r.page==='records'?records():r.page==='exam'?exam(r.examId):course();
  sc.innerHTML=crumbs(returnAction(r))+(E.getStorageError()?`<aside class="wcStorageWarning" role="alert">${t(E.getStorageError()==='newer-storage'?'이 기록은 더 새로운 버전에서 저장됐어요. 원본은 그대로 두고 이번 화면의 기록은 임시로만 보관해요.':'저장 공간을 사용할 수 없거나 기존 기록을 읽지 못했어요. 기존 원본은 지우지 않아요. 이번 문장을 따로 복사해 주세요.')}</aside>`:'')+content;
  document.body.classList.add('wcActive');document.body.classList.remove('tq-home-active');
- window.requestAnimationFrame?.(()=>sc.querySelector('h1')?.focus({preventScroll:true}));
+ window.requestAnimationFrame?.(()=>{if(!document.activeElement?.classList?.contains('wcLanguage'))sc.querySelector('h1')?.focus({preventScroll:true})});
 }
 let changingHistory=false;
 const baseSetView=window.setView,baseRender=window.render;

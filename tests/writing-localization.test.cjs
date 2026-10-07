@@ -343,12 +343,14 @@ test('writing navigation: migrated later-stage completion previews the actual ne
 
 
 test('writing language selector restores keyboard focus after a language-triggered rerender',()=>{
- const env=boot('ja');let focused=0;
+ const env=boot('ja');let focused=0,headingFocused=0;const frames=[];
+ env.c.requestAnimationFrame=fn=>frames.push(fn);env.screen.querySelector=selector=>selector==='h1'?{focus(){headingFocused++}}:null;
  env.c.document.activeElement={classList:{contains:name=>name==='wcLanguage'}};
  env.c.document.querySelector=selector=>selector==='.wcLanguage'?{focus(){focused++}}:null;
  env.c.malbitSetLanguage=lang=>{env.c.S.lang=lang;env.c.HARUMAL_WRITING.render()};
  env.go('item','P01');env.c.harumalWritingDraft('P01','계속 쓰는 문장');const before=env.values.get(KEY);
  env.c.harumalWritingLanguage('en');assert.equal(env.c.S.lang,'en');assert.equal(focused,1);
  env.c.harumalWritingLanguage('zh');assert.equal(env.c.S.lang,'zh');assert.equal(focused,2);
+ for(const frame of frames)frame();assert.equal(headingFocused,0,'deferred heading focus cannot steal language-selector focus');
  assert.equal(env.values.get(KEY),before);assert.equal(env.E.getState().route.itemId,'P01');
 });
