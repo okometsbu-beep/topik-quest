@@ -76,6 +76,12 @@ assert.equal(listening.length, 50);
 assert.equal(readingWriting.length, 54);
 assert.equal(listening[0].bankId, 'M07-II-L-01');
 assert.equal(readingWriting[50].bankId, 'M07-II-W-51');
+for (let set = 1; set <= 12; set++) {
+  const setListening = [], setReadingWriting = [];
+  assert.equal(bank.activateTopik2Set(set, setListening, setReadingWriting), true);
+  assert.deepEqual([setReadingWriting[52].min, setReadingWriting[52].max], [200, 300], `PBT Q53 target in set ${set}`);
+  assert.deepEqual([setReadingWriting[53].min, setReadingWriting[53].max], [600, 700], `PBT Q54 target in set ${set}`);
+}
 
 assert.ok(bank.items.every((item) => item.explanationKo && item.explanationJa));
 const mcqItems = bank.items.filter((item) => item.section !== 'writing');

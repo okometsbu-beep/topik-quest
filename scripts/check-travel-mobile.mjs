@@ -4,6 +4,7 @@ import {verifyHomeVocabulary} from './home-vocabulary-checks.mjs';
 import {verifyHaruman} from './haruman-checks.mjs';
 import {verifyAdventure} from './travel-adventure-checks.mjs';
 import {verifyIntro} from './haruman-intro-checks.mjs';
+import {verifyWritingCurriculum} from './writing-curriculum-checks.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import {spawn} from 'node:child_process';
@@ -2370,6 +2371,8 @@ try{
   await tap(`.harumalCourse[onclick="harumalCourse('topik2')"]`);
   assert.equal(await evaluate('S.view'),'infinity','TOPIK II course starts real learning');
   assert.deepEqual(errors,[],'Harumal navigation must not add console errors');
+  await verifyWritingCurriculum({evaluate,tap,shot,setViewport,send,ready,sleep});
+  assert.deepEqual(errors,[],'Writing curriculum must not add console errors');
   const screenshotCount=fs.readdirSync(out).filter(file=>file.endsWith('.png')).length;
   console.log(`mobile QA: 320/375/390/430px Home + Beginner Grammar + split Writing + Game + Shorts + Random Practice + Review visual contracts, two-field Writing input/save/reload/score/review/migration, 9-chapter/64-lesson grammar catalog, transformation coaching, per-unit handwriting exit/reload/re-entry and preserved progress, Review queue/filter/retry/translation/type coaching/re-entry, TOPIK I/II random question/answer/type coaching, level re-entry, Shorts question/answer/instructor feedback + hit-tested Travel route + one-tap completed-route re-entry + NPC word order + Hangul sign build with decoys, day/evening events, travel-won exchange, reload/back-resume, durable records, screenshots=${screenshotCount}, errors=0`);
   }

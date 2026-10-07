@@ -28,6 +28,7 @@ function learn(sc){
  ${card('가',L('한글부터 차근차근','ハングルから、一歩ずつ','Begin with Hangul','从韩文字母开始'),L('소리 · 글자 · 쓰기 · 기초 문법','音・文字・手書き・基礎文法','Sounds · letters · writing · grammar','发音 · 字母 · 手写 · 基础语法'),"harumalCourse('beginner')",'harumalBeginner')}
  ${card('I','TOPIK I',L('입문 다음, 듣기와 읽기','入門の次は、聴解と読解','Next, listening and reading','入门之后，听力与阅读'),"harumalCourse('topik1')")}
  ${card('II','TOPIK II',L('듣기 · 읽기 · 쓰기 유형별 연습','聴解・読解・作文を練習','Listening · reading · writing','听力 · 阅读 · 写作'),"harumalCourse('topik2')")}
+ ${card('✎',L('한 문장부터 쓰기','一文から、書く練習','Build your writing','从一句话练写作'),L('문장 능력 지도 · 원인 문장 깊이 연습','文の力マップ・理由の文を深く練習','Sentence skills · focused reason practice','句子能力地图 · 原因句练习'),"harumalWritingGo('course')",'harumalBeginner')}
  <h2>${L('오늘은 이렇게 연습해요','今日の練習を選ぶ','Choose your practice','选择今天的练习')}</h2><div class="harumalPracticeGrid">
  ${card('♪',L('소리 내어 말하기','声に出して話す','Speak out loud','开口说韩语'),L('듣고 따라 말하기','聞いて、まねして話す','Listen and repeat','听一听，跟着说'),"setView('speaking')")}
  ${card('↗',L('짧은 퀴즈','ミニクイズ','Quick quiz','短题练习'),L('어휘와 문법 한 문제','語彙・文法を1問','Vocabulary & grammar','一道词汇或语法题'),"tqStartMode('shorts')")}

@@ -55,3 +55,10 @@ jobs:
             artifacts/travel-mobile/intro-*.png
             artifacts/intro-baseline/*.png
           if-no-files-found: error
+      - name: Upload focused writing evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: writing-curriculum-${{ github.sha }}
+          path: artifacts/travel-mobile/writing-*.png
+          if-no-files-found: warn

@@ -1,3 +1,11 @@
+## 2026-10-07 v157 작문 코너 발행 후보
+
+- v156 main `7e8fc7df22f11d80fe739a910fb5fdda70372ec2` 위에 문장 능력 지도와 첫 원인 소단원 37문항을 구현했다. 발행 승인을 받아 기존 GitHub Actions/Pages 경로로 검증·발행한다.
+- 연습·수정·새 상황 첫 답·다른 날 확인·목표 형태·의미 자기점검을 분리한다. 자유 문장의 의미 숙달을 자동 확정하지 않는다. 미래 능력 노드는 문항 준비 중으로 표시한다.
+- 새 저장 루트 `harumalWritingCurriculumV1`은 기존 단어장·즐겨찾기·진도와 독립적이며 회복/백업 경로에 추가했다. 다중 탭·병합·초고·반복·지연·XSS 회귀 포함 전체 228/228 및 HTTP smoke 통과.
+- 브라우저는 localhost에서 `ERR_BLOCKED_BY_CLIENT`; 우회하지 않았으며 실제 렌더링/모바일/오프라인 E2E는 미검증이다. 원격 main을 기준으로 발행하며 PC 전용 변경은 포함하지 않는다. 원격 CI 모바일 검수와 배포 후 공개 앱 검증은 별도 증거로 남긴다.
+- 세부: `docs/qa/writing-curriculum-v157-candidate.md`. 실제 발행 SHA와 CI/Pages 검증 결과는 완료 후 기록한다.
+
 ## 2026-10-02 v156 공통 UI 공개 완료 / 다음 범위
 
 - PR #227 → main 86697e6bf57f9ecfaf4ecc8b2e37713ae70c2ddc, Pages 성공 및 live v156 smoke4+51파일/Cloud Chrome 주요 동작 확인. 후보와 PR CI 모두 성공(모바일341장/오류0·baseline·네 언어 focus). 실제 실기기 확인은 아니다.
