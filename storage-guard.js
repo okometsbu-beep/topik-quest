@@ -5,6 +5,7 @@
   const SNAPSHOT_KEY='malbitRecoverySnapshotV1';
   const DURABLE_KEYS=Object.freeze([
     'topikQuestV8',
+    'harumalWritingCurriculumV1',
     'topikQuestExamLevel',
     'topikQuestShortsV1',
     'topikQuestTopik1GameV1',

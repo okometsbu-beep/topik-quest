@@ -594,8 +594,8 @@
     };
     if (item.section === 'writing') return {
       ...q, id: item.no, section: 'writing', stem: [item.passage, item.prompt].filter(Boolean).join('\n\n'),
-      model: item.model || '', min: item.no <= 52 ? 3 : item.no === 53 ? 180 : 500,
-      max: item.no <= 52 ? 100 : item.no === 53 ? 300 : 800, bankId: item.id
+      model: item.model || '', min: item.no <= 52 ? 3 : item.no === 53 ? 200 : 600,
+      max: item.no <= 52 ? 100 : item.no === 53 ? 300 : 700, bankId: item.id
     };
     return {
       ...q, id: item.no, stem: [item.passage, item.prompt].filter(Boolean).join('\n\n'), choices: item.options,
