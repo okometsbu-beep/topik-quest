@@ -196,7 +196,7 @@ function updateActionLayout(){
  const bottom=keyboard?keyboardInset+8:Math.max(0,navRect?height-navRect.top:80)+8;
  const barHeight=bar.getBoundingClientRect?.().height||78;
  sc.style?.setProperty('--wc-action-bottom',bottom+'px');
- sc.style?.setProperty('--wc-action-space',(barHeight+(keyboard?16:bottom)+24)+'px');
+ sc.style?.setProperty('--wc-action-space',(barHeight+bottom+24)+'px');
  if(keyboard&&document.activeElement?.getBoundingClientRect){const rect=document.activeElement.getBoundingClientRect(),edge=(vv.offsetTop+vv.height)-barHeight-16;if(rect.bottom>edge)window.scrollBy?.({top:rect.bottom-edge,behavior:'instant'})}
 }
 window.addEventListener?.('resize',updateActionLayout);

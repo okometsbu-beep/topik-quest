@@ -193,6 +193,7 @@ test('visual viewport resize and focus hooks keep layout responsive without writ
   env.flush();
   assert.equal(env.body.classList.contains('wcKeyboardOpen'), true);
   assert.equal(env.screen.style.getPropertyValue('--wc-action-bottom'), '432px', 'action clears the keyboard inset');
+  assert.ok(parseFloat(env.screen.style.getPropertyValue('--wc-action-space')) >= 432 + 78, 'short lessons need scroll space for both the overlaid keyboard and action bar');
   assert.ok(inputTop >= 0 && inputTop + 180 <= 420 - 78 - 8, 'typing stays above the action');
   env.c.document.activeElement = null;
   for (const listener of env.documentEvents.focusout || []) listener();
