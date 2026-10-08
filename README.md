@@ -3,6 +3,8 @@
 An independent Korean-learning game and unofficial TOPIK I & II practice app.
 
 ## Current build
+- Optional growth practice from Today’s Challenge and TOPIK, grammar, writing and travel: 11 original paired mini-lessons with varied interactions, first-attempt/help/retry evidence, and a separate new-context check
+- Browser-local activity levels, difficulty-based XP and coins, and one-time growth-stage bonuses, with stable attempt identities, cross-tab award recovery and additive backup import; no proficiency certification or shop
 - Original 2,088-item bank across 12 complete mock sets, plus 56 original type-focused practice items for a 2,144-item runtime pool: TOPIK I listening 360 / reading 480, TOPIK II listening 600 / writing 48 / reading 600 remain fixed-set counts
 - Difficulty-aware delivery in Shorts, Random Practice, full mock exams, review, and Expedition battles; regular monsters draw from lower tiers while elites and bosses draw progressively harder items
 - Persistent Expedition no-repeat history and per-encounter answer shuffling, including a guaranteed change to the correct option's displayed position on a repeat encounter

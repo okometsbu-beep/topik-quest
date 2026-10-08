@@ -322,7 +322,7 @@
   }
   function newState(pack,previous){
     const state={
-      version:1,packId:pack.id,sceneId:pack.scenes[0].id,route:null,
+      version:1,rewardSessionId:window.HARUMAL_REWARDS?.newSession('travel'),packId:pack.id,sceneId:pack.scenes[0].id,route:null,
       answers:{},orders:{},practice:{...(previous?.practice||{})},dialogues:{},evidence:[],visited:[pack.scenes[0].id],
       wallet:Number(pack.startWallet)||0,clockMinutes:new Date().getHours()*60+new Date().getMinutes(),inventory:Array.from(new Set(Array.isArray(previous?.inventory)?previous.inventory:[])),spent:[],
       completed:false,startedAt:now(),updatedAt:now(),completedAt:null,
@@ -337,6 +337,11 @@
     state.myeongdong=normalizeHubState(previous?.myeongdong);
     state.myeongdong.screen='ending';
     return state;
+  }
+  function rewardTravelAnswer(state,slot,question,correct,assisted=false){
+    if(!window.HARUMAL_REWARDS)return;
+    if(!state.rewardSessionId){state.rewardSessionId=`travel:legacy:${state.packId}:${state.startedAt||0}`;writeState(state)}
+    return window.HARUMAL_REWARDS.answer({source:'travel',sessionId:state.rewardSessionId,slot,question,correct,assisted});
   }
   function current(){
     const pack=activePack();
@@ -1035,11 +1040,13 @@
   const item=event.menu.find(entry=>entry.id===event.targetItem)||event.menu[0],quantity=Math.max(0,Number(HUB_BUDGET[event.id])||0),cost=item.price*quantity;
   if(quantity!==Number(event.targetQuantity)||cost>Number(event.budget)){
     const tracking=!hubQuestDone(state,event.id);
+    state.myeongdong.quests[event.id]={...(state.myeongdong.quests[event.id]||{}),rewardAssisted:true};
     state.myeongdong.attempts+=1;state.myeongdong.lastAttemptCorrect=false;state.clockMinutes+=1;state.updatedAt=now();
     writeState(state,tracking?['priceQuestStarted']:[],tracking?{priceQuestWrongSubmissions:1}:null);render();revealFeedback();return;
   }
   if(cost>state.wallet)return notify(l({ko:'여행 원이 부족합니다. 다른 퀘스트에서 조금 더 모아 주세요.',ja:'旅ウォンが足りません。ほかのクエストでもう少し集めよう。',en:'Not enough travel won. Earn a little more in another quest.',zh:'旅行韩元不足，请先在其他任务中赚取。'}));
   const already=hubQuestDone(state,event.id),previous=state.myeongdong.quests[event.id]&&typeof state.myeongdong.quests[event.id]==='object'?state.myeongdong.quests[event.id]:{};
+  if(!already)rewardTravelAnswer(state,`hub:${event.id}`,{...event,difficulty:event.difficulty||'easy'},true,!!previous.rewardAssisted);
   if(!already){state.wallet-=cost;state.spent=Array.isArray(state.spent)?state.spent:[];state.spent.push({kind:'street-food',id:event.id,item:item.id,quantity,cost,currency:'travel-won',at:now()});}
   state.myeongdong.quests[event.id]={...previous,completed:true,earned:0,quantity,cost,completedAt:previous.completedAt||now()};
   state.myeongdong.lastAttemptCorrect=null;state.myeongdong.screen='result';state.clockMinutes+=3;state.updatedAt=now();
@@ -1080,16 +1087,18 @@
       const previous=state.myeongdong.quests[event.id]&&typeof state.myeongdong.quests[event.id]==='object'?state.myeongdong.quests[event.id]:{},attempted=Array.isArray(previous.attemptedPhrases)?previous.attemptedPhrases:[],key=compactSentence(evaluated.phrase),unique=!attempted.includes(key),limit=Math.max(0,Number(event.maxPartialRewards)||3),claimed=Math.max(0,Number(previous.partialRewards)||0),reward=evaluated.grade==='partial'&&unique&&claimed<limit?Math.max(0,Number(event.partialReward)||0):0;
       if(unique)attempted.push(key);
       if(reward)state.wallet+=reward;
-      state.myeongdong.quests[event.id]={...previous,attemptedPhrases:attempted.slice(-20),partialRewards:claimed+(reward?1:0),partialEarned:Math.max(0,Number(previous.partialEarned)||0)+reward};
+      state.myeongdong.quests[event.id]={...previous,rewardAssisted:true,attemptedPhrases:attempted.slice(-20),partialRewards:claimed+(reward?1:0),partialEarned:Math.max(0,Number(previous.partialEarned)||0)+reward};
       state.myeongdong.attempts+=1;state.clockMinutes+=1;state.updatedAt=now();state.myeongdong.lastAttemptCorrect=null;
       HUB_COMPOSE_RESULT[event.id]={...evaluated,earned:reward};writeState(state);render();revealFeedback();return;
     }
     if(!correct){
+      state.myeongdong.quests[event.id]={...(state.myeongdong.quests[event.id]||{}),rewardAssisted:true};
       state.myeongdong.attempts+=1;state.myeongdong.lastAttemptCorrect=false;state.clockMinutes+=2;state.updatedAt=now();HUB_ORDER[event.id]=[];
       writeState(state);render();revealFeedback();return;
     }
     const already=hubQuestDone(state,event.id),earned=already?0:Number(event.reward)||0;
     const previous=state.myeongdong.quests[event.id]&&typeof state.myeongdong.quests[event.id]==='object'?state.myeongdong.quests[event.id]:{};
+    if(!already)rewardTravelAnswer(state,`hub:${event.id}`,{...event,difficulty:event.difficulty||(sign?'easy':'medium')},true,!!previous.rewardAssisted);
     state.myeongdong.quests[event.id]={...previous,completed:true,earned,answer:Array.from(event.answer),completedAt:now()};
     state.myeongdong.lastAttemptCorrect=null;state.myeongdong.screen='result';state.wallet+=earned;state.clockMinutes+=3;state.updatedAt=now();
     if(event.itemReward&&!state.inventory.includes(event.itemReward))state.inventory.push(event.itemReward);
@@ -1153,6 +1162,7 @@
       const dialogue=normalizeDialogueState(state.dialogues[scene.id],scene);dialogue.attempts+=1;if(dialogue.firstWrong===null)dialogue.firstWrong=selected;state.dialogues[scene.id]=dialogue;delete SELECTED[scene.id];state.updatedAt=now();writeState(state);render();revealFeedback();return;
     }
     const dialogue=lesson?normalizeDialogueState(state.dialogues?.[scene.id],scene):null,correct=!dialogue?.attempts&&selected===q.answerIndex;
+    rewardTravelAnswer(state,scene.id,{...q,level:payload.source.level},selected===q.answerIndex,!!dialogue?.attempts)
     const earned=correct?Number(scene.reward??pack.questionReward)||0:0;
     const delayMinutes=correct?2:4,itemReward=correct&&scene.itemReward?scene.itemReward:null;
     state.answers[scene.id]={selected:correct?selected:dialogue?.firstWrong??selected,resolvedSelected:selected,correct,earned,delayMinutes,itemReward,bankId:q.bankId,choiceOrder:Array.from(q.choiceOrder),answeredAt:now()};

@@ -30,7 +30,7 @@ export async function verifyWritingCurriculum({evaluate,tap,shot,setViewport,sen
     delete core.view;delete core.lang;delete core.transCache;
     // Navigation analytics append mode_enter events by design. They are restored
     // with the complete storage snapshot below, not treated as learner progress.
-    const roots=Object.fromEntries(MALBIT_STORAGE_GUARD.durableKeys.filter(k=>!['topikQuestV8','${KEY}','malbitJourneyEventsV1'].includes(k)).map(k=>[k,localStorage.getItem(k)]));
+    const roots=Object.fromEntries(MALBIT_STORAGE_GUARD.durableKeys.filter(k=>!['topikQuestV8','${KEY}','malbitJourneyEventsV1','harumalRewardsV1'].includes(k)).map(k=>[k,localStorage.getItem(k)]));
     if(roots.malbitProductPrefsV1){const prefs=JSON.parse(roots.malbitProductPrefsV1);delete prefs.theme;roots.malbitProductPrefsV1=JSON.stringify(prefs)}
     return{core,roots};
   })()`);

@@ -27,7 +27,7 @@ export async function verifyWritingUsability({ evaluate, tap, shot, setViewport,
   const readLegacy = () => evaluate(`(()=>{
     const core=JSON.parse(localStorage.getItem('topikQuestV8'));
     delete core.view;delete core.lang;delete core.transCache;
-    const roots=Object.fromEntries(MALBIT_STORAGE_GUARD.durableKeys.filter(k=>!['topikQuestV8','${KEY}','malbitJourneyEventsV1'].includes(k)).map(k=>[k,localStorage.getItem(k)]));
+    const roots=Object.fromEntries(MALBIT_STORAGE_GUARD.durableKeys.filter(k=>!['topikQuestV8','${KEY}','malbitJourneyEventsV1','harumalRewardsV1'].includes(k)).map(k=>[k,localStorage.getItem(k)]));
     if(roots.malbitProductPrefsV1){const p=JSON.parse(roots.malbitProductPrefsV1);delete p.theme;roots.malbitProductPrefsV1=JSON.stringify(p)}
     return{core,roots};
   })()`);

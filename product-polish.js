@@ -218,11 +218,46 @@ window.malbitVocabGrade=(index,grade)=>{migrateVocab();const v=S.vocab?.[Number(
 window.malbitAddSampleVocab=()=>{S.vocab=Array.isArray(S.vocab)?S.vocab:[];if(!S.vocab.some(v=>v.text==='꾸준하다'))S.vocab.unshift({text:'꾸준하다',source:L('단어장 안내','単語帳ガイド','Vocabulary guide','单词本引导'),ja:'こつこつ続ける',meanings:{ja:'こつこつ続ける',en:'to be consistent',zh:'坚持不懈'},show:false,dueAt:Date.now(),interval:1,repetitions:0});save();render()};
 if(typeof window.deleteVocab==='function')window.deleteVocab=index=>{if(!confirm(L('이 표현을 단어장에서 삭제할까요?','この表現を単語帳から削除しますか？','Remove this expression from Vocabulary?','从单词本中删除此表达吗？')))return;S.vocab.splice(Number(index),1);save();render()};
 
-const PORTABLE_KEYS=['topikQuestV8','harumalWritingCurriculumV1','topikQuestExamLevel',T1_SESSION,SHORTS_KEY,GAME_KEY,REVIEW_KEY,EVENTS_KEY,PREFS_KEY,ONBOARD_KEY,'malbitBeginnerV1','malbitStoryV1','malbitTtsPrefsV1','malbitDiagnosticV1','malbitJourneyEventsV1','malbitGrowthPrefsV1','malbitInstallIdV1','malbitShortProposalHandled'];
-function progressPayload(){const data={schema:1,app:'MALBIT',exportedAt:new Date().toISOString(),storage:{}};for(const key of PORTABLE_KEYS){const value=localStorage.getItem(key);if(value!=null)data.storage[key]=value}return data}
-window.malbitExportProgress=()=>{const blob=new Blob([JSON.stringify(progressPayload(),null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`malbit-progress-${dayKey()}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
-window.malbitImportProgress=input=>{const file=input?.files?.[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const data=JSON.parse(String(reader.result||''));if(data?.app!=='MALBIT'||!data.storage||typeof data.storage!=='object')throw new Error('format');if(!confirm(L('파일에 들어 있는 기록을 복원할까요? 파일에 없는 최신 기록은 유지됩니다.','ファイル内の記録を復元しますか？ファイルにない新しい記録は残ります。','Restore records from this file? Newer records absent from the file stay.', '恢复文件中的记录吗？文件中没有的较新记录会保留。')))return;window.MALBIT_STORAGE_GUARD?.capture?.('before-import');for(const key of PORTABLE_KEYS)if(Object.prototype.hasOwnProperty.call(data.storage,key))localStorage.setItem(key,key==='harumalWritingCurriculumV1'&&window.HARUMAL_WRITING?window.HARUMAL_WRITING.mergeImport(String(data.storage[key])):key==='malbitStoryV1'&&window.HARUMAL_ADVENTURE?window.HARUMAL_ADVENTURE.mergeImport(String(data.storage[key])):String(data.storage[key]));window.MALBIT_STORAGE_GUARD?.capture?.('after-import');location.reload()}catch(e){toast(L('올바른 MALBIT 진행 파일이 아니에요.','正しいMALBIT進行ファイルではありません。','That is not a valid MALBIT progress file.','这不是有效的MALBIT进度文件。'))}};reader.readAsText(file)};
-window.malbitResetProgress=()=>{if(!confirm(L('학습·게임·오답·단어장 기록을 모두 삭제할까요? 이 작업은 되돌릴 수 없습니다.','学習・ゲーム・誤答・単語帳の記録をすべて削除しますか？元に戻せません。','Delete all learning, game, review, and vocabulary progress? This cannot be undone.','删除全部学习、游戏、错题和单词本记录吗？此操作无法撤销。')))return;window.MALBIT_STORAGE_GUARD?.clear?.();for(const key of PORTABLE_KEYS.concat(['malbitVocabLongPressUsed']))localStorage.removeItem(key);location.reload()};
+const PORTABLE_KEYS=['topikQuestV8','harumalWritingCurriculumV1','harumalRewardsV1','harumalGrowthLearningV1','topikQuestExamLevel',T1_SESSION,SHORTS_KEY,GAME_KEY,REVIEW_KEY,EVENTS_KEY,PREFS_KEY,ONBOARD_KEY,'malbitBeginnerV1','malbitStoryV1','malbitTtsPrefsV1','malbitDiagnosticV1','malbitJourneyEventsV1','malbitGrowthPrefsV1','malbitInstallIdV1','malbitShortProposalHandled'];
+function progressPayload(){
+  const data={schema:1,app:'MALBIT',exportedAt:new Date().toISOString(),storage:{},unreadableKeys:[]};
+  for(const key of PORTABLE_KEYS){
+    try{const value=key==='harumalRewardsV1'&&window.HARUMAL_REWARDS?window.HARUMAL_REWARDS.exportState():localStorage.getItem(key);if(value!=null)data.storage[key]=value}catch(error){data.unreadableKeys.push(key)}
+  }
+  return data;
+}
+window.malbitExportProgress=()=>{const data=progressPayload(),blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`malbit-progress-${dayKey()}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);if(data.unreadableKeys.length)toast(L('저장소 일부를 읽지 못해, 읽을 수 있는 기록과 현재 활동 보상만 내보냈어요.','保存領域の一部を読み取れず、読み取れる記録と現在の活動報酬のみ書き出しました。','Some stored records could not be read. The export contains accessible records and current activity rewards.','部分存储记录无法读取，已导出可读取的记录和当前活动奖励。'))};
+window.malbitImportProgress=input=>{
+  const file=input?.files?.[0];if(!file)return;
+  const reader=new FileReader();reader.onload=()=>{
+    try{
+      const data=JSON.parse(String(reader.result||''));
+      if(data?.app!=='MALBIT'||!data.storage||typeof data.storage!=='object'||Array.isArray(data.storage))throw new Error('format');
+      if(Object.prototype.hasOwnProperty.call(data.storage,'harumalRewardsV1')){
+        if(!window.HARUMAL_REWARDS)throw new Error('rewards-unavailable');
+        window.HARUMAL_REWARDS.validateImport(String(data.storage.harumalRewardsV1));
+      }
+      if(Object.prototype.hasOwnProperty.call(data.storage,'harumalGrowthLearningV1')){
+        if(!window.HARUMAL_GROWTH?.validateImport)throw new Error('growth-unavailable');
+        window.HARUMAL_GROWTH.validateImport(String(data.storage.harumalGrowthLearningV1));
+      }
+      if(!confirm(L('파일에 들어 있는 기록을 복원할까요? 파일에 없는 기록은 유지되고 활동 보상은 현재 기록과 합쳐집니다.','ファイル内の記録を復元しますか？ファイルにない記録は残り、活動報酬は現在の記録と統合されます。','Restore records from this file? Records absent from it stay; activity rewards merge with current records.','恢复文件中的记录吗？文件中没有的记录会保留，活动奖励将与当前记录合并。')))return;
+      window.MALBIT_STORAGE_GUARD?.capture?.('before-import');
+      for(const key of PORTABLE_KEYS){
+        if(!Object.prototype.hasOwnProperty.call(data.storage,key))continue;
+        const raw=String(data.storage[key]);
+        // The ledger persists its own immutable records and must never be bypassed by a root overwrite.
+        if(key==='harumalRewardsV1'){window.HARUMAL_REWARDS.mergeImport(raw);continue}
+        const value=key==='harumalGrowthLearningV1'&&window.HARUMAL_GROWTH?window.HARUMAL_GROWTH.mergeImport(raw):key==='harumalWritingCurriculumV1'&&window.HARUMAL_WRITING?window.HARUMAL_WRITING.mergeImport(raw):key==='malbitStoryV1'&&window.HARUMAL_ADVENTURE?window.HARUMAL_ADVENTURE.mergeImport(raw):raw;
+        localStorage.setItem(key,value);
+      }
+      window.MALBIT_STORAGE_GUARD?.capture?.('after-import');
+      if(window.HARUMAL_REWARDS?.getState?.().pendingCount){toast(L('보상 일부를 저장하지 못했어요. 새로고침 전에 진행 파일을 내보내세요.','報酬の一部を保存できませんでした。再読み込み前に進行ファイルを書き出してください。','Some rewards could not be saved. Export progress before reloading.','部分奖励未能保存。刷新前请导出进度。'));return}
+      location.reload();
+    }catch(e){toast(L('진행 파일을 완전히 가져오지 못했어요. 파일 형식과 브라우저 저장 공간을 확인하세요.','進行ファイルを完全に読み込めませんでした。ファイル形式とブラウザの保存容量を確認してください。','Progress could not be fully imported. Check the file format and browser storage space.','未能完整导入进度。请检查文件格式和浏览器存储空间。'))}
+  };reader.readAsText(file);
+};
+window.malbitResetProgress=()=>{if(!confirm(L('학습·게임·오답·단어장·활동 보상 기록을 모두 삭제할까요? 이 작업은 되돌릴 수 없습니다.','学習・ゲーム・誤答・単語帳・活動報酬の記録をすべて削除しますか？元に戻せません。','Delete all learning, game, review, vocabulary, and activity reward progress? This cannot be undone.','删除全部学习、游戏、错题、单词本和活动奖励记录吗？此操作无法撤销。')))return;if(window.HARUMAL_REWARDS?.reset?.()===false)return;window.MALBIT_STORAGE_GUARD?.clear?.();for(const key of PORTABLE_KEYS.concat(['malbitVocabLongPressUsed']))localStorage.removeItem(key);location.reload()};
 window.resetAll=window.malbitResetProgress;
 
 window.malbitSetPref=(name,value)=>{if(name==='dailyGoal')value=Math.max(3,Math.min(20,Number(value)||5));if(name==='randomMix'&&!['balanced','lr','writing'].includes(value))value='balanced';prefs[name]=value;writeJSON(PREFS_KEY,prefs);render()};
