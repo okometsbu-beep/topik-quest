@@ -17,7 +17,7 @@ export async function verifyGrowthLearning({evaluate,tap,shot,setViewport,send,r
  };
  const beginRecipe=async id=>{
   await click('hub');await click('filter','[data-value="all"]');
-  const existing=await evaluate(`(()=>{const card=[...document.querySelectorAll('#harumalGrowthRoot .growthLessonCard')].find(el=>el.querySelector('[data-recipe="${id}"]')||[...el.querySelectorAll('[data-session]')].some(el=>HARUMAL_GROWTH.getState().sessions[el.dataset.session]?.recipeId==='${id}'));return card?.querySelector('button')?.dataset||null})()`);
+  const existing=await evaluate(`(()=>{const card=[...document.querySelectorAll('#harumalGrowthRoot .growthLessonCard')].find(el=>el.querySelector('[data-recipe="${id}"]')||[...el.querySelectorAll('[data-session]')].some(el=>HARUMAL_GROWTH.getState().sessions[el.dataset.session]?.recipeId==='${id}'));const button=card?.querySelector('button');return button?{growthAction:button.getAttribute('data-growth-action'),recipe:button.getAttribute('data-recipe'),session:button.getAttribute('data-session')}:null})()`);
   assert.ok(existing,'recipe card '+id);
   if(existing.growthAction==='start')await click('start',`[data-recipe="${id}"]`);
   else{await click('resume',`[data-session="${existing.session}"]`);assert.equal(await phase(),'summary',id+' prior run finished');await click('repeat',`[data-recipe="${id}"]`)}
