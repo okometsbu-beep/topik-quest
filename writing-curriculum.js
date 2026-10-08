@@ -233,7 +233,7 @@ window.harumalWritingStart=id=>navigate('item',id);
 window.harumalWritingExit=()=>setView('learn');
 window.harumalWritingDraft=(id,text)=>{E.setDraft(id,text);const note=document.getElementById('wcSaveState');if(note)note.textContent=T(E.getStorageError()?'기기에 저장되지 않았어요. 글을 따로 복사해 주세요.':'이 기기에 초고 자동 저장')};
 window.harumalWritingHelp=(id,type)=>{E.help(id,type);const note=document.getElementById('wcHelpState');if(note)note.textContent=T('뜻 도움 사용 기록 있음 · 첫 답의 도움 여부를 따로 남겨요.')};
-window.harumalWritingSubmit=id=>{const result=E.submit(id);if(result.blocked)return navigate('group',item(id)?.groupId);if(result.empty){const error=document.getElementById('wcInlineError');if(error)error.textContent=T('답을 먼저 작성하거나 골라 주세요.');updateActionLayout();return}navigate('feedback',id)};
+window.harumalWritingSubmit=id=>{const result=E.submit(id);if(result.blocked)return navigate('group',item(id)?.groupId);if(result.empty){const error=document.getElementById('wcInlineError');if(error)error.textContent=T('답을 먼저 작성하거나 골라 주세요.');updateActionLayout();return}const a=result.attempt,q=item(id);if(!result.duplicate&&result.saved&&a&&q?.kind==='relation')window.HARUMAL_REWARDS?.answer({source:'writing',sessionId:a.id,slot:id,question:{...q,level:1,difficulty:'easy'},correct:a.evaluation.status==='interpretation_observed'&&a.evaluation.meaning==='bounded_choice_only',assisted:!!a.helpUsed});navigate('feedback',id)};
 window.harumalWritingReady=(id,value)=>{E.readiness(id,value);renderPage()};
 window.harumalWritingSelfCheck=(id,value)=>{E.selfCheck(id,value);renderPage()};
 window.harumalWritingModel=id=>{if(E.revealModel(id))renderPage()};

@@ -188,8 +188,12 @@ async function detailedReviewExplanation(item,q){
   return `<section class="tqReviewDeep"><div class="tqInlineTitle"><span>✓</span><b>${text('상세 해설','詳しい解説','Detailed explanation','详细解析')}</b></div><div class="tqInlineAnswer"><small>${text('정답','正解','Answer','正确答案')}</small><strong>${n}. ${esc(answer)}</strong></div><h4>${text('판단 근거','判断の根拠','Key evidence','判断依据')}</h4><p>${esc(reason)}</p>${evidence?`<blockquote>${esc(evidence)}</blockquote>`:''}${grammar?`<h4>${text('문법 포인트','文法ポイント','Grammar point','语法要点')}</h4><p>${esc(grammar)}</p>`:''}${vocab?`<h4>${text('핵심 어휘','重要語彙','Key vocabulary','核心词汇')}</h4><p>${esc(vocab)}</p>`:''}<h4>${text('선택지별 오답 소거','選択肢ごとの消去','Option-by-option elimination','逐项排除')}</h4><p>${esc(wrongIntro)}</p><ol class="tqReviewChoiceAnalysis">${(q.choices||[]).map((c,i)=>`<li class="${i===q.answerIndex?'right':''}"><b>${i+1}. ${esc(cleanChoice(c))}</b><span>${esc(choiceReason(c,i))}</span></li>`).join('')}</ol></section>`;
 }
 function activeReviewItems(){return Object.values(REVIEW.items).filter(x=>x?.active&&reviewQuestion(x.level,x.type,x.id,x.choiceOrder)).sort((a,b)=>(Number(b.lastWrongAt)||0)-(Number(a.lastWrongAt)||0))}
+// The same saved wrong-answer episode has one identity, including across stale tabs.
+function reviewRewardSession(item){return `review:${item.key||reviewKey(item.level,item.type,item.id)}:${Number(item.lastWrongAt)||0}:${Number(item.wrongCount)||0}`}
+function syncReviewRewardHelp(item){try{const saved=JSON.parse(localStorage.getItem(REVIEW_KEY)||'null')?.items?.[item.key]?.rewardAttempt;if(saved?.sessionId===item.rewardAttempt?.sessionId&&saved.assisted)item.rewardAttempt.assisted=true}catch(e){}}
 function openReviewRetry(key){
   const item=REVIEW.items[key],q=item&&reviewQuestion(item.level,item.type,item.id,item.choiceOrder);if(!item||!q)return;
+  if(!item.rewardAttempt){item.rewardAttempt={sessionId:reviewRewardSession(item),assisted:false};syncReviewRewardHelp(item);saveReview()}
   reviewAttempt={key,selected:null,locked:false,showTranslation:false,translation:null};renderReviewRetry();
 }
 function renderReviewRetry(){
@@ -205,11 +209,14 @@ async function loadReviewTranslation(){
   const a=reviewAttempt,item=a&&REVIEW.items[a.key],q=item&&reviewQuestion(item.level,item.type,item.id,item.choiceOrder);if(!a||!q)return;
   a.translation=await translatedReviewParts(item,q);if(reviewAttempt===a&&a.showTranslation)renderReviewRetry();
 }
-function toggleReviewTranslation(){if(!reviewAttempt)return;reviewAttempt.showTranslation=!reviewAttempt.showTranslation;renderReviewRetry()}
+function toggleReviewTranslation(){if(!reviewAttempt)return;reviewAttempt.showTranslation=!reviewAttempt.showTranslation;if(reviewAttempt.showTranslation){const item=REVIEW.items[reviewAttempt.key];if(item){item.rewardAttempt=item.rewardAttempt||{sessionId:reviewRewardSession(item)};item.rewardAttempt.assisted=true;saveReview()}}renderReviewRetry()}
 function reviewSelect(i){
   const a=reviewAttempt,item=a&&REVIEW.items[a.key],q=item&&reviewQuestion(item.level,item.type,item.id,item.choiceOrder);if(!a||!q||a.locked)return;
   i=Number(i);if(a.selected!==i){a.selected=i;return renderReviewRetry()}
-  a.locked=true;resolveReview(a.key,i===Number(q.answerIndex),i);renderReviewRetry();
+  a.locked=true;const ok=i===Number(q.answerIndex),attempt=item.rewardAttempt||(item.rewardAttempt={sessionId:reviewRewardSession(item),assisted:false});
+  if(!attempt.sessionId&&window.HARUMAL_REWARDS)attempt.sessionId=reviewRewardSession(item);
+  syncReviewRewardHelp(item);saveReview();window.HARUMAL_REWARDS?.answer({source:'review',sessionId:attempt.sessionId,slot:a.key,question:{...q,level:item.level},correct:ok,assisted:!!attempt.assisted||!!a.showTranslation});
+  if(!ok)attempt.assisted=true;resolveReview(a.key,ok,i);renderReviewRetry();
 }
 function clearMasteredReview(){for(const [key,item] of Object.entries(REVIEW.items))if(!item.active)delete REVIEW.items[key];saveReview();render()}
 function setReviewFilter(value){reviewFilter=['all','1','2'].includes(String(value))?String(value):'all';render()}

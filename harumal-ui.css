@@ -209,3 +209,14 @@ html[lang="ja"] body.harumal :is(.tqTodayLesson h2,.tqV9Greeting h1,.harumalPage
 html body.harumal .examHeader{background:var(--ui-surface);color:var(--ui-ink);border:1px solid var(--ui-border);border-radius:20px;box-shadow:none;padding:20px}
 html body.harumal .examHeader :is(h2,.examTimer){color:var(--ui-ink)}
 html body.harumal .examHeader p,html body.harumal .bgHero :is(p,small){color:var(--ui-muted);font-size:12px;line-height:1.6}
+
+/* Opt-in growth practice. Long headings always own their full text column. */
+body.harumal .harumalGrowthEntry{display:flex;flex-direction:column;gap:14px;padding:20px;margin:14px 0;border:1px solid var(--ui-border);border-radius:var(--ui-radius-card,22px);background:var(--ui-surface);color:var(--ui-ink);box-sizing:border-box;min-width:0}
+body.harumal .harumalGrowthEntry small{font-size:10px;font-weight:800;letter-spacing:.09em;color:var(--ui-muted)}
+body.harumal .harumalGrowthEntry h2{font-size:20px;line-height:1.4;margin:7px 0;word-break:keep-all;overflow-wrap:anywhere}
+body.harumal .harumalGrowthEntry p,body.harumal .harumalGrowthCourses>p{font-size:13px;line-height:1.7;color:var(--ui-muted);margin:0;overflow-wrap:anywhere}
+body.harumal .harumalGrowthEntry button{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:48px;padding:12px 16px;background:var(--ui-accent);color:var(--harumal-on-accent);border:0;border-radius:14px;font-family:inherit;font-size:14px;font-weight:800;line-height:1.5;text-align:left;white-space:normal}
+body.harumal .harumalGrowthEntry button:focus-visible{outline:3px solid var(--ui-accent);outline-offset:3px}
+body.harumal .harumalGrowthEntry--compact{padding:16px}
+body.harumal .harumalGrowthCourses{margin-top:24px}
+@media(max-width:350px){body.harumal .harumalGrowthEntry{padding:16px}body.harumal .harumalGrowthEntry h2{font-size:18px}}

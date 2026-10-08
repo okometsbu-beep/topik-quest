@@ -287,6 +287,12 @@ function tts(txt){stopAudio();const lines=String(txt||'').split(/\n+/).map(raw=>
 async function play(id){const q=find(id);if(!q)return;if(Q?.mode==='real'&&Q.played?.[id]){toast(T('실전 듣기는 한 번만 재생할 수 있습니다.','実戦の聞き取り音声は1回だけ再生できます。','Listening audio can be played only once in Exam Mode.','实战模式的听力音频只能播放一次。'));return}if(Q?.mode==='real'){Q.played[id]=1;saveQ();render()}stopAudio();const url=q.bankId?null:await fileAudio(q.sourceId||id,Q?.examLevel||1);if(!url)return tts(q.script);try{const a=new Audio(url+'?v='+Date.now());audio=a;try{const AC=window.AudioContext||window.webkitAudioContext;if(AC){ctx=ctx||new AC();if(ctx.state==='suspended')await ctx.resume();const s=ctx.createMediaElementSource(a),g=ctx.createGain(),c=ctx.createDynamicsCompressor();g.gain.value=1.3;c.threshold.value=-8;c.ratio.value=5;s.connect(g).connect(c).connect(ctx.destination)}}catch(e){}a.onended=()=>audio=null;await a.play()}catch(e){tts(q.script)}}
 window.t1Play=play;
 function saveQ(){try{localStorage.setItem(SESSION,JSON.stringify(Q))}catch(e){}}
+function rewardQuestion(q,correct,slot,assisted=false){
+  const rewards=window.HARUMAL_REWARDS;if(!rewards||!Q)return;
+  const source=Q.mode==='game'?'expedition':Q.mode==='real'?'topik1-exam':'topik1-random';
+  if(!Q.rewardSessionId){Q.rewardSessionId=`${source}:legacy:${Number(Q.examLevel)||1}:${Q.started||Q.gameStage||0}:${Q.ids?.[0]||''}:${Q.ids?.at(-1)||''}:${Number(Q.total)||0}`;saveQ()}
+  return rewards.answer({source,sessionId:Q.rewardSessionId,slot,question:{...q,level:Number(Q.examLevel)||1},correct,assisted});
+}
 function clearQ(){Q=null;try{localStorage.removeItem(SESSION)}catch(e){}}
 function restore(){
   if(Q&&typeof Q==='object'&&!Array.isArray(Q))return Q;
@@ -508,7 +514,7 @@ function game1ScheduleRoll(){if(!Q?.rolling&&!Q?.rollResult)return;stopRollTimer
 window.t1SelectGameStage=n=>{const p=game1Profile();n=Number(n)||1;if(n>p.unlock||n<1)return;p.selected=n;saveGame1();render()};
 window.t1ChooseTrailPath=id=>{restore();if(Q?.mode!=='game'||Q.phase!=='map')return;Q.pawnFrom=Q.currentNode;Q.pawnPath=[Q.currentNode];game1ContinueMovement(String(id))};
 window.t1EquipItem=id=>{restore();const item=game1Item(id);if(!item||!Q?.inventory?.includes(id))return;Q.equipped=Q.equipped||{};const before=3+(Number(game1Effects().maxFocus)||0);Q.equipped[item.slot]=id;Q.maxFocus=3+(Number(game1Effects().maxFocus)||0);if(Q.maxFocus>before)Q.focus=Math.min(Q.maxFocus,(Number(Q.focus)||0)+(Q.maxFocus-before));else Q.focus=Math.min(Q.maxFocus,Number(Q.focus)||0);game1SyncRun();saveQ();render()};
-window.t1StartGameStage=n=>{const lv=level(),p=game1Profile(lv);n=Math.max(1,Math.min(p.unlock,Number(n)||p.selected));const monster=game1Monster(n),savedRun=p.run?.alive&&Number(p.run.examLevel)===lv?p.run:{alive:true,examLevel:lv,gold:0,essence:0,inventory:[],equipped:{},usedQuestionIds:[]};clearQ();p.selected=n;G1.runs=(Number(G1.runs)||0)+1;Q={mode:'game',examLevel:lv,gameVersion:GAME1_VERSION,phase:'map',gameStage:n,kind:'all',ids:[],i:0,answers:{},played:{},choiceOrders:{},usedQuestionIds:[...(savedRun.usedQuestionIds||[])],score:0,total:0,timeouts:0,streak:0,locked:false,pos:0,goal:GAME1_TRAIL_GOAL,map:game1BuildTrail(n),currentNode:'m0',discovered:{m0:1},pendingChoices:[],moveRemaining:0,roll:null,rolling:false,rollResult:false,rollPending:null,rollDue:null,rollMoveDue:null,node:null,encounterMonster:null,enemyHp:null,enemyMax:null,focus:3,maxFocus:3,bossHp:monster.hp+(lv===2?1:0),bossMax:monster.hp+(lv===2?1:0),hints:0,gold:Number(savedRun.gold)||0,essence:Number(savedRun.essence)||0,inventory:[...(savedRun.inventory||[])],equipped:{...(savedRun.equipped||{})},shieldUsed:false,reviveUsed:false,trapGuardUsed:false,rolls:0,hiddenChoices:[],last:null,questionDeadline:null,questionTimeLimit:null,questionStartedAt:null,pausedTime:null,bossSkillActive:false,bossSkillTriggered:false,bossSkillSeed:0,shopStock:null};Q.maxFocus=3+(Number(game1Effects().maxFocus)||0);Q.focus=Q.maxFocus;Q.hints=Number(game1Effects().hints)||0;game1SyncRun();saveQ();open('t1quiz')};
+window.t1StartGameStage=n=>{const lv=level(),p=game1Profile(lv);n=Math.max(1,Math.min(p.unlock,Number(n)||p.selected));const monster=game1Monster(n),savedRun=p.run?.alive&&Number(p.run.examLevel)===lv?p.run:{alive:true,examLevel:lv,gold:0,essence:0,inventory:[],equipped:{},usedQuestionIds:[]};clearQ();p.selected=n;G1.runs=(Number(G1.runs)||0)+1;Q={mode:'game',rewardSessionId:window.HARUMAL_REWARDS?.newSession('expedition'),examLevel:lv,gameVersion:GAME1_VERSION,phase:'map',gameStage:n,kind:'all',ids:[],i:0,answers:{},played:{},choiceOrders:{},usedQuestionIds:[...(savedRun.usedQuestionIds||[])],score:0,total:0,timeouts:0,streak:0,locked:false,pos:0,goal:GAME1_TRAIL_GOAL,map:game1BuildTrail(n),currentNode:'m0',discovered:{m0:1},pendingChoices:[],moveRemaining:0,roll:null,rolling:false,rollResult:false,rollPending:null,rollDue:null,rollMoveDue:null,node:null,encounterMonster:null,enemyHp:null,enemyMax:null,focus:3,maxFocus:3,bossHp:monster.hp+(lv===2?1:0),bossMax:monster.hp+(lv===2?1:0),hints:0,gold:Number(savedRun.gold)||0,essence:Number(savedRun.essence)||0,inventory:[...(savedRun.inventory||[])],equipped:{...(savedRun.equipped||{})},shieldUsed:false,reviveUsed:false,trapGuardUsed:false,rolls:0,hiddenChoices:[],last:null,questionDeadline:null,questionTimeLimit:null,questionStartedAt:null,pausedTime:null,bossSkillActive:false,bossSkillTriggered:false,bossSkillSeed:0,shopStock:null};Q.maxFocus=3+(Number(game1Effects().maxFocus)||0);Q.focus=Q.maxFocus;Q.hints=Number(game1Effects().hints)||0;game1SyncRun();saveQ();open('t1quiz')};
 window.t1ResumeGame=()=>{restore();if(Q?.mode==='game'&&Q.phase==='battle'&&!Q.locked){const remain=Math.max(1,Number(Q.pausedTime)||game1QuestionLimit()),now=Date.now();Q.questionTimeLimit=Math.max(remain,Number(Q.questionTimeLimit)||remain);Q.questionDeadline=now+remain*1000;Q.questionStartedAt=now-Math.max(0,Q.questionTimeLimit-remain)*1000;Q.pausedTime=null;saveQ()}open('t1quiz')};
 window.t1OpenGameMap=n=>{const p=game1Profile();p.selected=Math.max(1,Math.min(p.unlock,Number(n)||p.selected));saveGame1();open('t1game')};
 window.t1PauseGame=()=>{restore();if(Q?.mode==='game'&&Q.phase==='battle'&&!Q.locked&&Q.questionDeadline){Q.pausedTime=Math.max(1,Math.ceil((Q.questionDeadline-Date.now())/1000));Q.questionDeadline=null;saveQ()}window.t1OpenGameMap(Number(Q?.gameStage)||game1Profile().selected)};
@@ -616,11 +622,12 @@ function randomShortsIndex(current,examLevel=SH.activeLevel||level()){
   const next=candidates[Math.floor(Math.random()*candidates.length)];p.recent=[...(p.recent||[]),next].slice(-Math.min(40,Math.max(1,deck.length-1)));return next
 }
 function prepareShortsCard(p,examLevel=SH.activeLevel){const deck=shortsDeck(examLevel);if(SHORTS_CYCLE)SHORTS_CYCLE.migrate(p,deck,examLevel);const item=deck[p.index];p.orderId=item?.bankId||item?.id||null;p.choiceOrder=(item?.bankId||item?.shortChoices)&&BANK?BANK.shuffledOrder(4):null}
-window.startShorts=()=>{SH.activeLevel=level();const p=shortState();p.index=randomShortsIndex(p.index,SH.activeLevel);p.selected=null;p.locked=false;prepareShortsCard(p);saveShorts();open('shorts')};
+window.startShorts=()=>{SH.activeLevel=level();const p=shortState();p.rewardSessionId=window.HARUMAL_REWARDS?.newSession('shorts');p.index=randomShortsIndex(p.index,SH.activeLevel);p.selected=null;p.locked=false;prepareShortsCard(p);saveShorts();open('shorts')};
 window.pickShorts=i=>{const p=shortState();if(p.locked)return;const next=Number(i);if(p.selected===next)return checkShorts();p.selected=next;saveShorts();render()};
 window.checkShorts=()=>{
   const p=shortState();if(p.locked||p.selected==null)return;
-  const {correct}=shortsOptions(p.index),ok=p.selected===correct,today=dayKey();
+  const {correct,target}=shortsOptions(p.index),ok=p.selected===correct,today=dayKey();
+  if(window.HARUMAL_REWARDS){if(!p.rewardSessionId){p.rewardSessionId=`shorts:legacy:${SH.activeLevel||level()}`;saveShorts()}window.HARUMAL_REWARDS.answer({source:'shorts',sessionId:p.rewardSessionId,slot:Number(p.total)||0,question:{...target,level:SH.activeLevel||level()},correct:ok})}
   p.locked=true;p.total=(Number(p.total)||0)+1;p.score=(Number(p.score)||0)+(ok?1:0);p.streak=ok?(Number(p.streak)||0)+1:0;
   SH.daily=SH.daily||{};SH.daily[today]=SH.daily[today]||{total:0,score:0};SH.daily[today].total++;if(ok)SH.daily[today].score++;
   saveShorts();render();
@@ -696,14 +703,14 @@ home=function(sc){
     <section class="tqV9Week"><div class="tqV9WeekTop"><div><h2>${T('이번 주 어휘 연습','今週の語彙練習','Vocabulary practice this week','本周词汇练习')} <span>${stats.weekCount}/7</span></h2><p>${T('숏츠 학습일 기록 · 전체 학습 성과와는 달라요','ミニクイズの学習日数 · 全体の学習成果ではありません','Days with Shorts practice · not overall learning progress','短题练习天数 · 不代表整体学习成果')}</p></div><button class="tqV9Stats" onclick="setView('stats')">${T('통계 ›','統計 ›','Stats ›','统计 ›')}</button></div><div class="tqV9Days">${stats.week.map((x,i)=>`<div class="tqV9Day ${x.on?'on':''}"><i>${x.on?'✓':'·'}</i><small>${labels[i]}</small></div>`).join('')}</div></section>`;
 };
 function renderSetup(sc){navActive('home');sc.innerHTML=`<div class="sectionTitle"><h2>TOPIK I · ${T('실전모드','実戦モード','Exam Mode','实战模式')}</h2><span>70 QUESTIONS</span></div><div class="infoCard"><h3>${T('TOPIK I 모의연습 세트','TOPIK I 模擬練習セット','TOPIK I Mock Practice Set','TOPIK I 模拟练习套题')}</h3><p>${T('독자 제작 문제로 듣기 30문항과 읽기 40문항을 연습합니다.','オリジナル問題で聞き取り30問・読解40問を練習します。','Practice 30 listening and 40 reading questions with original content.','使用原创题目练习30道听力题和40道阅读题。')}</p></div><div class="t1setup"><button onclick="t1Begin('full')"><small>100 MIN</small><b>🎓 ${T('전체 실전','フル模擬試験','Full Mock Exam','完整模拟考试')}</b><p>${T('듣기 30 → 읽기 40, 총 70문항','聞き取り30 → 読解40、全70問','Listening 30 → Reading 40, 70 questions total','听力30 → 阅读40，共70题')}</p></button><button onclick="t1Begin('listening')"><small>40 MIN</small><b>🎧 ${T('듣기만','聞き取りのみ','Listening Only','仅听力')}</b><p>${T('30문항 · 실전에서는 각 문항 1회 재생','30問 · 実戦では各問題1回のみ再生','30 questions · one playback per question in Exam Mode','30题 · 实战模式每题仅播放一次')}</p></button><button onclick="t1Begin('reading')"><small>60 MIN</small><b>📖 ${T('읽기만','読解のみ','Reading Only','仅阅读')}</b><p>${T('40문항','40問','40 questions','40题')}</p></button></div><button class="primary alt" style="margin-top:12px" onclick="setView('home')">${T('홈으로','ホームへ','Back Home','返回首页')}</button>`}
-window.t1Begin=k=>{clearQ();const m=k==='listening'?40:k==='reading'?60:100,mockSet=BANK?.nextMockSet(1)||1;Q={mode:'real',examLevel:1,mockSet,kind:k,ids:[],i:0,answers:{},played:{},choiceOrders:{},started:Date.now(),duration:m*60};Q.ids=pool(k).map(x=>x.id);saveQ();open('t1quiz')};
+window.t1Begin=k=>{clearQ();const m=k==='listening'?40:k==='reading'?60:100,mockSet=BANK?.nextMockSet(1)||1;Q={mode:'real',rewardSessionId:window.HARUMAL_REWARDS?.newSession('topik1-exam'),examLevel:1,mockSet,kind:k,ids:[],i:0,answers:{},played:{},choiceOrders:{},started:Date.now(),duration:m*60};Q.ids=pool(k).map(x=>x.id);saveQ();open('t1quiz')};
 function practiceDifficulty(){const answered=Number(Q?.total)||0,acc=answered?Number(Q.score||0)/answered:0;if(answered<4)return['easy'];if(acc>=.82)return['medium','hard'];if(acc<.5)return['easy'];return['easy','medium']}
 function nextPracticeQuestion(){
   if(!BANK){const deck=window.MALBIT_LISTENING_ENABLED?.()===false?A.filter(item=>item.section!=='listening'):A,item=deck[Math.floor(Math.random()*deck.length)];return item?.id}
   const sections=window.MALBIT_LISTENING_ENABLED?.()===false?['reading']:['listening','reading'],seen=Array.isArray(Q?.seenIds)?Q.seenIds:[],item=BANK.draw({level:1,sections,difficulties:practiceDifficulty(),mcqOnly:true,noVisual:true,exclude:seen,recentKey:'random:1',recentLimit:360});
   return item?.id||BANK.draw({level:1,sections,mcqOnly:true,noVisual:true,exclude:seen})?.id
 }
-function startPractice(kind='random',examLevel=1){clearQ();Q={mode:'random',examLevel:1,kind:'all',ids:[],seenIds:[],i:0,answers:{},played:{},choiceOrders:{},score:0,total:0,streak:0,locked:false};const id=nextPracticeQuestion();if(id){Q.ids=[id];Q.seenIds.push(id)}saveQ();open('t1quiz')}
+function startPractice(kind='random',examLevel=1){clearQ();Q={mode:'random',rewardSessionId:window.HARUMAL_REWARDS?.newSession('topik1-random'),examLevel:1,kind:'all',ids:[],seenIds:[],i:0,answers:{},played:{},choiceOrders:{},score:0,total:0,streak:0,locked:false};const id=nextPracticeQuestion();if(id){Q.ids=[id];Q.seenIds.push(id)}saveQ();open('t1quiz')}
 window.t1ExitRandom=()=>{stopAudio();stopTimer();clearQ();setView('home')};
 function cur(){
   restore();if(!Q)return null;const id=Q.ids?.[Q.i];if(id==null)return null;
@@ -726,6 +733,7 @@ function body(q,locked){const sel=Q.answers[q.id],aud=q.section==='listening'?`<
 function game1GradeAnswer(timedOut=false){
   const q=cur(),sel=q&&Q.answers[q.id];if(!q||Q.locked||(!timedOut&&sel==null))return;if(!timedOut&&Q.questionDeadline&&Date.now()>=Q.questionDeadline)return game1GradeAnswer(true);const ok=!timedOut&&sel===q.answerIndex,node=Q.node||'battle',effects=game1Effects();let damage=0,goldGain=0,essenceGain=0,blocked=false,recovered=false,revived=false,killed=false;
   stopTimer();Q.questionDeadline=null;if(timedOut){Q.answers[q.id]=-1;Q.timeouts=(Number(Q.timeouts)||0)+1}
+  rewardQuestion(q,ok,Number(Q.total)||0,!!Q.hiddenChoices?.length);
   Q.locked=true;Q.total=(Number(Q.total)||0)+1;
   if(ok){
     Q.score=(Number(Q.score)||0)+1;Q.streak=(Number(Q.streak)||0)+1;
@@ -759,7 +767,7 @@ window.t1Next=()=>{
   restore();if(!Q)return;stopAudio();
   if(Q.mode==='real'){Q.i++;if(Q.i>=Q.ids.length)return finish();saveQ();return render()}
   if(Q.mode==='game')return game1AdvanceAnswer();
-  if(!Q.locked){const q=cur(),sel=Q.answers[q.id];if(sel==null)return;const ok=sel===q.answerIndex;Q.locked=true;Q.total++;if(ok){Q.score++;Q.streak++}else{Q.streak=0;try{window.MALBIT_REVIEW?.record(1,q.section==='listening'?'listen':'read',q.bankId||q.id,sel,'random',{choiceOrder:q.choiceOrder})}catch(e){}}saveQ();return render()}
+  if(!Q.locked){const q=cur(),sel=Q.answers[q.id];if(sel==null)return;const ok=sel===q.answerIndex;rewardQuestion(q,ok,Number(Q.total)||0);Q.locked=true;Q.total++;if(ok){Q.score++;Q.streak++}else{Q.streak=0;try{window.MALBIT_REVIEW?.record(1,q.section==='listening'?'listen':'read',q.bankId||q.id,sel,'random',{choiceOrder:q.choiceOrder})}catch(e){}}saveQ();return render()}
   const id=nextPracticeQuestion();if(!id)return finish();Q.examLevel=1;Q.ids=[id];Q.seenIds=Array.isArray(Q.seenIds)?Q.seenIds:[];Q.seenIds.push(id);Q.i=0;Q.answers={};Q.played={};Q.locked=false;saveQ();render()
 };
 window.t1Prev=()=>{restore();if(Q?.mode==='real'&&Q.i>0){stopAudio();Q.i--;saveQ();render()}};
@@ -775,6 +783,7 @@ function finish(){
     if(dead)p.run=null;else game1SyncRun();
     saveGame1();Q.result={score,total,clear,dead,stage,examLevel:Number(Q.examLevel)||1,gold,essence,items,focus:Number(Q.focus)||0,maxFocus:Number(Q.maxFocus)||3,rolls:Number(Q.rolls)||0,timeouts:Number(Q.timeouts)||0,bossHp:Number(Q.bossHp)||0,monsterType:Q.node==='boss'?'boss':'mob',monsterIndex:Number(Q.encounterMonster)||0};
   }else if(Q.mode==='real'){
+    for(const id of Q.ids){const q=find(id);if(q)rewardQuestion(q,Q.answers[id]===q.answerIndex,id)}
     Q.result=result();for(const id of Q.result.wrong){const q=find(id);try{window.MALBIT_REVIEW?.record(1,q.section==='listening'?'listen':'read',q.bankId||q.id,Q.answers[id]??-1,'exam',{choiceOrder:q.choiceOrder})}catch(e){}}
   }else Q.result={score:Q.score,total:Q.total};
   saveQ();open('t1result');

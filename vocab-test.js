@@ -14,7 +14,7 @@ function pool(vocab,lang){
 }
 function deck(items){const copy=items.map(x=>({...x}));for(let i=copy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]]}return copy.slice(0,10)}
 function attempt(){const a=S.vocabExam;return a?.version===1&&Array.isArray(a.items)&&a.items.length&&Array.isArray(a.answers)?a:null}
-function start(items){if(!items.length)return;S.vocabExam={version:1,items:deck(items),answers:[],draft:'',startedAt:Date.now()};save();setView('vocabTest')}
+function start(items){if(!items.length)return;S.vocabExam={version:1,rewardSessionId:window.HARUMAL_REWARDS?.newSession('vocabulary'),items:deck(items),answers:[],draft:'',startedAt:Date.now()};save();setView('vocabTest')}
 window.harumalVocabTestStart=()=>start(pool(S.vocab,S.lang));
 window.harumalVocabTestResume=()=>{if(attempt())setView('vocabTest')};
 window.harumalVocabTestDraft=value=>{const a=attempt();if(!a||a.finishedAt)return;a.draft=String(value).slice(0,240);save()};
@@ -23,7 +23,7 @@ window.harumalVocabTestSubmit=event=>{
  const a=attempt();if(!a||a.finishedAt)return false;
  const item=a.items[a.answers.length],answer=normalize(a.draft);if(!item||!answer)return false;
  a.answers.push({text:answer,ok:answer===normalize(item.term)});a.draft='';
- if(a.answers.length===a.items.length)a.finishedAt=Date.now();save();render();window.scrollTo?.({top:0,behavior:'auto'});return false;
+ if(a.answers.length===a.items.length){a.finishedAt=Date.now();if(window.HARUMAL_REWARDS){if(!a.rewardSessionId){a.rewardSessionId=`vocabulary:legacy:${a.startedAt||0}`;save()}a.items.forEach((question,slot)=>window.HARUMAL_REWARDS.answer({source:'vocabulary',sessionId:a.rewardSessionId,slot,question:{...question,level:1},correct:a.answers[slot]?.ok===true}))}}save();render();window.scrollTo?.({top:0,behavior:'auto'});return false;
 };
 window.harumalVocabTestRetry=()=>{const a=attempt();if(a?.finishedAt)start(a.items.filter((_,i)=>!a.answers[i]?.ok))};
 function toolbar(sc){

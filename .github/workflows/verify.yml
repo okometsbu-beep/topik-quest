@@ -55,6 +55,13 @@ jobs:
             artifacts/travel-mobile/intro-*.png
             artifacts/intro-baseline/*.png
           if-no-files-found: error
+      - name: Upload growth learning evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: growth-learning-${{ github.sha }}
+          path: artifacts/travel-mobile/growth-*.png
+          if-no-files-found: warn
       - name: Upload focused writing evidence
         if: always()
         uses: actions/upload-artifact@v4

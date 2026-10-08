@@ -6,6 +6,8 @@
   const DURABLE_KEYS=Object.freeze([
     'topikQuestV8',
     'harumalWritingCurriculumV1',
+    'harumalRewardsV1',
+    'harumalGrowthLearningV1',
     'topikQuestExamLevel',
     'topikQuestShortsV1',
     'topikQuestTopik1GameV1',
@@ -21,7 +23,7 @@
     'malbitGrowthPrefsV1',
     'malbitInstallIdV1'
   ]);
-  const PREFIXES=Object.freeze(['malbitBankRecent:','malbitBankAnswerSlot:','malbitNextMockSet:']);
+  const PREFIXES=Object.freeze(['malbitBankRecent:','malbitBankAnswerSlot:','malbitNextMockSet:','harumalRewardsEvent:']);
 
   function readSnapshot(){
     try{
@@ -48,6 +50,19 @@
         +(value?.infinity?1:0);
     }catch(error){return -1}
   }
+  // Reward roots are replaceable caches; recovering an older snapshot must be additive.
+  function rewardRoot(raw){
+    try{const value=JSON.parse(raw);return value?.schema===1&&Array.isArray(value.events)&&value.events.every(event=>event&&typeof event.id==='string'&&Number.isSafeInteger(event.xp)&&Number.isSafeInteger(event.coins))?value:null}catch(error){return null}
+  }
+  function mergeRewardRoots(current,saved){
+    const left=rewardRoot(current),right=rewardRoot(saved);
+    if(!left)return current==null&&right?saved:current;
+    if(!right)return current;
+    const events=new Map(right.events.map(event=>[event.id,event]));
+    left.events.forEach(event=>events.set(event.id,event));
+    const union=[...events.values()],xp=union.reduce((sum,event)=>sum+event.xp,0),coins=union.reduce((sum,event)=>sum+event.coins,0);
+    return JSON.stringify({...right,...left,events:union,xp,coins});
+  }
   function trackedKeys(){
     const keys=new Set(DURABLE_KEYS);
     try{
@@ -65,7 +80,12 @@
         const value=localStorage.getItem(key);
         if(value==null)continue;
         const safe=key==='topikQuestV8'?safeCore(value):value;
-        if(safe!=null)storage[key]=safe;
+        if(safe!=null){
+          if(key==='harumalRewardsV1'){
+            // Preserve a healthy recovery copy if the replaceable current cache is corrupt.
+            storage[key]=rewardRoot(safe)?mergeRewardRoots(safe,storage[key]):(storage[key]||safe);
+          }else storage[key]=safe;
+        }
       }catch(error){}
     }
     try{
@@ -81,6 +101,11 @@
       if(!DURABLE_KEYS.includes(key)&&!PREFIXES.some(prefix=>key.startsWith(prefix)))continue;
       try{
         const current=localStorage.getItem(key);
+        if(key==='harumalRewardsV1'&&current!=null){
+          const merged=mergeRewardRoots(current,String(value));
+          if(merged!==current){localStorage.setItem(key,merged);restored.push(key)}
+          continue;
+        }
         const missing=current==null;
         const broken=key==='topikQuestV8'&&safeCore(current)==null;
         const suspiciousCore=key==='topikQuestV8'&&coreWeight(current)===0&&coreWeight(value)>0;

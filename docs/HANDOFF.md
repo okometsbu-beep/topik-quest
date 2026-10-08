@@ -1,3 +1,11 @@
+## 2026-10-08 v160 growth learning and activity reward candidate
+
+- Current release candidate adds an opt-in 11-recipe/22-task growth library and activity XP/coins. It is selected authored content, not full-bank conversion. Existing navigation, question bank, Shorts format and learner roots remain.
+- New source owners: `learning-rewards.js`; `data/growth-learning.js`, `growth-learning-engine.js`, `growth-learning.js`, `growth-learning.css`; `growth-learning-entrypoints.js`. Existing grading owners call the reward API only at valid submission/completion events.
+- Activity levels use cumulative `50*(L-1)*L` thresholds; difficulty awards are 10/2, 15/3, 25/5 and 40/8 XP/coins. Growth completion adds 20/4 (learn) or 30/6 (transfer). No shop/payment and no language proficiency certification.
+- Browser-local immutable event keys protect reward union across tabs; new progress roots participate in recovery/backup. Assistance, repeated known content, fresh transfer evidence and free-writing limitations remain explicit. No historical rewards are backfilled.
+- Release evidence, scope and limitations: `docs/qa/growth-rewards-v160.md`. Local headless Chromium is sandbox-denied; use the existing pre-merge GitHub Actions Chrome harness and inspect its growth/mobile artifacts before deployment. User desktop is not required.
+
 ## 2026-10-07 v157 작문 코너 발행 후보
 
 - v156 main `7e8fc7df22f11d80fe739a910fb5fdda70372ec2` 위에 문장 능력 지도와 첫 원인 소단원 37문항을 구현했다. 발행 승인을 받아 기존 GitHub Actions/Pages 경로로 검증·발행한다.
