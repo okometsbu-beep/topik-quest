@@ -61,7 +61,7 @@ export async function verifyGrowthLearning({evaluate,tap,shot,setViewport,send,r
   // Active timed exam and Shorts have no growth/hint entry; existing navigation remains.
   await evaluate(`tqSetLevel(1);tqStartMode('shorts')`);assert.equal(await evaluate(`document.querySelectorAll('#screen [data-growth-entry]').length`),0);
   assert.equal(await evaluate(`document.querySelector('.shortsCard')!==null`),true);
-  await evaluate(`setView('home');t1Begin('reading')`);const beforeExam=await totals();
+  await evaluate(`setView('home');t1Begin('reading')`);if(await evaluate(`!!document.querySelector('#malbitListeningDialog.open')`))await tap('#malbitListeningDialog .off',0,60);assert.equal(await evaluate(`S.view`),'t1quiz','exam starts after the existing listening availability prompt');const beforeExam=await totals();
   assert.equal(await evaluate(`document.querySelectorAll('#screen [data-growth-entry]').length`),0);
   assert.equal(await evaluate(`document.querySelector('#harumalGrowthRoot')?.hidden!==false`),true);
   assert.deepEqual(await totals(),beforeExam,'exam entry produces no reward');await evaluate(`stopTimer();setView('home')`);
