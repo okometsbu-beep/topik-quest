@@ -84,17 +84,21 @@ try{
   const tap=async(selector,index=0,delay=250)=>{
     const found=await evaluate(`(()=>{const el=document.querySelectorAll(${JSON.stringify(selector)})[${index}];if(!el||el.disabled)return false;el.scrollIntoView({block:'center',inline:'center',behavior:'auto'});return true})()`);
     assert.ok(found,`tap target missing or disabled: ${selector}[${index}]`);
-    let point;
-    for(let attempt=0;attempt<40;attempt++){
-      point=await evaluate(`(()=>{const el=document.querySelectorAll(${JSON.stringify(selector)})[${index}];if(!el)return{visible:false};el.scrollIntoView({block:'center',inline:'center',behavior:'auto'});const r=el.getBoundingClientRect(),s=getComputedStyle(el);return{visible:s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)!==0&&r.width>0&&r.height>0,x:r.left+r.width/2,y:r.top+r.height/2,width:r.width,height:r.height,top:r.top,bottom:r.bottom}})()`);
-      if(point.visible)break;
-      await sleep(50);
+    let point,previous,stable=0;
+    for(let attempt=0;attempt<80;attempt++){
+      point=await evaluate(`(()=>{const el=document.querySelectorAll(${JSON.stringify(selector)})[${index}];if(!el)return{visible:false};el.scrollIntoView({block:'center',inline:'center',behavior:'auto'});const r=el.getBoundingClientRect(),s=getComputedStyle(el),x=r.left+r.width/2,y=r.top+r.height/2,hit=document.elementFromPoint(x,y);return{visible:!el.disabled&&s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)!==0&&r.width>0&&r.height>0,hit:hit===el||el.contains(hit),hitTag:hit?.tagName,hitText:hit?.textContent?.trim().slice(0,100),x,y,width:r.width,height:r.height,top:r.top,bottom:r.bottom}})()`);
+      const unchanged=previous&&['x','y','width','height'].every(k=>Math.abs(point[k]-previous[k])<.5);
+      stable=point.visible&&point.hit&&unchanged?stable+1:0;
+      if(stable>=2)break;
+      previous=point;await sleep(50);
     }
-    assert.ok(point.visible,`tap target hidden: ${selector}[${index}]`);
+    assert.ok(stable>=2,`tap target is not stable, visible and unobscured: ${selector}[${index}] ${JSON.stringify(point)}`);
     const viewport=await evaluate(`({width:innerWidth,height:innerHeight})`);
     assert.ok(point.x>=0&&point.x<=viewport.width&&point.y>=0&&point.y<=viewport.height,`tap target outside viewport: ${selector}[${index}]`);
+    await evaluate(`(()=>{const el=document.querySelectorAll(${JSON.stringify(selector)})[${index}];window.__qaLastTap={selector:${JSON.stringify(selector)},x:${point.x},y:${point.y},clicked:false};document.addEventListener('mousedown',event=>{const hit=event.target.closest?.('button,a,input,textarea')||event.target;window.__qaLastTap={...window.__qaLastTap,clicked:true,matched:el===event.target||el.contains(event.target),hitTag:hit.tagName,hitText:hit.textContent?.trim().slice(0,100),hitAction:hit.getAttribute?.('onclick')}},{once:true,capture:true})})()`);
     await send('Input.dispatchMouseEvent',{type:'mousePressed',x:point.x,y:point.y,button:'left',clickCount:1});
     await send('Input.dispatchMouseEvent',{type:'mouseReleased',x:point.x,y:point.y,button:'left',clickCount:1});
+    const actual=await evaluate(`window.__qaLastTap`);assert.ok(actual?.clicked&&actual?.matched,`actual mouse target differed: ${JSON.stringify(actual)}`);
     await sleep(delay);
     return point;
   };
