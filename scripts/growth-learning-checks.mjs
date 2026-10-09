@@ -7,9 +7,13 @@ export async function verifyGrowthLearning({evaluate,tap,shot,setViewport,send,r
  const original=await evaluate(`({storage:Object.fromEntries(Object.keys(localStorage).map(k=>[k,localStorage.getItem(k)])),state:JSON.stringify(S),history:history.state,theme:document.documentElement.dataset.theme})`);
  const current=()=>evaluate('HARUMAL_GROWTH.status().current');
  const totals=()=>evaluate(`(()=>{const s=HARUMAL_REWARDS.getState();return{xp:s.xp,coins:s.coins,events:s.events.length}})()`);
- const click=(action,attrs='')=>tap(`#harumalGrowthRoot [data-growth-action="${action}"]${attrs}`,0,45);
+ const waitGrowth=async visible=>{
+  let state;for(let i=0;i<120;i++){state=await evaluate(`({visible:document.querySelector('#harumalGrowthRoot')?.hidden===false,history:!!history.state?.harumalGrowth,view:S.view})`);if(state.visible===visible&&state.history===visible)return;await sleep(25)}
+  assert.fail('growth navigation did not settle: '+JSON.stringify({expectedVisible:visible,...state}));
+ };
+ const click=async(action,attrs='')=>{await tap(`#harumalGrowthRoot [data-growth-action="${action}"]${attrs}`,0,45);if(action==='close')await waitGrowth(false)};
  const choice=(value,field)=>click('select',`${field!==undefined?`[data-field="${field}"]`:''}[data-value="${value}"]`);
- const enterGrowth=async()=>{await evaluate(`HARUMAL_HUB.openPractice()`);await tap('[data-hub-action="growth"]',0,80)};
+ const enterGrowth=async()=>{await waitGrowth(false);await evaluate(`HARUMAL_HUB.openPractice()`);await tap('[data-hub-action="growth"]',0,80);await waitGrowth(true)};
  const phase=()=>evaluate(`document.querySelector('#harumalGrowthRoot')?.dataset.stage`);
  const checkFits=async label=>{
   const fit=await evaluate(`(()=>{const root=document.querySelector('#harumalGrowthRoot'),page=root?.querySelector('.growthPage');if(!root||root.hidden||!page)return{missing:true};const visible=el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return r.width>0&&r.height>0&&s.display!=='none'&&s.visibility!=='hidden'};const controls=[...root.querySelectorAll('button,textarea')].filter(visible);return{missing:false,width:innerWidth,overflow:root.scrollWidth-root.clientWidth,body:document.documentElement.scrollWidth-innerWidth,outside:controls.filter(el=>{const r=el.getBoundingClientRect();return r.left< -1||r.right>innerWidth+1}).map(el=>el.className),small:controls.filter(el=>{const r=el.getBoundingClientRect();return r.height<43||r.width<43}).map(el=>({class:el.className,height:el.getBoundingClientRect().height,width:el.getBoundingClientRect().width})),images:[...root.querySelectorAll('.growthMascot img')].map(img=>({src:img.getAttribute('src'),loaded:img.complete&&img.naturalWidth>0})),background:getComputedStyle(page).backgroundColor}})()`);
@@ -56,7 +60,7 @@ export async function verifyGrowthLearning({evaluate,tap,shot,setViewport,send,r
   const done=await totals();assert.equal(done.xp-initial.xp,70);assert.equal(done.coins-initial.coins,14);assert.equal(done.events-initial.events,4);
   assert.match(await evaluate(`document.querySelector('#harumalGrowthRoot').textContent`),/‘이수자’를 새 문맥에서 안다는 뜻은 아니/);
   await checkFits('320px summary');await shot('growth-notice-320-light-summary.png');
-  await evaluate(`history.back()`);await sleep(100);assert.equal(await evaluate(`document.querySelector('#harumalGrowthRoot').hidden`),true,'browser Back closes growth');
+  await evaluate(`history.back()`);await waitGrowth(false);assert.equal(await evaluate(`document.querySelector('#harumalGrowthRoot').hidden`),true,'browser Back closes growth');
   await enterGrowth();assert.equal(await phase(),'summary');assert.deepEqual(await totals(),done,'back/re-entry does not regrant');
   await click('close');await sleep(100);
   // Active timed exam and Shorts have no growth/hint entry; existing navigation remains.
@@ -118,7 +122,7 @@ export async function verifyGrowthLearning({evaluate,tap,shot,setViewport,send,r
   await evaluate(`HARUMAL_REWARDS.mergeImport(window.__growthBackup);HARUMAL_REWARDS.mergeImport(window.__growthBackup)`);assert.deepEqual(await totals(),beforeImport);
   assert.deepEqual(await evaluate(`[99,100,299,300].map(x=>HARUMAL_REWARDS.levelInfo(x).level)`),[1,2,2,3]);
   console.log('Growth browser QA: 11 paired lessons, varied interactions, wrong/help/retry, correct/transfer, XP+coin tiers, repeated submit, reload/Back/re-entry, new session, exam/Shorts separation, status, backup dedupe, four-language guidance/evidence preservation, 320/390px two themes passed.');
- }catch(error){failure=error;throw error}finally{
+ }catch(error){failure=error;try{console.error('Growth failure context:',await evaluate(`({view:S.view,history:history.state,hidden:document.querySelector('#harumalGrowthRoot')?.hidden,stage:document.querySelector('#harumalGrowthRoot')?.dataset.stage,current:HARUMAL_GROWTH.status().current?.recipeId})`));await shot('growth-failure.png')}catch{}throw error}finally{
   try{
    await evaluate(`(()=>{HARUMAL_GROWTH.close(false);stopTimer();const saved=${JSON.stringify(original.storage)};for(const k of Object.keys(localStorage))if(!Object.hasOwn(saved,k))localStorage.removeItem(k);for(const[k,v]of Object.entries(saved))localStorage.setItem(k,v);S=JSON.parse(${JSON.stringify(original.state)});document.documentElement.dataset.theme=${JSON.stringify(original.theme)};history.replaceState(${JSON.stringify(original.history)},'');delete window.__growthBackup})()`);
    await send('Page.reload',{ignoreCache:true});await ready();
