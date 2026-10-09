@@ -70,7 +70,14 @@ export async function verifyGrowthLearning({evaluate,tap,shot,setViewport,send,r
   const recipes=await evaluate(`HARUMAL_GROWTH_DATA.recipes`);
   for(const recipe of recipes){
    if(recipe.id==='meaning')continue;
-   await beginRecipe(recipe.id);const before=await totals();await answerTask(recipe.learn);assert.equal(await phase(),'learn-complete',recipe.id+' learning completion');await click('continue');
+   await beginRecipe(recipe.id);const before=await totals();
+   if(recipe.learn.kind==='listen'){
+    await click('listen');await sleep(300);await click('listen');assert.equal((await current()).records.learn.heard,false,'stopped growth audio cannot count as heard');assert.deepEqual(await totals(),before,'stopping grants no reward');
+    await evaluate(`HARUMAL_LISTENING_PLAYER.setRate(1.5)`);await click('listen');
+    let heard=false;for(let i=0;i<450;i++){heard=(await current()).records.learn.heard;if(heard)break;await sleep(100)}
+    assert.equal(heard,true,'real growth MP3 must finish before hearing is recorded');assert.deepEqual(await totals(),before,'hearing alone grants no reward');await checkFits('growth recorded listening');await shot('growth-listening-player-completed-320-light.png');
+   }
+   await answerTask(recipe.learn);assert.equal(await phase(),'learn-complete',recipe.id+' learning completion');await click('continue');
    await checkFits(recipe.id+' task 320');await shot(`growth-${recipe.id}-320-light-task.png`);
    await answerTask(recipe.transfer);assert.equal(await phase(),'summary',recipe.id+' transfer completion');
    const after=await totals();assert.equal(after.events-before.events,4,recipe.id+' exactly two answer + two stage grants');const tiers={easy:[10,2],medium:[15,3],hard:[25,5],very_hard:[40,8]};const lr=tiers[recipe.learn.difficulty]||tiers.medium,tr=tiers[recipe.transfer.difficulty]||tiers.medium;assert.equal(after.xp-before.xp,lr[0]+tr[0]+50,recipe.id+' exact difficulty XP');assert.equal(after.coins-before.coins,lr[1]+tr[1]+10,recipe.id+' exact difficulty coins');

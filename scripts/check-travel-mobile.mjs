@@ -9,6 +9,7 @@ import {verifyWritingLocalization} from './writing-localization-checks.mjs';
 import {verifyWritingUsability} from './writing-usability-checks.mjs';
 import {verifyThreeTabRedesign} from './three-tab-redesign-checks.mjs';
 import {verifyVocabularySelection} from './vocabulary-selection-checks.mjs';
+import {verifyListeningPlayer} from './listening-player-checks.mjs';
 import {verifyGrowthLearning} from './growth-learning-checks.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -680,6 +681,7 @@ try{
   if(process.env.HARUMAN_INTRO_BASELINE){assert.deepEqual(errors,[]);console.log('Intro baseline captured');}else if(process.env.HARUMAL_BASELINE){for(const theme of ['light','dark'])for(const width of [320,375,390,430]){await evaluate(`setLang('ko');malbitSetTheme('${theme}');setView('home')`);await setViewport(width,844);await shot(`baseline-home-${theme}-${width}.png`)}console.log('Baseline captured');}else if(process.env.HARUMAL_FOCUS_ONLY){await verifyHomeVocabulary({evaluate,tap,shot,setViewport,send,ready,sleep});assert.deepEqual(errors,[]);console.log('Home/vocabulary focused mobile checks passed');}else{
   await verifyThreeTabRedesign({evaluate,tap,shot,setViewport,send,ready,sleep});
   await verifyVocabularySelection({evaluate,tap,shot,setViewport,send,ready,sleep});
+  await verifyListeningPlayer({evaluate,tap,shot,setViewport,sleep});
   await verifyHaruman({evaluate,tap,shot,setViewport,sleep});
   await verifyGrowthLearning({evaluate,tap,shot,setViewport,send,ready,sleep});
   assert.deepEqual(errors,[],'Growth learning and activity rewards must not add console errors');

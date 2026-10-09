@@ -29,5 +29,5 @@ function play(script,options={}){
   };advance();
  });
 }
-window.HARUMAL_LISTENING_AUDIO=Object.freeze({questionCount:1050,scriptCount:Object.keys(SCRIPTS).length,textCount:Object.keys(TEXTS).length,clipCount:363,normalize,lookup,has:script=>!!lookup(script),play,cancel});
+window.HARUMAL_LISTENING_AUDIO=Object.freeze({questionCount:1050,scriptCount:Object.keys(SCRIPTS).length,textCount:Object.keys(TEXTS).length,clipCount:363,normalize,lookup,resolve:script=>lookup(script)?.map(p=>p.pause?{pause:p.pause}:{url:`audio/listening/v1/${p.voice}/${p.id}.mp3`,text:TEXTS[p.id],gender:p.voice==='F1'?'female':'male'})||null,has:script=>!!lookup(script),play,cancel});
 })();
