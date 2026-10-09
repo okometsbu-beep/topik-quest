@@ -12,7 +12,9 @@ export async function verifyWritingUsability({ evaluate, tap, shot, setViewport,
   let screenshots = 0, failure;
   const route = (page, id = '') => evaluate(`harumalWritingGo(${JSON.stringify(page)},${JSON.stringify(id)})`);
   const state = () => evaluate('HARUMAL_WRITING.engine.getState()');
-  const snapshot = () => evaluate(`(()=>{const s=HARUMAL_WRITING.engine.getState();return{attempts:s.attempts,drafts:s.drafts,readiness:s.readiness,firstIndependentAt:s.firstIndependentAt,guided:s.guided}})()`);
+  // Returning from settings refreshes only the guided navigation timestamp.
+  // Preserve exact draft/attempt timestamps and every guided evidence/route field.
+  const snapshot = () => evaluate(`(()=>{const s=HARUMAL_WRITING.engine.getState(),guided={...s.guided};delete guided.updatedAt;return{attempts:s.attempts,drafts:s.drafts,readiness:s.readiness,firstIndependentAt:s.firstIndependentAt,guided}})()`);
   const click = action => tap(`.wcScreen button[onclick=${JSON.stringify(action)}]`, 0, 100);
   const expectRoute = async (page, id) => {
     const actual = (await state()).route;
