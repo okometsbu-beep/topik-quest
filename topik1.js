@@ -587,12 +587,13 @@ try{
 }catch(e){}
 SH.daily=SH.daily&&typeof SH.daily==='object'?SH.daily:{};
 function shortState(examLevel=SH.activeLevel||level()){
-  const lv=Number(examLevel)===1?1:2,deck=shortsDeck(lv);SH.levels=SH.levels||{};SH.levels[lv]={...blankShorts(),...(SH.levels[lv]||SH.levels[String(lv)])};
+  const lv=Number(examLevel)===1?1:2,deck=shortsDeck(lv);SH.levels=SH.levels||{};const before=JSON.stringify(SH.levels[lv]);SH.levels[lv]={...blankShorts(),...(SH.levels[lv]||SH.levels[String(lv)])};
   const p=SH.levels[lv];
   // Numeric-only legacy saves cannot identify a card after vocabulary filtering.
   if(!p.vocabularyOnly&&!p.cardId){p.selected=null;p.locked=false;p.choiceOrder=null;p.orderId=null}
   p.vocabularyOnly=true;
   if(SHORTS_CYCLE)SHORTS_CYCLE.migrate(p,deck,lv);else p.index=Math.max(0,Number(p.index)||0)%Math.max(1,deck.length);
+  if(JSON.stringify(p)!==before)saveShorts();
   return p
 }
 function saveShorts(){try{localStorage.setItem(SHORTS_KEY,JSON.stringify(SH))}catch(e){}}
