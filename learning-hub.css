@@ -2,6 +2,8 @@
 html body.harumal.hubRedesign{background:var(--ui-canvas)!important;color:var(--ui-ink)!important}
 html body.hubRedesign .app{max-width:760px!important;background:var(--ui-canvas)!important}
 html body.hubRedesign .screen{box-sizing:border-box;max-width:680px!important;margin:auto;padding:20px 20px 36px!important}
+/* The travel map owns the viewport; reading-width constraints would clip its HUD. */
+html body.hubRedesign.travel-rpg-active .app,html body.hubRedesign.travel-rpg-active .screen.travelScreen{max-width:none!important;margin:0;padding:0!important}
 html body.hubRedesign .nav{grid-template-columns:repeat(3,minmax(0,1fr))!important;max-width:560px}
 html body.hubRedesign .nav button{font-size:13px!important;min-height:58px!important}
 html body.hubRedesign .top{max-width:760px;margin:auto;padding:14px 20px!important;border-bottom:0}

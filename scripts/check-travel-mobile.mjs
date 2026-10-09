@@ -468,8 +468,10 @@ try{
     if(captureRpgVisuals){
       for(const theme of ['light','dark']){
         await evaluate(`malbitSetTheme('${theme}')`);await setViewport(1363,936);await sleep(120);
-        const clipped=await evaluate(`([...document.querySelectorAll('.travelRpgTopHud button,.travelRpgDpad button')].filter(el=>{const r=el.getBoundingClientRect(),hit=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);return !hit||!el.contains(hit)}).map(el=>el.getAttribute('aria-label')||el.textContent))`);
-        assert.deepEqual(clipped,[],`wide ${theme}: RPG controls clipped by the reading container`);
+        const geometry=await evaluate(`(()=>{const box=el=>{const r=el.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}},screen=document.querySelector('.screen.travelScreen');return {screen:box(screen),viewport:{width:innerWidth,height:innerHeight},controls:[...document.querySelectorAll('.travelRpgTopHud button,.travelRpgDpad button')].map(el=>{const r=el.getBoundingClientRect(),hit=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);return {label:el.getAttribute('aria-label')||el.textContent,...box(el),clickable:!!hit&&el.contains(hit),hit:hit?.className||null,inside:r.width>0&&r.height>0&&r.left>=0&&r.top>=0&&r.right<=innerWidth&&r.bottom<=innerHeight}})}})()`);
+        await shot(`00renewal-wide-travel-${theme}-geometry.png`);
+        assert.ok(Math.abs(geometry.screen.width-geometry.viewport.width)<1&&Math.abs(geometry.screen.x)<1,`wide ${theme}: RPG must own the viewport: ${JSON.stringify(geometry)}`);
+        assert.deepEqual(geometry.controls.filter(control=>!control.clickable||!control.inside),[],`wide ${theme}: RPG controls must be visible and clickable: ${JSON.stringify(geometry)}`);
         await shot(`00renewal-wide-travel-${theme}.png`);
       }
       await evaluate(`malbitSetTheme('light')`);await sleep(120);
