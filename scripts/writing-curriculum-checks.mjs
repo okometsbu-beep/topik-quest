@@ -150,6 +150,8 @@ export async function verifyWritingCurriculum({evaluate,tap,shot,setViewport,sen
     assert.equal(attempt.mode,'independent');assert.equal(attempt.helpUsed,false);assert.equal(attempt.evaluation.form,'observed');
     await click(`harumalWritingSelfCheck('${attempt.id}','checked')`);
     assert.equal((await state()).attempts.at(-1).selfCheck.source,'learner');await assertHonest('self-check');
+    const clearance=await evaluate(`(()=>{const sc=document.querySelector('.wcScreen.wcHasPrimary'),bar=sc.querySelector('.wcPrimaryAction'),r=bar.getBoundingClientRect();return{padding:parseFloat(getComputedStyle(sc).paddingBottom),required:r.height+innerHeight-r.bottom+24}})()`);
+    assert.ok(clearance.padding>=clearance.required-1,`writing feedback must reserve fixed-action clearance: ${JSON.stringify(clearance)}`);
     await click("harumalWritingGo('item','I01')");await click("harumalWritingSubmit('I01')");
     assert.equal((await state()).attempts.length,3,'reopening and resubmitting unchanged text cannot duplicate evidence');
     await tap('.wcTopline .wcButton--icon',0,100);await tap('.wcTopline .wcButton--icon',0,100);
@@ -177,6 +179,7 @@ export async function verifyWritingCurriculum({evaluate,tap,shot,setViewport,sen
     assert.equal(screenshots,72,'nine writing states × four widths × two themes');
   }catch(error){
     journeyFailure=error;
+    try{await shot('writing-course-failure.png')}catch{}
     throw error;
   }finally{
     // Restore byte-for-byte storage (including the recovery snapshot) even when
