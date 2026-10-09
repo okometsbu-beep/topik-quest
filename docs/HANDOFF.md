@@ -1,3 +1,10 @@
+## 2026-10-09 v161 three-tab UI candidate
+
+- New final UI owner `learning-hub.js`/`.css`: Learn, Review, Vocabulary; compact status → Profile; gear → accessible settings bottom sheet; progressive course path and practice hierarchy.
+- New `harumalLearningPathV1` preferences are in recovery/backup, with legacy path fallback. Existing engines and evidence remain. Coins are earned-only; full advanced curriculum and shop/stickers remain explicit gaps.
+- Vocabulary-only Shorts filtering, stable-index adapter, retired card-selection migration and travel Back fix. Generated diary empty-state WebP is included offline.
+- Release scope and verification: `docs/qa/three-tab-ui-v161.md`. Remote Chrome CI artifact verification is required before merge.
+
 ## 2026-10-08 v160 growth learning and activity reward candidate
 
 - Current release candidate adds an opt-in 11-recipe/22-task growth library and activity XP/coins. It is selected authored content, not full-bank conversion. Existing navigation, question bank, Shorts format and learner roots remain.

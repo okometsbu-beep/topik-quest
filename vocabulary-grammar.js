@@ -1,0 +1,16 @@
+// Authored grammar explanations, not word-for-word machine translations.
+(function(){
+'use strict';
+const records=[
+{term:'-기만 하면',aliases:['기만 하면'],meaning:{ko:'그 행동이 조건이 되거나, 그 행동을 할 때마다 같은 결과가 생김. 문맥에 따라 구분함.',ja:'～さえすれば／～するたびに。条件なのか、繰り返す出来事なのかは文脈で判断する。',en:'As long as / provided that one does …; or whenever one does …. Context distinguishes a sufficient condition from a repeated event.',zh:'只要……就……；也可表示每次……就……。需结合语境区分条件与反复发生的情况。'},example:'이 버튼을 누르기만 하면 문이 열려요. / 그 사람을 만나기만 하면 웃음이 나요.'},
+{term:'-다가',aliases:['다가'],meaning:{ko:'하던 행동이나 이어지던 상태 중에 다른 행동·상황으로 바뀌거나 다른 일이 생김.',ja:'～している途中で／～していて…。続いていた動作・状態が変わったり、その途中で別のことが起きたりする。',en:'While doing … / in the middle of …. An ongoing action or state changes, or another event occurs during it.',zh:'做着……时／……的过程中。表示原来的动作或状态发生转换，或中途发生另一件事。'},example:'공부하다가 잠깐 쉬었어요.'},
+{term:'-기에',aliases:['기에'],meaning:{ko:'문맥에 따라 이유·근거를 나타내거나, -기+에로 어떤 행동을 평가하는 기준을 나타냄.',ja:'①～ので・～ため（理由や根拠）。②「-기＋에」では～するのに（適性などの判断）。「공부하기에 좋다」は「勉強するのによい」。',en:'① Because / since (reason or basis). ② With nominalizer -기 + particle 에: for doing …, as in good for studying. The full sentence determines the analysis.',zh:'①因为……（原因或依据）。②“-기＋에”表示对某个动作作评价，如“공부하기에 좋다”＝适合学习。须看完整句子。'},example:'날씨가 좋기에 산책을 나갔어요. / 이곳은 공부하기에 좋아요.'},
+{term:'-(으)ㄴ 채로',aliases:['채로'],meaning:{ko:'앞에서 생긴 상태를 바꾸지 않고 유지하면서 뒤의 행동을 함.',ja:'～したまま。前の状態を変えずに、次の動作をする。',en:'While still … / with … left as it is. The earlier state remains unchanged during the following action.',zh:'保持……的状态做另一件事；……着就……。'},example:'불을 켠 채로 잠이 들었어요.'},
+{term:'셈이다',aliases:['셈이다,돈을 아낀 셈이다','돈을 아낀 셈이다'],meaning:{ko:'-(으)ㄴ/는 셈이다는 결과나 상황을 그렇게 볼 수 있다는 뜻. -(으)ㄹ 셈이다는 계획·의도이므로 구분함.',ja:'「-(으)ㄴ/는 셈이다」は、結果的に～したことになる／～といえる。「돈을 아낀 셈이다」＝結果としてお金を節約したことになる。なお「-(으)ㄹ 셈이다」は～するつもりだ。',en:'With -(으)ㄴ/는: effectively / it amounts to …. 돈을 아낀 셈이다 means it amounts to having saved money. With -(으)ㄹ, it instead expresses an intention or plan.',zh:'接“-(으)ㄴ/는”时表示算是……、相当于……。“돈을 아낀 셈이다”＝结果算是省了钱。接“-(으)ㄹ”时则表示打算……。'},example:'택시 대신 걸어왔으니 돈을 아낀 셈이에요.'},
+{term:'V-기에 + 좋은/편한/어려운 장소·방법',aliases:[],meaning:{ko:'V는 동사 자리 표시. 그 행동을 하기에 장소나 방법이 좋은지·편한지·어려운지 평가하는 틀. -기+에이며 이유를 나타내는 -기에와 구별함.',ja:'Vは動詞。「Vするのによい／便利な／難しい場所・方法」という評価の型。「-기＋에」を使い、理由の「～ので」と区別する。',en:'V stands for a verb. A pattern evaluating a place or method as good, convenient, or difficult for doing V. Here -기 + 에 marks the activity being evaluated, not a reason.',zh:'V代表动词。用于评价某地点或方法是否适合、便于或难以进行该动作。这里是“-기＋에”，不是表示原因的“-기에”。'},example:'도서관은 공부하기에 좋은 장소예요. / 이 방법은 초보자가 따라 하기에 어려워요.'},
+{term:'A는커녕 B도',aliases:['A는커녕B도','A은커녕 B도'],meaning:{ko:'A는 말할 것도 없고 그보다 기본적인 B조차 안 되거나 없음을 강조. 뒤에 부정 표현이 필요함.',ja:'AどころかBさえ…ない。Aはもちろん、それより基本的なBまで否定する。名詞には「은/는커녕」、動詞・形容詞には「-기는커녕」を付ける。',en:'Not even B, let alone A. Emphasizes that A is out of reach and even the more basic B is absent or impossible; followed by a negative expression. Nouns take 은/는커녕; verbs/adjectives take -기는커녕.',zh:'别说A，连B也不／没有……。强调A更谈不上，连更基本的B都做不到或没有。名词后接은/는커녕，动词、形容词后接-기는커녕。'},example:'밥은커녕 물도 못 마셨어요.'}
+];
+const key=value=>String(value??'').normalize('NFC').replace(/[–−]/g,'-').replace(/\s+/g,'').trim();
+function lookup(value){return records.find(row=>[row.term,...row.aliases].some(alias=>key(alias)===key(value)))||null}
+window.MALBIT_VOCAB_GRAMMAR={lookup,records};
+})();

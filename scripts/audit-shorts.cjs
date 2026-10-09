@@ -22,7 +22,10 @@ function inventory() {
   if (start < 0 || end < 0) throw new Error('Shorts selector changed: review audit extraction');
   context.SH = { activeLevel: 1, levels: {} };
   context.BANK = context.window.MALBIT_BANK;
-  context.shortsDeck = lv => [...context.window.MALBIT_SHORTS_DECKS[lv], ...context.BANK.shorts(lv)];
+  const deckStart = source.indexOf('const SHORTS=['), deckEnd = source.indexOf('const HOME_HERO=');
+  if (deckStart < 0 || deckEnd < deckStart) throw new Error('Shorts deck builder changed: review audit extraction');
+  vm.runInContext(source.slice(deckStart, deckEnd), context);
+  context.shortsDeck = context.window.HARUMAL_SHORTS_DECK;
   vm.runInContext(source.slice(start, end), context);
   const rows = [];
   for (const level of [1, 2]) {

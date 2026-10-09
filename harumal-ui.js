@@ -1,8 +1,8 @@
 // HARUMAL navigation and learning hub. Existing learning engines and storage own all progress.
 (function(){
 'use strict';
-const labels={ko:['오늘','학습','단어장','복습','내 기록'],ja:['今日','学ぶ','単語帳','復習','マイ'],en:['Today','Learn','Words','Review','My'],zh:['今天','学习','单词本','复习','我的']};
-const tabs=['home','learn','vocab','review','more'];
+const labels={ko:['학습','복습','단어장'],ja:['学習','復習','単語帳'],en:['Learn','Review','Words'],zh:['学习','复习','单词本']};
+const tabs=['home','review','vocab'];
 const paths=['M3 10 12 3l9 7v11H3z M9 21v-8h6v8','M3 4h7l2 2 2-2h7v16h-7l-2 2-2-2H3z M12 6v16','M7 3h14v16H7z M3 7v14h14 M10 8h8 M10 12h6','M4 9a8 8 0 1 1 0 7 M4 3v6h6','M16 7a4 4 0 1 1-8 0 4 4 0 1 1 8 0 M4 21v-3a8 8 0 0 1 16 0v3'];
 const L=(ko,ja,en,zh)=>({ko,ja,en,zh}[S.lang]||en);
 // Inline flags stay visible on desktop systems that do not support flag emoji.
@@ -16,9 +16,9 @@ function languageFlag(lang){
  return `<svg class="harumalFlag" viewBox="0 0 36 24" aria-hidden="true"><title>${symbols[lang]||symbols.en}</title><rect width="36" height="24" fill="white"/>${art[lang]||art.en}</svg>`;
 }
 const icon=i=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${paths[i]}"/></svg>`;
-function activeTab(view){return view==='home'?'home':['travel','travelAdventure','travelAdventureReview','travelLegacy','travelPlay','travelRecall'].includes(view)?'home':view==='review'?'review':['vocab','vocabEditor','vocabTest'].includes(view)?'vocab':['more','stats'].includes(view)?'more':'learn'}
+function activeTab(view){return ['review','travelAdventureReview','travelRecall'].includes(view)?'review':['vocab','vocabEditor','vocabTest'].includes(view)?'vocab':'home'}
 window.HARUMAL_UI=Object.freeze({activeTab});
-window.harumalGo=function(view){if(!tabs.includes(view))return;setView(view)};
+window.harumalGo=function(view){if(![...tabs,'learn','more','travel','stats'].includes(view))return;setView(view)};
 window.harumalCourse=function(path){if(path==='beginner'){tqSetLearningPath('beginner');setView('beginner')}else if(path==='topik1'||path==='topik2'){tqSetLevel(path==='topik2'?2:1);tqStartMode('random')}};
 function card(symbol,title,copy,action,extra=''){return `<button class="harumalCourse ${extra}" onclick="${action}"><i aria-hidden="true">${symbol}</i><span><b>${title}</b><small>${copy}</small></span><em aria-hidden="true">↗</em></button>`}
 function learn(sc){
@@ -71,7 +71,7 @@ function shell(){
  const nav=document.querySelector('.nav');if(!nav)return;
  const selected=activeTab(S.view),names=labels[S.lang]||labels.en;
  const key=`${S.lang}:${selected}`;
- if(nav.dataset.harumal!==key){nav.innerHTML=tabs.map((id,i)=>`<button type="button" id="nav_${id}" class="${id===selected?'active':''}" ${id===selected?'aria-current="page"':''} onclick="harumalGo('${id}')">${icon(i)}<span>${names[i]}</span></button>`).join('');nav.dataset.harumal=key}
+ if(nav.dataset.harumal!==key){nav.innerHTML=tabs.map((id,i)=>`<button type="button" id="nav_${id}" class="${id===selected?'active':''}" ${id===selected?'aria-current="page"':''} onclick="harumalGo('${id}')">${icon([1,3,2][i])}<span>${names[i]}</span></button>`).join('');nav.dataset.harumal=key}
  nav.querySelectorAll('button').forEach((button,i)=>{const label=button.querySelector('span');if(label)label.textContent=names[i];const active=button.id==='nav_'+selected;button.classList.toggle('active',active);if(active)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current')});
  for(const language of document.querySelectorAll('.tqLang,#flagBtn')){language.innerHTML=languageFlag(S.lang);language.setAttribute('aria-label',L('설명 언어 변경','説明言語を変更','Change explanation language','更改说明语言')+' · '+({ko:'한국어',ja:'日本語',en:'English',zh:'中文'}[S.lang]||'English'));language.setAttribute('aria-haspopup','true');}
  for(const option of document.querySelectorAll('.flagOpt')){const flag=option.querySelector('.flag');if(flag)flag.innerHTML=languageFlag(option.dataset.lang)}

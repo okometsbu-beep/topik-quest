@@ -1,33 +1,19 @@
-# MALBIT audio pipeline
+# Harumal listening audio pipeline
 
-## Listening source priority
+## Current listening priority
 
-The web app should play uploaded audio before browser TTS.
+1. Exact matching script in `HARUMAL_LISTENING_AUDIO` → Supertonic 3 pre-generated MP3 sequence.
+2. Existing uploaded question recording, where present.
+3. Device speech fallback. File failure resumes with the remaining script only.
 
-1. `audio/topik2/q001.mp3`
-2. `audio/topik2/q001.m4a`
-3. `audio/topik2/q001.aac`
-4. `audio/topik2/q001.webm`
-5. Device Korean TTS fallback
+The full inventory is `audio/listening/v1/corpus.json`; every input question ID, exact script,
+voice-specific segment, MP3 hash and byte count is traceable through corpus and manifest.
+Do not key generated-bank audio only by visible question number: `bankId` and script vary.
 
-Use the same numbering through `q050`.
+There is no on-device model download or live synthesis in the active application. Generic
+word/grammar read-aloud remains device TTS. Do not embed cloud API keys in static client code.
 
-## Recommended production path
+Existing `audio/topik1/q001.mp3` and `audio/topik2/q001.m4a` style paths remain compatible as
+legacy fallback. The old recording-studio route is a hidden UI, not authentication.
 
-For the most natural result, use a human recording or generate high-quality Korean neural/HD TTS outside the static GitHub Pages site, then upload the rendered audio files. Do not embed cloud API keys in client-side GitHub Pages code.
-
-A good future backend candidate is Azure Speech because it supports Korean HD/neural voices and Korean pronunciation assessment (`ko-KR`).
-
-## Speaking model audio
-
-Optional speaking reference audio uses:
-
-- `audio/speaking/p001.mp3`
-- `audio/speaking/p002.mp3`
-- ...
-
-Uploaded model audio is preferred over device TTS.
-
-## Developer studio
-
-The public navigation does not show the recording studio. The development route is intended to be accessed with `?dev=studio`. Since GitHub Pages is static hosting, this is only a hidden route, not real authentication. Real developer-only access requires a backend or authenticated admin surface.
+See `audio/listening/v1/README.md` for the build, licensing, playback and validation contract.

@@ -9,6 +9,7 @@ export async function verifyGrowthLearning({evaluate,tap,shot,setViewport,send,r
  const totals=()=>evaluate(`(()=>{const s=HARUMAL_REWARDS.getState();return{xp:s.xp,coins:s.coins,events:s.events.length}})()`);
  const click=(action,attrs='')=>tap(`#harumalGrowthRoot [data-growth-action="${action}"]${attrs}`,0,45);
  const choice=(value,field)=>click('select',`${field!==undefined?`[data-field="${field}"]`:''}[data-value="${value}"]`);
+ const enterGrowth=async()=>{await evaluate(`HARUMAL_HUB.openPractice()`);await tap('[data-hub-action="growth"]',0,80)};
  const phase=()=>evaluate(`document.querySelector('#harumalGrowthRoot')?.dataset.stage`);
  const checkFits=async label=>{
   const fit=await evaluate(`(()=>{const root=document.querySelector('#harumalGrowthRoot'),page=root?.querySelector('.growthPage');if(!root||root.hidden||!page)return{missing:true};const visible=el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return r.width>0&&r.height>0&&s.display!=='none'&&s.visibility!=='hidden'};const controls=[...root.querySelectorAll('button,textarea')].filter(visible);return{missing:false,width:innerWidth,overflow:root.scrollWidth-root.clientWidth,body:document.documentElement.scrollWidth-innerWidth,outside:controls.filter(el=>{const r=el.getBoundingClientRect();return r.left< -1||r.right>innerWidth+1}).map(el=>el.className),small:controls.filter(el=>{const r=el.getBoundingClientRect();return r.height<43||r.width<43}).map(el=>({class:el.className,height:el.getBoundingClientRect().height,width:el.getBoundingClientRect().width})),images:[...root.querySelectorAll('.growthMascot img')].map(img=>({src:img.getAttribute('src'),loaded:img.complete&&img.naturalWidth>0})),background:getComputedStyle(page).backgroundColor}})()`);
@@ -38,8 +39,8 @@ export async function verifyGrowthLearning({evaluate,tap,shot,setViewport,send,r
  let failure;
  try{
   await evaluate(`stopTimer();setLang('ko');malbitSetTheme('light');setView('home')`);await setViewport(320,844);
-  assert.match(await evaluate(`document.querySelector('.harumalRewardsStatus').textContent`),/활동 레벨/);await shot('growth-home-status-320-light.png');
-  await tap('[data-growth-entry="all"] button',0,80);await beginRecipe('meaning');
+  assert.match(await evaluate(`document.querySelector('.harumalCompactStatus').textContent`),/Lv\./);await shot('growth-home-status-320-light.png');
+  await enterGrowth();await beginRecipe('meaning');
   const initial=await totals(),sessionId=(await current()).id;
   await choice('junho','');await click('submit');assert.deepEqual(await totals(),initial,'wrong answer earns nothing');
   await click('help','[data-help="isoo"]');await click('help','[data-help="man"]');await checkFits('320px wrong+help');await shot('growth-notice-320-light-wrong-help.png');
@@ -56,7 +57,7 @@ export async function verifyGrowthLearning({evaluate,tap,shot,setViewport,send,r
   assert.match(await evaluate(`document.querySelector('#harumalGrowthRoot').textContent`),/‘이수자’를 새 문맥에서 안다는 뜻은 아니/);
   await checkFits('320px summary');await shot('growth-notice-320-light-summary.png');
   await evaluate(`history.back()`);await sleep(100);assert.equal(await evaluate(`document.querySelector('#harumalGrowthRoot').hidden`),true,'browser Back closes growth');
-  await tap('[data-growth-entry="all"] button',0,50);assert.equal(await phase(),'summary');assert.deepEqual(await totals(),done,'back/re-entry does not regrant');
+  await enterGrowth();assert.equal(await phase(),'summary');assert.deepEqual(await totals(),done,'back/re-entry does not regrant');
   await click('close');await sleep(100);
   // Active timed exam and Shorts have no growth/hint entry; existing navigation remains.
   await evaluate(`tqSetLevel(1);tqStartMode('shorts')`);assert.equal(await evaluate(`document.querySelectorAll('#screen [data-growth-entry]').length`),0);
@@ -65,7 +66,7 @@ export async function verifyGrowthLearning({evaluate,tap,shot,setViewport,send,r
   assert.equal(await evaluate(`document.querySelectorAll('#screen [data-growth-entry]').length`),0);
   assert.equal(await evaluate(`document.querySelector('#harumalGrowthRoot')?.hidden!==false`),true);
   assert.deepEqual(await totals(),beforeExam,'exam entry produces no reward');await evaluate(`stopTimer();setView('home')`);
-  await tap('[data-growth-entry="all"] button',0,50);
+  await enterGrowth();
   const recipes=await evaluate(`HARUMAL_GROWTH_DATA.recipes`);
   for(const recipe of recipes){
    if(recipe.id==='meaning')continue;
@@ -100,7 +101,7 @@ export async function verifyGrowthLearning({evaluate,tap,shot,setViewport,send,r
    const expected=await evaluate(`HARUMAL_GROWTH.getLessonText('GL-MEAN-T','explain','${lang}')`);assert.ok((await evaluate(`document.querySelector('#harumalGrowthRoot').textContent`)).includes(expected),lang+' localized explanation');await checkFits(lang+' final explanation');await shot(`growth-explanation-${lang}-390.png`);
   }
   await evaluate(`setLang('ko');HARUMAL_GROWTH.refreshLanguage()`);
-  await click('close');await sleep(100);await evaluate(`setView('more')`);assert.match(await evaluate(`document.querySelector('.harumalRewardsStatus').textContent`),/코인/);
+  await click('close');await sleep(100);await evaluate(`setView('profile')`);assert.match(await evaluate(`document.querySelector('.harumalRewardsStatus').textContent`),/코인/);
   await shot('growth-activity-status-390-dark.png');
   // Backup merge is idempotent and the level boundary is based on activity XP.
   await evaluate(`window.__growthBackup=HARUMAL_REWARDS.exportState()`);const beforeImport=await totals();

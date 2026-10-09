@@ -46,3 +46,10 @@ test('importing a pre-adventure travel backup retains the newer adventure record
  const {ctx:c,store}=harness();c.harumalAdventureStart(1);solve(c,2);const progress=store().adventureV1;const restored=JSON.parse(c.HARUMAL_ADVENTURE.mergeImport(JSON.stringify({version:1,episodes:{old:{wallet:4}}})));assert.deepEqual(restored.adventureV1,progress);assert.equal(restored.episodes.old.wallet,4);
  const supplied={version:1,activeLevel:2,levels:{}};assert.deepEqual(JSON.parse(c.HARUMAL_ADVENTURE.mergeImport(JSON.stringify({version:1,episodes:{},adventureV1:supplied}))).adventureV1,supplied);
 });
+
+
+test('scene Back calls the actual travel route, not a bottom-tab-only dispatcher',()=>{
+ const {ctx:c,screen,p}=harness();c.harumalAdventureStart(1);const saved=JSON.stringify(p(1));
+ assert.match(screen.innerHTML,/onclick="setView\('travel'\)"/);assert.doesNotMatch(screen.innerHTML,/harumalGo\('travel'\)/);
+ c.setView('travel');assert.equal(c.S.view,'travel');assert.match(screen.innerHTML,/TOPIK I/);assert.equal(JSON.stringify(p(1)),saved);
+});
