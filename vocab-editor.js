@@ -54,9 +54,15 @@ function current(){return Number.isInteger(activeIndex)&&activeIndex>=0?S.vocab?
 function input(id){return document.getElementById(id)}
 function value(id,max){return clean(input(id)?.value,max)}
 
+function syncExampleContext(previous){
+ const next=draft.examples?.[0]?.ko||'';
+ if(next!==previous)draft.translationContext=next;
+ draft.example=next;
+}
 function capture(){
-  if(!draft)return;draft.text=value('vocabEditTerm',500);draft.partOfSpeech=value('vocabEditType',30)||'word';draft.type=draft.partOfSpeech;draft.definitionKo=value('vocabEditDefinitionKo',1200);draft.note=value('vocabEditNote',1200);draft.meanings=draft.meanings||{};const typedMeaning=value('vocabEditMeaning',1000);if(typedMeaning!==(draft.meanings[targetLanguage]||'')){draft.meaningSources={...(draft.meaningSources||{}),[targetLanguage]:'user'}}draft.meanings[targetLanguage]=typedMeaning;draft.etymologies=draft.etymologies||{};draft.etymologies[targetLanguage]=value('vocabEditEtymology',1600);
+  if(!draft)return;const previousExample=draft.examples?.[0]?.ko||'';draft.text=value('vocabEditTerm',500);draft.partOfSpeech=value('vocabEditType',30)||'word';draft.type=draft.partOfSpeech;draft.definitionKo=value('vocabEditDefinitionKo',1200);draft.note=value('vocabEditNote',1200);draft.meanings=draft.meanings||{};const typedMeaning=value('vocabEditMeaning',1000);if(typedMeaning!==(draft.meanings[targetLanguage]||'')){draft.meaningSources={...(draft.meaningSources||{}),[targetLanguage]:'user'}}draft.meanings[targetLanguage]=typedMeaning;draft.etymologies=draft.etymologies||{};draft.etymologies[targetLanguage]=value('vocabEditEtymology',1600);
   draft.examples=[...document.querySelectorAll('.malbitVocabExampleRow')].slice(0,MAX_EXAMPLES).map((row,index)=>{const prior=draft.examples?.[index]||{},translations={...(prior.translations||{})};translations[targetLanguage]=clean(row.querySelector('[data-example-translation]')?.value,800);return{ko:clean(row.querySelector('[data-example-ko]')?.value,500),translations}}).filter(item=>item.ko||clean(item.translations[targetLanguage]));
+  syncExampleContext(previousExample);
 }
 function editorSource(entry){const reviewed=Number(entry.repetitions)||0,due=Number(entry.dueAt),date=due?new Intl.DateTimeFormat(S.lang==='zh'?'zh-CN':S.lang||'ko',{year:'numeric',month:'short',day:'numeric'}).format(new Date(due)):'–';return`${H(entry.source||L('직접 저장','手動保存','Manual save','手动保存'))} · ${L(`복습 ${reviewed}회 · 다음 ${date}`,`復習 ${reviewed}回・次回 ${date}`,`${reviewed} reviews · next ${date}`,`复习 ${reviewed}次 · 下次 ${date}`)}`}
 function exampleRows(entry){
@@ -81,17 +87,22 @@ window.malbitCloseVocabEditor=()=>{if(dirty&&!confirm(L('저장하지 않은 수
 window.malbitVocabEditorDirty=()=>{dirty=true};
 window.malbitVocabEditorTarget=lang=>{if(!TARGETS.includes(lang)||lang===targetLanguage)return;capture();targetLanguage=lang;notice='';window.render()};
 window.malbitVocabExampleAdd=()=>{capture();if(draft.examples.length>=MAX_EXAMPLES)return;draft.examples.push({ko:'',translations:{}});dirty=true;window.render()};
-window.malbitVocabExampleRemove=index=>{capture();draft.examples.splice(Number(index),1);dirty=true;window.render()};
-window.malbitVocabExampleMove=(index,delta)=>{capture();const from=Number(index),to=from+Number(delta);if(from<0||to<0||from>=draft.examples.length||to>=draft.examples.length)return;[draft.examples[from],draft.examples[to]]=[draft.examples[to],draft.examples[from]];dirty=true;window.render()};
+window.malbitVocabExampleRemove=index=>{capture();const previous=draft.examples?.[0]?.ko||'';draft.examples.splice(Number(index),1);syncExampleContext(previous);dirty=true;window.render()};
+window.malbitVocabExampleMove=(index,delta)=>{capture();const from=Number(index),to=from+Number(delta);if(from<0||to<0||from>=draft.examples.length||to>=draft.examples.length)return;const previous=draft.examples?.[0]?.ko||'';[draft.examples[from],draft.examples[to]]=[draft.examples[to],draft.examples[from]];syncExampleContext(previous);dirty=true;window.render()};
 window.malbitSaveVocabEditor=()=>{capture();if(!draft.text){input('vocabEditTerm')?.focus();return toast(L('한국어 표제어를 입력해 주세요.','韓国語の見出し語を入力してください。','Enter a Korean headword.','请输入韩语词条。'))}const original=current();if(!original)return;S.vocab[activeIndex]=savedEntry(original,draft,targetLanguage);S.view='vocab';save();draft=null;activeIndex=-1;dirty=false;notice='';toast(L('단어 정보를 저장했어요.','単語情報を保存しました。','Word details saved.','单词详情已保存。'));window.render()};
-function requestCurrent(request){if(draft===request.draft&&S.view==='vocabEditor'&&input('vocabEditTerm'))capture();return draft===request.draft&&draft?.text===request.term&&targetLanguage===request.target&&draft.meanings?.[request.target]===request.meaning&&S.view==='vocabEditor'}
-window.malbitVocabAutoTranslate=async()=>{
+function requestCurrent(request){
+ if(draft===request.draft&&S.view==='vocabEditor'&&input('vocabEditTerm'))capture();
+ const matches=draft===request.draft&&draft?.text===request.term&&targetLanguage===request.target&&draft.meanings?.[request.target]===request.meaning&&JSON.stringify(draft)===request.fingerprint&&S.view==='vocabEditor';
+ if(!matches&&draft===request.draft&&S.view==='vocabEditor')notice=L('입력이 바뀌어 이전 번역은 적용하지 않았어요. 내용을 확인한 뒤 다시 시도하세요.','入力が変更されたため、前の翻訳は適用していません。内容を確認して再試行してください。','Input changed, so the earlier translation was not applied. Check it and try again.','输入已更改，未应用之前的翻译。请核对后重试。');
+ return matches;
+}
+window.malbitVocabAutoTranslate=async(options={})=>{
  if(busy)return;capture();if(!draft.text)return;
- const request={draft,term:draft.text,target:targetLanguage,meaning:draft.meanings?.[targetLanguage]};busy=true;notice=L('번역 중…','翻訳中…','Translating…','正在翻译…');window.render();
+ const request={draft,term:draft.text,target:targetLanguage,meaning:draft.meanings?.[targetLanguage],fingerprint:JSON.stringify(draft)};busy=true;notice=L('번역 중…','翻訳中…','Translating…','正在翻译…');window.render();
  try{
   const adapter=window.MALBIT_AI_ADAPTER;let result;
   if(typeof adapter?.translateVocabulary==='function'){const output=await adapter.translateVocabulary({term:request.term,targetLanguage:request.target,context:clone(request.draft)});result={value:typeof output==='string'?output:output?.translation,source:'machine'}}
-  else result=await window.MALBIT_VOCAB_TRANSLATION.resolve(request.draft,request.target);
+  else result=await window.MALBIT_VOCAB_TRANSLATION.resolve(clone(request.draft),request.target,options);
   if(!requestCurrent(request))return;
   if(!window.MALBIT_VOCAB_TRANSLATION.valid(result.value,request.term,request.target))throw new Error('No usable translation');
   draft.meanings[request.target]=clean(result.value,1000);draft.meaningSources={...(draft.meaningSources||{}),[request.target]:result.source};
@@ -102,15 +113,15 @@ window.malbitVocabAutoTranslate=async()=>{
 };
 window.malbitVocabAutoDraft=async()=>{
  if(busy)return;capture();if(!draft.text)return;
- const request={draft,term:draft.text,target:targetLanguage,meaning:draft.meanings?.[targetLanguage]};busy=true;notice=L('초안을 만드는 중…','下書きを作成中…','Building a draft…','正在生成草稿…');window.render();
- try{const result=await automaticPayload(request.draft,request.target);if(!requestCurrent(request))return;
+ const request={draft,term:draft.text,target:targetLanguage,meaning:draft.meanings?.[targetLanguage],fingerprint:JSON.stringify(draft)};busy=true;notice=L('초안을 만드는 중…','下書きを作成中…','Building a draft…','正在生成草稿…');window.render();
+ try{const result=await automaticPayload(clone(request.draft),request.target);if(!requestCurrent(request))return;
  const hadMeaning=!!draft.meanings?.[request.target];draft=mergeEnrichment(draft,result.payload,request.target,false);
  if(!hadMeaning)draft.meaningSources={...(draft.meaningSources||{}),[request.target]:result.source||'machine'};
  dirty=true;busy=false;notice=L('빈칸만 채운 초안입니다. 뜻과 예문을 확인한 뒤 저장하세요.','空欄だけを埋めた下書きです。意味と例文を確認して保存してください。','Empty fields filled with a draft. Review meanings and examples before saving.','已用草稿填充空白，请核对释义和例句后保存。');window.render();
  }catch(error){if(requestCurrent(request))notice=L('문맥을 확인할 수 없어 초안을 만들지 못했어요. 기존 내용은 유지됩니다.','文脈を確認できず、下書きを作成できませんでした。元の内容は保持されます。','Could not establish context. Existing content is preserved.','无法确定上下文，原内容已保留。')}
  finally{if(draft===request.draft){busy=false;window.render()}}
 };
-window.malbitVocabRecheck=index=>{window.malbitOpenVocabEditor(index);return window.malbitVocabAutoTranslate()};
+window.malbitVocabRecheck=index=>{window.malbitOpenVocabEditor(index);return window.malbitVocabAutoTranslate({forceRefresh:true})};
 
 const baseRender=window.render;window.render=function(){if(S?.view==='vocabEditor'){if(typeof hideSelection==='function')hideSelection();const sc=document.getElementById('screen');if(sc){sc.innerHTML='';return renderEditor(sc)}}return baseRender.apply(this,arguments)};
 window.addEventListener('beforeunload',event=>{if(S?.view==='vocabEditor'&&dirty){event.preventDefault();event.returnValue=''}});

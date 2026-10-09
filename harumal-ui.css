@@ -220,3 +220,6 @@ body.harumal .harumalGrowthEntry button:focus-visible{outline:3px solid var(--ui
 body.harumal .harumalGrowthEntry--compact{padding:16px}
 body.harumal .harumalGrowthCourses{margin-top:24px}
 @media(max-width:350px){body.harumal .harumalGrowthEntry{padding:16px}body.harumal .harumalGrowthEntry h2{font-size:18px}}
+
+/* The exam header keeps its navy surface in both themes. Give it paired ink. */
+html body.harumal .t1head{color:#f2f6ff}

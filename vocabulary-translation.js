@@ -2,11 +2,15 @@
 (function(){
 'use strict';
 const norm=value=>String(value??'').normalize('NFC').trim().replace(/\s+/g,' ');
+// Preserve source context; an explicit editor override (including empty) wins.
+const contextOf=entry=>String(Object.prototype.hasOwnProperty.call(entry,'translationContext')?(entry.translationContext??''):(entry.context||entry.examples?.[0]?.ko||entry.example||''));
+const CACHE_VERSION='v2-gemma-4-26b-a4b-it-prompt1';
+const fingerprint=(entry,target)=>JSON.stringify([entry.text,entry.context,entry.translationContext,entry.example,entry.examples?.map(example=>example.ko),entry.type,entry.partOfSpeech,entry.updatedAt,entry.manual,entry.meaningSources?.[target]]);
 const errorText=/MYMEMORY WARNING|QUERY LENGTH LIMIT|YOU USED ALL AVAILABLE|INVALID LANGUAGE PAIR|PLEASE SELECT TWO DISTINCT LANGUAGES|TOO MANY REQUESTS|DAILY LIMIT|QUOTA EXCEEDED/i;
 function valid(value,source,target){return !(target==='en'&&!/[A-Za-z]/.test(value))&& !(target==='ja'&&!/[ぁ-ゖァ-ヺ一-龯]/.test(value))&&!(target==='zh'&&!/[一-龯]/.test(value))&&typeof value==='string'&&!!norm(value)&&norm(value)!==norm(source)&&!errorText.test(value)&&!/<(?:html|body|script)\b/i.test(value)}
 function authored(entry,target){
  const rows=[1,2].flatMap(level=>window.MALBIT_SHORTS_DECKS?.[level]||[]).filter(row=>norm(row.term)===norm(entry.text)&&row.meaning?.[target]);
- const context=norm(entry.example||entry.examples?.[0]?.ko||entry.context);
+ const context=norm(contextOf(entry));
  const exact=context&&rows.find(row=>norm(row.example)===context);if(exact)return exact;if(context)return null;
  const meanings=new Set(rows.map(row=>norm(row.meaning[target])));
  // Homographs with distinct senses require the matching example, not the first row.
@@ -21,7 +25,7 @@ window.MALBIT_TRANSLATION_CONFIG=window.MALBIT_TRANSLATION_CONFIG||{
 };
 const localized=(ko,ja,en,zh)=>[ko,ja,en,zh][({ko:0,ja:1,en:2,zh:3})[S.lang]??0];
 function publicEntry(entry){
- const term=String(entry.text||''),context=String(entry.context||entry.example||entry.examples?.[0]?.ko||'');if(!term)return false;
+ const term=String(entry.text||''),context=contextOf(entry);if(!term)return false;
  const roots=[window.MALBIT_BANK?.items,window.MALBIT_SHORTS_DECKS,window.MALBIT_VOCAB_GRAMMAR?.records,window.TOPIK1_LISTENING_DATA,window.TOPIK1_READING_DATA,window.MALBIT_BEGINNER_GRAMMAR_V1,window.HARUMAL_GROWTH_DATA];
  const seen=new Set();let budget=50000;
  function contains(value){if(--budget<0)return false;if(typeof value==='string')return value.includes(term)&&(!context||value.includes(context));if(!value||typeof value!=='object'||seen.has(value))return false;seen.add(value);return Object.values(value).some(contains);}
@@ -53,18 +57,18 @@ function translationApproval(action,input,isPublic){
 
 // No endpoint is guessed. Deployment code must supply the verified URL, public-text
 // site key before any cloud request is possible. Default UI requires review/approval.
-async function cloud(entry,target){
+async function cloud(entry,target,options={}){
  const cfg=window.MALBIT_TRANSLATION_CONFIG;
  if(!cfg?.enabled||!cfg.endpoint)throw new Error('Translation not configured; review needed');
  const endpoint=new URL(cfg.endpoint);if(endpoint.protocol!=='https:'||endpoint.username||endpoint.password||endpoint.search||endpoint.hash||endpoint.pathname!=='/v1/vocabulary')throw new Error('Invalid translation endpoint');
- const source=String(entry.text??''),context=String(entry.context||entry.example||entry.examples?.[0]?.ko||'');
+ const source=String(entry.text??''),context=contextOf(entry);
  if(!source.trim()||source.length>500||context.length>700||!['ja','en','zh'].includes(target)||/[<>\u0000-\u0008]|[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}|https?:\/\/|(?:\+?82[- ]?)?01[016789][- ]?\d{3,4}[- ]?\d{4}/i.test(source+' '+context))throw new Error('Invalid translation input');
  const kind=entry.type==='grammar'||entry.partOfSpeech==='grammar'?'grammar':/\s/.test(source)?'expression':'word';
  const isPublic=(cfg.verifyPublicEntry||publicEntry)(entry)===true;
  const input={version:1,term:source,context,target,kind,publicLearningText:isPublic,learningTextApproved:true};
- const key='vocab_cloud_v1_'+JSON.stringify([source,context,target,kind]);S.transCache=S.transCache||{};
+ const key='vocab_cloud_'+CACHE_VERSION+'_'+JSON.stringify([source,context,target,kind]);S.transCache=S.transCache||{};
  const usable=result=>result&&result.term===source&&result.target===target&&result.kind===kind&&result.uncertain===false&&valid(result.meaning,source,target)&&valid(result.explanation,source,target)&&Array.isArray(result.senses)&&result.senses.length<=3&&result.senses.every(x=>valid(x,source,target))&&result.example&&/[가-힣]/.test(result.example.ko||'')&&valid(result.example.translation,result.example.ko,target);
- if(usable(S.transCache[key]))return S.transCache[key];
+ if(!options.forceRefresh&&usable(S.transCache[key]))return S.transCache[key];
  const token=await (cfg.getTurnstileToken||translationApproval)('vocabulary',input,isPublic);if(!token)throw new Error('Verification required');
  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);
  try{
@@ -79,10 +83,11 @@ async function machine(source,target,src='ko'){
  if(src!=='ko')throw new Error('Only Korean learning text is supported');
  return (await cloud({text:source,type:'expression'},target)).meaning;
 }
-async function resolve(entry,target){
+async function resolve(entry,target,options={}){
+ if(!['ja','en','zh'].includes(target))throw Error('Unsupported target language');
  const grammar=window.MALBIT_VOCAB_GRAMMAR?.lookup(entry.text);if(grammar)return{value:grammar.meaning[target],source:'grammar',row:grammar};
  const row=authored(entry,target);if(row)return{value:row.meaning[target],source:'authored',row};
- const details=await cloud(entry,target);return{value:details.meaning,source:'machine',details};
+ const details=await cloud(entry,target,options);return{value:details.meaning,source:'machine',details};
 }
 function label(entry,target,lang){
  const source=entry.meaningSources?.[target];
@@ -91,7 +96,7 @@ function label(entry,target,lang){
 }
 function knownFailedAuto(entry,target,value){
  if(entry.updatedAt||entry.manual||entry.meaningSources?.[target]==='user')return false;
- return (!valid(value,entry.text))&&Object.entries(S.transCache||{}).some(([key,cached])=>key.startsWith('ko_'+target+'_vocab_')&&cached===value);
+ return (!valid(value,entry.text,target))&&Object.entries(S.transCache||{}).some(([key,cached])=>new RegExp('^ko_'+target+'_vocab_(?:v[0-9]+_)?'+target+'_').test(key)&&key.replace(new RegExp('^ko_'+target+'_vocab_(?:v[0-9]+_)?'+target+'_'),'')===entry.text&&cached===value);
 }
 async function reveal(entry,target){
  entry.meanings=entry.meanings||{};
@@ -99,10 +104,10 @@ async function reveal(entry,target){
  if(existing&&!knownFailedAuto(entry,target,existing)){if(!entry.meanings[target])entry.meanings[target]=existing;return existing;}
  // Preserve only positively identified failed auto-output before retrying.
  if(existing){entry.translationRecovery=entry.translationRecovery||{};entry.translationRecovery[target]=existing;}
- const before=entry.meanings[target],fingerprint=JSON.stringify([entry.text,entry.context,entry.example,entry.type,entry.updatedAt]);const result=await resolve(entry,target);if(entry.meanings[target]!==before||JSON.stringify([entry.text,entry.context,entry.example,entry.type,entry.updatedAt])!==fingerprint)return entry.meanings[target];entry.meanings[target]=result.value;if(result.row?.example&&!entry.example)entry.example=result.row.example;
+ const before=entry.meanings[target],beforeFingerprint=fingerprint(entry,target);const result=await resolve(entry,target);if(entry.meanings[target]!==before||fingerprint(entry,target)!==beforeFingerprint)return entry.meanings[target];entry.meanings[target]=result.value;if(result.row?.example&&!entry.example)entry.example=result.row.example;
  if(result.details)entry.translationDetails={...(entry.translationDetails||{}),[target]:result.details};
  entry.meaningSources={...(entry.meaningSources||{}),[target]:result.source};
  if(target==='ja')entry.ja=result.value;return result.value;
 }
-window.MALBIT_VOCAB_TRANSLATION={authored,valid,publicEntry,cloud,machine,resolve,reveal,label,knownFailedAuto};
+window.MALBIT_VOCAB_TRANSLATION={authored,valid,contextOf,fingerprint,cacheVersion:CACHE_VERSION,publicEntry,cloud,machine,resolve,reveal,label,knownFailedAuto};
 })();

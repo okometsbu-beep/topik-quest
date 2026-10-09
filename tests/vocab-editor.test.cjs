@@ -38,3 +38,35 @@ test('static client exposes an AI adapter boundary without provider keys or dire
   assert.match(source,/MALBIT_AI_ADAPTER/);assert.match(source,/enrichVocabulary/);assert.match(source,/translateVocabulary/);
   assert.doesNotMatch(source,/api\.openai\.com|generativelanguage\.googleapis\.com|sk-[A-Za-z0-9]/);
 });
+
+function interactiveRuntime(entry){
+ const c=runtime(),fields={vocabEditTerm:{value:entry.text},vocabEditType:{value:'word'},vocabEditDefinitionKo:{value:''},vocabEditNote:{value:entry.note||''},vocabEditMeaning:{value:entry.meanings?.ja||''},vocabEditEtymology:{value:''}},example={value:entry.examples?.[0]?.ko||entry.example||''};
+ c.document.getElementById=id=>fields[id]||null;c.document.querySelectorAll=()=>[{querySelector:selector=>selector==='[data-example-ko]'?example:{value:''}}];c.S.vocab=[entry];c.malbitOpenVocabEditor(0);return{c,fields,example};
+}
+test('edited example overrides translation context without destroying source or saved manual meaning',async()=>{
+ const original={text:'배',context:'배를 먹어요.',example:'배를 먹어요.',meanings:{ja:'私の意味',en:'my meaning'},meaningSources:{ja:'user'},note:'keep',dueAt:123,repetitions:7};const {c,example}=interactiveRuntime(original);let request,options;
+ c.MALBIT_VOCAB_TRANSLATION={resolve:async(e,t,o)=>{request=e;options=o;return{value:'船',source:'machine'}},valid:()=>true};example.value='배를 타요.';await c.malbitVocabAutoTranslate({forceRefresh:true});
+ assert.equal(request.context,original.context);assert.equal(request.example,'배를 타요.');assert.equal(request.translationContext,'배를 타요.');assert.equal(options.forceRefresh,true);assert.equal(c.S.vocab[0].meanings.ja,'私の意味');assert.equal(c.S.vocab[0].dueAt,123);
+ c.malbitCloseVocabEditor();assert.equal(c.S.vocab[0],original);assert.equal(original.meanings.en,'my meaning');
+});
+test('late editor responses cannot replace meaning after example, type, language or screen changes',async()=>{
+ for(const change of [x=>x.example.value='배를 타요.',x=>x.fields.vocabEditType.value='grammar',x=>x.c.malbitVocabEditorTarget('en'),x=>x.c.malbitCloseVocabEditor()]){
+ const x=interactiveRuntime({text:'배',example:'배를 먹어요.',meanings:{ja:'手入力'}});let finish;x.c.MALBIT_VOCAB_TRANSLATION={resolve:()=>new Promise(r=>finish=r),valid:()=>true};const pending=x.c.malbitVocabAutoTranslate();change(x);finish({value:'古い翻訳',source:'machine'});await pending;
+ if(x.c.S.view==='vocabEditor'){x.c.malbitSaveVocabEditor();assert.notEqual(x.c.S.vocab[0].meanings.ja,'古い翻訳')}else assert.equal(x.c.S.vocab[0].meanings.ja,'手入力');
+ }
+});
+test('Recheck meaning explicitly requests fresh cache evaluation',async()=>{
+ const x=interactiveRuntime({text:'배',example:'배를 먹어요.',meanings:{ja:'手入力'}});let options;x.c.MALBIT_VOCAB_TRANSLATION={resolve:async(e,t,o)=>{options=o;return{value:'梨',source:'authored'}},valid:()=>true};await x.c.malbitVocabRecheck(0);assert.equal(options.forceRefresh,true);assert.equal(x.c.S.vocab[0].meanings.ja,'手入力');
+});
+test('edited context survives explicit save and reopen while source context stays intact',async()=>{
+ const x=interactiveRuntime({text:'배',context:'배를 먹어요.',example:'배를 먹어요.',meanings:{ja:'手入力'},dueAt:123});x.example.value='배를 타요.';x.c.malbitSaveVocabEditor();assert.equal(x.c.S.vocab[0].translationContext,'배를 타요.');assert.equal(x.c.S.vocab[0].context,'배를 먹어요.');assert.equal(x.c.S.vocab[0].dueAt,123);
+ x.c.malbitOpenVocabEditor(0);let request;x.c.MALBIT_VOCAB_TRANSLATION={resolve:async e=>{request=e;return{value:'船',source:'machine'}},valid:()=>true};await x.c.malbitVocabAutoTranslate();assert.equal(request.translationContext,'배를 타요.');
+});
+test('removing or reordering primary example updates explicit context including empty',async()=>{
+ for(const remove of [false,true]){
+ const x=interactiveRuntime({text:'배',context:'원래 문맥',examples:[{ko:'배를 먹어요.',translations:{}},{ko:'배를 타요.',translations:{}}],meanings:{ja:'手入力'}});
+ let rows=['배를 먹어요.','배를 타요.'];x.c.document.querySelectorAll=()=>rows.map(ko=>({querySelector:s=>({value:s==='[data-example-ko]'?ko:''})}));
+ if(remove){x.c.malbitVocabExampleRemove(1);rows=['배를 먹어요.'];x.c.malbitVocabExampleRemove(0);rows=[]}else{x.c.malbitVocabExampleMove(1,-1);rows.reverse()}
+ let request;x.c.MALBIT_VOCAB_TRANSLATION={resolve:async e=>{request=e;return{value:'船',source:'machine'}},valid:()=>true};await x.c.malbitVocabAutoTranslate();assert.equal(request.translationContext,remove?'':'배를 타요.');assert.equal(request.context,'원래 문맥');
+ }
+});

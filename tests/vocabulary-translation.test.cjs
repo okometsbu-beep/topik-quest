@@ -32,3 +32,46 @@ test('actual consent bridge cancel closes modal and performs no translation',asy
 test('actual bridge submits only after explicit approval and a verification token',async()=>{const {c,elements}=modalRuntime();let calls=0,verification=0;c.fetch=async(_url,options)=>{calls++;const body=JSON.parse(options.body);assert.equal(body.term,'학교');assert.equal(body.learningTextApproved,true);assert.equal(body.turnstileToken,'verified');return{ok:true,json:async()=>cloudResult()}};c.turnstile={render(_node,opts){verification++;queueMicrotask(()=>opts.callback('verified'));return 0},remove(){}};const pending=c.MALBIT_VOCAB_TRANSLATION.resolve({text:'학교'},'en');assert.equal(calls,0);assert.equal(verification,0);await elements.filter(e=>e.tag==='button')[0].onclick();const result=await pending;assert.equal(result.value,'school');assert.equal(calls,1);assert.equal(verification,1);assert.equal(elements.find(e=>e.tag==='dialog').removed,true)});
 
 test('real public connection is present but inactive until release approval',async()=>{const c=runtime();assert.equal(c.MALBIT_TRANSLATION_CONFIG.enabled,false);assert.equal(c.MALBIT_TRANSLATION_CONFIG.endpoint,'https://harumal-vocabulary.okometsbu.workers.dev/v1/vocabulary');assert.equal(c.MALBIT_TRANSLATION_CONFIG.turnstileSitekey,'0x4AAAAAAFR8zumesIyXF9zt');await assert.rejects(c.MALBIT_VOCAB_TRANSLATION.resolve({text:'새로운말'},'ja'),/not configured/);const config=JSON.parse(fs.readFileSync('services/vocabulary-worker/wrangler.jsonc','utf8'));assert.equal(config.workers_dev,true);assert.equal(config.vars.FREE_PLAN_VERIFIED,'true');assert.equal(config.vars.ENABLED,'false');assert.equal(config.vars.ALLOWED_ORIGINS,'https://okometsbu-beep.github.io');assert.equal(config.ai.binding,'AI');assert.equal(config.ratelimits[0].name,'RATE_LIMITER');assert.equal(config.vars.TURNSTILE_SECRET,undefined)});
+
+test('all routes prefer source context over stale legacy examples and honor explicit edited context',()=>{
+ const c=runtime();c.MALBIT_SHORTS_DECKS={1:[{term:'배',example:'배를 먹어요.',meaning:{ja:'梨'}},{term:'배',example:'배를 타요.',meaning:{ja:'船'}}]};
+ const api=c.MALBIT_VOCAB_TRANSLATION,entry={text:'배',context:'배를 타요.',example:'배를 먹어요.',examples:[{ko:'배를 먹어요.'}]};
+ assert.equal(api.authored(entry,'ja').meaning.ja,'船');assert.equal(api.contextOf(entry),'배를 타요.');assert.equal(api.publicEntry(entry),true);
+ entry.translationContext='배를 먹어요.';assert.equal(api.authored(entry,'ja').meaning.ja,'梨');assert.equal(api.contextOf(entry),'배를 먹어요.');
+ entry.translationContext='';assert.equal(api.contextOf(entry),'');assert.equal(api.authored(entry,'ja'),null);
+});
+test('explicit recheck bypasses current cache and approval cancellation preserves it',async()=>{
+ let calls=0,approvals=0;const c=runtime(async()=>{calls++;return{ok:true,json:async()=>cloudResult()}});configure(c);c.MALBIT_TRANSLATION_CONFIG.getTurnstileToken=async()=>{approvals++;return'token'};
+ const api=c.MALBIT_VOCAB_TRANSLATION,entry={text:'학교',context:'학교에 가요.'};await api.resolve(entry,'en');await api.resolve(entry,'en');assert.equal(calls,1);
+ await api.resolve(entry,'en',{forceRefresh:true});assert.equal(calls,2);assert.equal(approvals,2);const cache=JSON.stringify(c.S.transCache);
+ c.MALBIT_TRANSLATION_CONFIG.getTurnstileToken=async()=>{throw Error('cancelled')};await assert.rejects(api.resolve(entry,'en',{forceRefresh:true}),/cancelled/);assert.equal(JSON.stringify(c.S.transCache),cache);assert.equal(calls,2);
+ assert.ok(Object.keys(c.S.transCache)[0].includes(api.cacheVersion));
+});
+test('prior cloud cache version is retained but not reused',async()=>{
+ let calls=0;const c=runtime(async()=>{calls++;return{ok:true,json:async()=>cloudResult()}});configure(c);const key='vocab_cloud_v1_'+JSON.stringify(['학교','','en','word']);c.S.transCache[key]=cloudResult().result;
+ await c.MALBIT_VOCAB_TRANSLATION.resolve({text:'학교'},'en');assert.equal(calls,1);assert.equal(c.S.transCache[key].meaning,'school');
+});
+test('late reveal response cannot overwrite changed examples, kind or manual provenance',async()=>{
+ for(const mutate of [e=>e.examples[0].ko='새 예문이에요.',e=>e.partOfSpeech='grammar',e=>e.translationContext='다른 원문이에요.',e=>e.meaningSources={en:'user'}]){
+ let done;const c=runtime(async()=>({ok:true,json:()=>new Promise(r=>done=r)}));configure(c);const entry={text:'학교',examples:[{ko:'학교에 가요.'}]};const pending=c.MALBIT_VOCAB_TRANSLATION.reveal(entry,'en');await new Promise(r=>setTimeout(r,0));mutate(entry);done(cloudResult());await pending;assert.equal(entry.meanings.en,undefined);
+ }
+});
+test('target language is checked in known failed auto recovery while manual values stay untouched',()=>{
+ const c=runtime(),api=c.MALBIT_VOCAB_TRANSLATION;c.S.transCache.ko_ja_vocab_v20_ja_기에='GYE';const entry={text:'기에'};assert.equal(api.knownFailedAuto(entry,'ja','GYE'),true);
+ for(const protection of [{manual:true},{updatedAt:123},{meaningSources:{ja:'user'}}])assert.equal(api.knownFailedAuto({...entry,...protection},'ja','GYE'),false);
+});
+test('parallel language reveals preserve both results without cross-language invalidation',async()=>{
+ const pending={};const c=runtime(async(_url,options)=>({ok:true,json:()=>new Promise(resolve=>pending[JSON.parse(options.body).target]=resolve)}));configure(c);
+ const entry={text:'학교',examples:[{ko:'학교에 가요.',translations:{}}]},api=c.MALBIT_VOCAB_TRANSLATION;
+ const en=api.reveal(entry,'en'),ja=api.reveal(entry,'ja');await new Promise(r=>setTimeout(r,0));pending.en(cloudResult());assert.equal(await en,'school');
+ entry.examples[0].translations.en='I go to school.';
+ const result=cloudResult();Object.assign(result.result,{target:'ja',meaning:'学校',explanation:'学ぶ場所です。',example:{ko:'학교에 가요.',translation:'学校に行きます。'}});pending.ja(result);assert.equal(await ja,'学校');assert.equal(entry.meanings.en,'school');assert.equal(entry.meanings.ja,'学校');
+});
+test('same cached error on a different term is not proof a saved meaning was automatic',async()=>{
+ const c=runtime();c.S.transCache.ko_ja_vocab_v20_ja_기에='GYE';c.MALBIT_SHORTS_DECKS={1:[{term:'기억',meaning:{ja:'記憶'}}]};const entry={text:'기억',meanings:{ja:'GYE'},dueAt:123};const before=JSON.stringify(entry);
+ await c.MALBIT_VOCAB_TRANSLATION.reveal(entry,'ja');assert.equal(JSON.stringify(entry),before);
+});
+test('forced refresh transport and invalid output failures preserve previous good cache',async()=>{
+ const c=runtime(async()=>({ok:true,json:async()=>cloudResult()}));configure(c);const api=c.MALBIT_VOCAB_TRANSLATION;await api.resolve({text:'학교'},'en');const before=JSON.stringify(c.S.transCache);
+ for(const failure of [async()=>{throw Error('offline')},async()=>({ok:true,json:async()=>({bad:true})})]){c.fetch=failure;await assert.rejects(api.resolve({text:'학교'},'en',{forceRefresh:true}));assert.equal(JSON.stringify(c.S.transCache),before)}
+});

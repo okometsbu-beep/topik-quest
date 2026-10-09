@@ -1,0 +1,163 @@
+{
+  "schemaVersion": 1,
+  "suiteId": "translation-semantic-synthetic-20261009",
+  "createdAt": "2026-10-09",
+  "provenance": "Twelve newly authored synthetic cases from the translation improvement QA plan, section 3 (2026-10-09). No learner vocabulary or private context is included.",
+  "syntheticOnly": true,
+  "evaluation": {
+    "status": "unrun",
+    "actualModelRequests": 0,
+    "records": []
+  },
+  "referenceModel": {
+    "provider": "cloudflare",
+    "model": "@cf/google/gemma-4-26b-a4b-it",
+    "referenceOnly": true
+  },
+  "rubric": {
+    "requiresHumanSemanticReview": true,
+    "allowEquivalentParaphrases": true,
+    "exactStringMatchIsSufficient": false,
+    "requirements": [
+      "The primary meaning must explain the exact selected term in its supplied context.",
+      "Meaning and explanation must agree, including polarity, time, condition, cause, and state where relevant.",
+      "The generated Korean example and its translation must demonstrate the same intended sense.",
+      "Other senses may appear as alternatives but must not replace or contradict the context's primary sense.",
+      "A target-language character alone does not establish semantic correctness."
+    ],
+    "outcomes": ["pass", "fail", "safe_incomplete", "unrun"],
+    "safeIncomplete": "Uncertain responses and refusals are safe_incomplete, never pass. Report them separately and do not include them in the correct-answer count.",
+    "routes": ["grammar", "authored", "cache", "mock", "machine"],
+    "liveModelEvidence": "A machine label alone is insufficient: record whether the Worker request occurred and whether actual inference occurred. Cache, local dictionaries, and mocks are not live model evidence.",
+    "requiredRecordFields": ["caseId", "input", "codeVersion", "model", "promptVersion", "route", "workerRequestOccurred", "modelInferenceOccurred", "rawResponse", "outcome", "rationale"],
+    "aggregation": "Report all 12 outcomes and route counts. For verified actual-model attempts, show pass / attempted, fail, and safe_incomplete counts. Report any answered-only rate separately with its explicit denominator; never silently remove incomplete responses or count local/cache/mock passes as model passes."
+  },
+  "contrasts": [
+    {"caseIds": [4, 5], "dimension": "reason versus suitability"},
+    {"caseIds": [6, 12], "dimension": "result versus future intention"},
+    {"caseIds": [7, 8], "dimension": "same term and target, different context, cache identity, and primary meaning"},
+    {"caseIds": [10, 11], "dimension": "writing versus bitter taste"}
+  ],
+  "cases": [
+    {
+      "id": 1,
+      "input": {"term": "켠 채로", "context": "불을 켠 채로 잠이 들었어요.", "target": "ja", "kind": "grammar"},
+      "expected": {
+        "primarySense": "maintained-state",
+        "acceptableParaphrases": ["明かりをつけたまま", "つけた状態で"],
+        "requiredInterpretation": "불이 켜진 상태를 유지한 채 잠들었다는 의미를 보존한다.",
+        "clearFailures": ["チェロ", "불을 끄고 잤다는 해석", "상태 유지 의미 누락"]
+      }
+    },
+    {
+      "id": 2,
+      "input": {"term": "누르기만 하면", "context": "이 버튼을 누르기만 하면 문이 열려요.", "target": "ja", "kind": "grammar"},
+      "expected": {
+        "primarySense": "sufficient-condition",
+        "acceptableParaphrases": ["押すだけで", "押しさえすれば"],
+        "requiredInterpretation": "버튼을 누르는 것만으로 문이 열린다는 충분조건을 설명한다.",
+        "clearFailures": ["チェス", "계속 누르기만 한다는 해석으로 충분조건을 잃음"]
+      }
+    },
+    {
+      "id": 3,
+      "input": {"term": "읽다가", "context": "책을 읽다가 잠이 들었어요.", "target": "ja", "kind": "grammar"},
+      "expected": {
+        "primarySense": "event-during-ongoing-action",
+        "acceptableParaphrases": ["読んでいる途中で", "読んでいて"],
+        "requiredInterpretation": "읽는 도중 잠든 것으로 설명하며 완료나 의도적 중단을 단정하지 않는다.",
+        "clearFailures": ["たが", "책을 다 읽은 뒤라고 단정", "의도적으로 읽기를 그만두었다고 단정"]
+      }
+    },
+    {
+      "id": 4,
+      "input": {"term": "좋기에", "context": "날씨가 좋기에 산책을 나갔어요.", "target": "ja", "kind": "grammar"},
+      "expected": {
+        "primarySense": "reason-or-basis",
+        "acceptableParaphrases": ["天気がよいので", "よかったので"],
+        "requiredInterpretation": "좋은 날씨가 산책의 이유나 근거임을 설명한다.",
+        "clearFailures": ["GYE", "날씨를 좋게 하는 데 적합하다는 평가 용법"]
+      }
+    },
+    {
+      "id": 5,
+      "input": {"term": "공부하기에 좋은", "context": "이 도서관은 조용해서 공부하기에 좋은 장소예요.", "target": "ja", "kind": "grammar"},
+      "expected": {
+        "primarySense": "suitability-for-activity",
+        "acceptableParaphrases": ["勉強するのによい", "勉強に適した"],
+        "requiredInterpretation": "공부라는 활동에 적합한 장소라는 평가를 설명한다.",
+        "clearFailures": ["공부하기 때문에 좋은 장소라는 인과만 제시", "장소 평가 의미 누락"]
+      }
+    },
+    {
+      "id": 6,
+      "input": {"term": "아낀 셈이다", "context": "택시 대신 걸어왔으니 돈을 아낀 셈이다.", "target": "ja", "kind": "grammar"},
+      "expected": {
+        "primarySense": "effective-result",
+        "acceptableParaphrases": ["結果として節約したことになる", "節約したといえる"],
+        "requiredInterpretation": "걸어온 결과 돈을 절약한 것으로 볼 수 있다는 의미를 설명한다.",
+        "clearFailures": ["節約するつもりだ", "계산이나 셈하기만 설명"]
+      }
+    },
+    {
+      "id": 7,
+      "input": {"term": "배", "context": "잘 익은 배를 깎아서 접시에 담았어요.", "target": "ja", "kind": "word"},
+      "expected": {
+        "primarySense": "pear-fruit",
+        "acceptableParaphrases": ["梨"],
+        "requiredInterpretation": "현재 문맥의 주요 뜻은 깎아 먹는 과일인 배이다.",
+        "clearFailures": ["船을 주요 뜻으로 제시", "腹만 주요 뜻으로 제시"]
+      }
+    },
+    {
+      "id": 8,
+      "input": {"term": "배", "context": "배를 타고 섬으로 건너갔어요.", "target": "ja", "kind": "word"},
+      "expected": {
+        "primarySense": "boat-vessel",
+        "acceptableParaphrases": ["船", "船舶"],
+        "requiredInterpretation": "현재 문맥의 주요 뜻은 섬에 갈 때 타는 배이며 7번의 과일 뜻과 구별한다.",
+        "clearFailures": ["梨를 주요 뜻으로 제시", "腹만 주요 뜻으로 제시"]
+      }
+    },
+    {
+      "id": 9,
+      "input": {"term": "밥은커녕 물도", "context": "너무 바빠서 밥은커녕 물도 못 마셨어요.", "target": "en", "kind": "grammar"},
+      "expected": {
+        "primarySense": "not-even-basic-b-let-alone-a",
+        "acceptableParaphrases": ["not even water, let alone a meal"],
+        "requiredInterpretation": "밥은 물론 더 기본적인 물도 마시지 못했다는 부정과 강조 방향을 보존한다.",
+        "clearFailures": ["not even a meal, let alone water", "물은 마셨다는 해석"]
+      }
+    },
+    {
+      "id": 10,
+      "input": {"term": "쓰다", "context": "여기서 쓰다는 종이에 글자를 적는다는 뜻이에요.", "target": "en", "kind": "word"},
+      "expected": {
+        "primarySense": "write-text",
+        "acceptableParaphrases": ["to write", "put words or letters on paper"],
+        "requiredInterpretation": "종이에 글자를 적는 동작이 현재 문맥의 주요 뜻이다.",
+        "clearFailures": ["wear를 주요 뜻으로 제시", "bitter를 주요 뜻으로 제시", "spend를 주요 뜻으로 제시"]
+      }
+    },
+    {
+      "id": 11,
+      "input": {"term": "쓰다", "context": "이 약은 맛이 쓰다.", "target": "zh", "kind": "word"},
+      "expected": {
+        "primarySense": "bitter-taste",
+        "acceptableParaphrases": ["苦", "味道苦"],
+        "requiredInterpretation": "약의 쓴맛이 현재 문맥의 주요 뜻이다.",
+        "clearFailures": ["写를 주요 뜻으로 제시", "戴를 주요 뜻으로 제시", "使用를 주요 뜻으로 제시"]
+      }
+    },
+    {
+      "id": 12,
+      "input": {"term": "갈 셈이다", "context": "나는 내년에 한국에 갈 셈이다.", "target": "zh", "kind": "grammar"},
+      "expected": {
+        "primarySense": "future-intention",
+        "acceptableParaphrases": ["打算去韩国", "计划去"],
+        "requiredInterpretation": "내년에 가려는 미래의 계획이나 의도이며 이미 간 결과가 아니다.",
+        "clearFailures": ["算是已经去了韩国", "이미 완료된 결과라는 해석"]
+      }
+    }
+  ]
+}
