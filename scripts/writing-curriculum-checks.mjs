@@ -72,7 +72,7 @@ export async function verifyWritingCurriculum({evaluate,tap,shot,setViewport,sen
     })()`);
     assert.equal(r.theme,theme,label+': theme');
     assert.equal(r.css,true,label+': writing stylesheet loaded');
-    assert.equal(r.nav,'nav_learn',label+': learning navigation stays selected');
+    assert.equal(r.nav,'nav_home',label+': learning navigation stays selected');
     assert.ok(r.rootWidth<=r.innerWidth+1&&r.bodyWidth<=r.innerWidth+1&&r.contentOverflow<=1,label+': horizontal overflow '+JSON.stringify(r));
     assert.deepEqual(r.small,[],label+': touch target below 44px');
     assert.deepEqual(r.outside,[],label+': interactive control leaves viewport');
@@ -97,8 +97,8 @@ export async function verifyWritingCurriculum({evaluate,tap,shot,setViewport,sen
     await evaluate(`setView('learn');S.lang='ko';S.vocab=[...S.vocab,{text:'쓰기 CI 보존',ja:'保存用',favorite:true,dueAt:123,interval:3,notes:'writing-ci-only'}];save();localStorage.setItem('${KEY}',JSON.stringify({schema:1,createdAt:new Date().toISOString(),revision:0,drafts:{},attempts:[],readiness:{},route:{page:'course'},firstIndependentAt:null}))`);
     await send('Page.reload',{ignoreCache:true});await ready();
     const legacyBefore=await readLegacy();
-    await tap('#nav_learn',0,100);
-    await tap(`.harumalCourse[onclick="harumalWritingGo('course')"]`,0,100);
+    await tap('#nav_home',0,100);await tap('[data-hub-action="practice"]',0,100);
+    await tap(`.hubRow[onclick="harumalWritingGo('course')"]`,0,100);
     await expectRoute('course');await capture('01-course');
     await click("harumalWritingGo('map')");await expectRoute('map');await capture('02-map');
     await tap('.wcCurrent',0,100);await expectRoute('unit');await capture('03-unit');
@@ -134,8 +134,8 @@ export async function verifyWritingCurriculum({evaluate,tap,shot,setViewport,sen
     await evaluate('history.back()');
     await waitFor(`S.view==='writingCourse'&&HARUMAL_WRITING.engine.getState().route.page==='item'&&document.querySelector('#wcAnswer')?.value===${JSON.stringify(draft)}`,'browser Back must restore the actual draft route');
     await tap('.wcTopline .wcButton--icon',1,100);
-    assert.equal(await evaluate('S.view'),'learn','Close leaves the writing corner');
-    await tap(`.harumalCourse[onclick="harumalWritingGo('course')"]`,0,100);
+    assert.equal(await evaluate('S.view'),'learn','Close leaves the writing corner');await tap('[data-hub-action="practice"]',0,100);
+    await tap(`.hubRow[onclick="harumalWritingGo('course')"]`,0,100);
     await click("harumalWritingGo('map')");await click("harumalWritingGo('unit')");await click("harumalWritingGo('group','independent-new')");await click("harumalWritingStart('I01')");
     assert.equal(await evaluate(`document.querySelector('#wcAnswer')?.value`),draft,'Close/reopen keeps the unfinished draft');
     await fill('공원이 넓어서 여기에서 산책해요.','I01');
@@ -150,6 +150,8 @@ export async function verifyWritingCurriculum({evaluate,tap,shot,setViewport,sen
     assert.equal(attempt.mode,'independent');assert.equal(attempt.helpUsed,false);assert.equal(attempt.evaluation.form,'observed');
     await click(`harumalWritingSelfCheck('${attempt.id}','checked')`);
     assert.equal((await state()).attempts.at(-1).selfCheck.source,'learner');await assertHonest('self-check');
+    const clearance=await evaluate(`(()=>{const sc=document.querySelector('.wcScreen.wcHasPrimary'),bar=sc.querySelector('.wcPrimaryAction'),r=bar.getBoundingClientRect();return{padding:parseFloat(getComputedStyle(sc).paddingBottom),required:r.height+innerHeight-r.bottom+24}})()`);
+    assert.ok(clearance.padding>=clearance.required-1,`writing feedback must reserve fixed-action clearance: ${JSON.stringify(clearance)}`);
     await click("harumalWritingGo('item','I01')");await click("harumalWritingSubmit('I01')");
     assert.equal((await state()).attempts.length,3,'reopening and resubmitting unchanged text cannot duplicate evidence');
     await tap('.wcTopline .wcButton--icon',0,100);await tap('.wcTopline .wcButton--icon',0,100);
@@ -177,6 +179,7 @@ export async function verifyWritingCurriculum({evaluate,tap,shot,setViewport,sen
     assert.equal(screenshots,72,'nine writing states × four widths × two themes');
   }catch(error){
     journeyFailure=error;
+    try{await shot('writing-course-failure.png')}catch{}
     throw error;
   }finally{
     // Restore byte-for-byte storage (including the recovery snapshot) even when

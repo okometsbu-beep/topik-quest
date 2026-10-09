@@ -67,8 +67,13 @@ for (const level of [1, 2]) {
 }
 delete context.window.MALBIT_LISTENING_ENABLED;
 
-assert.equal(bank.shorts(1).length, 124);
-assert.equal(bank.shorts(2).length, 62);
+for (const level of [1, 2]) {
+  const deck = bank.shorts(level);
+  assert.ok(deck.length > 0, `TOPIK ${level} retains quick vocabulary practice`);
+  assert.ok(deck.every(item => bank.byId(item.bankId).itemType === 'vocabulary_blank'));
+  assert.ok(deck.every(item => item.type === 'word'));
+  assert.ok(!deck.some(item => ['grammar_blank', 'same_meaning'].includes(bank.byId(item.bankId).itemType)), 'sentence grammar/paraphrases cannot leak into vocabulary Shorts');
+}
 
 const listening = [], readingWriting = [];
 assert.equal(bank.activateTopik2Set(7, listening, readingWriting), true);
@@ -223,3 +228,17 @@ const noisyProblemHeader = /^\s*[<〈《][^>〉》\n]{2,120}[>〉》]\s*(?:\r?\n
 assert.ok(bank.items.every((item) => [item.instruction, item.passage, item.script, item.prompt]
   .every((value) => !noisyProblemHeader.test(String(value || '')))), 'generated problem headers should be removed');
 console.log('question-bank.test: 2,144 items, 16,768 shuffled multilingual instructor explanations, clean prompts, 12 fixed mock sets, and no-repeat policies passed');
+
+// Exercise the actual runtime deck builder, not only the bank subset.
+vm.runInContext(fs.readFileSync('data/shorts-levels.js', 'utf8'), context);
+const topikSource = fs.readFileSync('topik1.js', 'utf8');
+vm.runInContext(`const BANK=window.MALBIT_BANK;${topikSource.slice(topikSource.indexOf('const SHORTS=['), topikSource.indexOf('const HOME_HERO='))}`, context);
+for (const level of [1, 2]) {
+  const original = context.window.MALBIT_SHORTS_DECKS[level];
+  const quick = context.window.HARUMAL_SHORTS_DECK(level);
+  assert.ok(original.some(item => item.type === 'grammar'), 'full learning library keeps grammar content');
+  assert.ok(quick.length > 50, 'fast vocabulary deck remains sufficiently populated');
+  assert.ok(quick.every(item => ['word', 'idiom', 'expression'].includes(item.type)));
+  assert.ok(!quick.some(item => item.type === 'grammar' || /^-/.test(item.term)), 'grammar endings cannot enter the vocabulary loop');
+  assert.ok(quick.some(item => item.term === (level === 1 ? '마음에 들다' : '미루다')), 'lexical expressions and word definitions remain available');
+}

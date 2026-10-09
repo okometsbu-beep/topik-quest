@@ -13,7 +13,8 @@
   const DIFFICULTY = { e: 'easy', m: 'medium', h: 'hard', v: 'very_hard' };
   const RANK = { easy: 1, medium: 2, hard: 3, very_hard: 4 };
   const SYMBOLS = ['①', '②', '③', '④'];
-  const SHORT_TYPES = new Set(['vocabulary_blank', 'grammar_blank', 'same_meaning']);
+  // Shorts is lexical recall only; sentence paraphrase and grammar stay in full practice.
+  const SHORT_TYPES = new Set(['vocabulary_blank']);
   const NOISY_PROBLEM_HEADER = /^\s*[<〈《][^>〉》\n]{2,120}[>〉》]\s*(?:\r?\n|$)/gmu;
   const cleanProblemText = (value) => String(value || '').replace(NOISY_PROBLEM_HEADER, '').trim();
   const ITEM_GROUPS = {
@@ -578,7 +579,7 @@
       .map((item) => {
         const explanationI18n = explanationPack(item, item.answerIndex, item.options);
         return ({
-        type: item.itemType === 'grammar_blank' ? 'grammar' : 'word', bankId: item.id,
+        type: 'word', bankId: item.id,
         term: [item.passage, item.prompt].filter(Boolean).join('\n'), choices: item.options,
         answerIndex: item.answerIndex, explanationKo: explanationI18n.ko, explanationJa: explanationI18n.ja, explanationI18n,
         difficulty: item.difficulty, targetSkills: item.targetSkills

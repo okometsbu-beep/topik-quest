@@ -2,6 +2,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import { repairListeningScript } from './lib/listening-script-repairs.mjs';
+import { repairListeningChoices } from './lib/listening-choice-repairs.mjs';
 
 const input = path.resolve(process.argv[2] || '../upload/02-topik_question_bank.json');
 const root = path.resolve(import.meta.dirname, '..');
@@ -35,10 +37,10 @@ const rows = items.map((item) => {
     item.item_type,
     difficultyCode[item.difficulty],
     cleanProblemText(item.instruction),
-    cleanProblemText(item.passage),
-    cleanProblemText(item.audio_script),
+    cleanProblemText(item.section === 'listening' ? repairListeningScript(item.passage) : item.passage),
+    cleanProblemText(item.section === 'listening' ? repairListeningScript(item.audio_script) : item.audio_script),
     cleanProblemText(item.prompt),
-    item.options || [],
+    repairListeningChoices(item),
     writing ? item.answer : item.answer - 1,
     item.explanation_ko || '',
     item.explanation_ja || '',

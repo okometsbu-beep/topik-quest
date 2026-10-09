@@ -1,7 +1,13 @@
-// Suppress native selection/callouts while preserving app-owned vocabulary holds and typing.
+// Keep native range selection available on learning text; suppress unrelated UI callouts.
 (function(){
 'use strict';
-for(const type of ['contextmenu','selectstart','copy','cut','paste'])document.addEventListener(type,e=>e.preventDefault(),{capture:true});
+for(const type of ['contextmenu','selectstart','copy','cut','paste'])document.addEventListener(type,e=>{
+ const target=e.target?.nodeType===3?e.target.parentElement:e.target;
+ const learningText=target?.closest?.('.selectable,.vocab-zone');
+ const control=target?.closest?.('input,textarea,select,button,a,[contenteditable="true"],[role="button"]');
+ if(learningText&&!control&&['contextmenu','selectstart','copy'].includes(type))return;
+ e.preventDefault();
+},{capture:true});
 let timer=null,start=null;
 const cancel=()=>{clearTimeout(timer);timer=null;start=null};
 document.addEventListener('touchstart',e=>{

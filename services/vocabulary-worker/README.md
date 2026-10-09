@@ -1,6 +1,15 @@
-# Harumal Cloudflare vocabulary adapter — prepared, NOT deployed
+# Harumal Cloudflare vocabulary adapter — deployed, inference disabled
 
-Checked against Cloudflare documentation 2026-10-09. This folder is local preparation only. No account, API token, OAuth grant, binding or endpoint has been created. Live model quality has NOT been verified.
+Checked against Cloudflare documentation 2026-10-09. The parent deployment task verified the Worker, AI/RATE_LIMITER bindings and user-entered Turnstile secret on 2026-10-09 05:01 UTC. Workers Free/current US$0 was verified by that task. Live model quality has NOT been verified.
+
+## Current rollout state
+- Endpoint: https://harumal-vocabulary.okometsbu.workers.dev/v1/vocabulary
+- Public Turnstile site key: 0x4AAAAAAFR8zumesIyXF9zt; allowed hostname okometsbu-beep.github.io; action vocabulary.
+- Worker: workers_dev=true, FREE_PLAN_VERIFIED=true, ENABLED=false. Client: enabled=false with real public endpoint/site key.
+- Runtime secret TURNSTILE_SECRET was entered by the user in Cloudflare. Its value is not in this repo and must remain server-only.
+- Wrangler configuration is the deployment source of truth. Dashboard-only edits can be reverted by a later deploy. Current route/free-plan values are synchronized here; do not change ENABLED before live QA and approval. Recheck Free status if the account plan changes.
+- Before any remote deployment of these local changes, use the parent release task's current publication authorization; do not independently push.
+- Remaining rollout gate: live consent/cancel, Turnstile hostname/action, quota/error behavior, seven grammar cases plus ambiguous vocabulary in ja/en/zh, and mobile rendering. Mock tests do not prove output quality. Once approved, enable the client and Worker together in a controlled validation/release, then verify the exact deployed versions.
 
 ## Contract and privacy
 - Browser keeps reviewed grammar/deck meanings first. Otherwise sends selected text exactly, its bounded public learning sentence, kind and target language (ja/en/zh). Never the whole vocabulary notebook, user notes or profile.

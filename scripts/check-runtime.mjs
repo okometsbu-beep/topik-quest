@@ -57,7 +57,7 @@ for (const file of [...runtime, ...shell]) assert.ok(existing(file), `runtime ta
 for (let part = 1; part <= 4; part++) before(runtime, `data/question-bank-v1-part${part}.js`, 'question-bank-engine.js');
 before(runtime, 'data/question-bank-practice-v1.js', 'question-bank-engine.js');
 before(runtime, 'site-patch-core.js', 'tts-quality.js');
-before(runtime, 'site-patch-core.js', 'neural-tts.js');
+
 before(runtime, 'site-patch-core.js', 'storage-guard.js');
 before(runtime, 'storage-guard.js', 'topik1.js');
 before(runtime, 'storage-guard.js', 'learning-rewards.js');
@@ -66,7 +66,7 @@ before(runtime, 'data/growth-learning.js', 'growth-learning-engine.js');
 before(runtime, 'data/growth-learning-locales.js', 'growth-learning.js');
 before(runtime, 'growth-learning-engine.js', 'growth-learning.js');
 before(runtime, 'growth-learning.js', 'growth-learning-entrypoints.js');
-before(runtime, 'neural-tts.js', 'tts-quality.js');
+before(runtime, 'listening-audio.js', 'tts-quality.js');
 before(runtime, 'tts-quality.js', 'topik1.js');
 before(runtime, 'tts-quality.js', 'learning-features.js');
 before(runtime, 'question-bank-engine.js', 'topik1.js');

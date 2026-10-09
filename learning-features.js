@@ -283,18 +283,19 @@ if(typeof gameLimit==='function'){
 }
 
 // ----- Korean token normalization -----
-const LEXICAL_WORDS=new Set(['사과','종이','회의','같이','많이','그만','정말','동안','시장','건강','생각','희망','공부','단어','의자','나라','바다','아래','위로','서로','지도']);
+const LEXICAL_WORDS=new Set(['사과','종이','회의','같이','많이','그만','정말','동안','시장','건강','생각','희망','공부','단어','의자','나라','바다','아래','위로','서로','지도','고양이','호랑이','어린이','차이','제대로','스스로','지하도']);
 const ONE_SYLLABLE_STEMS=new Set(['책','집','밥','물','옷','문','길','차','비','빵','말','일','달','돈','손','발','눈','입','귀','방','병','표','산','약','빛','불','꿈','힘','줄','글','칸','곳','때','뒤','앞','속','밖','밤','낮','맛','몸','잠','값','꽃','배','강','숲','벽','돌','땅','풀','나','너','저']);
 const PARTICLES=['에게서는','한테서는','으로부터','로부터','께서는','에게서','한테서','에서는','으로는','이라도','라도','까지','부터','조차','마저','밖에','처럼','만큼','보다','하고','이랑','께서','에서','에게','한테','으로','로는','로','께','랑','와','과','의','에','을','를','은','는','이','가','도','만'].sort((a,b)=>b.length-a.length);
 const KNOWN_FORMS=new Map([['보지도','보다']]);
 const BLOCKED_FRAGMENTS=new Set(['보지']);
 
 function stripParticle(word){
-  if(!/^[가-힣]+$/.test(word)||LEXICAL_WORDS.has(word))return word;
+  const known=new Set([...LEXICAL_WORDS,...[1,2].flatMap(level=>(window.MALBIT_SHORTS_DECKS?.[level]||[]).map(item=>item.term))]);
+  if(!/^[가-힣]+$/.test(word)||known.has(word))return word;
   for(const particle of PARTICLES){
     if(!word.endsWith(particle)||word===particle)continue;
     const stem=word.slice(0,-particle.length);
-    if(stem.length>=2||ONE_SYLLABLE_STEMS.has(stem))return stem;
+    if(known.has(stem)||ONE_SYLLABLE_STEMS.has(stem))return stem;
   }
   return word;
 }
@@ -331,9 +332,9 @@ function termFromToken(target){
   const raw=String(target?.textContent||'').trim(),zone=target?.closest?.('.vocab-zone'),full=String(zone?.textContent||'');
   for(const phrase of PHRASES){
     phrase.re.lastIndex=0;
-    if(phrase.re.test(full)&&phrase.keys.some(k=>raw.includes(k)||k.includes(raw)))return{term:phrase.term,raw};
+    if(phrase.re.test(full)&&phrase.keys.some(k=>raw.includes(k)||k.includes(raw)))return{term:phrase.term,raw,context:full.slice(0,1200)};
   }
-  return{term:normalizeKoreanTerm(raw),raw};
+  return{term:normalizeKoreanTerm(raw),raw,context:full.slice(0,1200)};
 }
 
 // ----- Custom long-press menu -----
@@ -350,13 +351,15 @@ function sourceForVocab(){
 
 function popup(){return document.getElementById('tqVocabPopup')}
 function closeVocabPopup(){pendingVocab=null;popup()?.classList.remove('open')}
-function showVocabPopup(term,raw){
+function showVocabPopup(term,raw,context='',type='word'){
   if(!isSavableTerm(term))return toast(text('완전한 단어나 표현을 눌러 주세요.','完全な単語・表現を長押ししてください。','Long-press a complete word or expression.','请长按完整的单词或表达。'));
-  pendingVocab={term,raw};const p=popup();if(!p)return;
+  pendingVocab={term,raw,context,type};const p=popup();if(!p)return;
   p.querySelector('.tqVocabTerm').textContent=term;
   const input=p.querySelector('.tqVocabInput');if(input){input.value=term;input.setAttribute('aria-label',text('저장할 단어 또는 표현','保存する単語・表現','Word or expression to save','要保存的单词或表达'))}
+  const typeInput=p.querySelector('.tqVocabType');if(typeInput)typeInput.value=type;
   const note=p.querySelector('.tqVocabNormalize');
   note.textContent=raw!==term?text(`“${raw}”에서 조사를 정리해 “${term}”로 저장합니다.`,`「${raw}」の助詞を除き、「${term}」として保存します。`,`The particle is removed from “${raw}”; “${term}” will be saved.`,`已从“${raw}”中去除助词，将保存为“${term}”。`):text('이 표현 그대로 저장합니다.','この表現をそのまま保存します。','This expression will be saved as shown.','将按当前表达保存。');
+  const contextBox=p.querySelector('.tqVocabContext');if(contextBox)contextBox.textContent=context?text('원문 문맥 · ','原文の文脈 · ','Source context · ','原文上下文 · ')+context:'';
   p.classList.add('open');
 }
 
@@ -374,18 +377,19 @@ function storeVocab(entry){
 
 function addVocabTerm(term=pendingVocab?.term){
   const edited=popup()?.querySelector('.tqVocabInput')?.value;
-  const word=normalizeKoreanTerm(edited||term)||String(edited||term||'').trim();if(!isSavableTerm(word))return toast(text('완전한 단어나 표현으로 고쳐 주세요.','完全な単語・表現に直してください。','Edit this into a complete word or expression.','请修改为完整的单词或表达。'));
+  const word=String(edited??term??'').trim();if(!isSavableTerm(word))return toast(text('완전한 단어나 표현으로 고쳐 주세요.','完全な単語・表現に直してください。','Edit this into a complete word or expression.','请修改为完整的单词或表达。'));
   if(hasVocabTerm(word)){
     closeVocabPopup();return toast(text('이미 단어장에 있어요.','すでに単語帳にあります。','Already in your vocabulary.','已经在单词本中。'));
   }
-  storeVocab({text:word,source:sourceForVocab()});
+  storeVocab({text:word,source:sourceForVocab(),inputOriginal:pendingVocab?.raw||'',context:pendingVocab?.context||'',type:popup()?.querySelector('.tqVocabType')?.value||pendingVocab?.type||'word'});
   try{localStorage.setItem('malbitVocabLongPressUsed','1')}catch(e){}
+  window.MALBIT_VOCAB_SELECTION?.clear();if(typeof hideSelection==='function')hideSelection();try{window.getSelection?.()?.removeAllRanges()}catch(_){}
   closeVocabPopup();toast(text(`“${word}” 단어장에 추가했어요.`,`「${word}」を単語帳に追加しました。`,`Added “${word}” to Vocabulary.`,`已将“${word}”加入单词本。`));
 }
 
 function installPopup(){
   if(popup())return;
-  const el=document.createElement('div');el.id='tqVocabPopup';el.className='tqVocabPopup';el.innerHTML=`<button class="tqVocabBackdrop" aria-label="${text('닫기','閉じる','Close','关闭')}"></button><section role="dialog" aria-modal="true" aria-labelledby="tqVocabPopupTitle"><div class="tqVocabHandle"></div><small>${text('길게 누른 표현','長押しした表現','Long-pressed expression','长按的表达')}</small><strong id="tqVocabPopupTitle" class="tqVocabTerm"></strong><label class="tqVocabEditLabel">${text('저장 형태 확인·수정','保存形を確認・修正','Review or edit the saved form','确认或修改保存形式')}<input class="tqVocabInput" lang="ko" autocomplete="off" spellcheck="false"></label><p class="tqVocabNormalize"></p><button class="tqVocabAdd">＋ ${text('단어장에 추가하기','単語帳に追加','Add to Vocabulary','加入单词本')}</button><button class="tqVocabCancel">${text('취소','キャンセル','Cancel','取消')}</button></section>`;
+  const el=document.createElement('div');el.id='tqVocabPopup';el.className='tqVocabPopup';el.innerHTML=`<button class="tqVocabBackdrop" aria-label="${text('닫기','閉じる','Close','关闭')}"></button><section role="dialog" aria-modal="true" aria-labelledby="tqVocabPopupTitle"><div class="tqVocabHandle"></div><small>${text('길게 누른 표현','長押しした表現','Long-pressed expression','长按的表达')}</small><strong id="tqVocabPopupTitle" class="tqVocabTerm"></strong><label class="tqVocabEditLabel">${text('저장 형태 확인·수정','保存形を確認・修正','Review or edit the saved form','确认或修改保存形式')}<input class="tqVocabInput" lang="ko" autocomplete="off" spellcheck="false"></label><p class="tqVocabNormalize"></p><label>${text('표현 유형','表現の種類','Expression type','表达类型')}<select class="tqVocabType"><option value="word">${text('단어','単語','Word','单词')}</option><option value="grammar">${text('문법','文法','Grammar','语法')}</option><option value="expression">${text('구절·문장','句・文','Phrase or sentence','短语或句子')}</option></select></label><p class="tqVocabContext"></p><button class="tqVocabAdd">＋ ${text('단어장에 추가하기','単語帳に追加','Add to Vocabulary','加入单词本')}</button><button class="tqVocabCancel">${text('취소','キャンセル','Cancel','取消')}</button></section>`;
   document.body.appendChild(el);el.querySelector('.tqVocabBackdrop').onclick=closeVocabPopup;el.querySelector('.tqVocabCancel').onclick=closeVocabPopup;el.querySelector('.tqVocabAdd').onclick=()=>addVocabTerm();
 }
 
@@ -403,24 +407,24 @@ function tokenizeElement(el){
 function pointerTarget(e){return e.target?.closest?.('.vocab-token')}
 function clearHold(){if(holdTimer)clearTimeout(holdTimer);holdStart?.target?.classList?.remove('holding');holdTimer=null;holdStart=null}
 document.addEventListener('pointerdown',e=>{
-  const target=pointerTarget(e);if(!target||e.button>0)return;clearHold();target.classList.add('holding');holdStart={x:e.clientX,y:e.clientY,target,id:e.pointerId};
-  holdTimer=setTimeout(()=>{if(!target.isConnected)return clearHold();const hit=typeof document.elementFromPoint==='function'?document.elementFromPoint(holdStart.x,holdStart.y):target;if(hit!==target&&!target.contains(hit))return clearHold();const info=termFromToken(target);suppressClickUntil=Date.now()+700;try{navigator.vibrate?.(18)}catch(_){}showVocabPopup(info.term,info.raw);clearHold()},550);
+  const target=pointerTarget(e);if(!target||e.button>0||e.pointerType==='touch')return;clearHold();target.classList.add('holding');holdStart={x:e.clientX,y:e.clientY,target,id:e.pointerId};
+  holdTimer=setTimeout(()=>{if(!target.isConnected)return clearHold();const hit=typeof document.elementFromPoint==='function'?document.elementFromPoint(holdStart.x,holdStart.y):target;if(hit!==target&&!target.contains(hit))return clearHold();if(window.MALBIT_VOCAB_SELECTION?.capture(window.getSelection?.()))return clearHold();const info=termFromToken(target);suppressClickUntil=Date.now()+700;try{navigator.vibrate?.(18)}catch(_){}showVocabPopup(info.term,info.raw,info.context);clearHold()},550);
 },{capture:true});
 document.addEventListener('pointermove',e=>{if(!holdStart||e.pointerId!==holdStart.id)return;if(Math.hypot(e.clientX-holdStart.x,e.clientY-holdStart.y)>9)clearHold()},{capture:true,passive:true});
 document.addEventListener('pointerup',clearHold,{capture:true});document.addEventListener('pointercancel',clearHold,{capture:true});
 document.addEventListener('click',e=>{if(Date.now()<suppressClickUntil&&pointerTarget(e)){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation()}},{capture:true});
-document.addEventListener('contextmenu',e=>{if(pointerTarget(e))e.preventDefault()},{capture:true});
+// Native selection handles/context menu remain available for exact range selection.
 
 // ----- Discovery UI and vocab page compatibility -----
 function showVocabGuide(){
   const body=document.getElementById('sheetBody');if(!body)return;
-  body.innerHTML=`<div class="reward"><b>☝ ${text('길게 눌러 단어 저장','長押しで単語を保存','Long-press to save words','长按保存单词')}</b><small>${text('문제를 풀다가 바로 단어장으로','問題を解きながら単語帳へ','Save while you solve','做题时直接收藏')}</small></div><div class="tqGuideSteps"><div><i>1</i><p><b>${text('한국어 표현을 0.5초간 누르기','韓国語の表現を0.5秒長押し','Hold a Korean expression for 0.5 sec','长按韩语表达0.5秒')}</b><small>${text('브라우저 복사 메뉴 대신 말빛 메뉴가 열립니다.','ブラウザのコピーではなくMALBITメニューが開きます。','The MALBIT menu opens instead of the browser copy menu.','不会弹出浏览器复制菜单，而会打开MALBIT菜单。')}</small></p></div><div><i>2</i><p><b>${text('저장될 단어·표현 확인','保存する単語・表現を確認','Check the saved word or phrase','确认保存的单词或表达')}</b><small>${text('문맥을 확인해 “친구를 → 친구”, “보지도 못한 → -지도 못하다”처럼 정리하며 불완전한 조각은 저장하지 않습니다.','文脈を確認し、「친구를 → 친구」「보지도 못한 → -지도 못하다」のように整え、不完全な断片は保存しません。','Context is checked: “친구를 → 친구” and “보지도 못한 → -지도 못하다.” Incomplete fragments are rejected.','系统会结合语境整理为“친구를 → 친구”“보지도 못한 → -지도 못하다”，并拒绝不完整片段。')}</small></p></div><div><i>3</i><p><b>${text('단어장에 추가하기','単語帳に追加','Add to Vocabulary','加入单词本')}</b><small>${text('아래 단어장 탭에서 언제든 다시 볼 수 있어요.','下の単語帳タブでいつでも見直せます。','Review it anytime from the Vocabulary tab.','可随时在下方“单词本”中复习。')}</small></p></div></div><button class="closeBtn" onclick="closeSheet()">${text('알겠어요','わかりました','Got it','知道了')}</button>`;
+  body.innerHTML=`<div class="reward"><b>☝ ${text('선택한 표현을 단어장에 저장','選択した表現を単語帳に保存','Save a selected expression','将选中的表达存入单词本')}</b><small>${text('선택 범위와 원문 문맥을 함께 확인해요','選択範囲と原文の文脈を確認','Check the selection and its source context','确认选择范围和原文上下文')}</small></div><div class="tqGuideSteps"><div><i>1</i><p><b>${text('길게 눌러 원하는 범위 선택','長押しして保存する範囲を選択','Long-press and select the range','长按并选择需要保存的范围')}</b><small>${text('휴대폰의 선택 핸들로 단어나 문법 표현의 범위를 조절하세요. 컴퓨터에서는 드래그해 선택할 수 있어요.','スマートフォンの選択ハンドルで単語や文法表現の範囲を調整してください。パソコンではドラッグして選択できます。','Use your phone’s selection handles to select a word or grammar expression. On a computer, drag to select.','用手机的选择手柄调整单词或语法表达的范围。电脑上可拖动鼠标选择。')}</small></p></div><div><i>2</i><p><b>${text('저장 바에서 단어장 추가 선택','保存バーで単語帳への追加を選択','Choose Add to Vocabulary in the save bar','在保存栏中选择加入单词本')}</b><small>${text('미리보기에서 선택한 표현과 주변 문장을 확인하고 단어·문법·구절 유형을 고르세요. 선택한 표현을 임의로 줄이지 않으며, 직접 수정한 내용 그대로 저장해요.','プレビューで選択した表現と前後の文を確認し、単語・文法・句の種類を選んでください。選択した表現を勝手に短くせず、編集した内容をそのまま保存します。','In the preview, check the selected expression and nearby sentence, then choose Word, Grammar, or Phrase. The selection is not shortened automatically; your edits are saved as entered.','在预览中确认选中的表达及附近句子，并选择单词、语法或短语类型。不会擅自缩短所选内容，修改后将按原样保存。')}</small></p></div><div><i>3</i><p><b>${text('미리보기 확인 후 저장','プレビューを確認して保存','Review the preview, then save','确认预览后保存')}</b><small>${text('단어장 탭에서 다시 볼 수 있어요. 뜻이 어색하면 “뜻 다시 확인”으로 초안을 검토한 뒤 저장하세요.','単語帳タブで見直せます。意味がおかしいときは「意味を再確認」で下書きを確認してから保存してください。','Find it in the Vocabulary tab. If the meaning looks wrong, use Recheck meaning and review the draft before saving.','可在单词本中查看。如果释义不自然，请选择“重新核对释义”，确认草稿后再保存。')}</small></p></div></div><button class="closeBtn" onclick="closeSheet()">${text('알겠어요','わかりました','Got it','知道了')}</button>`;
   document.getElementById('overlay')?.classList.add('open');
 }
 
 window.showVocabGuide=showVocabGuide;
 window.addVocabTerm=addVocabTerm;
-if(typeof addVocab==='function')addVocab=function(){addVocabTerm(typeof selectedText==='string'?selectedText:'')};
+if(typeof addVocab==='function')addVocab=function(){const range=window.MALBIT_VOCAB_SELECTION?.capture(window.getSelection?.())||window.MALBIT_VOCAB_SELECTION?.current();if(range)return showVocabPopup(range.term,range.raw,range.context,range.type);const term=typeof selectedText==='string'?selectedText:'';if(term)showVocabPopup(term,term,'',window.MALBIT_VOCAB_SELECTION?.classify(term)||'word')};
 
 let vocabPageMode='saved',vocabLibraryLevel=1,vocabLibraryType='all',vocabLibraryQuery='';
 function vocabTypeGroup(type){return type==='grammar'?'grammar':type==='idiom'||type==='expression'?'idiom':'word'}
@@ -449,7 +453,7 @@ window.malbitAddManualVocab=async event=>{
 };
 window.malbitAddLibraryVocab=(level,index)=>{
   const item=window.MALBIT_SHORTS_DECKS?.[Number(level)]?.[Number(index)];if(!item)return;
-  if(!storeVocab({text:item.term,source:`${vocabLevelLabel(level)} · ${vocabTypeLabel(item.type)}`,meanings:{...(item.meaning||{})},ja:item.meaning?.ja||'',example:item.example||'',level:Number(level),type:item.type}))return toast(text('이미 단어장에 있어요.','すでに単語帳にあります。','Already in your vocabulary.','已经在单词本中。'));
+  if(!storeVocab({text:item.term,source:`${vocabLevelLabel(level)} · ${vocabTypeLabel(item.type)}`,meanings:{...(item.meaning||{})},meaningSources:Object.fromEntries(Object.keys(item.meaning||{}).map(lang=>[lang,'authored'])),ja:item.meaning?.ja||'',example:item.example||'',level:Number(level),type:item.type}))return toast(text('이미 단어장에 있어요.','すでに単語帳にあります。','Already in your vocabulary.','已经在单词本中。'));
   toast(text(`“${item.term}” 단어장에 저장했어요.`,`「${item.term}」を単語帳に保存しました。`,`Saved “${item.term}” to your vocabulary.`,`已将“${item.term}”保存到单词本。`));render();
 };
 window.malbitPracticeVocabLibrary=level=>{try{localStorage.setItem('topikQuestExamLevel',Number(level)===2?'2':'1')}catch(e){};if(typeof startShorts==='function')startShorts()};
@@ -465,7 +469,7 @@ function vocabGrowthName(stage){const names={ko:['씨앗','첫 싹','두 잎','�
 function vocabGrowthSvg(stage){const canopy=stage>=5,leafCount=Math.max(0,stage-4),fruit=stage>=9;return `<svg viewBox="0 0 220 170" role="img" aria-label="${esc(vocabGrowthName(stage))}"><defs><linearGradient id="vocabSoil" x1="0" x2="1"><stop stop-color="#a8693d"/><stop offset="1" stop-color="#704329"/></linearGradient><linearGradient id="vocabLeaf" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8ee75f"/><stop offset="1" stop-color="#249b57"/></linearGradient></defs><ellipse cx="110" cy="146" rx="78" ry="15" fill="url(#vocabSoil)" opacity=".92"/><ellipse cx="110" cy="144" rx="57" ry="8" fill="#d99b5f" opacity=".45"/>${stage===0?`<path d="M102 140c-11-11 0-24 10-20 13 6 8 23-10 20Z" fill="#e9bd58"/><path d="M109 124c2 5 2 9 0 14" stroke="#9b7130" stroke-width="3"/>`:''}${stage>0&&!canopy?`<path d="M111 143c-1-24 ${stage>=3?'-2-49':'0-36'} 2-${32+stage*8}" fill="none" stroke="#43a859" stroke-width="${4+stage*.7}" stroke-linecap="round"/><ellipse cx="${86-stage}" cy="${116-stage*8}" rx="${15+stage}" ry="${8+stage/2}" fill="url(#vocabLeaf)" transform="rotate(22 ${86-stage} ${116-stage*8})"/>${stage>=2?`<ellipse cx="${135+stage}" cy="${105-stage*7}" rx="${15+stage}" ry="${8+stage/2}" fill="url(#vocabLeaf)" transform="rotate(-25 ${135+stage} ${105-stage*7})"/>`:''}${stage>=3?`<ellipse cx="92" cy="78" rx="18" ry="9" fill="url(#vocabLeaf)" transform="rotate(18 92 78)"/>`:''}${stage>=4?`<ellipse cx="130" cy="64" rx="19" ry="10" fill="url(#vocabLeaf)" transform="rotate(-20 130 64)"/>`:''}`:''}${canopy?`<path d="M106 145c5-28 0-51 5-78M111 103 83 80M111 91l31-24" fill="none" stroke="#8b5938" stroke-width="${10+stage}" stroke-linecap="round"/><g fill="url(#vocabLeaf)"><circle cx="81" cy="72" r="${31+leafCount}"/><circle cx="119" cy="55" r="${37+leafCount}"/><circle cx="153" cy="76" r="${30+leafCount}"/><circle cx="111" cy="88" r="${35+leafCount}"/></g>${stage>=7?`<g fill="${stage===7?'#ffe8a3':'#ffd4ed'}" stroke="#fff" stroke-width="2"><circle cx="72" cy="66" r="6"/><circle cx="130" cy="38" r="6"/><circle cx="163" cy="75" r="6"/>${stage>=8?`<circle cx="105" cy="83" r="6"/><circle cx="144" cy="94" r="6"/>`:''}</g>`:''}${fruit?`<g fill="#ff6b62" stroke="#ffd36b" stroke-width="2"><circle cx="82" cy="87" r="8"/><circle cx="126" cy="65" r="8"/><circle cx="154" cy="91" r="8"/><circle cx="105" cy="34" r="8"/></g>`:''}`:''}</svg>`}
 function vocabGardenHtml(){const count=S.vocab.length,stage=vocabGrowthStage(count),next=VOCAB_GROWTH_THRESHOLDS[stage+1];return `<section class="tqVocabGarden"><div class="tqVocabGardenArt">${vocabGrowthSvg(stage)}</div><div><small>${text('나의 말빛 정원','私のことばの庭','My word garden','我的词语花园')} · ${stage+1}/10</small><h3>${vocabGrowthName(stage)}</h3><p>${next?text(`${next-count}개를 더 심으면 다음 단계로 자라요.`,`あと${next-count}語で次の段階へ育ちます。`,`Save ${next-count} more to reach the next stage.`,`再收藏${next-count}个即可成长到下一阶段。`):text('멋진 열매나무로 자랐어요!','立派な実のなる木に育ちました！','Your garden has grown a fruit tree!','已经长成硕果累累的大树！')}</p><div class="tqVocabGardenProgress"><i style="width:${next?Math.max(6,Math.round((count-VOCAB_GROWTH_THRESHOLDS[stage])/(next-VOCAB_GROWTH_THRESHOLDS[stage])*100)):100}%"></i></div><b>${count} ${text('개 표현','語','saved','个表达')}</b></div></section>`}
 function savedVocabHtml(target,flag){
-  const cards=S.vocab.map((v,i)=>{const meaning=v.note||v.meanings?.[target]||(target==='ja'?v.ja:'')||'…',example=v.example?`<small class="tqVocabExample">${text('예문','例文','Example','例句')} · ${esc(v.example)}</small>`:'';return `<article class="vocabCard tqSavedVocabCard" data-vocab-index="${i}"><div class="vocabHead"><div class="vocabWord">${esc(v.text)}</div><span class="source">${esc(v.source||manualSource())}</span></div><div class="vocabAnswer ${v.show?'show':''}">${v.show?`<b>${esc(meaning)}</b>${example}`:''}</div><div class="vocabActions"><button class="reveal" onclick="revealVocab(${i})">${flag} ${v.show?text('뜻 숨기기','意味を隠す','Hide meaning','隐藏释义'):text('뜻 보기','意味を見る','Reveal meaning','查看释义')}</button><button class="delete" onclick="deleteVocab(${i})">×</button></div>${v.show&&typeof malbitVocabGrade==='function'?`<div class="tqVocabSrs"><small>${text('다음 복습 간격','次の復習間隔','Next review interval','下次复习间隔')}</small><button onclick="malbitVocabGrade(${i},'hard')">${text('어려움','難しい','Hard','困难')}</button><button onclick="malbitVocabGrade(${i},'good')">${text('보통','普通','Good','一般')}</button><button onclick="malbitVocabGrade(${i},'easy')">${text('쉬움','簡単','Easy','简单')}</button></div>`:''}<button class="malbitVocabDetailLink" onclick="malbitOpenVocabEditor(${i})"><span>${text('상세 보기·편집','詳細を見る・編集','Open details & edit','查看详情并编辑')}</span><b>›</b></button></article>`}).join('');
+  const cards=S.vocab.map((v,i)=>{const meaning=v.meanings?.[target]||(target==='ja'?v.ja:'')||'…',example=v.example?`<small class="tqVocabExample">${text('예문','例文','Example','例句')} · ${esc(v.example)}</small>`:'';return `<article class="vocabCard tqSavedVocabCard" data-vocab-index="${i}"><div class="vocabHead"><div class="vocabWord">${esc(v.text)}</div><span class="source">${esc(v.source||manualSource())}</span></div><div class="vocabAnswer ${v.show?'show':''}">${v.show?`<b>${esc(meaning)}</b><small>${esc(window.MALBIT_VOCAB_TRANSLATION?.label(v,target,S.lang)||'')}</small>${example}${v.note?`<p>${text('내 메모','自分のメモ','My note','我的笔记')} · ${esc(v.note)}</p>`:''}`:''}</div><div class="vocabActions"><button class="reveal" onclick="revealVocab(${i})">${flag} ${v.show?text('뜻 숨기기','意味を隠す','Hide meaning','隐藏释义'):text('뜻 보기','意味を見る','Reveal meaning','查看释义')}</button><button class="delete" onclick="deleteVocab(${i})">×</button></div>${v.show&&typeof malbitVocabGrade==='function'?`<div class="tqVocabSrs"><small>${text('다음 복습 간격','次の復習間隔','Next review interval','下次复习间隔')}</small><button onclick="malbitVocabGrade(${i},'hard')">${text('어려움','難しい','Hard','困难')}</button><button onclick="malbitVocabGrade(${i},'good')">${text('보통','普通','Good','一般')}</button><button onclick="malbitVocabGrade(${i},'easy')">${text('쉬움','簡単','Easy','简单')}</button></div>`:''}<button class="malbitVocabDetailLink malbitVocabRecheck" onclick="malbitVocabRecheck(${i})">${text('뜻 다시 확인','意味を再確認','Recheck meaning','重新核对释义')}</button><button class="malbitVocabDetailLink" onclick="malbitOpenVocabEditor(${i})"><span>${text('상세 보기·편집','詳細を見る・編集','Open details & edit','查看详情并编辑')}</span><b>›</b></button></article>`}).join('');
   return `${vocabGardenHtml()}<section class="tqManualVocab"><div><small>MY VOCABULARY</small><h3>${text('직접 추가','直接追加','Add manually','手动添加')}</h3><p>${text('한국어나 내 언어로 입력하면 한국어 표제어로 정리해 저장해요.','韓国語または自分の言語で入力すると、韓国語の見出し語として保存します。','Type in Korean or your language; MALBIT saves a Korean headword.','用韩语或自己的语言输入，系统会保存为韩语词条。')}</p></div><form onsubmit="return malbitAddManualVocab(event)"><label>${text('한국어 또는 내 언어','韓国語または自分の言語','Korean or your language','韩语或自己的语言')}<input id="tqManualVocabTerm" maxlength="60" autocomplete="off" required placeholder="${text('예: 마음에 들다','例：好きになる / 마음에 들다','e.g. dependable or 믿음직하다','例：可靠 / 믿음직하다')}"></label><label>${text('뜻·메모 (선택)','意味・メモ（任意）','Meaning or note (optional)','释义或备注（选填）')}<input id="tqManualVocabMeaning" maxlength="120" autocomplete="off" placeholder="${text('내가 기억하기 쉬운 설명','覚えやすい説明','A note that helps you remember','便于记忆的说明')}"></label><button type="submit">＋ ${text('단어장에 저장','単語帳に保存','Save to vocabulary','保存到单词本')}</button></form></section><div class="tqVocabCompactTip"><span>☝ ${text('문제 속 표현은 길게 눌러서도 저장할 수 있어요.','問題の表現は長押しでも保存できます。','You can also long-press expressions in questions to save them.','也可以长按题目中的表达进行保存。')}</span><button onclick="showVocabGuide()">${text('사용법','使い方','How it works','使用方法')} ›</button></div>${cards||`<div class="tqVocabEmpty"><i>＋</i><h3>${text('아직 저장한 표현이 없어요.','保存した表現はまだありません。','No saved expressions yet.','还没有保存的表达。')}</h3><p>${text('위에서 직접 입력하거나 TOPIK 학습목록에서 골라 담아 보세요.','上で直接入力するか、TOPIK学習リストから追加しましょう。','Add one above or choose from the TOPIK study library.','请在上方手动添加，或从TOPIK学习列表中选择。')}</p></div>`}`;
 }
 
@@ -480,10 +484,9 @@ function libraryVocabHtml(){
 if(typeof revealVocab==='function'){
   revealVocab=async function(i){
     const v=S.vocab?.[i];if(!v)return;v.show=!v.show;v.meanings=v.meanings||{};const target=S.lang==='ko'?'ja':S.lang;
-    if(v.show&&!v.meanings[target]){
-      if(target==='ja'&&v.ja)v.meanings.ja=v.ja;
-      else v.meanings[target]=await translateCached(`vocab_v2_${target}_${v.text}`,v.text,'ko',target);
-      if(target==='ja')v.ja=v.meanings.ja;
+    if(v.show){
+      try{await window.MALBIT_VOCAB_TRANSLATION.reveal(v,target)}catch(error){toast(text('뜻을 불러오지 못했어요. 상세 편집에서 다시 시도하세요.','意味を取得できませんでした。詳細編集で再試行してください。','Meaning unavailable. Retry in Details.','无法获取释义，请在详情中重试。'))}
+      if(target==='ja'&&v.meanings.ja)v.ja=v.meanings.ja;
     }
     save();render();
   };
@@ -526,7 +529,7 @@ if(typeof openGameResult==='function'){
 
 const style=document.createElement('style');style.textContent=`
   .tqInlineExplanation{margin-top:13px;border:1px solid #cfe4ff;background:linear-gradient(145deg,#f1f7ff,#fff);border-radius:18px;padding:13px;color:#17243a}.tqInlineExplanation.compact{margin-top:0}.tqInlineTitle{display:flex;align-items:center;gap:7px;color:#245ed5}.tqInlineTitle span{width:24px;height:24px;border-radius:8px;background:#ddebff;display:grid;place-items:center;font-weight:950}.tqInlineTitle b{font-size:13px}.tqInlineAnswer{margin:10px 0;background:#e8f2ff;border-radius:13px;padding:10px 11px}.tqInlineAnswer small{display:block;color:#69809d;font-size:9px;font-weight:900}.tqInlineAnswer strong{display:block;margin-top:3px;font-size:13px}.tqInlineExplanation h4{margin:10px 0 4px;font-size:10px;color:#62748d}.tqInlineExplanation p{margin:0!important;color:#263850!important;font-size:12px!important;line-height:1.65!important}
-  .selectable,.vocab-zone{-webkit-user-select:none!important;user-select:none!important;-webkit-touch-callout:none!important}.vocab-token{display:inline;border-radius:4px;touch-action:pan-y;-webkit-touch-callout:none;transition:background .12s,box-shadow .12s}.vocab-token:active,.vocab-token.holding{background:#dceaff;box-shadow:0 0 0 3px rgba(63,126,235,.12)}.selectionBar{display:none!important}
+  .selectable,.selectable *,.vocab-zone,.vocab-zone *{-webkit-user-select:text!important;user-select:text!important;-webkit-touch-callout:default!important}.vocab-token{display:inline;border-radius:4px;touch-action:pan-y;-webkit-touch-callout:default;transition:background .12s,box-shadow .12s}.vocab-token:active,.vocab-token.holding{background:#dceaff;box-shadow:0 0 0 3px rgba(63,126,235,.12)}.selectionBar.show{display:flex!important}.tqVocabContext{font-size:12px;max-height:120px;overflow:auto;white-space:pre-wrap}.tqVocabType{margin:8px;padding:8px}
   .tqVocabPopup{position:fixed;inset:0;z-index:180;display:none;align-items:flex-end}.tqVocabPopup.open{display:flex}.tqVocabBackdrop{position:absolute;inset:0;border:0;background:rgba(2,8,18,.68)}.tqVocabPopup section{position:relative;width:100%;background:#f8fbff;color:#15223a;border-radius:27px 27px 0 0;padding:10px 18px calc(20px + env(safe-area-inset-bottom));box-shadow:0 -20px 60px rgba(0,0,0,.35);animation:sheetUp .22s ease}.tqVocabHandle{width:40px;height:5px;background:#d3dbe8;border-radius:99px;margin:0 auto 16px}.tqVocabPopup small{display:block;color:#78879d;font-size:9px;font-weight:900}.tqVocabTerm{display:block;font-size:27px;margin:5px 0 8px;letter-spacing:-.04em}.tqVocabNormalize{background:#edf3fb;border-radius:13px;padding:10px;color:#55657b;font-size:11px;line-height:1.55}.tqVocabAdd,.tqVocabCancel{width:100%;border:0;border-radius:15px;padding:13px;font-weight:950}.tqVocabAdd{background:#286cff;color:#fff;margin-top:10px}.tqVocabCancel{background:#e9eef6;color:#536176;margin-top:7px}
   .tqVocabCoach{width:100%;border:1px dashed #9eb5d5;background:#edf4ff;color:#49617e;border-radius:13px;padding:9px 10px;margin-top:11px;font-size:9px;font-weight:850;line-height:1.45}.tqGuideSteps{display:grid;gap:9px;margin-top:12px}.tqGuideSteps>div{display:flex;gap:10px;align-items:flex-start;background:#eef3fa;border-radius:15px;padding:11px}.tqGuideSteps i{font-style:normal;width:25px;height:25px;border-radius:9px;background:#286cff;color:#fff;display:grid;place-items:center;font-weight:950;font-size:11px}.tqGuideSteps p{margin:0!important;flex:1}.tqGuideSteps b{display:block;color:#23344d;font-size:11px}.tqGuideSteps small{display:block;color:#66768d;font-size:9px;line-height:1.5;margin-top:3px}.tqVocabInfo button{border:0;background:#1c3353;color:#dceaff;border-radius:11px;padding:9px 11px;font-size:9px;font-weight:900}
   .tqVocabTitle{margin-top:3px}.tqVocabTitle>div small{display:block;color:#7fa9f4;font-size:8px;font-weight:950;letter-spacing:.14em}.tqVocabTitle h2{margin-top:3px!important;font-size:23px!important}.tqVocabTitle>span{display:grid;place-items:center;min-width:34px;height:29px;border:1px solid #304b70;border-radius:10px;background:#10243e;color:#a8c4ea;font-weight:950}.tqVocabPageTabs{display:grid;grid-template-columns:1fr 1.25fr;gap:6px;border:1px solid #263d5c;border-radius:16px;padding:5px;background:#0d1d32;margin-bottom:12px}.tqVocabPageTabs button{border:0;border-radius:12px;padding:10px 7px;background:transparent;color:#8297b4;font-size:10px;font-weight:950}.tqVocabPageTabs button.on{background:linear-gradient(135deg,#346ff2,#725cf0);color:#fff;box-shadow:0 8px 18px rgba(45,83,205,.28)}.tqVocabPageTabs b{display:inline-grid;place-items:center;min-width:20px;height:18px;margin-left:3px;border-radius:7px;background:rgba(255,255,255,.13);font-size:8px}

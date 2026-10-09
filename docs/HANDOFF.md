@@ -1,3 +1,19 @@
+## 2026-10-09 v162 listening player candidate
+
+- Shared recorded/device transport with Stop, metadata-based cumulative timeline, study seeking and 0.75/1/1.25/1.5 speed. TOPIK I/II and growth use the same cancellation generation.
+- Exam play rights begin on actual playback, recover on failure, and remain used after intentional stop. Missing recordings offer explicit retry/device speech. Device duration/seeking is unavailable and labelled accordingly.
+- Existing 363 MP3 files and learning/reward data stay unchanged. Translation remains disabled. Runtime/cache version is 162.
+- Recovered PC snapshot: 433 tests and Chrome dialogue, TOPIK I/II, failure/device fallback, cancellation and 16 component layouts were reported passing. Latest cloud integration: 438 tests, v162 runtime and 152 JS syntax checks pass. Current cloud Chromium is blocked by socket EPERM and HTTP smoke by localhost ECONNREFUSED; latest actual-browser CI is pending. Physical devices and human pronunciation remain unverified.
+- Growth hearing evidence requires uninterrupted completed playback; seeking or cancellation never grants heard evidence or rewards. The obsolete owner-specific fallback loops were removed. CI now includes real-MP3 progress/stop, four rates, 16 player layouts and a real growth listening completion.
+- Travel browser assertion now expects Review for travelAdventureReview/travelRecall and Home otherwise, with exactly one active tab, matching harumal-ui.js.
+
+## 2026-10-09 v161 three-tab UI candidate
+
+- New final UI owner `learning-hub.js`/`.css`: Learn, Review, Vocabulary; compact status → Profile; gear → accessible settings bottom sheet; progressive course path and practice hierarchy.
+- New `harumalLearningPathV1` preferences are in recovery/backup, with legacy path fallback. Existing engines and evidence remain. Coins are earned-only; full advanced curriculum and shop/stickers remain explicit gaps.
+- Vocabulary-only Shorts filtering, stable-index adapter, retired card-selection migration and travel Back fix. Generated diary empty-state WebP is included offline.
+- Release scope and verification: `docs/qa/three-tab-ui-v161.md`. Remote Chrome CI artifact verification is required before merge.
+
 ## 2026-10-08 v160 growth learning and activity reward candidate
 
 - Current release candidate adds an opt-in 11-recipe/22-task growth library and activity XP/coins. It is selected authored content, not full-bank conversion. Existing navigation, question bank, Shorts format and learner roots remain.

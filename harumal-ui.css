@@ -8,7 +8,7 @@ html body.harumal .top{background:var(--ui-canvas)!important;border-color:var(--
 html body.harumal .brand{background:var(--ui-accent);color:var(--harumal-on-accent);box-shadow:none;border-radius:14px;font-size:24px}
 html body.harumal .title small{font-size:12px;color:var(--ui-muted)}
 html body.harumal .bottom{background:var(--ui-surface)!important;border-top:1px solid var(--ui-border);box-shadow:0 -4px 20px var(--ui-shadow);padding-bottom:env(safe-area-inset-bottom)}
-html body.harumal .nav{max-width:600px;margin:auto;gap:4px;padding:6px 10px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
+html body.harumal .nav{max-width:600px;margin:auto;gap:4px;padding:6px 10px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
 html body.harumal .nav button{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;min-height:60px;min-width:0;padding:7px 2px;border:0;border-radius:14px;background:transparent!important;color:var(--ui-muted)!important;font-size:12px;font-weight:650;box-shadow:none}
 html body.harumal .nav button.active{color:var(--ui-accent)!important;background:var(--ui-accent-soft)!important}
 html body.harumal .nav svg{width:23px;height:23px;flex:none}

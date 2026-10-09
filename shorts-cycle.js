@@ -20,7 +20,9 @@ function catalog(deck,level){
 
 function migrate(state,deck,level){
   const rows=catalog(deck,level),p=state&&typeof state==='object'?state:{},byId=new Map(rows.map(row=>[row.id,row]));
-  let current=(p.cardId&&byId.get(p.cardId))||(p.orderId&&rows.find(row=>row.item?.bankId===p.orderId));
+  let current=(p.cardId&&byId.get(p.cardId))||(p.orderId&&rows.find(row=>row.id===p.orderId));
+  // A removed card must not carry a checked answer onto its replacement.
+  if(!current&&(p.cardId||p.orderId)){p.selected=null;p.locked=false;p.choiceOrder=null;p.orderId=null}
   if(!current&&rows.length)current=rows[Math.max(0,Number(p.index)||0)%rows.length];
   const fromLegacy=unique((p.recent||[]).map(value=>rows[Math.max(0,Number(value)||0)%Math.max(1,rows.length)]?.id));
   const recentIds=unique(Array.isArray(p.recentIds)&&p.recentIds.length?p.recentIds:fromLegacy).filter(id=>byId.has(id)).slice(-RECENT_LIMIT);

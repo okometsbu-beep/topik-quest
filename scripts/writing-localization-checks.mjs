@@ -55,25 +55,12 @@ export async function verifyWritingLocalization({ evaluate, tap, shot, setViewpo
     const savedRoute = await evaluate('HARUMAL_WRITING.engine.getState().route');
     const before = await snapshot();
     const storedBefore = await evaluate(`localStorage.getItem('${KEY}')`);
-    if (await evaluate(`!!document.querySelector('.wcLanguage')`)) {
-      await tap('.wcLanguage',0,100);
-      const key = async (name,code) => { await send('Input.dispatchKeyEvent',{type:'keyDown',key:name,code:name,windowsVirtualKeyCode:code}); await send('Input.dispatchKeyEvent',{type:'keyUp',key:name,code:name,windowsVirtualKeyCode:code}); };
-      await key('Home',36);
-      for (let index=0;index<['ko','ja','en','zh'].indexOf(lang);index++) await key('ArrowDown',40);
-      await key('Enter',13); await key('Escape',27); await sleep(100);
-      assert.equal(await evaluate('S.lang'),lang,'in-place language selector changes current writing locale');
-      assert.equal(await evaluate(`JSON.parse(localStorage.getItem('topikQuestV8')).lang`),lang,'in-place language selection is persisted');
-      assert.deepEqual(await evaluate('HARUMAL_WRITING.engine.getState().route'),savedRoute,'in-place language change keeps current route');
-      assert.deepEqual(await snapshot(),before,'in-place language change preserves writing evidence');
-      assert.equal(await evaluate(`localStorage.getItem('${KEY}')`),storedBefore,'in-place language change leaves every stored writing byte unchanged');
-      return;
-    }
-    if (await evaluate(`S.view==='writingCourse'`)) await tap('.wcTopline button[onclick="harumalWritingExit()"]', 0, 100);
-    const selector = '.tqLang,#flagBtn';
+    const selector = '.harumalSettingsTrigger';
     const index = await evaluate(`[...document.querySelectorAll(${JSON.stringify(selector)})].findIndex(el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return r.width>0&&r.height>0&&s.display!=='none'&&s.visibility!=='hidden'})`);
-    assert.ok(index >= 0, 'actual language picker is visible outside the writing screen');
-    await tap(selector, index, 100);
-    await tap(`.flagOpt[data-lang="${lang}"]`, 0, 100);
+    assert.ok(index >= 0, 'settings gear is visible');
+    await tap(selector,index,100);
+    await evaluate(`(()=>{const select=document.querySelector('#harumalSettingsDialog select[onchange="malbitSetLanguage(this.value)"]');select.value='${lang}';select.dispatchEvent(new Event('change',{bubbles:true}))})()`);
+    await tap('[data-hub-action="close-settings"]',0,100);
     assert.equal(await evaluate('S.lang'), lang, 'language-picker click changes the active locale');
     assert.equal(await evaluate(`JSON.parse(localStorage.getItem('topikQuestV8')).lang`), lang, 'locale selection is persisted');
     await route(savedRoute.page, savedRoute.itemId || savedRoute.groupId || savedRoute.nodeId || savedRoute.examId || savedRoute.levelId || '');

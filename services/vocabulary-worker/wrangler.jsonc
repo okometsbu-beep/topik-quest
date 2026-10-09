@@ -2,11 +2,11 @@
   "name": "harumal-vocabulary",
   "main": "worker.mjs",
   "compatibility_date": "2026-10-09",
-  "workers_dev": false,
+  "workers_dev": true,
   "observability": { "enabled": false },
   "vars": {
     "ENABLED": "false",
-    "FREE_PLAN_VERIFIED": "false",
+    "FREE_PLAN_VERIFIED": "true",
     "ALLOWED_ORIGINS": "https://okometsbu-beep.github.io"
   },
   "ai": { "binding": "AI" },

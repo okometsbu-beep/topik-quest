@@ -3,3 +3,7 @@ npm-debug.log*
 .DS_Store
 *.log
 artifacts/
+
+# Local speech-pack build state (never publish model or temporary waveform data)
+audio/listening/v1/.current.wav
+audio/listening/v1/.generation-progress.json

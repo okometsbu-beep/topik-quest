@@ -61,3 +61,11 @@ test('one-family fallback rotates duplicate IDs and marks the repeat as review',
   assert.equal(state.cardId,'A2');
   assert.equal(state.isReview,true);
 });
+
+
+test('removing a saved grammar card clears only its pending answer and preserves earned progress',()=>{
+  const state={cardId:'GRAMMAR',orderId:'GRAMMAR',index:1,total:24,score:20,streak:4,selected:2,locked:true,choiceOrder:[2,0,1,3],recentIds:['GRAMMAR','WORD']};
+  cycle.migrate(state,[item('WORD','사과')],1);
+  assert.equal(state.cardId,'WORD');assert.equal(state.selected,null);assert.equal(state.locked,false);assert.equal(state.choiceOrder,null);
+  assert.equal(state.total,24);assert.equal(state.score,20);assert.equal(state.streak,4);assert.deepEqual(state.recentIds,['WORD']);
+});

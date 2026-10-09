@@ -6,16 +6,17 @@ const { inventory, curatedId } = require('../scripts/audit-shorts.cjs');
 
 test('Shorts audit covers the actual deck and keeps all content approvals unreviewed', () => {
   const report = inventory();
-  assert.equal(report.summary.total, 432);
-  assert.deepEqual(report.summary.byLevel, [{level:1,total:240,curated:116,bank:124},{level:2,total:192,curated:130,bank:62}]);
-  assert.equal(new Set(report.rows.map(row => row.id)).size, 432);
+  assert.equal(report.summary.total, 189);
+  assert.deepEqual(report.summary.byLevel, [{level:1,total:124,curated:82,bank:42},{level:2,total:65,curated:61,bank:4}]);
+  assert.equal(new Set(report.rows.map(row => row.id)).size, 189);
   assert.equal(report.summary.approved, 0);
-  assert.equal(report.summary.distinctQuestionChoiceSets, 306);
-  assert.equal(report.summary.redundantRows, 126);
-  assert.equal(report.summary.flagged, 15);
-  assert.equal(report.exactDuplicateGroups.length, 30);
+  assert.equal(report.summary.distinctQuestionChoiceSets, 161);
+  assert.equal(report.summary.redundantRows, 28);
+  assert.equal(report.summary.flagged, 2);
+  assert.equal(report.exactDuplicateGroups.length, 8);
   assert.equal(report.conflictingAnswerGroups.length, 0);
   for (const row of report.rows) {
+    assert.ok(['word','expression','idiom','vocabulary_blank'].includes(row.type), 'audit must use the vocabulary-only runtime deck');
     assert.match(row.contentHash, /^[a-f0-9]{64}$/);
     assert.equal(row.overall, 'unreviewed');
     assert.equal(row.decisionSteps, null);

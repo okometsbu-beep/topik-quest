@@ -12,7 +12,9 @@ export async function verifyWritingUsability({ evaluate, tap, shot, setViewport,
   let screenshots = 0, failure;
   const route = (page, id = '') => evaluate(`harumalWritingGo(${JSON.stringify(page)},${JSON.stringify(id)})`);
   const state = () => evaluate('HARUMAL_WRITING.engine.getState()');
-  const snapshot = () => evaluate(`(()=>{const s=HARUMAL_WRITING.engine.getState();return{attempts:s.attempts,drafts:s.drafts,readiness:s.readiness,firstIndependentAt:s.firstIndependentAt,guided:s.guided}})()`);
+  // Returning from settings refreshes only the guided navigation timestamp.
+  // Preserve exact draft/attempt timestamps and every guided evidence/route field.
+  const snapshot = () => evaluate(`(()=>{const s=HARUMAL_WRITING.engine.getState(),guided={...s.guided};delete guided.updatedAt;return{attempts:s.attempts,drafts:s.drafts,readiness:s.readiness,firstIndependentAt:s.firstIndependentAt,guided}})()`);
   const click = action => tap(`.wcScreen button[onclick=${JSON.stringify(action)}]`, 0, 100);
   const expectRoute = async (page, id) => {
     const actual = (await state()).route;
@@ -31,13 +33,33 @@ export async function verifyWritingUsability({ evaluate, tap, shot, setViewport,
     if(roots.malbitProductPrefsV1){const p=JSON.parse(roots.malbitProductPrefsV1);delete p.theme;roots.malbitProductPrefsV1=JSON.stringify(p)}
     return{core,roots};
   })()`);
+  const settingsLanguage = '#harumalSettingsDialog select[onchange="malbitSetLanguage(this.value)"]';
+  const openLanguageSettings = async () => {
+    const index=await evaluate(`[...document.querySelectorAll('.harumalSettingsTrigger')].findIndex(el=>{const r=el.getBoundingClientRect();return r.width>0&&r.height>0&&getComputedStyle(el).visibility!=='hidden'})`);
+    assert.ok(index>=0,'writing settings gear is visible');
+    await tap('.harumalSettingsTrigger',index,100);
+    await waitFor(`!!document.querySelector(${JSON.stringify(settingsLanguage)})`,'settings language picker exists');
+  };
+  const assertLanguagePicker = async () => {
+    const value=await evaluate(`(()=>{const el=document.querySelector(${JSON.stringify(settingsLanguage)}),r=el.getBoundingClientRect(),s=getComputedStyle(el),ctx=document.createElement('canvas').getContext('2d');ctx.font=s.font||s.fontSize+' '+s.fontFamily;const hit=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);return{value:el.value,label:el.selectedOptions[0]?.textContent,width:r.width,height:r.height,left:r.left,right:r.right,viewport:innerWidth,hit:hit===el||el.contains(hit),labelWidth:ctx.measureText(el.selectedOptions[0]?.textContent||'').width,available:r.width-parseFloat(s.paddingLeft)-parseFloat(s.paddingRight)-parseFloat(s.borderLeftWidth)-parseFloat(s.borderRightWidth)-(s.appearance==='none'?0:20)}})()`);
+    assert.ok(value.width>=44&&value.height>=44&&value.hit,'settings language picker is visible and clickable');
+    assert.ok(value.left>=0&&value.right<=value.viewport,'settings language picker fits viewport');
+    assert.ok(value.available>=value.labelWidth-1,'full selected language label fits '+JSON.stringify(value));
+    return value;
+  };
   const selectLanguage = async lang => {
-    const before = await snapshot();
-    // Dispatch the actual select change handler; no synthetic writing route or
-    // bypass of the learner's persistent language setting is involved.
-    await evaluate(`(()=>{const select=document.querySelector('.wcLanguage');if(!select)throw Error('Writing language selector missing');select.value=${JSON.stringify(lang)};select.dispatchEvent(new Event('change',{bubbles:true}))})()`);
-    assert.equal(await evaluate('S.lang'), lang);
+    const before = await snapshot(),savedRoute=(await state()).route;
+    await openLanguageSettings();
+    await tap(settingsLanguage,0,50);
+    const key=async(key,code,n)=>{await send('Input.dispatchKeyEvent',{type:'keyDown',key,code,windowsVirtualKeyCode:n});await send('Input.dispatchKeyEvent',{type:'keyUp',key,code,windowsVirtualKeyCode:n})};
+    await key('Home','Home',36);
+    for(let i=0;i<locales.indexOf(lang);i++)await key('ArrowDown','ArrowDown',40);
+    await key('Enter','Enter',13);
+    await waitFor(`S.lang===${JSON.stringify(lang)}`,'settings picker changes the language');
+    assert.equal((await assertLanguagePicker()).value,lang);
+    await tap('[data-hub-action="close-settings"]',0,100);
     assert.equal(await evaluate(`JSON.parse(localStorage.getItem('topikQuestV8')).lang`), lang);
+    assert.deepEqual((await state()).route,savedRoute,'language selection preserves the writing route');
     assert.deepEqual(await snapshot(), before, 'language selection preserves attempts, drafts and guided pointer');
   };
   const fill = async (id, text) => {
@@ -50,9 +72,7 @@ export async function verifyWritingUsability({ evaluate, tap, shot, setViewport,
     const root=document.querySelector('.wcScreen'),bars=[...root.querySelectorAll('.wcPrimaryAction')],bar=bars[0],button=bar?.querySelector('button'),nav=document.querySelector('.nav');
     if(!bar||!button||!nav)return{missing:true,count:bars.length};
     const rect=el=>{const r=el.getBoundingClientRect();return{left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width,height:r.height}},b=rect(bar),a=rect(button),n=rect(nav),hit=document.elementFromPoint(a.left+a.width/2,a.top+a.height/2),style=getComputedStyle(bar),v=window.visualViewport;
-    const select=root.querySelector('.wcLanguage'),s=rect(select),ss=getComputedStyle(select),canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');ctx.font=ss.font||ss.fontSize+' '+ss.fontFamily;
-    const label=select.selectedOptions[0]?.textContent||'',labelWidth=ctx.measureText(label).width,available=s.width-parseFloat(ss.paddingLeft)-parseFloat(ss.paddingRight)-parseFloat(ss.borderLeftWidth)-parseFloat(ss.borderRightWidth)-(ss.appearance==='none'?0:20);
-    return{missing:false,count:bars.length,position:style.position,bar:b,button:a,nav:n,navDisplay:getComputedStyle(nav).display,navVisibility:getComputedStyle(nav).visibility,innerWidth,innerHeight,viewport:{height:v?.height||innerHeight,offsetTop:v?.offsetTop||0},hit:hit===button||button.contains(hit),overflow:Math.max(document.documentElement.scrollWidth,document.body.scrollWidth,root.scrollWidth)-innerWidth,space:parseFloat(getComputedStyle(root).paddingBottom),label,labelWidth,available,select:s,theme:document.documentElement.dataset.theme};
+    return{missing:false,count:bars.length,position:style.position,bar:b,button:a,nav:n,navDisplay:getComputedStyle(nav).display,navVisibility:getComputedStyle(nav).visibility,innerWidth,innerHeight,viewport:{height:v?.height||innerHeight,offsetTop:v?.offsetTop||0},hit:hit===button||button.contains(hit),overflow:Math.max(document.documentElement.scrollWidth,document.body.scrollWidth,root.scrollWidth)-innerWidth,space:parseFloat(getComputedStyle(root).paddingBottom),theme:document.documentElement.dataset.theme};
   })()`);
   const assertAction = async (label, { keyboard = false, theme } = {}) => {
     const value = await inspectAction();
@@ -73,7 +93,6 @@ export async function verifyWritingUsability({ evaluate, tap, shot, setViewport,
       assert.ok(value.nav.height > 0, label + ': normal navigation remains visible');
       assert.ok(value.bar.bottom <= value.nav.top + 1, label + ': action is above bottom navigation');
     }
-    if (value.label === 'English') assert.ok(value.available >= value.labelWidth - 1, label + ': full English selector label fits ' + JSON.stringify(value));
     return value;
   };
   const assertHeading = async id => {
@@ -101,6 +120,7 @@ export async function verifyWritingUsability({ evaluate, tap, shot, setViewport,
         await setViewport(width, 844);
         await evaluate(`malbitSetTheme('${theme}');scrollTo({top:0,left:0,behavior:'instant'})`);
         await sleep(100);
+        if(name==='feedback'){await openLanguageSettings();await assertLanguagePicker();await shot(`writing-settings-${lang}-${theme}-${width}.png`);await tap('[data-hub-action="close-settings"]',0,100)}
         await waitFor(`[...document.querySelectorAll('.wcScreen img')].every(img=>img.complete&&img.naturalWidth>0)`, label + ': illustration failed to load');
         if (itemId) await assertHeading(itemId);
         if (feedback) await assertAssessment(label);
