@@ -730,8 +730,11 @@ try{
   const interrupted=await evaluate(`localStorage.getItem('topikQuestTopik1Session')`);
   await evaluate(`setView('home')`);await tap('[data-hub-action="continue"]');assert.equal(await evaluate(`S.view`),'t1quiz');
   assert.equal(await evaluate(`localStorage.getItem('topikQuestTopik1Session')`),interrupted,'matching TOPIK I session continues without replacement');
-  await evaluate(`setView('home');HARUMAL_HUB.chooseStage('hangul')`);await tap('[data-hub-action="continue"]');assert.equal(await evaluate(`S.view`),'beginner');
-  assert.equal(await evaluate(`localStorage.getItem('topikQuestExamLevel')`),'1','Hangul must preserve last TOPIK level');
+  assert.equal(await evaluate(`localStorage.getItem('topikQuestExamLevel')`),null,'course continuation does not invent a separate exam-level preference');
+  await evaluate(`setView('home');tqSetLevel(2)`);
+  assert.equal(await evaluate(`localStorage.getItem('topikQuestExamLevel')`),'2','explicit exam-level selection is stored');
+  await evaluate(`HARUMAL_HUB.chooseStage('hangul')`);await tap('[data-hub-action="continue"]');assert.equal(await evaluate(`S.view`),'beginner');
+  assert.equal(await evaluate(`localStorage.getItem('topikQuestExamLevel')`),'2','Hangul must preserve the explicitly selected TOPIK II exam level');
   await evaluate(`setView('home');malbitSetTheme('dark')`);
 
   // Synthetic QA fixtures: never counted as learner evidence.
