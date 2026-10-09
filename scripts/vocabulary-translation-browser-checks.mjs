@@ -8,6 +8,29 @@ export async function verifyVocabularyTranslation({evaluate,tap,shot,setViewport
  const wait=async expression=>{for(let i=0;i<100;i++){if(await evaluate(expression))return;await sleep(30)}throw Error('Translation browser QA timed out: '+expression)};
  const fill=async(selector,text)=>{await tap(selector);await evaluate(`document.querySelector(${JSON.stringify(selector)}).select()`);await send('Input.insertText',{text})};
  const status=()=>evaluate(`({posts:__translationQA.posts.length,widgets:__translationQA.widgets,dialogs:document.querySelectorAll('dialog[open]').length,meaning:document.querySelector('#vocabEditMeaning')?.value,notice:document.querySelector('.malbitVocabAiPanel aside')?.textContent,saved:S.vocab[0]})`);
+ const checkNoticeContrast=async state=>{
+  const theme=await evaluate('document.documentElement.dataset.theme');
+  try{
+   for(const target of ['light','dark'])for(const width of [320,390]){
+    await evaluate(`document.documentElement.dataset.theme=${JSON.stringify(target)}`);await setViewport(width,844);
+    const style=await evaluate(`(()=>{const node=document.querySelector('.malbitVocabAiPanel aside'),panel=node?.closest('.malbitVocabAiPanel');if(!node||!node.textContent.trim())return null;node.scrollIntoView({block:'center'});const notice=getComputedStyle(node),surface=getComputedStyle(panel),rect=node.getBoundingClientRect();return{text:node.textContent,foreground:notice.color,background:notice.backgroundColor,gradient:surface.backgroundImage,opacity:notice.opacity,visible:notice.display!=='none'&&notice.visibility==='visible'&&rect.width>0&&rect.height>0,fits:rect.left>=0&&rect.right<=innerWidth&&node.scrollWidth<=node.clientWidth}})()`);
+    assert.ok(style,`${state}: notice is present`);assert.equal(style.visible,true);assert.equal(style.fits,true);assert.equal(style.opacity,'1');
+    const rgba=value=>{const match=value.match(/^rgba?\(([^)]+)\)$/);assert.ok(match,`unsupported computed color: ${value}`);const channels=match[1].split(',').map(Number);return{rgb:channels.slice(0,3),alpha:channels[3]??1}};
+    const ink=rgba(style.foreground),overlay=rgba(style.background),stops=(style.gradient.match(/rgba?\([^)]+\)/g)||[]).map(rgba);
+    assert.equal(ink.alpha,1);assert.equal(stops.length,2,'measure the actual two-stop panel gradient');
+    const luminance=values=>values.map(x=>x/255).map(x=>x<=.04045?x/12.92:((x+.055)/1.055)**2.4).reduce((sum,x,i)=>sum+x*[.2126,.7152,.0722][i],0);
+    const ratios=[];
+    for(let step=0;step<=100;step++){
+     assert.ok(stops.every(stop=>stop.alpha===1),'panel gradient must be opaque');
+     const background=stops[0].rgb.map((v,i)=>v+(stops[1].rgb[i]-v)*step/100).map((v,i)=>overlay.rgb[i]*overlay.alpha+v*(1-overlay.alpha));
+     const first=luminance(ink.rgb),second=luminance(background);ratios.push((Math.max(first,second)+.05)/(Math.min(first,second)+.05));
+    }
+    const minimum=Math.min(...ratios);assert.ok(minimum>=7,`${state} ${target} ${width}px notice contrast ${minimum.toFixed(2)}:1 is below 7:1`);
+    console.log(`Translation ${state} notice: ${target} ${width}px, minimum computed-style contrast ${minimum.toFixed(2)}:1`);
+    await shot(`translation-mock-${state}-notice-${target}-${width}.png`);
+   }
+  }finally{await evaluate(`document.documentElement.dataset.theme=${JSON.stringify(theme)}`);await setViewport(390,844)}
+ };
  const consent=async()=>{
   await wait(`!!document.querySelector('dialog[open]')`);
   const before=await status();await tap('dialog[open] button',0);
@@ -37,6 +60,7 @@ export async function verifyVocabularyTranslation({evaluate,tap,shot,setViewport
   await shot('translation-mock-consent-390.png');await tap('dialog[open] button',1);
   await wait(`!document.querySelector('dialog[open]')`);assert.equal(await evaluate('JSON.stringify(S.vocab[0])'),original);
   assert.equal((await status()).meaning,'直接入力した意味');
+  assert.match((await status()).notice,/翻訳を確定できません/);await checkNoticeContrast('error');
   // Cancel during verification; even a late proof callback cannot send.
   await tap('.malbitVocabAiPanel button',0);await wait(`!!document.querySelector('dialog[open]')`);await tap('dialog[open] button',0);await tap('dialog[open] button',1);
   await evaluate(`__translationQA.proof.callback('late-mock-token')`);await sleep(30);assert.equal((await status()).posts,0);
@@ -44,12 +68,14 @@ export async function verifyVocabularyTranslation({evaluate,tap,shot,setViewport
   await tap('.malbitVocabAiPanel button',0);await consent();
   await fill('[data-example-ko]','합성 수정 문장: 배를 타고 섬으로 갔어요.');
   await finish('以前の文脈の翻訳');assert.equal((await status()).meaning,'直接入力した意味');assert.match((await status()).notice,/入力が変更/);
+  await checkNoticeContrast('changed-input');
   assert.equal(await evaluate('JSON.stringify(S.vocab[0])'),original);
   // A new request previews and sends the edited sentence, then stays a draft.
   await tap('.malbitVocabAiPanel button',0);await wait(`!!document.querySelector('dialog[open]')`);
   assert.match(await evaluate(`document.querySelector('dialog pre').textContent`),/합성 수정 문장/);await consent();
   assert.equal(await evaluate(`__translationQA.posts.at(-1).context`),'합성 수정 문장: 배를 타고 섬으로 갔어요.');
   await finish('船');assert.equal((await status()).meaning,'船');assert.equal(await evaluate('JSON.stringify(S.vocab[0])'),original);
+  await checkNoticeContrast('review-ready');
   await shot('translation-mock-reviewed-draft-390.png');await tap('.malbitVocabEditorTop .save');
   const saved=await evaluate('S.vocab[0]');assert.equal(saved.meanings.ja,'船');assert.equal(saved.meanings.en,'Keep my English');assert.equal(saved.context,'합성 원문: 잘 익은 배를 깎았어요.');assert.equal(saved.translationContext,'합성 수정 문장: 배를 타고 섬으로 갔어요.');assert.equal(saved.dueAt,123);assert.equal(saved.repetitions,7);assert.equal(saved.note,'Synthetic QA note');
   await tap('.malbitVocabDetailLink:not(.malbitVocabRecheck)');assert.equal((await status()).meaning,'船');assert.equal(await evaluate(`document.querySelector('[data-example-ko]').value`),saved.translationContext);
