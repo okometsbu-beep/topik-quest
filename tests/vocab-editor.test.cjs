@@ -70,3 +70,31 @@ test('removing or reordering primary example updates explicit context including 
  let request;x.c.MALBIT_VOCAB_TRANSLATION={resolve:async e=>{request=e;return{value:'船',source:'machine'}},valid:()=>true};await x.c.malbitVocabAutoTranslate();assert.equal(request.translationContext,remove?'':'배를 타요.');assert.equal(request.context,'원래 문맥');
  }
 });
+
+test('translation notices inherit readable panel ink across light and dark gradients',()=>{
+ const block=selector=>source.slice(source.indexOf(selector+'{')+selector.length+1).split('}')[0];
+ const property=(css,name)=>css.match(new RegExp('(?:^|;)'+name+':([^;]+)'))?.[1];
+ const notice=block('.malbitVocabAiPanel aside');
+ assert.equal(property(notice,'color'),'inherit','notice must not override theme-aware panel ink');
+ const rgba=property(notice,'background').match(/^rgba\((\d+),(\d+),(\d+),([\d.]+)\)$/);
+ assert.ok(rgba,'notice background must be included in contrast calculations');
+ const overlay=rgba.slice(1,4).map(Number),alpha=Number(rgba[4]);
+ const rgb=hex=>hex.slice(1).match(/../g).map(x=>parseInt(x,16));
+ const luminance=values=>values.map(x=>x/255).map(x=>x<=.04045?x/12.92:((x+.055)/1.055)**2.4).reduce((sum,x,i)=>sum+x*[.2126,.7152,.0722][i],0);
+ const ratio=(a,b)=>(Math.max(luminance(a),luminance(b))+.05)/(Math.min(luminance(a),luminance(b))+.05);
+ const base=block('.malbitVocabAiPanel'),light=block('html[data-theme="light"] .malbitVocabAiPanel');
+ const styles=fs.readFileSync(path.join(root,'styles.css'),'utf8');
+ const darkInk=styles.match(/html\[data-theme="dark"\]\{[^}]*--ui-ink:(#[0-9a-f]{6})/)[1];
+ for(const [theme,panel,foreground] of [
+  ['light',light,property(light,'color')],
+  ['dark',base,darkInk],
+  ['legacy dark',base,property(block('.malbitVocabEditorScreen'),'color')]
+ ]){
+  const endpoints=property(panel,'background').match(/#[0-9a-f]{6}/g).map(rgb);
+  assert.equal(endpoints.length,2,'check the complete two-stop panel gradient');
+  for(let step=0;step<=100;step++){
+   const background=endpoints[0].map((v,i)=>v+(endpoints[1][i]-v)*step/100).map((v,i)=>overlay[i]*alpha+v*(1-alpha));
+   assert.ok(ratio(rgb(foreground),background)>=7,`${theme} notice must meet 7:1 throughout the gradient`);
+  }
+ }
+});
