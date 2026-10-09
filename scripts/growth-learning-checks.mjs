@@ -101,7 +101,10 @@ export async function verifyGrowthLearning({evaluate,tap,shot,setViewport,send,r
    const expected=await evaluate(`HARUMAL_GROWTH.getLessonText('GL-MEAN-T','explain','${lang}')`);assert.ok((await evaluate(`document.querySelector('#harumalGrowthRoot').textContent`)).includes(expected),lang+' localized explanation');await checkFits(lang+' final explanation');await shot(`growth-explanation-${lang}-390.png`);
   }
   await evaluate(`setLang('ko');HARUMAL_GROWTH.refreshLanguage()`);
-  await click('close');await sleep(100);await evaluate(`setView('profile')`);assert.match(await evaluate(`document.querySelector('.harumalRewardsStatus').textContent`),/코인/);
+  await click('close');await sleep(100);await evaluate(`setView('profile')`);
+  const profileStatus=await evaluate(`(()=>{const root=document.querySelector('#screen.hubProfile .harumalCompactStatus'),state=HARUMAL_REWARDS.getState(),level=HARUMAL_REWARDS.levelInfo(state.xp);return{exists:!!root,actual:{coins:root?.querySelector('.hubCoins b')?.textContent?.trim(),level:root?.querySelector('.hubStatusMain b')?.textContent?.trim(),xp:root?.querySelector('progress')?.value,maxXp:root?.querySelector('progress')?.max},expected:{coins:'◉ '+state.coins,level:'Lv. '+level.level,xp:level.currentXp,maxXp:level.nextXp}}})()`);
+  assert.equal(profileStatus.exists,true,'profile compact reward status exists');
+  assert.deepEqual(profileStatus.actual,profileStatus.expected,'profile coins, level and XP match reward ledger');
   await shot('growth-activity-status-390-dark.png');
   // Backup merge is idempotent and the level boundary is based on activity XP.
   await evaluate(`window.__growthBackup=HARUMAL_REWARDS.exportState()`);const beforeImport=await totals();
