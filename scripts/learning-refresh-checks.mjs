@@ -32,7 +32,8 @@ export async function verifyLearningRefresh({evaluate,tap,shot,setViewport,send,
     assert.equal(await evaluate(`__refreshSecond.then(r=>r.cancelled)`),true,'settings close cancels preview');
     await evaluate(`window.__refreshRead1=MALBIT_TTS.play('급격히');void 0`);
     await wait(`__refreshSpeech.length>0`,'short read reaches device voice');
-    assert.equal(await evaluate(`__refreshSpeech.at(-1).rate`),.73,'short read uses exact settings speed');
+    // SpeechSynthesisUtterance.rate is WebIDL float (32-bit), unlike HTMLMediaElement.playbackRate.
+    assert.equal(await evaluate(`__refreshSpeech.at(-1).rate`),Math.fround(.73),'short read uses exact settings speed without step rounding');
     assert.equal(await evaluate(`!!document.getElementById('deviceSpeechPlayer')`),false,'short read never opens speed popup');
     await evaluate(`window.__refreshRead2=MALBIT_TTS.play('중단');void 0`);
     assert.equal(await evaluate(`__refreshRead1.then(r=>r.cancelled)`),true,'repeat read cancels old speech');
