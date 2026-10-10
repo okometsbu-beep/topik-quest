@@ -4,12 +4,15 @@
 
 const BEGINNER_KEY='malbitBeginnerV1';
 const LANG_INDEX={ko:0,ja:1,en:2,zh:3};
+// Preserve the original 24 positions; append the missing 16 jamo. Progress is keyed by glyph.
 const LETTERS=[
   ['ㅏ','아'],['ㅑ','야'],['ㅓ','어'],['ㅕ','여'],['ㅗ','오'],['ㅛ','요'],['ㅜ','우'],['ㅠ','유'],['ㅡ','으'],['ㅣ','이'],
-  ['ㄱ','가'],['ㄴ','나'],['ㄷ','다'],['ㄹ','라'],['ㅁ','마'],['ㅂ','바'],['ㅅ','사'],['ㅇ','아'],['ㅈ','자'],['ㅊ','차'],['ㅋ','카'],['ㅌ','타'],['ㅍ','파'],['ㅎ','하']
+  ['ㄱ','기역'],['ㄴ','니은'],['ㄷ','디귿'],['ㄹ','리을'],['ㅁ','미음'],['ㅂ','비읍'],['ㅅ','시옷'],['ㅇ','이응'],['ㅈ','지읒'],['ㅊ','치읓'],['ㅋ','키읔'],['ㅌ','티읕'],['ㅍ','피읖'],['ㅎ','히읗'],
+  ['ㅐ','애'],['ㅒ','얘'],['ㅔ','에'],['ㅖ','예'],['ㅘ','와'],['ㅙ','왜'],['ㅚ','외'],['ㅝ','워'],['ㅞ','웨'],['ㅟ','위'],['ㅢ','의'],
+  ['ㄲ','쌍기역'],['ㄸ','쌍디귿'],['ㅃ','쌍비읍'],['ㅆ','쌍시옷'],['ㅉ','쌍지읒']
 ];
 const WRITING_SETS={
-  letters:LETTERS.map(([text,sound])=>({text,sound,meaning:['한글 기본 글자','ハングルの基本文字','Basic Hangul letter','韩文基础字母']})),
+  letters:LETTERS.map(([text,sound])=>({text,sound,meaning:[`이름: ${sound}`,`名前：${sound}`,`Name: ${sound}`,`名称：${sound}`]})),
   words:[
     {text:'사과',meaning:['과일','りんご','apple','苹果']},{text:'나무',meaning:['식물','木','tree','树']},{text:'학교',meaning:['배우는 곳','学校','school','学校']},{text:'친구',meaning:['가까운 사람','友だち','friend','朋友']},{text:'우유',meaning:['마시는 음식','牛乳','milk','牛奶']},{text:'바다',meaning:['넓은 물','海','sea','大海']},{text:'가족',meaning:['함께 사는 사람들','家族','family','家人']},{text:'시간',meaning:['때의 흐름','時間','time','时间']},{text:'오늘',meaning:['지금의 날','今日','today','今天']},{text:'사람',meaning:['인간','人','person','人']}
   ],
@@ -71,7 +74,7 @@ function playDing(){
 }
 function saveMatch(completedItem){
   const value=beginnerProgress(),unit=currentUnit();value.writing[unit]=(Number(value.writing[unit])||0)+1;value.writingV35.success=(Number(value.writingV35.success)||0)+1;
-  if(writingCategory==='letters'){const vowels='ㅏㅑㅓㅕㅗㅛㅜㅠㅡㅣ',consonants='ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅎ';if(vowels.includes(unit)||consonants.includes(unit)){const knownId=`${vowels.includes(unit)?'v':'c'}:${unit}`;if(!value.known.includes(knownId))value.known.push(knownId)}}
+  if(writingCategory==='letters'){const vowels='ㅏㅑㅓㅕㅗㅛㅜㅠㅡㅣㅐㅒㅔㅖㅘㅙㅚㅝㅞㅟㅢ',consonants='ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎㄲㄸㅃㅆㅉ';if(vowels.includes(unit)||consonants.includes(unit)){const knownId=`${vowels.includes(unit)?'v':'c'}:${unit}`;if(!value.known.includes(knownId))value.known.push(knownId)}}
   if(completedItem){value.writingV35.completed[writingCategory]=value.writingV35.completed[writingCategory]||{};const text=currentItem().text;value.writingV35.completed[writingCategory][text]=(Number(value.writingV35.completed[writingCategory][text])||0)+1}write(BEGINNER_KEY,value)
 }
 function advanceWriting(){

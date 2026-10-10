@@ -19,7 +19,7 @@ test('TOPIK study library is complete, multilingual, and organized by level', ()
     assert.equal(new Set(decks[level].map(item => item.term)).size, decks[level].length, `TOPIK ${level} terms should be unique`);
     assert.ok(decks[level].every(item => item.term && item.example && ['ko', 'ja', 'en', 'zh'].every(lang => item.meaning[lang])));
     assert.ok(decks[level].every(item => ['ko', 'ja', 'en', 'zh'].every(lang => item.explanationI18n[lang])));
-    assert.ok(decks[level].every(item => /【意味】[\s\S]*【文脈】[\s\S]*【覚え方】/u.test(item.explanationI18n.ja)||/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u.test(item.explanationI18n.ja)));
+    assert.ok(decks[level].every(item => /【意味】[\s\S]*【文脈】[\s\S]*【覚え方】/u.test(item.explanationI18n.ja)||/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u.test(item.explanationI18n.ja)));
   }
 });
 
@@ -36,8 +36,8 @@ test('S04 time-adverb Shorts have stable IDs and reviewed fixed feedback in ever
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -54,8 +54,8 @@ test('S04 TOPIK II connector Shorts make one reviewed relation judgment in every
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -73,8 +73,8 @@ test('S04 TOPIK II cause-concession Shorts separate result value and reality in 
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -93,8 +93,8 @@ test('S04 TOPIK II inference-evidence Shorts separate clues, possibility, certai
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -113,8 +113,8 @@ test('S04 TOPIK II reported-speech Shorts separate statements, questions, comman
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -133,8 +133,8 @@ test('S04 TOPIK I location Shorts separate opposite, beside, between, and nearby
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -153,8 +153,8 @@ test('S04 TOPIK I frequency Shorts separate every time, often, sometimes, and ze
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -173,8 +173,8 @@ test('S04 TOPIK I counter Shorts separate people, objects, bottles, and books in
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -193,8 +193,8 @@ test('S04 TOPIK I question-word Shorts separate people, places, times, and price
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -213,8 +213,8 @@ test('S04 TOPIK I particle Shorts separate destination, action place, means, and
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -233,8 +233,8 @@ test('S04 TOPIK I demonstrative Shorts separate speaker, listener, distance, and
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -253,8 +253,8 @@ test('S04 TOPIK I basic-tense Shorts separate present habit, completed past, cur
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -273,8 +273,8 @@ test('S04 TOPIK I polite-interaction Shorts separate item request, action reques
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -293,8 +293,8 @@ test('S04 TOPIK I basic-negation Shorts separate simple negation, inability, nou
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -313,8 +313,8 @@ test('S04 TOPIK I basic-connective Shorts separate simultaneity, reason, movemen
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -333,8 +333,8 @@ test('S04 TOPIK II state-change Shorts separate circumstance, quality, progress,
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -353,8 +353,8 @@ test('S04 TOPIK II condition Shorts separate event, necessary, hypothetical, and
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -373,8 +373,8 @@ test('S04 TOPIK II completion-experience Shorts separate completion, long-proces
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -393,8 +393,8 @@ test('S04 TOPIK II judgment-constraint Shorts separate no alternative, worth, ne
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -413,8 +413,8 @@ test('S04 TOPIK II plan-stage Shorts separate intention, decision, consideration
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -433,8 +433,8 @@ test('S04 TOPIK II time-relation Shorts separate immediate, completed, overlappi
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -453,8 +453,8 @@ test('S04 TOPIK II formal-relation Shorts separate source, standard, channel, an
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -473,8 +473,8 @@ test('S04 TOPIK II degree-comparison Shorts separate baseline, no-less degree, e
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -493,8 +493,8 @@ test('S04 TOPIK II scope-relation Shorts separate exclusion, substitution, irrel
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -513,8 +513,8 @@ test('S04 TOPIK II stance-adverb Shorts separate narrow success, alternative, em
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -533,8 +533,8 @@ test('S04 TOPIK II change-adverb Shorts separate gradual, temporary, continuous,
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -553,8 +553,8 @@ test('S04 TOPIK II analysis-noun Shorts separate tendency, factor, phenomenon, a
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -573,8 +573,8 @@ test('S04 TOPIK II argument-noun Shorts separate claim, evidence, rebuttal, and 
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -593,8 +593,8 @@ test('S04 TOPIK I wearing-action Shorts separate clothes, footwear, headwear, an
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -613,8 +613,8 @@ test('S04 TOPIK I transit-action Shorts separate boarding, exiting, transferring
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -633,8 +633,8 @@ test('S04 TOPIK I housework-action Shorts separate room, laundry, dishes, and co
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -653,8 +653,8 @@ test('S04 TOPIK I directional-action Shorts separate vertical and inside/outside
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -673,8 +673,8 @@ test('S04 TOPIK I object-action Shorts separate finding, losing, bringing, and t
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -693,8 +693,8 @@ test('S04 TOPIK I morning-routine Shorts separate getting up, washing, changing,
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -713,8 +713,8 @@ test('S04 TOPIK II policy-review nouns separate measures, effects, limitations, 
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -733,8 +733,8 @@ test('S04 TOPIK II scale-state nouns separate expansion, reduction, maintenance,
       assert.ok(item.shortChoices.every(choice=>choice.explanationI18n[lang]),`${item.id} must explain each ${lang} choice`);
       assert.ok(item.coach[lang].short,`${item.id} must have concise ${lang} feedback`);
     }
-    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【오답 함정】[\s\S]*【재사용 풀이】/u);
-    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+    assert.match(item.explanationI18n.ko,/【정답 근거】[\s\S]*【선택지 비교】[\s\S]*【재사용 풀이】/u);
+    assert.match(item.explanationI18n.ja,/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   }
 });
 
@@ -758,4 +758,65 @@ test('vocabulary screen exposes manual entry, search, filters, and save actions'
   assert.match(source, /window\.malbitLearningVocabPage/);
   assert.match(source, /window\.malbitPracticeVocabLibrary/);
   assert.doesNotMatch(source, /class="tqLongPressDiscovery"/);
+});
+
+test('all 143 lexical Shorts show Japanese equivalents before plain-language glosses', () => {
+  const rows=Object.values(context.window.MALBIT_SHORTS_DECKS).flat().filter(item=>item.type!=='grammar');
+  assert.equal(rows.length,143);
+  for(const item of rows){
+    assert.match(item.meaning.ja,/^[^（）]+（[^（）]+）$/u,item.term);
+    assert.doesNotMatch(item.meaning.ja,/[가-힣]/u,`${item.term}: choices must not reveal the Korean answer`);
+    if(item.shortChoices) for(const choice of item.shortChoices) assert.match(choice.meaning.ja,/^[^（）]+（[^（）]+）$/u,item.term);
+  }
+  const rowsByTerm=Object.fromEntries(rows.map(item=>[item.term,item]));
+  assert.equal(rowsByTerm['중단'].meaning.ja,'中断（続けていたことを途中でやめること）');
+  assert.match(rowsByTerm['발이 넓다'].meaning.ja,/^顔が広い（/u);
+  assert.match(rowsByTerm['반박'].meaning.ja,/^反論（/u);
+});
+
+test('all 144 fixed-choice Shorts explain the visible term before explicitly labelled examples', () => {
+  const rows=Object.values(context.window.MALBIT_SHORTS_DECKS).flat().filter(item=>item.shortChoices);
+  assert.equal(rows.length,144);
+  const headers={ko:'【예문 속 쓰임】',ja:'【例文での使い方】',en:'[Example usage]',zh:'【例句中的用法】'};
+  for(const item of rows){
+    for(const lang of ['ko','ja','en','zh']){
+      assert.equal(item.shortChoices[item.answerIndex].meaning[lang],item.meaning[lang],`${item.term}: ${lang} answer alignment`);
+      assert.equal(item.coach[lang].short,item.shortChoices[item.answerIndex].explanationI18n[lang],`${item.term}: immediate feedback must define the term, not assume a hidden scene`);
+      const detail=item.explanationI18n[lang];
+      assert.ok(detail.indexOf(item.coach[lang].short)<detail.indexOf(headers[lang]),`${item.term}: definition before example`);
+      assert.ok(detail.includes(headers[lang]+(lang==='en'?' ':'')+item.example),`${item.term}: Korean example shown with label`);
+      assert.ok(detail.includes(item.exampleI18n[lang]),`${item.term}: translated example available`);
+      assert.equal(new Set(item.shortChoices.map(choice=>choice.meaning[lang])).size,4,`${item.term}: distinct choices`);
+    }
+  }
+  const suspension=rows.find(item=>item.term==='중단');
+  assert.doesNotMatch(suspension.coach.ja.short,/雨|屋外/u);
+  assert.doesNotMatch(suspension.coach.ko.short,/비 때문에|야외/u);
+  assert.match(suspension.explanationI18n.ja,/【選択肢の比較】/u);
+});
+
+test('reviewed grammar explanations preserve clause direction and avoid false semantic restrictions', () => {
+  const rows=Object.values(context.window.MALBIT_SHORTS_DECKS).flat();
+  const degree=rows.find(item=>item.term==='-(으)ㄹ 정도로');
+  assert.match(degree.coach.ko.short,/앞절에 정도를 보여 주는 기준/u);
+  assert.match(degree.coach.ja.short,/前の節を程度の目安/u);
+  assert.doesNotMatch(degree.meaning.en,/extreme/u);
+  assert.doesNotMatch(degree.meaning.ja,/非常に/u);
+  assert.match(rows.find(item=>item.term==='-는데도').meaning.ja,/予想に反する/u);
+  assert.doesNotMatch(rows.find(item=>item.term==='-(으)ㄹ 생각이다').meaning.ja,/まだ確定していない/u);
+  assert.match(rows.find(item=>item.term==='-는 대신에').example,/타는 대신에/u);
+});
+
+test('dynamic vocabulary choices exclude overlapping change/exchange meanings without changing the answer slot', () => {
+  const source=fs.readFileSync(path.join(root,'topik1.js'),'utf8');
+  const snippet=source.slice(source.indexOf('function shortsOptions('),source.indexOf('\nfunction shortType('));
+  const deck=context.window.MALBIT_SHORTS_DECKS[1].filter(item=>item.type!=='grammar');
+  const runtime={SH:{activeLevel:1},shortsDeck:()=>deck,level:()=>1};vm.createContext(runtime);vm.runInContext(snippet,runtime);
+  for(const [term,excluded] of [['바꾸다','교환하다'],['교환하다','바꾸다']]){
+    const index=deck.findIndex(item=>item.term===term),options=runtime.shortsOptions(index,1);
+    assert.equal(options.items.length,4);assert.equal(options.correct,(index*3+1)%4);
+    assert.equal(options.items[options.correct].term,term);
+    assert.ok(!options.items.some(item=>item.term===excluded));
+    assert.equal(new Set(options.items.map(item=>item.term)).size,4);
+  }
 });

@@ -1,27 +1,28 @@
 {
   "version": 1,
-  "generated_at": "2026-10-09T03:42:16.170Z",
-  "source_sha256": "e226d68835534057f10c0d94b047e849f8d0d42cd18e981b0117f0be1a28d491",
+  "generated_at": "2026-10-10T08:28:10.970Z",
+  "source_sha256": "2b3e3b9a00d26fb6f03b5dd2d68dc39aecda2c70c9d386d50704d978310c9fed",
+  "source_provenance": "Lossless reconstruction from packed rows; not original authored upload.",
   "outputs": [
     {
       "file": "data/question-bank-v1-part1.js",
-      "bytes": 552193,
-      "sha256": "a9bb3e8679ec268ccbcb24f56e47c0a1f7caeccda68654df0beb96912dba7ab3"
+      "bytes": 558128,
+      "sha256": "f3c4fad0ce3dd7d7b14863401d8617a53c954fce85c345db109c81e9a80d88b9"
     },
     {
       "file": "data/question-bank-v1-part2.js",
-      "bytes": 552072,
-      "sha256": "a4416827171238c49b6518540a724d07e2985c92fe8e36314a68c72a9fa11d16"
+      "bytes": 557926,
+      "sha256": "c56daf1df6c215fdbe6a4f2fbd0abc14dc3938d4473e1b05490b84c0d7a1dda2"
     },
     {
       "file": "data/question-bank-v1-part3.js",
-      "bytes": 551757,
-      "sha256": "695589b5a6b769b1a730389c5fb1122c433f19c9a4556f9c39e2da9bb033c967"
+      "bytes": 557548,
+      "sha256": "d72f3977e1dcd82069344ff99a00601458f174386fef7f4d2ac427c12f60fe54"
     },
     {
       "file": "data/question-bank-v1-part4.js",
-      "bytes": 551499,
-      "sha256": "7790f283b09ec79faa3bae98eda8fe16670f5770f6a795b416d6de56358ba415"
+      "bytes": 557415,
+      "sha256": "4fb7a2c1e20432a67d60c14fc2fd9c5618699729a0c2fdb589b39a0c0513c4d4"
     }
   ],
   "total_items": 2088,

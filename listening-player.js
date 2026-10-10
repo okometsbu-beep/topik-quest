@@ -5,6 +5,7 @@ const RATES=[.75,1,1.25,1.5];
 let serial=0,current=null,last=null,view=null;
 const L=(ko,ja,en,zh)=>({ko,ja,en,zh}[typeof S==='object'?S.lang:'ko']||en);
 const h=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const readingRate=value=>Math.max(.65,Math.min(1.5,Math.round((Number(value??window.MALBIT_TTS?.preferences?.().rate)||1)*100)/100));
 const rate=()=>{const v=Number(window.MALBIT_TTS?.preferences?.().rate)||1;return RATES.reduce((a,b)=>Math.abs(b-v)<Math.abs(a-v)?b:a)};
 const time=v=>Number.isFinite(v)?`${Math.floor(v/60)}:${String(Math.floor(v%60)).padStart(2,'0')}`:'—:—';
 const busy=key=>!!current&&(!key||current.options.key===key);
@@ -27,16 +28,22 @@ function cancel(){current?.finish({cancelled:true});}
 function setRate(value){if(!RATES.includes(Number(value)))return;window.malbitTtsSetRate?.(Number(value));current?.changeRate(Number(value));paint();}
 function device(){if(last?.onDevice)last.onDevice();else if(last)play({...last,forceDevice:true});}
 function speechParts(script){return String(script||'').split(/\n+/).map(line=>{const label=line.match(/^(여자|남자)(?:\([^)]*\))?\s*[:：]\s*/);return{text:line.replace(/^(?:여자|남자|여성|남성|진행자|전문가|안내|방송)(?:\([^)]*\))?\s*[:：]\s*/,''),gender:label?.[1]==='여자'?'female':label?'male':''}}).filter(p=>p.text.trim()).map(p=>/^[_\s]+$/.test(p.text)?{pause:1200}:p);}
+// Short reads have no transport UI, but still belong to the screen/settings that started them.
+function readingContext(check){
+ const screen=document.getElementById?.('screen'),content=screen?.firstElementChild,screenView=typeof S==='object'?S.view:null;
+ const settings=document.getElementById?.('harumalSettingsDialog'),inSettings=!!settings&&!settings.hidden;
+ return()=>check?.()!==false&&(typeof S!=='object'||S.view===screenView)&&(!screen||(screen.isConnected!==false&&screen.firstElementChild===content))&&(!inSettings||(settings.isConnected!==false&&!settings.hidden));
+}
 function play(options){
  cancel();window.MALBIT_TTS?.cancel?.(true);window.HARUMAL_LISTENING_AUDIO?.cancel?.();
  const token=++serial;last=options;view={key:options.key,status:'loading',device:!!options.forceDevice,position:0,total:null};
  return new Promise(resolve=>{
-  let parts=[],index=0,step=0,settled=false,started=false,seeked=false,active=null,gap=null,gapTimer=null,watchdog=null,tick=null,playRate=rate();
+  let parts=[],index=0,step=0,settled=false,started=false,seeked=false,active=null,gap=null,gapTimer=null,watchdog=null,tick=null,observer=null,playRate=options.inline?readingRate(options.readOptions?.rate):rate();
   const media=[],alive=()=>!settled&&token===serial;
   const validContext=()=>options.isCurrent?.()!==false&&(options.rootRequired===false||!!rootFor(options.key));
   const request={isCurrent:()=>alive()&&validContext()};
   const halt=()=>{step++;clearTimeout(gapTimer);clearTimeout(watchdog);gap=null;if(active){try{active.pause();active.currentTime=0}catch(_){}}active=null;window.MALBIT_TTS?.cancel?.(true);};
-  const finish=result=>{if(!alive())return;settled=true;halt();clearInterval(tick);for(const a of media){a.onloadedmetadata=a.ondurationchange=a.onplaying=a.onended=a.onerror=a.onwaiting=null;try{a.pause();a.removeAttribute?.('src');a.load?.()}catch(_){}}if(current?.token===token)current=null;view.status=result.error?'error':result.cancelled?'stopped':'ended';view.position=result.cancelled?0:Number.isFinite(view.total)&&!result.error?view.total:view.position;const final={...result,started,heard:started&&!seeked&&!result.error&&!result.cancelled,engine:view.device?'device':'listening-file'};options.onResult?.(final);paint();resolve(final);};
+  const finish=result=>{if(!alive())return;settled=true;observer?.disconnect();halt();clearInterval(tick);for(const a of media){a.onloadedmetadata=a.ondurationchange=a.onplaying=a.onended=a.onerror=a.onwaiting=null;try{a.pause();a.removeAttribute?.('src');a.load?.()}catch(_){}}if(current?.token===token)current=null;view.status=result.error?'error':result.cancelled?'stopped':'ended';view.position=result.cancelled?0:Number.isFinite(view.total)&&!result.error?view.total:view.position;const final={...result,started,heard:started&&!seeked&&!result.error&&!result.cancelled,engine:view.device?'device':'listening-file'};options.onResult?.(final);paint();resolve(final);};
   const fail=()=>finish({error:true}),markStarted=()=>{if(!started){started=true;options.onStart?.();}};
   const total=()=>{view.total=parts.length&&parts.every(p=>Number.isFinite(p.duration))?parts.reduce((n,p)=>n+p.duration,0):null;};
   const before=idx=>parts.slice(0,idx).reduce((n,p)=>n+(Number.isFinite(p.duration)?p.duration:0),0);
@@ -59,15 +66,23 @@ function play(options){
    for(let i=0;i<segments.length;i++){const p=segments[i];if(i&&!p.pause&&!segments[i-1].pause)parts.push({pause:true,duration:.38});if(p.pause){parts.push({pause:true,duration:p.pause/1000});continue;}const part={...p,duration:null};if(!view.device){try{const a=new Audio();a.preload='metadata';a.src=p.url;part.audio=a;media.push(a);const metadata=()=>{if(!alive())return;const d=Number(a.duration);if(Number.isFinite(d)&&d>0){part.duration=d;total();paint();}};a.onloadedmetadata=a.ondurationchange=metadata;a.load?.();metadata();}catch(_){fail();return;}}parts.push(part);}
    total();tick=setInterval(()=>{if(!alive())return;if(!validContext()){finish({cancelled:true});return;}position();paint()},150);run(0);
   };
+  if(options.inline&&typeof MutationObserver==='function'){
+   observer=new MutationObserver(()=>{if(alive()&&!validContext())finish({cancelled:true})});
+   const screen=document.getElementById?.('screen'),settings=document.getElementById?.('harumalSettingsDialog');
+   if(screen)observer.observe(screen,{childList:true});if(settings)observer.observe(settings,{attributes:true,attributeFilter:['hidden']});
+  }
   paint();if(options.forceDevice){prepare(options.readOptions?[{text:String(options.script||''),gender:options.readOptions.gender||''}]:speechParts(options.script));return;}
-  const segments=window.HARUMAL_LISTENING_AUDIO?.resolve?.(options.script);if(segments){prepare(segments);return;}
+  const segments=options.segments||window.HARUMAL_LISTENING_AUDIO?.resolve?.(options.script);if(segments){prepare(segments);return;}
   if(options.legacy){Promise.resolve().then(()=>request.isCurrent()?options.legacy(request):null).then(url=>{if(!alive())return;if(!validContext()){finish({cancelled:true});return;}if(url)prepare([{url}]);else fail()},()=>{if(alive())fail()});return;}fail();
  });
 }
 function read(text,options={}){
- let root=document.getElementById('deviceSpeechPlayer');if(!root){root=document.createElement('aside');root.id='deviceSpeechPlayer';root.className='deviceSpeechPlayer';document.body.appendChild(root);}root.innerHTML=markup('HARUMAL_LISTENING_PLAYER.repeatRead()','device-read')+`<button type="button" class="deviceSpeechClose" onclick="HARUMAL_LISTENING_PLAYER.closeRead()">${L('닫기','閉じる','Close','关闭')}</button>`;
- return play({key:'device-read',script:text,forceDevice:true,readOptions:options});
+ return play({key:'device-read',script:text,forceDevice:true,readOptions:options,inline:true,rootRequired:false,isCurrent:readingContext(options.isCurrent)});
 }
-window.HARUMAL_LISTENING_PLAYER=Object.freeze({markup,play,cancel,busy,setRate,seek:value=>current?.seek(Number(value)),device,read,repeatRead(){if(busy('device-read'))cancel();else if(last?.key==='device-read')read(last.script,last.readOptions)},closeRead(){if(busy('device-read'))cancel();document.getElementById('deviceSpeechPlayer')?.remove()},refresh:paint});
+function preview(segments,options={}){
+ return play({...options,key:'settings-preview',segments,inline:true,rootRequired:false,isCurrent:readingContext(options.isCurrent)});
+}
+window.HARUMAL_LISTENING_PLAYER=Object.freeze({markup,play,cancel,busy,setRate,seek:value=>current?.seek(Number(value)),device,read,preview,repeatRead(){if(busy('device-read'))cancel();else if(last?.key==='device-read')read(last.script,last.readOptions)},closeRead(){if(busy('device-read'))cancel();document.getElementById('deviceSpeechPlayer')?.remove()},refresh:paint});
 window.addEventListener?.('pagehide',cancel);
+window.addEventListener?.('popstate',cancel);
 })();

@@ -613,7 +613,9 @@ function shortsOptions(index,examLevel=SH.activeLevel||level()){
   const lv=Number(examLevel)===1?1:2,deck=shortsDeck(lv),target=deck[Math.max(0,Number(index)||0)%deck.length];
   if(target.bankId){const p=SH.levels?.[lv]||{},order=p.orderId===target.bankId?BANK.cleanOrder(p.choiceOrder,4):[0,1,2,3];return{items:order.map(i=>({label:target.choices[i],sourceIndex:i})),correct:order.indexOf(target.answerIndex),target,level:lv}}
   if(target.shortChoices){const p=SH.levels?.[lv]||{},order=p.orderId===target.id?BANK.cleanOrder(p.choiceOrder,4):[0,1,2,3];return{items:order.map(i=>({...target.shortChoices[i],sourceIndex:i})),correct:order.indexOf(target.answerIndex),target,level:lv}}
-  const pool=deck.filter(x=>x!==target&&!x.bankId&&x.meaning&&x.type===target.type),start=((Number(index)||0)*5+lv)%pool.length;
+  // These meanings overlap; neither is a fair distractor for the other.
+  const confusable=target.term==='바꾸다'?['교환하다']:target.term==='교환하다'?['바꾸다']:[];
+  const pool=deck.filter(x=>x!==target&&!x.bankId&&x.meaning&&x.type===target.type&&!confusable.includes(x.term)),start=((Number(index)||0)*5+lv)%pool.length;
   const items=Array.from({length:3},(_,i)=>pool[(start+i)%pool.length]),correct=((Number(index)||0)*3+lv)%4;
   items.splice(correct,0,target);return {items,correct,target,level:lv};
 }

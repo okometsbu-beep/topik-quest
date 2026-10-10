@@ -54,7 +54,8 @@ test('all 22 tasks have explicit four-language instruction coverage, keyed by st
 
 test('canonical Korean learning material, options, IDs, accepted answers and grades stay unchanged',()=>{
  const retained=D.recipes.flatMap(r=>['learn','transfer'].map(p=>{const q=r[p];return{id:q.id,kind:q.kind,difficulty:q.difficulty,text:q.text,audio:q.audio,choices:q.choices,rows:q.rows,cards:q.cards,groups:q.groups,claims:q.claims,evidence:q.evidence,parts:q.parts,insert:q.insert,sentences:q.sentences,caption:q.caption,headers:q.headers,table:q.table,first:q.first,branches:q.branches,answer:q.answer,accepted:q.accepted};}));
- assert.equal(crypto.createHash('sha256').update(JSON.stringify(retained)).digest('hex'),'89ed05c73423f8909d750b783897f9967eb7bd50d79ab569ea6d84849461a2b9');
+ // v165: six listening labels omit AM/PM not stated in the unchanged audio.
+ assert.equal(crypto.createHash('sha256').update(JSON.stringify(retained)).digest('hex'),'613fef31e99fea9ad940c5c44a344996d8227a734af9a8a92c18d2c9cbca4549');
  const before=JSON.stringify(D);for(const lang of langs)for(const r of D.recipes)for(const p of ['learn','transfer']){assert.equal(E.grade(r[p],answer(r[p])),true);const h=harness({lang,seed:prepared(r.id,p)});assert.equal(JSON.stringify(h.c.HARUMAL_GROWTH_DATA),before);}
  assert.equal(JSON.stringify(D),before);
 });

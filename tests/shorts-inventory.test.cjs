@@ -12,7 +12,9 @@ test('Shorts audit covers the actual deck and keeps all content approvals unrevi
   assert.equal(report.summary.approved, 0);
   assert.equal(report.summary.distinctQuestionChoiceSets, 161);
   assert.equal(report.summary.redundantRows, 28);
-  assert.equal(report.summary.flagged, 2);
+  assert.equal(report.summary.flagged, 3);
+  assert.deepEqual(report.rows.filter(row => row.flags.length).map(row => row.id), ['P01-I-R-09', 'P01-I-R-10', 'P01-II-R-09']);
+  assert.ok(report.rows.filter(row => row.flags.length).every(row => row.flags.every(flag => flag === 'review-question-length')), 'the extra own-wardrobe context is a length-review flag, not an answer conflict');
   assert.equal(report.exactDuplicateGroups.length, 8);
   assert.equal(report.conflictingAnswerGroups.length, 0);
   for (const row of report.rows) {

@@ -13,6 +13,7 @@ import {verifyVocabularySelection} from './vocabulary-selection-checks.mjs';
 import {verifyRetiredShorts} from './retired-shorts-checks.mjs';
 import {verifyListeningPlayer} from './listening-player-checks.mjs';
 import {verifyGrowthLearning} from './growth-learning-checks.mjs';
+import {verifyLearningRefresh} from './learning-refresh-checks.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import {spawn} from 'node:child_process';
@@ -691,6 +692,7 @@ try{
   await verifyVocabularySelection({evaluate,tap,shot,setViewport,send,ready,sleep});
   await verifyVocabularyTranslation({evaluate,tap,shot,setViewport,send,ready,sleep});
   await verifyListeningPlayer({evaluate,tap,shot,setViewport,sleep});
+  await verifyLearningRefresh({evaluate,tap,shot,setViewport,send,ready,sleep});
   await verifyHaruman({evaluate,tap,shot,setViewport,sleep});
   await verifyGrowthLearning({evaluate,tap,shot,setViewport,send,ready,sleep});
   assert.deepEqual(errors,[],'Growth learning and activity rewards must not add console errors');
@@ -711,7 +713,7 @@ try{
   await tap('[data-hub-action="continue"]',0,120);
   assert.equal(await evaluate(`S.view`),'beginner');
   assert.match(await evaluate(`document.querySelector('.v33BeginnerTabs button.on')?.textContent||''`),/子音/,'Continue must restore the interrupted consonant step');
-  assert.match(await evaluate(`document.querySelector('.v33BeginnerHero p')?.textContent||''`),/1\/20/,'the learned-letter count must survive re-entry');
+  assert.match(await evaluate(`document.querySelector('.v33BeginnerHero p')?.textContent||''`),/1\/40/,'the learned-letter count must survive re-entry');
   assert.match(await evaluate(`document.querySelector('.v33LetterGrid button.learned')?.textContent||''`),/ㄱ/,'the learned consonant must remain marked');
   for(const theme of ['light','dark']){await evaluate(`malbitSetTheme('${theme}')`);await sleep(80);for(const width of [320,375,390,430]){
     await setViewport(width,width===320?700:844);
@@ -1085,18 +1087,18 @@ try{
   const timeBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['1'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
   assert.equal(timeBefore.term,'벌써');assert.equal(timeBefore.cardId,timeAdverb.id);assert.equal(timeBefore.orderId,timeAdverb.id);
   assert.deepEqual(timeBefore.choiceOrder,[2,0,3,1]);
-  assert.deepEqual(timeBefore.labels,['たった今','もう（予想より早く）','もうすぐ','まだ'],'fixed reviewed choices must keep the saved shuffle');
-  await submitShortsLabel('まだ');
+  assert.deepEqual(timeBefore.labels,['たった今（ほんの少し前に）','もう（予想より早く、すでに）','もうすぐ（少し時間がたったら）','まだ（状態が続く、または完了していない）'],'fixed reviewed choices must keep the saved shuffle');
+  await submitShortsLabel('まだ（状態が続く、または完了していない）');
   const timeReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,detail:details?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
   assert.match(timeReview.summary,/아직[\s\S]*完了していない/u,'selected Japanese feedback must explain the specific 아직 trap');
-  assert.match(timeReview.answer,/もう（予想より早く）/u);assert.equal(timeReview.closed,true);
+  assert.match(timeReview.answer,/^もう（/u);assert.equal(timeReview.closed,true);
   assert.equal(timeReview.nextBeforeDetails,true,'Next question must precede optional time-adverb coaching');
   assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'宿題をもう全部終えました。','reviewed Japanese example must render locally without a translation wait');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 time adverb light ${width}px`,'light')}
   await setViewport(390,844);await shot('00be-shorts-time-adverb-wrong-light.png');
   await evaluate(`malbitSetTheme('dark');const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);
-  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 time adverb expanded dark ${width}px`,'dark')}
   await setViewport(390,844);await shot('00bf-shorts-time-adverb-full-dark.png');
   await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsFeedbackSummary');
@@ -1106,7 +1108,7 @@ try{
   assert.deepEqual(timeRestored.choiceOrder,[2,0,3,1],'saved reviewed choice order must survive reload');
   assert.equal(timeRestored.locked,true,'graded state must survive reload');
   assert.match(timeRestored.summary,/아직[\s\S]*完了していない/u,'selected Japanese feedback must survive reload');
-  assert.match(timeRestored.answer,/もう（予想より早く）/u,'reviewed answer must survive reload');
+  assert.match(timeRestored.answer,/^もう（/u,'reviewed answer must survive reload');
 
   const locationWord=await evaluate(`(()=>{const lv=1,deck=window.HARUMAL_SHORTS_DECK(lv),index=deck.findIndex(item=>item.id==='S04-I-W-PLACE-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,0,3,1],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','1');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:1,levels:{1:active,2:blank},daily:{}}));return{index,id:identity.id}})()`);
   assert.equal(locationWord.id,'S04-I-W-PLACE-01','reviewed location card must have its explicit stable ID');
@@ -1114,18 +1116,18 @@ try{
   const locationBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['1'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
   assert.equal(locationBefore.term,'건너편');assert.equal(locationBefore.cardId,locationWord.id);assert.equal(locationBefore.orderId,locationWord.id);
   assert.deepEqual(locationBefore.choiceOrder,[2,0,3,1]);
-  assert.deepEqual(locationBefore.labels,['二つの間','道・空間の向こう側','近く・周辺','すぐ隣・横'],'fixed location choices must keep the saved shuffle');
-  await submitShortsLabel('すぐ隣・横');
+  assert.deepEqual(locationBefore.labels,['間（二つのものに挟まれたところ）','向かい側（道や空間を挟んだ反対側）','近く（ある場所の周辺）','隣・横（すぐそばの位置）'],'fixed location choices must keep the saved shuffle');
+  await submitShortsLabel('隣・横（すぐそばの位置）');
   const locationReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
   assert.match(locationReview.summary,/옆[\s\S]*すぐ隣/u,'selected Japanese feedback must explain the specific beside trap');
-  assert.match(locationReview.answer,/道・空間の向こう側/u);assert.equal(locationReview.closed,true);
+  assert.match(locationReview.answer,/^向かい側（/u);assert.equal(locationReview.closed,true);
   assert.equal(locationReview.nextBeforeDetails,true,'Next question must precede optional location coaching');
   assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'銀行は道の向こう側にあります。','reviewed Japanese location example must render locally');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK I location light ${width}px`,'light')}
   await setViewport(390,844);await shot('00bm-shorts-topik1-location-wrong-light.png');
   await evaluate(`malbitSetTheme('dark');const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);
-  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK I location expanded dark ${width}px`,'dark')}
   await setViewport(390,844);await shot('00bn-shorts-topik1-location-full-dark.png');
   await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsFeedbackSummary');
@@ -1135,7 +1137,7 @@ try{
   assert.deepEqual(locationRestored.choiceOrder,[2,0,3,1],'saved location choice order must survive reload');
   assert.equal(locationRestored.locked,true,'graded location state must survive reload');
   assert.match(locationRestored.summary,/옆[\s\S]*すぐ隣/u,'location selected feedback must survive reload');
-  assert.match(locationRestored.answer,/道・空間の向こう側/u,'reviewed location answer must survive reload');
+  assert.match(locationRestored.answer,/^向かい側（/u,'reviewed location answer must survive reload');
 
   const connector=await evaluate(`(()=>{const lv=2,deck=window.HARUMAL_SHORTS_DECK(lv),index=deck.findIndex(item=>item.id==='S04-II-W-LINK-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[1,3,0,2],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','2');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:2,levels:{1:blank,2:active},daily:{}}));return{index,id:identity.id}})()`);
   assert.equal(connector.id,'S04-II-W-LINK-01','reviewed connector card must have its explicit stable ID');
@@ -1143,18 +1145,18 @@ try{
   const connectorBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['2'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
   assert.equal(connectorBefore.term,'따라서');assert.equal(connectorBefore.cardId,connector.id);assert.equal(connectorBefore.orderId,connector.id);
   assert.deepEqual(connectorBefore.choiceOrder,[1,3,0,2]);
-  assert.deepEqual(connectorBefore.labels,['一方で；それに対して','ただし；ただ','したがって；そのため','そのうえ；さらに'],'fixed connector choices must keep the saved shuffle');
-  await submitShortsLabel('ただし；ただ');
+  assert.deepEqual(connectorBefore.labels,['一方で（異なる面を対比する）','ただし（制限や条件を付け加える）','したがって（前の内容から結果を導く）','そのうえ（同じ方向の情報を付け加える）'],'fixed connector choices must keep the saved shuffle');
+  await submitShortsLabel('ただし（制限や条件を付け加える）');
   const connectorReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,detail:details?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
   assert.match(connectorReview.summary,/다만[\s\S]*制限や条件/u,'selected Japanese feedback must explain the specific 다만 trap');
-  assert.match(connectorReview.answer,/したがって；そのため/u);assert.equal(connectorReview.closed,true);
+  assert.match(connectorReview.answer,/^したがって（/u);assert.equal(connectorReview.closed,true);
   assert.equal(connectorReview.nextBeforeDetails,true,'Next question must precede optional connector coaching');
   assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'大雨が降りました。したがって、試合は中止になりました。','reviewed Japanese connector example must render locally');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK II connector light ${width}px`,'light')}
   await setViewport(390,844);await shot('00bg-shorts-topik2-connector-wrong-light.png');
   await evaluate(`malbitSetTheme('dark');const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);
-  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK II connector expanded dark ${width}px`,'dark')}
   await setViewport(390,844);await shot('00bh-shorts-topik2-connector-full-dark.png');
   await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsFeedbackSummary');
@@ -1164,7 +1166,7 @@ try{
   assert.deepEqual(connectorRestored.choiceOrder,[1,3,0,2],'saved connector choice order must survive reload');
   assert.equal(connectorRestored.locked,true,'graded connector state must survive reload');
   assert.match(connectorRestored.summary,/다만[\s\S]*制限や条件/u,'connector-specific Japanese feedback must survive reload');
-  assert.match(connectorRestored.answer,/したがって；そのため/u,'reviewed connector answer must survive reload');
+  assert.match(connectorRestored.answer,/^したがって（/u,'reviewed connector answer must survive reload');
 
   const stanceAdverb=await evaluate(`(()=>{const lv=2,deck=window.HARUMAL_SHORTS_DECK(lv),index=deck.findIndex(item=>item.id==='S04-II-W-STANCE-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','2');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:2,levels:{1:blank,2:active},daily:{}}));return{index,id:identity.id}})()`);
   assert.equal(stanceAdverb.id,'S04-II-W-STANCE-01','reviewed stance-adverb card must have its explicit stable ID');
@@ -1172,18 +1174,18 @@ try{
   const stanceBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['2'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
   assert.equal(stanceBefore.term,'간신히');assert.equal(stanceBefore.cardId,stanceAdverb.id);assert.equal(stanceBefore.orderId,stanceAdverb.id);
   assert.deepEqual(stanceBefore.choiceOrder,[2,1,0,3]);
-  assert.deepEqual(stanceBefore.labels,['否定表現とともに「まったく・どうしても」','よりましな選択肢を選ぶ','苦労の末、かろうじて実現する','間に合わず、することができない'],'fixed stance-adverb choices must keep the saved shuffle');
-  await submitShortsLabel('よりましな選択肢を選ぶ');
+  assert.deepEqual(stanceBefore.labels,['どうしても（否定とともに「まったく～ない」）','いっそ（比べたうえで、よりましな方を選ぶ）','かろうじて（苦労の末、やっと）','～する余裕もなく（時間が足りず、しきれない様子）'],'fixed stance-adverb choices must keep the saved shuffle');
+  await submitShortsLabel('いっそ（比べたうえで、よりましな方を選ぶ）');
   const stanceReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
   assert.match(stanceReview.summary,/차라리[\s\S]*選択肢/u,'selected Japanese feedback must explain the alternative-choice trap');
-  assert.match(stanceReview.answer,/苦労の末、かろうじて/u);assert.equal(stanceReview.closed,true);
+  assert.match(stanceReview.answer,/^かろうじて（/u);assert.equal(stanceReview.closed,true);
   assert.equal(stanceReview.nextBeforeDetails,true,'Next question must precede optional stance-adverb coaching');
   assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'終電が出る直前に、かろうじて駅に着きました。','reviewed Japanese stance-adverb example must render locally');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK II stance adverb light ${width}px`,'light')}
   await setViewport(390,844);await shot('00dc-shorts-topik2-stance-adverb-wrong-light.png');
   await evaluate(`malbitSetTheme('dark');const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);
-  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK II stance adverb expanded dark ${width}px`,'dark')}
   await setViewport(390,844);await shot('00dd-shorts-topik2-stance-adverb-full-dark.png');
   await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsFeedbackSummary');
@@ -1193,7 +1195,7 @@ try{
   assert.deepEqual(stanceRestored.choiceOrder,[2,1,0,3],'saved stance-adverb choice order must survive reload');
   assert.equal(stanceRestored.locked,true,'graded stance-adverb state must survive reload');
   assert.match(stanceRestored.summary,/차라리[\s\S]*選択肢/u,'stance-adverb selected feedback must survive reload');
-  assert.match(stanceRestored.answer,/苦労の末、かろうじて/u,'reviewed stance-adverb answer must survive reload');
+  assert.match(stanceRestored.answer,/^かろうじて（/u,'reviewed stance-adverb answer must survive reload');
 
   const wearingAction=await evaluate(`(()=>{const lv=1,deck=window.HARUMAL_SHORTS_DECK(lv),index=deck.findIndex(item=>item.id==='S04-I-W-WEAR-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','1');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:1,levels:{1:active,2:blank},daily:{}}));return{index,id:identity.id}})()`);
   assert.equal(wearingAction.id,'S04-I-W-WEAR-01','reviewed wearing-action card must have its explicit stable ID');
@@ -1201,18 +1203,18 @@ try{
   const wearingBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['1'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
   assert.equal(wearingBefore.term,'입다');assert.equal(wearingBefore.cardId,wearingAction.id);assert.equal(wearingBefore.orderId,wearingAction.id);
   assert.deepEqual(wearingBefore.choiceOrder,[2,1,0,3]);
-  assert.deepEqual(wearingBefore.labels,['帽子をかぶる','靴・靴下を履く','服を着る','手袋をはめる'],'fixed wearing-action choices must keep the saved shuffle');
-  await submitShortsLabel('靴・靴下を履く');
+  assert.deepEqual(wearingBefore.labels,['かぶる（帽子などを頭につける）','履く（靴や靴下を身につける）','着る（服を身につける）','はめる（手袋などを手につける）'],'fixed wearing-action choices must keep the saved shuffle');
+  await submitShortsLabel('履く（靴や靴下を身につける）');
   const wearingReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
   assert.match(wearingReview.summary,/신다[\s\S]*靴や靴下/u,'selected Japanese feedback must explain the footwear trap');
-  assert.match(wearingReview.answer,/服を着る/u);assert.equal(wearingReview.closed,true);
+  assert.match(wearingReview.answer,/^着る（/u);assert.equal(wearingReview.closed,true);
   assert.equal(wearingReview.nextBeforeDetails,true,'Next question must precede optional wearing-action coaching');
   assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'寒かったので、厚いコートを着ました。','reviewed Japanese wearing-action example must render locally');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK I wearing action light ${width}px`,'light')}
   await setViewport(390,844);await shot('00de-shorts-topik1-wearing-action-wrong-light.png');
   await evaluate(`malbitSetTheme('dark');const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);
-  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK I wearing action expanded dark ${width}px`,'dark')}
   await setViewport(390,844);await shot('00df-shorts-topik1-wearing-action-full-dark.png');
   await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsFeedbackSummary');
@@ -1222,7 +1224,7 @@ try{
   assert.deepEqual(wearingRestored.choiceOrder,[2,1,0,3],'saved wearing-action choice order must survive reload');
   assert.equal(wearingRestored.locked,true,'graded wearing-action state must survive reload');
   assert.match(wearingRestored.summary,/신다[\s\S]*靴や靴下/u,'wearing-action selected feedback must survive reload');
-  assert.match(wearingRestored.answer,/服を着る/u,'reviewed wearing-action answer must survive reload');
+  assert.match(wearingRestored.answer,/^着る（/u,'reviewed wearing-action answer must survive reload');
 
   const transitAction=await evaluate(`(()=>{const lv=1,deck=window.HARUMAL_SHORTS_DECK(lv),index=deck.findIndex(item=>item.id==='S04-I-W-TRANSIT-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','1');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:1,levels:{1:active,2:blank},daily:{}}));return{index,id:identity.id}})()`);
   assert.equal(transitAction.id,'S04-I-W-TRANSIT-01','reviewed transit-action card must have its explicit stable ID');
@@ -1230,18 +1232,18 @@ try{
   const transitBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['1'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
   assert.equal(transitBefore.term,'타다');assert.equal(transitBefore.cardId,transitAction.id);assert.equal(transitBefore.orderId,transitAction.id);
   assert.deepEqual(transitBefore.choiceOrder,[2,1,0,3]);
-  assert.deepEqual(transitBefore.labels,['別の路線・乗り物に乗り換える','乗り物から降りる','乗り物に乗る','道・川などを渡る'],'fixed transit-action choices must keep the saved shuffle');
-  await submitShortsLabel('乗り物から降りる');
+  assert.deepEqual(transitBefore.labels,['乗り換える（別の路線や乗り物に移る）','降りる（乗り物から出る）','乗る（乗り物に乗り込む）','渡る（道や川などの向こう側へ行く）'],'fixed transit-action choices must keep the saved shuffle');
+  await submitShortsLabel('降りる（乗り物から出る）');
   const transitReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
   assert.match(transitReview.summary,/내리다[\s\S]*乗っていた/u,'selected Japanese feedback must explain the getting-off trap');
-  assert.match(transitReview.answer,/乗り物に乗る/u);assert.equal(transitReview.closed,true);
+  assert.match(transitReview.answer,/^乗る（/u);assert.equal(transitReview.closed,true);
   assert.equal(transitReview.nextBeforeDetails,true,'Next question must precede optional transit-action coaching');
   assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'家の前の停留所でバスに乗りました。','reviewed Japanese transit-action example must render locally');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK I transit action light ${width}px`,'light')}
   await setViewport(390,844);await shot('00di-shorts-topik1-transit-action-wrong-light.png');
   await evaluate(`malbitSetTheme('dark');const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);
-  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK I transit action expanded dark ${width}px`,'dark')}
   await setViewport(390,844);await shot('00dj-shorts-topik1-transit-action-full-dark.png');
   await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsFeedbackSummary');
@@ -1251,7 +1253,7 @@ try{
   assert.deepEqual(transitRestored.choiceOrder,[2,1,0,3],'saved transit-action choice order must survive reload');
   assert.equal(transitRestored.locked,true,'graded transit-action state must survive reload');
   assert.match(transitRestored.summary,/내리다[\s\S]*乗っていた/u,'transit-action selected feedback must survive reload');
-  assert.match(transitRestored.answer,/乗り物に乗る/u,'reviewed transit-action answer must survive reload');
+  assert.match(transitRestored.answer,/^乗る（/u,'reviewed transit-action answer must survive reload');
 
   const changeAdverb=await evaluate(`(()=>{const lv=2,deck=window.HARUMAL_SHORTS_DECK(lv),index=deck.findIndex(item=>item.id==='S04-II-W-CHANGE-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','2');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:2,levels:{1:blank,2:active},daily:{}}));return{index,id:identity.id}})()`);
   assert.equal(changeAdverb.id,'S04-II-W-CHANGE-01','reviewed change-adverb card must have its explicit stable ID');
@@ -1259,18 +1261,18 @@ try{
   const changeBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['2'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
   assert.equal(changeBefore.term,'점차');assert.equal(changeBefore.cardId,changeAdverb.id);assert.equal(changeBefore.orderId,changeAdverb.id);
   assert.deepEqual(changeBefore.choiceOrder,[2,1,0,3]);
-  assert.deepEqual(changeBefore.labels,['長い期間にわたって続く','短い期間だけ一時的に現れる','時間の経過とともに少しずつ変化する','短時間で大きく変化する'],'fixed change-adverb choices must keep the saved shuffle');
-  await submitShortsLabel('短い期間だけ一時的に現れる');
+  assert.deepEqual(changeBefore.labels,['継続的に（途切れずに続けて）','一時的に（短い間だけ）','徐々に（時間とともに少しずつ変わる様子）','急激に（短い時間で大きく変わる様子）'],'fixed change-adverb choices must keep the saved shuffle');
+  await submitShortsLabel('一時的に（短い間だけ）');
   const changeReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
   assert.match(changeReview.summary,/일시적으로[\s\S]*短い期間/u,'selected Japanese feedback must explain the temporary-change trap');
-  assert.match(changeReview.answer,/時間の経過とともに少しずつ/u);assert.equal(changeReview.closed,true);
+  assert.match(changeReview.answer,/^徐々に（/u);assert.equal(changeReview.closed,true);
   assert.equal(changeReview.nextBeforeDetails,true,'Next question must precede optional change-adverb coaching');
   assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'最初は少なかったものの、利用者が次第に増えています。','reviewed Japanese change-adverb example must render locally');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK II change adverb light ${width}px`,'light')}
   await setViewport(390,844);await shot('00dk-shorts-topik2-change-adverb-wrong-light.png');
   await evaluate(`malbitSetTheme('dark');const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);
-  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK II change adverb expanded dark ${width}px`,'dark')}
   await setViewport(390,844);await shot('00dl-shorts-topik2-change-adverb-full-dark.png');
   await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsFeedbackSummary');
@@ -1280,7 +1282,7 @@ try{
   assert.deepEqual(changeRestored.choiceOrder,[2,1,0,3],'saved change-adverb choice order must survive reload');
   assert.equal(changeRestored.locked,true,'graded change-adverb state must survive reload');
   assert.match(changeRestored.summary,/일시적으로[\s\S]*短い期間/u,'change-adverb selected feedback must survive reload');
-  assert.match(changeRestored.answer,/時間の経過とともに少しずつ/u,'reviewed change-adverb answer must survive reload');
+  assert.match(changeRestored.answer,/^徐々に（/u,'reviewed change-adverb answer must survive reload');
 
   const analysisNoun=await evaluate(`(()=>{const lv=2,deck=window.HARUMAL_SHORTS_DECK(lv),index=deck.findIndex(item=>item.id==='S04-II-W-ANALYSIS-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','2');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:2,levels:{1:blank,2:active},daily:{}}));return{index,id:identity.id}})()`);
   assert.equal(analysisNoun.id,'S04-II-W-ANALYSIS-01','reviewed analysis-noun card must have its explicit stable ID');
@@ -1288,18 +1290,18 @@ try{
   const analysisBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['2'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
   assert.equal(analysisBefore.term,'경향');assert.equal(analysisBefore.cardId,analysisNoun.id);assert.equal(analysisBefore.orderId,analysisNoun.id);
   assert.deepEqual(analysisBefore.choiceOrder,[2,1,0,3]);
-  assert.deepEqual(analysisBefore.labels,['実際に観察される出来事・状態','結果に影響を与える原因・要素','複数の事例に共通して現れる傾向','今後の状態についての見通し・判断'],'fixed analysis-noun choices must keep the saved shuffle');
-  await submitShortsLabel('結果に影響を与える原因・要素');
+  assert.deepEqual(analysisBefore.labels,['現象（実際に観察される出来事や状態）','要因（結果に影響を与える原因や要素）','傾向（多くの事例に共通する方向性）','見通し（今後どうなるかについての予想）'],'fixed analysis-noun choices must keep the saved shuffle');
+  await submitShortsLabel('要因（結果に影響を与える原因や要素）');
   const analysisReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
   assert.match(analysisReview.summary,/요인[\s\S]*結果/u,'selected Japanese feedback must explain the factor trap');
-  assert.match(analysisReview.answer,/複数の事例/u);assert.equal(analysisReview.closed,true);
+  assert.match(analysisReview.answer,/^傾向（/u);assert.equal(analysisReview.closed,true);
   assert.equal(analysisReview.nextBeforeDetails,true,'Next question must precede optional analysis-noun coaching');
   assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'最近はオンライン授業を選ぶ学生が増える傾向にあります。','reviewed Japanese analysis-noun example must render locally');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK II analysis noun light ${width}px`,'light')}
   await setViewport(390,844);await shot('00do-shorts-topik2-analysis-noun-wrong-light.png');
   await evaluate(`malbitSetTheme('dark');const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);
-  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK II analysis noun expanded dark ${width}px`,'dark')}
   await setViewport(390,844);await shot('00dp-shorts-topik2-analysis-noun-full-dark.png');
   await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsFeedbackSummary');
@@ -1309,7 +1311,7 @@ try{
   assert.deepEqual(analysisRestored.choiceOrder,[2,1,0,3],'saved analysis-noun choice order must survive reload');
   assert.equal(analysisRestored.locked,true,'graded analysis-noun state must survive reload');
   assert.match(analysisRestored.summary,/요인[\s\S]*結果/u,'analysis-noun selected feedback must survive reload');
-  assert.match(analysisRestored.answer,/複数の事例/u,'reviewed analysis-noun answer must survive reload');
+  assert.match(analysisRestored.answer,/^傾向（/u,'reviewed analysis-noun answer must survive reload');
 
   const argumentNoun=await evaluate(`(()=>{const lv=2,deck=window.HARUMAL_SHORTS_DECK(lv),index=deck.findIndex(item=>item.id==='S04-II-W-ARGUMENT-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','2');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:2,levels:{1:blank,2:active},daily:{}}));return{index,id:identity.id}})()`);
   assert.equal(argumentNoun.id,'S04-II-W-ARGUMENT-01','reviewed argument-noun card must have its explicit stable ID');
@@ -1317,11 +1319,11 @@ try{
   const argumentBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['2'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
   assert.equal(argumentBefore.term,'주장');assert.equal(argumentBefore.cardId,argumentNoun.id);assert.equal(argumentBefore.orderId,argumentNoun.id);
   assert.deepEqual(argumentBefore.choiceOrder,[2,1,0,3]);
-  assert.deepEqual(argumentBefore.labels,['別の主張に反対し、その誤りを示すこと','主張・判断を裏づける資料や理由','自分の考え・意見を述べること','検討・議論を経て下した最終的な判断'],'fixed argument-noun choices must keep the saved shuffle');
-  await submitShortsLabel('主張・判断を裏づける資料や理由');
+  assert.deepEqual(argumentBefore.labels,['反論（相手の主張の誤りを指摘すること）','根拠（主張や判断を裏づける資料や理由）','主張（自分の考えや意見を述べること）','結論（検討や議論を経て下した判断）'],'fixed argument-noun choices must keep the saved shuffle');
+  await submitShortsLabel('根拠（主張や判断を裏づける資料や理由）');
   const argumentReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
   assert.match(argumentReview.summary,/근거[\s\S]*裏づける/u,'selected Japanese feedback must explain the evidence trap');
-  assert.match(argumentReview.answer,/自分の考え・意見/u);assert.equal(argumentReview.closed,true);
+  assert.match(argumentReview.answer,/^主張（/u);assert.equal(argumentReview.closed,true);
   assert.equal(argumentReview.nextBeforeDetails,true,'Next question must precede optional argument-noun coaching');
   assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'専門家たちは、子ども保護区域の制限速度を維持すべきだと主張しました。','reviewed Japanese argument-noun example must render locally');
   for(const theme of ['light','dark']){
@@ -1330,7 +1332,7 @@ try{
   }
   await evaluate(`malbitSetTheme('light')`);await sleep(100);await setViewport(390,844);await shot('00ds-shorts-topik2-argument-noun-wrong-light.png');
   await evaluate(`const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);
-  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   for(const theme of ['light','dark']){
     await evaluate(`malbitSetTheme(${JSON.stringify(theme)})`);await sleep(100);
     assert.equal(await evaluate(`(()=>{const details=document.querySelector('.shortsExplanation');details.open=true;return details.open})()`),true,`S04 TOPIK II argument noun details must stay open in ${theme}`);
@@ -1346,7 +1348,7 @@ try{
   assert.deepEqual(argumentRestored.choiceOrder,[2,1,0,3],'saved argument-noun choice order must survive reload');
   assert.equal(argumentRestored.locked,true,'graded argument-noun state must survive reload');
   assert.match(argumentRestored.summary,/근거[\s\S]*裏づける/u,'argument-noun selected feedback must survive reload');
-  assert.match(argumentRestored.answer,/自分の考え・意見/u,'reviewed argument-noun answer must survive reload');
+  assert.match(argumentRestored.answer,/^主張（/u,'reviewed argument-noun answer must survive reload');
 
   const policyReviewNoun=await evaluate(`(()=>{const lv=2,deck=window.HARUMAL_SHORTS_DECK(lv),index=deck.findIndex(item=>item.id==='S04-II-W-POLICY-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','2');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:2,levels:{1:blank,2:active},daily:{}}));return{index,id:identity.id}})()`);
   assert.equal(policyReviewNoun.id,'S04-II-W-POLICY-01','reviewed policy-review card must have its explicit stable ID');
@@ -1354,11 +1356,11 @@ try{
   const policyBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['2'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
   assert.equal(policyBefore.term,'대책');assert.equal(policyBefore.cardId,policyReviewNoun.id);assert.equal(policyBefore.orderId,policyReviewNoun.id);
   assert.deepEqual(policyBefore.choiceOrder,[2,1,0,3]);
-  assert.deepEqual(policyBefore.labels,['完全な達成を妨げる範囲・問題','行動・政策で現れた結果','問題を解決・軽減する計画や行動','今後解決・達成すべき事柄'],'fixed policy-review choices must keep the saved shuffle');
-  await submitShortsLabel('行動・政策で現れた結果');
+  assert.deepEqual(policyBefore.labels,['限界（それ以上には進めない範囲や制約）','効果（行動や政策によって生じる結果）','対策（問題を解決・軽減するための方法や行動）','課題（これから解決・達成すべきこと）'],'fixed policy-review choices must keep the saved shuffle');
+  await submitShortsLabel('効果（行動や政策によって生じる結果）');
   const policyReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
   assert.match(policyReview.summary,/효과[\s\S]*実行した後/u,'selected Japanese feedback must explain the effect trap');
-  assert.match(policyReview.answer,/問題を解決・軽減する計画/u);assert.equal(policyReview.closed,true);
+  assert.match(policyReview.answer,/^対策（/u);assert.equal(policyReview.closed,true);
   assert.equal(policyReview.nextBeforeDetails,true,'Next question must precede optional policy-review coaching');
   assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'市は微細粉じんを減らす対策として、バスの運行を増やしました。','reviewed Japanese policy-review example must render locally');
   for(const theme of ['light','dark']){
@@ -1367,7 +1369,7 @@ try{
   }
   await evaluate(`malbitSetTheme('light')`);await sleep(100);await setViewport(390,844);await shot('00dw-shorts-topik2-policy-review-wrong-light.png');
   await evaluate(`const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);
-  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   for(const theme of ['light','dark']){
     await evaluate(`malbitSetTheme(${JSON.stringify(theme)})`);await sleep(100);
     assert.equal(await evaluate(`(()=>{const details=document.querySelector('.shortsExplanation');details.open=true;return details.open})()`),true,`S04 TOPIK II policy review details must stay open in ${theme}`);
@@ -1383,7 +1385,7 @@ try{
   assert.deepEqual(policyRestored.choiceOrder,[2,1,0,3],'saved policy-review choice order must survive reload');
   assert.equal(policyRestored.locked,true,'graded policy-review state must survive reload');
   assert.match(policyRestored.summary,/효과[\s\S]*実行した後/u,'policy-review selected feedback must survive reload');
-  assert.match(policyRestored.answer,/問題を解決・軽減する計画/u,'reviewed policy-review answer must survive reload');
+  assert.match(policyRestored.answer,/^対策（/u,'reviewed policy-review answer must survive reload');
 
   const scaleStateNoun=await evaluate(`(()=>{const lv=2,deck=window.HARUMAL_SHORTS_DECK(lv),index=deck.findIndex(item=>item.id==='S04-II-W-SCALE-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','2');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:2,levels:{1:blank,2:active},daily:{}}));return{index,id:identity.id}})()`);
   assert.equal(scaleStateNoun.id,'S04-II-W-SCALE-01','reviewed scale-state card must have its explicit stable ID');
@@ -1391,11 +1393,11 @@ try{
   const scaleBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['2'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
   assert.equal(scaleBefore.term,'확대');assert.equal(scaleBefore.cardId,scaleStateNoun.id);assert.equal(scaleBefore.orderId,scaleStateNoun.id);
   assert.deepEqual(scaleBefore.choiceOrder,[2,1,0,3]);
-  assert.deepEqual(scaleBefore.labels,['現在の状態・水準を変えずに保つこと','規模・範囲・数量を小さく縮めること','規模・範囲・数量を大きく広げること','続けていた活動・運営を止めること'],'fixed scale-state choices must keep the saved shuffle');
-  await submitShortsLabel('規模・範囲・数量を小さく縮めること');
+  assert.deepEqual(scaleBefore.labels,['維持（今の状態や水準を保つこと）','縮小（規模や範囲を小さくすること）','拡大（規模や範囲を大きくすること）','中断（続けていたことを途中でやめること）'],'fixed scale-state choices must keep the saved shuffle');
+  await submitShortsLabel('縮小（規模や範囲を小さくすること）');
   const scaleReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
   assert.match(scaleReview.summary,/축소[\s\S]*今より小さく/u,'selected Japanese feedback must explain the reduction trap');
-  assert.match(scaleReview.answer,/大きく広げる/u);assert.equal(scaleReview.closed,true);
+  assert.match(scaleReview.answer,/^拡大（/u);assert.equal(scaleReview.closed,true);
   assert.equal(scaleReview.nextBeforeDetails,true,'Next question must precede optional scale-state coaching');
   assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'市は増加する介護需要に合わせて、支援対象を拡大しました。','reviewed Japanese scale-state example must render locally');
   for(const theme of ['light','dark']){
@@ -1404,7 +1406,7 @@ try{
   }
   await evaluate(`malbitSetTheme('light')`);await sleep(100);await setViewport(390,844);await shot('00e0-shorts-topik2-scale-state-wrong-light.png');
   await evaluate(`const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);
-  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   for(const theme of ['light','dark']){
     await evaluate(`malbitSetTheme(${JSON.stringify(theme)})`);await sleep(100);
     assert.equal(await evaluate(`(()=>{const details=document.querySelector('.shortsExplanation');details.open=true;return details.open})()`),true,`S04 TOPIK II scale-state details must stay open in ${theme}`);
@@ -1420,7 +1422,24 @@ try{
   assert.deepEqual(scaleRestored.choiceOrder,[2,1,0,3],'saved scale-state choice order must survive reload');
   assert.equal(scaleRestored.locked,true,'graded scale-state state must survive reload');
   assert.match(scaleRestored.summary,/축소[\s\S]*今より小さく/u,'scale-state selected feedback must survive reload');
-  assert.match(scaleRestored.answer,/大きく広げる/u,'reviewed scale-state answer must survive reload');
+  assert.match(scaleRestored.answer,/^拡大（/u,'reviewed scale-state answer must survive reload');
+
+  const interruptionNoun=await evaluate(`(()=>{const lv=2,deck=window.HARUMAL_SHORTS_DECK(lv),index=deck.findIndex(item=>item.id==='S04-II-W-SCALE-04'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','2');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:2,levels:{1:blank,2:active},daily:{}}));return{index,id:identity.id}})()`);
+  assert.equal(interruptionNoun.id,'S04-II-W-SCALE-04');
+  await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsWord');
+  assert.equal(await evaluate(`document.querySelector('.shortsWord').textContent.trim()`),'중단');
+  await submitShortsLabel('中断（続けていたことを途中でやめること）');
+  const interruptionReview=await evaluate(`({summary:document.querySelector('.shortsFeedbackSummary').innerText,detail:document.querySelector('.shortsExplanation').textContent})`);
+  assert.doesNotMatch(interruptionReview.summary,/雨|屋外/,'a bare term question must not invent a rain/event premise');
+  assert.match(interruptionReview.summary,/途中|続け/u,'immediate feedback explains the shown term');
+  assert.match(interruptionReview.detail,/【例文での使い方】/u,'the separate example is explicitly labelled');
+  for(const theme of ['light','dark']){
+    await evaluate(`malbitSetTheme('${theme}');document.querySelector('.shortsExplanation').open=false;scrollTo(0,0)`);await setViewport(390,844);await sleep(100);await assertShortsFits(`user-feedback 中断 ${theme}`,theme);await shot(`refresh-short-interruption-${theme}-390.png`);
+    await evaluate(`(()=>{const d=document.querySelector('.shortsExplanation');d.open=true;d.scrollIntoView({block:'start',behavior:'auto'})})()`);await sleep(100);await shot(`refresh-short-interruption-detail-${theme}-390.png`);
+  }
+
+  await evaluate(`setLang('ko');malbitSetTheme('dark');document.querySelector('.shortsExplanation').open=false;scrollTo(0,0)`);await sleep(100);
+  assert.doesNotMatch(await evaluate(`document.querySelector('.shortsFeedbackSummary').innerText`),/비 때문에|야외 행사/u,'Korean immediate feedback also uses only the visible term');await shot('refresh-short-interruption-ko-dark-390.png');
 
   const houseworkAction=await evaluate(`(()=>{const lv=1,deck=window.HARUMAL_SHORTS_DECK(lv),index=deck.findIndex(item=>item.id==='S04-I-W-HOUSEWORK-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','1');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:1,levels:{1:active,2:blank},daily:{}}));return{index,id:identity.id}})()`);
   assert.equal(houseworkAction.id,'S04-I-W-HOUSEWORK-01','reviewed housework-action card must have its explicit stable ID');
@@ -1428,18 +1447,18 @@ try{
   const houseworkBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['1'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
   assert.equal(houseworkBefore.term,'청소하다');assert.equal(houseworkBefore.cardId,houseworkAction.id);assert.equal(houseworkBefore.orderId,houseworkAction.id);
   assert.deepEqual(houseworkBefore.choiceOrder,[2,1,0,3]);
-  assert.deepEqual(houseworkBefore.labels,['食後の食器を洗う','服などを洗濯する','部屋や場所を掃除する','材料を使って料理を作る'],'fixed housework-action choices must keep the saved shuffle');
-  await submitShortsLabel('服などを洗濯する');
+  assert.deepEqual(houseworkBefore.labels,['食器を洗う（使った皿や調理器具を洗う）','洗濯する（服やタオルなどを洗う）','掃除する（部屋や場所をきれいにする）','料理する（材料から食べ物を作る）'],'fixed housework-action choices must keep the saved shuffle');
+  await submitShortsLabel('洗濯する（服やタオルなどを洗う）');
   const houseworkReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
   assert.match(houseworkReview.summary,/빨래하다[\s\S]*服やタオル/u,'selected Japanese feedback must explain the laundry trap');
-  assert.match(houseworkReview.answer,/部屋や場所を掃除する/u);assert.equal(houseworkReview.closed,true);
+  assert.match(houseworkReview.answer,/^掃除する（/u);assert.equal(houseworkReview.closed,true);
   assert.equal(houseworkReview.nextBeforeDetails,true,'Next question must precede optional housework-action coaching');
   assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'お客さんが来る前に、リビングを掃除しました。','reviewed Japanese housework-action example must render locally');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK I housework action light ${width}px`,'light')}
   await setViewport(390,844);await shot('00dm-shorts-topik1-housework-action-wrong-light.png');
   await evaluate(`malbitSetTheme('dark');const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);
-  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK I housework action expanded dark ${width}px`,'dark')}
   await setViewport(390,844);await shot('00dn-shorts-topik1-housework-action-full-dark.png');
   await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsFeedbackSummary');
@@ -1449,7 +1468,7 @@ try{
   assert.deepEqual(houseworkRestored.choiceOrder,[2,1,0,3],'saved housework-action choice order must survive reload');
   assert.equal(houseworkRestored.locked,true,'graded housework-action state must survive reload');
   assert.match(houseworkRestored.summary,/빨래하다[\s\S]*服やタオル/u,'housework-action selected feedback must survive reload');
-  assert.match(houseworkRestored.answer,/部屋や場所を掃除する/u,'reviewed housework-action answer must survive reload');
+  assert.match(houseworkRestored.answer,/^掃除する（/u,'reviewed housework-action answer must survive reload');
 
   const directionalAction=await evaluate(`(()=>{const lv=1,deck=window.HARUMAL_SHORTS_DECK(lv),index=deck.findIndex(item=>item.id==='S04-I-W-DIRECTION-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','1');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:1,levels:{1:active,2:blank},daily:{}}));return{index,id:identity.id}})()`);
   assert.equal(directionalAction.id,'S04-I-W-DIRECTION-01','reviewed directional-action card must have its explicit stable ID');
@@ -1457,18 +1476,18 @@ try{
   const directionalBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['1'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
   assert.equal(directionalBefore.term,'올라가다');assert.equal(directionalBefore.cardId,directionalAction.id);assert.equal(directionalBefore.orderId,directionalAction.id);
   assert.deepEqual(directionalBefore.choiceOrder,[2,1,0,3]);
-  assert.deepEqual(directionalBefore.labels,['外から中へ入る','高い所から低い所へ下りる','低い所から高い所へ上がる','中から外へ出る'],'fixed directional-action choices must keep the saved shuffle');
-  await submitShortsLabel('高い所から低い所へ下りる');
+  assert.deepEqual(directionalBefore.labels,['入る（外から中へ行く）','下りる（高い所から低い所へ行く）','上がる（低い所から高い所へ行く）','出てくる（中から外へ来る）'],'fixed directional-action choices must keep the saved shuffle');
+  await submitShortsLabel('下りる（高い所から低い所へ行く）');
   const directionalReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
   assert.match(directionalReview.summary,/내려가다[\s\S]*高い所から/u,'selected Japanese feedback must explain the downward-action trap');
-  assert.match(directionalReview.answer,/低い所から高い所/u);assert.equal(directionalReview.closed,true);
+  assert.match(directionalReview.answer,/^上がる（/u);assert.equal(directionalReview.closed,true);
   assert.equal(directionalReview.nextBeforeDetails,true,'Next question must precede optional directional-action coaching');
   assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'階段で2階に上がりました。','reviewed Japanese directional-action example must render locally');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK I directional action light ${width}px`,'light')}
   await setViewport(390,844);await shot('00dq-shorts-topik1-directional-action-wrong-light.png');
   await evaluate(`malbitSetTheme('dark');const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);
-  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK I directional action expanded dark ${width}px`,'dark')}
   await setViewport(390,844);await shot('00dr-shorts-topik1-directional-action-full-dark.png');
   await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsFeedbackSummary');
@@ -1478,7 +1497,7 @@ try{
   assert.deepEqual(directionalRestored.choiceOrder,[2,1,0,3],'saved directional-action choice order must survive reload');
   assert.equal(directionalRestored.locked,true,'graded directional-action state must survive reload');
   assert.match(directionalRestored.summary,/내려가다[\s\S]*高い所から/u,'directional-action selected feedback must survive reload');
-  assert.match(directionalRestored.answer,/低い所から高い所/u,'reviewed directional-action answer must survive reload');
+  assert.match(directionalRestored.answer,/^上がる（/u,'reviewed directional-action answer must survive reload');
 
   const objectAction=await evaluate(`(()=>{const lv=1,deck=window.HARUMAL_SHORTS_DECK(lv),index=deck.findIndex(item=>item.id==='S04-I-W-OBJECT-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','1');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:1,levels:{1:active,2:blank},daily:{}}));return{index,id:identity.id}})()`);
   assert.equal(objectAction.id,'S04-I-W-OBJECT-01','reviewed object-action card must have its explicit stable ID');
@@ -1486,11 +1505,11 @@ try{
   const objectBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['1'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
   assert.equal(objectBefore.term,'찾다');assert.equal(objectBefore.cardId,objectAction.id);assert.equal(objectBefore.orderId,objectAction.id);
   assert.deepEqual(objectBefore.choiceOrder,[2,1,0,3]);
-  assert.deepEqual(objectBefore.labels,['物を持って話し手のいる方へ来る','持っていた物がどこにあるか分からなくなる','探したり調べたりして必要な物を見つける','物を持って話し手の所から別の場所へ行く'],'fixed object-action choices must keep the saved shuffle');
-  await submitShortsLabel('持っていた物がどこにあるか分からなくなる');
+  assert.deepEqual(objectBefore.labels,['持ってくる（物を持ってこちらへ来る）','なくす（持っていた物を見失う）','探す・見つける（必要な物を探して見つける）','持っていく（物を持って別の場所へ行く）'],'fixed object-action choices must keep the saved shuffle');
+  await submitShortsLabel('なくす（持っていた物を見失う）');
   const objectReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
   assert.match(objectReview.summary,/잃어버리다[\s\S]*持っていた物/u,'selected Japanese feedback must explain the losing trap');
-  assert.match(objectReview.answer,/探したり調べたりして/u);assert.equal(objectReview.closed,true);
+  assert.match(objectReview.answer,/^探す・見つける（/u);assert.equal(objectReview.closed,true);
   assert.equal(objectReview.nextBeforeDetails,true,'Next question must precede optional object-action coaching');
   assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'引き出しで、なくした鍵を見つけました。','reviewed Japanese object-action example must render locally');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);
@@ -1498,7 +1517,7 @@ try{
   await setViewport(390,844);await shot('00du-shorts-topik1-object-action-wrong-light.png');
   await evaluate(`(()=>{malbitSetTheme('dark');const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})})()`);await sleep(100);
   assert.equal(await evaluate(`document.querySelector('.shortsExplanation')?.open`),true,'object-action evidence screenshot must keep detailed coaching open');
-  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK I object action expanded dark ${width}px`,'dark')}
   await setViewport(390,844);await evaluate(`(()=>{const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})})()`);await sleep(100);
   assert.equal(await evaluate(`document.querySelector('.shortsExplanation')?.open`),true,'object-action expanded state must survive evidence repositioning');
@@ -1510,7 +1529,7 @@ try{
   assert.deepEqual(objectRestored.choiceOrder,[2,1,0,3],'saved object-action choice order must survive reload');
   assert.equal(objectRestored.locked,true,'graded object-action state must survive reload');
   assert.match(objectRestored.summary,/잃어버리다[\s\S]*持っていた物/u,'object-action selected feedback must survive reload');
-  assert.match(objectRestored.answer,/探したり調べたりして/u,'reviewed object-action answer must survive reload');
+  assert.match(objectRestored.answer,/^探す・見つける（/u,'reviewed object-action answer must survive reload');
 
   const routineAction=await evaluate(`(()=>{const lv=1,deck=window.HARUMAL_SHORTS_DECK(lv),index=deck.findIndex(item=>item.id==='S04-I-W-ROUTINE-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','1');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:1,levels:{1:active,2:blank},daily:{}}));return{index,id:identity.id}})()`);
   assert.equal(routineAction.id,'S04-I-W-ROUTINE-01','reviewed morning-routine card must have its explicit stable ID');
@@ -1518,11 +1537,11 @@ try{
   const routineBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['1'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
   assert.equal(routineBefore.term,'일어나다');assert.equal(routineBefore.cardId,routineAction.id);assert.equal(routineBefore.orderId,routineAction.id);
   assert.deepEqual(routineBefore.choiceOrder,[2,1,0,3]);
-  assert.deepEqual(routineBefore.labels,['着ていた服を別の服に着替える','水で体や顔を洗う','寝床から起きる','必要なものを前もって用意する'],'fixed morning-routine choices must keep the saved shuffle');
-  await submitShortsLabel('水で体や顔を洗う');
+  assert.deepEqual(routineBefore.labels,['着替える（別の服に着替える）','洗う（水で体や物をきれいにする）','起きる（寝床から体を起こす）','準備する（必要なものを前もって用意する）'],'fixed morning-routine choices must keep the saved shuffle');
+  await submitShortsLabel('洗う（水で体や物をきれいにする）');
   const routineReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
   assert.match(routineReview.summary,/씻다[\s\S]*水を使って/u,'selected Japanese feedback must explain the washing trap');
-  assert.match(routineReview.answer,/寝床から起きる/u);assert.equal(routineReview.closed,true);
+  assert.match(routineReview.answer,/^起きる（/u);assert.equal(routineReview.closed,true);
   assert.equal(routineReview.nextBeforeDetails,true,'Next question must precede optional morning-routine coaching');
   assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'私は朝7時に起きます。','reviewed Japanese morning-routine example must render locally');
   for(const theme of ['light','dark']){
@@ -1531,7 +1550,7 @@ try{
   }
   await evaluate(`malbitSetTheme('light')`);await sleep(100);await setViewport(390,844);await shot('00dy-shorts-topik1-morning-routine-wrong-light.png');
   await evaluate(`const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);
-  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   for(const theme of ['light','dark']){
     await evaluate(`malbitSetTheme(${JSON.stringify(theme)})`);await sleep(100);
     assert.equal(await evaluate(`(()=>{const details=document.querySelector('.shortsExplanation');details.open=true;return details.open})()`),true,`S04 TOPIK I morning-routine details must stay open in ${theme}`);
@@ -1546,7 +1565,7 @@ try{
   assert.deepEqual(routineRestored.choiceOrder,[2,1,0,3],'saved morning-routine choice order must survive reload');
   assert.equal(routineRestored.locked,true,'graded morning-routine state must survive reload');
   assert.match(routineRestored.summary,/씻다[\s\S]*水を使って/u,'morning-routine selected feedback must survive reload');
-  assert.match(routineRestored.answer,/寝床から起きる/u,'reviewed morning-routine answer must survive reload');
+  assert.match(routineRestored.answer,/^起きる（/u,'reviewed morning-routine answer must survive reload');
 
   const frequencyWord=await evaluate(`(()=>{const lv=1,deck=window.HARUMAL_SHORTS_DECK(lv),index=deck.findIndex(item=>item.id==='S04-I-W-FREQ-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','1');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:1,levels:{1:active,2:blank},daily:{}}));return{index,id:identity.id}})()`);
   assert.equal(frequencyWord.id,'S04-I-W-FREQ-01','reviewed frequency card must have its explicit stable ID');
@@ -1554,18 +1573,18 @@ try{
   const frequencyBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['1'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
   assert.equal(frequencyBefore.term,'항상');assert.equal(frequencyBefore.cardId,frequencyWord.id);assert.equal(frequencyBefore.orderId,frequencyWord.id);
   assert.deepEqual(frequencyBefore.choiceOrder,[2,1,0,3]);
-  assert.deepEqual(frequencyBefore.labels,['時々；たまに','よく；頻繁に','いつも；毎回','否定とともに「まったく～ない」'],'fixed frequency choices must keep the saved shuffle');
-  await submitShortsLabel('よく；頻繁に');
+  assert.deepEqual(frequencyBefore.labels,['時々（いつもではなく、たまに）','よく（回数が多く、頻繁に）','いつも（どの時も、毎回）','まったく（否定とともに「少しも～ない」）'],'fixed frequency choices must keep the saved shuffle');
+  await submitShortsLabel('よく（回数が多く、頻繁に）');
   const frequencyReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
   assert.match(frequencyReview.summary,/자주[\s\S]*高い頻度/u,'selected Japanese feedback must explain the high-frequency trap');
-  assert.match(frequencyReview.answer,/いつも；毎回/u);assert.equal(frequencyReview.closed,true);
+  assert.match(frequencyReview.answer,/^いつも（/u);assert.equal(frequencyReview.closed,true);
   assert.equal(frequencyReview.nextBeforeDetails,true,'Next question must precede optional frequency coaching');
   assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'私はいつも朝ご飯を食べます。','reviewed Japanese frequency example must render locally');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK I frequency light ${width}px`,'light')}
   await setViewport(390,844);await shot('00bq-shorts-topik1-frequency-wrong-light.png');
   await evaluate(`malbitSetTheme('dark');const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);
-  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK I frequency expanded dark ${width}px`,'dark')}
   await setViewport(390,844);await shot('00br-shorts-topik1-frequency-full-dark.png');
   await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsFeedbackSummary');
@@ -1575,7 +1594,7 @@ try{
   assert.deepEqual(frequencyRestored.choiceOrder,[2,1,0,3],'saved frequency choice order must survive reload');
   assert.equal(frequencyRestored.locked,true,'graded frequency state must survive reload');
   assert.match(frequencyRestored.summary,/자주[\s\S]*高い頻度/u,'frequency selected feedback must survive reload');
-  assert.match(frequencyRestored.answer,/いつも；毎回/u,'reviewed frequency answer must survive reload');
+  assert.match(frequencyRestored.answer,/^いつも（/u,'reviewed frequency answer must survive reload');
 
   const counterWord=await evaluate(`(()=>{const lv=1,deck=window.HARUMAL_SHORTS_DECK(lv),index=deck.findIndex(item=>item.id==='S04-I-W-COUNT-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','1');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:1,levels:{1:active,2:blank},daily:{}}));return{index,id:identity.id}})()`);
   assert.equal(counterWord.id,'S04-I-W-COUNT-01','reviewed counter card must have its explicit stable ID');
@@ -1583,18 +1602,18 @@ try{
   const counterBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['1'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
   assert.equal(counterBefore.term,'명');assert.equal(counterBefore.cardId,counterWord.id);assert.equal(counterBefore.orderId,counterWord.id);
   assert.deepEqual(counterBefore.choiceOrder,[2,1,0,3]);
-  assert.deepEqual(counterBefore.labels,['瓶入りの物を数える助数詞（～本）','一般の物を数える助数詞（～個）','人を数える助数詞（～人）','本・冊子を数える助数詞（～冊）'],'fixed counter choices must keep the saved shuffle');
-  await submitShortsLabel('一般の物を数える助数詞（～個）');
+  assert.deepEqual(counterBefore.labels,['～本（瓶に入った物を数える言い方）','～個（一般的な物を数える言い方）','～人（人を数える言い方）','～冊（本やノートを数える言い方）'],'fixed counter choices must keep the saved shuffle');
+  await submitShortsLabel('～個（一般的な物を数える言い方）');
   const counterReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
   assert.match(counterReview.summary,/개[\s\S]*一般の物/u,'selected Japanese feedback must explain the general-object counter trap');
-  assert.match(counterReview.answer,/人を数える/u);assert.equal(counterReview.closed,true);
+  assert.match(counterReview.answer,/^～人（/u);assert.equal(counterReview.closed,true);
   assert.equal(counterReview.nextBeforeDetails,true,'Next question must precede optional counter coaching');
   assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'教室に学生が二人います。','reviewed Japanese counter example must render locally');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK I counter light ${width}px`,'light')}
   await setViewport(390,844);await shot('00bx-shorts-topik1-counter-wrong-light.png');
   await evaluate(`malbitSetTheme('dark');const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);
-  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK I counter expanded dark ${width}px`,'dark')}
   await setViewport(390,844);await shot('00by-shorts-topik1-counter-full-dark.png');
   await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsFeedbackSummary');
@@ -1604,7 +1623,7 @@ try{
   assert.deepEqual(counterRestored.choiceOrder,[2,1,0,3],'saved counter choice order must survive reload');
   assert.equal(counterRestored.locked,true,'graded counter state must survive reload');
   assert.match(counterRestored.summary,/개[\s\S]*一般の物/u,'counter selected feedback must survive reload');
-  assert.match(counterRestored.answer,/人を数える/u,'reviewed counter answer must survive reload');
+  assert.match(counterRestored.answer,/^～人（/u,'reviewed counter answer must survive reload');
 
   const questionWord=await evaluate(`(()=>{const lv=1,deck=window.HARUMAL_SHORTS_DECK(lv),index=deck.findIndex(item=>item.id==='S04-I-W-QUESTION-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','1');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:1,levels:{1:active,2:blank},daily:{}}));return{index,id:identity.id}})()`);
   assert.equal(questionWord.id,'S04-I-W-QUESTION-01','reviewed question-word card must have its explicit stable ID');
@@ -1612,18 +1631,18 @@ try{
   const questionWordBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['1'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
   assert.equal(questionWordBefore.term,'누구');assert.equal(questionWordBefore.cardId,questionWord.id);assert.equal(questionWordBefore.orderId,questionWord.id);
   assert.deepEqual(questionWordBefore.choiceOrder,[2,1,0,3]);
-  assert.deepEqual(questionWordBefore.labels,['時を尋ねる「いつ」','場所を尋ねる「どこ」','人を尋ねる「だれ」','値段・金額を尋ねる「いくら」'],'fixed question-word choices must keep the saved shuffle');
-  await submitShortsLabel('場所を尋ねる「どこ」');
+  assert.deepEqual(questionWordBefore.labels,['いつ（時を尋ねる言い方）','どこ（場所を尋ねる言い方）','誰（人を尋ねる言い方）','いくら（値段や金額を尋ねる言い方）'],'fixed question-word choices must keep the saved shuffle');
+  await submitShortsLabel('どこ（場所を尋ねる言い方）');
   const questionWordReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
   assert.match(questionWordReview.summary,/어디[\s\S]*場所/u,'selected Japanese feedback must explain the place-question trap');
-  assert.match(questionWordReview.answer,/人を尋ねる「だれ」/u);assert.equal(questionWordReview.closed,true);
+  assert.match(questionWordReview.answer,/^誰（/u);assert.equal(questionWordReview.closed,true);
   assert.equal(questionWordReview.nextBeforeDetails,true,'Next question must precede optional question-word coaching');
   assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'あの人はだれですか。','reviewed Japanese question-word example must render locally');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK I question word light ${width}px`,'light')}
   await setViewport(390,844);await shot('00cc-shorts-topik1-question-word-wrong-light.png');
   await evaluate(`malbitSetTheme('dark');const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);
-  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK I question word expanded dark ${width}px`,'dark')}
   await setViewport(390,844);await shot('00cd-shorts-topik1-question-word-full-dark.png');
   await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsFeedbackSummary');
@@ -1633,7 +1652,7 @@ try{
   assert.deepEqual(questionWordRestored.choiceOrder,[2,1,0,3],'saved question-word choice order must survive reload');
   assert.equal(questionWordRestored.locked,true,'graded question-word state must survive reload');
   assert.match(questionWordRestored.summary,/어디[\s\S]*場所/u,'question-word selected feedback must survive reload');
-  assert.match(questionWordRestored.answer,/人を尋ねる「だれ」/u,'reviewed question-word answer must survive reload');
+  assert.match(questionWordRestored.answer,/^誰（/u,'reviewed question-word answer must survive reload');
 
   const demonstrative=await evaluate(`(()=>{const lv=1,deck=window.HARUMAL_SHORTS_DECK(lv),index=deck.findIndex(item=>item.id==='S04-I-W-DEMONSTRATIVE-01'),item=deck[index],identity=window.MALBIT_SHORTS_CYCLE.identity(item,lv),blank={index:0,selected:null,locked:false,total:0,score:0,streak:0,recent:[],orderId:null,choiceOrder:null,cardId:null,familyId:null,recentIds:[],recentFamilies:[],cycleFamilies:[],cycle:0,isReview:false},active={...blank,index,orderId:item.id,choiceOrder:[2,1,0,3],cardId:identity.id,familyId:identity.family,recentIds:[identity.id],recentFamilies:[identity.family],cycleFamilies:[identity.family]};S.lang='ja';S.view='shorts';save();localStorage.setItem('topikQuestExamLevel','1');localStorage.setItem('topikQuestShortsV1',JSON.stringify({schema:3,activeLevel:1,levels:{1:active,2:blank},daily:{}}));return{index,id:identity.id}})()`);
   assert.equal(demonstrative.id,'S04-I-W-DEMONSTRATIVE-01','reviewed demonstrative card must have its explicit stable ID');
@@ -1641,18 +1660,18 @@ try{
   const demonstrativeBefore=await evaluate(`(()=>{const state=JSON.parse(localStorage.getItem('topikQuestShortsV1')).levels['1'];return{term:document.querySelector('.shortsWord')?.textContent.trim(),labels:[...document.querySelectorAll('.shortsChoice span')].map(node=>node.textContent.trim()),cardId:state.cardId,orderId:state.orderId,choiceOrder:state.choiceOrder}})()`);
   assert.equal(demonstrativeBefore.term,'이것');assert.equal(demonstrativeBefore.cardId,demonstrative.id);assert.equal(demonstrativeBefore.orderId,demonstrative.id);
   assert.deepEqual(demonstrativeBefore.choiceOrder,[2,1,0,3]);
-  assert.deepEqual(demonstrativeBefore.labels,['二人から遠い物（あれ）','聞き手の近く・話題の物（それ）','話し手の近くの物（これ）','複数から選ぶ物（どれ）'],'fixed demonstrative choices must keep the saved shuffle');
-  await submitShortsLabel('聞き手の近く・話題の物（それ）');
+  assert.deepEqual(demonstrativeBefore.labels,['あれ（話し手と聞き手の両方から遠い物）','それ（聞き手の近くにある物や話題の物）','これ（話し手の近くにある物）','どれ（複数の物から一つを尋ねる言い方）'],'fixed demonstrative choices must keep the saved shuffle');
+  await submitShortsLabel('それ（聞き手の近くにある物や話題の物）');
   const demonstrativeReview=await evaluate(`(()=>{const summary=document.querySelector('.shortsFeedbackSummary'),details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{summary:summary?.innerText,closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),answer:document.querySelector('.shortsFeedback p')?.innerText}})()`);
   assert.match(demonstrativeReview.summary,/그것[\s\S]*聞き手/u,'selected Japanese feedback must explain the listener-near demonstrative trap');
-  assert.match(demonstrativeReview.answer,/話し手の近くの物（これ）/u);assert.equal(demonstrativeReview.closed,true);
+  assert.match(demonstrativeReview.answer,/^これ（/u);assert.equal(demonstrativeReview.closed,true);
   assert.equal(demonstrativeReview.nextBeforeDetails,true,'Next question must precede optional demonstrative coaching');
   assert.equal(await evaluate(`document.querySelector('.malbitExampleTranslation')?.innerText`),'これは私が持っている傘です。','reviewed Japanese demonstrative example must render locally');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK I demonstrative light ${width}px`,'light')}
   await setViewport(390,844);await shot('00ck-shorts-topik1-demonstrative-wrong-light.png');
   await evaluate(`malbitSetTheme('dark');const details=document.querySelector('.shortsExplanation');details.open=true;details.scrollIntoView({block:'start',behavior:'auto'})`);await sleep(100);
-  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【誤答の罠】[\s\S]*【再利用できる解き方】/u);
+  assert.match(await evaluate(`document.querySelector('.shortsExplanation')?.innerText`),/【正解の根拠】[\s\S]*【選択肢の比較】[\s\S]*【再利用できる解き方】/u);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`S04 TOPIK I demonstrative expanded dark ${width}px`,'dark')}
   await setViewport(390,844);await shot('00cl-shorts-topik1-demonstrative-full-dark.png');
   await send('Page.reload',{ignoreCache:true});await ready();await waitForSelector('.shortsFeedbackSummary');
@@ -1662,7 +1681,7 @@ try{
   assert.deepEqual(demonstrativeRestored.choiceOrder,[2,1,0,3],'saved demonstrative choice order must survive reload');
   assert.equal(demonstrativeRestored.locked,true,'graded demonstrative state must survive reload');
   assert.match(demonstrativeRestored.summary,/그것[\s\S]*聞き手/u,'demonstrative selected feedback must survive reload');
-  assert.match(demonstrativeRestored.answer,/話し手の近くの物（これ）/u,'reviewed demonstrative answer must survive reload');
+  assert.match(demonstrativeRestored.answer,/^これ（/u,'reviewed demonstrative answer must survive reload');
 
   const exhausted=await openExhaustedShortsCycle(1);
   await evaluate(`nextShorts()`);await sleep(180);

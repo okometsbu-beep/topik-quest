@@ -77,8 +77,8 @@ test('v33 restores the last Hangul step after a browser reload', () => {
   vm.runInContext(fs.readFileSync('app-polish-v33.js', 'utf8'), context);
 
   assert.match(screen.innerHTML, /class="on" onclick="malbitBeginnerTab\('consonants'\)">2\. 子音/);
-  assert.match(screen.innerHTML, /音と一緒に覚える子音/);
-  assert.match(screen.innerHTML, /文字 1\/20 習得/);
+  assert.match(screen.innerHTML, /子音の名前と音/);
+  assert.match(screen.innerHTML, /文字 1\/40 習得/);
 });
 
 test('v33 beginner step tabs keep a 44px touch target', () => {

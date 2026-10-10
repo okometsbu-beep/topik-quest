@@ -5,7 +5,7 @@
 const PREFS_KEY='malbitProductPrefsV1';
 const BEGINNER_KEY='malbitBeginnerV1';
 const LANG_INDEX={ko:0,ja:1,en:2,zh:3};
-let listeningContinuation=null,listeningGatePass=false,beginnerTab=savedBeginnerTab(),beginnerAnswer=null;
+let listeningContinuation=null,listeningGatePass=false,beginnerTab=savedBeginnerTab();
 
 function appState(){return typeof S!=='undefined'?S:null}
 function L(ko,ja,en,zh){return[ko,ja,en,zh][LANG_INDEX[appState()?.lang]??0]||ko}
@@ -51,31 +51,116 @@ function patchMoreListening(){
   anchor.insertAdjacentHTML('afterend',`<section class="malbitSetting malbitListeningSetting"><h2>${L('듣기 문제','聴解問題','Listening questions','听力题')}</h2><p>${L('소리를 들을 수 없는 환경에서는 듣기 문제를 제외할 수 있어요.','音声を聞けない環境では、聴解問題を除外できます。','Exclude listening questions when you cannot play audio.','无法播放声音时可排除听力题。')}</p><div class="malbitListeningGrid"><button class="${mode==='on'?'on':''}" onclick="malbitSetListeningMode('on')"><i>🔊</i><span>${L('포함','含める','Include','包含')}</span></button><button class="${mode==='off'?'on':''}" onclick="malbitSetListeningMode('off')"><i>🔕</i><span>${L('제외','除外','Exclude','排除')}</span></button><button class="${mode==='ask'?'on':''}" onclick="malbitSetListeningMode('ask')"><i>?</i><span>${L('다시 물어보기','もう一度確認','Ask next time','下次再问')}</span></button></div></section>`)
 }
 
+// Complete modern jamo inventory. Letter names and syllable sound examples are distinct.
+// Source: National Institute of Korean Language, mcfaq_seq=5573.
 const BEGINNER_VOWELS=[
-  ['ㅏ','아','a'],['ㅓ','어','eo'],['ㅗ','오','o'],['ㅜ','우','u'],['ㅡ','으','eu'],['ㅣ','이','i'],['ㅑ','야','ya'],['ㅕ','여','yeo'],['ㅛ','요','yo'],['ㅠ','유','yu']
+  ['ㅏ','아','a'],['ㅑ','야','ya'],['ㅓ','어','eo'],['ㅕ','여','yeo'],['ㅗ','오','o'],
+  ['ㅛ','요','yo'],['ㅜ','우','u'],['ㅠ','유','yu'],['ㅡ','으','eu'],['ㅣ','이','i']
+];
+const BEGINNER_FURTHER_VOWELS=[
+  ['ㅐ','애','ae'],['ㅒ','얘','yae'],['ㅔ','에','e'],['ㅖ','예','ye'],['ㅘ','와','wa'],
+  ['ㅙ','왜','wae'],['ㅚ','외','oe'],['ㅝ','워','wo'],['ㅞ','웨','we'],['ㅟ','위','wi'],['ㅢ','의','ui']
 ];
 const BEGINNER_CONSONANTS=[
-  ['ㄱ','가','g/k'],['ㄴ','나','n'],['ㄷ','다','d/t'],['ㄹ','라','r/l'],['ㅁ','마','m'],['ㅂ','바','b/p'],['ㅅ','사','s'],['ㅇ','아','silent/ng'],['ㅈ','자','j'],['ㅎ','하','h']
+  ['ㄱ','기역','가'],['ㄴ','니은','나'],['ㄷ','디귿','다'],['ㄹ','리을','라'],['ㅁ','미음','마'],
+  ['ㅂ','비읍','바'],['ㅅ','시옷','사'],['ㅇ','이응','아'],['ㅈ','지읒','자'],['ㅊ','치읓','차'],
+  ['ㅋ','키읔','카'],['ㅌ','티읕','타'],['ㅍ','피읖','파'],['ㅎ','히읗','하']
+];
+const BEGINNER_DOUBLE_CONSONANTS=[
+  ['ㄲ','쌍기역','까'],['ㄸ','쌍디귿','따'],['ㅃ','쌍비읍','빠'],['ㅆ','쌍시옷','싸'],['ㅉ','쌍지읒','짜']
 ];
 const BEGINNER_WORDS=[
-  {word:'가구',read:'ga-gu',meaning:['가구','家具','furniture','家具']},{word:'나무',read:'na-mu',meaning:['나무','木','tree','树']},{word:'다리',read:'da-ri',meaning:['다리','脚・橋','leg / bridge','腿／桥']},{word:'머리',read:'meo-ri',meaning:['머리','頭','head','头']},{word:'바다',read:'ba-da',meaning:['바다','海','sea','海']},{word:'사과',read:'sa-gwa',meaning:['사과','りんご','apple','苹果']},{word:'우유',read:'u-yu',meaning:['우유','牛乳','milk','牛奶']},{word:'하루',read:'ha-ru',meaning:['하루','一日','one day','一天']}
+  {id:'tree',word:'나무',meaning:['나무','木','tree','树'],level:'basic'},
+  {id:'banana',word:'바나나',meaning:['바나나','バナナ','banana','香蕉'],level:'basic'},
+  {id:'grapes',word:'포도',meaning:['포도','ぶどう','grapes','葡萄'],level:'basic'},
+  {id:'milk',word:'우유',meaning:['우유','牛乳','milk','牛奶'],level:'basic'},
+  {id:'cucumber',word:'오이',meaning:['오이','きゅうり','cucumber','黄瓜'],level:'basic'},
+  {id:'tomato',word:'토마토',meaning:['토마토','トマト','tomato','西红柿'],level:'basic'},
+  {id:'hat',word:'모자',meaning:['모자','帽子','hat','帽子'],level:'basic'},
+  {id:'apple',word:'사과',meaning:['사과','りんご','apple','苹果'],level:'vowel'},
+  {id:'rabbit',word:'토끼',meaning:['토끼','うさぎ','rabbit','兔子'],level:'double'},
+  {id:'door',word:'문',meaning:['문','ドア','door','门'],level:'coda'},
+  {id:'water',word:'물',meaning:['물','水','water','水'],level:'coda'},
+  {id:'ball',word:'공',meaning:['공','ボール','ball','球'],level:'coda'}
 ];
-function beginnerProgress(){const value=read(BEGINNER_KEY,{known:[],quiz:0,correct:0});value.known=Array.isArray(value.known)?value.known:[];return value}
+const BEGINNER_BLOCKS=[
+  {id:'vertical',parts:['ㄴ','ㅏ'],result:'나',title:['오른쪽에 모음','右に母音','Vowel on the right','元音在右边'],note:['ㅏ처럼 세로 모양인 모음은 자음 오른쪽에 놓아요.','ㅏのような縦の母音は子音の右に置きます。','A vertical vowel like ㅏ goes to the right of the consonant.','像ㅏ这样的竖形元音放在辅音右边。']},
+  {id:'horizontal',parts:['ㄴ','ㅗ'],result:'노',title:['아래에 모음','下に母音','Vowel underneath','元音在下面'],note:['ㅗ처럼 가로 모양인 모음은 자음 아래에 놓아요.','ㅗのような横の母音は子音の下に置きます。','A horizontal vowel like ㅗ goes underneath the consonant.','像ㅗ这样的横形元音放在辅音下面。']},
+  {id:'compound',parts:['ㄱ','ㅘ'],result:'과',title:['오른쪽과 아래에 모음','右と下に母音','Vowel around the corner','元音在右边和下面'],note:['ㅘ는 ㅗ와 ㅏ가 만난 모음이에요. 자음 오른쪽과 아래를 함께 써요.','ㅘはㅗとㅏが組み合わさった母音です。子音の右と下を使います。','ㅘ combines ㅗ and ㅏ, using space below and to the right of the consonant.','ㅘ由ㅗ和ㅏ组合而成，位于辅音的下方和右侧。']},
+  {id:'coda',parts:['ㅁ','ㅜ','ㄴ'],result:'문',title:['맨 아래에 받침','一番下にパッチム','Final consonant at the bottom','收音在最下面'],note:['ㅁ과 ㅜ로 무를 만들고, 맨 아래에 ㄴ 받침을 붙이면 문이 돼요.','ㅁとㅜで무を作り、一番下にㄴのパッチムを付けると문になります。','ㅁ and ㅜ make 무. Add final ㄴ at the bottom to make 문.','ㅁ和ㅜ组成무，再在最下面加上收音ㄴ，就成为문。']}
+];
+const BEGINNER_LETTER_IDS=new Set([
+  ...BEGINNER_VOWELS.concat(BEGINNER_FURTHER_VOWELS).map(row=>'v:'+row[0]),
+  ...BEGINNER_CONSONANTS.concat(BEGINNER_DOUBLE_CONSONANTS).map(row=>'c:'+row[0])
+]);
+function beginnerProgress(){
+  const raw=read(BEGINNER_KEY,{}),value=raw&&typeof raw==='object'&&!Array.isArray(raw)?raw:{};
+  value.known=Array.isArray(value.known)?value.known:[];
+  return value
+}
 function saveBeginner(value){write(BEGINNER_KEY,value)}
 function beginnerSpeak(value){if(typeof window.malbitSpeak==='function')return window.malbitSpeak(value);try{speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(value);utterance.lang='ko-KR';utterance.rate=.72;speechSynthesis.speak(utterance)}catch(e){}}
-window.malbitBeginnerLearn=(id,sound,button)=>{const p=beginnerProgress();if(!p.known.includes(id)){p.known.push(id);saveBeginner(p)}button?.classList.add('learned');beginnerSpeak(sound)};
+window.malbitBeginnerLearn=(id,sound,button)=>{if(!BEGINNER_LETTER_IDS.has(id))return;const p=beginnerProgress();if(!p.known.includes(id)){p.known.push(id);saveBeginner(p)}button?.classList.add('learned');beginnerSpeak(sound);window.render?.()};
 window.malbitBeginnerSpeak=beginnerSpeak;
-window.malbitBeginnerTab=tab=>{beginnerTab=['vowels','consonants','reading'].includes(tab)?tab:'vowels';const p=beginnerProgress();p.activeTab=beginnerTab;saveBeginner(p);beginnerAnswer=null;window.render?.()};
-function letterGrid(rows,prefix){const known=new Set(beginnerProgress().known);return `<div class="v33LetterGrid">${rows.map(([letter,sound,roman])=>`<button class="${known.has(`${prefix}:${letter}`)?'learned':''}" onclick='malbitBeginnerLearn(${JSON.stringify(`${prefix}:${letter}`)},${JSON.stringify(sound)},this)'><b>${letter}</b><span>${sound}</span><small>${roman} · 🔊</small></button>`).join('')}</div>`}
-function beginnerReading(){
-  const p=beginnerProgress(),q=BEGINNER_WORDS[(Number(p.quiz)||0)%BEGINNER_WORDS.length],answer=BEGINNER_WORDS.indexOf(q),offset=(answer+3)%BEGINNER_WORDS.length,choiceIndexes=[answer,(answer+1)%8,(answer+5)%8,offset].filter((x,i,a)=>a.indexOf(x)===i).slice(0,4).sort((a,b)=>((a*7+p.quiz*3)%11)-((b*7+p.quiz*3)%11));
-  return `<section class="v33ReadingLesson"><small>${L('첫 단어 읽기','はじめての単語読み','FIRST WORDS','初次读词')}</small><button class="v33ReadingWord" onclick='malbitBeginnerSpeak(${JSON.stringify(q.word)})'><b>${q.word}</b><span>🔊</span></button><p>${L('소리를 듣고 알맞은 읽기를 골라 보세요.','音声を聞いて正しい読み方を選びましょう。','Listen and choose the correct reading.','听声音并选择正确读法。')}</p><div class="v33ReadingChoices">${choiceIndexes.map(index=>`<button class="${beginnerAnswer===index?(index===answer?'correct':'wrong'):''}" onclick="malbitBeginnerAnswer(${index},${answer})" ${beginnerAnswer!==null?'disabled':''}><b>${BEGINNER_WORDS[index].read}</b><small>${BEGINNER_WORDS[index].meaning[LANG_INDEX[appState()?.lang]??0]}</small></button>`).join('')}</div>${beginnerAnswer!==null?`<div class="v33ReadingFeedback ${beginnerAnswer===answer?'correct':'wrong'}">${beginnerAnswer===answer?L('정답이에요! 다음 단어로 넘어가요.','正解！次の単語へ。','Correct! Moving to the next word.','答对了！进入下一个词。'):L(`정답은 ${q.read}예요. 소리를 다시 들어 보세요.`,`正解は ${q.read} です。もう一度聞いてみましょう。`,`The answer is ${q.read}. Listen once more.`,`正确读法是 ${q.read}，请再听一次。`)}</div>`:''}</section>`
+window.malbitBeginnerTab=tab=>{beginnerTab=['vowels','consonants','reading'].includes(tab)?tab:'vowels';const p=beginnerProgress();p.activeTab=beginnerTab;saveBeginner(p);window.render?.()};
+function localBeginner(values){return values[LANG_INDEX[appState()?.lang]??0]||values[0]}
+function letterGrid(rows,prefix){
+  const known=new Set(beginnerProgress().known),isConsonant=prefix==='c';
+  return `<div class="v33LetterGrid hbLetterGrid">${rows.map(([letter,name,example])=>{
+    const id=`${prefix}:${letter}`,learned=known.has(id),sound=isConsonant?example:name;
+    return `<article class="hbLetterCard ${learned?'learned':''}"><button class="hbLetterName ${learned?'learned':''}" onclick='malbitBeginnerLearn(${JSON.stringify(id)},${JSON.stringify(name)},this)' aria-label="${escapeHtml(L(`${letter}, 이름 ${name} 듣기`,`${letter}、名前 ${name} を聞く`,`${letter}, hear the name ${name}`,`${letter}，听名称${name}`))}"><b lang="ko">${letter}</b><span><small>${L('이름','名前','Name','名称')}</small><strong lang="ko">${name}</strong></span><i aria-hidden="true">${learned?'✓':'♪'}</i></button><button class="hbLetterSound" onclick='malbitBeginnerSpeak(${JSON.stringify(sound)})'><span>${isConsonant?L('소리 예','音の例','Sound example','发音示例'):L('소리','音','Sound','发音')}</span><strong lang="ko">${sound}</strong><i aria-hidden="true">🔊</i></button></article>`
+  }).join('')}</div>`
 }
-window.malbitBeginnerAnswer=(selected,answer)=>{if(beginnerAnswer!==null)return;beginnerAnswer=Number(selected);const p=beginnerProgress();p.quiz=Number(p.quiz)||0;if(Number(selected)===Number(answer)){p.correct=(Number(p.correct)||0)+1;setTimeout(()=>{p.quiz++;saveBeginner(p);beginnerAnswer=null;window.render?.()},850)}else{saveBeginner(p);setTimeout(()=>{beginnerAnswer=null;window.render?.()},1100)}window.render?.()};
+function letterLesson(){
+  const consonants=beginnerTab==='consonants';
+  return `<section class="v33LetterIntro"><small>${consonants?'STEP 2':'STEP 1'}</small><h2>${consonants?L('자음의 이름과 소리','子音の名前と音','Consonant names and sounds','辅音的名称与发音'):L('모음을 하나씩 읽어요','母音を一つずつ読もう','Read each vowel','逐个读元音')}</h2><p>${consonants?L('기역은 ㄱ의 이름이에요. 가는 ㄱ에 ㅏ를 붙여 읽는 소리의 예예요.','기역はㄱの名前です。가はㄱにㅏを付けた音の例です。','기역 is the name of ㄱ. 가 is a sound example made by adding ㅏ.','기역是ㄱ的名称，가是ㄱ加上ㅏ后的发音示例。'):L('모음 글자와 소리를 함께 익혀요. 아처럼 읽을 때는 소리 없는 첫 자음 ㅇ을 붙여요.','母音の文字と音を覚えましょう。아のように読むときは、音のない最初の子音ㅇを付けます。','Learn the vowel and its sound together. To write 아, add the silent initial consonant ㅇ.','一起学习元音字母与发音。写成아时，要加上不发音的声母ㅇ。')}</p></section><h3 class="hbGroupTitle">${consonants?L('기본 자음 14개','基本子音14字','14 basic consonants','14个基本辅音'):L('기본 모음 10개','基本母音10字','10 basic vowels','10个基本元音')}</h3>${letterGrid(consonants?BEGINNER_CONSONANTS:BEGINNER_VOWELS,consonants?'c':'v')}<h3 class="hbGroupTitle">${consonants?L('쌍자음 5개','二重子音5字','5 double consonants','5个双辅音'):L('더 배우는 모음 11개','さらに学ぶ母音11字','11 further vowels','再学11个元音')}</h3>${letterGrid(consonants?BEGINNER_DOUBLE_CONSONANTS:BEGINNER_FURTHER_VOWELS,consonants?'c':'v')}${consonants?`<aside class="hbLetterNote"><b>ㅇ · 이응</b><p>${L('첫소리의 ㅇ은 소리가 없어요: 아, 우. 받침의 ㅇ은 ‘ng’ 소리예요: 공.','最初のㅇは発音しません：아、우。パッチムのㅇは「ng」の音です：공。','Initial ㅇ is silent: 아, 우. Final ㅇ has an “ng” sound: 공.','声母ㅇ不发音：아、우。收音ㅇ发“ng”音：공。')}</p><button onclick="malbitBeginnerSpeak('공')">🔊 ${L('공 듣기','공を聞く','Hear 공','听공')}</button></aside>`:''}<button class="hbPrimary hbLessonContinue" onclick="malbitBeginnerTab('${consonants?'reading':'consonants'}')">${consonants?L('글자 조합해 보기','文字を組み合わせる','Build a syllable','试着组合字母'):L('자음 배우러 가기','子音へ進む','Learn consonants','学习辅音')} →</button>`
+}
+function readingProgress(p=beginnerProgress()){
+  const raw=p.readingV2&&typeof p.readingV2==='object'&&!Array.isArray(p.readingV2)?p.readingV2:{};
+  return {...raw,index:Math.max(0,Math.min(BEGINNER_WORDS.length,Math.floor(Number(raw.index)||0))),completed:Array.isArray(raw.completed)?raw.completed.filter(id=>BEGINNER_WORDS.some(q=>q.id===id)):[],confirmed:raw.confirmed===true}
+}
+function blockProgress(p=beginnerProgress()){
+  const raw=p.blocksV1&&typeof p.blocksV1==='object'&&!Array.isArray(p.blocksV1)?p.blocksV1:{};
+  const index=Math.max(0,Math.min(BEGINNER_BLOCKS.length-1,Math.floor(Number(raw.index)||0)));
+  return {...raw,index,reveal:Math.max(1,Math.min(BEGINNER_BLOCKS[index].parts.length,Math.floor(Number(raw.reveal)||1)))}
+}
+window.malbitBeginnerReadingStep=step=>{if(!['blocks','words'].includes(step))return;const p=beginnerProgress();p.readingStep=step;saveBeginner(p);window.render?.()};
+window.malbitBeginnerBlock=index=>{const p=beginnerProgress();p.blocksV1={...blockProgress(p),index:Math.max(0,Math.min(BEGINNER_BLOCKS.length-1,Math.floor(Number(index)||0))),reveal:1};saveBeginner(p);window.render?.()};
+window.malbitBeginnerBuild=expected=>{if(appState()?.view!=='beginner')return;const p=beginnerProgress(),b=blockProgress(p),q=BEGINNER_BLOCKS[b.index];if(q.id!==expected||b.reveal>=q.parts.length)return;p.blocksV1={...b,reveal:b.reveal+1};saveBeginner(p);window.render?.()};
+function blockLesson(){
+  const b=blockProgress(),q=BEGINNER_BLOCKS[b.index],built=b.reveal===q.parts.length;
+  const part=(glyph,index,cls='')=>`<span class="${cls} ${index<b.reveal?'isVisible':'isWaiting'}" aria-hidden="true">${index<b.reveal?glyph:'?'}</span>`;
+  const tiles=q.id==='compound'?part('ㄱ',0,'hbInitial')+part('ㅗ',1,'hbBelow')+part('ㅏ',1,'hbRight'):q.parts.map((glyph,index)=>part(glyph,index)).join('');
+  return `<section class="v33ReadingLesson hbBlockLesson"><small>${L('한 글자 만들기','一文字を作る','BUILD ONE SYLLABLE','组成一个音节')}</small><h2>${L('자음과 모음을 한 칸에 모아요','子音と母音を一つの枠に','Put consonants and vowels in one block','把辅音和元音组合在一个方块里')}</h2><div class="hbBlockTabs">${BEGINNER_BLOCKS.map((item,index)=>`<button class="${index===b.index?'on':''}" aria-pressed="${index===b.index}" onclick="malbitBeginnerBlock(${index})">${item.result}</button>`).join('')}</div><h3>${escapeHtml(localBeginner(q.title))}</h3><div class="hbConstruction"><div class="hbBlock ${q.id}" role="img" aria-label="${escapeHtml(q.parts.slice(0,b.reveal).join(' + '))}">${tiles}</div><span class="hbEquals" aria-hidden="true">→</span><button class="hbBuiltWord ${built?'isBuilt':''}" ${built?`onclick="malbitBeginnerSpeak('${q.result}')"`:'disabled'} aria-label="${escapeHtml(L(`${q.result} 듣기`,`${q.result}を聞く`,`Hear ${q.result}`,`听${q.result}`))}"><b lang="ko">${built?q.result:'?'}</b>${built?'<small>🔊</small>':''}</button></div><p class="hbEquation" lang="ko">${q.parts.slice(0,b.reveal).join(' + ')}${built?' = '+q.result:''}</p><p>${escapeHtml(localBeginner(q.note))}</p>${built?`<button class="hbPrimary" onclick="${b.index<BEGINNER_BLOCKS.length-1?`malbitBeginnerBlock(${b.index+1})`:"malbitBeginnerReadingStep('words')"}">${b.index<BEGINNER_BLOCKS.length-1?L('다음 조합','次の組み合わせ','Next syllable','下一个组合'):L('그림 단어 읽기','絵の単語を読む','Read picture words','读图片单词')} →</button>`:`<button class="hbPrimary" onclick="malbitBeginnerBuild('${q.id}')">${b.reveal===2?L('받침 붙이기','パッチムを付ける','Add the final consonant','加上收音'):L('모음 붙이기','母音を付ける','Add the vowel','加上元音')} + ${q.parts[b.reveal]}</button>`}</section>`
+}
+function wordPicture(q){
+  const index=BEGINNER_WORDS.indexOf(q),x=(index%4)*100/3,y=Math.floor(index/4)*50;
+  return `<div class="hbWordPicture" data-picture="${q.id}" role="img" aria-label="${escapeHtml(localBeginner(q.meaning))}" style="--picture-x:${x}%;--picture-y:${y}%"></div>`
+}
+function wordReading(){
+  const r=readingProgress(),q=BEGINNER_WORDS[r.index];
+  if(!q)return `<section class="v33ReadingLesson hbReadingComplete"><span aria-hidden="true">✓</span><h2>${L('열두 단어를 따라 읽었어요','12語を読んでみました','You practiced 12 words','跟读了12个单词')}</h2><p>${L('소리와 그림을 떠올리며 다시 읽어 보세요.','音と絵を思い浮かべて、もう一度読んでみましょう。','Picture each word and try reading it again.','回想发音和图片，再读一遍吧。')}</p><p class="hbSelfNote">${L('내가 체크한 읽기 기록이에요. 발음 점수는 매기지 않아요.','自分でチェックした記録です。発音の採点はしません。','This is your self-check record. Pronunciation is not scored.','这是自行确认的跟读记录，不对发音评分。')}</p><button class="hbPrimary" onclick="malbitBeginnerReadRestart()">${L('다시 읽기','もう一度読む','Read again','再读一遍')}</button></section>`;
+  const hint=q.level==='vowel'?L('ㅘ가 들어간 단어','ㅘが入る単語','A word with ㅘ','含ㅘ的单词'):q.level==='double'?L('ㄲ이 들어간 단어','ㄲが入る単語','A word with ㄲ','含ㄲ的单词'):q.level==='coda'?L('받침이 있는 단어','パッチムのある単語','A word with a final consonant','有收音的单词'):L('받침 없이 읽기','パッチムなしで読む','Read without a final consonant','读不带收音的单词');
+  return `<section class="v33ReadingLesson hbPictureReading"><div class="hbReadingMeta"><small>${L('그림 단어 읽기','絵で単語を読む','PICTURE WORDS','看图读词')}</small><span>${r.index+1} / ${BEGINNER_WORDS.length}</span></div>${wordPicture(q)}<button class="v33ReadingWord" onclick="malbitBeginnerSpeak('${q.word}')" aria-label="${escapeHtml(L(`${q.word} 듣기`,`${q.word}を聞く`,`Hear ${q.word}`,`听${q.word}`))}"><b lang="ko">${q.word}</b><span aria-hidden="true">🔊</span></button><p class="hbWordMeaning" lang="${escapeHtml(appState()?.lang||'ko')}">${escapeHtml(localBeginner(q.meaning))}</p><p class="hbWordHint">${hint}</p><p class="hbReadInstruction">${L('소리를 듣고 천천히 따라 읽어 보세요.','音を聞いて、ゆっくりまねして読んでみましょう。','Listen, then say the word slowly.','听发音，慢慢跟着读。')}</p>${r.confirmed?`<div class="hbSelfConfirmed" role="status">✓ ${L('따라 읽기를 기록했어요','読んだ記録を保存しました','Your reading practice is saved','已记录跟读练习')}</div><button class="hbPrimary" onclick="malbitBeginnerReadNext('${q.id}')">${r.index===BEGINNER_WORDS.length-1?L('읽기 마치기','読みを終える','Finish reading','完成跟读'):L('다음 단어','次の単語','Next word','下一个单词')} →</button>`:`<button class="hbPrimary" onclick="malbitBeginnerReadDone('${q.id}')">✓ ${L('따라 읽었어요','まねして読みました','I read it aloud','我跟读了')}</button>`}<p class="hbSelfNote">${L('직접 체크해요 · 음성 인식이나 발음 채점은 하지 않아요.','自分でチェック · 音声認識や発音の採点はしません。','Self-check · no speech recognition or pronunciation scoring.','自行确认 · 不进行语音识别或发音评分。')}</p></section>`
+}
+window.malbitBeginnerReadDone=expected=>{
+  if(appState()?.view!=='beginner')return;const p=beginnerProgress(),r=readingProgress(p),q=BEGINNER_WORDS[r.index];if(!q||q.id!==expected||r.confirmed)return;
+  p.readingV2={...r,confirmed:true,completed:[...new Set([...r.completed,q.id])]};saveBeginner(p);window.render?.()
+};
+window.malbitBeginnerReadNext=expected=>{if(appState()?.view!=='beginner')return;const p=beginnerProgress(),r=readingProgress(p),q=BEGINNER_WORDS[r.index];if(!q||q.id!==expected||!r.confirmed)return;p.readingV2={...r,index:r.index+1,confirmed:false};saveBeginner(p);window.render?.()};
+window.malbitBeginnerReadRestart=()=>{if(appState()?.view!=='beginner')return;const p=beginnerProgress(),r=readingProgress(p);p.readingV2={...r,index:0,confirmed:false};saveBeginner(p);window.render?.()};
+// Keep the old public hook inert: a stale multiple-choice click cannot award correctness.
+window.malbitBeginnerAnswer=()=>false;
+function beginnerReading(){
+  const step=beginnerProgress().readingStep==='words'?'words':'blocks';
+  return `<div class="hbReadingSteps" role="group" aria-label="${L('읽기 단계','読みのステップ','Reading steps','阅读步骤')}"><button class="${step==='blocks'?'on':''}" aria-pressed="${step==='blocks'}" onclick="malbitBeginnerReadingStep('blocks')">${L('글자 조합','文字の組み合わせ','Build syllables','字母组合')}</button><button class="${step==='words'?'on':''}" aria-pressed="${step==='words'}" onclick="malbitBeginnerReadingStep('words')">${L('그림 단어','絵の単語','Picture words','图片单词')}</button></div>${step==='blocks'?blockLesson():wordReading()}`
+}
+window.HARUMAL_BEGINNER=Object.freeze({storageKey:BEGINNER_KEY,inventory:Object.freeze({basicVowels:BEGINNER_VOWELS,furtherVowels:BEGINNER_FURTHER_VOWELS,basicConsonants:BEGINNER_CONSONANTS,doubleConsonants:BEGINNER_DOUBLE_CONSONANTS}),words:BEGINNER_WORDS,blocks:BEGINNER_BLOCKS,getReading:readingProgress});
 function renderBeginner(sc){
-  if(typeof navActive==='function')navActive('home');if(typeof setProgress==='function')setProgress(0);const p=beginnerProgress(),total=BEGINNER_VOWELS.length+BEGINNER_CONSONANTS.length,learned=Math.min(total,p.known.length),percent=Math.round(learned/total*100);sc.className='screen v33BeginnerScreen';
-  const content=beginnerTab==='vowels'?`<section class="v33LetterIntro"><small>STEP 1</small><h2>${L('입 모양으로 익히는 모음','口の形で覚える母音','Learn vowels by mouth shape','通过口型学习元音')}</h2><p>${L('글자를 누르면 ‘아·어·오…’ 소리를 들을 수 있어요.','文字を押すと「あ・お・オ…」の音を聞けます。','Tap a letter to hear its Korean sound.','点击字母即可听韩语发音。')}</p></section>${letterGrid(BEGINNER_VOWELS,'v')}`:beginnerTab==='consonants'?`<section class="v33LetterIntro"><small>STEP 2</small><h2>${L('소리와 함께 익히는 자음','音と一緒に覚える子音','Learn consonants with sound','结合发音学习辅音')}</h2><p>${L('자음은 모음 ㅏ를 붙여 ‘가·나·다’로 먼저 익혀요.','子音に母音ㅏを付けて「가・나・다」で覚えます。','Pair each consonant with ㅏ: 가, 나, 다.','辅音先与元音ㅏ组合成“가、나、다”来学习。')}</p></section>${letterGrid(BEGINNER_CONSONANTS,'c')}`:beginnerReading();
-  sc.innerHTML=`<div class="v33BeginnerTop"><button onclick="setView('home')" aria-label="${L('홈으로','ホームへ','Back home','返回首页')}">‹</button><div><small>HANGUL START</small><h1>${L('한글 첫걸음','ハングル入門','Hangul Start','韩文字母入门')}</h1></div><button onclick="event.stopPropagation();flagMenu()" aria-label="${L('언어 변경','言語を変更','Change language','更改语言')}">${typeof LANGS!=='undefined'?(LANGS[appState()?.lang]?.flag||'🌐'):'🌐'}</button></div><section class="v33BeginnerHero"><div><small>${L('완전 입문자 과정','完全初心者コース','ABSOLUTE BEGINNER','零基础课程')}</small><h2>${L('한글을 처음부터 천천히 읽어요.','ハングルをゼロからゆっくり読みましょう。','Read Hangul slowly from the very beginning.','从零开始慢慢学会读韩文。')}</h2><div class="v33BeginnerProgress"><i style="width:${percent}%"></i></div><p>${L(`글자 ${learned}/${total} 익힘`,`文字 ${learned}/${total} 習得`,`${learned}/${total} letters learned`,`已学 ${learned}/${total} 个字母`)}</p></div><span>가</span></section><div class="v33BeginnerTabs"><button class="${beginnerTab==='vowels'?'on':''}" onclick="malbitBeginnerTab('vowels')">${L('1. 모음','1. 母音','1. Vowels','1. 元音')}</button><button class="${beginnerTab==='consonants'?'on':''}" onclick="malbitBeginnerTab('consonants')">${L('2. 자음','2. 子音','2. Consonants','2. 辅音')}</button><button class="${beginnerTab==='reading'?'on':''}" onclick="malbitBeginnerTab('reading')">${L('3. 읽기','3. 読み','3. Reading','3. 阅读')}</button></div>${content}<section class="v33BeginnerTip"><b>💡 ${L('하루 5분이면 충분해요.','1日5分で十分です。','Five minutes a day is enough.','每天5分钟就足够。')}</b><p>${L('글자를 소리와 함께 반복한 뒤 TOPIK I로 넘어가세요.','文字と音を繰り返してからTOPIK Iへ進みましょう。','Repeat letters with sound, then move on to TOPIK I.','反复练习字母与发音后，再进入TOPIK I。')}</p></section>`
+  if(!sc)return;if(typeof navActive==='function')navActive('home');if(typeof setProgress==='function')setProgress(0);
+  const p=beginnerProgress(),total=BEGINNER_LETTER_IDS.size,learned=new Set(p.known.filter(id=>BEGINNER_LETTER_IDS.has(id))).size,percent=Math.round(learned/total*100);sc.className='screen v33BeginnerScreen hbBeginner';
+  const content=beginnerTab==='reading'?beginnerReading():letterLesson();
+  sc.innerHTML=`<div class="v33BeginnerTop"><button onclick="setView('home')" aria-label="${L('홈으로','ホームへ','Back home','返回首页')}">‹</button><div><small>HANGUL START</small><h1>${L('한글 첫걸음','ハングル入門','Hangul Start','韩文字母入门')}</h1></div><button onclick="event.stopPropagation();flagMenu()" aria-label="${L('언어 변경','言語を変更','Change language','更改语言')}">${typeof LANGS!=='undefined'?(LANGS[appState()?.lang]?.flag||'🌐'):'🌐'}</button></div><section class="v33BeginnerHero"><div><small>${L('완전 입문자 과정','完全初心者コース','ABSOLUTE BEGINNER','零基础课程')}</small><h2>${L('글자에서 첫 단어까지, 한 걸음씩.','文字から最初の単語まで、一歩ずつ。','From letters to first words, one step at a time.','从字母到第一个单词，一步一步来。')}</h2><div class="v33BeginnerProgress" role="progressbar" aria-valuenow="${learned}" aria-valuemin="0" aria-valuemax="${total}" aria-label="${L('익힌 글자','学んだ文字','Letters explored','已学字母')}"><i style="width:${percent}%"></i></div><p>${L(`글자 ${learned}/${total} 익힘`,`文字 ${learned}/${total} 習得`,`${learned}/${total} letters explored`,`已学 ${learned}/${total} 个字母`)}</p></div><span aria-hidden="true">가</span></section><div class="v33BeginnerTabs"><button class="${beginnerTab==='vowels'?'on':''}" onclick="malbitBeginnerTab('vowels')">${L('1. 모음','1. 母音','1. Vowels','1. 元音')}</button><button class="${beginnerTab==='consonants'?'on':''}" onclick="malbitBeginnerTab('consonants')">${L('2. 자음','2. 子音','2. Consonants','2. 辅音')}</button><button class="${beginnerTab==='reading'?'on':''}" onclick="malbitBeginnerTab('reading')">${L('3. 읽기','3. 読み','3. Reading','3. 阅读')}</button></div>${content}<section class="v33BeginnerTip"><b>${L('짧게, 여러 번 익혀요','短く、何度も練習','A little practice, often','每次学一点，多练几次')}</b><p>${L('모음 → 자음 → 글자 조합 → 그림 단어 순서로 익혀요. 손글씨는 언제든 연습할 수 있어요.','母音→子音→文字の組み合わせ→絵の単語の順に学びます。手書きはいつでも練習できます。','Try vowels, consonants, syllable blocks, then picture words. Handwriting is available anytime.','按照元音、辅音、字母组合、图片单词的顺序学习。也可以随时练习手写。')}</p></section>`
 }
 function patchHomeBeginner(){
   if(appState()?.view!=='home'||document.querySelector('.v33BeginnerLaunch'))return;const level=document.querySelector('.tqHomeScreen>.t1level'),modes=document.querySelector('.tqV9Modes'),anchor=level||modes;if(!anchor)return;const button=document.createElement('button');button.className='v33BeginnerLaunch';button.setAttribute('onclick',"setView('beginner')");button.innerHTML=`<i>가</i><span><small>HANGUL START</small><b>${L('한글 첫걸음','ハングル入門','Hangul Start','韩文字母入门')}</b><em>${L('한글 읽기부터 시작하는 완전 입문 과정','ハングルの読み方から始める入門コース','Start from letters and basic reading','从韩文字母和基础阅读开始')}</em></span><strong>›</strong>`;anchor.insertAdjacentElement(level?'afterend':'beforebegin',button)
