@@ -248,3 +248,9 @@ html body.harumal .malbitSupport button.danger{background:var(--ui-error-soft);c
 
 html body.harumal :is(.v33ReadingChoices button.correct,.v33ReadingFeedback:not(.wrong)){background:var(--ui-success-soft);color:var(--ui-success);border-color:var(--ui-success)}
 html body.harumal :is(.v33ReadingChoices button.wrong,.v33ReadingFeedback.wrong){background:var(--ui-error-soft);color:var(--ui-error);border-color:var(--ui-error)}
+/* First-card save prompts follow the same palette as other learner actions. */
+html body.harumal .malbitShortProposal{background:var(--ui-surface);color:var(--ui-ink);border-color:var(--ui-border)}
+html body.harumal .malbitShortProposal :is(small,p){color:var(--ui-muted)!important}
+html body.harumal .malbitShortProposal>button{background:var(--ui-accent);color:var(--harumal-on-accent)}
+html body.harumal .malbitShortProposal>button.dismiss{background:var(--ui-surface-soft);color:var(--ui-ink);border:1px solid var(--ui-border)}
+@media(max-width:360px){html[lang="en"] body.harumal .v33BeginnerTabs{grid-template-columns:repeat(2,minmax(0,1fr))!important}html[lang="en"] body.harumal .v33BeginnerTabs button{overflow-wrap:normal;word-break:normal}}

@@ -65,9 +65,14 @@ test('shared settings and learner surfaces use theme tokens without recoloring a
  assert.doesNotMatch(skin,/#f2f6ff/,'old fixed navy header ink is removed');
 });
 test('mobile browser regressions operate visible flags and preserve settings/learning state',()=>{
- for(const file of ['scripts/three-tab-redesign-checks.mjs','scripts/writing-usability-checks.mjs']){
-  const script=read(file);assert.match(script,/data-hub-language/);assert.match(script,/aria-pressed/);assert.doesNotMatch(script,/select\[onchange="malbitSetLanguage/);
+ for(const file of ['scripts/three-tab-redesign-checks.mjs','scripts/writing-usability-checks.mjs','scripts/writing-localization-checks.mjs']){
+  const script=read(file);assert.match(script,/data-hub-language/);if(!file.includes('writing-localization'))assert.match(script,/aria-pressed/);assert.doesNotMatch(script,/select\[onchange="malbitSetLanguage/);
  }
  assert.match(read('scripts/three-tab-redesign-checks.mjs'),/gear\.svgWidth,24/);
  assert.match(read('scripts/writing-usability-checks.mjs'),/language selection preserves attempts, drafts and guided pointer/);
+});
+
+test('first-card save prompt uses the active palette and narrow English tabs retain whole words',()=>{
+ assert.match(skin,/\.malbitShortProposal>button\{background:var\(--ui-accent\);color:var\(--harumal-on-accent\)/);
+ assert.match(skin,/html\[lang="en"\] body\.harumal \.v33BeginnerTabs\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)!important/);
 });

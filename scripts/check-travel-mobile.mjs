@@ -1434,7 +1434,7 @@ try{
   assert.match(interruptionReview.summary,/途中|続け/u,'immediate feedback explains the shown term');
   assert.match(interruptionReview.detail,/【例文での使い方】/u,'the separate example is explicitly labelled');
   for(const theme of ['light','dark']){
-    await evaluate(`malbitSetTheme('${theme}');document.querySelector('.shortsExplanation').open=false;scrollTo(0,0)`);await setViewport(390,844);await sleep(100);await assertShortsFits(`user-feedback 中断 ${theme}`,theme);await shot(`refresh-short-interruption-${theme}-390.png`);
+    await evaluate(`malbitSetTheme('${theme}');document.querySelector('.shortsExplanation').open=false;scrollTo(0,0)`);await setViewport(390,844);await sleep(100);await assertShortsFits(`user-feedback 中断 ${theme}`,theme);assert.equal(await evaluate(`(()=>{const b=document.querySelector('.malbitShortProposal>button:not(.dismiss)');if(!b)return false;const probe=document.createElement('span');probe.style.color='var(--ui-accent)';document.body.append(probe);const matches=getComputedStyle(b).backgroundColor===getComputedStyle(probe).color;probe.remove();return matches})()`),true,'first-card save button follows the active theme');await shot(`refresh-short-interruption-${theme}-390.png`);
     await evaluate(`(()=>{const d=document.querySelector('.shortsExplanation');d.open=true;d.scrollIntoView({block:'start',behavior:'auto'})})()`);await sleep(100);await shot(`refresh-short-interruption-detail-${theme}-390.png`);
   }
 

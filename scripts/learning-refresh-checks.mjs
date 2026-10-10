@@ -59,14 +59,14 @@ export async function verifyLearningRefresh({evaluate,tap,shot,setViewport,send,
     for(const lang of ['ko','ja','en','zh'])for(const theme of ['light','dark'])for(const width of [320,390]) {
       await setViewport(width,844);await evaluate(`setLang('${lang}');malbitSetTheme('${theme}');setView('beginner');malbitBeginnerTab('consonants');scrollTo(0,0)`);await sleep(50);
       const fit=await evaluate(`(()=>{const buttons=[...document.querySelectorAll('.hbLetterName,.hbLetterSound')];return{overflow:document.documentElement.scrollWidth-innerWidth,small:buttons.filter(b=>b.getBoundingClientRect().height<44).length,text:document.querySelector('.hbLetterNote').textContent}})()`);
-      assert.ok(fit.overflow<=1,lang+theme+width+' letter layout fits');assert.equal(fit.small,0,'letter controls have 44px targets');assert.match(fit.text,/ㅇ/);await shot(`refresh-letters-${lang}-${theme}-${width}.png`);
-      await evaluate(`malbitBeginnerTab('reading');malbitBeginnerReadingStep('blocks');malbitBeginnerBlock(2);malbitBeginnerBuild(HARUMAL_BEGINNER.blocks[2].id)`);await shot(`refresh-block-${lang}-${theme}-${width}.png`);
+      assert.ok(fit.overflow<=1,lang+theme+width+' letter layout fits');assert.equal(fit.small,0,'letter controls have 44px targets');assert.match(fit.text,/ㅇ/);await evaluate(`document.querySelector('.v33LetterIntro').scrollIntoView({block:'start',behavior:'auto'})`);await shot(`refresh-letters-${lang}-${theme}-${width}.png`);
+      await evaluate(`malbitBeginnerTab('reading');malbitBeginnerReadingStep('blocks');malbitBeginnerBlock(2);malbitBeginnerBuild(HARUMAL_BEGINNER.blocks[2].id);document.querySelector('.hbBlockLesson').scrollIntoView({block:'start',behavior:'auto'})`);await shot(`refresh-block-${lang}-${theme}-${width}.png`);
       assert.equal(await evaluate(`document.querySelector('.hbBuiltWord b').textContent`),'과');
       await evaluate(`malbitBeginnerReadingStep('words')`);
       assert.equal(await evaluate(`document.querySelector('.hbWordMeaning').textContent`),({ko:'나무',ja:'木',en:'tree',zh:'树'})[lang]);
       assert.equal(await evaluate(`!!document.querySelector('.v33ReadingChoices')`),false,'reading is not a correctness quiz');
       assert.ok(await evaluate(`document.querySelector('.hbWordPicture').getBoundingClientRect().width>0`),'word picture visible');
-      assert.ok(await evaluate(`document.documentElement.scrollWidth<=innerWidth+1`),'picture-word layout fits');await shot(`refresh-picture-${lang}-${theme}-${width}.png`);
+      assert.ok(await evaluate(`document.documentElement.scrollWidth<=innerWidth+1`),'picture-word layout fits');await evaluate(`document.querySelector('.hbPictureReading').scrollIntoView({block:'start',behavior:'auto'})`);await shot(`refresh-picture-${lang}-${theme}-${width}.png`);
     }
     await evaluate(`malbitBeginnerReadDone('tree');malbitBeginnerReadDone('tree')`);
     assert.deepEqual(await evaluate(`HARUMAL_BEGINNER.getReading().completed`),['tree'],'repeat self-check is idempotent');
