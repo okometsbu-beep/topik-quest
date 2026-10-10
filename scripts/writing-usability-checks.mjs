@@ -60,7 +60,8 @@ export async function verifyWritingUsability({ evaluate, tap, shot, setViewport,
     await openLanguageSettings();
     // Activate the real flag control with the keyboard after giving it focus.
     await evaluate(`document.querySelector('#harumalSettingsDialog [data-hub-language="${lang}"]').focus()`);
-    await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Enter',code:'Enter',windowsVirtualKeyCode:13});
+    assert.equal(await evaluate(`document.activeElement?.dataset.hubLanguage`),lang,'keyboard focus reaches the flag button');
+    await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Enter',code:'Enter',windowsVirtualKeyCode:13,text:'\r',unmodifiedText:'\r'});
     await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Enter',code:'Enter',windowsVirtualKeyCode:13});
     await waitFor(`S.lang===${JSON.stringify(lang)}`,'settings picker changes the language');
     assert.equal((await assertLanguagePicker()).value,lang);
