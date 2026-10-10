@@ -5,7 +5,7 @@ const vm = require('node:vm');
 
 test('reviewed listening repairs are exact, idempotent, and preserve speaker labels', async () => {
   const { repairListeningScript, listeningScriptRepairs } = await import('../scripts/lib/listening-script-repairs.mjs');
-  assert.equal(listeningScriptRepairs.length, 28);
+  assert.equal(listeningScriptRepairs.length, 38, '28 earlier exact repairs plus ten v165 clip-aligned corrections');
   for (const { old, corrected } of listeningScriptRepairs) {
     assert.notEqual(old, corrected);
     assert.equal(repairListeningScript(old), corrected);

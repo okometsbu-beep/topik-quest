@@ -1,0 +1,46 @@
+/* Hangul names, syllable blocks and picture reading. All learning surfaces follow shared theme tokens. */
+.hbBeginner{--hb-ink:var(--ui-ink,#173c36);--hb-muted:var(--ui-muted,#526f69);--hb-surface:var(--ui-surface,#fff);--hb-soft:var(--ui-surface-soft,#edf5f1);--hb-border:var(--ui-border,#ccdcd4);--hb-accent:var(--ui-accent,#24735e);--hb-accent-soft:var(--ui-accent-soft,#e0f1e9)}
+html body.harumal .hbBeginner :is(h2,h3,p,span,small,strong,button){overflow-wrap:anywhere}
+html body.harumal .hbBeginner :is(.v33LetterIntro,.v33ReadingLesson,.v33BeginnerTip,.hbLetterNote){border:1px solid var(--hb-border);border-radius:21px;padding:18px;background:var(--hb-surface);color:var(--hb-ink);box-shadow:none}
+html body.harumal .hbBeginner :is(.v33LetterIntro h2,.v33ReadingLesson h2){font-size:20px;line-height:1.45;margin:7px 0 10px;color:var(--hb-ink)}
+html body.harumal .hbBeginner :is(.v33LetterIntro p,.v33ReadingLesson>p,.v33BeginnerTip p,.hbLetterNote p){font-size:14px;line-height:1.7;color:var(--hb-muted)}
+html body.harumal .hbBeginner :is(.v33LetterIntro>small,.v33ReadingLesson>small,.hbReadingMeta>small){font-size:11px;letter-spacing:.06em;font-weight:800;color:var(--hb-accent)}
+html body.harumal .hbBeginner .v33BeginnerTabs{gap:3px;padding:4px;border-color:var(--hb-border);background:var(--hb-soft)}
+html body.harumal .hbBeginner .v33BeginnerTabs button{font-size:12px!important;line-height:1.35;padding:10px 3px;min-width:0;min-height:48px;color:var(--hb-muted)}
+html body.harumal .hbBeginner .v33BeginnerTabs button.on{color:var(--hb-accent);background:var(--hb-accent-soft)}
+html body.harumal .hbBeginner .hbGroupTitle{font-size:16px;line-height:1.5;margin:24px 0 10px;color:var(--hb-ink)}
+html body.harumal .hbBeginner .hbLetterGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0}
+.hbLetterCard{border:1px solid var(--hb-border);border-radius:18px;background:var(--hb-surface);overflow:hidden;min-width:0}
+.hbLetterCard.learned{border-color:var(--hb-accent)}
+html body.harumal .hbBeginner .hbLetterGrid button{border:0;border-radius:0;box-shadow:none!important;margin:0;width:100%;min-height:52px;background:transparent!important;color:var(--hb-ink);text-align:left;font:inherit}
+html body.harumal .hbBeginner .hbLetterGrid .hbLetterName{display:grid;grid-template-columns:44px minmax(0,1fr) 10px;grid-template-rows:auto;gap:6px;padding:12px 8px;align-items:center}
+html body.harumal .hbBeginner .hbLetterName b{grid-row:auto;display:grid;place-items:center;width:44px;height:48px;border-radius:13px;font-size:30px;line-height:1;background:var(--hb-soft)!important;color:var(--hb-ink)!important}
+html body.harumal .hbBeginner .hbLetterName.learned b{background:var(--hb-accent-soft)!important;color:var(--hb-accent)!important}
+html body.harumal .hbBeginner .hbLetterName span{display:block;align-self:center;font-size:14px;line-height:1.5}
+html body.harumal .hbBeginner .hbLetterName small{display:block;margin:0 0 3px;font-size:10px;font-weight:500;color:var(--hb-muted)}
+.hbLetterName strong{font-size:14px;color:var(--hb-ink);font-weight:750}
+.hbLetterName i{font-size:12px;font-style:normal;color:var(--hb-accent)}
+html body.harumal .hbBeginner .hbLetterGrid .hbLetterSound{display:flex;align-items:center;justify-content:space-between;gap:7px;border-top:1px solid var(--hb-border);padding:8px 12px;min-height:44px}
+html body.harumal .hbBeginner .hbLetterSound span{font-size:11px;font-weight:500;line-height:1.4;align-self:center;color:var(--hb-muted)}
+.hbLetterSound strong{font-size:18px;font-weight:700;margin-left:auto;flex:none}.hbLetterSound i{font-size:12px;font-style:normal;flex:none}
+html body.harumal .hbBeginner .hbLetterNote{margin-top:16px}.hbLetterNote>b{font-size:18px}.hbLetterNote p{margin:8px 0}.hbLetterNote button{border:1px solid var(--hb-border);border-radius:12px;padding:8px 14px;background:var(--hb-soft);color:var(--hb-ink);font:inherit;font-size:13px}
+html body.harumal .hbBeginner .hbPrimary{display:block;width:100%;min-height:52px;margin:18px 0 0;padding:12px 15px;border:0;border-radius:14px;background:var(--hb-accent);color:var(--harumal-on-accent,#fff);font:inherit;font-size:15px;font-weight:750;line-height:1.5;text-align:center;white-space:normal}
+.hbReadingSteps{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:18px 0 12px}.hbReadingSteps button,.hbBlockTabs button{min-width:0;min-height:48px;border:1px solid var(--hb-border);border-radius:13px;padding:9px;background:var(--hb-surface);color:var(--hb-muted);font:inherit;font-size:13px;line-height:1.4}
+.hbReadingSteps button.on,.hbBlockTabs button.on{border-color:var(--hb-accent);background:var(--hb-accent-soft);color:var(--hb-accent);font-weight:750}
+.hbBlockTabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:18px 0}.hbBlockTabs button{font-size:21px}.hbBlockLesson h3{font-size:16px;line-height:1.5;margin:0 0 16px}
+.hbConstruction{display:flex;align-items:center;justify-content:center;gap:14px;margin:18px 0}.hbBlock{flex:none;display:grid;width:120px;height:120px;gap:3px;padding:7px;border:2px dashed var(--hb-border);border-radius:18px;background:var(--hb-soft);box-sizing:border-box}.hbBlock span{display:grid;place-items:center;min-height:0;font-size:36px;font-weight:750;line-height:1;background:var(--hb-accent-soft);color:var(--hb-accent);border-radius:7px}.hbBlock .isWaiting{font-size:23px;background:transparent;color:var(--hb-muted);opacity:.7}.hbBlock.vertical{grid-template-columns:1fr 1fr}.hbBlock.horizontal{grid-template-rows:1fr 1fr}.hbBlock.compound{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}.hbBlock.compound .hbInitial{grid-column:1;grid-row:1}.hbBlock.compound .hbBelow{grid-column:1;grid-row:2}.hbBlock.compound .hbRight{grid-column:2;grid-row:1/3}.hbBlock.coda{grid-template-rows:repeat(3,1fr)}.hbBlock.coda span{font-size:30px}.hbEquals{font-size:23px;color:var(--hb-muted)}.hbBuiltWord{display:flex;flex-direction:column;align-items:center;justify-content:center;width:94px;height:120px;border:1px solid var(--hb-border);border-radius:18px;background:var(--hb-surface);color:var(--hb-muted);padding:4px}.hbBuiltWord:disabled{opacity:.5}.hbBuiltWord.isBuilt{background:var(--hb-accent-soft);color:var(--hb-accent);border-color:var(--hb-accent)}.hbBuiltWord b{font-size:48px;font-weight:750;line-height:1.3}.hbBuiltWord small{font-size:15px;line-height:1.2}
+html body.harumal .hbBeginner .hbEquation{font-size:23px;font-weight:750;text-align:center;color:var(--hb-ink);margin:16px 0}
+.hbReadingMeta{display:flex;align-items:center;justify-content:space-between;gap:10px}.hbReadingMeta>span{font-size:12px;color:var(--hb-muted)}
+.hbWordPicture{width:min(100%,240px);aspect-ratio:1;margin:18px auto 8px;border-radius:20px;background-color:#fffbec;background-image:url('assets/art/beginner/beginner-objects-sprite-v1.png');background-repeat:no-repeat;background-size:400% 300%;background-position:var(--picture-x) var(--picture-y)}
+html body.harumal .hbBeginner .v33ReadingWord{display:flex;align-items:center;justify-content:center;gap:15px;padding:8px 12px;margin:0;border:0;border-radius:14px;background:transparent;box-shadow:none;color:var(--hb-ink);min-height:60px}
+html body.harumal .hbBeginner .v33ReadingWord b{font-size:38px;line-height:1.3;color:var(--hb-ink)}
+html body.harumal .hbBeginner .v33ReadingWord span{font-size:20px}
+html body.harumal .hbBeginner .hbWordMeaning{font-size:14px;line-height:1.5;margin:3px 0 12px;text-align:center;color:var(--hb-muted)}
+html body.harumal .hbBeginner .hbWordHint{font-size:11px;text-align:center;color:var(--hb-accent);margin:0 0 20px}
+html body.harumal .hbBeginner .hbReadInstruction{font-size:14px;text-align:center;margin:0}
+html body.harumal .hbBeginner .hbSelfNote{font-size:11px;line-height:1.65;text-align:center;color:var(--hb-muted);margin:12px 0 0}
+.hbSelfConfirmed{padding:12px;border-radius:12px;margin-top:16px;background:var(--hb-accent-soft);color:var(--hb-accent);font-size:14px;text-align:center}
+.hbReadingComplete{text-align:center}.hbReadingComplete>span{display:grid;place-items:center;width:58px;height:58px;margin:6px auto 16px;background:var(--hb-accent-soft);color:var(--hb-accent);border-radius:50%;font-size:30px}
+html body.harumal .hbBeginner .v33BeginnerTip{margin-top:20px}.hbBeginner .v33BeginnerTip b{font-size:15px}.hbBeginner .v33BeginnerTip p{margin:6px 0 0}
+@media(max-width:360px){html body.harumal .hbBeginner :is(.v33LetterIntro,.v33ReadingLesson,.v33BeginnerTip,.hbLetterNote){padding:14px}html body.harumal .hbBeginner .hbLetterGrid{gap:8px}html body.harumal .hbBeginner .hbLetterGrid .hbLetterName{grid-template-columns:36px minmax(0,1fr) 9px;padding:10px 6px;gap:4px}html body.harumal .hbBeginner .hbLetterName b{width:36px;height:44px;font-size:27px}.hbLetterName strong{font-size:13px}.hbConstruction{gap:10px}.hbBlock{width:108px;height:116px}.hbBuiltWord{width:78px;height:116px}.hbWordPicture{max-width:210px}}
+@media(prefers-reduced-motion:reduce){.hbBeginner *{scroll-behavior:auto}}

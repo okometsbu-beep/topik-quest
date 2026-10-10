@@ -66,7 +66,7 @@ test('v35 exposes four writing sets and recognizes a closely traced mask', () =>
   assert.match(writingHolder.innerHTML, /malbitWritingCategory\('words'\)/);
   assert.match(writingHolder.innerHTML, /malbitHangulCanvasV35/);
 
-  assert.deepEqual({ ...api.setSizes }, { letters: 24, words: 10, vocab: 10, sentences: 5 });
+  assert.deepEqual({ ...api.setSizes }, { letters: 40, words: 10, vocab: 10, sentences: 5 });
   assert.deepEqual([...api.hangulUnits('오늘 날씨가 좋아요.')], ['오', '늘', '날', '씨', '가', '좋', '아', '요']);
 
   const width = 32, height = 32, target = new Uint8Array(width * height);

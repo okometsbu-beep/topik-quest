@@ -159,7 +159,7 @@ for(const lang of ['ko','ja','en','zh']){
   assert.equal(new Set(wrong).size,3,`M09-I-R-34/${lang}: each shuffled distractor needs its own rationale`);
 }
 assert.match(purposeQuestion.explanationI18n.ko,/V-기 위해서/u);
-assert.match(purposeQuestion.explanationI18n.ja,/目的と原因/u);
+assert.match(purposeQuestion.explanationI18n.ja,/目標[\s\S]*理由/u);
 assert.match(purposeQuestion.choiceExplanationsI18n.ko[purposeQuestion.choices.indexOf('부터')],/시작점/u);
 assert.match(purposeQuestion.choiceExplanationsI18n.ja[purposeQuestion.choices.indexOf('처럼')],/類似/u);
 assert.match(purposeQuestion.choiceExplanationsI18n.ko[purposeQuestion.choices.indexOf('때문에만')],/오직 그것 때문/u);
@@ -223,7 +223,7 @@ assert.match(bank.present('M01-II-W-53').explanationI18n.ko, /최고·최저/u);
 assert.match(bank.present('M01-II-W-54').explanationI18n.ja, /600～700字/u);
 assert.doesNotMatch(bank.present('M01-II-W-54').explanationI18n.ja, /논리 전개/u);
 assert.match(bank.present('M01-I-L-15').explanationI18n.ja, /主体・物・動作・方向/u);
-assert.match(bank.present('M01-II-L-04').explanationI18n.ko, /하고 있는\/한\/할/u);
+assert.match(bank.present('M01-II-L-04').explanationI18n.ko, /요청·계획·진행·완료/u);
 const noisyProblemHeader = /^\s*[<〈《][^>〉》\n]{2,120}[>〉》]\s*(?:\r?\n|$)/u;
 assert.ok(bank.items.every((item) => [item.instruction, item.passage, item.script, item.prompt]
   .every((value) => !noisyProblemHeader.test(String(value || '')))), 'generated problem headers should be removed');

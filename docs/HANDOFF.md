@@ -1,3 +1,10 @@
+## 2026-10-10 v165 learning feedback candidate
+
+- Settings uses a square SVG gear, accessible SVG language flags and theme-aligned controls. Preview plays existing Supertonic 3 female/male samples; short device reads have no transport popup and preserve exact settings speed.
+- Beginner letters and handwriting cover 40 glyphs with names separate from sound examples. Four syllable constructions and 12 generated picture-word self-checks preserve legacy progress and do not claim pronunciation scoring.
+- Final local release check passes 536/536 tests, 164 JS files and v165 runtime hashes. Remote Chrome/screenshots remain pending. Candidate scope/verification: `docs/qa/learning-refresh-v165.md`; explanatory-content audit is separate. New learning browser checks run in the existing GitHub Actions Chrome harness because local Chromium socket creation is denied.
+- Translation remains disabled; no credentials or runtime model changes. Ten offline Supertonic clips correct 21 source rows, with active catalog 363 and ten old URL files retained for compatibility. No main merge/deployment is included in candidate preparation.
+
 ## 2026-10-09 v162 listening player candidate
 
 - Shared recorded/device transport with Stop, metadata-based cumulative timeline, study seeking and 0.75/1/1.25/1.5 speed. TOPIK I/II and growth use the same cancellation generation.

@@ -73,3 +73,17 @@ test('semantic tokens, 44px targets and approved assets are used; no Shorts or f
 
 test('seeking or cancelling growth audio never grants heard evidence or rewards',async()=>{for(const result of [{heard:false},{cancelled:true}]){const h=harness({tts:()=>Promise.resolve(result)});h.open('listening');h.click('begin');h.click('listen');await new Promise(setImmediate);assert.equal(h.current().records.learn.heard,false);assert.equal(h.ledger.size,0);}});
 test('uninterrupted successful growth playback records hearing without directly awarding rewards',async()=>{const h=harness();h.open('listening');h.click('begin');h.click('listen');await new Promise(setImmediate);assert.equal(h.current().records.learn.heard,true);assert.equal(h.ledger.size,0);});
+
+test('listening choices do not invent an unspoken morning or afternoon qualifier',()=>{
+  const data=require('../data/growth-learning.js');
+  const recipe=data.recipes.find(item=>item.id==='listening');
+  for(const phase of ['learn','transfer']){
+    const task=recipe[phase];
+    assert.doesNotMatch(task.audio,/오전|오후/u);
+    for(const choice of task.choices)assert.doesNotMatch(choice.text,/오전|오후/u);
+    assert.ok(task.choices.some(choice=>choice.id===task.answer));
+  }
+  assert.equal(recipe.learn.audio,'오늘 수업은 두 시가 아니고 세 시에 시작합니다. 교실은 이 층입니다.');
+  assert.equal(recipe.transfer.audio,'박물관 버스는 열 시 출발 예정이었지만, 출발이 삼십 분 늦어졌습니다. 열 시 삼십 분에 정문에서 출발합니다.');
+  assert.equal(recipe.learn.answer,'three');assert.equal(recipe.transfer.answer,'half');
+});

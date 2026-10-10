@@ -221,5 +221,36 @@ body.harumal .harumalGrowthEntry--compact{padding:16px}
 body.harumal .harumalGrowthCourses{margin-top:24px}
 @media(max-width:350px){body.harumal .harumalGrowthEntry{padding:16px}body.harumal .harumalGrowthEntry h2{font-size:18px}}
 
-/* The exam header keeps its navy surface in both themes. Give it paired ink. */
-html body.harumal .t1head{color:#f2f6ff}
+/* Finish the shared palette on legacy learner controls. Scenic game art is untouched. */
+html body.harumal :is(.t1head,.t1result,.card,.resultCard,.vocabCard,.selectionBar,.toast){background:var(--ui-surface);color:var(--ui-ink);border-color:var(--ui-border)}
+html body.harumal :is(.t1head small,.t1setup p,.t1score small,.scoreGrid small,.resultCard p,.sheet h3,.sheet p,.infoCard p,.infoCard li,.malbitMixGrid small){color:var(--ui-muted)!important}
+html body.harumal :is(.t1level,.t1hud span,.t1split div,.instruction,.answerBox,.scoreGrid div,.vocabAnswer,.source,.examTimes div){background:var(--ui-surface-soft);color:var(--ui-ink);border-color:var(--ui-border);box-shadow:none}
+html body.harumal :is(.t1level button,.t1setup small,.examTimes small){color:var(--ui-muted)}
+html body.harumal :is(.progress,.t1bar){background:var(--ui-border)}
+html body.harumal :is(.progress i,.t1bar i){background:var(--ui-accent)}
+html body.harumal :is(.t1nav .n,.randomWriteAction,.resultActions .main,.selectionBar button,.closeBtn,.examSubmit,.reward){background:var(--ui-accent);color:var(--harumal-on-accent);border-color:var(--ui-accent);box-shadow:none}
+html body.harumal :is(.primary.alt,.t1nav .p,.questionMiniNav button,.resultActions .sub,.examNav .prev,.malbitDataButtons label){background:var(--ui-surface-soft);color:var(--ui-ink);border-color:var(--ui-border);box-shadow:none}
+html body.harumal .grade{color:var(--ui-accent)}
+html body.harumal :is(.doubleTapHint,.malbitSpeakingTranslation:not(:empty)){background:var(--ui-surface-soft);color:var(--ui-muted);border-color:var(--ui-border)}
+html body.harumal .choice:not(.correct):not(.wrong){background:var(--ui-surface);color:var(--ui-ink);border-color:var(--ui-border)}
+html body.harumal .choice:not(.correct):not(.wrong) .n{background:var(--ui-surface-soft);color:var(--ui-muted)}
+html body.harumal .choice.selected:not(.correct):not(.wrong){background:var(--ui-accent-soft);color:var(--ui-ink);border-color:var(--ui-accent)}
+html body.harumal .choice.selected:not(.correct):not(.wrong) .n{background:var(--ui-accent);color:var(--harumal-on-accent)}
+/* Beginner learning keeps selected, learned and answer feedback distinct. */
+html body.harumal :is(.v33BeginnerTop>button,.v33BeginnerTabs,.v33ReadingWord,.bgLessonHero>button,.bgResume>span){background:var(--ui-surface-soft);color:var(--ui-ink);border-color:var(--ui-border);box-shadow:none}
+html body.harumal :is(.v33BeginnerTabs button,.v33LetterGrid small,.v33ReadingChoices small,.bgLessonHero p){color:var(--ui-muted)}
+html body.harumal :is(.v33BeginnerTop>div small,.v33LetterIntro>small,.v33ReadingLesson>small){color:var(--ui-accent)}
+html body.harumal .v33LetterGrid button:not(.learned) b{background:var(--ui-surface-soft);color:var(--ui-ink)}
+html body.harumal .v33BeginnerTabs button.on{background:var(--ui-accent-soft);color:var(--ui-accent);border-color:var(--ui-accent)}
+html body.harumal .v33LetterGrid .learned b{background:var(--ui-success-soft);color:var(--ui-success)}
+html body.harumal .bgLessonHero.complete{background:var(--ui-success-soft);color:var(--ui-success);border-color:var(--ui-success)}
+html body.harumal .malbitSupport button.danger{background:var(--ui-error-soft);color:var(--ui-error);border-color:var(--ui-error)}
+
+html body.harumal :is(.v33ReadingChoices button.correct,.v33ReadingFeedback:not(.wrong)){background:var(--ui-success-soft);color:var(--ui-success);border-color:var(--ui-success)}
+html body.harumal :is(.v33ReadingChoices button.wrong,.v33ReadingFeedback.wrong){background:var(--ui-error-soft);color:var(--ui-error);border-color:var(--ui-error)}
+/* First-card save prompts follow the same palette as other learner actions. */
+html body.harumal .malbitShortProposal{background:var(--ui-surface);color:var(--ui-ink);border-color:var(--ui-border)}
+html body.harumal .malbitShortProposal :is(small,p){color:var(--ui-muted)!important}
+html body.harumal .malbitShortProposal>button{background:var(--ui-accent);color:var(--harumal-on-accent)}
+html body.harumal .malbitShortProposal>button.dismiss{background:var(--ui-surface-soft);color:var(--ui-ink);border:1px solid var(--ui-border)}
+@media(max-width:360px){html[lang="en"] body.harumal .v33BeginnerTabs{grid-template-columns:repeat(2,minmax(0,1fr))!important}html[lang="en"] body.harumal .v33BeginnerTabs button{overflow-wrap:normal;word-break:normal}}

@@ -126,3 +126,16 @@ test('high-risk conjugations keep reviewed answers and exceptions explicit', () 
   assert.match(byId['hieut-irregular'].trap.ko, /좋다|놓다|넣다/u);
   assert.match(byId['hada-doeda'].trap.ko, /되요/u);
 });
+
+test('beginner coaching preserves vowels and does not forbid tense or honorifics in earlier clauses', () => {
+  const lessons=loadData().lessons;
+  const modifier=lessons.find(item=>item.id==='adjective-modifier');
+  assert.match(modifier.drill.coach.ko,/ㅡ.*그대로/u);
+  assert.doesNotMatch(modifier.drill.coach.ja,/으が脱落/u);
+  const hieut=lessons.find(item=>item.id==='hieut-irregular');
+  assert.doesNotMatch(JSON.stringify(hieut),/ㅏ[+＋]ㅓ/u);
+  for(const id of ['past','and-sequence']){
+    const lesson=lessons.find(item=>item.id===id);
+    for(const lang of requiredLanguages) assert.match(lesson.trap[lang],/먹었고/u,`${id}.${lang}`);
+  }
+});

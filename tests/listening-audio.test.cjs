@@ -1,6 +1,28 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('fs'),vm=require('vm'),crypto=require('node:crypto');
 const spec=JSON.parse(fs.readFileSync('audio/listening/v1/corpus.json','utf8'));
 const script=id=>spec.coverage.find(x=>x.id===id).script;
+test('reviewed grammar repairs use exact corrected speech and isolate ten compatibility recordings',()=>{
+ const repairs=JSON.parse(fs.readFileSync('docs/qa/generated-korean-audio-repairs-v165.json','utf8'));
+ const{c}=boot(),api=c.HARUMAL_LISTENING_AUDIO;
+ assert.equal(repairs.corpus_repairs.length,10);
+ assert.equal(repairs.script_repairs.length,13);
+ assert.equal(new Set(repairs.script_repairs.flatMap(x=>x.question_ids)).size,21);
+ for(const repair of repairs.script_repairs){
+  assert.equal(api.has(repair.old),false);
+  assert.equal(api.has(repair.corrected),true);
+  for(const id of repair.question_ids)assert.equal(script(id),repair.corrected,id);
+ }
+ for(const repair of repairs.corpus_repairs){
+  const row=spec.corpus.find(x=>x.id===repair.new_id);
+  assert.ok(row,repair.new_id);assert.equal(row.text,repair.corrected);
+  assert.deepEqual(row.voices,repair.voices);
+  assert.equal(spec.corpus.some(x=>x.id===repair.old_id),false);
+  for(const voice of repair.voices){
+   assert.equal(fs.existsSync(`audio/listening/v1/${voice}/${repair.old_id}.mp3`),true);
+   assert.equal(fs.existsSync(`audio/listening/v1/${voice}/${repair.new_id}.mp3`),true);
+  }
+ }
+});
 function boot(mode='auto'){
  const audio=[],urls=[],timers=new Map();let clock=0,cancelDevice=0;
  function FakeAudio(){audio.push(this);this.duration=1;this.play=()=>{urls.push(this.src);if(mode==='reject')return Promise.reject(Error('blocked'));this.onplaying?.();if(mode==='auto')queueMicrotask(()=>this.onended?.());return Promise.resolve()};this.pause=()=>{this.paused=true};this.load=()=>{};this.removeAttribute=()=>{};}
@@ -14,7 +36,7 @@ test('missing files, rejected playback and unavailable scripts fail without hang
 test('all listening owners use the recorded script before legacy device fallback',()=>{for(const file of ['topik1.js','legacy-core.js','growth-learning.js'])assert.match(fs.readFileSync(file,'utf8'),/HARUMAL_LISTENING_PLAYER/);const worker=fs.readFileSync('sw.js','utf8');assert.match(worker,/url.pathname.includes\('\/audio\/listening\/'\)/);assert.doesNotMatch(fs.readFileSync('tts-quality.js','utf8'),/MALBIT_NEURAL_TTS/)});
 test('full source inventory still matches the generated script manifest',()=>{const c={};c.window=c;vm.createContext(c);for(const file of ['data/topik1-listening.js','legacy-data.js','data/growth-learning.js','data/question-bank-v1-part1.js','data/question-bank-v1-part2.js','data/question-bank-v1-part3.js','data/question-bank-v1-part4.js','data/question-bank-practice-v1.js'])vm.runInContext(fs.readFileSync(file,'utf8'),c);const current=[...c.MALBIT_QUESTION_BANK_PARTS.flat().filter(x=>x[3]==='l').map(x=>({id:x[0],script:x[9]})),...c.TOPIK1_LISTENING_DATA.map(x=>({id:'legacy-I-'+x.id,script:x.script})),...vm.runInContext('LS',c).map(x=>({id:'legacy-II-'+x.id,script:x.script})),...c.MALBIT_QUESTION_BANK_EXPANSION.filter(x=>x.section==='listening'),...c.HARUMAL_GROWTH_DATA.recipes.flatMap(r=>[r.learn,r.transfer]).filter(x=>x.kind==='listen').map(x=>({id:x.id,script:x.audio}))];const{c:runtime}=boot();assert.equal(current.length,1050);for(const q of current){const entry=spec.coverage.find(x=>x.id===q.id);assert.ok(entry,q.id);assert.equal(entry.script,runtime.HARUMAL_LISTENING_AUDIO.normalize(q.script))}});
 
-test('every source segment is covered by a verified, exact-hash MP3 and no obsolete clips remain',()=>{
+test('every source segment is covered by a verified MP3 and only declared compatibility clips remain',()=>{
  const manifest=JSON.parse(fs.readFileSync('audio/listening/v1/manifest.json','utf8'));assert.equal(manifest.questionCount,1050);assert.equal(manifest.scriptCount,843);assert.equal(manifest.textCount,360);assert.equal(manifest.fileCount,363);assert.equal(manifest.decodeVerified,true);assert.equal(manifest.humanPronunciationReview,false);assert.equal(manifest.physicalIOSPlaybackVerified,false);assert.ok(manifest.totalBytes<50*1024*1024);assert.equal(new Set(manifest.files.map(x=>x.sha256)).size,363);let sum=0,count=0;
- for(const row of spec.corpus){assert.equal(crypto.createHash('sha256').update(row.text).digest('hex').slice(0,16),row.id);for(const voice of row.voices){const file=`audio/listening/v1/${voice}/${row.id}.mp3`,data=fs.readFileSync(file),entry=manifest.files.find(x=>x.file===file);assert.ok(entry,file);assert.equal(entry.bytes,data.length);assert.equal(entry.sha256,crypto.createHash('sha256').update(data).digest('hex'));assert.ok(entry.duration>.2&&entry.peak<1&&entry.rms>.001);sum+=data.length;count++}}assert.equal(count,363);assert.equal(sum,manifest.totalBytes);assert.equal(['F1','M1'].reduce((n,v)=>n+fs.readdirSync(`audio/listening/v1/${v}`).filter(x=>x.endsWith('.mp3')).length,0),363);
+ for(const row of spec.corpus){assert.equal(crypto.createHash('sha256').update(row.text).digest('hex').slice(0,16),row.id);for(const voice of row.voices){const file=`audio/listening/v1/${voice}/${row.id}.mp3`,data=fs.readFileSync(file),entry=manifest.files.find(x=>x.file===file);assert.ok(entry,file);assert.equal(entry.bytes,data.length);assert.equal(entry.sha256,crypto.createHash('sha256').update(data).digest('hex'));assert.ok(entry.duration>.2&&entry.peak<1&&entry.rms>.001);sum+=data.length;count++}}assert.equal(count,363);assert.equal(sum,manifest.totalBytes);assert.equal(manifest.retainedLegacyFiles.length,10);for(const entry of manifest.retainedLegacyFiles){const data=fs.readFileSync(entry.file);assert.equal(entry.sha256,crypto.createHash('sha256').update(data).digest('hex'));assert.equal(spec.corpus.some(x=>x.id===entry.id),false)}assert.equal(['F1','M1'].reduce((n,v)=>n+fs.readdirSync(`audio/listening/v1/${v}`).filter(x=>x.endsWith('.mp3')).length,0),363+manifest.retainedLegacyFiles.length);
 });

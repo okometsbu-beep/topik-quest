@@ -1,6 +1,6 @@
 # Supertonic 3 listening-question audio
 
-The app plays static speech files for listening questions only. There is no model download,
+The app plays static speech files for listening questions and the explicitly labelled settings preview. There is no model download,
 real-time synthesis, new inference server or embedded API secret in the public runtime.
 Vocabulary, grammar examples and other arbitrary reading continue to use device speech.
 
@@ -16,6 +16,12 @@ The source inventory currently contains:
 - Growth listening: 2.
 - Total: 1,050 questions and 843 distinct full scripts.
 - 360 distinct spoken strings / 363 voice-specific clips, with repeated strings reused.
+
+The v165 grammar correction replaces ten M1 references across 21 questions with exact
+new text hashes. Ten old MP3 URLs remain only for already-open, older app clients;
+they are never referenced by the current corpus or runtime map. The directory therefore
+contains 373 MP3s: 363 current clips and ten declared compatibility clips, listed separately
+as `retainedLegacyFiles` in the manifest. This is not a fuzzy alias for incorrect text.
 
 Explicit male/female role labels control M1/F1. Fictional actor pairs are cast consistently.
 Nested host labels are metadata, not spoken words: host F1 / expert M1. Unlabelled narration
@@ -39,7 +45,8 @@ cached by the app. Internet access is required; this is not a guaranteed offline
 2. `scripts/generate-static-korean-voices.py --model-dir PATH --helper-dir PATH` generates only
    required preset/text pairs using separately downloaded official assets and helper.py.
 3. `python3 scripts/verify-static-korean-voices.py` decodes every expected MP3 and writes the
-   byte/hash/duration/waveform manifest. Remove unused generated clips before committing.
+   byte/hash/duration/waveform manifest, including the explicitly declared compatibility clips.
+   Do not remove those old URLs while older open app versions may still request them.
 4. Run the full test suite and check all changed source hashes before publishing.
 
 Model snapshot: `supertone-oss-archive/supertonic-3` at

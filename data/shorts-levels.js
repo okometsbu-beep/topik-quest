@@ -43,7 +43,7 @@ const item=(level,type,term,ko,ja,en,zh,example)=>{
 
 const TIME_WORDS=Object.freeze({
   already:Object.freeze({
-    meaning:Object.freeze({ko:'예상보다 이르게 이미',ja:'もう（予想より早く）',en:'already (earlier than expected)',zh:'已经（比预想早）'}),
+    meaning:Object.freeze({ko:'예상보다 이르게 이미',ja:'もう（予想より早く、すでに）',en:'already (earlier than expected)',zh:'已经（比预想早）'}),
     selected:Object.freeze({
       ko:'“벌써”는 예상보다 이른 완료를 나타냅니다. 완료 시점이 뜻밖에 빠른지 확인하세요.',
       ja:'「벌써」は予想より早い完了を表します。完了が思ったより早いかを確認しましょう。',
@@ -52,7 +52,7 @@ const TIME_WORDS=Object.freeze({
     })
   }),
   still:Object.freeze({
-    meaning:Object.freeze({ko:'지금까지도; 아직은',ja:'まだ',en:'still; yet',zh:'还；尚未'}),
+    meaning:Object.freeze({ko:'지금까지도; 아직은',ja:'まだ（状態が続く、または完了していない）',en:'still; yet',zh:'还；尚未'}),
     selected:Object.freeze({
       ko:'“아직”은 상태가 지금까지 계속되거나 일이 완료되지 않았음을 나타냅니다.',
       ja:'「아직」は状態の継続、または物事が完了していないことを表します。',
@@ -61,7 +61,7 @@ const TIME_WORDS=Object.freeze({
     })
   }),
   justNow:Object.freeze({
-    meaning:Object.freeze({ko:'바로 조금 전',ja:'たった今',en:'just now',zh:'刚刚'}),
+    meaning:Object.freeze({ko:'바로 조금 전',ja:'たった今（ほんの少し前に）',en:'just now',zh:'刚刚'}),
     selected:Object.freeze({
       ko:'“방금”은 말하는 때에서 아주 가까운 과거를 가리킵니다.',
       ja:'「방금」は発話時点のすぐ前、つまりごく近い過去を指します。',
@@ -70,7 +70,7 @@ const TIME_WORDS=Object.freeze({
     })
   }),
   soon:Object.freeze({
-    meaning:Object.freeze({ko:'짧은 시간이 지나면',ja:'もうすぐ',en:'soon; shortly',zh:'马上；不久'}),
+    meaning:Object.freeze({ko:'짧은 시간이 지나면',ja:'もうすぐ（少し時間がたったら）',en:'soon; shortly',zh:'马上；不久'}),
     selected:Object.freeze({
       ko:'“곧”은 아직 일어나지 않았지만 가까운 미래에 일어날 일을 나타냅니다.',
       ja:'「곧」はまだ起きていないものの、近い未来に起きることを表します。',
@@ -94,19 +94,19 @@ const reviewedTimeItem=(id,term,key,example,exampleI18n,evidence)=>{
       meaning:TIME_WORDS[choiceKey].meaning,
       explanationI18n:TIME_WORDS[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]} )]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]} )]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】벌써·아직·방금·곧은 각각 이른 완료·지속/미완료·바로 전·가까운 미래로 시간 기준이 다릅니다.\n【재사용 풀이】${TIME_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】벌써・아직・방금・곧 はそれぞれ、早い完了・継続/未完了・直前・近い未来を表し、時間の基準が異なります。\n【再利用できる解き方】${TIME_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 벌써, 아직, 방금, and 곧 mark earlier completion, continuation/incompletion, the immediate past, and the near future respectively.\n[Reusable method] ${TIME_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】벌써、아직、방금、곧分别表示提前完成、持续/未完成、刚刚过去和不久的将来，时间基准不同。\n【通用解法】${TIME_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】벌써·아직·방금·곧은 각각 이른 완료·지속/미완료·바로 전·가까운 미래로 시간 기준이 다릅니다.\n【재사용 풀이】${TIME_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】벌써・아직・방금・곧 はそれぞれ、早い完了・継続/未完了・直前・近い未来を表し、時間の基準が異なります。\n【再利用できる解き方】${TIME_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] 벌써, 아직, 방금, and 곧 mark earlier completion, continuation/incompletion, the immediate past, and the near future respectively.\n[Reusable method] ${TIME_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】벌써、아직、방금、곧分别表示提前完成、持续/未完成、刚刚过去和不久的将来，时间基准不同。\n【通用解法】${TIME_METHOD.zh}`
     })
   });
 };
 
 const CONNECTOR_WORDS=Object.freeze({
   result:Object.freeze({
-    meaning:Object.freeze({ko:'앞 내용의 결과를 이어 말함',ja:'したがって；そのため',en:'therefore; as a result',zh:'因此；所以'}),
+    meaning:Object.freeze({ko:'앞 내용의 결과를 이어 말함',ja:'したがって（前の内容から結果を導く）',en:'therefore; as a result',zh:'因此；所以'}),
     selected:Object.freeze({
       ko:'“따라서”는 앞의 원인이나 근거에서 나온 결과를 이어 말합니다.',
       ja:'「따라서」は、前の原因・根拠から導かれる結果を続けます。',
@@ -115,7 +115,7 @@ const CONNECTOR_WORDS=Object.freeze({
     })
   }),
   contrast:Object.freeze({
-    meaning:Object.freeze({ko:'서로 다른 두 면을 대조함',ja:'一方で；それに対して',en:'whereas; on the other hand',zh:'另一方面；与此相反'}),
+    meaning:Object.freeze({ko:'서로 다른 두 면을 대조함',ja:'一方で（異なる面を対比する）',en:'whereas; on the other hand',zh:'另一方面；与此相反'}),
     selected:Object.freeze({
       ko:'“반면에”는 두 대상이나 상황의 서로 다른 면을 나란히 대조합니다.',
       ja:'「반면에」は、二つの対象や状況の異なる面を並べて対比します。',
@@ -124,7 +124,7 @@ const CONNECTOR_WORDS=Object.freeze({
     })
   }),
   addition:Object.freeze({
-    meaning:Object.freeze({ko:'같은 방향의 내용을 더함',ja:'そのうえ；さらに',en:'moreover; in addition',zh:'而且；此外'}),
+    meaning:Object.freeze({ko:'같은 방향의 내용을 더함',ja:'そのうえ（同じ方向の情報を付け加える）',en:'moreover; in addition',zh:'而且；此外'}),
     selected:Object.freeze({
       ko:'“게다가”는 앞 내용과 같은 방향의 정보를 하나 더 보탭니다.',
       ja:'「게다가」は、前の内容と同じ方向の情報をさらに付け加えます。',
@@ -133,7 +133,7 @@ const CONNECTOR_WORDS=Object.freeze({
     })
   }),
   condition:Object.freeze({
-    meaning:Object.freeze({ko:'앞 내용을 제한하는 조건을 덧붙임',ja:'ただし；ただ',en:'however; with one condition',zh:'不过；只是'}),
+    meaning:Object.freeze({ko:'앞 내용을 제한하는 조건을 덧붙임',ja:'ただし（制限や条件を付け加える）',en:'however; with one condition',zh:'不过；只是'}),
     selected:Object.freeze({
       ko:'“다만”은 앞 내용을 유지하면서 제한이나 조건을 덧붙입니다.',
       ja:'「다만」は、前の内容を保ちながら制限や条件を付け加えます。',
@@ -157,12 +157,12 @@ const reviewedConnectorItem=(id,term,key,example,exampleI18n,evidence)=>{
       meaning:CONNECTOR_WORDS[choiceKey].meaning,
       explanationI18n:CONNECTOR_WORDS[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】따라서=결과, 반면에=대조, 게다가=같은 방향의 추가, 다만=제한 조건으로 문장 관계가 각각 다릅니다.\n【재사용 풀이】${CONNECTOR_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】따라서＝結果、반면에＝対比、게다가＝同方向の追加、다만＝制限条件で、文の関係がそれぞれ異なります。\n【再利用できる解き方】${CONNECTOR_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 따라서 marks a result, 반면에 a contrast, 게다가 a same-direction addition, and 다만 a limiting condition.\n[Reusable method] ${CONNECTOR_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】따라서表示结果，반면에表示对比，게다가表示同方向补充，다만表示限制条件，句间关系各不相同。\n【通用解法】${CONNECTOR_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】따라서=결과, 반면에=대조, 게다가=같은 방향의 추가, 다만=제한 조건으로 문장 관계가 각각 다릅니다.\n【재사용 풀이】${CONNECTOR_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】따라서＝結果、반면에＝対比、게다가＝同方向の追加、다만＝制限条件で、文の関係がそれぞれ異なります。\n【再利用できる解き方】${CONNECTOR_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] 따라서 marks a result, 반면에 a contrast, 게다가 a same-direction addition, and 다만 a limiting condition.\n[Reusable method] ${CONNECTOR_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】따라서表示结果，반면에表示对比，게다가表示同方向补充，다만表示限制条件，句间关系各不相同。\n【通用解法】${CONNECTOR_METHOD.zh}`
     })
   });
 };
@@ -187,7 +187,7 @@ const CAUSE_CONCESSION=Object.freeze({
     })
   }),
   factConcession:Object.freeze({
-    meaning:Object.freeze({ko:'사실인데도 예상과 다른 결과',ja:'事実に反する結果（～のに）',en:'unexpected result despite a fact',zh:'尽管是事实，结果却相反'}),
+    meaning:Object.freeze({ko:'사실인데도 예상과 다른 결과',ja:'予想に反する結果（～のに）',en:'unexpected result despite a fact',zh:'事实成立，结果却与预期不同'}),
     selected:Object.freeze({
       ko:'“-는데도”는 실제로 성립한 앞 사실을 인정하지만 뒤에 예상과 다른 결과가 나옵니다.',
       ja:'「-는데도」は、実際に成立した前の事実を認めつつ、予想に反する結果を続けます。',
@@ -208,8 +208,8 @@ const CAUSE_CONCESSION=Object.freeze({
 const CAUSE_CONCESSION_ORDER=['badCause','goodCause','factConcession','hypotheticalConcession'];
 const CAUSE_CONCESSION_METHOD=Object.freeze({
   ko:'결과의 평가와 현실성을 먼저 보세요. 나쁜 원인=탓에, 좋은 원인=덕분에, 실제 사실과 반대=는데도, 가정해도 결론 유지=ㄹ지라도입니다.',
-  ja:'結果の評価と現実性を先に見ます。悪い原因＝탓에、良い原因＝덕분에、実際の事実に反する結果＝는데도、仮定しても結論維持＝ㄹ지라도です。',
-  en:'Check the result value and reality first: bad cause = 탓에, beneficial cause = 덕분에, actual fact but contrary result = 는데도, hypothetical concession with a retained conclusion = ㄹ지라도.',
+  ja:'結果の評価と現実性を先に見ます。悪い原因＝탓에、良い原因＝덕분에、実際の予想に反する結果＝는데도、仮定しても結論維持＝ㄹ지라도です。',
+  en:'Check the result value and reality first: bad cause = 탓에, beneficial cause = 덕분에, actual fact but unexpected result = 는데도, hypothetical concession with a retained conclusion = ㄹ지라도.',
   zh:'先看结果的好坏和现实性：坏原因＝탓에，好原因＝덕분에，既成事实却有相反结果＝는데도，假设成立结论仍不变＝ㄹ지라도。'
 });
 const reviewedCauseConcessionItem=(id,term,key,example,exampleI18n,evidence)=>{
@@ -220,12 +220,12 @@ const reviewedCauseConcessionItem=(id,term,key,example,exampleI18n,evidence)=>{
       meaning:CAUSE_CONCESSION[choiceKey].meaning,
       explanationI18n:CAUSE_CONCESSION[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】탓에=나쁜 원인, 덕분에=좋은 원인, 는데도=실제 사실과 반대 결과, ㄹ지라도=가정해도 유지되는 결론으로 기준이 다릅니다.\n【재사용 풀이】${CAUSE_CONCESSION_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】탓에＝悪い原因、덕분에＝良い原因、는데도＝実際の事実に反する結果、ㄹ지라도＝仮定しても保つ結論で、基準が異なります。\n【再利用できる解き方】${CAUSE_CONCESSION_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 탓에 marks a bad cause, 덕분에 a beneficial cause, 는데도 an actual fact with a contrary result, and ㄹ지라도 a hypothetical concession with a retained conclusion.\n[Reusable method] ${CAUSE_CONCESSION_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】탓에表示坏原因，덕분에表示好原因，는데도表示既成事实却有相反结果，ㄹ지라도表示即使假设成立结论仍不变，判断标准各不相同。\n【通用解法】${CAUSE_CONCESSION_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】탓에=나쁜 원인, 덕분에=좋은 원인, 는데도=실제 사실과 반대 결과, ㄹ지라도=가정해도 유지되는 결론으로 기준이 다릅니다.\n【재사용 풀이】${CAUSE_CONCESSION_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】탓에＝悪い原因、덕분에＝良い原因、는데도＝実際の予想に反する結果、ㄹ지라도＝仮定しても保つ結論で、基準が異なります。\n【再利用できる解き方】${CAUSE_CONCESSION_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] 탓에 marks a bad cause, 덕분에 a beneficial cause, 는데도 an actual fact with an unexpected result, and ㄹ지라도 a hypothetical concession with a retained conclusion.\n[Reusable method] ${CAUSE_CONCESSION_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】탓에表示坏原因，덕분에表示好原因，는데도表示既成事实却有相反结果，ㄹ지라도表示即使假设成立结论仍不变，判断标准各不相同。\n【通用解法】${CAUSE_CONCESSION_METHOD.zh}`
     })
   });
 };
@@ -243,10 +243,10 @@ const INFERENCE_EVIDENCE=Object.freeze({
   possibility:Object.freeze({
     meaning:Object.freeze({ko:'가능성을 열어 둠',ja:'可能性を残す（～かもしれない）',en:'leave open a possibility',zh:'保留某种可能性'}),
     selected:Object.freeze({
-      ko:'“-(으)ㄹ지도 모르다”는 미래 상황이 그렇게 될 가능성을 확정하지 않고 열어 둡니다.',
-      ja:'「-(으)ㄹ지도 모르다」は、今後そうなる可能性を確定せずに残します。',
-      en:'“-(으)ㄹ지도 모르다” leaves open the possibility that something may happen.',
-      zh:'“-(으)ㄹ지도 모르다”不下定论，保留将来可能发生的情况。'
+      ko:'“-(으)ㄹ지도 모르다”는 어떤 상황이 사실이거나 일어날 가능성을 확정하지 않고 나타냅니다.',
+      ja:'「-(으)ㄹ지도 모르다」は、ある状況が事実である可能性や、起こる可能性を表します。',
+      en:'“-(으)ㄹ지도 모르다” expresses the possibility that something is true or may happen.',
+      zh:'“-(으)ㄹ지도 모르다”表示某种情况可能属实或可能发生，但不下定论。'
     })
   }),
   certainty:Object.freeze({
@@ -283,12 +283,12 @@ const reviewedInferenceEvidenceItem=(id,term,key,example,exampleI18n,evidence)=>
       meaning:INFERENCE_EVIDENCE[choiceKey].meaning,
       explanationI18n:INFERENCE_EVIDENCE[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】나 보다=관찰 단서의 추측, ㄹ지도 모르다=열린 가능성, ㄹ 것이 틀림없다=강한 확신, ㄹ 테니=내 의지·예상 뒤 부탁으로 판단 기준이 다릅니다.\n【재사용 풀이】${INFERENCE_EVIDENCE_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】나 보다＝観察した手掛かりからの推測、ㄹ지도 모르다＝残された可能性、ㄹ 것이 틀림없다＝強い確信、ㄹ 테니＝自分の意志・予想に続く依頼で、判断基準が異なります。\n【再利用できる解き方】${INFERENCE_EVIDENCE_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 나 보다 infers from observed clues, ㄹ지도 모르다 leaves possibility open, ㄹ 것이 틀림없다 marks strong certainty, and ㄹ 테니 supports a following request with the speaker’s intention or prediction.\n[Reusable method] ${INFERENCE_EVIDENCE_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】나 보다表示根据观察线索推测，ㄹ지도 모르다保留可能性，ㄹ 것이 틀림없다表示强烈确信，ㄹ 테니以说话人的意志或预想引出请求，判断标准各不相同。\n【通用解法】${INFERENCE_EVIDENCE_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】나 보다=관찰 단서의 추측, ㄹ지도 모르다=열린 가능성, ㄹ 것이 틀림없다=강한 확신, ㄹ 테니=내 의지·예상 뒤 부탁으로 판단 기준이 다릅니다.\n【재사용 풀이】${INFERENCE_EVIDENCE_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】나 보다＝観察した手掛かりからの推測、ㄹ지도 모르다＝残された可能性、ㄹ 것이 틀림없다＝強い確信、ㄹ 테니＝自分の意志・予想に続く依頼で、判断基準が異なります。\n【再利用できる解き方】${INFERENCE_EVIDENCE_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] 나 보다 infers from observed clues, ㄹ지도 모르다 leaves possibility open, ㄹ 것이 틀림없다 marks strong certainty, and ㄹ 테니 supports a following request with the speaker’s intention or prediction.\n[Reusable method] ${INFERENCE_EVIDENCE_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】나 보다表示根据观察线索推测，ㄹ지도 모르다保留可能性，ㄹ 것이 틀림없다表示强烈确信，ㄹ 테니以说话人的意志或预想引出请求，判断标准各不相同。\n【通用解法】${INFERENCE_EVIDENCE_METHOD.zh}`
     })
   });
 };
@@ -346,12 +346,12 @@ const reviewedReportedSpeechItem=(id,term,key,example,exampleI18n,evidence)=>{
       meaning:REPORTED_SPEECH[choiceKey].meaning,
       explanationI18n:REPORTED_SPEECH[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】-다고 하다=진술·사실, -냐고 하다=질문, -(으)라고 하다=명령·요청, -자고 하다=함께하자는 제안을 전달합니다.\n【재사용 풀이】${REPORTED_SPEECH_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】-다고 하다＝発言・事実、-냐고 하다＝質問、-(으)라고 하다＝命令・依頼、-자고 하다＝一緒にしようという提案を伝えます。\n【再利用できる解き方】${REPORTED_SPEECH_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] -다고 하다 reports a statement or fact, -냐고 하다 a question, -(으)라고 하다 a command or request, and -자고 하다 a suggestion to do something together.\n[Reusable method] ${REPORTED_SPEECH_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】-다고 하다转述陈述或事实，-냐고 하다转述提问，-(으)라고 하다转述命令或请求，-자고 하다转述一起做某事的建议。\n【通用解法】${REPORTED_SPEECH_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】-다고 하다=진술·사실, -냐고 하다=질문, -(으)라고 하다=명령·요청, -자고 하다=함께하자는 제안을 전달합니다.\n【재사용 풀이】${REPORTED_SPEECH_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】-다고 하다＝発言・事実、-냐고 하다＝質問、-(으)라고 하다＝命令・依頼、-자고 하다＝一緒にしようという提案を伝えます。\n【再利用できる解き方】${REPORTED_SPEECH_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] -다고 하다 reports a statement or fact, -냐고 하다 a question, -(으)라고 하다 a command or request, and -자고 하다 a suggestion to do something together.\n[Reusable method] ${REPORTED_SPEECH_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】-다고 하다转述陈述或事实，-냐고 하다转述提问，-(으)라고 하다转述命令或请求，-자고 하다转述一起做某事的建议。\n【通用解法】${REPORTED_SPEECH_METHOD.zh}`
     })
   });
 };
@@ -409,12 +409,12 @@ const reviewedStateChangeItem=(id,term,key,example,exampleI18n,evidence)=>{
       meaning:STATE_CHANGE[choiceKey].meaning,
       explanationI18n:STATE_CHANGE[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】-게 되다=상황에 따른 새 행동, -아/어지다=성질·상태 변화, -고 있다=진행 중인 동작, -아/어 있다=끝난 동작의 결과 상태로 기준이 다릅니다.\n【재사용 풀이】${STATE_CHANGE_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】-게 되다＝状況による新しい行動、-아/어지다＝性質・状態の変化、-고 있다＝進行中の動作、-아/어 있다＝終わった動作の結果状態で、基準が異なります。\n【再利用できる解き方】${STATE_CHANGE_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] -게 되다 marks a new action due to circumstances, -아/어지다 a quality change, -고 있다 an action in progress, and -아/어 있다 a remaining result state.\n[Reusable method] ${STATE_CHANGE_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】-게 되다表示因情况而开始的新动作，-아/어지다表示性质或状态变化，-고 있다表示正在进行的动作，-아/어 있다表示动作结束后持续的结果状态，判断标准各不相同。\n【通用解法】${STATE_CHANGE_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】-게 되다=상황에 따른 새 행동, -아/어지다=성질·상태 변화, -고 있다=진행 중인 동작, -아/어 있다=끝난 동작의 결과 상태로 기준이 다릅니다.\n【재사용 풀이】${STATE_CHANGE_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】-게 되다＝状況による新しい行動、-아/어지다＝性質・状態の変化、-고 있다＝進行中の動作、-아/어 있다＝終わった動作の結果状態で、基準が異なります。\n【再利用できる解き方】${STATE_CHANGE_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] -게 되다 marks a new action due to circumstances, -아/어지다 a quality change, -고 있다 an action in progress, and -아/어 있다 a remaining result state.\n[Reusable method] ${STATE_CHANGE_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】-게 되다表示因情况而开始的新动作，-아/어지다表示性质或状态变化，-고 있다表示正在进行的动作，-아/어 있다表示动作结束后持续的结果状态，判断标准各不相同。\n【通用解法】${STATE_CHANGE_METHOD.zh}`
     })
   });
 };
@@ -472,12 +472,12 @@ const reviewedConditionRelationItem=(id,term,key,example,exampleI18n,evidence)=>
       meaning:CONDITION_RELATIONS[choiceKey].meaning,
       explanationI18n:CONDITION_RELATIONS[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】-거든=실제 발생 뒤 부탁·지시, -아/어야만=필수 조건, -(으)ㄴ/는다면=미정 상황 가정, -다가는=계속할 때의 나쁜 결과 경고로 기준이 다릅니다.\n【재사용 풀이】${CONDITION_RELATION_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】-거든＝実際に起きた後の依頼・指示、-아/어야만＝必須条件、-(으)ㄴ/는다면＝未定の状況の仮定、-다가는＝続けた場合の悪い結果への警告で、基準が異なります。\n【再利用できる解き方】${CONDITION_RELATION_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] -거든 sets an actual-event condition for a request, -아/어야만 a necessary condition, -(으)ㄴ/는다면 an undecided hypothesis, and -다가는 a warning about continuing behavior.\n[Reusable method] ${CONDITION_RELATION_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】-거든表示事情发生后执行请求或指示，-아/어야만表示必要条件，-(으)ㄴ/는다면表示假设未定情况，-다가는表示继续当前行为会产生坏结果的警告，判断标准各不相同。\n【通用解法】${CONDITION_RELATION_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】-거든=실제 발생 뒤 부탁·지시, -아/어야만=필수 조건, -(으)ㄴ/는다면=미정 상황 가정, -다가는=계속할 때의 나쁜 결과 경고로 기준이 다릅니다.\n【재사용 풀이】${CONDITION_RELATION_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】-거든＝実際に起きた後の依頼・指示、-아/어야만＝必須条件、-(으)ㄴ/는다면＝未定の状況の仮定、-다가는＝続けた場合の悪い結果への警告で、基準が異なります。\n【再利用できる解き方】${CONDITION_RELATION_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] -거든 sets an actual-event condition for a request, -아/어야만 a necessary condition, -(으)ㄴ/는다면 an undecided hypothesis, and -다가는 a warning about continuing behavior.\n[Reusable method] ${CONDITION_RELATION_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】-거든表示事情发生后执行请求或指示，-아/어야만表示必要条件，-(으)ㄴ/는다면表示假设未定情况，-다가는表示继续当前行为会产生坏结果的警告，判断标准各不相同。\n【通用解法】${CONDITION_RELATION_METHOD.zh}`
     })
   });
 };
@@ -535,12 +535,12 @@ const reviewedCompletionExperienceItem=(id,term,key,example,exampleI18n,evidence
       meaning:COMPLETION_EXPERIENCE[choiceKey].meaning,
       explanationI18n:COMPLETION_EXPERIENCE[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】-아/어 버리다=남김없는 완료, -(으)ㄴ 끝에=긴 과정 뒤의 마지막 결과, -아/어 본 적이 있다=과거 경험, -아/어 놓다=미리 준비해 유지하는 상태로 기준이 다릅니다.\n【재사용 풀이】${COMPLETION_EXPERIENCE_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】-아/어 버리다＝完全な終了、-(으)ㄴ 끝에＝長い過程の最終結果、-아/어 본 적이 있다＝過去の経験、-아/어 놓다＝前もって準備して保つ状態で、基準が異なります。\n【再利用できる解き方】${COMPLETION_EXPERIENCE_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] -아/어 버리다 marks total completion, -(으)ㄴ 끝에 a final result after a long process, -아/어 본 적이 있다 past experience, and -아/어 놓다 a prepared state kept for later.\n[Reusable method] ${COMPLETION_EXPERIENCE_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】-아/어 버리다表示彻底完成，-(으)ㄴ 끝에表示漫长过程后的最终结果，-아/어 본 적이 있다表示过去经历，-아/어 놓다表示事先准备并保持状态，判断标准各不相同。\n【通用解法】${COMPLETION_EXPERIENCE_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】-아/어 버리다=남김없는 완료, -(으)ㄴ 끝에=긴 과정 뒤의 마지막 결과, -아/어 본 적이 있다=과거 경험, -아/어 놓다=미리 준비해 유지하는 상태로 기준이 다릅니다.\n【재사용 풀이】${COMPLETION_EXPERIENCE_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】-아/어 버리다＝完全な終了、-(으)ㄴ 끝에＝長い過程の最終結果、-아/어 본 적이 있다＝過去の経験、-아/어 놓다＝前もって準備して保つ状態で、基準が異なります。\n【再利用できる解き方】${COMPLETION_EXPERIENCE_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] -아/어 버리다 marks total completion, -(으)ㄴ 끝에 a final result after a long process, -아/어 본 적이 있다 past experience, and -아/어 놓다 a prepared state kept for later.\n[Reusable method] ${COMPLETION_EXPERIENCE_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】-아/어 버리다表示彻底完成，-(으)ㄴ 끝에表示漫长过程后的最终结果，-아/어 본 적이 있다表示过去经历，-아/어 놓다表示事先准备并保持状态，判断标准各不相同。\n【通用解法】${COMPLETION_EXPERIENCE_METHOD.zh}`
     })
   });
 };
@@ -598,19 +598,19 @@ const reviewedJudgmentConstraintItem=(id,term,key,example,exampleI18n,evidence)=
       meaning:JUDGMENT_CONSTRAINT[choiceKey].meaning,
       explanationI18n:JUDGMENT_CONSTRAINT[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】-(으)ㄹ 수밖에 없다=다른 선택 없음, -(으)ㄹ 만하다=해 볼 가치, -(으)ㄹ 필요가 있다=해야 할 요구, -(으)ㄹ 필요가 없다=하지 않아도 됨으로 기준이 다릅니다.\n【재사용 풀이】${JUDGMENT_CONSTRAINT_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】-(으)ㄹ 수밖에 없다＝ほかに選択肢がない、-(으)ㄹ 만하다＝試す価値、-(으)ㄹ 필요가 있다＝する必要がある、-(으)ㄹ 필요가 없다＝しなくてもよいで、判断基準が異なります。\n【再利用できる解き方】${JUDGMENT_CONSTRAINT_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] -(으)ㄹ 수밖에 없다 marks no alternative, -(으)ㄹ 만하다 something worth doing, -(으)ㄹ 필요가 있다 a required action, and -(으)ㄹ 필요가 없다 an unnecessary action.\n[Reusable method] ${JUDGMENT_CONSTRAINT_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】-(으)ㄹ 수밖에 없다表示没有其他选择，-(으)ㄹ 만하다表示值得尝试，-(으)ㄹ 필요가 있다表示需要做，-(으)ㄹ 필요가 없다表示不必做，判断标准各不相同。\n【通用解法】${JUDGMENT_CONSTRAINT_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】-(으)ㄹ 수밖에 없다=다른 선택 없음, -(으)ㄹ 만하다=해 볼 가치, -(으)ㄹ 필요가 있다=해야 할 요구, -(으)ㄹ 필요가 없다=하지 않아도 됨으로 기준이 다릅니다.\n【재사용 풀이】${JUDGMENT_CONSTRAINT_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】-(으)ㄹ 수밖에 없다＝ほかに選択肢がない、-(으)ㄹ 만하다＝試す価値、-(으)ㄹ 필요가 있다＝する必要がある、-(으)ㄹ 필요가 없다＝しなくてもよいで、判断基準が異なります。\n【再利用できる解き方】${JUDGMENT_CONSTRAINT_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] -(으)ㄹ 수밖에 없다 marks no alternative, -(으)ㄹ 만하다 something worth doing, -(으)ㄹ 필요가 있다 a required action, and -(으)ㄹ 필요가 없다 an unnecessary action.\n[Reusable method] ${JUDGMENT_CONSTRAINT_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】-(으)ㄹ 수밖에 없다表示没有其他选择，-(으)ㄹ 만하다表示值得尝试，-(으)ㄹ 필요가 있다表示需要做，-(으)ㄹ 필요가 없다表示不必做，判断标准各不相同。\n【通用解法】${JUDGMENT_CONSTRAINT_METHOD.zh}`
     })
   });
 };
 
 const PLAN_STAGE=Object.freeze({
   intention:Object.freeze({
-    meaning:Object.freeze({ko:'아직 정하지 않은 개인의 의향',ja:'まだ確定していない本人の意向',en:'a personal intention not yet fixed',zh:'尚未最终确定的个人意向'}),
+    meaning:Object.freeze({ko:'앞으로 하려는 개인의 의향',ja:'これからそうしようとする本人の意向',en:'a personal intention for a future action',zh:'打算今后做某事的个人意向'}),
     selected:Object.freeze({
       ko:'“-(으)ㄹ 생각이다”는 앞으로 그렇게 하려는 개인의 생각이나 의향을 나타냅니다.',
       ja:'「-(으)ㄹ 생각이다」は、これからそうしようとする本人の考え・意向を表します。',
@@ -661,12 +661,12 @@ const reviewedPlanStageItem=(id,term,key,example,exampleI18n,evidence)=>{
       meaning:PLAN_STAGE[choiceKey].meaning,
       explanationI18n:PLAN_STAGE[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】-(으)ㄹ까 하다=아직 고민 중, -(으)ㄹ 생각이다=개인 의향, -기로 하다=이미 내린 결정, -(으)ㄹ 예정이다=확정된 일정으로 계획 단계가 다릅니다.\n【재사용 풀이】${PLAN_STAGE_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】-(으)ㄹ까 하다＝まだ検討中、-(으)ㄹ 생각이다＝本人の意向、-기로 하다＝決定済み、-(으)ㄹ 예정이다＝確定した日程で、計画の段階が異なります。\n【再利用できる解き方】${PLAN_STAGE_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] -(으)ㄹ까 하다 marks tentative consideration, -(으)ㄹ 생각이다 personal intention, -기로 하다 a decision already made, and -(으)ㄹ 예정이다 a fixed schedule.\n[Reusable method] ${PLAN_STAGE_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】-(으)ㄹ까 하다表示仍在考虑，-(으)ㄹ 생각이다表示个人意向，-기로 하다表示已经决定，-(으)ㄹ 예정이다表示确定的日程，计划阶段各不相同。\n【通用解法】${PLAN_STAGE_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】-(으)ㄹ까 하다=아직 고민 중, -(으)ㄹ 생각이다=개인 의향, -기로 하다=이미 내린 결정, -(으)ㄹ 예정이다=확정된 일정으로 계획 단계가 다릅니다.\n【재사용 풀이】${PLAN_STAGE_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】-(으)ㄹ까 하다＝まだ検討中、-(으)ㄹ 생각이다＝本人の意向、-기로 하다＝決定済み、-(으)ㄹ 예정이다＝確定した日程で、計画の段階が異なります。\n【再利用できる解き方】${PLAN_STAGE_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] -(으)ㄹ까 하다 marks tentative consideration, -(으)ㄹ 생각이다 personal intention, -기로 하다 a decision already made, and -(으)ㄹ 예정이다 a fixed schedule.\n[Reusable method] ${PLAN_STAGE_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】-(으)ㄹ까 하다表示仍在考虑，-(으)ㄹ 생각이다表示个人意向，-기로 하다表示已经决定，-(으)ㄹ 예정이다表示确定的日程，计划阶段各不相同。\n【通用解法】${PLAN_STAGE_METHOD.zh}`
     })
   });
 };
@@ -724,12 +724,12 @@ const reviewedTimeRelationItem=(id,term,key,example,exampleI18n,evidence)=>{
       meaning:TIME_RELATION[choiceKey].meaning,
       explanationI18n:TIME_RELATION[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】-자마자=직후 바로, -고 나서=끝낸 뒤, -는 동안=같은 시간에 겹침, -기 전에=기준 동작보다 앞서로 시간 관계가 다릅니다.\n【재사용 풀이】${TIME_RELATION_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】-자마자＝直後、-고 나서＝終えてから、-는 동안＝同じ時間に重なる、-기 전에＝前にすることで、時間関係が異なります。\n【再利用できる解き方】${TIME_RELATION_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] -자마자 means immediately after, -고 나서 after completion, -는 동안 during an overlapping interval, and -기 전에 before the reference action.\n[Reusable method] ${TIME_RELATION_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】-자마자表示紧接着，-고 나서表示完成之后，-는 동안表示同一时段重叠，-기 전에表示在基准动作之前，时间关系各不相同。\n【通用解法】${TIME_RELATION_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】-자마자=직후 바로, -고 나서=끝낸 뒤, -는 동안=같은 시간에 겹침, -기 전에=기준 동작보다 앞서로 시간 관계가 다릅니다.\n【재사용 풀이】${TIME_RELATION_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】-자마자＝直後、-고 나서＝終えてから、-는 동안＝同じ時間に重なる、-기 전에＝前にすることで、時間関係が異なります。\n【再利用できる解き方】${TIME_RELATION_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] -자마자 means immediately after, -고 나서 after completion, -는 동안 during an overlapping interval, and -기 전에 before the reference action.\n[Reusable method] ${TIME_RELATION_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】-자마자表示紧接着，-고 나서表示完成之后，-는 동안表示同一时段重叠，-기 전에表示在基准动作之前，时间关系各不相同。\n【通用解法】${TIME_RELATION_METHOD.zh}`
     })
   });
 };
@@ -787,12 +787,12 @@ const reviewedFormalRelationItem=(id,term,key,example,exampleI18n,evidence)=>{
       meaning:FORMAL_RELATION[choiceKey].meaning,
       explanationI18n:FORMAL_RELATION[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】-에 따르면=정보 출처, -에 따라(서)=변화 기준, -을/를 통해(서)=수단·경로, -에 의해(서)=피동 주체·공식적 원인으로 앞 명사의 역할이 다릅니다.\n【재사용 풀이】${FORMAL_RELATION_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】-에 따르면＝情報源、-에 따라(서)＝変化の基準、-을/를 통해(서)＝手段・経路、-에 의해(서)＝受け身の主体・改まった原因で、前の名詞の役割が異なります。\n【再利用できる解き方】${FORMAL_RELATION_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] -에 따르면 marks an information source, -에 따라(서) a varying standard, -을/를 통해(서) a means or channel, and -에 의해(서) a passive agent or formal cause.\n[Reusable method] ${FORMAL_RELATION_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】-에 따르면表示信息来源，-에 따라(서)表示变化基准，-을/를 통해(서)表示手段或渠道，-에 의해(서)表示被动施事者或正式原因，前面名词的作用各不相同。\n【通用解法】${FORMAL_RELATION_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】-에 따르면=정보 출처, -에 따라(서)=변화 기준, -을/를 통해(서)=수단·경로, -에 의해(서)=피동 주체·공식적 원인으로 앞 명사의 역할이 다릅니다.\n【재사용 풀이】${FORMAL_RELATION_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】-에 따르면＝情報源、-에 따라(서)＝変化の基準、-을/를 통해(서)＝手段・経路、-에 의해(서)＝受け身の主体・改まった原因で、前の名詞の役割が異なります。\n【再利用できる解き方】${FORMAL_RELATION_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] -에 따르면 marks an information source, -에 따라(서) a varying standard, -을/를 통해(서) a means or channel, and -에 의해(서) a passive agent or formal cause.\n[Reusable method] ${FORMAL_RELATION_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】-에 따르면表示信息来源，-에 따라(서)表示变化基准，-을/를 통해(서)表示手段或渠道，-에 의해(서)表示被动施事者或正式原因，前面名词的作用各不相同。\n【通用解法】${FORMAL_RELATION_METHOD.zh}`
     })
   });
 };
@@ -850,12 +850,12 @@ const reviewedScopeRelationItem=(id,term,key,example,exampleI18n,evidence)=>{
       meaning:SCOPE_RELATION[choiceKey].meaning,
       explanationI18n:SCOPE_RELATION[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】-을/를 제외하고=범위에서 뺌, -을/를 대신해(서)=역할 대체, -에 관계없이=조건이 결과에 영향 없음, -을/를 비롯해(서)=대표 예를 포함한 확장으로 관계가 다릅니다.\n【재사용 풀이】${SCOPE_RELATION_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】-을/를 제외하고＝範囲から除く、-을/를 대신해(서)＝役割を替える、-에 관계없이＝条件が結果に影響しない、-을/를 비롯해(서)＝代表例を含めて広げることで、関係が異なります。\n【再利用できる解き方】${SCOPE_RELATION_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] -을/를 제외하고 removes an item from a scope, -을/를 대신해(서) replaces its role, -에 관계없이 makes a condition irrelevant, and -을/를 비롯해(서) includes a representative example in a wider set.\n[Reusable method] ${SCOPE_RELATION_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】-을/를 제외하고表示从范围中排除，-을/를 대신해(서)表示替代职责，-에 관계없이表示条件不影响结果，-을/를 비롯해(서)表示以代表性例子纳入更大范围，关系各不相同。\n【通用解法】${SCOPE_RELATION_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】-을/를 제외하고=범위에서 뺌, -을/를 대신해(서)=역할 대체, -에 관계없이=조건이 결과에 영향 없음, -을/를 비롯해(서)=대표 예를 포함한 확장으로 관계가 다릅니다.\n【재사용 풀이】${SCOPE_RELATION_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】-을/를 제외하고＝範囲から除く、-을/를 대신해(서)＝役割を替える、-에 관계없이＝条件が結果に影響しない、-을/를 비롯해(서)＝代表例を含めて広げることで、関係が異なります。\n【再利用できる解き方】${SCOPE_RELATION_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] -을/를 제외하고 removes an item from a scope, -을/를 대신해(서) replaces its role, -에 관계없이 makes a condition irrelevant, and -을/를 비롯해(서) includes a representative example in a wider set.\n[Reusable method] ${SCOPE_RELATION_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】-을/를 제외하고表示从范围中排除，-을/를 대신해(서)表示替代职责，-에 관계없이表示条件不影响结果，-을/를 비롯해(서)表示以代表性例子纳入更大范围，关系各不相同。\n【通用解法】${SCOPE_RELATION_METHOD.zh}`
     })
   });
 };
@@ -889,21 +889,21 @@ const DEGREE_COMPARISON=Object.freeze({
     })
   }),
   extent:Object.freeze({
-    meaning:Object.freeze({ko:'결과로 드러나는 매우 큰 정도',ja:'結果から分かる非常に大きな程度',en:'an extreme degree shown by its result',zh:'由结果体现出的很大程度'}),
+    meaning:Object.freeze({ko:'앞절을 기준으로 나타내는 정도',ja:'～ほど（前の節を程度の目安にする）',en:'to the degree described in the preceding clause',zh:'以前面的分句为标准表示程度'}),
     selected:Object.freeze({
-      ko:'“-(으)ㄹ 정도로”는 뒤의 결과가 생길 만큼 앞의 상태나 행동 정도가 큼을 나타냅니다.',
-      ja:'「-(으)ㄹ 정도로」は、後ろの結果が生じるほど、前の状態・動作の程度が大きいことを表します。',
-      en:'“-(으)ㄹ 정도로” shows that the preceding state or action is strong enough to produce the following result.',
-      zh:'“-(으)ㄹ 정도로”表示前面的状态或动作程度很大，足以产生后面的结果。'
+      ko:'“-(으)ㄹ 정도로”는 앞절에 정도를 보여 주는 기준을 제시하여 뒤의 상태나 행동이 어느 정도인지 나타냅니다.',
+      ja:'「-(으)ㄹ 정도로」は、前の節を程度の目安として示し、後ろの状態や動作がどの程度かを表します。',
+      en:'“-(으)ㄹ 정도로” uses the preceding clause as a measure of the degree of the following state or action.',
+      zh:'“-(으)ㄹ 정도로”以前面的分句作为程度标准，说明后面的状态或动作达到何种程度。'
     })
   })
 });
 const DEGREE_COMPARISON_ORDER=['baseline','noLess','equal','extent'];
 const DEGREE_COMPARISON_METHOD=Object.freeze({
-  ko:'문장 속 기준과 정도 관계를 보세요. 두 대상의 차이=비해서, 기준에 뒤지지 않음=못지않게, 같은 정도=만큼, 결과가 보여 주는 큰 정도=ㄹ 정도로입니다.',
-  ja:'文中の基準と程度の関係を見ます。二つの対象の差＝비해서、基準に劣らない＝못지않게、同じ程度＝만큼、結果で分かる大きな程度＝ㄹ 정도로です。',
-  en:'Find the reference and degree relation: difference between two items = 비해서, not inferior to the reference = 못지않게, equal degree = 만큼, and an extreme degree shown by a result = ㄹ 정도로.',
-  zh:'先找句中的基准和程度关系：两个对象的差异＝비해서，不逊于基准＝못지않게，相同程度＝만큼，由结果体现的大程度＝ㄹ 정도로。'
+  ko:'문장 속 기준과 정도 관계를 보세요. 두 대상의 차이=비해서, 기준에 뒤지지 않음=못지않게, 같은 정도=만큼, 앞절로 나타내는 정도=ㄹ 정도로입니다.',
+  ja:'文中の基準と程度の関係を見ます。二つの対象の差＝비해서、基準に劣らない＝못지않게、同じ程度＝만큼、前の節で表す程度＝ㄹ 정도로です。',
+  en:'Find the reference and degree relation: difference between two items = 비해서, not inferior to the reference = 못지않게, equal degree = 만큼, and a degree illustrated by the preceding clause = ㄹ 정도로.',
+  zh:'先找句中的基准和程度关系：两个对象的差异＝비해서，不逊于基准＝못지않게，相同程度＝만큼，以前一分句为标准的程度＝ㄹ 정도로。'
 });
 const reviewedDegreeComparisonItem=(id,term,key,example,exampleI18n,evidence)=>{
   const target=DEGREE_COMPARISON[key];
@@ -913,19 +913,19 @@ const reviewedDegreeComparisonItem=(id,term,key,example,exampleI18n,evidence)=>{
       meaning:DEGREE_COMPARISON[choiceKey].meaning,
       explanationI18n:DEGREE_COMPARISON[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】-에 비해(서)=두 대상의 차이, -에 못지않게=기준에 뒤지지 않음, -만큼=같은 정도, -(으)ㄹ 정도로=결과가 보여 주는 큰 정도로 관계가 다릅니다.\n【재사용 풀이】${DEGREE_COMPARISON_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】-에 비해(서)＝二つの対象の差、-에 못지않게＝基準に劣らない、-만큼＝同じ程度、-(으)ㄹ 정도로＝結果で分かる大きな程度で、関係が異なります。\n【再利用できる解き方】${DEGREE_COMPARISON_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] -에 비해(서) compares two items, -에 못지않게 means not inferior to a reference, -만큼 equal degree, and -(으)ㄹ 정도로 an extreme degree shown by a result.\n[Reusable method] ${DEGREE_COMPARISON_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】-에 비해(서)表示两个对象的差异，-에 못지않게表示不逊于基准，-만큼表示相同程度，-(으)ㄹ 정도로表示由结果体现出的很大程度，关系各不相同。\n【通用解法】${DEGREE_COMPARISON_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】-에 비해(서)=두 대상의 차이, -에 못지않게=기준에 뒤지지 않음, -만큼=같은 정도, -(으)ㄹ 정도로=앞절을 기준으로 나타내는 정도로 관계가 다릅니다.\n【재사용 풀이】${DEGREE_COMPARISON_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】-에 비해(서)＝二つの対象の差、-에 못지않게＝基準に劣らない、-만큼＝同じ程度、-(으)ㄹ 정도로＝前の節で表す程度で、関係が異なります。\n【再利用できる解き方】${DEGREE_COMPARISON_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] -에 비해(서) compares two items, -에 못지않게 means not inferior to a reference, -만큼 equal degree, and -(으)ㄹ 정도로 a degree illustrated by the preceding clause.\n[Reusable method] ${DEGREE_COMPARISON_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】-에 비해(서)表示两个对象的差异，-에 못지않게表示不逊于基准，-만큼表示相同程度，-(으)ㄹ 정도로以前一分句为标准表示程度，关系各不相同。\n【通用解法】${DEGREE_COMPARISON_METHOD.zh}`
     })
   });
 };
 
 const STANCE_ADVERBS=Object.freeze({
   barely:Object.freeze({
-    meaning:Object.freeze({ko:'어려움을 겪은 뒤 겨우 해냄',ja:'苦労の末、かろうじて実現する',en:'barely succeeding after difficulty',zh:'克服困难后勉强做到'}),
+    meaning:Object.freeze({ko:'어려움을 겪은 뒤 겨우 해냄',ja:'かろうじて（苦労の末、やっと）',en:'barely succeeding after difficulty',zh:'克服困难后勉强做到'}),
     selected:Object.freeze({
       ko:'“간신히”는 어려운 과정이나 아슬아슬한 상황을 거쳐 결과를 겨우 이루었음을 나타냅니다.',
       ja:'「간신히」は、困難な過程やぎりぎりの状況を経て、結果をかろうじて実現したことを表します。',
@@ -934,7 +934,7 @@ const STANCE_ADVERBS=Object.freeze({
     })
   }),
   prefer:Object.freeze({
-    meaning:Object.freeze({ko:'덜 나쁜 대안을 선택함',ja:'よりましな選択肢を選ぶ',en:'choosing the preferable alternative',zh:'选择相对更好的方案'}),
+    meaning:Object.freeze({ko:'덜 나쁜 대안을 선택함',ja:'いっそ（比べたうえで、よりましな方を選ぶ）',en:'choosing the preferable alternative',zh:'选择相对更好的方案'}),
     selected:Object.freeze({
       ko:'“차라리”는 마음에 들지 않는 상황을 계속하기보다 다른 대안이 더 낫다고 선택할 때 씁니다.',
       ja:'「차라리」は、好ましくない状況を続けるより、別の選択肢のほうがましだと選ぶときに使います。',
@@ -943,7 +943,7 @@ const STANCE_ADVERBS=Object.freeze({
     })
   }),
   absolute:Object.freeze({
-    meaning:Object.freeze({ko:'부정 표현과 함께 전혀·도저히',ja:'否定表現とともに「まったく・どうしても」',en:'not at all with a negative expression',zh:'与否定表达搭配，表示怎么也、完全不'}),
+    meaning:Object.freeze({ko:'부정 표현과 함께 전혀·도저히',ja:'どうしても（否定とともに「まったく～ない」）',en:'not at all with a negative expression',zh:'与否定表达搭配，表示怎么也、完全不'}),
     selected:Object.freeze({
       ko:'“도무지”는 보통 부정 표현과 함께 써서 아무리 해도 전혀 되지 않음을 강조합니다.',
       ja:'「도무지」は普通、否定表現とともに使い、どうしてもまったくできないことを強調します。',
@@ -952,7 +952,7 @@ const STANCE_ADVERBS=Object.freeze({
     })
   }),
   notInTime:Object.freeze({
-    meaning:Object.freeze({ko:'때를 놓쳐 하지 못함',ja:'間に合わず、することができない',en:'failing to do something in time',zh:'因来不及而没能做'}),
+    meaning:Object.freeze({ko:'때를 놓쳐 하지 못함',ja:'～する余裕もなく（時間が足りず、しきれない様子）',en:'failing to do something in time',zh:'因来不及而没能做'}),
     selected:Object.freeze({
       ko:'“미처”는 예상하지 못한 일이나 시간 부족 때문에 필요한 행동을 제때 하지 못했음을 나타냅니다.',
       ja:'「미처」は、予想外の出来事や時間不足のため、必要な行動を間に合うようにできなかったことを表します。',
@@ -976,19 +976,19 @@ const reviewedStanceAdverbItem=(id,term,key,example,exampleI18n,evidence)=>{
       meaning:STANCE_ADVERBS[choiceKey].meaning,
       explanationI18n:STANCE_ADVERBS[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】간신히=어려움 끝의 성취, 차라리=더 나은 대안 선택, 도무지=부정의 절대 강조, 미처=제때 못 한 행동으로 문장 기능이 다릅니다.\n【재사용 풀이】${STANCE_ADVERB_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】간신히＝苦労の末の実現、차라리＝よりましな選択、도무지＝否定の強調、미처＝間に合わなかった行動で、文中の働きが異なります。\n【再利用できる解き方】${STANCE_ADVERB_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 간신히 marks achievement after difficulty, 차라리 a preferable alternative, 도무지 emphatic negation, and 미처 an action not completed in time.\n[Reusable method] ${STANCE_ADVERB_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】간신히表示历经困难后实现，차라리表示选择相对更好的方案，도무지强化否定，미처表示没能及时完成，句中作用各不相同。\n【通用解法】${STANCE_ADVERB_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】간신히=어려움 끝의 성취, 차라리=더 나은 대안 선택, 도무지=부정의 절대 강조, 미처=제때 못 한 행동으로 문장 기능이 다릅니다.\n【재사용 풀이】${STANCE_ADVERB_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】간신히＝苦労の末の実現、차라리＝よりましな選択、도무지＝否定の強調、미처＝間に合わなかった行動で、文中の働きが異なります。\n【再利用できる解き方】${STANCE_ADVERB_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] 간신히 marks achievement after difficulty, 차라리 a preferable alternative, 도무지 emphatic negation, and 미처 an action not completed in time.\n[Reusable method] ${STANCE_ADVERB_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】간신히表示历经困难后实现，차라리表示选择相对更好的方案，도무지强化否定，미처表示没能及时完成，句中作用各不相同。\n【通用解法】${STANCE_ADVERB_METHOD.zh}`
     })
   });
 };
 
 const CHANGE_ADVERBS=Object.freeze({
   gradual:Object.freeze({
-    meaning:Object.freeze({ko:'시간이 지나며 조금씩 변함',ja:'時間の経過とともに少しずつ変化する',en:'changing little by little over time',zh:'随着时间逐渐变化'}),
+    meaning:Object.freeze({ko:'시간이 지나며 조금씩 변함',ja:'徐々に（時間とともに少しずつ変わる様子）',en:'changing little by little over time',zh:'随着时间逐渐变化'}),
     selected:Object.freeze({
       ko:'“점차”는 시간이 흐르면서 상태나 수치가 조금씩 달라지는 과정을 나타냅니다.',
       ja:'「점차」は、時間の経過とともに状態や数値が少しずつ変わる過程を表します。',
@@ -997,7 +997,7 @@ const CHANGE_ADVERBS=Object.freeze({
     })
   }),
   temporary:Object.freeze({
-    meaning:Object.freeze({ko:'짧은 기간에만 잠시 나타남',ja:'短い期間だけ一時的に現れる',en:'lasting only for a short period',zh:'只在短时间内暂时出现'}),
+    meaning:Object.freeze({ko:'짧은 기간에만 잠시 나타남',ja:'一時的に（短い間だけ）',en:'lasting only for a short period',zh:'只在短时间内暂时出现'}),
     selected:Object.freeze({
       ko:'“일시적으로”는 상태가 짧은 기간에만 나타나고 이후에는 끝나거나 원래대로 돌아감을 나타냅니다.',
       ja:'「일시적으로」は、状態が短い期間だけ現れ、その後は終わるか元に戻ることを表します。',
@@ -1006,7 +1006,7 @@ const CHANGE_ADVERBS=Object.freeze({
     })
   }),
   continuous:Object.freeze({
-    meaning:Object.freeze({ko:'긴 기간 동안 계속 이어짐',ja:'長い期間にわたって続く',en:'continuing over an extended period',zh:'在较长时间内持续进行'}),
+    meaning:Object.freeze({ko:'긴 기간 동안 계속 이어짐',ja:'継続的に（途切れずに続けて）',en:'continuing over an extended period',zh:'在较长时间内持续进行'}),
     selected:Object.freeze({
       ko:'“지속적으로”는 변화나 활동이 한 번으로 끝나지 않고 일정 기간 계속 이어짐을 나타냅니다.',
       ja:'「지속적으로」は、変化や活動が一度で終わらず、一定の期間にわたって続くことを表します。',
@@ -1015,7 +1015,7 @@ const CHANGE_ADVERBS=Object.freeze({
     })
   }),
   sharp:Object.freeze({
-    meaning:Object.freeze({ko:'짧은 시간에 큰 폭으로 변함',ja:'短時間で大きく変化する',en:'changing sharply in a short time',zh:'在短时间内发生大幅变化'}),
+    meaning:Object.freeze({ko:'짧은 시간에 큰 폭으로 변함',ja:'急激に（短い時間で大きく変わる様子）',en:'changing sharply in a short time',zh:'在短时间内发生大幅变化'}),
     selected:Object.freeze({
       ko:'“급격히”는 짧은 시간 안에 상태나 수치가 큰 폭으로 변함을 나타냅니다.',
       ja:'「급격히」は、短い時間のうちに状態や数値が大きく変わることを表します。',
@@ -1039,12 +1039,12 @@ const reviewedChangeAdverbItem=(id,term,key,example,exampleI18n,evidence)=>{
       meaning:CHANGE_ADVERBS[choiceKey].meaning,
       explanationI18n:CHANGE_ADVERBS[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】점차=시간에 따라 조금씩, 일시적으로=짧은 기간만, 지속적으로=긴 기간 계속, 급격히=짧은 시간에 큰 폭으로 변화의 시간과 폭이 다릅니다.\n【재사용 풀이】${CHANGE_ADVERB_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】점차＝時間とともに少しずつ、일시적으로＝短期間だけ、지속적으로＝長期間続く、급격히＝短時間で大幅に、という時間と変化幅の違いがあります。\n【再利用できる解き方】${CHANGE_ADVERB_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 점차 means little by little over time, 일시적으로 only briefly, 지속적으로 continuing over a long period, and 급격히 a large change in a short time.\n[Reusable method] ${CHANGE_ADVERB_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】점차表示随时间一点点变化，일시적으로表示只持续短时间，지속적으로表示长时间持续，급격히表示短时间内大幅变化，时间和幅度各不相同。\n【通用解法】${CHANGE_ADVERB_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】점차=시간에 따라 조금씩, 일시적으로=짧은 기간만, 지속적으로=긴 기간 계속, 급격히=짧은 시간에 큰 폭으로 변화의 시간과 폭이 다릅니다.\n【재사용 풀이】${CHANGE_ADVERB_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】점차＝時間とともに少しずつ、일시적으로＝短期間だけ、지속적으로＝長期間続く、급격히＝短時間で大幅に、という時間と変化幅の違いがあります。\n【再利用できる解き方】${CHANGE_ADVERB_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] 점차 means little by little over time, 일시적으로 only briefly, 지속적으로 continuing over a long period, and 급격히 a large change in a short time.\n[Reusable method] ${CHANGE_ADVERB_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】점차表示随时间一点点变化，일시적으로表示只持续短时间，지속적으로表示长时间持续，급격히表示短时间内大幅变化，时间和幅度各不相同。\n【通用解法】${CHANGE_ADVERB_METHOD.zh}`
     })
   });
 };
@@ -1102,12 +1102,12 @@ const reviewedBasicConnectiveItem=(id,term,key,example,exampleI18n,evidence)=>{
       meaning:BASIC_CONNECTIVES[choiceKey].meaning,
       explanationI18n:BASIC_CONNECTIVES[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】-(으)면서=동시 행동, -(으)니까=이유 뒤 판단·요청, -(으)러=이동 목적, -는데=뒤말의 배경으로 관계가 다릅니다.\n【재사용 풀이】${BASIC_CONNECTIVE_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】-(으)면서＝同時動作、-(으)니까＝理由の後の判断・依頼、-(으)러＝移動目的、-는데＝後ろの内容の背景で、関係が異なります。\n【再利用できる解き方】${BASIC_CONNECTIVE_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] -(으)면서 marks simultaneous actions, -(으)니까 a reason for a judgment or request, -(으)러 movement purpose, and -는데 background for what follows.\n[Reusable method] ${BASIC_CONNECTIVE_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】-(으)면서表示同时动作，-(으)니까表示判断或请求的理由，-(으)러表示移动目的，-는데表示后项背景，关系各不相同。\n【通用解法】${BASIC_CONNECTIVE_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】-(으)면서=동시 행동, -(으)니까=이유 뒤 판단·요청, -(으)러=이동 목적, -는데=뒤말의 배경으로 관계가 다릅니다.\n【재사용 풀이】${BASIC_CONNECTIVE_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】-(으)면서＝同時動作、-(으)니까＝理由の後の判断・依頼、-(으)러＝移動目的、-는데＝後ろの内容の背景で、関係が異なります。\n【再利用できる解き方】${BASIC_CONNECTIVE_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] -(으)면서 marks simultaneous actions, -(으)니까 a reason for a judgment or request, -(으)러 movement purpose, and -는데 background for what follows.\n[Reusable method] ${BASIC_CONNECTIVE_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】-(으)면서表示同时动作，-(으)니까表示判断或请求的理由，-(으)러表示移动目的，-는데表示后项背景，关系各不相同。\n【通用解法】${BASIC_CONNECTIVE_METHOD.zh}`
     })
   });
 };
@@ -1165,12 +1165,12 @@ const reviewedBasicNegationItem=(id,term,key,example,exampleI18n,evidence)=>{
       meaning:BASIC_NEGATION[choiceKey].meaning,
       explanationI18n:BASIC_NEGATION[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】안=단순 부정, 못=불가능, 아니에요=명사 정체 부정, 없어요=존재·소유 부정으로 부정하는 대상과 이유가 다릅니다.\n【재사용 풀이】${BASIC_NEGATION_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】안＝単純否定、못＝不可能、아니에요＝名詞の身分・分類の否定、없어요＝存在・所有の否定で、否定する対象と理由が異なります。\n【再利用できる解き方】${BASIC_NEGATION_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 안 is simple negation, 못 marks inability, 아니에요 denies noun identity or category, and 없어요 denies existence or possession.\n[Reusable method] ${BASIC_NEGATION_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】안表示一般否定，못表示无法做到，아니에요否定名词身份或类别，없어요否定存在或拥有，否定对象和原因各不相同。\n【通用解法】${BASIC_NEGATION_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】안=단순 부정, 못=불가능, 아니에요=명사 정체 부정, 없어요=존재·소유 부정으로 부정하는 대상과 이유가 다릅니다.\n【재사용 풀이】${BASIC_NEGATION_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】안＝単純否定、못＝不可能、아니에요＝名詞の身分・分類の否定、없어요＝存在・所有の否定で、否定する対象と理由が異なります。\n【再利用できる解き方】${BASIC_NEGATION_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] 안 is simple negation, 못 marks inability, 아니에요 denies noun identity or category, and 없어요 denies existence or possession.\n[Reusable method] ${BASIC_NEGATION_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】안表示一般否定，못表示无法做到，아니에요否定名词身份或类别，없어요否定存在或拥有，否定对象和原因各不相同。\n【通用解法】${BASIC_NEGATION_METHOD.zh}`
     })
   });
 };
@@ -1228,12 +1228,12 @@ const reviewedBasicTenseItem=(id,term,key,example,exampleI18n,evidence)=>{
       meaning:BASIC_TENSE[choiceKey].meaning,
       explanationI18n:BASIC_TENSE[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】-아/어요=현재 습관, -았/었어요=완료 과거, -고 있어요=현재 진행, -(으)ㄹ 거예요=미래 계획으로 시간 기준이 다릅니다.\n【재사용 풀이】${BASIC_TENSE_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】-아/어요＝現在の習慣、-았/었어요＝完了した過去、-고 있어요＝現在進行、-(으)ㄹ 거예요＝未来の予定で、時間の基準が異なります。\n【再利用できる解き方】${BASIC_TENSE_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] -아/어요 marks a present habit, -았/었어요 a completed past action, -고 있어요 an action in progress now, and -(으)ㄹ 거예요 a future plan.\n[Reusable method] ${BASIC_TENSE_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】-아/어요表示当前习惯，-았/었어요表示完成的过去，-고 있어요表示现在进行，-(으)ㄹ 거예요表示未来计划，时间基准各不相同。\n【通用解法】${BASIC_TENSE_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】-아/어요=현재 습관, -았/었어요=완료 과거, -고 있어요=현재 진행, -(으)ㄹ 거예요=미래 계획으로 시간 기준이 다릅니다.\n【재사용 풀이】${BASIC_TENSE_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】-아/어요＝現在の習慣、-았/었어요＝完了した過去、-고 있어요＝現在進行、-(으)ㄹ 거예요＝未来の予定で、時間の基準が異なります。\n【再利用できる解き方】${BASIC_TENSE_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] -아/어요 marks a present habit, -았/었어요 a completed past action, -고 있어요 an action in progress now, and -(으)ㄹ 거예요 a future plan.\n[Reusable method] ${BASIC_TENSE_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】-아/어요表示当前习惯，-았/었어요表示完成的过去，-고 있어요表示现在进行，-(으)ㄹ 거예요表示未来计划，时间基准各不相同。\n【通用解法】${BASIC_TENSE_METHOD.zh}`
     })
   });
 };
@@ -1291,19 +1291,19 @@ const reviewedPoliteInteractionItem=(id,term,key,example,exampleI18n,evidence)=>
       meaning:POLITE_INTERACTION[choiceKey].meaning,
       explanationI18n:POLITE_INTERACTION[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】주세요=물건 요청, -(으)세요=행동 요청, -지 마세요=금지, -(으)ㄹ까요?=함께할 행동 제안으로 말하는 목적이 다릅니다.\n【재사용 풀이】${POLITE_INTERACTION_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】주세요＝物の依頼、-(으)세요＝行動の依頼、-지 마세요＝禁止、-(으)ㄹ까요？＝一緒にする行動の提案で、発話の目的が異なります。\n【再利用できる解き方】${POLITE_INTERACTION_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 주세요 requests an item, -(으)세요 requests an action, -지 마세요 prohibits an action, and -(으)ㄹ까요? suggests doing an action together.\n[Reusable method] ${POLITE_INTERACTION_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】주세요用于请求物品，-(으)세요用于请求动作，-지 마세요表示禁止，-(으)ㄹ까요？表示提议一起行动，说话目的各不相同。\n【通用解法】${POLITE_INTERACTION_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】주세요=물건 요청, -(으)세요=행동 요청, -지 마세요=금지, -(으)ㄹ까요?=함께할 행동 제안으로 말하는 목적이 다릅니다.\n【재사용 풀이】${POLITE_INTERACTION_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】주세요＝物の依頼、-(으)세요＝行動の依頼、-지 마세요＝禁止、-(으)ㄹ까요？＝一緒にする行動の提案で、発話の目的が異なります。\n【再利用できる解き方】${POLITE_INTERACTION_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] 주세요 requests an item, -(으)세요 requests an action, -지 마세요 prohibits an action, and -(으)ㄹ까요? suggests doing an action together.\n[Reusable method] ${POLITE_INTERACTION_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】주세요用于请求物品，-(으)세요用于请求动作，-지 마세요表示禁止，-(으)ㄹ까요？表示提议一起行动，说话目的各不相同。\n【通用解法】${POLITE_INTERACTION_METHOD.zh}`
     })
   });
 };
 
 const LOCATION_WORDS=Object.freeze({
   opposite:Object.freeze({
-    meaning:Object.freeze({ko:'길·공간의 반대쪽',ja:'道・空間の向こう側',en:'opposite side',zh:'道路或空间的对面'}),
+    meaning:Object.freeze({ko:'길·공간의 반대쪽',ja:'向かい側（道や空間を挟んだ反対側）',en:'opposite side',zh:'道路或空间的对面'}),
     selected:Object.freeze({
       ko:'“건너편”은 길이나 열린 공간을 건너 마주 보는 반대쪽입니다.',
       ja:'「건너편」は、道や空間を挟んで向かい合う反対側です。',
@@ -1312,7 +1312,7 @@ const LOCATION_WORDS=Object.freeze({
     })
   }),
   nextTo:Object.freeze({
-    meaning:Object.freeze({ko:'바로 곁',ja:'すぐ隣・横',en:'right next to',zh:'紧挨着；旁边'}),
+    meaning:Object.freeze({ko:'바로 곁',ja:'隣・横（すぐそばの位置）',en:'right next to',zh:'紧挨着；旁边'}),
     selected:Object.freeze({
       ko:'“옆”은 한 기준점의 바로 곁이나 좌우에 붙은 위치입니다.',
       ja:'「옆」は、一つの基準となる場所のすぐ隣・横です。',
@@ -1321,7 +1321,7 @@ const LOCATION_WORDS=Object.freeze({
     })
   }),
   between:Object.freeze({
-    meaning:Object.freeze({ko:'둘의 가운데',ja:'二つの間',en:'between two places',zh:'两者之间'}),
+    meaning:Object.freeze({ko:'둘의 가운데',ja:'間（二つのものに挟まれたところ）',en:'between two places',zh:'两者之间'}),
     selected:Object.freeze({
       ko:'“사이”는 두 기준점의 가운데에 있는 위치입니다.',
       ja:'「사이」は、二つの基準となる場所の間にある位置です。',
@@ -1330,7 +1330,7 @@ const LOCATION_WORDS=Object.freeze({
     })
   }),
   nearby:Object.freeze({
-    meaning:Object.freeze({ko:'가까운 주변',ja:'近く・周辺',en:'nearby area',zh:'附近一带'}),
+    meaning:Object.freeze({ko:'가까운 주변',ja:'近く（ある場所の周辺）',en:'nearby area',zh:'附近一带'}),
     selected:Object.freeze({
       ko:'“근처”는 바로 붙어 있지 않아도 기준점에서 가까운 주변입니다.',
       ja:'「근처」は、すぐ隣でなくても基準となる場所から近い周辺です。',
@@ -1354,19 +1354,19 @@ const reviewedLocationItem=(id,term,key,example,exampleI18n,evidence)=>{
       meaning:LOCATION_WORDS[choiceKey].meaning,
       explanationI18n:LOCATION_WORDS[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】건너편=길·공간 너머 반대쪽, 옆=한 곳 바로 곁, 사이=두 곳 가운데, 근처=가까운 주변으로 기준점과 거리가 다릅니다.\n【재사용 풀이】${LOCATION_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】건너편＝道・空間の向こう側、옆＝一か所のすぐ隣、사이＝二か所の間、근처＝近い周辺で、基準となる場所と距離が異なります。\n【再利用できる解き方】${LOCATION_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 건너편 is across a road or space, 옆 directly beside one place, 사이 between two places, and 근처 the nearby area.\n[Reusable method] ${LOCATION_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】건너편是隔着道路或空间的对面，옆是一处旁边，사이是两处中间，근처是附近一带，参照地点和距离各不相同。\n【通用解法】${LOCATION_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】건너편=길·공간 너머 반대쪽, 옆=한 곳 바로 곁, 사이=두 곳 가운데, 근처=가까운 주변으로 기준점과 거리가 다릅니다.\n【재사용 풀이】${LOCATION_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】건너편＝道・空間の向こう側、옆＝一か所のすぐ隣、사이＝二か所の間、근처＝近い周辺で、基準となる場所と距離が異なります。\n【再利用できる解き方】${LOCATION_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] 건너편 is across a road or space, 옆 directly beside one place, 사이 between two places, and 근처 the nearby area.\n[Reusable method] ${LOCATION_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】건너편是隔着道路或空间的对面，옆是一处旁边，사이是两处中间，근처是附近一带，参照地点和距离各不相同。\n【通用解法】${LOCATION_METHOD.zh}`
     })
   });
 };
 
 const FREQUENCY_WORDS=Object.freeze({
   always:Object.freeze({
-    meaning:Object.freeze({ko:'매번 빠짐없이',ja:'いつも；毎回',en:'always; every time',zh:'总是；每次'}),
+    meaning:Object.freeze({ko:'매번 빠짐없이',ja:'いつも（どの時も、毎回）',en:'always; every time',zh:'总是；每次'}),
     selected:Object.freeze({
       ko:'“항상”은 예외 없이 매번 같은 일이 일어남을 나타냅니다.',
       ja:'「항상」は、例外なく毎回同じことが起こることを表します。',
@@ -1375,7 +1375,7 @@ const FREQUENCY_WORDS=Object.freeze({
     })
   }),
   often:Object.freeze({
-    meaning:Object.freeze({ko:'횟수가 많게',ja:'よく；頻繁に',en:'often; frequently',zh:'经常；频繁'}),
+    meaning:Object.freeze({ko:'횟수가 많게',ja:'よく（回数が多く、頻繁に）',en:'often; frequently',zh:'经常；频繁'}),
     selected:Object.freeze({
       ko:'“자주”는 어떤 일이 여러 번, 높은 빈도로 일어남을 나타냅니다.',
       ja:'「자주」は、あることが何度も高い頻度で起こることを表します。',
@@ -1384,7 +1384,7 @@ const FREQUENCY_WORDS=Object.freeze({
     })
   }),
   sometimes:Object.freeze({
-    meaning:Object.freeze({ko:'때때로; 어떤 때에는',ja:'時々；たまに',en:'sometimes; occasionally',zh:'有时；偶尔'}),
+    meaning:Object.freeze({ko:'때때로; 어떤 때에는',ja:'時々（いつもではなく、たまに）',en:'sometimes; occasionally',zh:'有时；偶尔'}),
     selected:Object.freeze({
       ko:'“가끔”은 늘 그렇지는 않고 어떤 때에만 일이 일어남을 나타냅니다.',
       ja:'「가끔」は、いつもではなく、ある時だけ起こることを表します。',
@@ -1393,7 +1393,7 @@ const FREQUENCY_WORDS=Object.freeze({
     })
   }),
   notAtAll:Object.freeze({
-    meaning:Object.freeze({ko:'부정문에서 조금도 아님',ja:'否定とともに「まったく～ない」',en:'not at all (with a negative)',zh:'与否定搭配，完全不'}),
+    meaning:Object.freeze({ko:'부정문에서 조금도 아님',ja:'まったく（否定とともに「少しも～ない」）',en:'not at all (with a negative)',zh:'与否定搭配，完全不'}),
     selected:Object.freeze({
       ko:'“전혀”는 “안·못·없다” 같은 부정 표현과 함께 정도나 횟수가 조금도 없음을 강조합니다.',
       ja:'「전혀」は「안・못・없다」などの否定表現とともに使い、程度や回数がまったくないことを強調します。',
@@ -1417,19 +1417,19 @@ const reviewedFrequencyItem=(id,term,key,example,exampleI18n,evidence)=>{
       meaning:FREQUENCY_WORDS[choiceKey].meaning,
       explanationI18n:FREQUENCY_WORDS[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】항상=매번, 자주=높은 빈도, 가끔=어떤 때에만, 전혀=부정 표현과 함께 0회·0정도로 빈도가 다릅니다.\n【재사용 풀이】${FREQUENCY_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】항상＝毎回、자주＝高い頻度、가끔＝ある時だけ、전혀＝否定表現とともに0回・0程度で、頻度が異なります。\n【再利用できる解き方】${FREQUENCY_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 항상 means every time, 자주 high frequency, 가끔 some occasions, and 전혀 zero frequency or degree with a negative expression.\n[Reusable method] ${FREQUENCY_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】항상表示每次，자주表示高频，가끔表示有时，전혀与否定搭配表示零次或零程度，频率各不相同。\n【通用解法】${FREQUENCY_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】항상=매번, 자주=높은 빈도, 가끔=어떤 때에만, 전혀=부정 표현과 함께 0회·0정도로 빈도가 다릅니다.\n【재사용 풀이】${FREQUENCY_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】항상＝毎回、자주＝高い頻度、가끔＝ある時だけ、전혀＝否定表現とともに0回・0程度で、頻度が異なります。\n【再利用できる解き方】${FREQUENCY_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] 항상 means every time, 자주 high frequency, 가끔 some occasions, and 전혀 zero frequency or degree with a negative expression.\n[Reusable method] ${FREQUENCY_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】항상表示每次，자주表示高频，가끔表示有时，전혀与否定搭配表示零次或零程度，频率各不相同。\n【通用解法】${FREQUENCY_METHOD.zh}`
     })
   });
 };
 
 const QUESTION_WORDS=Object.freeze({
   person:Object.freeze({
-    meaning:Object.freeze({ko:'사람을 물음',ja:'人を尋ねる「だれ」',en:'who; asks about a person',zh:'询问人物：谁'}),
+    meaning:Object.freeze({ko:'사람을 물음',ja:'誰（人を尋ねる言い方）',en:'who; asks about a person',zh:'询问人物：谁'}),
     selected:Object.freeze({
       ko:'“누구”는 이름이나 관계를 모르는 사람을 물을 때 씁니다.',
       ja:'「누구」は、名前や関係が分からない人を尋ねるときに使います。',
@@ -1438,7 +1438,7 @@ const QUESTION_WORDS=Object.freeze({
     })
   }),
   place:Object.freeze({
-    meaning:Object.freeze({ko:'장소를 물음',ja:'場所を尋ねる「どこ」',en:'where; asks about a place',zh:'询问地点：哪里'}),
+    meaning:Object.freeze({ko:'장소를 물음',ja:'どこ（場所を尋ねる言い方）',en:'where; asks about a place',zh:'询问地点：哪里'}),
     selected:Object.freeze({
       ko:'“어디”는 위치나 가고 오는 장소를 물을 때 씁니다.',
       ja:'「어디」は、位置や行き来する場所を尋ねるときに使います。',
@@ -1447,7 +1447,7 @@ const QUESTION_WORDS=Object.freeze({
     })
   }),
   time:Object.freeze({
-    meaning:Object.freeze({ko:'시간을 물음',ja:'時を尋ねる「いつ」',en:'when; asks about time',zh:'询问时间：什么时候'}),
+    meaning:Object.freeze({ko:'시간을 물음',ja:'いつ（時を尋ねる言い方）',en:'when; asks about time',zh:'询问时间：什么时候'}),
     selected:Object.freeze({
       ko:'“언제”는 일이 일어나는 날이나 시각을 물을 때 씁니다.',
       ja:'「언제」は、物事が起こる日や時刻を尋ねるときに使います。',
@@ -1456,7 +1456,7 @@ const QUESTION_WORDS=Object.freeze({
     })
   }),
   price:Object.freeze({
-    meaning:Object.freeze({ko:'가격·금액을 물음',ja:'値段・金額を尋ねる「いくら」',en:'how much; asks about a price or amount',zh:'询问价格或金额：多少钱'}),
+    meaning:Object.freeze({ko:'가격·금액을 물음',ja:'いくら（値段や金額を尋ねる言い方）',en:'how much; asks about a price or amount',zh:'询问价格或金额：多少钱'}),
     selected:Object.freeze({
       ko:'“얼마”는 물건의 가격이나 돈의 액수를 물을 때 씁니다.',
       ja:'「얼마」は、品物の値段やお金の金額を尋ねるときに使います。',
@@ -1480,12 +1480,12 @@ const reviewedQuestionWordItem=(id,term,key,example,exampleI18n,evidence)=>{
       meaning:QUESTION_WORDS[choiceKey].meaning,
       explanationI18n:QUESTION_WORDS[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】누구=사람, 어디=장소, 언제=날·시각, 얼마=가격·금액으로 묻는 대상이 다릅니다.\n【재사용 풀이】${QUESTION_WORD_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】누구＝人、어디＝場所、언제＝日・時刻、얼마＝値段・金額で、尋ねる対象が異なります。\n【再利用できる解き方】${QUESTION_WORD_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 누구 asks about a person, 어디 a place, 언제 a day or time, and 얼마 a price or amount.\n[Reusable method] ${QUESTION_WORD_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】누구问人物，어디问地点，언제问日期或时刻，얼마问价格或金额，询问对象各不相同。\n【通用解法】${QUESTION_WORD_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】누구=사람, 어디=장소, 언제=날·시각, 얼마=가격·금액으로 묻는 대상이 다릅니다.\n【재사용 풀이】${QUESTION_WORD_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】누구＝人、어디＝場所、언제＝日・時刻、얼마＝値段・金額で、尋ねる対象が異なります。\n【再利用できる解き方】${QUESTION_WORD_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] 누구 asks about a person, 어디 a place, 언제 a day or time, and 얼마 a price or amount.\n[Reusable method] ${QUESTION_WORD_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】누구问人物，어디问地点，언제问日期或时刻，얼마问价格或金额，询问对象各不相同。\n【通用解法】${QUESTION_WORD_METHOD.zh}`
     })
   });
 };
@@ -1543,19 +1543,19 @@ const reviewedParticleItem=(id,term,key,example,exampleI18n,evidence)=>{
       meaning:PARTICLE_ROLES[choiceKey].meaning,
       explanationI18n:PARTICLE_ROLES[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】에=이동 도착점, 에서=행동 장소, (으)로=수단·방법, 에게=사람인 받는 대상으로 명사의 역할이 다릅니다.\n【재사용 풀이】${PARTICLE_ROLE_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】에＝移動の到着点、에서＝動作の場所、(으)로＝手段・方法、에게＝人である受け手で、名詞の役割が異なります。\n【再利用できる解き方】${PARTICLE_ROLE_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 에 marks a destination, 에서 an action location, (으)로 a means or method, and 에게 a human recipient.\n[Reusable method] ${PARTICLE_ROLE_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】에表示移动目的地，에서表示动作场所，(으)로表示手段或方法，에게表示人的接受对象，名词的作用各不相同。\n【通用解法】${PARTICLE_ROLE_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】에=이동 도착점, 에서=행동 장소, (으)로=수단·방법, 에게=사람인 받는 대상으로 명사의 역할이 다릅니다.\n【재사용 풀이】${PARTICLE_ROLE_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】에＝移動の到着点、에서＝動作の場所、(으)로＝手段・方法、에게＝人である受け手で、名詞の役割が異なります。\n【再利用できる解き方】${PARTICLE_ROLE_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] 에 marks a destination, 에서 an action location, (으)로 a means or method, and 에게 a human recipient.\n[Reusable method] ${PARTICLE_ROLE_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】에表示移动目的地，에서表示动作场所，(으)로表示手段或方法，에게表示人的接受对象，名词的作用各不相同。\n【通用解法】${PARTICLE_ROLE_METHOD.zh}`
     })
   });
 };
 
 const DEMONSTRATIVES=Object.freeze({
   speaker:Object.freeze({
-    meaning:Object.freeze({ko:'화자 가까이에 있는 물건',ja:'話し手の近くの物（これ）',en:'object near the speaker (this)',zh:'靠近说话者的物品（这个）'}),
+    meaning:Object.freeze({ko:'화자 가까이에 있는 물건',ja:'これ（話し手の近くにある物）',en:'object near the speaker (this)',zh:'靠近说话者的物品（这个）'}),
     selected:Object.freeze({
       ko:'“이것”은 말하는 사람 가까이에 있는 물건을 가리킵니다.',
       ja:'「이것」は、話し手の近くにある物を指し、日本語の「これ」に当たります。',
@@ -1564,7 +1564,7 @@ const DEMONSTRATIVES=Object.freeze({
     })
   }),
   listenerOrMentioned:Object.freeze({
-    meaning:Object.freeze({ko:'청자 가까이·이미 말한 물건',ja:'聞き手の近く・話題の物（それ）',en:'object near listener or mentioned',zh:'靠近听话者或已提到的物品'}),
+    meaning:Object.freeze({ko:'청자 가까이·이미 말한 물건',ja:'それ（聞き手の近くにある物や話題の物）',en:'object near listener or mentioned',zh:'靠近听话者或已提到的物品'}),
     selected:Object.freeze({
       ko:'“그것”은 듣는 사람 가까이에 있거나 앞에서 이미 말한 물건을 가리킵니다.',
       ja:'「그것」は、聞き手の近くにある物や、すでに話題に出た物を指し、日本語の「それ」に当たります。',
@@ -1573,7 +1573,7 @@ const DEMONSTRATIVES=Object.freeze({
     })
   }),
   far:Object.freeze({
-    meaning:Object.freeze({ko:'화자·청자 모두에게서 먼 물건',ja:'二人から遠い物（あれ）',en:'object far from both people',zh:'离说话者和听话者都远的物品'}),
+    meaning:Object.freeze({ko:'화자·청자 모두에게서 먼 물건',ja:'あれ（話し手と聞き手の両方から遠い物）',en:'object far from both people',zh:'离说话者和听话者都远的物品'}),
     selected:Object.freeze({
       ko:'“저것”은 말하는 사람과 듣는 사람 모두에게서 먼 물건을 가리킵니다.',
       ja:'「저것」は、話し手と聞き手の両方から遠い物を指し、日本語の「あれ」に当たります。',
@@ -1582,7 +1582,7 @@ const DEMONSTRATIVES=Object.freeze({
     })
   }),
   which:Object.freeze({
-    meaning:Object.freeze({ko:'여럿 중 어떤 물건인지 물음',ja:'複数から選ぶ物（どれ）',en:'which object among choices',zh:'在多个选项中询问哪一个'}),
+    meaning:Object.freeze({ko:'여럿 중 어떤 물건인지 물음',ja:'どれ（複数の物から一つを尋ねる言い方）',en:'which object among choices',zh:'在多个选项中询问哪一个'}),
     selected:Object.freeze({
       ko:'“어느 것”은 여러 물건 가운데 어떤 물건인지 물을 때 씁니다.',
       ja:'「어느 것」は、複数の物からどの物かを尋ねる表現で、日本語の「どれ」に当たります。',
@@ -1606,28 +1606,28 @@ const reviewedDemonstrativeItem=(id,term,key,example,exampleI18n,evidence)=>{
       meaning:DEMONSTRATIVES[choiceKey].meaning,
       explanationI18n:DEMONSTRATIVES[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】이것=화자 가까이, 그것=청자 가까이·이미 말함, 저것=둘 모두에게서 멂, 어느 것=여럿 중 질문으로 관계가 다릅니다.\n【재사용 풀이】${DEMONSTRATIVE_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】이것＝これ（話し手の近く）、그것＝それ（聞き手の近く・話題の物）、저것＝あれ（二人から遠い）、어느 것＝どれ（複数から質問）で、物と人の関係が異なります。\n【再利用できる解き方】${DEMONSTRATIVE_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 이것 is near the speaker, 그것 near the listener or already mentioned, 저것 far from both, and 어느 것 asks which one among choices.\n[Reusable method] ${DEMONSTRATIVE_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】이것靠近说话者，그것靠近听话者或前文已提到，저것离双方都远，어느 것用于在多个选项中提问，所指关系各不相同。\n【通用解法】${DEMONSTRATIVE_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】이것=화자 가까이, 그것=청자 가까이·이미 말함, 저것=둘 모두에게서 멂, 어느 것=여럿 중 질문으로 관계가 다릅니다.\n【재사용 풀이】${DEMONSTRATIVE_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】이것＝これ（話し手の近く）、그것＝それ（聞き手の近く・話題の物）、저것＝あれ（二人から遠い）、어느 것＝どれ（複数から質問）で、物と人の関係が異なります。\n【再利用できる解き方】${DEMONSTRATIVE_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] 이것 is near the speaker, 그것 near the listener or already mentioned, 저것 far from both, and 어느 것 asks which one among choices.\n[Reusable method] ${DEMONSTRATIVE_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】이것靠近说话者，그것靠近听话者或前文已提到，저것离双方都远，어느 것用于在多个选项中提问，所指关系各不相同。\n【通用解法】${DEMONSTRATIVE_METHOD.zh}`
     })
   });
 };
 
 const COUNTER_UNITS=Object.freeze({
   people:Object.freeze({
-    meaning:Object.freeze({ko:'사람을 세는 단위',ja:'人を数える助数詞（～人）',en:'counter for people',zh:'数人的量词（名、位）'}),
+    meaning:Object.freeze({ko:'사람을 세는 단위',ja:'～人（人を数える言い方）',en:'counter for people',zh:'数人的量词（名、位）'}),
     selected:Object.freeze({
       ko:'“명”은 사람의 수를 셀 때 쓰는 단위입니다.',
-      ja:'「명」は、人の人数を数えるときに使う助数詞です。',
+      ja:'「명」は、人数を数えるときに使う助数詞です。',
       en:'“명” is the counter used for people.',
       zh:'“명”是计算人数时使用的量词。'
     })
   }),
   general:Object.freeze({
-    meaning:Object.freeze({ko:'일반적인 물건을 세는 단위',ja:'一般の物を数える助数詞（～個）',en:'general counter for objects',zh:'数一般物品的量词（个）'}),
+    meaning:Object.freeze({ko:'일반적인 물건을 세는 단위',ja:'～個（一般的な物を数える言い方）',en:'general counter for objects',zh:'数一般物品的量词（个）'}),
     selected:Object.freeze({
       ko:'“개”는 특별한 단위가 없는 일반적인 물건의 수를 셀 때 씁니다.',
       ja:'「개」は、専用の助数詞がない一般の物を数えるときに使います。',
@@ -1636,7 +1636,7 @@ const COUNTER_UNITS=Object.freeze({
     })
   }),
   bottles:Object.freeze({
-    meaning:Object.freeze({ko:'병에 든 것을 세는 단위',ja:'瓶入りの物を数える助数詞（～本）',en:'counter for bottles',zh:'数瓶装物品的量词（瓶）'}),
+    meaning:Object.freeze({ko:'병에 든 것을 세는 단위',ja:'～本（瓶に入った物を数える言い方）',en:'counter for bottles',zh:'数瓶装物品的量词（瓶）'}),
     selected:Object.freeze({
       ko:'“병”은 물이나 음료처럼 병에 담긴 것의 수를 셀 때 쓰는 단위입니다.',
       ja:'「병」は、水や飲み物など瓶に入った物を数えるときに使う助数詞です。',
@@ -1645,7 +1645,7 @@ const COUNTER_UNITS=Object.freeze({
     })
   }),
   volumes:Object.freeze({
-    meaning:Object.freeze({ko:'책·공책을 세는 단위',ja:'本・冊子を数える助数詞（～冊）',en:'counter for books and bound volumes',zh:'数书本的量词（册、本）'}),
+    meaning:Object.freeze({ko:'책·공책을 세는 단위',ja:'～冊（本やノートを数える言い方）',en:'counter for books and bound volumes',zh:'数书本的量词（册、本）'}),
     selected:Object.freeze({
       ko:'“권”은 책이나 공책처럼 묶인 책 형태의 물건을 셀 때 쓰는 단위입니다.',
       ja:'「권」は、本やノートなど冊子になった物を数えるときに使う助数詞です。',
@@ -1669,19 +1669,19 @@ const reviewedCounterItem=(id,term,key,example,exampleI18n,evidence)=>{
       meaning:COUNTER_UNITS[choiceKey].meaning,
       explanationI18n:COUNTER_UNITS[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】명=사람, 개=일반 물건, 병=병에 든 것, 권=책·공책으로 세는 대상이 다릅니다.\n【재사용 풀이】${COUNTER_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】명＝人、개＝一般の物、병＝瓶入りの物、권＝本・ノートで、数える対象が異なります。\n【再利用できる解き方】${COUNTER_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 명 counts people, 개 general objects, 병 bottles, and 권 books or notebooks.\n[Reusable method] ${COUNTER_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】명数人，개数一般物品，병数瓶装物品，권数书或笔记本，计数对象各不相同。\n【通用解法】${COUNTER_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】명=사람, 개=일반 물건, 병=병에 든 것, 권=책·공책으로 세는 대상이 다릅니다.\n【재사용 풀이】${COUNTER_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】명＝人、개＝一般の物、병＝瓶入りの物、권＝本・ノートで、数える対象が異なります。\n【再利用できる解き方】${COUNTER_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] 명 counts people, 개 general objects, 병 bottles, and 권 books or notebooks.\n[Reusable method] ${COUNTER_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】명数人，개数一般物品，병数瓶装物品，권数书或笔记本，计数对象各不相同。\n【通用解法】${COUNTER_METHOD.zh}`
     })
   });
 };
 
 const WEARING_ACTIONS=Object.freeze({
   clothes:Object.freeze({
-    meaning:Object.freeze({ko:'옷을 몸에 입음',ja:'服を着る',en:'put on or wear clothes',zh:'穿衣服'}),
+    meaning:Object.freeze({ko:'옷을 몸에 입음',ja:'着る（服を身につける）',en:'put on or wear clothes',zh:'穿衣服'}),
     selected:Object.freeze({
       ko:'“입다”는 코트·셔츠처럼 몸에 걸치는 옷을 착용할 때 씁니다.',
       ja:'「입다」は、コートやシャツなど、体に着る服を身につけるときに使います。',
@@ -1690,7 +1690,7 @@ const WEARING_ACTIONS=Object.freeze({
     })
   }),
   footwear:Object.freeze({
-    meaning:Object.freeze({ko:'신발·양말을 발에 신음',ja:'靴・靴下を履く',en:'put on or wear shoes or socks',zh:'穿鞋或袜子'}),
+    meaning:Object.freeze({ko:'신발·양말을 발에 신음',ja:'履く（靴や靴下を身につける）',en:'put on or wear shoes or socks',zh:'穿鞋或袜子'}),
     selected:Object.freeze({
       ko:'“신다”는 신발이나 양말처럼 발에 착용하는 것을 말할 때 씁니다.',
       ja:'「신다」は、靴や靴下など、足につける物を履くときに使います。',
@@ -1699,7 +1699,7 @@ const WEARING_ACTIONS=Object.freeze({
     })
   }),
   headwear:Object.freeze({
-    meaning:Object.freeze({ko:'모자를 머리에 씀',ja:'帽子をかぶる',en:'put on or wear a hat',zh:'戴帽子'}),
+    meaning:Object.freeze({ko:'모자를 머리에 씀',ja:'かぶる（帽子などを頭につける）',en:'put on or wear a hat',zh:'戴帽子'}),
     selected:Object.freeze({
       ko:'“쓰다”는 모자처럼 머리에 얹어 착용하는 것을 말할 때 씁니다.',
       ja:'「쓰다」は、帽子のように頭にかぶる物を身につけるときに使います。',
@@ -1708,7 +1708,7 @@ const WEARING_ACTIONS=Object.freeze({
     })
   }),
   gloves:Object.freeze({
-    meaning:Object.freeze({ko:'장갑을 손에 낌',ja:'手袋をはめる',en:'put on or wear gloves',zh:'戴手套'}),
+    meaning:Object.freeze({ko:'장갑을 손에 낌',ja:'はめる（手袋などを手につける）',en:'put on or wear gloves',zh:'戴手套'}),
     selected:Object.freeze({
       ko:'“끼다”는 장갑처럼 손이나 손가락에 밀착시켜 착용하는 것을 말할 때 씁니다.',
       ja:'「끼다」は、手袋のように手や指に密着させて身につけるときに使います。',
@@ -1732,19 +1732,19 @@ const reviewedWearingActionItem=(id,term,key,example,exampleI18n,evidence)=>{
       meaning:WEARING_ACTIONS[choiceKey].meaning,
       explanationI18n:WEARING_ACTIONS[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】입다=몸의 옷, 신다=발의 신발·양말, 쓰다=머리의 모자, 끼다=손의 장갑으로 착용하는 물건과 위치가 다릅니다.\n【재사용 풀이】${WEARING_ACTION_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】입다＝体の服、신다＝足の靴・靴下、쓰다＝頭の帽子、끼다＝手の手袋で、身につける物と位置が異なります。\n【再利用できる解き方】${WEARING_ACTION_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 입다 is for clothes on the body, 신다 shoes or socks on the feet, 쓰다 a hat on the head, and 끼다 gloves on the hands.\n[Reusable method] ${WEARING_ACTION_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】입다用于身上的衣服，신다用于脚上的鞋或袜子，쓰다用于头上的帽子，끼다用于手上的手套，穿戴物和部位各不相同。\n【通用解法】${WEARING_ACTION_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】입다=몸의 옷, 신다=발의 신발·양말, 쓰다=머리의 모자, 끼다=손의 장갑으로 착용하는 물건과 위치가 다릅니다.\n【재사용 풀이】${WEARING_ACTION_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】입다＝体の服、신다＝足の靴・靴下、쓰다＝頭の帽子、끼다＝手の手袋で、身につける物と位置が異なります。\n【再利用できる解き方】${WEARING_ACTION_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] 입다 is for clothes on the body, 신다 shoes or socks on the feet, 쓰다 a hat on the head, and 끼다 gloves on the hands.\n[Reusable method] ${WEARING_ACTION_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】입다用于身上的衣服，신다用于脚上的鞋或袜子，쓰다用于头上的帽子，끼다用于手上的手套，穿戴物和部位各不相同。\n【通用解法】${WEARING_ACTION_METHOD.zh}`
     })
   });
 };
 
 const TRANSIT_ACTIONS=Object.freeze({
   board:Object.freeze({
-    meaning:Object.freeze({ko:'교통수단에 올라 이용함',ja:'乗り物に乗る',en:'board or ride transport',zh:'乘坐交通工具'}),
+    meaning:Object.freeze({ko:'교통수단에 올라 이용함',ja:'乗る（乗り物に乗り込む）',en:'board or ride transport',zh:'乘坐交通工具'}),
     selected:Object.freeze({
       ko:'“타다”는 버스·지하철 같은 교통수단에 올라 이용할 때 씁니다.',
       ja:'「타다」は、バスや地下鉄などの乗り物に乗って利用するときに使います。',
@@ -1753,7 +1753,7 @@ const TRANSIT_ACTIONS=Object.freeze({
     })
   }),
   exit:Object.freeze({
-    meaning:Object.freeze({ko:'교통수단에서 밖으로 나옴',ja:'乗り物から降りる',en:'get off transport',zh:'从交通工具下来'}),
+    meaning:Object.freeze({ko:'교통수단에서 밖으로 나옴',ja:'降りる（乗り物から出る）',en:'get off transport',zh:'从交通工具下来'}),
     selected:Object.freeze({
       ko:'“내리다”는 타고 있던 버스·지하철 같은 교통수단에서 밖으로 나올 때 씁니다.',
       ja:'「내리다」は、乗っていたバスや地下鉄などの乗り物から外へ出るときに使います。',
@@ -1762,7 +1762,7 @@ const TRANSIT_ACTIONS=Object.freeze({
     })
   }),
   transfer:Object.freeze({
-    meaning:Object.freeze({ko:'다른 노선·교통수단으로 바꾸어 탐',ja:'別の路線・乗り物に乗り換える',en:'transfer to another line or vehicle',zh:'换乘其他线路或交通工具'}),
+    meaning:Object.freeze({ko:'다른 노선·교통수단으로 바꾸어 탐',ja:'乗り換える（別の路線や乗り物に移る）',en:'transfer to another line or vehicle',zh:'换乘其他线路或交通工具'}),
     selected:Object.freeze({
       ko:'“갈아타다”는 타고 있던 교통수단에서 내려 다른 노선이나 교통수단으로 바꾸어 탈 때 씁니다.',
       ja:'「갈아타다」は、今の乗り物を降りて、別の路線や乗り物に乗り換えるときに使います。',
@@ -1771,7 +1771,7 @@ const TRANSIT_ACTIONS=Object.freeze({
     })
   }),
   cross:Object.freeze({
-    meaning:Object.freeze({ko:'길·강의 한쪽에서 반대쪽으로 감',ja:'道・川などを渡る',en:'cross a road, river, or similar space',zh:'穿过道路、河流等'}),
+    meaning:Object.freeze({ko:'길·강의 한쪽에서 반대쪽으로 감',ja:'渡る（道や川などの向こう側へ行く）',en:'cross a road, river, or similar space',zh:'穿过道路、河流等'}),
     selected:Object.freeze({
       ko:'“건너다”는 길·횡단보도·강의 한쪽에서 반대쪽으로 이동할 때 씁니다.',
       ja:'「건너다」は、道・横断歩道・川などの一方から反対側へ移動するときに使います。',
@@ -1795,19 +1795,19 @@ const reviewedTransitActionItem=(id,term,key,example,exampleI18n,evidence)=>{
       meaning:TRANSIT_ACTIONS[choiceKey].meaning,
       explanationI18n:TRANSIT_ACTIONS[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】타다=교통수단에 올라감, 내리다=교통수단에서 나옴, 갈아타다=다른 노선·교통수단으로 바꿈, 건너다=길의 반대쪽으로 감으로 이동의 단계가 다릅니다.\n【재사용 풀이】${TRANSIT_ACTION_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】타다＝乗り物に乗る、내리다＝乗り物から降りる、갈아타다＝別の路線・乗り物に乗り換える、건너다＝道の反対側へ渡る、という移動の段階が異なります。\n【再利用できる解き方】${TRANSIT_ACTION_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 타다 boards transport, 내리다 leaves it, 갈아타다 changes to another line or vehicle, and 건너다 crosses to the other side of a road.\n[Reusable method] ${TRANSIT_ACTION_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】타다表示登上交通工具，내리다表示从交通工具下来，갈아타다表示换乘其他线路或交通工具，건너다表示走到道路另一侧，移动阶段各不相同。\n【通用解法】${TRANSIT_ACTION_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】타다=교통수단에 올라감, 내리다=교통수단에서 나옴, 갈아타다=다른 노선·교통수단으로 바꿈, 건너다=길의 반대쪽으로 감으로 이동의 단계가 다릅니다.\n【재사용 풀이】${TRANSIT_ACTION_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】타다＝乗り物に乗る、내리다＝乗り物から降りる、갈아타다＝別の路線・乗り物に乗り換える、건너다＝道の反対側へ渡る、という移動の段階が異なります。\n【再利用できる解き方】${TRANSIT_ACTION_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] 타다 boards transport, 내리다 leaves it, 갈아타다 changes to another line or vehicle, and 건너다 crosses to the other side of a road.\n[Reusable method] ${TRANSIT_ACTION_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】타다表示登上交通工具，내리다表示从交通工具下来，갈아타다表示换乘其他线路或交通工具，건너다表示走到道路另一侧，移动阶段各不相同。\n【通用解法】${TRANSIT_ACTION_METHOD.zh}`
     })
   });
 };
 
 const HOUSEWORK_ACTIONS=Object.freeze({
   clean:Object.freeze({
-    meaning:Object.freeze({ko:'방이나 장소를 깨끗하게 함',ja:'部屋や場所を掃除する',en:'clean a room or place',zh:'打扫房间或场所'}),
+    meaning:Object.freeze({ko:'방이나 장소를 깨끗하게 함',ja:'掃除する（部屋や場所をきれいにする）',en:'clean a room or place',zh:'打扫房间或场所'}),
     selected:Object.freeze({
       ko:'“청소하다”는 방이나 장소의 먼지·쓰레기를 치워 깨끗하게 할 때 씁니다.',
       ja:'「청소하다」は、部屋や場所のほこり・ごみを片づけて、きれいにするときに使います。',
@@ -1816,7 +1816,7 @@ const HOUSEWORK_ACTIONS=Object.freeze({
     })
   }),
   laundry:Object.freeze({
-    meaning:Object.freeze({ko:'옷 등을 물로 빨아 깨끗하게 함',ja:'服などを洗濯する',en:'wash clothes or other laundry',zh:'清洗衣物等'}),
+    meaning:Object.freeze({ko:'옷 등을 물로 빨아 깨끗하게 함',ja:'洗濯する（服やタオルなどを洗う）',en:'wash clothes or other laundry',zh:'清洗衣物等'}),
     selected:Object.freeze({
       ko:'“빨래하다”는 입은 옷·수건 같은 천을 물로 빨아 깨끗하게 할 때 씁니다.',
       ja:'「빨래하다」は、着た服やタオルなどの布類を水で洗って、きれいにするときに使います。',
@@ -1825,7 +1825,7 @@ const HOUSEWORK_ACTIONS=Object.freeze({
     })
   }),
   dishes:Object.freeze({
-    meaning:Object.freeze({ko:'먹고 난 그릇을 씻어 정리함',ja:'食後の食器を洗う',en:'wash and put away used dishes',zh:'清洗并整理用过的餐具'}),
+    meaning:Object.freeze({ko:'먹고 난 그릇을 씻어 정리함',ja:'食器を洗う（使った皿や調理器具を洗う）',en:'wash and put away used dishes',zh:'清洗并整理用过的餐具'}),
     selected:Object.freeze({
       ko:'“설거지하다”는 식사 뒤에 사용한 그릇·컵·수저를 씻어 정리할 때 씁니다.',
       ja:'「설거지하다」は、食事の後に使った皿・コップ・箸などを洗って片づけるときに使います。',
@@ -1834,7 +1834,7 @@ const HOUSEWORK_ACTIONS=Object.freeze({
     })
   }),
   cook:Object.freeze({
-    meaning:Object.freeze({ko:'재료를 이용해 음식을 만듦',ja:'材料を使って料理を作る',en:'make food from ingredients',zh:'用食材制作饭菜'}),
+    meaning:Object.freeze({ko:'재료를 이용해 음식을 만듦',ja:'料理する（材料から食べ物を作る）',en:'make food from ingredients',zh:'用食材制作饭菜'}),
     selected:Object.freeze({
       ko:'“요리하다”는 재료를 손질하고 익혀 음식을 만들 때 씁니다.',
       ja:'「요리하다」は、材料を下ごしらえしたり加熱したりして、料理を作るときに使います。',
@@ -1858,19 +1858,19 @@ const reviewedHouseworkActionItem=(id,term,key,example,exampleI18n,evidence)=>{
       meaning:HOUSEWORK_ACTIONS[choiceKey].meaning,
       explanationI18n:HOUSEWORK_ACTIONS[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】청소하다=방·장소, 빨래하다=옷·수건, 설거지하다=식사 뒤 그릇, 요리하다=재료로 음식을 만드는 일로 대상과 결과가 다릅니다.\n【재사용 풀이】${HOUSEWORK_ACTION_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】청소하다＝部屋・場所、빨래하다＝服・タオル、설거지하다＝食後の食器、요리하다＝材料から料理を作ることで、対象と結果が異なります。\n【再利用できる解き方】${HOUSEWORK_ACTION_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 청소하다 targets a room or place, 빨래하다 clothes or towels, 설거지하다 dishes after a meal, and 요리하다 ingredients turned into food.\n[Reusable method] ${HOUSEWORK_ACTION_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】청소하다针对房间或场所，빨래하다针对衣服或毛巾，설거지하다针对饭后的餐具，요리하다用食材制作饭菜，对象和结果各不相同。\n【通用解法】${HOUSEWORK_ACTION_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】청소하다=방·장소, 빨래하다=옷·수건, 설거지하다=식사 뒤 그릇, 요리하다=재료로 음식을 만드는 일로 대상과 결과가 다릅니다.\n【재사용 풀이】${HOUSEWORK_ACTION_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】청소하다＝部屋・場所、빨래하다＝服・タオル、설거지하다＝食後の食器、요리하다＝材料から料理を作ることで、対象と結果が異なります。\n【再利用できる解き方】${HOUSEWORK_ACTION_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] 청소하다 targets a room or place, 빨래하다 clothes or towels, 설거지하다 dishes after a meal, and 요리하다 ingredients turned into food.\n[Reusable method] ${HOUSEWORK_ACTION_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】청소하다针对房间或场所，빨래하다针对衣服或毛巾，설거지하다针对饭后的餐具，요리하다用食材制作饭菜，对象和结果各不相同。\n【通用解法】${HOUSEWORK_ACTION_METHOD.zh}`
     })
   });
 };
 
 const DIRECTIONAL_ACTIONS=Object.freeze({
   upward:Object.freeze({
-    meaning:Object.freeze({ko:'낮은 곳에서 높은 곳으로 이동하다',ja:'低い所から高い所へ上がる',en:'move upward to a higher place',zh:'从低处移动到高处'}),
+    meaning:Object.freeze({ko:'낮은 곳에서 높은 곳으로 이동하다',ja:'上がる（低い所から高い所へ行く）',en:'move upward to a higher place',zh:'从低处移动到高处'}),
     selected:Object.freeze({
       ko:'“올라가다”는 낮은 곳에서 계단 위·위층처럼 더 높은 곳으로 이동할 때 씁니다.',
       ja:'「올라가다」は、低い所から階段の上・上の階など、より高い所へ移動するときに使います。',
@@ -1879,7 +1879,7 @@ const DIRECTIONAL_ACTIONS=Object.freeze({
     })
   }),
   downward:Object.freeze({
-    meaning:Object.freeze({ko:'높은 곳에서 낮은 곳으로 이동하다',ja:'高い所から低い所へ下りる',en:'move downward to a lower place',zh:'从高处移动到低处'}),
+    meaning:Object.freeze({ko:'높은 곳에서 낮은 곳으로 이동하다',ja:'下りる（高い所から低い所へ行く）',en:'move downward to a lower place',zh:'从高处移动到低处'}),
     selected:Object.freeze({
       ko:'“내려가다”는 높은 곳에서 아래층·아래쪽처럼 더 낮은 곳으로 이동할 때 씁니다.',
       ja:'「내려가다」は、高い所から下の階・下の方など、より低い所へ移動するときに使います。',
@@ -1888,7 +1888,7 @@ const DIRECTIONAL_ACTIONS=Object.freeze({
     })
   }),
   inward:Object.freeze({
-    meaning:Object.freeze({ko:'바깥에서 안으로 이동하다',ja:'外から中へ入る',en:'move from outside to inside',zh:'从外面移动到里面'}),
+    meaning:Object.freeze({ko:'바깥에서 안으로 이동하다',ja:'入る（外から中へ行く）',en:'move from outside to inside',zh:'从外面移动到里面'}),
     selected:Object.freeze({
       ko:'“들어가다”는 건물·방의 바깥에서 그 안쪽으로 이동할 때 씁니다.',
       ja:'「들어가다」は、建物・部屋の外から、その中へ移動するときに使います。',
@@ -1897,7 +1897,7 @@ const DIRECTIONAL_ACTIONS=Object.freeze({
     })
   }),
   outward:Object.freeze({
-    meaning:Object.freeze({ko:'안에서 바깥으로 이동하다',ja:'中から外へ出る',en:'move from inside to outside',zh:'从里面移动到外面'}),
+    meaning:Object.freeze({ko:'안에서 바깥으로 이동하다',ja:'出てくる（中から外へ来る）',en:'move from inside to outside',zh:'从里面移动到外面'}),
     selected:Object.freeze({
       ko:'“나오다”는 건물·방의 안에서 그 바깥쪽으로 이동할 때 씁니다.',
       ja:'「나오다」は、建物・部屋の中から、その外へ移動するときに使います。',
@@ -1921,19 +1921,19 @@ const reviewedDirectionalActionItem=(id,term,key,example,exampleI18n,evidence)=>
       meaning:DIRECTIONAL_ACTIONS[choiceKey].meaning,
       explanationI18n:DIRECTIONAL_ACTIONS[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】올라가다=낮은 곳→높은 곳, 내려가다=높은 곳→낮은 곳, 들어가다=밖→안, 나오다=안→밖으로 출발점과 도착점이 다릅니다.\n【재사용 풀이】${DIRECTIONAL_ACTION_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】올라가다＝低い所→高い所、내려가다＝高い所→低い所、들어가다＝外→中、나오다＝中→外で、出発点と到着点が異なります。\n【再利用できる解き方】${DIRECTIONAL_ACTION_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 올라가다 moves low to high, 내려가다 high to low, 들어가다 outside to inside, and 나오다 inside to outside.\n[Reusable method] ${DIRECTIONAL_ACTION_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】올라가다表示低处→高处，내려가다表示高处→低处，들어가다表示外→内，나오다表示内→外，出发点和目的地各不相同。\n【通用解法】${DIRECTIONAL_ACTION_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】올라가다=낮은 곳→높은 곳, 내려가다=높은 곳→낮은 곳, 들어가다=밖→안, 나오다=안→밖으로 출발점과 도착점이 다릅니다.\n【재사용 풀이】${DIRECTIONAL_ACTION_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】올라가다＝低い所→高い所、내려가다＝高い所→低い所、들어가다＝外→中、나오다＝中→外で、出発点と到着点が異なります。\n【再利用できる解き方】${DIRECTIONAL_ACTION_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] 올라가다 moves low to high, 내려가다 high to low, 들어가다 outside to inside, and 나오다 inside to outside.\n[Reusable method] ${DIRECTIONAL_ACTION_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】올라가다表示低处→高处，내려가다表示高处→低处，들어가다表示外→内，나오다表示内→外，出发点和目的地各不相同。\n【通用解法】${DIRECTIONAL_ACTION_METHOD.zh}`
     })
   });
 };
 
 const OBJECT_ACTIONS=Object.freeze({
   find:Object.freeze({
-    meaning:Object.freeze({ko:'찾아보거나 살펴서 필요한 물건을 발견하다',ja:'探したり調べたりして必要な物を見つける',en:'find a needed object by looking for it',zh:'寻找或查看后找到需要的物品'}),
+    meaning:Object.freeze({ko:'찾아보거나 살펴서 필요한 물건을 발견하다',ja:'探す・見つける（必要な物を探して見つける）',en:'find a needed object by looking for it',zh:'寻找或查看后找到需要的物品'}),
     selected:Object.freeze({
       ko:'“찾다”는 어디에 있는지 모르던 물건을 살펴서 발견할 때 씁니다.',
       ja:'「찾다」は、どこにあるか分からなかった物を探して見つけるときに使います。',
@@ -1942,7 +1942,7 @@ const OBJECT_ACTIONS=Object.freeze({
     })
   }),
   lose:Object.freeze({
-    meaning:Object.freeze({ko:'가지고 있던 물건이 어디 있는지 모르게 되다',ja:'持っていた物がどこにあるか分からなくなる',en:'lose track of an object you had',zh:'不知道原来持有的物品在哪里了'}),
+    meaning:Object.freeze({ko:'가지고 있던 물건이 어디 있는지 모르게 되다',ja:'なくす（持っていた物を見失う）',en:'lose track of an object you had',zh:'不知道原来持有的物品在哪里了'}),
     selected:Object.freeze({
       ko:'“잃어버리다”는 가지고 있던 물건이 없어져서 어디 있는지 모를 때 씁니다.',
       ja:'「잃어버리다」は、持っていた物がなくなり、どこにあるか分からないときに使います。',
@@ -1951,7 +1951,7 @@ const OBJECT_ACTIONS=Object.freeze({
     })
   }),
   bring:Object.freeze({
-    meaning:Object.freeze({ko:'물건을 가지고 말하는 사람 쪽으로 오다',ja:'物を持って話し手のいる方へ来る',en:'bring an object toward the speaker',zh:'拿着物品来到说话人这边'}),
+    meaning:Object.freeze({ko:'물건을 가지고 말하는 사람 쪽으로 오다',ja:'持ってくる（物を持ってこちらへ来る）',en:'bring an object toward the speaker',zh:'拿着物品来到说话人这边'}),
     selected:Object.freeze({
       ko:'“가져오다”는 물건을 가지고 말하는 사람이나 기준 장소 쪽으로 올 때 씁니다.',
       ja:'「가져오다」は、物を持って話し手や基準となる場所の方へ来るときに使います。',
@@ -1960,7 +1960,7 @@ const OBJECT_ACTIONS=Object.freeze({
     })
   }),
   take:Object.freeze({
-    meaning:Object.freeze({ko:'물건을 가지고 말하는 사람에게서 다른 곳으로 가다',ja:'物を持って話し手の所から別の場所へ行く',en:'take an object away from the speaker',zh:'拿着物品从说话人这里去别处'}),
+    meaning:Object.freeze({ko:'물건을 가지고 말하는 사람에게서 다른 곳으로 가다',ja:'持っていく（物を持って別の場所へ行く）',en:'take an object away from the speaker',zh:'拿着物品从说话人这里去别处'}),
     selected:Object.freeze({
       ko:'“가져가다”는 물건을 가지고 말하는 사람이나 기준 장소에서 다른 곳으로 갈 때 씁니다.',
       ja:'「가져가다」は、物を持って話し手や基準となる場所から別の所へ行くときに使います。',
@@ -1984,19 +1984,19 @@ const reviewedObjectActionItem=(id,term,key,example,exampleI18n,evidence)=>{
       meaning:OBJECT_ACTIONS[choiceKey].meaning,
       explanationI18n:OBJECT_ACTIONS[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】찾다=찾아서 발견, 잃어버리다=가지고 있던 물건의 위치를 모름, 가져오다=물건을 들고 이쪽으로 옴, 가져가다=물건을 들고 이곳에서 감으로 상태와 방향이 다릅니다.\n【재사용 풀이】${OBJECT_ACTION_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】찾다＝探して発見、잃어버리다＝持っていた物の場所が不明、가져오다＝物を持ってこちらへ来る、가져가다＝物を持ってここから行く、という状態・方向の違いがあります。\n【再利用できる解き方】${OBJECT_ACTION_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 찾다 means finding after looking, 잃어버리다 losing track of something you had, 가져오다 bringing it here, and 가져가다 taking it away.\n[Reusable method] ${OBJECT_ACTION_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】찾다表示寻找后发现，잃어버리다表示不知道原有物品在哪里，가져오다表示拿到这边来，가져가다表示从这里拿走，状态和方向不同。\n【通用解法】${OBJECT_ACTION_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】찾다=찾아서 발견, 잃어버리다=가지고 있던 물건의 위치를 모름, 가져오다=물건을 들고 이쪽으로 옴, 가져가다=물건을 들고 이곳에서 감으로 상태와 방향이 다릅니다.\n【재사용 풀이】${OBJECT_ACTION_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】찾다＝探して発見、잃어버리다＝持っていた物の場所が不明、가져오다＝物を持ってこちらへ来る、가져가다＝物を持ってここから行く、という状態・方向の違いがあります。\n【再利用できる解き方】${OBJECT_ACTION_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] 찾다 means finding after looking, 잃어버리다 losing track of something you had, 가져오다 bringing it here, and 가져가다 taking it away.\n[Reusable method] ${OBJECT_ACTION_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】찾다表示寻找后发现，잃어버리다表示不知道原有物品在哪里，가져오다表示拿到这边来，가져가다表示从这里拿走，状态和方向不同。\n【通用解法】${OBJECT_ACTION_METHOD.zh}`
     })
   });
 };
 
 const MORNING_ROUTINE_ACTIONS=Object.freeze({
   wake:Object.freeze({
-    meaning:Object.freeze({ko:'잠자리에서 몸을 일으키다',ja:'寝床から起きる',en:'get up from bed',zh:'从床上起来'}),
+    meaning:Object.freeze({ko:'잠자리에서 몸을 일으키다',ja:'起きる（寝床から体を起こす）',en:'get up from bed',zh:'从床上起来'}),
     selected:Object.freeze({
       ko:'“일어나다”는 잠을 잔 뒤 침대나 이불에서 몸을 일으킬 때 씁니다.',
       ja:'「일어나다」は、眠った後にベッドや布団から体を起こすときに使います。',
@@ -2005,7 +2005,7 @@ const MORNING_ROUTINE_ACTIONS=Object.freeze({
     })
   }),
   wash:Object.freeze({
-    meaning:Object.freeze({ko:'물로 몸이나 얼굴을 깨끗하게 하다',ja:'水で体や顔を洗う',en:'wash the body or face with water',zh:'用水清洗身体或脸'}),
+    meaning:Object.freeze({ko:'물로 몸이나 얼굴을 깨끗하게 하다',ja:'洗う（水で体や物をきれいにする）',en:'wash the body or face with water',zh:'用水清洗身体或脸'}),
     selected:Object.freeze({
       ko:'“씻다”는 물을 사용해 얼굴·손·몸의 더러움을 없앨 때 씁니다.',
       ja:'「씻다」は、水を使って顔・手・体の汚れを落とすときに使います。',
@@ -2014,7 +2014,7 @@ const MORNING_ROUTINE_ACTIONS=Object.freeze({
     })
   }),
   change:Object.freeze({
-    meaning:Object.freeze({ko:'입고 있던 옷을 다른 옷으로 바꾸어 입다',ja:'着ていた服を別の服に着替える',en:'change into different clothes',zh:'把身上的衣服换成另一套'}),
+    meaning:Object.freeze({ko:'입고 있던 옷을 다른 옷으로 바꾸어 입다',ja:'着替える（別の服に着替える）',en:'change into different clothes',zh:'把身上的衣服换成另一套'}),
     selected:Object.freeze({
       ko:'“갈아입다”는 지금 입은 옷을 벗고 다른 옷을 입을 때 씁니다.',
       ja:'「갈아입다」は、今着ている服を脱いで、別の服を着るときに使います。',
@@ -2023,7 +2023,7 @@ const MORNING_ROUTINE_ACTIONS=Object.freeze({
     })
   }),
   prepare:Object.freeze({
-    meaning:Object.freeze({ko:'필요한 것을 미리 갖추다',ja:'必要なものを前もって用意する',en:'get necessary things ready in advance',zh:'提前备好需要的东西'}),
+    meaning:Object.freeze({ko:'필요한 것을 미리 갖추다',ja:'準備する（必要なものを前もって用意する）',en:'get necessary things ready in advance',zh:'提前备好需要的东西'}),
     selected:Object.freeze({
       ko:'“준비하다”는 할 일에 필요한 물건이나 상태를 미리 갖출 때 씁니다.',
       ja:'「준비하다」は、これからすることに必要な物や状態を前もって整えるときに使います。',
@@ -2047,19 +2047,19 @@ const reviewedMorningRoutineItem=(id,term,key,example,exampleI18n,evidence)=>{
       meaning:MORNING_ROUTINE_ACTIONS[choiceKey].meaning,
       explanationI18n:MORNING_ROUTINE_ACTIONS[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】일어나다=잠자리에서 몸을 일으킴, 씻다=물로 몸을 깨끗하게 함, 갈아입다=다른 옷으로 바꿈, 준비하다=필요한 것을 미리 갖춤으로 행동과 결과가 다릅니다.\n【재사용 풀이】${MORNING_ROUTINE_ACTION_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】일어나다＝寝床から体を起こす、씻다＝水で体をきれいにする、갈아입다＝別の服に替える、준비하다＝必要なものを前もって整える、という行動と結果の違いがあります。\n【再利用できる解き方】${MORNING_ROUTINE_ACTION_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 일어나다 gets out of bed, 씻다 washes with water, 갈아입다 changes clothes, and 준비하다 gets needed things ready.\n[Reusable method] ${MORNING_ROUTINE_ACTION_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】일어나다表示从床上起身，씻다表示用水清洗身体，갈아입다表示换衣服，준비하다表示提前备好所需物品，动作和结果各不相同。\n【通用解法】${MORNING_ROUTINE_ACTION_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】일어나다=잠자리에서 몸을 일으킴, 씻다=물로 몸을 깨끗하게 함, 갈아입다=다른 옷으로 바꿈, 준비하다=필요한 것을 미리 갖춤으로 행동과 결과가 다릅니다.\n【재사용 풀이】${MORNING_ROUTINE_ACTION_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】일어나다＝寝床から体を起こす、씻다＝水で体をきれいにする、갈아입다＝別の服に替える、준비하다＝必要なものを前もって整える、という行動と結果の違いがあります。\n【再利用できる解き方】${MORNING_ROUTINE_ACTION_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] 일어나다 gets out of bed, 씻다 washes with water, 갈아입다 changes clothes, and 준비하다 gets needed things ready.\n[Reusable method] ${MORNING_ROUTINE_ACTION_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】일어나다表示从床上起身，씻다表示用水清洗身体，갈아입다表示换衣服，준비하다表示提前备好所需物品，动作和结果各不相同。\n【通用解法】${MORNING_ROUTINE_ACTION_METHOD.zh}`
     })
   });
 };
 
 const ANALYSIS_NOUNS=Object.freeze({
   tendency:Object.freeze({
-    meaning:Object.freeze({ko:'여러 사례에서 공통으로 나타나는 흐름',ja:'複数の事例に共通して現れる傾向',en:'a recurring pattern across cases',zh:'在多个事例中共同出现的趋势'}),
+    meaning:Object.freeze({ko:'여러 사례에서 공통으로 나타나는 흐름',ja:'傾向（多くの事例に共通する方向性）',en:'a recurring pattern across cases',zh:'在多个事例中共同出现的趋势'}),
     selected:Object.freeze({
       ko:'“경향”은 여러 사례나 시간의 흐름에서 같은 방향이 반복되어 나타날 때 씁니다.',
       ja:'「경향」は、複数の事例や時間の流れの中で、同じ方向の動きが繰り返し現れる場合に使います。',
@@ -2068,7 +2068,7 @@ const ANALYSIS_NOUNS=Object.freeze({
     })
   }),
   factor:Object.freeze({
-    meaning:Object.freeze({ko:'결과에 영향을 주는 원인이나 요소',ja:'結果に影響を与える原因・要素',en:'a cause that affects a result',zh:'影响结果的原因或要素'}),
+    meaning:Object.freeze({ko:'결과에 영향을 주는 원인이나 요소',ja:'要因（結果に影響を与える原因や要素）',en:'a cause that affects a result',zh:'影响结果的原因或要素'}),
     selected:Object.freeze({
       ko:'“요인”은 어떤 결과가 생기거나 달라지게 하는 원인이나 구성 요소입니다.',
       ja:'「요인」は、ある結果を生じさせたり変化させたりする原因・構成要素です。',
@@ -2077,7 +2077,7 @@ const ANALYSIS_NOUNS=Object.freeze({
     })
   }),
   phenomenon:Object.freeze({
-    meaning:Object.freeze({ko:'실제로 관찰되는 일이나 상태',ja:'実際に観察される出来事・状態',en:'an observable event or state',zh:'实际可以观察到的事情或状态'}),
+    meaning:Object.freeze({ko:'실제로 관찰되는 일이나 상태',ja:'現象（実際に観察される出来事や状態）',en:'an observable event or state',zh:'实际可以观察到的事情或状态'}),
     selected:Object.freeze({
       ko:'“현상”은 눈이나 측정으로 확인할 수 있게 실제로 나타난 일이나 상태를 가리킵니다.',
       ja:'「현상」は、目や測定によって確認できる形で実際に現れた出来事・状態を指します。',
@@ -2086,7 +2086,7 @@ const ANALYSIS_NOUNS=Object.freeze({
     })
   }),
   outlook:Object.freeze({
-    meaning:Object.freeze({ko:'앞으로의 상태에 대한 예상이나 판단',ja:'今後の状態についての見通し・判断',en:'an expectation about future conditions',zh:'对未来状态的预测或判断'}),
+    meaning:Object.freeze({ko:'앞으로의 상태에 대한 예상이나 판단',ja:'見通し（今後どうなるかについての予想）',en:'an expectation about future conditions',zh:'对未来状态的预测或判断'}),
     selected:Object.freeze({
       ko:'“전망”은 현재 자료를 바탕으로 앞으로 어떻게 될지를 예상하거나 판단한 내용입니다.',
       ja:'「전망」は、現在の資料を基に、今後どうなるかを予想・判断した内容です。',
@@ -2110,19 +2110,19 @@ const reviewedAnalysisNounItem=(id,term,key,example,exampleI18n,evidence)=>{
       meaning:ANALYSIS_NOUNS[choiceKey].meaning,
       explanationI18n:ANALYSIS_NOUNS[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】경향=반복되는 흐름, 요인=결과에 영향을 주는 원인, 현상=관찰된 일, 전망=미래 예상으로 시간과 역할이 다릅니다.\n【재사용 풀이】${ANALYSIS_NOUN_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】경향＝反復する流れ、요인＝結果に影響する原因、현상＝観察された出来事、전망＝未来の予想で、時間と役割が異なります。\n【再利用できる解き方】${ANALYSIS_NOUN_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 경향 is a repeated pattern, 요인 a cause affecting a result, 현상 an observed event, and 전망 a future expectation.\n[Reusable method] ${ANALYSIS_NOUN_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】경향是反复出现的趋势，요인是影响结果的原因，현상是观察到的事情，전망是对未来的预测，时间和作用各不相同。\n【通用解法】${ANALYSIS_NOUN_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】경향=반복되는 흐름, 요인=결과에 영향을 주는 원인, 현상=관찰된 일, 전망=미래 예상으로 시간과 역할이 다릅니다.\n【재사용 풀이】${ANALYSIS_NOUN_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】경향＝反復する流れ、요인＝結果に影響する原因、현상＝観察された出来事、전망＝未来の予想で、時間と役割が異なります。\n【再利用できる解き方】${ANALYSIS_NOUN_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] 경향 is a repeated pattern, 요인 a cause affecting a result, 현상 an observed event, and 전망 a future expectation.\n[Reusable method] ${ANALYSIS_NOUN_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】경향是反复出现的趋势，요인是影响结果的原因，현상是观察到的事情，전망是对未来的预测，时间和作用各不相同。\n【通用解法】${ANALYSIS_NOUN_METHOD.zh}`
     })
   });
 };
 
 const ARGUMENT_NOUNS=Object.freeze({
   claim:Object.freeze({
-    meaning:Object.freeze({ko:'자신의 생각이나 의견을 내세움',ja:'自分の考え・意見を述べること',en:'a stated position or opinion',zh:'提出自己的看法或意见'}),
+    meaning:Object.freeze({ko:'자신의 생각이나 의견을 내세움',ja:'主張（自分の考えや意見を述べること）',en:'a stated position or opinion',zh:'提出自己的看法或意见'}),
     selected:Object.freeze({
       ko:'“주장”은 자신의 생각이나 의견을 분명하게 내세워 말하는 것입니다.',
       ja:'「주장」は、自分の考えや意見をはっきり述べることです。',
@@ -2131,7 +2131,7 @@ const ARGUMENT_NOUNS=Object.freeze({
     })
   }),
   evidence:Object.freeze({
-    meaning:Object.freeze({ko:'주장이나 판단을 뒷받침하는 자료나 이유',ja:'主張・判断を裏づける資料や理由',en:'supporting information or reasons',zh:'支持主张或判断的资料、理由'}),
+    meaning:Object.freeze({ko:'주장이나 판단을 뒷받침하는 자료나 이유',ja:'根拠（主張や判断を裏づける資料や理由）',en:'supporting information or reasons',zh:'支持主张或判断的资料、理由'}),
     selected:Object.freeze({
       ko:'“근거”는 주장이나 판단이 타당하다는 것을 뒷받침하는 자료나 이유입니다.',
       ja:'「근거」は、主張や判断が妥当だと裏づける資料や理由です。',
@@ -2140,7 +2140,7 @@ const ARGUMENT_NOUNS=Object.freeze({
     })
   }),
   rebuttal:Object.freeze({
-    meaning:Object.freeze({ko:'다른 주장에 맞서 틀린 점을 밝힘',ja:'別の主張に反対し、その誤りを示すこと',en:'showing that another claim is wrong',zh:'针对另一主张指出其错误'}),
+    meaning:Object.freeze({ko:'다른 주장에 맞서 틀린 점을 밝힘',ja:'反論（相手の主張の誤りを指摘すること）',en:'showing that another claim is wrong',zh:'针对另一主张指出其错误'}),
     selected:Object.freeze({
       ko:'“반박”은 다른 주장에 동의하지 않고 그 주장에 틀리거나 부족한 점이 있음을 밝히는 것입니다.',
       ja:'「반박」は、別の主張に同意せず、その誤りや不十分な点を示すことです。',
@@ -2149,7 +2149,7 @@ const ARGUMENT_NOUNS=Object.freeze({
     })
   }),
   conclusion:Object.freeze({
-    meaning:Object.freeze({ko:'검토나 논의를 거쳐 내린 최종 판단',ja:'検討・議論を経て下した最終的な判断',en:'a final judgment after review',zh:'经过分析、讨论得出的最终判断'}),
+    meaning:Object.freeze({ko:'검토나 논의를 거쳐 내린 최종 판단',ja:'結論（検討や議論を経て下した判断）',en:'a final judgment after review',zh:'经过分析、讨论得出的最终判断'}),
     selected:Object.freeze({
       ko:'“결론”은 자료를 검토하거나 논의한 뒤 마지막으로 내린 판단입니다.',
       ja:'「결론」は、資料を検討したり議論したりした後、最後に下した判断です。',
@@ -2173,28 +2173,28 @@ const reviewedArgumentNounItem=(id,term,key,example,exampleI18n,evidence)=>{
       meaning:ARGUMENT_NOUNS[choiceKey].meaning,
       explanationI18n:ARGUMENT_NOUNS[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】주장=내세운 생각, 근거=생각을 뒷받침하는 자료·이유, 반박=다른 주장의 오류 지적, 결론=검토 뒤의 최종 판단으로 글의 역할이 다릅니다.\n【재사용 풀이】${ARGUMENT_NOUN_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】주장＝述べた考え、근거＝考えを裏づける資料・理由、반박＝別の主張の誤りの指摘、결론＝検討後の最終判断で、文中での役割が異なります。\n【再利用できる解き方】${ARGUMENT_NOUN_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 주장 is a stated position, 근거 its supporting information or reason, 반박 a challenge to another claim, and 결론 a final judgment after review.\n[Reusable method] ${ARGUMENT_NOUN_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】주장是提出的看法，근거是支持看法的资料或理由，반박是指出另一主张的错误，결론是分析后的最终判断，作用各不相同。\n【通用解法】${ARGUMENT_NOUN_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】주장=내세운 생각, 근거=생각을 뒷받침하는 자료·이유, 반박=다른 주장의 오류 지적, 결론=검토 뒤의 최종 판단으로 글의 역할이 다릅니다.\n【재사용 풀이】${ARGUMENT_NOUN_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】주장＝述べた考え、근거＝考えを裏づける資料・理由、반박＝別の主張の誤りの指摘、결론＝検討後の最終判断で、文中での役割が異なります。\n【再利用できる解き方】${ARGUMENT_NOUN_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] 주장 is a stated position, 근거 its supporting information or reason, 반박 a challenge to another claim, and 결론 a final judgment after review.\n[Reusable method] ${ARGUMENT_NOUN_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】주장是提出的看法，근거是支持看法的资料或理由，반박是指出另一主张的错误，결론是分析后的最终判断，作用各不相同。\n【通用解法】${ARGUMENT_NOUN_METHOD.zh}`
     })
   });
 };
 
 const POLICY_REVIEW_NOUNS=Object.freeze({
   measure:Object.freeze({
-    meaning:Object.freeze({ko:'문제를 해결·줄이는 계획이나 행동',ja:'問題を解決・軽減する計画や行動',en:'a plan or action addressing a problem',zh:'解决或减轻问题的计划、行动'}),
+    meaning:Object.freeze({ko:'문제를 해결·줄이는 계획이나 행동',ja:'対策（問題を解決・軽減するための方法や行動）',en:'a plan or action addressing a problem',zh:'解决或减轻问题的计划、行动'}),
     selected:Object.freeze({
-      ko:'“대책”은 이미 생긴 문제를 해결하거나 피해를 줄이기 위해 마련한 계획이나 행동입니다.',
-      ja:'「대책」は、起きている問題を解決したり被害を減らしたりするための計画・行動です。',
-      en:'“대책” is a plan or action prepared to solve an existing problem or reduce its harm.',
-      zh:'“대책”是为解决已经出现的问题或减轻其影响而制定的计划、行动。'
+      ko:'“대책”은 문제를 해결하거나 예상되는 문제와 피해를 막기 위해 마련한 계획이나 행동입니다.',
+      ja:'「대책」は、問題を解決したり、予想される問題や被害を防いだりするための計画・行動です。',
+      en:'“대책” is a plan or action prepared to solve a problem or prevent an expected problem or harm.',
+      zh:'“대책”是为解决问题或预防可能出现的问题与损害而制定的计划、行动。'
     })
   }),
   effect:Object.freeze({
-    meaning:Object.freeze({ko:'행동·정책으로 나타난 결과',ja:'行動・政策で現れた結果',en:'a result from an action or policy',zh:'行动或政策带来的结果'}),
+    meaning:Object.freeze({ko:'행동·정책으로 나타난 결과',ja:'効果（行動や政策によって生じる結果）',en:'a result from an action or policy',zh:'行动或政策带来的结果'}),
     selected:Object.freeze({
       ko:'“효과”는 계획이나 행동을 실행한 뒤 실제로 나타난 결과나 성과입니다.',
       ja:'「효과」は、計画や行動を実行した後に実際に現れた結果・成果です。',
@@ -2203,7 +2203,7 @@ const POLICY_REVIEW_NOUNS=Object.freeze({
     })
   }),
   limitation:Object.freeze({
-    meaning:Object.freeze({ko:'완전한 달성을 막는 범위·문제',ja:'完全な達成を妨げる範囲・問題',en:'a limit preventing full achievement',zh:'妨碍完全实现的范围或问题'}),
+    meaning:Object.freeze({ko:'완전한 달성을 막는 범위·문제',ja:'限界（それ以上には進めない範囲や制約）',en:'a limit preventing full achievement',zh:'妨碍完全实现的范围或问题'}),
     selected:Object.freeze({
       ko:'“한계”는 방법이나 자료가 모든 경우에 충분하지 못한 범위나 문제점을 가리킵니다.',
       ja:'「한계」は、方法や資料がすべての場合に十分ではない範囲・問題点を指します。',
@@ -2212,7 +2212,7 @@ const POLICY_REVIEW_NOUNS=Object.freeze({
     })
   }),
   task:Object.freeze({
-    meaning:Object.freeze({ko:'앞으로 해결·달성해야 할 일',ja:'今後解決・達成すべき事柄',en:'a future issue or goal to address',zh:'今后要解决或完成的事项'}),
+    meaning:Object.freeze({ko:'앞으로 해결·달성해야 할 일',ja:'課題（これから解決・達成すべきこと）',en:'a future issue or goal to address',zh:'今后要解决或完成的事项'}),
     selected:Object.freeze({
       ko:'“과제”는 현재 끝난 결과가 아니라 앞으로 해결하거나 이루어야 할 중요한 일입니다.',
       ja:'「과제」は、すでに出た結果ではなく、今後解決・達成すべき重要な事柄です。',
@@ -2236,19 +2236,19 @@ const reviewedPolicyReviewNounItem=(id,term,key,example,exampleI18n,evidence)=>{
       meaning:POLICY_REVIEW_NOUNS[choiceKey].meaning,
       explanationI18n:POLICY_REVIEW_NOUNS[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】대책=문제 해결 행동, 효과=실행 뒤 결과, 한계=충분히 이루지 못하는 경계, 과제=앞으로 풀어야 할 일로 시간과 역할이 다릅니다.\n【재사용 풀이】${POLICY_REVIEW_NOUN_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】대책＝問題を解決する行動、효과＝実行後の結果、한계＝十分に達成できない境界、과제＝今後解くべき事柄で、時間と役割が異なります。\n【再利用できる解き方】${POLICY_REVIEW_NOUN_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 대책 is a response to a problem, 효과 a result after action, 한계 a boundary preventing full achievement, and 과제 a future issue to solve.\n[Reusable method] ${POLICY_REVIEW_NOUN_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】대책是解决问题的行动，효과是实施后的结果，한계是无法充分实现的界限，과제是今后要解决的事项，时间和作用各不相同。\n【通用解法】${POLICY_REVIEW_NOUN_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】대책=문제 해결 행동, 효과=실행 뒤 결과, 한계=충분히 이루지 못하는 경계, 과제=앞으로 풀어야 할 일로 시간과 역할이 다릅니다.\n【재사용 풀이】${POLICY_REVIEW_NOUN_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】대책＝問題を解決する行動、효과＝実行後の結果、한계＝十分に達成できない境界、과제＝今後解くべき事柄で、時間と役割が異なります。\n【再利用できる解き方】${POLICY_REVIEW_NOUN_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] 대책 is a response to a problem, 효과 a result after action, 한계 a boundary preventing full achievement, and 과제 a future issue to solve.\n[Reusable method] ${POLICY_REVIEW_NOUN_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】대책是解决问题的行动，효과是实施后的结果，한계是无法充分实现的界限，과제是今后要解决的事项，时间和作用各不相同。\n【通用解法】${POLICY_REVIEW_NOUN_METHOD.zh}`
     })
   });
 };
 
 const SCALE_STATE_NOUNS=Object.freeze({
   expansion:Object.freeze({
-    meaning:Object.freeze({ko:'규모·범위·수량을 더 크게 늘림',ja:'規模・範囲・数量を大きく広げること',en:'making scale, scope, or amount larger',zh:'扩大规模、范围或数量'}),
+    meaning:Object.freeze({ko:'규모·범위·수량을 더 크게 늘림',ja:'拡大（規模や範囲を大きくすること）',en:'making scale, scope, or amount larger',zh:'扩大规模、范围或数量'}),
     selected:Object.freeze({
       ko:'“확대”는 대상의 규모나 적용 범위, 수량을 지금보다 더 크게 늘리는 것입니다.',
       ja:'「확대」は、対象の規模・適用範囲・数量を今より大きく増やすことです。',
@@ -2257,7 +2257,7 @@ const SCALE_STATE_NOUNS=Object.freeze({
     })
   }),
   reduction:Object.freeze({
-    meaning:Object.freeze({ko:'규모·범위·수량을 더 작게 줄임',ja:'規模・範囲・数量を小さく縮めること',en:'making scale, scope, or amount smaller',zh:'缩小规模、范围或数量'}),
+    meaning:Object.freeze({ko:'규모·범위·수량을 더 작게 줄임',ja:'縮小（規模や範囲を小さくすること）',en:'making scale, scope, or amount smaller',zh:'缩小规模、范围或数量'}),
     selected:Object.freeze({
       ko:'“축소”는 대상의 규모나 적용 범위, 수량을 지금보다 더 작게 줄이는 것입니다.',
       ja:'「축소」は、対象の規模・適用範囲・数量を今より小さく減らすことです。',
@@ -2266,7 +2266,7 @@ const SCALE_STATE_NOUNS=Object.freeze({
     })
   }),
   maintenance:Object.freeze({
-    meaning:Object.freeze({ko:'현재 상태·수준을 바꾸지 않고 이어 감',ja:'現在の状態・水準を変えずに保つこと',en:'keeping the current state or level',zh:'保持当前状态或水平不变'}),
+    meaning:Object.freeze({ko:'현재 상태·수준을 바꾸지 않고 이어 감',ja:'維持（今の状態や水準を保つこと）',en:'keeping the current state or level',zh:'保持当前状态或水平不变'}),
     selected:Object.freeze({
       ko:'“유지”는 현재의 상태나 수준을 크게 바꾸지 않고 계속 이어 가는 것입니다.',
       ja:'「유지」は、現在の状態や水準を大きく変えず、そのまま保ち続けることです。',
@@ -2275,7 +2275,7 @@ const SCALE_STATE_NOUNS=Object.freeze({
     })
   }),
   suspension:Object.freeze({
-    meaning:Object.freeze({ko:'하던 일이나 운영을 계속하지 않고 멈춤',ja:'続けていた活動・運営を止めること',en:'stopping an ongoing activity or service',zh:'停止正在进行的活动或运营'}),
+    meaning:Object.freeze({ko:'하던 일이나 운영을 계속하지 않고 멈춤',ja:'中断（続けていたことを途中でやめること）',en:'stopping an ongoing activity or service',zh:'停止正在进行的活动或运营'}),
     selected:Object.freeze({
       ko:'“중단”은 진행하던 활동이나 운영을 더 이어 가지 않고 멈추는 것입니다.',
       ja:'「중단」は、進行していた活動や運営をそれ以上続けず、止めることです。',
@@ -2299,39 +2299,39 @@ const reviewedScaleStateNounItem=(id,term,key,example,exampleI18n,evidence)=>{
       meaning:SCALE_STATE_NOUNS[choiceKey].meaning,
       explanationI18n:SCALE_STATE_NOUNS[choiceKey].selected
     }))),
-    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:evidence[lang]})]))),
+    coach:Object.freeze(Object.fromEntries(['ko','ja','en','zh'].map(lang=>[lang,Object.freeze({short:target.selected[lang]})]))),
     explanationI18n:Object.freeze({
-      ko:`【정답 근거】${evidence.ko}\n【오답 함정】확대=규모·범위를 키움, 축소=규모·범위를 줄임, 유지=현재 상태를 이어 감, 중단=진행을 멈춤으로 변화 방향이 다릅니다.\n【재사용 풀이】${SCALE_STATE_NOUN_METHOD.ko}`,
-      ja:`【正解の根拠】${evidence.ja}\n【誤答の罠】확대＝規模・範囲を大きくする、축소＝規模・範囲を小さくする、유지＝現在の状態を保つ、중단＝進行を止める、という変化の方向の違いがあります。\n【再利用できる解き方】${SCALE_STATE_NOUN_METHOD.ja}`,
-      en:`[Decisive evidence] ${evidence.en}\n[Distractor traps] 확대 makes a scale or scope larger, 축소 makes it smaller, 유지 keeps the current state, and 중단 stops an ongoing activity.\n[Reusable method] ${SCALE_STATE_NOUN_METHOD.en}`,
-      zh:`【正答依据】${evidence.zh}\n【错项陷阱】확대表示扩大规模或范围，축소表示缩小，유지表示保持当前状态，중단表示停止进行，变化方向各不相同。\n【通用解法】${SCALE_STATE_NOUN_METHOD.zh}`
+      ko:`【정답 근거】${target.selected.ko}\n【예문 속 쓰임】${example}\n${evidence.ko}\n【선택지 비교】확대=규모·범위를 키움, 축소=규모·범위를 줄임, 유지=현재 상태를 이어 감, 중단=진행을 멈춤으로 변화 방향이 다릅니다.\n【재사용 풀이】${SCALE_STATE_NOUN_METHOD.ko}`,
+      ja:`【正解の根拠】${target.selected.ja}\n【例文での使い方】${example}\n${exampleI18n.ja}\n${evidence.ja}\n【選択肢の比較】확대＝規模・範囲を大きくする、축소＝規模・範囲を小さくする、유지＝現在の状態を保つ、중단＝進行を止める、という変化の方向の違いがあります。\n【再利用できる解き方】${SCALE_STATE_NOUN_METHOD.ja}`,
+      en:`[Decisive evidence] ${target.selected.en}\n[Example usage] ${example}\n${exampleI18n.en}\n${evidence.en}\n[Choice comparison] 확대 makes a scale or scope larger, 축소 makes it smaller, 유지 keeps the current state, and 중단 stops an ongoing activity.\n[Reusable method] ${SCALE_STATE_NOUN_METHOD.en}`,
+      zh:`【正答依据】${target.selected.zh}\n【例句中的用法】${example}\n${exampleI18n.zh}\n${evidence.zh}\n【选项对比】확대表示扩大规模或范围，축소表示缩小，유지表示保持当前状态，중단表示停止进行，变化方向各不相同。\n【通用解法】${SCALE_STATE_NOUN_METHOD.zh}`
     })
   });
 };
 
 const TOPIK_I=[
-  item(1,'word','가게','상점','店','store; shop','商店','집 앞 가게에서 우유를 샀어요.'),
-  item(1,'word','약속','만나기로 정한 일','約束','promise; appointment','约定','친구와 세 시에 만날 약속이 있어요.'),
-  item(1,'word','주문하다','음식이나 물건을 달라고 하다','注文する','order','点餐；订购','식당에서 비빔밥을 주문했어요.'),
-  item(1,'word','교환하다','다른 것으로 바꾸다','交換する','exchange','更换；交换','작은 신발을 큰 것으로 교환했어요.'),
-  item(1,'word','빌리다','남의 것을 잠시 쓰다','借りる','borrow','借','도서관에서 책을 빌렸어요.'),
-  item(1,'word','반납하다','빌린 것을 돌려주다','返却する','return','归还','책은 화요일까지 반납하세요.'),
-  item(1,'word','무료','돈을 내지 않음','無料','free','免费','수요일 저녁에는 입장이 무료예요.'),
-  item(1,'word','늦다','정한 시간보다 뒤가 되다','遅れる；遅い','be late','迟；晚','버스가 십 분 늦게 왔어요.'),
-  item(1,'word','열다','문이나 가게를 이용할 수 있게 하다','開ける；開く','open','打开；营业','도서관은 아홉 시에 문을 열어요.'),
-  item(1,'word','닫다','열린 것을 막거나 영업을 끝내다','閉める；閉店する','close','关闭','에어컨을 켰으니 문을 닫아 주세요.'),
-  item(1,'word','가깝다','거리가 짧다','近い','be near','近','새 회사는 지하철역에서 가까워요.'),
-  item(1,'word','고르다','여럿 중 하나를 선택하다','選ぶ','choose','选择','가장 알맞은 답을 고르세요.'),
-  item(1,'word','참석하다','모임이나 행사에 가다','参加する','attend','参加','토요일 수업에 참석할 수 있어요?'),
-  item(1,'word','미리','정한 때보다 앞서','あらかじめ','in advance','提前','기차표를 미리 예약했어요.'),
-  item(1,'word','바꾸다','다른 상태나 것으로 만들다','変える','change','更换','회의 시간을 열한 시로 바꿨어요.'),
-  item(1,'word','필요하다','꼭 있어야 하다','必要だ','need; be necessary','需要；必要','통장을 만들려면 신분증이 필요해요.'),
-  item(1,'word','도착하다','목적지에 이르다','到着する','arrive','到达','택배가 오늘 오후에 도착해요.'),
-  item(1,'word','예약하다','자리나 시간을 미리 정하다','予約する','reserve; book','预约','주말 식당을 예약했어요.'),
-  item(1,'word','깜빡하다','해야 할 일이나 물건을 순간적으로 잊다','うっかり忘れる','forget by accident','一时忘记','우산을 가져오는 것을 깜빡했어요.'),
-  item(1,'word','미끄럽다','표면이 매끈해서 쉽게 넘어질 수 있다','滑りやすい','be slippery','滑','비가 와서 길이 미끄러워요.'),
-  item(1,'word','포장하다','물건을 싸거나 음식을 가져갈 수 있게 담다','包む；持ち帰り用にする','wrap; pack to go','包装；打包','남은 음식은 포장해 주세요.'),
-  item(1,'word','직접','다른 사람을 통하지 않고 스스로','直接；自分で','directly; in person','亲自；直接','신청서를 직접 제출했습니다.'),
+  item(1,'word','가게','상점','店（物を売るところ）','store; shop','商店','집 앞 가게에서 우유를 샀어요.'),
+  item(1,'word','약속','만나기로 정한 일','約束（人と取り決めたこと）','promise; appointment','约定','친구와 세 시에 만날 약속이 있어요.'),
+  item(1,'word','주문하다','음식이나 물건을 달라고 하다','注文する（店に欲しい物や料理を頼む）','order','点餐；订购','식당에서 비빔밥을 주문했어요.'),
+  item(1,'word','교환하다','다른 것으로 바꾸다','交換する（別の物と取り替える）','exchange','更换；交换','작은 신발을 큰 것으로 교환했어요.'),
+  item(1,'word','빌리다','남의 것을 잠시 쓰다','借りる（返す約束で一時的に使う）','borrow','借','도서관에서 책을 빌렸어요.'),
+  item(1,'word','반납하다','빌린 것을 돌려주다','返却する（借りた物を返す）','return','归还','책은 화요일까지 반납하세요.'),
+  item(1,'word','무료','돈을 내지 않음','無料（料金がかからないこと）','free','免费','수요일 저녁에는 입장이 무료예요.'),
+  item(1,'word','늦다','정한 시간보다 뒤가 되다','遅い・遅れる（予定の時刻を過ぎる）','be late','迟；晚','버스가 십 분 늦게 왔어요.'),
+  item(1,'word','열다','문이나 가게를 이용할 수 있게 하다','開ける・開く（閉じていたものを開ける）','open','打开；营业','도서관은 아홉 시에 문을 열어요.'),
+  item(1,'word','닫다','열린 것을 막거나 영업을 끝내다','閉める（開いていたものを閉じる）','close','关闭','에어컨을 켰으니 문을 닫아 주세요.'),
+  item(1,'word','가깝다','거리가 짧다','近い（距離が短い）','be near','近','새 회사는 지하철역에서 가까워요.'),
+  item(1,'word','고르다','여럿 중 하나를 선택하다','選ぶ（いくつかの中から決める）','choose','选择','가장 알맞은 답을 고르세요.'),
+  item(1,'word','참석하다','모임이나 행사에 가다','出席する（会や授業などに参加する）','attend','参加','토요일 수업에 참석할 수 있어요?'),
+  item(1,'word','미리','정한 때보다 앞서','前もって（必要になる時より先に）','in advance','提前','기차표를 미리 예약했어요.'),
+  item(1,'word','바꾸다','다른 상태나 것으로 만들다','変える（別のものや状態にする）','change','更换','회의 시간을 열한 시로 바꿨어요.'),
+  item(1,'word','필요하다','꼭 있어야 하다','必要だ（なくてはならない）','need; be necessary','需要；必要','통장을 만들려면 신분증이 필요해요.'),
+  item(1,'word','도착하다','목적지에 이르다','到着する（目的地に着く）','arrive','到达','택배가 오늘 오후에 도착해요.'),
+  item(1,'word','예약하다','자리나 시간을 미리 정하다','予約する（利用する前に申し込む）','reserve; book','预约','주말 식당을 예약했어요.'),
+  item(1,'word','깜빡하다','해야 할 일이나 물건을 순간적으로 잊다','うっかり忘れる（するはずのことを忘れる）','forget by accident','一时忘记','우산을 가져오는 것을 깜빡했어요.'),
+  item(1,'word','미끄럽다','표면이 매끈해서 쉽게 넘어질 수 있다','滑りやすい（足や物が滑りやすい状態だ）','be slippery','滑','비가 와서 길이 미끄러워요.'),
+  item(1,'word','포장하다','물건을 싸거나 음식을 가져갈 수 있게 담다','包む（商品や持ち帰る料理を包装する）','wrap; pack to go','包装；打包','남은 음식은 포장해 주세요.'),
+  item(1,'word','직접','다른 사람을 통하지 않고 스스로','直接・自分で（人任せにせず行う）','directly; in person','亲自；直接','신청서를 직접 제출했습니다.'),
   reviewedTimeItem('S04-I-W-TIME-01','벌써','already','숙제를 벌써 다 했어요.',{
     ko:'숙제를 벌써 다 했어요.',ja:'宿題をもう全部終えました。',en:'I already finished all my homework.',zh:'我已经把作业全做完了。'
   },{
@@ -2380,18 +2380,18 @@ const TOPIK_I=[
   item(1,'grammar','-(으)면','조건이나 가정을 나타냄','～すれば；～なら','if; when','如果……','시간이 있으면 같이 등산해요.'),
   item(1,'grammar','-는 동안','어떤 행동이나 상태가 계속되는 시간','～している間','while; during','在……期间','버스를 기다리는 동안 책을 읽었어요.'),
 
-  item(1,'expression','마음에 들다','좋아하거나 만족하다','気に入る','like','喜欢；中意','이 셔츠가 마음에 들어요.'),
-  item(1,'expression','괜찮아요','문제없어요','大丈夫です','It is okay.','没关系。','조금 늦어도 괜찮아요.'),
-  item(1,'expression','잠시만요','조금만 기다려 주세요','少々お待ちください','One moment, please.','请稍等。','잠시만요. 곧 도와드릴게요.'),
-  item(1,'expression','처음 뵙겠습니다','처음 만나 인사합니다','初めまして','Nice to meet you.','初次见面。','안녕하세요. 처음 뵙겠습니다.'),
-  item(1,'expression','잘 먹겠습니다','먹기 전에 하는 감사 인사','いただきます','Thanks for the meal.','我开动了。','음식을 준비해 주셔서 감사합니다. 잘 먹겠습니다.'),
-  item(1,'expression','수고하세요','일하는 사람에게 하는 인사','お疲れさまです','Keep up the good work.','辛苦了。','먼저 가겠습니다. 수고하세요.'),
-  item(1,'expression','길이 막히다','교통이 혼잡하다','道が混む','traffic is congested','堵车','월요일 아침에는 길이 많이 막혀요.'),
-  item(1,'expression','배가 고프다','음식을 먹고 싶다','お腹がすく','be hungry','饿','아침을 안 먹어서 배가 고파요.'),
-  item(1,'expression','시간이 나다','해야 할 일이 없어 여유 시간이 생기다','時間が空く','have some free time','有空','오후에 시간이 나면 같이 차를 마셔요.'),
-  item(1,'expression','손이 모자라다','일할 사람이 부족하다','人手が足りない','be short-handed','人手不足','축제 준비를 도울 사람이 적어서 손이 모자라요.'),
-  item(1,'expression','잘 부탁드립니다','앞으로 좋은 관계나 도움을 정중히 청하는 인사','よろしくお願いします','I look forward to working with you.','请多关照','오늘부터 함께 일하게 되었습니다. 잘 부탁드립니다.'),
-  item(1,'expression','다녀오겠습니다','나갔다가 돌아오겠다고 알리는 인사','行ってきます','I am leaving and will be back.','我出门了，会回来的','학교에 다녀오겠습니다.'),
+  item(1,'expression','마음에 들다','좋아하거나 만족하다','気に入る（自分の好みに合う）','like','喜欢；中意','이 셔츠가 마음에 들어요.'),
+  item(1,'expression','괜찮아요','문제없어요','大丈夫です（問題ないと伝える）','It is okay.','没关系。','조금 늦어도 괜찮아요.'),
+  item(1,'expression','잠시만요','조금만 기다려 주세요','少々お待ちください（少し待ってもらう）','One moment, please.','请稍等。','잠시만요. 곧 도와드릴게요.'),
+  item(1,'expression','처음 뵙겠습니다','처음 만나 인사합니다','初めまして（初対面の丁寧な挨拶）','Nice to meet you.','初次见面。','안녕하세요. 처음 뵙겠습니다.'),
+  item(1,'expression','잘 먹겠습니다','먹기 전에 하는 감사 인사','いただきます（食べる前に感謝を伝える挨拶）','Thanks for the meal.','我开动了。','음식을 준비해 주셔서 감사합니다. 잘 먹겠습니다.'),
+  item(1,'expression','수고하세요','일하는 사람에게 하는 인사','お疲れさまです（作業を続ける相手へのねぎらい）','Keep up the good work.','辛苦了。','먼저 가겠습니다. 수고하세요.'),
+  item(1,'expression','길이 막히다','교통이 혼잡하다','道が混む（車が多く、進みにくい）','traffic is congested','堵车','월요일 아침에는 길이 많이 막혀요.'),
+  item(1,'expression','배가 고프다','음식을 먹고 싶다','お腹がすく（食べ物が欲しくなる）','be hungry','饿','아침을 안 먹어서 배가 고파요.'),
+  item(1,'expression','시간이 나다','해야 할 일이 없어 여유 시간이 생기다','時間が空く（何かに使える時間ができる）','have some free time','有空','오후에 시간이 나면 같이 차를 마셔요.'),
+  item(1,'expression','손이 모자라다','일할 사람이 부족하다','人手が足りない（働く人が不足している）','be short-handed','人手不足','축제 준비를 도울 사람이 적어서 손이 모자라요.'),
+  item(1,'expression','잘 부탁드립니다','앞으로 좋은 관계나 도움을 정중히 청하는 인사','よろしくお願いします（協力や配慮をお願いする挨拶）','I look forward to working with you.','请多关照','오늘부터 함께 일하게 되었습니다. 잘 부탁드립니다.'),
+  item(1,'expression','다녀오겠습니다','나갔다가 돌아오겠다고 알리는 인사','行ってきます（戻る予定で出かける時の挨拶）','I am leaving and will be back.','我出门了，会回来的','학교에 다녀오겠습니다.'),
 
   reviewedLocationItem('S04-I-W-PLACE-01','건너편','opposite','은행은 길 건너편에 있어요.',{
     ko:'은행은 길 건너편에 있어요.',ja:'銀行は道の向こう側にあります。',en:'The bank is on the other side of the street.',zh:'银行在马路对面。'
@@ -2910,25 +2910,25 @@ const TOPIK_I=[
 ];
 
 const TOPIK_II=[
-  item(2,'word','미루다','나중으로 넘기다','先延ばしにする','postpone','推迟；拖延','할 일을 내일로 미루지 마세요.'),
-  item(2,'word','꼼꼼하다','빈틈없이 세심하다','几帳面だ','meticulous','仔细；一丝不苟','그분은 일을 아주 꼼꼼하게 해요.'),
-  item(2,'word','익숙하다','낯설지 않다','慣れている','be accustomed','熟悉；习惯','이제 한국 생활에 익숙해졌어요.'),
-  item(2,'word','아쉽다','기대에 못 미쳐 안타깝다','心残りだ；残念だ','feel regretful','遗憾；可惜','더 이야기하지 못해 아쉬워요.'),
-  item(2,'word','챙기다','빠뜨리지 않고 준비하다','忘れずに用意する','make sure to bring','备齐；带好','여권을 꼭 챙기세요.'),
-  item(2,'word','부담스럽다','부담을 느끼다','負担に感じる','feel burdened','感到有负担','너무 비싼 선물은 부담스러워요.'),
-  item(2,'word','서두르다','급하게 움직이다','急ぐ','hurry','赶忙；着急','늦었으니까 조금 서둘러 주세요.'),
-  item(2,'word','차분하다','조용하고 침착하다','落ち着いている','calm; composed','沉着；平静','차분하게 다시 설명해 보세요.'),
-  item(2,'word','놓치다','제때 잡거나 얻지 못하다','逃す','miss','错过','버스를 놓쳐서 지각했어요.'),
-  item(2,'word','살피다','주의 깊게 보다','注意深く見る','examine','仔细查看','계약 조건을 자세히 살펴야 합니다.'),
-  item(2,'word','드물다','자주 있지 않다','珍しい；まれだ','be rare','罕见','현금만 받는 가게는 드물어요.'),
-  item(2,'word','넉넉하다','충분하고 여유가 있다','十分だ；余裕がある','be ample','充足；宽裕','시간을 넉넉하게 잡으세요.'),
-  item(2,'word','아끼다','소중히 여기거나 절약하다','大切にする；節約する','cherish; save','珍惜；节省','물을 아껴 쓰는 습관이 필요해요.'),
-  item(2,'word','막상','실제 상황이 되었을 때','いざ','when it comes to it','真到……时','막상 발표를 시작하니 긴장이 풀렸어요.'),
-  item(2,'word','오히려','예상과 반대로','むしろ；かえって','rather; instead','反而','너무 많이 자서 오히려 피곤해요.'),
-  item(2,'word','간과하다','중요한 사실을 제대로 보지 못하고 넘기다','見過ごす','overlook','忽视','작은 오류를 간과하면 큰 문제가 될 수 있어요.'),
-  item(2,'word','선뜻','망설이지 않고 기꺼이','快く；ためらわずに','readily; willingly','欣然；爽快地','어려운 부탁인데도 선뜻 도와주었어요.'),
-  item(2,'word','줄곧','처음부터 끝까지 계속','ずっと；終始','all along; throughout','一直；始终','그는 십 년 동안 줄곧 같은 분야를 연구했어요.'),
-  item(2,'word','마련하다','필요한 것을 준비하거나 만들다','用意する；設ける','prepare; provide','准备；筹备','주민들을 위한 쉼터를 마련했어요.'),
+  item(2,'word','미루다','나중으로 넘기다','先延ばしにする（予定より後に回す）','postpone','推迟；拖延','할 일을 내일로 미루지 마세요.'),
+  item(2,'word','꼼꼼하다','빈틈없이 세심하다','几帳面だ（細かいところまで注意深い）','meticulous','仔细；一丝不苟','그분은 일을 아주 꼼꼼하게 해요.'),
+  item(2,'word','익숙하다','낯설지 않다','慣れている（繰り返し経験して不自由がない）','be accustomed','熟悉；习惯','이제 한국 생활에 익숙해졌어요.'),
+  item(2,'word','아쉽다','기대에 못 미쳐 안타깝다','残念だ・名残惜しい（物足りなさや心残りがある）','feel regretful','遗憾；可惜','더 이야기하지 못해 아쉬워요.'),
+  item(2,'word','챙기다','빠뜨리지 않고 준비하다','忘れずに用意する（必要な物をそろえて持つ）','make sure to bring','备齐；带好','여권을 꼭 챙기세요.'),
+  item(2,'word','부담스럽다','부담을 느끼다','負担に感じる（気が重いと感じる）','feel burdened','感到有负担','너무 비싼 선물은 부담스러워요.'),
+  item(2,'word','서두르다','급하게 움직이다','急ぐ（遅れないように早く行動する）','hurry','赶忙；着急','늦었으니까 조금 서둘러 주세요.'),
+  item(2,'word','차분하다','조용하고 침착하다','落ち着いている（慌てず静かで穏やかだ）','calm; composed','沉着；平静','차분하게 다시 설명해 보세요.'),
+  item(2,'word','놓치다','제때 잡거나 얻지 못하다','逃す（機会や乗り物をつかまえ損なう）','miss','错过','버스를 놓쳐서 지각했어요.'),
+  item(2,'word','살피다','주의 깊게 보다','よく調べる（注意深く様子や内容を見る）','examine','仔细查看','계약 조건을 자세히 살펴야 합니다.'),
+  item(2,'word','드물다','자주 있지 않다','まれだ（数や起こる回数が少ない）','be rare','罕见','현금만 받는 가게는 드물어요.'),
+  item(2,'word','넉넉하다','충분하고 여유가 있다','十分だ（不足せず余裕がある）','be ample','充足；宽裕','시간을 넉넉하게 잡으세요.'),
+  item(2,'word','아끼다','소중히 여기거나 절약하다','大切にする・節約する（無駄にせず使う）','cherish; save','珍惜；节省','물을 아껴 쓰는 습관이 필요해요.'),
+  item(2,'word','막상','실제 상황이 되었을 때','いざ（実際にその場面になると）','when it comes to it','真到……时','막상 발표를 시작하니 긴장이 풀렸어요.'),
+  item(2,'word','오히려','예상과 반대로','かえって（予想や期待とは反対に）','rather; instead','反而','너무 많이 자서 오히려 피곤해요.'),
+  item(2,'word','간과하다','중요한 사실을 제대로 보지 못하고 넘기다','見過ごす（重要なことに注意を払わず通り過ぎる）','overlook','忽视','작은 오류를 간과하면 큰 문제가 될 수 있어요.'),
+  item(2,'word','선뜻','망설이지 않고 기꺼이','ためらわずに（すぐに進んで行う）','readily; willingly','欣然；爽快地','어려운 부탁인데도 선뜻 도와주었어요.'),
+  item(2,'word','줄곧','처음부터 끝까지 계속','ずっと（途中で変わらず続けて）','all along; throughout','一直；始终','그는 십 년 동안 줄곧 같은 분야를 연구했어요.'),
+  item(2,'word','마련하다','필요한 것을 준비하거나 만들다','用意する・設ける（必要なものを整える）','prepare; provide','准备；筹备','주민들을 위한 쉼터를 마련했어요.'),
   reviewedConnectorItem('S04-II-W-LINK-01','따라서','result','비가 많이 왔습니다. 따라서 경기가 취소되었습니다.',{
     ko:'비가 많이 왔습니다. 따라서 경기가 취소되었습니다.',ja:'大雨が降りました。したがって、試合は中止になりました。',en:'It rained heavily. Therefore, the match was canceled.',zh:'下了大雨。因此，比赛取消了。'
   },{
@@ -2961,20 +2961,20 @@ const TOPIK_II=[
     en:'The event remains free, but advance registration is added as a condition, so 다만 fits.',
     zh:'“免费”这一点不变，只补充提前报名的条件，所以应选“다만”。'
   }),
-  item(2,'idiom','눈에 띄다','두드러져 보이다','目立つ','stand out','显眼；引人注目','빨간 우산이 멀리서도 눈에 띄어요.'),
-  item(2,'idiom','손이 크다','넉넉하게 많이 준비하다','気前よく多く用意する','prepare generously','出手大方；准备得多','할머니는 손이 커서 음식을 많이 만드세요.'),
-  item(2,'idiom','기분이 풀리다','화난 마음이 좋아지다','機嫌が直る','feel better','消气；心情好转','사과를 듣고 기분이 풀렸어요.'),
-  item(2,'idiom','발이 넓다','아는 사람이 많다','顔が広い','be well-connected','人脉广','민수 씨는 발이 넓어서 아는 사람이 많아요.'),
-  item(2,'idiom','귀가 얇다','남의 말에 쉽게 흔들리다','人の話に影響されやすい','be easily swayed','耳根软','저는 귀가 얇아서 광고에 쉽게 끌려요.'),
-  item(2,'idiom','한눈을 팔다','다른 데에 정신을 두다','よそ見をする','be distracted','分心；东张西望','운전할 때 한눈을 팔면 위험해요.'),
-  item(2,'idiom','입이 무겁다','비밀을 잘 지키다','口が堅い','keep a secret','嘴严；守口如瓶','그 친구는 입이 무거워서 믿을 수 있어요.'),
-  item(2,'idiom','마음을 놓다','걱정을 멈추고 안심하다','安心する','feel relieved','放心；安心','검사 결과를 듣고 마음을 놓았어요.'),
-  item(2,'idiom','발 벗고 나서다','적극적으로 도와주다','一肌脱ぐ','go out of one’s way to help','挺身相助','친구들이 발 벗고 나서서 도와줬어요.'),
-  item(2,'idiom','손에 익다','일이 익숙해지다','手慣れる','get the hang of it','上手；熟练','새 도구가 이제 손에 익었어요.'),
-  item(2,'idiom','눈코 뜰 새 없다','잠깐 쉴 틈도 없을 만큼 매우 바쁘다','目が回るほど忙しい','be extremely busy','忙得不可开交','연말이라 눈코 뜰 새 없이 바빠요.'),
-  item(2,'idiom','두고 볼 일이다','지금 결론 내리지 않고 앞으로의 결과를 지켜봐야 한다','今後の成り行きを見守る必要がある','remain to be seen','还要看今后的结果','새 정책의 효과는 아직 두고 볼 일이에요.'),
-  item(2,'idiom','난처한 입장에 놓이다','대응하기 어려운 곤란한 상황이 되다','困った立場に置かれる','be put in an awkward position','陷入为难的处境','갑작스러운 변경으로 회사가 난처한 입장에 놓였어요.'),
-  item(2,'idiom','갈피를 못 잡다','상황을 이해하거나 방향을 정하지 못하다','見当がつかない；方針を決められない','be unable to get one’s bearings','摸不着头绪','정보가 너무 많아서 갈피를 못 잡겠어요.'),
+  item(2,'idiom','눈에 띄다','두드러져 보이다','目立つ（すぐに目に入る）','stand out','显眼；引人注目','빨간 우산이 멀리서도 눈에 띄어요.'),
+  item(2,'idiom','손이 크다','넉넉하게 많이 준비하다','気前がいい（食べ物などを惜しまずたくさん用意する）','prepare generously','出手大方；准备得多','할머니는 손이 커서 음식을 많이 만드세요.'),
+  item(2,'idiom','기분이 풀리다','화난 마음이 좋아지다','機嫌が直る（不快な気持ちが和らぐ）','feel better','消气；心情好转','사과를 듣고 기분이 풀렸어요.'),
+  item(2,'idiom','발이 넓다','아는 사람이 많다','顔が広い（知り合いが多い）','be well-connected','人脉广','민수 씨는 발이 넓어서 아는 사람이 많아요.'),
+  item(2,'idiom','귀가 얇다','남의 말에 쉽게 흔들리다','人に流されやすい（他人の話をすぐ信じる）','be easily swayed','耳根软','저는 귀가 얇아서 광고에 쉽게 끌려요.'),
+  item(2,'idiom','한눈을 팔다','다른 데에 정신을 두다','よそ見をする（すべきことから注意がそれる）','be distracted','分心；东张西望','운전할 때 한눈을 팔면 위험해요.'),
+  item(2,'idiom','입이 무겁다','비밀을 잘 지키다','口が堅い（秘密をむやみに話さない）','keep a secret','嘴严；守口如瓶','그 친구는 입이 무거워서 믿을 수 있어요.'),
+  item(2,'idiom','마음을 놓다','걱정을 멈추고 안심하다','安心する（心配がなくなる）','feel relieved','放心；安心','검사 결과를 듣고 마음을 놓았어요.'),
+  item(2,'idiom','발 벗고 나서다','적극적으로 도와주다','一肌脱ぐ（人のために進んで力を貸す）','go out of one’s way to help','挺身相助','친구들이 발 벗고 나서서 도와줬어요.'),
+  item(2,'idiom','손에 익다','일이 익숙해지다','手慣れる（繰り返して扱いに慣れる）','get the hang of it','上手；熟练','새 도구가 이제 손에 익었어요.'),
+  item(2,'idiom','눈코 뜰 새 없다','잠깐 쉴 틈도 없을 만큼 매우 바쁘다','目が回るほど忙しい（休む暇もない）','be extremely busy','忙得不可开交','연말이라 눈코 뜰 새 없이 바빠요.'),
+  item(2,'idiom','두고 볼 일이다','지금 결론 내리지 않고 앞으로의 결과를 지켜봐야 한다','様子を見る必要がある（すぐに判断せず成り行きを見守る）','remain to be seen','还要看今后的结果','새 정책의 효과는 아직 두고 볼 일이에요.'),
+  item(2,'idiom','난처한 입장에 놓이다','대응하기 어려운 곤란한 상황이 되다','困った立場に置かれる（どう対応すればよいか困る）','be put in an awkward position','陷入为难的处境','갑작스러운 변경으로 회사가 난처한 입장에 놓였어요.'),
+  item(2,'idiom','갈피를 못 잡다','상황을 이해하거나 방향을 정하지 못하다','見当がつかない（考えや方針がまとまらない）','be unable to get one’s bearings','摸不着头绪','정보가 너무 많아서 갈피를 못 잡겠어요.'),
 
   item(2,'grammar','-는 바람에','뜻밖의 원인으로 나쁜 결과가 생김','～したせいで','because ... unexpectedly','因为意外……而……','버스를 놓치는 바람에 지각했어요.'),
   item(2,'grammar','-기는커녕','앞의 사실은 전혀 아니고 반대 상황임','～どころか','far from; let alone','别说……反而……','도와주기는커녕 방해만 했어요.'),
@@ -2989,7 +2989,7 @@ const TOPIK_II=[
   item(2,'grammar','-(으)ㄴ 채로','상태를 유지하며 뒤 행동을 함','～したまま','while still ...','保持……状态','불을 켠 채로 잠이 들었어요.'),
   item(2,'grammar','-느라고','앞 행동 때문에 뒤 일을 못함','～するのに忙しくて','because one was busy ...','因为忙于……','숙제하느라고 전화를 못 받았어요.'),
   item(2,'grammar','-다 보니','계속한 결과 새 상태가 생김','～しているうちに','as one keeps doing','做着做着……','매일 연습하다 보니 발음이 좋아졌어요.'),
-  item(2,'grammar','-는 대신에','앞의 것을 다른 것으로 바꿈','～する代わりに','instead of','代替……','택시 대신에 지하철을 이용했어요.'),
+  item(2,'grammar','-는 대신에','앞의 것을 다른 것으로 바꿈','～する代わりに','instead of','代替……','택시를 타는 대신에 지하철을 이용했어요.'),
   item(2,'grammar','-(으)려던 참이다','마침 하려고 하던 순간','ちょうど～しようとしていた','be just about to','正打算……','저도 전화하려던 참이었어요.'),
   item(2,'grammar','-(으)ㄹ 리가 없다','가능성을 강하게 부정함','～はずがない','there is no way','不可能……','그 사람이 약속을 잊을 리가 없어요.'),
   item(2,'grammar','-기만 하면','그때마다 같은 결과가 나타남','～するたびに','whenever','每当……','이 노래를 듣기만 하면 여행이 생각나요.'),
@@ -3563,15 +3563,15 @@ const TOPIK_II=[
     ko:'시는 늘어나는 돌봄 수요에 맞춰 지원 대상을 확대했습니다.',ja:'市は増加する介護需要に合わせて、支援対象を拡大しました。',en:'The city expanded eligibility for support to meet growing care needs.',zh:'市政府根据不断增长的照护需求，扩大了支援对象范围。'
   },{
     ko:'지원 대상을 전보다 더 넓게 늘렸으므로 “확대”가 맞습니다.',
-    ja:'支援対象を以前より広く増やしたので「확대」が合います。',
+    ja:'支援対象の範囲を以前より広げたので「확대」が合います。',
     en:'The eligible group was made broader than before, so 확대 fits.',
     zh:'支援对象范围比以前更广，所以应选“확대”。'
   }),
   reviewedScaleStateNounItem('S04-II-W-SCALE-02','축소','reduction','회사는 비용을 줄이기 위해 해외 지점 수를 축소했습니다.',{
-    ko:'회사는 비용을 줄이기 위해 해외 지점 수를 축소했습니다.',ja:'会社は費用を減らすため、海外支店の数を縮小しました。',en:'The company reduced the number of overseas branches to cut costs.',zh:'公司为了降低成本，缩减了海外分店的数量。'
+    ko:'회사는 비용을 줄이기 위해 해외 지점 수를 축소했습니다.',ja:'会社は費用を減らすため、海外支店の数を減らしました。',en:'The company reduced the number of overseas branches to cut costs.',zh:'公司为了降低成本，缩减了海外分店的数量。'
   },{
     ko:'해외 지점 수를 전보다 더 적게 줄였으므로 “축소”가 맞습니다.',
-    ja:'海外支店の数を以前より少なく減らしたので「축소」が合います。',
+    ja:'海外支店の数を以前より減らしたので「축소」が合います。',
     en:'The number of overseas branches was made smaller than before, so 축소 fits.',
     zh:'海外分店数量比以前更少，所以应选“축소”。'
   }),

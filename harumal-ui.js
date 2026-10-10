@@ -13,11 +13,11 @@ function languageFlag(lang){
   en:`<path stroke="#b22234" stroke-width="1.85" d="${[0,1,2,3,4,5,6].map(i=>`M0 ${.92+i*3.69}h36`).join(' ')}"/><path fill="#3c3b6e" d="M0 0h15v13H0z"/><g fill="white">${Array.from({length:9},(_,row)=>Array.from({length:row%2?5:6},(_,col)=>star(1.2+col*2.5+(row%2?1.25:0),1+row*1.4,.65)).join('')).join('')}</g>`,
   zh:`<path fill="#de2910" d="M0 0h36v24H0z"/><g fill="#ffde00">${star(7,7,3.6)}${[[13,3],[15,6],[15,10],[12,13]].map(([x,y])=>star(x,y,1.3)).join('')}</g>`,
   ko:'<circle cx="18" cy="12" r="5.5" fill="#0047a0"/><path d="M12.5 12a5.5 5.5 0 0 1 11 0a2.75 2.75 0 0 1-5.5 0a2.75 2.75 0 0 0-5.5 0" fill="#cd2e3a"/><g stroke="#161616" stroke-width="1"><path transform="rotate(-55 8 6)" d="M5 4h6M5 6h6M5 8h6"/><path transform="rotate(55 28 6)" d="M25 4h2.5m1 0H31M25 6h6M25 8h2.5m1 0H31"/><path transform="rotate(55 8 18)" d="M5 16h6M5 18h2.5m1 0H11M5 20h6"/><path transform="rotate(-55 28 18)" d="M25 16h2.5m1 0H31M25 18h2.5m1 0H31M25 20h2.5m1 0H31"/></g>'};
- return `<svg class="harumalFlag" viewBox="0 0 36 24" aria-hidden="true"><title>${symbols[lang]||symbols.en}</title><rect width="36" height="24" fill="white"/>${art[lang]||art.en}</svg>`;
+ return `<svg class="harumalFlag" width="36" height="24" viewBox="0 0 36 24" aria-hidden="true" focusable="false"><title>${symbols[lang]||symbols.en}</title><rect width="36" height="24" fill="white"/>${art[lang]||art.en}</svg>`;
 }
 const icon=i=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${paths[i]}"/></svg>`;
 function activeTab(view){return ['review','travelAdventureReview','travelRecall'].includes(view)?'review':['vocab','vocabEditor','vocabTest'].includes(view)?'vocab':'home'}
-window.HARUMAL_UI=Object.freeze({activeTab});
+window.HARUMAL_UI=Object.freeze({activeTab,languageFlag});
 window.harumalGo=function(view){if(![...tabs,'learn','more','travel','stats'].includes(view))return;setView(view)};
 window.harumalCourse=function(path){if(path==='beginner'){tqSetLearningPath('beginner');setView('beginner')}else if(path==='topik1'||path==='topik2'){tqSetLevel(path==='topik2'?2:1);tqStartMode('random')}};
 function card(symbol,title,copy,action,extra=''){return `<button class="harumalCourse ${extra}" onclick="${action}"><i aria-hidden="true">${symbol}</i><span><b>${title}</b><small>${copy}</small></span><em aria-hidden="true">↗</em></button>`}

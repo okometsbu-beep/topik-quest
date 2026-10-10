@@ -33,7 +33,8 @@ export async function verifyWritingUsability({ evaluate, tap, shot, setViewport,
     if(roots.malbitProductPrefsV1){const p=JSON.parse(roots.malbitProductPrefsV1);delete p.theme;roots.malbitProductPrefsV1=JSON.stringify(p)}
     return{core,roots};
   })()`);
-  const settingsLanguage = '#harumalSettingsDialog select[onchange="malbitSetLanguage(this.value)"]';
+  const settingsLanguage = '#harumalSettingsDialog [data-hub-language]';
+  const languageNames = {ko:['한국어','일본어','영어','중국어'],ja:['韓国語','日本語','英語','中国語'],en:['Korean','Japanese','English','Chinese'],zh:['韩语','日语','英语','中文']};
   const openLanguageSettings = async () => {
     const index=await evaluate(`[...document.querySelectorAll('.harumalSettingsTrigger')].findIndex(el=>{const r=el.getBoundingClientRect();return r.width>0&&r.height>0&&getComputedStyle(el).visibility!=='hidden'})`);
     assert.ok(index>=0,'writing settings gear is visible');
@@ -41,20 +42,27 @@ export async function verifyWritingUsability({ evaluate, tap, shot, setViewport,
     await waitFor(`!!document.querySelector(${JSON.stringify(settingsLanguage)})`,'settings language picker exists');
   };
   const assertLanguagePicker = async () => {
-    const value=await evaluate(`(()=>{const el=document.querySelector(${JSON.stringify(settingsLanguage)}),r=el.getBoundingClientRect(),s=getComputedStyle(el),ctx=document.createElement('canvas').getContext('2d');ctx.font=s.font||s.fontSize+' '+s.fontFamily;const hit=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);return{value:el.value,label:el.selectedOptions[0]?.textContent,width:r.width,height:r.height,left:r.left,right:r.right,viewport:innerWidth,hit:hit===el||el.contains(hit),labelWidth:ctx.measureText(el.selectedOptions[0]?.textContent||'').width,available:r.width-parseFloat(s.paddingLeft)-parseFloat(s.paddingRight)-parseFloat(s.borderLeftWidth)-parseFloat(s.borderRightWidth)-(s.appearance==='none'?0:20)}})()`);
-    assert.ok(value.width>=44&&value.height>=44&&value.hit,'settings language picker is visible and clickable');
-    assert.ok(value.left>=0&&value.right<=value.viewport,'settings language picker fits viewport');
-    assert.ok(value.available>=value.labelWidth-1,'full selected language label fits '+JSON.stringify(value));
-    return value;
+    const values=await evaluate(`[...document.querySelectorAll(${JSON.stringify(settingsLanguage)})].map(el=>{const r=el.getBoundingClientRect(),flag=el.querySelector('svg'),f=flag?.getBoundingClientRect(),hit=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);return{value:el.dataset.hubLanguage,label:el.getAttribute('aria-label'),selected:el.getAttribute('aria-pressed'),width:r.width,height:r.height,left:r.left,right:r.right,viewport:innerWidth,hit:hit===el||el.contains(hit),flag:f?{width:f.width,height:f.height}:null}})`);
+    assert.deepEqual(values.map(v=>v.value),locales,'all four flag choices exist');
+    const lang=await evaluate('S.lang');
+    assert.deepEqual(values.map(v=>v.label),languageNames[lang],'language names remain localized and accessible');
+    for(const value of values){
+      assert.ok(value.width>=44&&value.height>=44&&value.hit,'settings language flag is visible and clickable');
+      assert.ok(value.left>=0&&value.right<=value.viewport,'settings language flags fit viewport');
+      assert.ok(value.flag?.width>=28&&value.flag?.height>=18,'real SVG flag has visible dimensions');
+    }
+    const selected=values.filter(v=>v.selected==='true');
+    assert.equal(selected.length,1,'exactly one flag is selected');
+    return selected[0];
   };
   const selectLanguage = async lang => {
     const before = await snapshot(),savedRoute=(await state()).route;
     await openLanguageSettings();
-    await tap(settingsLanguage,0,50);
-    const key=async(key,code,n)=>{await send('Input.dispatchKeyEvent',{type:'keyDown',key,code,windowsVirtualKeyCode:n});await send('Input.dispatchKeyEvent',{type:'keyUp',key,code,windowsVirtualKeyCode:n})};
-    await key('Home','Home',36);
-    for(let i=0;i<locales.indexOf(lang);i++)await key('ArrowDown','ArrowDown',40);
-    await key('Enter','Enter',13);
+    // Activate the real flag control with the keyboard after giving it focus.
+    await evaluate(`document.querySelector('#harumalSettingsDialog [data-hub-language="${lang}"]').focus()`);
+    assert.equal(await evaluate(`document.activeElement?.dataset.hubLanguage`),lang,'keyboard focus reaches the flag button');
+    await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Enter',code:'Enter',windowsVirtualKeyCode:13,text:'\r',unmodifiedText:'\r'});
+    await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Enter',code:'Enter',windowsVirtualKeyCode:13});
     await waitFor(`S.lang===${JSON.stringify(lang)}`,'settings picker changes the language');
     assert.equal((await assertLanguagePicker()).value,lang);
     await tap('[data-hub-action="close-settings"]',0,100);
