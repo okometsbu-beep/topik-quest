@@ -59,7 +59,7 @@ export async function verifyWritingLocalization({ evaluate, tap, shot, setViewpo
     const index = await evaluate(`[...document.querySelectorAll(${JSON.stringify(selector)})].findIndex(el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return r.width>0&&r.height>0&&s.display!=='none'&&s.visibility!=='hidden'})`);
     assert.ok(index >= 0, 'settings gear is visible');
     await tap(selector,index,100);
-    await evaluate(`(()=>{const select=document.querySelector('#harumalSettingsDialog select[onchange="malbitSetLanguage(this.value)"]');select.value='${lang}';select.dispatchEvent(new Event('change',{bubbles:true}))})()`);
+    await tap(`#harumalSettingsDialog [data-hub-language="${lang}"]`,0,100);
     await tap('[data-hub-action="close-settings"]',0,100);
     assert.equal(await evaluate('S.lang'), lang, 'language-picker click changes the active locale');
     assert.equal(await evaluate(`JSON.parse(localStorage.getItem('topikQuestV8')).lang`), lang, 'locale selection is persisted');
