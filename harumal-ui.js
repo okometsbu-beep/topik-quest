@@ -16,7 +16,7 @@ function languageFlag(lang){
  return `<svg class="harumalFlag" width="36" height="24" viewBox="0 0 36 24" aria-hidden="true" focusable="false"><title>${symbols[lang]||symbols.en}</title><rect width="36" height="24" fill="white"/>${art[lang]||art.en}</svg>`;
 }
 const icon=i=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${paths[i]}"/></svg>`;
-function activeTab(view){return ['review','travelAdventureReview','travelRecall'].includes(view)?'review':['vocab','vocabEditor','vocabTest'].includes(view)?'vocab':'home'}
+function activeTab(view){return ['review','travelAdventureReview','travelRecall'].includes(view)?'review':['vocab','vocabEditor','vocabTest','vocabFlashcards'].includes(view)?'vocab':'home'}
 window.HARUMAL_UI=Object.freeze({activeTab,languageFlag});
 window.harumalGo=function(view){if(![...tabs,'learn','more','travel','stats'].includes(view))return;setView(view)};
 window.harumalCourse=function(path){if(path==='beginner'){tqSetLearningPath('beginner');setView('beginner')}else if(path==='topik1'||path==='topik2'){tqSetLevel(path==='topik2'?2:1);tqStartMode('random')}};
@@ -61,7 +61,7 @@ function compose(sc){
  }
  if(S.view==='vocab'){
   const tabs=sc.querySelector('.tqVocabPageTabs'),firstCard=sc.querySelector('.tqSavedVocabCard');
-  if(tabs&&firstCard)tabs.after(firstCard);
+  if(tabs&&firstCard)(sc.querySelector('.hfEntry')||tabs).after(firstCard);
  }
  sc.dataset.harumalView=S.view;
 }

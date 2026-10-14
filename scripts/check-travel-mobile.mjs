@@ -13,6 +13,7 @@ import {verifyVocabularySelection} from './vocabulary-selection-checks.mjs';
 import {verifyRetiredShorts} from './retired-shorts-checks.mjs';
 import {verifyListeningPlayer} from './listening-player-checks.mjs';
 import {verifyGrowthLearning} from './growth-learning-checks.mjs';
+import {verifyVocabFlashcards} from './vocab-flashcards-checks.mjs';
 import {verifyLearningRefresh} from './learning-refresh-checks.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -20,7 +21,7 @@ import {spawn} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
-const out=path.join(root,'artifacts',process.env.HARUMAN_INTRO_BASELINE?'intro-baseline':process.env.HARUMAL_FOCUS_ONLY?'home-vocabulary':'travel-mobile');
+const out=path.join(root,'artifacts',process.env.HARUMAL_FLASHCARDS_ONLY?'flashcards':process.env.HARUMAN_INTRO_BASELINE?'intro-baseline':process.env.HARUMAL_FOCUS_ONLY?'home-vocabulary':'travel-mobile');
 fs.mkdirSync(out,{recursive:true});
 for(const file of fs.readdirSync(out))if(file.endsWith('.png'))fs.unlinkSync(path.join(out,file));
 const chromePath=[process.env.CHROME_PATH,'/usr/bin/google-chrome','/usr/bin/google-chrome-stable','/usr/bin/chromium','/usr/bin/chromium-browser'].find(candidate=>candidate&&fs.existsSync(candidate));
@@ -675,7 +676,7 @@ try{
   assert.ok(introQA.some(e=>e.type==='playing'&&e.muted&&e.inline&&e.width===540&&e.height===540&&e.fit==='contain'),'intro must actually decode and play inline, muted and proportionally');
   assert.ok(introQA.some(e=>e.type==='ended'&&e.time>2.7&&e.time<3),'intro must naturally end before the watchdog');
   console.log('Haruman actual browser playback passed',JSON.stringify(introQA));
-  if(!process.env.HARUMAL_FOCUS_ONLY&&!process.env.HARUMAL_TRANSLATION_ONLY)await verifyIntro({evaluate,send,setViewport,shot,ready,sleep,baseline:!!process.env.HARUMAN_INTRO_BASELINE});
+  if(!process.env.HARUMAL_FLASHCARDS_ONLY&&!process.env.HARUMAL_FOCUS_ONLY&&!process.env.HARUMAL_TRANSLATION_ONLY)await verifyIntro({evaluate,send,setViewport,shot,ready,sleep,baseline:!!process.env.HARUMAN_INTRO_BASELINE});
   // Complete/default/re-entry playback is checked above. Only unrelated bulk reloads
   // use the existing data-saver opt-out; preserve all ordinary motion regressions.
   // The separate Home suite keeps default media and tests reduced-motion itself.
@@ -687,7 +688,7 @@ try{
   assert.match(await evaluate(`document.querySelector('[data-hub-action="continue"],.tqLessonStart')?.textContent||''`),/学習/,'the first primary CTA must be localized before language-menu use');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);await assertHomeFits('fresh Japanese browser Home light','light');await shot('00renewal-home-ja-locale-first-visit-light.png');
   await evaluate(`malbitSetTheme('dark')`);await sleep(100);await assertHomeFits('fresh Japanese browser Home dark','dark');await shot('00renewal-home-ja-locale-first-visit-dark.png');
-  if(process.env.HARUMAL_TRANSLATION_ONLY){await verifyVocabularyTranslation({evaluate,tap,shot,setViewport,send,ready,sleep});assert.deepEqual(errors,[]);console.log('Translation-only MOCK browser checks passed');}else if(process.env.HARUMAN_INTRO_BASELINE){assert.deepEqual(errors,[]);console.log('Intro baseline captured');}else if(process.env.HARUMAL_BASELINE){for(const theme of ['light','dark'])for(const width of [320,375,390,430]){await evaluate(`setLang('ko');malbitSetTheme('${theme}');setView('home')`);await setViewport(width,844);await shot(`baseline-home-${theme}-${width}.png`)}console.log('Baseline captured');}else if(process.env.HARUMAL_FOCUS_ONLY){await verifyHomeVocabulary({evaluate,tap,shot,setViewport,send,ready,sleep});assert.deepEqual(errors,[]);console.log('Home/vocabulary focused mobile checks passed');}else{
+  if(process.env.HARUMAL_FLASHCARDS_ONLY){await verifyVocabFlashcards({evaluate,tap,shot,setViewport,send,ready,sleep});assert.deepEqual(errors,[]);}else if(process.env.HARUMAL_TRANSLATION_ONLY){await verifyVocabularyTranslation({evaluate,tap,shot,setViewport,send,ready,sleep});assert.deepEqual(errors,[]);console.log('Translation-only MOCK browser checks passed');}else if(process.env.HARUMAN_INTRO_BASELINE){assert.deepEqual(errors,[]);console.log('Intro baseline captured');}else if(process.env.HARUMAL_BASELINE){for(const theme of ['light','dark'])for(const width of [320,375,390,430]){await evaluate(`setLang('ko');malbitSetTheme('${theme}');setView('home')`);await setViewport(width,844);await shot(`baseline-home-${theme}-${width}.png`)}console.log('Baseline captured');}else if(process.env.HARUMAL_FOCUS_ONLY){await verifyHomeVocabulary({evaluate,tap,shot,setViewport,send,ready,sleep});assert.deepEqual(errors,[]);console.log('Home/vocabulary focused mobile checks passed');}else{
   await verifyThreeTabRedesign({evaluate,tap,shot,setViewport,send,ready,sleep});
   await verifyVocabularySelection({evaluate,tap,shot,setViewport,send,ready,sleep});
   await verifyVocabularyTranslation({evaluate,tap,shot,setViewport,send,ready,sleep});
