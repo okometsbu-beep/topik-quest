@@ -31,7 +31,7 @@ export async function verifyVocabFlashcards({evaluate,tap,shot,setViewport,send,
   await tap('.hfKnown',0,600);assert.equal(await evaluate(`scrollY`),0,'long meaning completion returns to top of result');
   await evaluate(`S.vocab=[];setView('vocab')`);assert.equal(await evaluate(`document.querySelector('.hfEntry .hfPrimary').disabled`),true);await shot('flashcards-empty-ja.png');
   await evaluate(`S.lang='en';S.vocab=[{text:'학교',meanings:{en:'school'},manual:true}];harumalFlashcardsStart('manual')`);await fit();await shot('flashcards-en-320.png');
-  await evaluate(`S.vocab=[{text:'길고 긴 한국어 표현을 끝까지 읽을 수 있어요. '.repeat(15),ja:'長い韓国語の表現'}];harumalFlashcardsStart('all')`);await fit();assert.equal(await evaluate(`document.querySelector('.hfTermScroll').scrollHeight>document.querySelector('.hfTermScroll').clientHeight`),true);await shot('flashcards-long-term-320.png');
+  await evaluate(`S.lang='ja';S.vocab=[{text:'길고 긴 한국어 표현을 끝까지 읽을 수 있어요. '.repeat(15),ja:'長い韓国語の表現'}];harumalFlashcardsStart('all')`);await fit();assert.equal(await evaluate(`document.querySelector('.hfTermScroll').scrollHeight>document.querySelector('.hfTermScroll').clientHeight`),true);await shot('flashcards-long-term-320.png');
   // A real screen recording of the shipped interaction, not a drawn simulation.
   await setViewport(390,844);await evaluate(`S.lang='ja';malbitSetTheme('light');S.vocab=[{text:'설레다',ja:'心がときめく'},{text:'꾸준하다',ja:'こつこつ続ける'},{text:'여유',ja:'心のゆとり'},{text:'다정하다',ja:'優しくて温かい'},{text:'나아가다',ja:'前へ進む'}];harumalFlashcardsStart('all')`);
   assert.equal(await evaluate(`document.querySelectorAll('.hfUnderCard').length`),2);
