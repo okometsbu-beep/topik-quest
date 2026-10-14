@@ -23,7 +23,7 @@ export async function verifyVocabFlashcards({evaluate,tap,shot,setViewport,send,
   await tap('.hfResult .hfPrimary');assert.equal(await evaluate(`S.vocabFlashcards.items.length`),1);assert.equal(await evaluate(`JSON.stringify(S.vocab)`),words);
   await tap('#flashcardSound');assert.equal(await evaluate(`S.vocabFlashcardSound`),false);
   await tap('#vocabFlashcard');await tap('.hfKnown');await evaluate(`harumalFlashcardsExit();harumalFlashcardsStart('manual')`);assert.equal(await evaluate(`S.vocabFlashcards.items.length`),1);
-  await evaluate(`S.vocabFlashcards.items[0].meaning='日本語の長い意味を確認します。'.repeat(35);S.vocabFlashcards.revealed=true;render()`);await setViewport(320,844);await fit();await shot('flashcards-long-meaning-320.png');
+  await evaluate(`S.vocabFlashcards.items[0].meaning='日本語の長い意味を確認します。'.repeat(35);S.vocabFlashcards.revealed=true;render()`);await setViewport(320,844);await fit();await shot('flashcards-long-meaning-320.png');await tap('.hfKnown');assert.equal(await evaluate(`scrollY`),0,'long meaning completion returns to top of result');
   await evaluate(`S.vocab=[];setView('vocab')`);assert.equal(await evaluate(`document.querySelector('.hfEntry .hfPrimary').disabled`),true);await shot('flashcards-empty-ja.png');
   await evaluate(`S.lang='en';S.vocab=[{text:'학교',meanings:{en:'school'},manual:true}];harumalFlashcardsStart('manual')`);await fit();await shot('flashcards-en-320.png');
   console.log('Flashcard mobile checks passed: entry, filters, tap/swipe, reload, duplicate-click guard, retry, mute, themes, 320/390, long/empty/one word, unchanged vocabulary.');

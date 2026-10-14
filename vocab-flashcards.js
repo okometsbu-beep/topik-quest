@@ -13,7 +13,7 @@ function active(){const a=session();return S.view==='vocabFlashcards'&&a&&a.answ
 function start(items,scope){
  if(!items.length)return;
  const shuffled=items.map(x=>({...x}));for(let i=shuffled.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]]}
- S.vocabFlashcards={version:1,items:shuffled,answers:[],revealed:false,scope,startedAt:Date.now()};feedback='';save();setView('vocabFlashcards');
+ S.vocabFlashcards={version:1,items:shuffled,answers:[],revealed:false,scope,startedAt:Date.now()};feedback='';save();setView('vocabFlashcards');window.scrollTo?.({top:0,behavior:'auto'});
 }
 function soundEnabled(){return S.vocabFlashcardSound!==false&&S.muted!==true&&S.soundEnabled!==false}
 function sound(correct){
@@ -31,13 +31,13 @@ function sound(correct){
 }
 function focusCard(){document.getElementById('vocabFlashcard')?.focus({preventScroll:true})}
 window.harumalFlashcardsStart=scope=>start(pool(scope),scope==='manual'?'manual':'all');
-window.harumalFlashcardsResume=()=>{if(session()){feedback='';setView('vocabFlashcards')}};
+window.harumalFlashcardsResume=()=>{if(session()){feedback='';setView('vocabFlashcards');window.scrollTo?.({top:0,behavior:'auto'})}};
 window.harumalFlashcardsFlip=()=>{const a=active();if(!a)return;a.revealed=!a.revealed;save();render();focusCard()};
 window.harumalFlashcardsGrade=correct=>{
  const a=active();if(!a||!a.revealed||typeof correct!=='boolean')return;
  a.answers.push(correct);a.revealed=false;if(a.answers.length===a.items.length)a.finishedAt=Date.now();
  feedback=correct?L('✓ 기억했어요!','✓ 覚えていた！','✓ You remembered!','✓ 记住了！'):L('↻ 한 번 더 익혀요','↻ もう一度覚えよう','↻ Let’s revisit this one','↻ 再复习一次');
- save();sound(correct);render();focusCard();
+ save();sound(correct);render();window.scrollTo?.({top:0,behavior:'auto'});focusCard();
 };
 window.harumalFlashcardsRetry=()=>{const a=session();if(a&&a.answers.length===a.items.length)start(a.items.filter((_,i)=>!a.answers[i]),a.scope)};
 window.harumalFlashcardsSound=()=>{S.vocabFlashcardSound=!soundEnabled();save();render();document.getElementById('flashcardSound')?.focus({preventScroll:true})};
