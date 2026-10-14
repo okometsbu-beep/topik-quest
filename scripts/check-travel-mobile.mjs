@@ -17,7 +17,7 @@ import {verifyVocabFlashcards} from './vocab-flashcards-checks.mjs';
 import {verifyLearningRefresh} from './learning-refresh-checks.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
-import {spawn} from 'node:child_process';
+import {spawn,spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
@@ -47,10 +47,11 @@ try{
   const target=await json('http://127.0.0.1:9222/json/new?about:blank',{method:'PUT'});
   socket=new WebSocket(target.webSocketDebuggerUrl);
   await new Promise((resolve,reject)=>{socket.addEventListener('open',resolve,{once:true});socket.addEventListener('error',reject,{once:true})});
-  let id=0;const pending=new Map();const errors=[];
+  let id=0;const pending=new Map();const errors=[];let recording=null;
   socket.addEventListener('message',async event=>{
     const message=JSON.parse(typeof event.data==='string'?event.data:await event.data.text());
     if(message.id&&pending.has(message.id)){const handlers=pending.get(message.id);pending.delete(message.id);if(message.error){handlers.error.message=message.error.message+' ['+handlers.method+']';handlers.reject(handlers.error)}else handlers.resolve(message.result)}
+    if(message.method==='Page.screencastFrame'){if(recording){const frame=String(recording.frames.length).padStart(5,'0')+'.jpg';fs.writeFileSync(path.join(recording.dir,frame),Buffer.from(message.params.data,'base64'));recording.frames.push({frame,time:message.params.metadata.timestamp||Date.now()/1000})}send('Page.screencastFrameAck',{sessionId:message.params.sessionId}).catch(()=>{})}
     if(message.method==='Runtime.exceptionThrown')errors.push(message.params.exceptionDetails.text||'runtime exception');
     if(message.method==='Log.entryAdded'&&message.params.entry.level==='error')errors.push(message.params.entry.text+' '+(message.params.entry.url||''));
   });
@@ -62,6 +63,16 @@ try{
     return result.result.value;
   };
   const shot=async name=>{const result=await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});fs.writeFileSync(path.join(out,name),Buffer.from(result.data,'base64'))};
+  const record=async(name,actions)=>{
+    const dir=path.join(out,name+'-frames');fs.mkdirSync(dir,{recursive:true});recording={dir,frames:[]};
+    await send('Page.startScreencast',{format:'jpeg',quality:88,maxWidth:390,maxHeight:844,everyNthFrame:1});
+    try{await actions()}finally{await send('Page.stopScreencast');}
+    const frames=recording.frames;recording=null;assert.ok(frames.length>20,'motion preview must contain actual rendered browser frames');
+    const manifest=frames.map((f,i)=>`file '${f.frame}'\nduration ${Math.max(1/60,Math.min(2,(frames[i+1]?.time||f.time+.8)-f.time))}`).join('\n')+`\nfile '${frames.at(-1).frame}'\n`;
+    const list=path.join(dir,'frames.txt');fs.writeFileSync(list,manifest);
+    const movie=spawnSync('ffmpeg',['-y','-loglevel','error','-f','concat','-safe','0','-i',list,'-vf','fps=30','-c:v','libx264','-pix_fmt','yuv420p','-movflags','+faststart',path.join(out,name+'.mp4')],{encoding:'utf8'});
+    assert.equal(movie.status,0,'encode actual browser motion: '+movie.stderr);console.log('Recorded actual browser motion:',name,frames.length,'frames');
+  };
   const setViewport=async(width,height)=>{
     await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:true,screenWidth:width,screenHeight:height});
     await send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1});
@@ -688,7 +699,7 @@ try{
   assert.match(await evaluate(`document.querySelector('[data-hub-action="continue"],.tqLessonStart')?.textContent||''`),/学習/,'the first primary CTA must be localized before language-menu use');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);await assertHomeFits('fresh Japanese browser Home light','light');await shot('00renewal-home-ja-locale-first-visit-light.png');
   await evaluate(`malbitSetTheme('dark')`);await sleep(100);await assertHomeFits('fresh Japanese browser Home dark','dark');await shot('00renewal-home-ja-locale-first-visit-dark.png');
-  if(process.env.HARUMAL_FLASHCARDS_ONLY){await verifyVocabFlashcards({evaluate,tap,shot,setViewport,send,ready,sleep});assert.deepEqual(errors,[]);}else if(process.env.HARUMAL_TRANSLATION_ONLY){await verifyVocabularyTranslation({evaluate,tap,shot,setViewport,send,ready,sleep});assert.deepEqual(errors,[]);console.log('Translation-only MOCK browser checks passed');}else if(process.env.HARUMAN_INTRO_BASELINE){assert.deepEqual(errors,[]);console.log('Intro baseline captured');}else if(process.env.HARUMAL_BASELINE){for(const theme of ['light','dark'])for(const width of [320,375,390,430]){await evaluate(`setLang('ko');malbitSetTheme('${theme}');setView('home')`);await setViewport(width,844);await shot(`baseline-home-${theme}-${width}.png`)}console.log('Baseline captured');}else if(process.env.HARUMAL_FOCUS_ONLY){await verifyHomeVocabulary({evaluate,tap,shot,setViewport,send,ready,sleep});assert.deepEqual(errors,[]);console.log('Home/vocabulary focused mobile checks passed');}else{
+  if(process.env.HARUMAL_FLASHCARDS_ONLY){await verifyVocabFlashcards({evaluate,tap,shot,setViewport,send,ready,sleep,record});assert.deepEqual(errors,[]);}else if(process.env.HARUMAL_TRANSLATION_ONLY){await verifyVocabularyTranslation({evaluate,tap,shot,setViewport,send,ready,sleep});assert.deepEqual(errors,[]);console.log('Translation-only MOCK browser checks passed');}else if(process.env.HARUMAN_INTRO_BASELINE){assert.deepEqual(errors,[]);console.log('Intro baseline captured');}else if(process.env.HARUMAL_BASELINE){for(const theme of ['light','dark'])for(const width of [320,375,390,430]){await evaluate(`setLang('ko');malbitSetTheme('${theme}');setView('home')`);await setViewport(width,844);await shot(`baseline-home-${theme}-${width}.png`)}console.log('Baseline captured');}else if(process.env.HARUMAL_FOCUS_ONLY){await verifyHomeVocabulary({evaluate,tap,shot,setViewport,send,ready,sleep});assert.deepEqual(errors,[]);console.log('Home/vocabulary focused mobile checks passed');}else{
   await verifyThreeTabRedesign({evaluate,tap,shot,setViewport,send,ready,sleep});
   await verifyVocabularySelection({evaluate,tap,shot,setViewport,send,ready,sleep});
   await verifyVocabularyTranslation({evaluate,tap,shot,setViewport,send,ready,sleep});

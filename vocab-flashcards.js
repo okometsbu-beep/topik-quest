@@ -3,7 +3,10 @@
 'use strict';
 const L=(ko,ja,en,zh)=>({ko,ja,en,zh}[S.lang]||en);
 const H=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let feedback='',audioContext=null,gesture=null,suppressClick=false;
+let feedback='',audioContext=null,gesture=null,suppressClick=false,motionTimer=null,motionVersion=0,leaving=false;
+const reducedMotion=()=>window.matchMedia?.('(prefers-reduced-motion: reduce)').matches===true;
+function cancelMotion(){motionVersion++;if(motionTimer!==null)window.clearTimeout?.(motionTimer);motionTimer=null;gesture=null;leaving=false}
+function swipeDecision(dx,dy,velocity,width,revealed){return revealed&&Math.abs(dx)>Math.abs(dy)*1.35&&(Math.abs(dx)>=Math.max(64,Math.min(100,width*.27))||(Math.abs(dx)>28&&Math.abs(velocity)>.65&&Math.sign(dx)===Math.sign(velocity)))}
 function pool(scope='all'){
  const words=(Array.isArray(S.vocab)?S.vocab:[]).filter(v=>scope!=='manual'||v.manual===true);
  return window.HARUMAL_VOCAB_TEST.pool(words,S.lang);
@@ -32,15 +35,34 @@ function sound(correct){
 function focusCard(){document.getElementById('vocabFlashcard')?.focus({preventScroll:true})}
 window.harumalFlashcardsStart=scope=>start(pool(scope),scope==='manual'?'manual':'all');
 window.harumalFlashcardsResume=()=>{if(session()){feedback='';setView('vocabFlashcards');window.scrollTo?.({top:0,behavior:'auto'})}};
-window.harumalFlashcardsFlip=()=>{const a=active();if(!a)return;a.revealed=!a.revealed;save();render();focusCard()};
+window.harumalFlashcardsFlip=()=>{
+ const a=active();if(!a||leaving)return;a.revealed=!a.revealed;save();
+ const card=document.getElementById('vocabFlashcard'),back=card?.querySelector?.('.hfBack');
+ if(!card?.classList||!back){render();focusCard();return}
+ if(a.revealed&&!back.dataset.filled){back.innerHTML=backFace(a.items[a.answers.length],a.answers.length);back.dataset.filled='true'}
+ card.classList.toggle('isRevealed',a.revealed);card.setAttribute('aria-pressed',String(a.revealed));
+ card.querySelector('.hfFront')?.setAttribute('aria-hidden',String(a.revealed));back.setAttribute('aria-hidden',String(!a.revealed));
+ document.querySelectorAll('.hfAgain,.hfKnown').forEach(el=>el.disabled=!a.revealed);
+ const hint=document.getElementById('hfHint');if(hint)hint.textContent=a.revealed?L('왼쪽은 다시 학습, 오른쪽은 알아요','左はもう一度、右は覚えた','Left to revisit · Right if you know it','向左再学 · 向右记住了'):L('탭해서 뒤집고, 좌우로 넘겨요','タップで裏返して、左右にスワイプ','Tap to flip, then swipe left or right','轻点翻面，再左右滑动');
+ focusCard();
+};
 window.harumalFlashcardsGrade=correct=>{
- const a=active();if(!a||!a.revealed||typeof correct!=='boolean')return;
+ const a=active();if(!a||!a.revealed||leaving||typeof correct!=='boolean')return;
+ leaving=true;gesture=null;const token=++motionVersion,card=document.getElementById('vocabFlashcard');
  a.answers.push(correct);a.revealed=false;if(a.answers.length===a.items.length)a.finishedAt=Date.now();
  feedback=correct?L('✓ 기억했어요!','✓ 覚えていた！','✓ You remembered!','✓ 记住了！'):L('↻ 한 번 더 익혀요','↻ もう一度覚えよう','↻ Let’s revisit this one','↻ 再复习一次');
- save();sound(correct);render();window.scrollTo?.({top:0,behavior:'auto'});focusCard();
+ save();sound(correct);
+ const finish=()=>{if(token!==motionVersion)return;motionTimer=null;leaving=false;if(S.view==='vocabFlashcards'&&session()===a){render();if(a.finishedAt)window.scrollTo?.({top:0,behavior:'auto'});focusCard()}};
+ if(!card?.classList||reducedMotion()){finish();return}
+ const direction=correct?1:-1,travel=Math.max(window.innerWidth||390,card.getBoundingClientRect().width)*1.35;
+ card.classList.remove('isDragging','isReturning');card.classList.add('isLeaving');card.dataset.direction=correct?'right':'left';card.style.setProperty('--hf-stamp','1');
+ card.style.transform=`translate3d(${direction*travel}px,-45px,0) rotate(${direction*29}deg) rotateY(${direction*-12}deg)`;
+ document.querySelectorAll('.hfUnderCard').forEach((el,i)=>{el.style.transition='transform 400ms cubic-bezier(.2,.8,.25,1)';el.style.transform=el.classList.contains('hfUnder1')?'translate3d(0,0,0) rotate(0deg) scale(1)':'translate3d(0,11px,0) rotate(3deg) scale(.965)'});
+ document.querySelectorAll('.hfActions button').forEach(el=>el.disabled=true);
+ motionTimer=window.setTimeout(finish,420);
 };
 window.harumalFlashcardsRetry=()=>{const a=session();if(a&&a.answers.length===a.items.length)start(a.items.filter((_,i)=>!a.answers[i]),a.scope)};
-window.harumalFlashcardsSound=()=>{S.vocabFlashcardSound=!soundEnabled();save();render();document.getElementById('flashcardSound')?.focus({preventScroll:true})};
+window.harumalFlashcardsSound=()=>{S.vocabFlashcardSound=!soundEnabled();save();if(leaving)return;render();document.getElementById('flashcardSound')?.focus({preventScroll:true})};
 window.harumalFlashcardsExit=()=>{feedback='';setView('vocab')};
 function toolbar(sc){
  const tabs=sc.querySelector('.tqVocabPageTabs');if(!tabs||!tabs.querySelector('button.on')?.getAttribute('onclick')?.includes("'saved'")||sc.querySelector('.hfEntry'))return;
@@ -50,27 +72,53 @@ function toolbar(sc){
  tabs.insertAdjacentElement('afterend',box);
 }
 function renderCards(sc){
- const a=session();sc.className='screen hfScreen';gesture=null;
+ cancelMotion();const a=session();sc.className='screen hfScreen';
  const title=L('플래시카드','フラッシュカード','Flashcards','闪卡');
- sc.innerHTML=`<header class="hfHeader"><button class="hfQuiet" onclick="harumalFlashcardsExit()">← ${L('단어장','単語帳','My words','单词本')}</button><button id="flashcardSound" class="hfQuiet" aria-pressed="${soundEnabled()}" onclick="harumalFlashcardsSound()">${soundEnabled()?'♪':'♩'} ${soundEnabled()?L('소리 켜짐','効果音 ON','Sound on','声音开启'):L('소리 꺼짐','効果音 OFF','Sound off','声音关闭')}</button></header><div class="hfHeading"><small>MY WORDS / FLASHCARDS</small><h1>${title}</h1><p>${L('저장한 단어로 가볍게 기억 연습','保存した単語で、気軽に記憶の練習','A little recall practice with your saved words','用收藏的单词，轻松练习回忆')}</p></div>`;
+ sc.innerHTML=`<header class="hfHeader"><button class="hfIconButton" aria-label="${L('단어장으로','単語帳に戻る','Back to words','返回单词本')}" onclick="harumalFlashcardsExit()">‹</button><div><small>MY WORDS</small><h1>${title}</h1></div><button id="flashcardSound" class="hfIconButton" aria-label="${soundEnabled()?L('효과음 끄기','効果音をオフ','Mute sounds','关闭声音'):L('효과음 켜기','効果音をオン','Enable sounds','开启声音')}" aria-pressed="${soundEnabled()}" onclick="harumalFlashcardsSound()">${soundEnabled()?'♪':'♩'}</button></header>`;
  if(!a)return;
  const n=a.answers.length,total=a.items.length,known=a.answers.filter(Boolean).length;
  if(n===total){
   sc.innerHTML+=`<section class="hfResult" role="status"><span class="hfResultIcon">✦</span><small>${L('학습 완료','学習完了','SESSION COMPLETE','学习完成')}</small><h2>${L('한 장씩, 더 오래 기억해요','1枚ずつ、記憶に残そう','One card closer to remembering','一张张，记得更牢')}</h2><div class="hfScore"><b>${known}<small> / ${total}</small></b><span>${L('알아요','覚えていた','Remembered','记住了')}</span></div><p>${L('직접 체크한 기억 상태예요.','自分で確認した記憶の記録です。','This is your self-assessed recall.','这是你对记忆的自我评价。')}</p>${known<total?`<button class="hfPrimary" onclick="harumalFlashcardsRetry()">↻ ${L('다시 학습할 단어만','もう一度の単語だけ','Practice missed words','复习未记住的词')} · ${total-known}</button>`:''}<button class="hfQuiet" onclick="harumalFlashcardsStart('${a.scope==='manual'?'manual':'all'}')">${L('전체 다시 섞기','すべてシャッフルして再開','Shuffle and start again','重新打乱再来')}</button><button class="hfQuiet" onclick="harumalFlashcardsExit()">${L('단어장으로 돌아가기','単語帳に戻る','Back to my words','返回单词本')}</button></section>`;return;
  }
  const item=a.items[n];
- sc.innerHTML+=`<div class="hfProgress"><span>${n+1} <span>/ ${total}</span></span><small>✓ ${known} &nbsp; ↻ ${n-known}</small></div><progress max="${total}" value="${n}" aria-label="${L('학습 진행','学習の進み具合','Session progress','学习进度')}"></progress><p class="hfFeedback" role="status" aria-live="polite">${feedback||L('먼저 뜻을 떠올려 보세요','まずは意味を思い出してみよう','Recall the meaning first','先回想一下词义')}</p><button id="vocabFlashcard" type="button" class="hfCard ${a.revealed?'isRevealed':''}" aria-pressed="${a.revealed}" aria-describedby="hfHint"><span class="hfCardLabel">${a.revealed?L('뜻 확인','意味を確認','MEANING','词义'):'한국어'}</span><span class="hfCardWord" lang="${a.revealed?H(item.target):'ko'}">${H(a.revealed?item.meaning:item.term)}</span>${a.revealed?`<span class="hfCardTerm" lang="ko">${H(item.term)}</span>`:''}<span class="hfFlipCue">↺ ${a.revealed?L('탭해서 단어 보기','タップで単語に戻る','Tap to see the word','轻点返回单词'):L('탭해서 뜻 보기','タップで意味を見る','Tap to reveal meaning','轻点查看词义')}</span></button><p id="hfHint" class="hfHint">${L('뜻을 확인한 뒤 ← 다시 학습 · 알아요 →','意味を確認したら ← もう一度 · 覚えた →','After revealing: ← Revisit · Know it →','查看词义后 ← 再学一次 · 记住了 →')}</p><div class="hfActions"><button class="hfAgain" onclick="harumalFlashcardsGrade(false)" ${a.revealed?'':'disabled'}>← ${L('다시 학습','もう一度','Revisit','再学一次')}</button><button class="hfKnown" onclick="harumalFlashcardsGrade(true)" ${a.revealed?'':'disabled'}>${L('알아요','覚えた','Know it','记住了')} →</button></div><p class="hfFoot">${L('중간에 나가도 이어서 학습할 수 있어요','途中で閉じても、続きから学習できます','Leave anytime; your place is saved','可随时退出，下次继续')}</p>`;
+ sc.innerHTML+=`<div class="hfProgress"><span>${String(n+1).padStart(2,'0')} <span>/ ${String(total).padStart(2,'0')}</span></span><small><b>✓ ${known}</b><span>↻ ${n-known}</span></small></div><progress max="${total}" value="${n}" aria-label="${L('학습 진행','学習の進み具合','Session progress','学习进度')}"></progress><div class="hfDeckStage"><div class="hfDeck">${a.items.slice(n+1,n+3).map((x,i)=>`<div class="hfUnderCard hfUnder${i+1}" aria-hidden="true">${frontFace(x,n+i+1)}</div>`).reverse().join('')}<button id="vocabFlashcard" type="button" class="hfCard ${a.revealed?'isRevealed':''}" aria-pressed="${a.revealed}" aria-describedby="hfHint"><span class="hfFlipper"><span class="hfFace hfFront" aria-hidden="${a.revealed}">${frontFace(item,n)}</span><span class="hfFace hfBack" aria-hidden="${!a.revealed}" data-filled="${a.revealed?'true':''}">${a.revealed?backFace(item,n):''}</span></span><span class="hfStamp hfStampKnown" aria-hidden="true">${L('알아요','覚えた','GOT IT','记住了')}</span><span class="hfStamp hfStampAgain" aria-hidden="true">${L('한 번 더','もう一度','AGAIN','再学一次')}</span></button></div></div><p id="hfHint" class="hfHint">${a.revealed?L('왼쪽은 다시 학습, 오른쪽은 알아요','左はもう一度、右は覚えた','Left to revisit · Right if you know it','向左再学 · 向右记住了'):L('탭해서 뒤집고, 좌우로 넘겨요','タップで裏返して、左右にスワイプ','Tap to flip, then swipe left or right','轻点翻面，再左右滑动')}</p><div class="hfActions"><button class="hfAgain" onclick="harumalFlashcardsGrade(false)" ${a.revealed?'':'disabled'}><i aria-hidden="true">↶</i><span>${L('다시 학습','もう一度','Revisit','再学一次')}</span></button><button class="hfFlipButton" onclick="harumalFlashcardsFlip()"><i aria-hidden="true">↺</i><span>${L('뒤집기','裏返す','Flip','翻面')}</span></button><button class="hfKnown" onclick="harumalFlashcardsGrade(true)" ${a.revealed?'':'disabled'}><i aria-hidden="true">✓</i><span>${L('알아요','覚えた','Know it','记住了')}</span></button></div><p class="hfFeedback" role="status" aria-live="polite">${feedback||L('한 장씩, 내 기억으로','1枚ずつ、自分の記憶に','One card at a time, make it yours','一张张，变成自己的记忆')}</p>`;
  bindCard(document.getElementById('vocabFlashcard'));
+}
+function frontFace(item,index){return `<span class="hfCardCorner"><b>한</b><small>${String(index+1).padStart(2,'0')}</small></span><span class="hfCardCentre"><span class="hfCardLabel">KOREAN</span><span class="hfCardWord" lang="ko">${H(item.term)}</span><span class="hfCardRule">✦</span><span class="hfCardPrompt">${L('뜻을 떠올려 보세요','意味を思い出してみよう','What does it mean?','想想它的意思')}</span></span><span class="hfCardFooter"><span>하루말</span><span>MY VOCABULARY</span></span>`}
+function backFace(item,index){return `<span class="hfCardCorner"><b>뜻</b><small>${String(index+1).padStart(2,'0')}</small></span><span class="hfCardCentre"><span class="hfCardLabel">${L('의미','意味','MEANING','词义')}</span><span class="hfMeaningScroll" aria-label="${L('단어 뜻','単語の意味','Word meaning','单词释义')}"><span class="hfCardWord" lang="${H(item.target)}">${H(item.meaning)}</span></span><span class="hfCardRule">✦</span><span class="hfCardTerm" lang="ko">${H(item.term)}</span></span><span class="hfCardFooter"><span>하루말</span><span>${L('기억에 남겨요','記憶に残そう','MAKE IT YOURS','记在心里')}</span></span>`}
+function resetDrag(card){
+ card.classList?.remove('isDragging');card.classList?.add('isReturning');card.style.transform='';card.style.setProperty?.('--hf-stamp','0');delete card.dataset.direction;
+ document.querySelectorAll?.('.hfUnderCard').forEach(el=>{el.style.transition='';el.style.transform=''});
 }
 function bindCard(card){
  if(!card)return;
- card.addEventListener('click',(e={})=>{if(suppressClick&&e.detail!==0){suppressClick=false;return}suppressClick=false;window.harumalFlashcardsFlip()});
- card.addEventListener('keydown',e=>{if(e.repeat)return;if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();window.harumalFlashcardsGrade(e.key==='ArrowRight')}});
- card.addEventListener('pointerdown',e=>{if(!e.isPrimary||e.button!==0)return;suppressClick=false;gesture={id:e.pointerId,x:e.clientX,y:e.clientY};card.setPointerCapture?.(e.pointerId)});
- card.addEventListener('pointermove',e=>{if(!gesture||e.pointerId!==gesture.id)return;const dx=e.clientX-gesture.x,dy=e.clientY-gesture.y;if(Math.abs(dx)>12&&Math.abs(dx)>Math.abs(dy)){card.style.transform=`translateX(${Math.max(-100,Math.min(100,dx))}px) rotate(${dx/30}deg)`;card.dataset.direction=dx>0?'right':'left'}});
- card.addEventListener('pointerup',e=>{if(!gesture||e.pointerId!==gesture.id)return;const dx=e.clientX-gesture.x,dy=e.clientY-gesture.y;gesture=null;card.style.transform='';delete card.dataset.direction;if(Math.hypot(dx,dy)>12){suppressClick=true;if(Math.abs(dx)>=60&&Math.abs(dx)>Math.abs(dy)*1.4)window.harumalFlashcardsGrade(dx>0)}});
- card.addEventListener('pointercancel',()=>{gesture=null;suppressClick=false;card.style.transform='';delete card.dataset.direction});
+ card.addEventListener('click',(e={})=>{if(leaving)return;if(suppressClick&&e.detail!==0){suppressClick=false;return}suppressClick=false;if(e.target?.closest?.('.hfMeaningScroll')&&e.target.scrollHeight>e.target.clientHeight+2)return;window.harumalFlashcardsFlip()});
+ card.addEventListener('keydown',e=>{if(e.repeat)return;if(['ArrowUp','ArrowDown','Home','End'].includes(e.key)&&active()?.revealed){const body=card.querySelector?.('.hfMeaningScroll');if(body&&body.scrollHeight>body.clientHeight+2){e.preventDefault();body.scrollTop=e.key==='Home'?0:e.key==='End'?body.scrollHeight:body.scrollTop+(e.key==='ArrowDown'?70:-70);return}}if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();window.harumalFlashcardsGrade(e.key==='ArrowRight')}});
+ card.addEventListener('pointerdown',e=>{
+  if(leaving||!e.isPrimary||e.button!==0)return;suppressClick=false;
+  gesture={id:e.pointerId,x:e.clientX,y:e.clientY,lastX:e.clientX,lastAt:e.timeStamp||0,vx:0,drag:false,vertical:false};
+  card.classList?.remove('isReturning');card.setPointerCapture?.(e.pointerId);
+ });
+ card.addEventListener('pointermove',e=>{
+  const g=gesture;if(!g||e.pointerId!==g.id||g.vertical)return;
+  const dx=e.clientX-g.x,dy=e.clientY-g.y,dt=(e.timeStamp||0)-g.lastAt;
+  if(dt>0){g.vx=(e.clientX-g.lastX)/dt;g.lastX=e.clientX;g.lastAt=e.timeStamp}
+  if(!g.drag&&Math.abs(dy)>12&&Math.abs(dy)>Math.abs(dx)){g.vertical=true;return}
+  if(!g.drag&&(Math.abs(dx)<8||Math.abs(dx)<Math.abs(dy)))return;
+  g.drag=true;const width=card.getBoundingClientRect?.().width||300,p=Math.min(1,Math.abs(dx)/(width*.35));
+  card.classList?.add('isDragging');card.style.transform=`translate3d(${dx}px,${dy*.28}px,0) rotate(${Math.max(-17,Math.min(17,dx/16))}deg)`;
+  card.style.setProperty?.('--hf-stamp',String(active()?.revealed?p:0));card.dataset.direction=dx>0?'right':'left';
+  const next=document.querySelector?.('.hfUnder1');if(next){next.style.transition='none';next.style.transform=`translate3d(0,${12*(1-p)}px,0) rotate(${3*(1-p)}deg) scale(${.965+.035*p})`}
+ });
+ card.addEventListener('pointerup',e=>{
+  const g=gesture;if(!g||e.pointerId!==g.id)return;gesture=null;
+  const dx=e.clientX-g.x,dy=e.clientY-g.y;const recent=(e.timeStamp||0)-g.lastAt<100?g.vx:0;
+  if(Math.hypot(dx,dy)>8){suppressClick=true;if(!g.vertical&&swipeDecision(dx,dy,recent,card.getBoundingClientRect?.().width||300,active()?.revealed)){window.harumalFlashcardsGrade(dx>0);return}}
+  resetDrag(card);
+ });
+ card.addEventListener('pointercancel',()=>{gesture=null;suppressClick=false;resetDrag(card)});
+ card.addEventListener('lostpointercapture',()=>{if(gesture){gesture=null;resetDrag(card)}});
 }
-window.HARUMAL_FLASHCARDS=Object.freeze({pool,session,soundEnabled});
-const base=render;render=function(){if(S.view==='vocabFlashcards'){renderShell();return renderCards(document.getElementById('screen'))}const result=base.apply(this,arguments);if(S.view==='vocab')toolbar(document.getElementById('screen'));return result};
+window.HARUMAL_FLASHCARDS=Object.freeze({pool,session,soundEnabled,swipeDecision});
+const base=render;render=function(){if(S.view==='vocabFlashcards'){renderShell();return renderCards(document.getElementById('screen'))}cancelMotion();const result=base.apply(this,arguments);if(S.view==='vocab')toolbar(document.getElementById('screen'));return result};
 })();
