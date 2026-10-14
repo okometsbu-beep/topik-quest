@@ -58,3 +58,11 @@ test('back-forward cache return rebuilds the flashcard viewport at its current h
  c.harumalFlashcardsStart();c.harumalFlashcardsFlip();assert.equal(props.get('--hf-height'),'844px');
  lifecycle.pagehide();assert.equal(classes.has('hfActive'),false);c.innerHeight=568;c.scrollY=0;lifecycle.pageshow({persisted:true});assert.equal(classes.has('hfActive'),true);assert.equal(props.get('--hf-height'),'568px');assert.equal(c.S.vocabFlashcards.revealed,true);c.harumalFlashcardsExit();assert.equal(restored,230);
 });
+test('deferred return correction cancels on newer navigation, entry, pagehide and user input',()=>{
+ for(const action of ['navigate','enter','pagehide','pointerdown']){
+  const {c,lifecycle}=boot(),queue=[],classes=new Set(),calls=[];c.document.documentElement={classList:{add:x=>classes.add(x),remove:x=>classes.delete(x)}};c.document.body=c.document.documentElement;c.requestAnimationFrame=f=>queue.push(f);c.scrollY=350;c.scrollTo=x=>calls.push(x.top);
+  c.harumalFlashcardsStart();c.harumalFlashcardsExit();assert.equal(classes.has('hfRestoring'),true);
+  if(action==='navigate')c.setView('vocab');else if(action==='enter')c.harumalFlashcardsResume();else lifecycle[action]();
+  const n=calls.length;while(queue.length)queue.shift()();assert.equal(calls.length,n,action);assert.equal(classes.has('hfRestoring'),false,action);
+ }
+});

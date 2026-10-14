@@ -13,13 +13,18 @@ function sizeViewport(){
 function lockViewport(lock){
  if(lock===viewportLocked)return;viewportLocked=lock;
  const root=document.documentElement,body=document.body;
- if(lock){restoreVersion++;root?.classList?.remove('hfRestoring');entryScrollY=window.scrollY||0;root?.classList?.add('hfActive');body?.classList?.add('hfActive');sizeViewport();window.addEventListener?.('resize',sizeViewport);window.visualViewport?.addEventListener('resize',sizeViewport);window.visualViewport?.addEventListener('scroll',sizeViewport)}
- else{root?.classList?.remove('hfActive');body?.classList?.remove('hfActive');root?.style?.removeProperty('--hf-height');root?.style?.removeProperty('--hf-top');window.removeEventListener?.('resize',sizeViewport);window.visualViewport?.removeEventListener('resize',sizeViewport);window.visualViewport?.removeEventListener('scroll',sizeViewport);return entryScrollY}
+ if(lock){cancelRestore();entryScrollY=window.scrollY||0;root?.classList?.add('hfActive');body?.classList?.add('hfActive');sizeViewport();window.addEventListener?.('resize',sizeViewport);window.visualViewport?.addEventListener('resize',sizeViewport);window.visualViewport?.addEventListener('scroll',sizeViewport)}
+ else{root?.classList?.add('hfRestoring');root?.classList?.remove('hfActive');body?.classList?.remove('hfActive');root?.style?.removeProperty('--hf-height');root?.style?.removeProperty('--hf-top');window.removeEventListener?.('resize',sizeViewport);window.visualViewport?.removeEventListener('resize',sizeViewport);window.visualViewport?.removeEventListener('scroll',sizeViewport);return entryScrollY}
+}
+function cancelRestore(){
+ restoreVersion++;document.documentElement?.classList?.remove('hfRestoring');
+ for(const type of ['wheel','touchstart','pointerdown','keydown'])window.removeEventListener?.(type,cancelRestore);
 }
 function restoreScroll(y){
- const token=++restoreVersion,view=S.view,root=document.documentElement;
+ cancelRestore();const token=++restoreVersion,view=S.view,root=document.documentElement;
  root?.classList?.add('hfRestoring');window.scrollTo?.({top:y,behavior:'instant'});
- const finish=()=>{if(token===restoreVersion)root?.classList?.remove('hfRestoring')};
+ const finish=()=>{if(token===restoreVersion)cancelRestore()};
+ for(const type of ['wheel','touchstart','pointerdown','keydown'])window.addEventListener?.(type,cancelRestore,{passive:true});
  if(!window.requestAnimationFrame){finish();return}
  window.requestAnimationFrame(()=>{
   if(token!==restoreVersion)return;
@@ -155,13 +160,13 @@ function bindCard(card){
 // Release before later render owners (writing/travel) can bypass our render wrapper.
 const baseSetView=window.setView;
 window.setView=function(view){
- const restoreY=view!=='vocabFlashcards'?lockViewport(false):undefined;
+ cancelRestore();const restoreY=view!=='vocabFlashcards'?lockViewport(false):undefined;
  if(view!=='vocabFlashcards')cancelMotion();
  const result=baseSetView.apply(this,arguments);
  if(restoreY!==undefined)restoreScroll(restoreY);
  return result;
 };
-window.addEventListener?.('pagehide',()=>{cancelMotion();const y=lockViewport(false);if(y!==undefined)suspendedScrollY=y});
+window.addEventListener?.('pagehide',()=>{cancelMotion();const y=lockViewport(false);if(y!==undefined)suspendedScrollY=y;cancelRestore()});
 window.addEventListener?.('pageshow',event=>{if(event.persisted&&S.view==='vocabFlashcards'){render();if(suspendedScrollY!==null)entryScrollY=suspendedScrollY}suspendedScrollY=null});
 window.HARUMAL_FLASHCARDS=Object.freeze({pool,session,soundEnabled,swipeDecision});
 const base=render;render=function(){if(S.view==='vocabFlashcards'){renderShell();return renderCards(document.getElementById('screen'))}cancelMotion();const restoreY=lockViewport(false),result=base.apply(this,arguments);if(S.view==='vocab')toolbar(document.getElementById('screen'));if(restoreY!==undefined)restoreScroll(restoreY);return result};
