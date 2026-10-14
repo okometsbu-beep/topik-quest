@@ -21,7 +21,7 @@ export async function verifyVocabFlashcards({evaluate,tap,shot,setViewport,send,
   await evaluate(`harumalFlashcardsResume()`);await tap('#vocabFlashcard',0,650);await swipe(-105);
   assert.equal(await evaluate(`S.vocabFlashcards.answers.length`),2);await shot('flashcards-result-ja.png');
   await tap('.hfResult .hfPrimary');assert.equal(await evaluate(`S.vocabFlashcards.items.length`),1);assert.equal(await evaluate(`JSON.stringify(S.vocab)`),words);
-  await tap('#flashcardSound');assert.equal(await evaluate(`S.vocabFlashcardSound`),false);
+  assert.equal(await evaluate(`document.getElementById('flashcardSound')===null`),true,'card-specific sound toggle is removed');await evaluate(`S.vocabFlashcardSound=false;save()`);assert.equal(await evaluate(`HARUMAL_FLASHCARDS.soundEnabled()`),false,'stored sound preference is still respected');
   await tap('#vocabFlashcard',0,650);await tap('.hfKnown',0,600);await evaluate(`harumalFlashcardsExit();harumalFlashcardsStart('manual')`);assert.equal(await evaluate(`S.vocabFlashcards.items.length`),1);
   await evaluate(`S.vocabFlashcards.items[0].meaning='日本語の長い意味を確認します。'.repeat(35);S.vocabFlashcards.revealed=true;render()`);await setViewport(320,844);await fit();await shot('flashcards-long-meaning-320.png');
   const scrollBefore=await evaluate(`(()=>{const el=document.querySelector('.hfMeaningScroll');const r=el.getBoundingClientRect();return{x:r.x+r.width/2,y:r.y+r.height*.8,top:el.scrollTop,overflow:el.scrollHeight>el.clientHeight}})()`);assert.equal(scrollBefore.overflow,true);
@@ -35,7 +35,7 @@ export async function verifyVocabFlashcards({evaluate,tap,shot,setViewport,send,
   // A real screen recording of the shipped interaction, not a drawn simulation.
   await setViewport(390,844);await evaluate(`S.lang='ja';malbitSetTheme('light');S.vocab=[{text:'설레다',ja:'心がときめく'},{text:'꾸준하다',ja:'こつこつ続ける'},{text:'여유',ja:'心のゆとり'},{text:'다정하다',ja:'優しくて温かい'},{text:'나아가다',ja:'前へ進む'}];harumalFlashcardsStart('all')`);
   assert.equal(await evaluate(`document.querySelectorAll('.hfUnderCard').length`),2);
-  assert.equal(await evaluate(`(()=>{const nav=document.querySelector('.nav,.bottomNav,#nav');const buttons=[...document.querySelectorAll('.hfActions button')];return buttons.every(el=>el.getBoundingClientRect().bottom<innerHeight-78)})()`),true,'all action controls stay above bottom navigation without scrolling');
+  assert.equal(await evaluate(`(()=>{const nav=document.querySelector('.nav,.bottomNav,#nav');const buttons=[...document.querySelectorAll('.hfActions button')];return buttons.every(el=>el.getBoundingClientRect().bottom<innerHeight-110)})()`),true,'action controls retain more than 30px extra breathing room above bottom navigation');
   await shot('flashcards-physical-deck-light.png');
   if(record)await record('flashcards-motion',async()=>{
    await sleep(800);await tap('#vocabFlashcard',0,650);await sleep(300);
