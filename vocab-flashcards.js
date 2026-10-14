@@ -3,7 +3,46 @@
 'use strict';
 const L=(ko,ja,en,zh)=>({ko,ja,en,zh}[S.lang]||en);
 const H=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let feedback='',audioContext=null,gesture=null,pointerScrollBody=null,suppressClick=false,motionTimer=null,motionVersion=0,leaving=false;
+let feedback='',audioContext=null,gesture=null,suppressClick=false,motionTimer=null,motionVersion=0,leaving=false;
+let viewportLocked=false,entryScrollY=0,suspendedScrollY=null,restoreVersion=0;
+function sizeViewport(){
+ const v=window.visualViewport,root=document.documentElement;
+ root?.style?.setProperty('--hf-height',`${v?.height||window.innerHeight||844}px`);
+ root?.style?.setProperty('--hf-top',`${v?.offsetTop||0}px`);
+}
+function lockViewport(lock){
+ if(lock===viewportLocked)return;viewportLocked=lock;
+ const root=document.documentElement,body=document.body;
+ if(lock){cancelRestore();entryScrollY=window.scrollY||0;root?.classList?.add('hfActive');body?.classList?.add('hfActive');sizeViewport();window.addEventListener?.('resize',sizeViewport);window.visualViewport?.addEventListener('resize',sizeViewport);window.visualViewport?.addEventListener('scroll',sizeViewport)}
+ else{root?.classList?.add('hfRestoring');root?.classList?.remove('hfActive');body?.classList?.remove('hfActive');root?.style?.removeProperty('--hf-height');root?.style?.removeProperty('--hf-top');window.removeEventListener?.('resize',sizeViewport);window.visualViewport?.removeEventListener('resize',sizeViewport);window.visualViewport?.removeEventListener('scroll',sizeViewport);return entryScrollY}
+}
+function cancelRestore(){
+ restoreVersion++;document.documentElement?.classList?.remove('hfRestoring');
+ for(const type of ['wheel','touchstart','pointerdown','keydown'])window.removeEventListener?.(type,cancelRestore);
+}
+function restoreScroll(y){
+ cancelRestore();const token=++restoreVersion,view=S.view,root=document.documentElement;
+ root?.classList?.add('hfRestoring');window.scrollTo?.({top:y,behavior:'instant'});
+ const finish=()=>{if(token===restoreVersion)cancelRestore()};
+ for(const type of ['wheel','touchstart','pointerdown','keydown'])window.addEventListener?.(type,cancelRestore,{passive:true});
+ if(!window.requestAnimationFrame){finish();return}
+ window.requestAnimationFrame(()=>{
+  if(token!==restoreVersion)return;
+  if(!viewportLocked&&S.view===view)window.scrollTo?.({top:y,behavior:'instant'});
+  window.requestAnimationFrame(finish);
+ });
+}
+window.harumalFlashcardsDetails=()=>{
+ const a=active();if(!a||leaving)return;
+ const old=document.querySelector?.('.hfDetails');if(old)return;
+ const item=a.items[a.answers.length],dialog=document.createElement('dialog');dialog.className='hfDetails';
+ dialog.setAttribute('aria-label',L('카드 전체 보기','カード全文','Full card text','查看完整内容'));
+ dialog.innerHTML=`<button type="button" class="hfQuiet hfDetailClose">${L('닫기','閉じる','Close','关闭')}</button><div class="hfDetailBody" tabindex="0"><h2 lang="ko">${H(item.term)}</h2>${a.revealed?`<p lang="${H(item.target)}">${H(item.meaning)}</p>`:''}</div>`;
+ document.getElementById('screen').appendChild(dialog);
+ dialog.querySelector('.hfDetailClose').addEventListener('click',()=>dialog.close());
+ dialog.addEventListener('close',()=>{dialog.remove();document.querySelector('.hfDetailsButton')?.focus({preventScroll:true})});
+ dialog.showModal();dialog.querySelector('.hfDetailClose').focus({preventScroll:true});
+};
 const reducedMotion=()=>window.matchMedia?.('(prefers-reduced-motion: reduce)').matches===true;
 function cancelMotion(){motionVersion++;if(motionTimer!==null)window.clearTimeout?.(motionTimer);motionTimer=null;gesture=null;leaving=false}
 function swipeDecision(dx,dy,velocity,width,revealed){return revealed&&Math.abs(dx)>Math.abs(dy)*1.35&&(Math.abs(dx)>=Math.max(64,Math.min(100,width*.27))||(Math.abs(dx)>28&&Math.abs(velocity)>.65&&Math.sign(dx)===Math.sign(velocity)))}
@@ -71,16 +110,16 @@ function toolbar(sc){
  tabs.insertAdjacentElement('afterend',box);
 }
 function renderCards(sc){
- cancelMotion();const a=session();sc.className='screen hfScreen';
+ cancelMotion();lockViewport(true);const a=session();sc.className='screen hfScreen';
  const title=L('플래시카드','フラッシュカード','Flashcards','闪卡');
  sc.innerHTML=`<header class="hfHeader"><button class="hfIconButton" aria-label="${L('단어장으로','単語帳に戻る','Back to words','返回单词本')}" onclick="harumalFlashcardsExit()">‹</button><div><small>MY WORDS</small><h1>${title}</h1></div><span class="hfHeaderSpacer" aria-hidden="true"></span></header>`;
  if(!a)return;
  const n=a.answers.length,total=a.items.length,known=a.answers.filter(Boolean).length;
- if(n===total){
+ if(n===total){sc.classList?.add('hfComplete');
   sc.innerHTML+=`<section class="hfResult" role="status"><span class="hfResultIcon">✦</span><small>${L('학습 완료','学習完了','SESSION COMPLETE','学习完成')}</small><h2>${L('한 장씩, 더 오래 기억해요','1枚ずつ、記憶に残そう','One card closer to remembering','一张张，记得更牢')}</h2><div class="hfScore"><b>${known}<small> / ${total}</small></b><span>${L('알아요','覚えていた','Remembered','记住了')}</span></div><p>${L('직접 체크한 기억 상태예요.','自分で確認した記憶の記録です。','This is your self-assessed recall.','这是你对记忆的自我评价。')}</p>${known<total?`<button class="hfPrimary" onclick="harumalFlashcardsRetry()">↻ ${L('다시 학습할 단어만','もう一度の単語だけ','Practice missed words','复习未记住的词')} · ${total-known}</button>`:''}<button class="hfQuiet" onclick="harumalFlashcardsStart('${a.scope==='manual'?'manual':'all'}')">${L('전체 다시 섞기','すべてシャッフルして再開','Shuffle and start again','重新打乱再来')}</button><button class="hfQuiet" onclick="harumalFlashcardsExit()">${L('단어장으로 돌아가기','単語帳に戻る','Back to my words','返回单词本')}</button></section>`;return;
  }
  const item=a.items[n];
- sc.innerHTML+=`<div class="hfProgress"><span>${String(n+1).padStart(2,'0')} <span>/ ${String(total).padStart(2,'0')}</span></span><small><b>✓ ${known}</b><span>↻ ${n-known}</span></small></div><progress max="${total}" value="${n}" aria-label="${L('학습 진행','学習の進み具合','Session progress','学习进度')}"></progress><div class="hfDeckStage"><div class="hfDeck">${a.items.slice(n+1,n+3).map((x,i)=>`<div class="hfUnderCard hfUnder${i+1}" aria-hidden="true">${frontFace(x,n+i+1)}</div>`).reverse().join('')}<button id="vocabFlashcard" type="button" class="hfCard ${a.revealed?'isRevealed':''}" aria-pressed="${a.revealed}" aria-describedby="hfHint"><span class="hfFlipper"><span class="hfFace hfFront" aria-hidden="${a.revealed}">${frontFace(item,n)}</span><span class="hfFace hfBack" aria-hidden="${!a.revealed}" data-filled="${a.revealed?'true':''}">${a.revealed?backFace(item,n):''}</span></span><span class="hfStamp hfStampKnown" aria-hidden="true">${L('알아요','覚えた','GOT IT','记住了')}</span><span class="hfStamp hfStampAgain" aria-hidden="true">${L('한 번 더','もう一度','AGAIN','再学一次')}</span></button></div></div><p id="hfHint" class="hfHint">${a.revealed?L('왼쪽은 다시 학습, 오른쪽은 알아요','左はもう一度、右は覚えた','Left to revisit · Right if you know it','向左再学 · 向右记住了'):L('탭해서 뒤집고, 좌우로 넘겨요','タップで裏返して、左右にスワイプ','Tap to flip, then swipe left or right','轻点翻面，再左右滑动')}</p><div class="hfActions"><button class="hfAgain" onclick="harumalFlashcardsGrade(false)" ${a.revealed?'':'disabled'}><i aria-hidden="true">↶</i><span>${L('다시 학습','もう一度','Revisit','再学一次')}</span></button><button class="hfFlipButton" onclick="harumalFlashcardsFlip()"><i aria-hidden="true">↺</i><span>${L('뒤집기','裏返す','Flip','翻面')}</span></button><button class="hfKnown" onclick="harumalFlashcardsGrade(true)" ${a.revealed?'':'disabled'}><i aria-hidden="true">✓</i><span>${L('알아요','覚えた','Know it','记住了')}</span></button></div><p class="hfFeedback" role="status" aria-live="polite">${feedback}</p>`;
+ sc.innerHTML+=`<div class="hfProgress"><span>${String(n+1).padStart(2,'0')} <span>/ ${String(total).padStart(2,'0')}</span></span><small><b>✓ ${known}</b><span>↻ ${n-known}</span></small></div><progress max="${total}" value="${n}" aria-label="${L('학습 진행','学習の進み具合','Session progress','学习进度')}"></progress><div class="hfDeckStage"><div class="hfDeck">${a.items.slice(n+1,n+3).map((x,i)=>`<div class="hfUnderCard hfUnder${i+1}" aria-hidden="true">${frontFace(x,n+i+1)}</div>`).reverse().join('')}<button id="vocabFlashcard" type="button" class="hfCard ${a.revealed?'isRevealed':''}" aria-pressed="${a.revealed}" aria-describedby="hfHint"><span class="hfFlipper"><span class="hfFace hfFront" aria-hidden="${a.revealed}">${frontFace(item,n)}</span><span class="hfFace hfBack" aria-hidden="${!a.revealed}" data-filled="${a.revealed?'true':''}">${a.revealed?backFace(item,n):''}</span></span><span class="hfStamp hfStampKnown" aria-hidden="true">${L('알아요','覚えた','GOT IT','记住了')}</span><span class="hfStamp hfStampAgain" aria-hidden="true">${L('한 번 더','もう一度','AGAIN','再学一次')}</span></button></div></div><p id="hfHint" class="hfHint">${a.revealed?L('왼쪽은 다시 학습, 오른쪽은 알아요','左はもう一度、右は覚えた','Left to revisit · Right if you know it','向左再学 · 向右记住了'):L('탭해서 뒤집고, 좌우로 넘겨요','タップで裏返して、左右にスワイプ','Tap to flip, then swipe left or right','轻点翻面，再左右滑动')}</p><button type="button" class="hfDetailsButton" onclick="harumalFlashcardsDetails()">${L('전체 보기','全文を見る','Read full text','查看全文')}</button><div class="hfActions"><button class="hfAgain" onclick="harumalFlashcardsGrade(false)" ${a.revealed?'':'disabled'}><i aria-hidden="true">↶</i><span>${L('다시 학습','もう一度','Revisit','再学一次')}</span></button><button class="hfFlipButton" onclick="harumalFlashcardsFlip()"><i aria-hidden="true">↺</i><span>${L('뒤집기','裏返す','Flip','翻面')}</span></button><button class="hfKnown" onclick="harumalFlashcardsGrade(true)" ${a.revealed?'':'disabled'}><i aria-hidden="true">✓</i><span>${L('알아요','覚えた','Know it','记住了')}</span></button></div><p class="hfFeedback" role="status" aria-live="polite">${feedback}</p>`;
  bindCard(document.getElementById('vocabFlashcard'));
 }
 function frontFace(item,index){return `<span class="hfCardCorner"><b>한</b><small>${String(index+1).padStart(2,'0')}</small></span><span class="hfCardCentre"><span class="hfCardLabel">KOREAN</span><span class="hfTermScroll"><span class="hfCardWord ${item.term.length>18?'hfLongTerm':''}" lang="ko">${H(item.term)}</span></span><span class="hfCardRule">✦</span><span class="hfCardPrompt">${L('뜻을 떠올려 보세요','意味を思い出してみよう','What does it mean?','想想它的意思')}</span></span><span class="hfCardFooter"><span>하루말</span><span>MY VOCABULARY</span></span>`}
@@ -91,10 +130,10 @@ function resetDrag(card){
 }
 function bindCard(card){
  if(!card)return;
- card.addEventListener('click',(e={})=>{if(leaving)return;if(suppressClick&&e.detail!==0){suppressClick=false;return}suppressClick=false;const scrollBody=e.target?.closest?.('.hfMeaningScroll,.hfTermScroll')||pointerScrollBody;pointerScrollBody=null;if(e.detail!==0&&scrollBody&&scrollBody.scrollHeight>scrollBody.clientHeight+2)return;window.harumalFlashcardsFlip()});
- card.addEventListener('keydown',e=>{if(e.repeat)return;if(['ArrowUp','ArrowDown','Home','End'].includes(e.key)){const body=card.querySelector?.(active()?.revealed?'.hfMeaningScroll':'.hfTermScroll');if(body&&body.scrollHeight>body.clientHeight+2){e.preventDefault();body.scrollTop=e.key==='Home'?0:e.key==='End'?body.scrollHeight:body.scrollTop+(e.key==='ArrowDown'?70:-70);return}}if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();window.harumalFlashcardsGrade(e.key==='ArrowRight')}});
+ card.addEventListener('click',(e={})=>{if(leaving)return;if(suppressClick&&e.detail!==0){suppressClick=false;return}suppressClick=false;window.harumalFlashcardsFlip()});
+ card.addEventListener('keydown',e=>{if(e.repeat)return;if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();window.harumalFlashcardsGrade(e.key==='ArrowRight')}});
  card.addEventListener('pointerdown',e=>{
-  if(leaving||!e.isPrimary||e.button!==0)return;suppressClick=false;pointerScrollBody=e.target?.closest?.('.hfMeaningScroll,.hfTermScroll')||null;
+  if(leaving||!e.isPrimary||e.button!==0)return;suppressClick=false;
   gesture={id:e.pointerId,x:e.clientX,y:e.clientY,lastX:e.clientX,lastAt:e.timeStamp||0,vx:0,drag:false,vertical:false};
   card.classList?.remove('isReturning');card.setPointerCapture?.(e.pointerId);
  });
@@ -115,9 +154,21 @@ function bindCard(card){
   if(Math.hypot(dx,dy)>8){suppressClick=true;if(!g.vertical&&swipeDecision(dx,dy,recent,card.getBoundingClientRect?.().width||300,active()?.revealed)){window.harumalFlashcardsGrade(dx>0);return}}
   resetDrag(card);
  });
- card.addEventListener('pointercancel',()=>{gesture=null;pointerScrollBody=null;suppressClick=false;resetDrag(card)});
+ card.addEventListener('pointercancel',()=>{gesture=null;suppressClick=true;resetDrag(card)});
  card.addEventListener('lostpointercapture',()=>{if(gesture){gesture=null;resetDrag(card)}});
 }
+// Release before later render owners (writing/travel) can bypass our render wrapper.
+const baseSetView=window.setView;
+window.setView=function(view){
+ cancelRestore();const openingY=view==='vocabFlashcards'&&!viewportLocked?(window.scrollY||0):null,restoreY=view!=='vocabFlashcards'?lockViewport(false):undefined;
+ if(view!=='vocabFlashcards')cancelMotion();
+ const result=baseSetView.apply(this,arguments);
+ if(openingY!==null)entryScrollY=openingY;
+ if(restoreY!==undefined)restoreScroll(restoreY);
+ return result;
+};
+window.addEventListener?.('pagehide',()=>{cancelMotion();const y=lockViewport(false);if(y!==undefined)suspendedScrollY=y;cancelRestore()});
+window.addEventListener?.('pageshow',event=>{if(event.persisted&&S.view==='vocabFlashcards'){render();if(suspendedScrollY!==null)entryScrollY=suspendedScrollY}suspendedScrollY=null});
 window.HARUMAL_FLASHCARDS=Object.freeze({pool,session,soundEnabled,swipeDecision});
-const base=render;render=function(){if(S.view==='vocabFlashcards'){renderShell();return renderCards(document.getElementById('screen'))}cancelMotion();const result=base.apply(this,arguments);if(S.view==='vocab')toolbar(document.getElementById('screen'));return result};
+const base=render;render=function(){if(S.view==='vocabFlashcards'){renderShell();return renderCards(document.getElementById('screen'))}cancelMotion();const restoreY=lockViewport(false),result=base.apply(this,arguments);if(S.view==='vocab')toolbar(document.getElementById('screen'));if(restoreY!==undefined)restoreScroll(restoreY);return result};
 })();
