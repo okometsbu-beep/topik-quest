@@ -160,9 +160,10 @@ function bindCard(card){
 // Release before later render owners (writing/travel) can bypass our render wrapper.
 const baseSetView=window.setView;
 window.setView=function(view){
- cancelRestore();const restoreY=view!=='vocabFlashcards'?lockViewport(false):undefined;
+ cancelRestore();const openingY=view==='vocabFlashcards'&&!viewportLocked?(window.scrollY||0):null,restoreY=view!=='vocabFlashcards'?lockViewport(false):undefined;
  if(view!=='vocabFlashcards')cancelMotion();
  const result=baseSetView.apply(this,arguments);
+ if(openingY!==null)entryScrollY=openingY;
  if(restoreY!==undefined)restoreScroll(restoreY);
  return result;
 };

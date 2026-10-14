@@ -66,3 +66,7 @@ test('deferred return correction cancels on newer navigation, entry, pagehide an
   const n=calls.length;while(queue.length)queue.shift()();assert.equal(calls.length,n,action);assert.equal(classes.has('hfRestoring'),false,action);
  }
 });
+
+test('entry captures return scroll before outer renderers change the page height',()=>{
+ const {c}=boot();c.scrollY=350;let restored;c.scrollTo=x=>{restored=x.top};const base=c.render;c.render=function(){if(c.S.view==='vocabFlashcards')c.scrollY=363;return base()};c.harumalFlashcardsStart();c.harumalFlashcardsExit();assert.equal(restored,350);
+});
