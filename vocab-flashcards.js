@@ -4,7 +4,7 @@
 const L=(ko,ja,en,zh)=>({ko,ja,en,zh}[S.lang]||en);
 const H=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let feedback='',audioContext=null,gesture=null,suppressClick=false,motionTimer=null,motionVersion=0,leaving=false;
-let viewportLocked=false,entryScrollY=0,suspendedScrollY=null;
+let viewportLocked=false,entryScrollY=0,suspendedScrollY=null,restoreVersion=0;
 function sizeViewport(){
  const v=window.visualViewport,root=document.documentElement;
  root?.style?.setProperty('--hf-height',`${v?.height||window.innerHeight||844}px`);
@@ -13,8 +13,19 @@ function sizeViewport(){
 function lockViewport(lock){
  if(lock===viewportLocked)return;viewportLocked=lock;
  const root=document.documentElement,body=document.body;
- if(lock){entryScrollY=window.scrollY||0;root?.classList?.add('hfActive');body?.classList?.add('hfActive');sizeViewport();window.addEventListener?.('resize',sizeViewport);window.visualViewport?.addEventListener('resize',sizeViewport);window.visualViewport?.addEventListener('scroll',sizeViewport)}
+ if(lock){restoreVersion++;root?.classList?.remove('hfRestoring');entryScrollY=window.scrollY||0;root?.classList?.add('hfActive');body?.classList?.add('hfActive');sizeViewport();window.addEventListener?.('resize',sizeViewport);window.visualViewport?.addEventListener('resize',sizeViewport);window.visualViewport?.addEventListener('scroll',sizeViewport)}
  else{root?.classList?.remove('hfActive');body?.classList?.remove('hfActive');root?.style?.removeProperty('--hf-height');root?.style?.removeProperty('--hf-top');window.removeEventListener?.('resize',sizeViewport);window.visualViewport?.removeEventListener('resize',sizeViewport);window.visualViewport?.removeEventListener('scroll',sizeViewport);return entryScrollY}
+}
+function restoreScroll(y){
+ const token=++restoreVersion,view=S.view,root=document.documentElement;
+ root?.classList?.add('hfRestoring');window.scrollTo?.({top:y,behavior:'instant'});
+ const finish=()=>{if(token===restoreVersion)root?.classList?.remove('hfRestoring')};
+ if(!window.requestAnimationFrame){finish();return}
+ window.requestAnimationFrame(()=>{
+  if(token!==restoreVersion)return;
+  if(!viewportLocked&&S.view===view)window.scrollTo?.({top:y,behavior:'instant'});
+  window.requestAnimationFrame(finish);
+ });
 }
 window.harumalFlashcardsDetails=()=>{
  const a=active();if(!a||leaving)return;
@@ -147,11 +158,11 @@ window.setView=function(view){
  const restoreY=view!=='vocabFlashcards'?lockViewport(false):undefined;
  if(view!=='vocabFlashcards')cancelMotion();
  const result=baseSetView.apply(this,arguments);
- if(restoreY!==undefined)window.scrollTo?.({top:restoreY,behavior:'instant'});
+ if(restoreY!==undefined)restoreScroll(restoreY);
  return result;
 };
 window.addEventListener?.('pagehide',()=>{cancelMotion();const y=lockViewport(false);if(y!==undefined)suspendedScrollY=y});
 window.addEventListener?.('pageshow',event=>{if(event.persisted&&S.view==='vocabFlashcards'){render();if(suspendedScrollY!==null)entryScrollY=suspendedScrollY}suspendedScrollY=null});
 window.HARUMAL_FLASHCARDS=Object.freeze({pool,session,soundEnabled,swipeDecision});
-const base=render;render=function(){if(S.view==='vocabFlashcards'){renderShell();return renderCards(document.getElementById('screen'))}cancelMotion();const restoreY=lockViewport(false),result=base.apply(this,arguments);if(S.view==='vocab')toolbar(document.getElementById('screen'));if(restoreY!==undefined)window.scrollTo?.({top:restoreY,behavior:'instant'});return result};
+const base=render;render=function(){if(S.view==='vocabFlashcards'){renderShell();return renderCards(document.getElementById('screen'))}cancelMotion();const restoreY=lockViewport(false),result=base.apply(this,arguments);if(S.view==='vocab')toolbar(document.getElementById('screen'));if(restoreY!==undefined)restoreScroll(restoreY);return result};
 })();
