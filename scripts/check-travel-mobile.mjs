@@ -21,6 +21,22 @@ import path from 'node:path';
 import {spawn,spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 
+// Deterministic provider-outage fixture, only in this disposable localhost browser.
+// All other requests use native fetch; live MyMemory availability is not tested.
+function installLegacyTranslationFixture(){
+  if(!['localhost','127.0.0.1','[::1]'].includes(location.hostname))return;
+  const nativeFetch=window.fetch.bind(window);window.__legacyTranslationQA={requests:0};
+  window.fetch=(input,init)=>{
+    const url=new URL(typeof input==='string'?input:input.url||String(input),location.href);
+    const method=String(init?.method||input?.method||'GET').toUpperCase();
+    if(method==='GET'&&url.origin==='https://api.mymemory.translated.net'&&url.pathname==='/get'){
+      window.__legacyTranslationQA.requests++;
+      return Promise.resolve(new Response(JSON.stringify({responseStatus:429,responseData:{translatedText:''},responseDetails:'Synthetic browser QA provider outage'}),{status:429,headers:{'content-type':'application/json','x-harumal-browser-qa':'synthetic-429'}}));
+    }
+    return nativeFetch(input,init);
+  };
+}
+
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const out=path.join(root,'artifacts',process.env.HARUMAL_QUICK_PRACTICE_ONLY?'quick-practice':process.env.HARUMAL_FLASHCARDS_ONLY?'flashcards':process.env.HARUMAN_INTRO_BASELINE?'intro-baseline':process.env.HARUMAL_FOCUS_ONLY?'home-vocabulary':'travel-mobile');
 fs.mkdirSync(out,{recursive:true});
@@ -677,6 +693,7 @@ try{
   await setViewport(390,844);
   await send('Emulation.setLocaleOverride',{locale:'ja-JP'});
   await send('Network.setUserAgentOverride',{userAgent:await evaluate(`navigator.userAgent`),acceptLanguage:'ja-JP,ja;q=0.9,en;q=0.8'});
+  await send('Page.addScriptToEvaluateOnNewDocument',{source:`(${installLegacyTranslationFixture.toString()})()`});
   await send('Page.addScriptToEvaluateOnNewDocument',{source:`
     window.__introQA=[];
     for(const type of ['loadeddata','playing','ended'])document.addEventListener(type,e=>{
@@ -688,6 +705,11 @@ try{
   assert.ok(introQA.some(e=>e.type==='playing'&&e.muted&&e.inline&&e.width===540&&e.height===540&&e.fit==='contain'),'intro must actually decode and play inline, muted and proportionally');
   assert.ok(introQA.some(e=>e.type==='ended'&&e.time>2.7&&e.time<3),'intro must naturally end before the watchdog');
   console.log('Haruman actual browser playback passed',JSON.stringify(introQA));
+  if(await evaluate(`['localhost','127.0.0.1','[::1]'].includes(location.hostname)`)){
+    const fixture=await evaluate(`(async()=>{const before=__legacyTranslationQA.requests,cache=JSON.stringify(S.transCache);try{const r=await fetch('https://api.mymemory.translated.net/get?q=synthetic-provider-outage&langpair=ko%7Cja'),body=await r.json();delete S.transCache.ko_ja_browserQaProviderOutage;const fallback=await translateCached('browserQaProviderOutage','합성 번역 확인','ko','ja');return{status:r.status,ok:r.ok,responseStatus:body.responseStatus,marker:r.headers.get('x-harumal-browser-qa'),fallback,requests:__legacyTranslationQA.requests-before}}finally{S.transCache=JSON.parse(cache);save()}})()`);
+    assert.deepEqual(fixture,{status:429,ok:false,responseStatus:429,marker:'synthetic-429',fallback:'합성 번역 확인',requests:2},'the synthetic 429 must exercise the real legacy translation fallback');
+    console.log('Legacy translation provider: localhost synthetic 429; real source fallback verified. Live translation availability is not tested.');
+  }
   if(!process.env.HARUMAL_QUICK_PRACTICE_ONLY&&!process.env.HARUMAL_FLASHCARDS_ONLY&&!process.env.HARUMAL_FOCUS_ONLY&&!process.env.HARUMAL_TRANSLATION_ONLY)await verifyIntro({evaluate,send,setViewport,shot,ready,sleep,baseline:!!process.env.HARUMAN_INTRO_BASELINE});
   // Complete/default/re-entry playback is checked above. Only unrelated bulk reloads
   // use the existing data-saver opt-out; preserve all ordinary motion regressions.
