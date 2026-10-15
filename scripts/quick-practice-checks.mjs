@@ -103,7 +103,7 @@ export async function verifyQuickPracticeMenus({evaluate,tap,shot,setViewport,se
     assert.equal(await evaluate('JSON.stringify(HARUMAL_HUB.getState())'),course,'practice level choices do not change the learning course');
     await setup();
     for(const [action,expected] of [['path','courseMap'],['shorts','shorts'],['random','randomAreas'],['mock','mockAreas']]){
-      await edgeTap(`.hubMenuCard[data-hub-action="${action}"]`);assert.equal(await view(),expected,`${action}: clicking the card edge opens its route`);await tap('#nav_home');
+      await edgeTap(`.hubMenuCard[data-hub-action="${action}"]`);assert.equal(await view(),expected,`${action}: clicking the card edge opens its route`);await tap(action==='shorts'?'.shortsTop>button':'#nav_home');assert.equal(await view(),'home','route Back returns Home');
     }
     await tap('[data-hub-action="practice"]');assert.equal(await view(),'practiceHub');
     assert.equal(await evaluate(`!!document.querySelector('[data-hub-action="travel"]')`),true,'existing Travel remains reachable');await tap('#nav_home');
