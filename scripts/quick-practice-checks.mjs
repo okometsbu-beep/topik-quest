@@ -61,6 +61,9 @@ export async function verifyQuickPracticeMenus({evaluate,tap,shot,setViewport,se
   let failed;
   try {
     await setup();
+    // The existing Travel resize listener lazily creates its empty arrival record.
+    // Settle that legacy initialization before the evidence baseline; keep exact root comparisons below.
+    await evaluate(`new Promise(resolve=>{window.dispatchEvent(new Event('resize'));requestAnimationFrame(()=>requestAnimationFrame(resolve))})`);
     const initialRewards=await rewards(),initialProgress=await progress(),course=await evaluate('JSON.stringify(HARUMAL_HUB.getState())');
     // Each matrix screenshot contains actual rendered DOM, never a mockup or image of a design board.
     for(const lang of ['ko','ja','en','zh'])for(const theme of ['light','dark'])for(const width of [320,390,1280]){
