@@ -16,7 +16,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     # Full audio playback, writing keyboard/settings matrices, baseline and home QA.
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -25,6 +25,15 @@ jobs:
       - run: npm run check
       - name: Install Japanese visual-check font
         run: sudo apt-get update -qq && sudo apt-get install -y fonts-noto-cjk ffmpeg
+      - name: Verify quick practice menus and area sessions
+        run: HARUMAL_QUICK_PRACTICE_ONLY=1 node scripts/check-travel-mobile.mjs
+      - name: Upload quick practice evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: quick-practice-${{ github.sha }}
+          path: artifacts/quick-practice/*.png
+          if-no-files-found: warn
       - name: Verify saved vocabulary flashcards
         run: HARUMAL_FLASHCARDS_ONLY=1 node scripts/check-travel-mobile.mjs
       - name: Upload flashcard mobile evidence

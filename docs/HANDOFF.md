@@ -1,3 +1,9 @@
+## 2026-10-15 v168 quick-practice navigation candidate
+
+- Home has four equal sage cards: step-by-step course, Shorts, area random practice, and area mock exams. The latter two share light blue-gray area cards; four locales and both themes are preserved. Existing course continuation moved inside the course path.
+- `practice-sessions.js` owns explicit-area session metadata in the existing session roots. Random is ten area-scoped questions; TOPIK II writing uses exam types 51–54. Explicit listening wins over mixed-practice exclusions without changing settings or course path.
+- Mock menus show readiness before starting timers; full mock access remains. Regression and screenshot contracts are in `docs/qa/quick-practice-v168.md`. Remote Chrome evidence and exact-commit CI are release gates; physical-device checks remain unverified.
+
 ## 2026-10-10 v165 learning feedback candidate
 
 - Settings uses a square SVG gear, accessible SVG language flags and theme-aligned controls. Preview plays existing Supertonic 3 female/male samples; short device reads have no transport popup and preserve exact settings speed.
