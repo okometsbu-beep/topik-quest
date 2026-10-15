@@ -3,7 +3,9 @@
 ## Timing and media
 
 - Both character videos are 540 × 540, 60 fps, 168 decoded frames and 2.800 seconds, with no audio stream. Local `ffprobe -count_frames` verifies these properties.
-- The final animation revision uses 22 distinct drawings: nine original drawings and 13 added drawings, including ten added in the last revision. Its eight-direction body-view sequence repeats twice, continues during descent, and ends with a three-stage one-hand invitation. Direction lines, a three-frame head-crest delay, and eased motion remain part of the animation.
+- The final animation revision uses 26 distinct drawings: three original drawings and 23 added drawings, including 13 added in the last revision. It aligns the initial sleep-to-wake turn from left through back-left to back. Two eight-direction body-view cycles follow, then the grounded turn to front and three-stage one-hand invitation. The renderer records 152 unique frames and 16 intentional sleep-repeat frames.
+- Compression now starts during ascent at frame 54 and reaches the compact front pose by frame 60, before the apex at frame 69. Small four-point sparkles appear behind the character and disappear before contact. The two view cycles end at frames 73 and 98; authored angle phases are sequencing controls, not physical 3D measurements.
+- Final renderer and encoded-WebM QA cover all 168 frames: maximum floor penetration is 1 px, character silhouettes have no detached alpha components exceeding 4 px, no character frame touches or clips the canvas edge, and minimum head/crest clearance is 30 px. Separate small sparkle components are intentional. Encoded character bounds differ from render measurements by at most 1 px.
 - Natural video completion starts a 300 ms whiteout, followed by a 1000 ms title stage (including its 250 ms entrance), then a 200 ms exit. Uninterrupted playback and presentation total 4.3 seconds, excluding loading or background pauses.
 - The browser timing contract checks complete playback and bounds every post-video stage. It does not impose a wall-clock playback cutoff.
 
@@ -16,8 +18,8 @@
 
 ## Public assets
 
-- `assets/video/haruman-intro-v2.mp4`: 291475 bytes; SHA-256 `15fee62c987d8ae265a466c63c16f0c29b8d8f88b9f92310cebe98a0656caccd`.
-- `assets/video/haruman-intro-v2.webm`: 1015980 bytes; SHA-256 `bf3ef620a5667cd5bcaed9769a7b7297a95889e6b61f445bdc729276064af25b`.
+- `assets/video/haruman-intro-v2.mp4`: 294280 bytes; SHA-256 `7ba8d8bd17780082d709e6060b75a229ec75bd4561b57b855b2bc7fc52cf72f1`.
+- `assets/video/haruman-intro-v2.webm`: 897823 bytes; SHA-256 `bab21e4462a05b2b45b26956b63de1c63918d51b1d9f2102b96ca210668f16c3`.
 
 ## Verification status
 

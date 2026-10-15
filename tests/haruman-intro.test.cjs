@@ -102,8 +102,8 @@ test('v2 video sources match the verified release assets and preserve v1 compati
   assert.equal(boot().video.src,'assets/video/haruman-intro-v2.webm');
   assert.equal(boot({webm:false}).video.src,'assets/video/haruman-intro-v2.mp4');
   for(const [ext,size,sha256] of [
-    ['mp4',291475,'15fee62c987d8ae265a466c63c16f0c29b8d8f88b9f92310cebe98a0656caccd'],
-    ['webm',1015980,'bf3ef620a5667cd5bcaed9769a7b7297a95889e6b61f445bdc729276064af25b']
+    ['mp4',294280,'7ba8d8bd17780082d709e6060b75a229ec75bd4561b57b855b2bc7fc52cf72f1'],
+    ['webm',897823,'bab21e4462a05b2b45b26956b63de1c63918d51b1d9f2102b96ca210668f16c3']
   ]){
     const file=fs.readFileSync(path.join(__dirname,'..','assets','video','haruman-intro-v2.'+ext));
     assert.equal(file.length,size);assert.equal(createHash('sha256').update(file).digest('hex'),sha256);
