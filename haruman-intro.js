@@ -32,13 +32,14 @@
     fading=true;sourceId++;clearTimeout(stallTimer);video.pause();
     if(immediate){dispose();return}
     panel.classList.add('harumanIntroWhiteout');
+    // The completed 2.8s video is followed by a 1.5s presentation, never a cutoff.
     scheduleStage(()=>{
       panel.classList.add('harumanIntroShowingTitle');
       scheduleStage(()=>{
         panel.classList.add('harumanIntroLeaving');
-        scheduleStage(dispose,300);
-      },1600);
-    },600);
+        scheduleStage(dispose,200);
+      },1000);
+    },300);
   };
   const onVisibility=()=>{
     if(closed)return;
@@ -66,7 +67,7 @@
   const useMp4=()=>{
     if(closed||fading)return;
     sourceId++;lastTime=0;watchProgress();alphaChecked=true;video.style.opacity='0';
-    video.src='assets/video/haruman-intro-v1.mp4';play();
+    video.src='assets/video/haruman-intro-v2.mp4';play();
   };
   // canPlayType alone cannot establish that the decoder preserves alpha.
   video.addEventListener('loadeddata',()=>{
@@ -89,6 +90,6 @@
   });
   watchProgress();
   if(video.canPlayType('video/webm; codecs="vp9"')){
-    video.src='assets/video/haruman-intro-v1.webm';play();
+    video.src='assets/video/haruman-intro-v2.webm';play();
   }else{useMp4()}
 })();

@@ -4,15 +4,15 @@
 .harumanIntroStage:after{display:none}
 .harumanIntroStage video{display:block;width:100%;height:100%;object-fit:contain;opacity:0;pointer-events:none}
 .harumanIntro:before{content:"";position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:1}
-.harumanIntroWhiteout:before{animation:harumanWhiteout 500ms ease-in-out both}
+.harumanIntroWhiteout:before{animation:harumanWhiteout 300ms ease-in-out both}
 .harumanIntroTitle{position:absolute;inset:0;z-index:2;display:grid;place-items:center;visibility:hidden;opacity:0}
 .harumanIntroTitle img{display:none;width:min(82vw,420px,72svh);height:auto;object-fit:contain}
 .harumanIntroTitle span{text-align:center;color:#002e3d;font-size:clamp(40px,12vw,72px);font-weight:900}
 .harumanIntroTitle small{display:block;color:#008493;font-size:.42em;letter-spacing:.04em}
 .harumanIntroTitleReady .harumanIntroTitle img{display:block}
 .harumanIntroTitleReady .harumanIntroTitle span{display:none}
-.harumanIntroShowingTitle .harumanIntroTitle{visibility:visible;animation:harumanTitleIn 450ms cubic-bezier(.22,1,.36,1) both}
-.harumanIntro.harumanIntroLeaving{animation:harumanIntroOut 300ms ease-in-out both}
+.harumanIntroShowingTitle .harumanIntroTitle{visibility:visible;animation:harumanTitleIn 250ms cubic-bezier(.22,1,.36,1) both}
+.harumanIntro.harumanIntroLeaving{animation:harumanIntroOut 200ms ease-in-out both}
 .harumanIntro.harumanIntroPaused,.harumanIntroPaused:before,.harumanIntroPaused .harumanIntroTitle{animation-play-state:paused}
 @keyframes harumanWhiteout{from{opacity:0}to{opacity:1}}
 @keyframes harumanTitleIn{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}

@@ -1,15 +1,33 @@
 import assert from 'node:assert/strict';
 
+export function assertIntroTimeline(result,{baseline=false}={}){
+  assert.ok(Number.isFinite(result.ended),'video must end naturally before removal');
+  assert.ok(Number.isFinite(result.removed),'intro must be removed');
+  assert.ok(result.removed>=result.ended+150,'fade follows the final frame');
+  if(baseline)return;
+  for(const stage of ['whiteout','title','leaving'])assert.ok(Number.isFinite(result[stage]),stage+' must occur');
+  assert.ok(result.mediaDuration>2.7&&result.mediaDuration<3,'the complete video remains 2.8 seconds');
+  assert.ok(result.mediaEndedAt>=result.mediaDuration-.05,'the final video frame is reached');
+  assert.ok(result.whiteout>=result.ended,'whiteout follows natural completion');
+  assert.ok(result.title>=result.whiteout+280&&result.title<=result.whiteout+500,'whiteout takes about 300ms');
+  assert.ok(result.leaving>=result.title+980&&result.leaving<=result.title+1250,'title includes 1000ms entrance and hold');
+  assert.ok(result.removed>=result.leaving+180&&result.removed<=result.leaving+450,'exit takes about 200ms');
+  assert.ok(result.removed>=result.title+1150,'title remains readable before home');
+  // Bound the post-video flow, not loading/playback time; slow playback must still finish.
+  assert.ok(result.removed>=result.ended+1450&&result.removed<=result.ended+1900,'post-video flow stays near 1500ms');
+}
+
 export async function verifyIntro({evaluate,send,setViewport,shot,ready,sleep,baseline=false}){
   const watch=await send('Page.addScriptToEvaluateOnNewDocument',{source:`
-    window.__introCompletion={started:performance.now(),ended:null,whiteout:null,title:null,removed:null};
+    window.__introCompletion={started:performance.now(),ended:null,mediaDuration:null,mediaEndedAt:null,whiteout:null,title:null,leaving:null,removed:null};
     document.addEventListener('ended',e=>{
-      if(e.target.id==='harumanIntroVideo')window.__introCompletion.ended=performance.now();
+      if(e.target.id==='harumanIntroVideo')Object.assign(window.__introCompletion,{ended:performance.now(),mediaDuration:e.target.duration,mediaEndedAt:e.target.currentTime});
     },true);
     new MutationObserver(records=>{
       const panel=document.querySelector('.harumanIntro'),result=window.__introCompletion;
       if(panel?.classList.contains('harumanIntroWhiteout')&&result.whiteout===null)result.whiteout=performance.now();
       if(panel?.classList.contains('harumanIntroShowingTitle')&&result.title===null)result.title=performance.now();
+      if(panel?.classList.contains('harumanIntroLeaving')&&result.leaving===null)result.leaving=performance.now();
       if(records.some(r=>[...r.removedNodes].some(n=>n.classList?.contains('harumanIntro'))))
         window.__introCompletion.removed=performance.now();
     }).observe(document,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});
@@ -28,13 +46,7 @@ export async function verifyIntro({evaluate,send,setViewport,shot,ready,sleep,ba
   const finish=async()=>{
     await wait(`window.__introCompletion?.removed!==null`,'removal');
     const result=await evaluate('window.__introCompletion');
-    assert.ok(result.ended!==null,'video must end naturally before removal');
-    assert.ok(result.removed>=result.ended+150,'fade follows the final frame');
-    if(!baseline){
-      assert.ok(result.whiteout>=result.ended,'whiteout follows natural completion');
-      assert.ok(result.title>=result.whiteout+550,'title waits for whiteout');
-      assert.ok(result.removed>=result.title+1800,'title remains readable before home');
-    }
+    assertIntroTimeline(result,{baseline});
     await ready();return result;
   };
   try{
