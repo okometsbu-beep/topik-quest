@@ -1893,8 +1893,14 @@ try{
   await evaluate(`setView('home')`);await tap('.hubHomeHeader .harumalSettingsTrigger');
   assert.equal(await evaluate(`document.querySelector('#harumalSettingsDialog').hidden`),false);
   await tap('[data-hub-action="close-settings"]');
-  await evaluate(`HARUMAL_HUB.exam(1,'random')`);assert.equal(await evaluate('S.view'),'t1quiz');await tap('.t1RandomTop>button');assert.equal(await evaluate('S.view'),'home');
-  await evaluate(`HARUMAL_HUB.exam(2,'random')`);assert.equal(await evaluate('S.view'),'infinity');
+  for(const level of [1,2]){
+    await evaluate(`HARUMAL_HUB.exam(${level},'random')`);assert.equal(await evaluate('S.view'),'randomAreas','exam shortcut opens the area chooser');
+    assert.equal(await evaluate(`document.querySelector('[data-practice-level][aria-pressed="true"]').dataset.practiceLevel`),String(level),'exam shortcut preserves the requested level');
+    await tap('.hubAreaCard[data-area="reading"]');assert.equal(await evaluate('S.view'),level===1?'t1quiz':'infinity','reading card starts the matching engine');
+    assert.deepEqual(await evaluate(`(()=>{const p=HARUMAL_PRACTICE.getActive();return{level:p.level,area:p.area,mode:p.mode}})()`),{level,area:'reading',mode:'random'});
+    await tap(level===1?'.t1RandomTop>button':'.randomPracticeTop>button');assert.equal(await evaluate('S.view'),'randomAreas','question Back returns to the area chooser');
+    assert.equal(await evaluate(`document.querySelector('[data-practice-level][aria-pressed="true"]').dataset.practiceLevel`),String(level),'Back preserves the selected level');
+  }
   assert.deepEqual(errors,[],'Three-tab navigation must not add console errors');
   await verifyWritingCurriculum({evaluate,tap,shot,setViewport,send,ready,sleep});
   await verifyWritingLocalization({evaluate,tap,shot,setViewport,send,ready,sleep});
