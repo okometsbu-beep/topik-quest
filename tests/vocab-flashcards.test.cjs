@@ -70,3 +70,13 @@ test('deferred return correction cancels on newer navigation, entry, pagehide an
 test('entry captures return scroll before outer renderers change the page height',()=>{
  const {c}=boot();c.scrollY=350;let restored;c.scrollTo=x=>{restored=x.top};const base=c.render;c.render=function(){if(c.S.view==='vocabFlashcards')c.scrollY=363;return base()};c.harumalFlashcardsStart();c.harumalFlashcardsExit();assert.equal(restored,350);
 });
+
+test('fullscreen root keeps its centering transform while card flip and fling motion remain available',()=>{
+ const css=fs.readFileSync(path.join(__dirname,'../vocab-flashcards.css'),'utf8');
+ const root=css.match(/html body\.hfActive \.hfScreen\{([^}]+)\}/)?.[1];
+ assert.ok(root,'fullscreen rule is scoped to active flashcards');
+ assert.match(root,/animation:none;/);
+ assert.match(root,/transform:translateX\(-50%\);/);
+ assert.match(css,/\.hfFlipper\{[^}]*transition:transform 560ms/);
+ assert.match(css,/\.hfCard\.isLeaving\{[^}]*transition:transform 410ms/);
+});
