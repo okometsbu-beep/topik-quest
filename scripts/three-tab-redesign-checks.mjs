@@ -10,14 +10,14 @@ export async function verifyThreeTabRedesign({evaluate,tap,shot,setViewport,send
   const dialog='#harumalSettingsDialog';
   const open=async()=>{await tap('.hubHomeHeader .harumalSettingsTrigger');assert.equal(await visible(dialog),true,'settings opens by gear')};
   const fit=async label=>{
-    const result=await evaluate(`(()=>{const visible=e=>{const r=e.getBoundingClientRect();return r.width>0&&r.height>0&&getComputedStyle(e).visibility!=='hidden'};const c=document.querySelector('[data-hub-action="continue"]');const r=c?.getBoundingClientRect();const n=document.querySelector('.nav')?.getBoundingClientRect();return{overflow:document.documentElement.scrollWidth-innerWidth,nav:[...document.querySelectorAll('.nav button')].filter(visible).map(e=>e.id),cta:r?{top:r.top,bottom:r.bottom}:null,navTop:n?.top,oldLanguage:[...document.querySelectorAll('.tqLang,#flagBtn')].filter(visible).length,gear:[...document.querySelectorAll('.harumalSettingsTrigger')].filter(visible).map(e=>{const b=e.getBoundingClientRect(),s=e.querySelector('svg')?.getBoundingClientRect();return{width:b.width,height:b.height,svgWidth:s?.width,svgHeight:s?.height}}),broken:[...document.querySelectorAll('#screen img')].filter(visible).filter(e=>e.complete&&e.naturalWidth===0).map(e=>e.src)}})()`);
+    const result=await evaluate(`(()=>{const visible=e=>{const r=e.getBoundingClientRect();return r.width>0&&r.height>0&&getComputedStyle(e).visibility!=='hidden'};const c=document.querySelector('.hubHome [data-hub-action="continue"]');const r=c?.getBoundingClientRect();const n=document.querySelector('.nav')?.getBoundingClientRect();return{overflow:document.documentElement.scrollWidth-innerWidth,nav:[...document.querySelectorAll('.nav button')].filter(visible).map(e=>e.id),cta:r?{top:r.top,bottom:r.bottom}:null,navTop:n?.top,oldLanguage:[...document.querySelectorAll('.tqLang,#flagBtn')].filter(visible).length,gear:[...document.querySelectorAll('.harumalSettingsTrigger')].filter(visible).map(e=>{const b=e.getBoundingClientRect(),s=e.querySelector('svg')?.getBoundingClientRect();return{width:b.width,height:b.height,svgWidth:s?.width,svgHeight:s?.height}}),broken:[...document.querySelectorAll('#screen img')].filter(visible).filter(e=>e.complete&&e.naturalWidth===0).map(e=>e.src)}})()`);
     assert.ok(result.overflow<=1,label+' no horizontal overflow');
     assert.deepEqual(result.nav,['nav_home','nav_review','nav_vocab'],label+' exactly Learn / Review / Vocabulary');
     assert.equal(result.oldLanguage,0,label+' no persistent language shortcut');
     assert.equal(result.gear.length,1,label+' one visible settings gear');
     const gear=result.gear[0];assert.ok(gear.width>=44&&gear.height>=44,label+' gear has a full touch target');assert.equal(gear.svgWidth,24,label+' gear icon keeps its width');assert.equal(gear.svgHeight,24,label+' gear icon is square');
     assert.deepEqual(result.broken,[],label+' no broken visible images');
-    if(result.cta){assert.ok(result.cta.top>=0&&result.cta.bottom<=result.navTop,label+' main lesson visible above navigation without scrolling')}
+    assert.equal(result.cta,null,label+' Home has no primary Continue shortcut');
   };
   const flagsAndPalette=async(lang,label)=>{
     const names={ko:['한국어','일본어','영어','중국어'],ja:['韓国語','日本語','英語','中国語'],en:['Korean','Japanese','English','Chinese'],zh:['韩语','日语','英语','中文']};
@@ -64,10 +64,10 @@ export async function verifyThreeTabRedesign({evaluate,tap,shot,setViewport,send
     await evaluate(`setView('more')`);assert.equal(await visible(dialog),true,'legacy settings route still opens settings');
     await tap('[data-hub-action="close-settings"]');await sleep(160);await evaluate(`render()`);assert.equal(await visible(dialog),false,'dismissed legacy settings route must not reopen on render');
     await open();await send('Page.reload',{ignoreCache:true});await ready();assert.equal(await visible(dialog),false,'reload does not reopen transient settings');
-    await tap('[data-hub-action="continue"]');assert.notEqual(await evaluate(`S.view`),'home','one primary button starts learning');assert.equal(await visible(dialog),false,'closed dialog cannot intercept lesson');
+    await tap('[data-hub-action="path"]');assert.equal(await evaluate(`S.view`),'courseMap','stage learning opens the course map');await tap('[data-hub-action="continue"]');assert.notEqual(await evaluate(`S.view`),'courseMap','course map retains the current-stage lesson entry');assert.equal(await visible(dialog),false,'closed dialog cannot intercept lesson');
     await evaluate(`stopTimer();setView('home')`);
     assert.equal(await reward(),initialReward,'navigation, settings, and lesson entry never mint rewards');
-    console.log('Three-tab QA: 4 languages, 2 themes, 320/390 widths, short 606px home, settings Escape/close/reload, profile/path/practice routes, primary lesson entry, no navigation rewards passed.');
+    console.log('Three-tab QA: 4 languages, 2 themes, 320/390 widths, short 606px home, settings Escape/close/reload, profile/path/practice routes, course-map lesson entry, no navigation rewards passed.');
   } catch(error) {failed=error;throw error} finally {
     try {
       await evaluate(`(()=>{HARUMAL_HUB.closeSettings();stopTimer();const saved=${JSON.stringify(before.storage)};for(const k of Object.keys(localStorage))if(!Object.hasOwn(saved,k))localStorage.removeItem(k);for(const[k,v]of Object.entries(saved))localStorage.setItem(k,v);S=JSON.parse(${JSON.stringify(before.state)});document.documentElement.dataset.theme=${JSON.stringify(before.theme)};history.replaceState(${JSON.stringify(before.history)},'')})()`);

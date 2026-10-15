@@ -6,6 +6,7 @@ export async function verifyVocabFlashcards({evaluate,tap,shot,setViewport,send,
  const fit=async()=>assert.equal(await evaluate(`document.documentElement.scrollWidth<=innerWidth+1`),true,'no horizontal overflow');
  const shell=()=>evaluate(`(()=>{const style=el=>{const s=getComputedStyle(el);return{display:s.display,overflowX:s.overflowX,overflowY:s.overflowY,position:s.position,touchAction:s.touchAction}};return{root:style(document.documentElement),body:style(document.body),chrome:[...document.querySelectorAll('.top,.bottom')].map(style)}})()`);
  const locked=async()=>{
+  assert.equal(await evaluate(`getComputedStyle(document.querySelector('.hfScreen')).animationName`),'none','fullscreen flashcards never inherit the shared root entry animation');
   const state=await evaluate(`(()=>{const root=document.documentElement,body=document.body;return{root:root.classList.contains('hfActive'),body:body.classList.contains('hfActive'),chrome:[...document.querySelectorAll('.top,.bottom')].map(el=>getComputedStyle(el).display),width:root.scrollWidth,height:root.scrollHeight,x:scrollX,y:scrollY,viewport:{width:innerWidth,height:innerHeight}}})()`);
   assert.equal(state.root,true,'flashcards lock the html viewport');
   assert.equal(state.body,true,'flashcards lock the body viewport');

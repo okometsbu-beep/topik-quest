@@ -1,3 +1,10 @@
+## 2026-10-15 v168 quick-practice navigation candidate
+
+- Home has four equal sage cards: step-by-step course, Shorts, area random practice, and area mock exams. The latter two share light blue-gray area cards; four locales and both themes are preserved. Existing course continuation moved inside the course path.
+- `practice-sessions.js` owns explicit-area session metadata in the existing session roots. Random is ten area-scoped questions; TOPIK II writing uses exam types 51–54. Explicit listening wins over mixed-practice exclusions without changing settings or course path.
+- Mock menus show readiness before starting timers; full mock access remains. Regression and screenshot contracts are in `docs/qa/quick-practice-v168.md`. Remote Chrome evidence and exact-commit CI are release gates; physical-device checks remain unverified.
+- The combined release also includes the revised 60 fps opening animation: 2.8 seconds of complete video followed by 300 ms whiteout, 1000 ms title and 200 ms exit. New v2 media paths retain the prior v1 files, media-cache exclusion and playback recovery. Asset hashes and the no-skip/timing contract are in `docs/qa/haruman-intro-v168.md`.
+
 ## 2026-10-10 v165 learning feedback candidate
 
 - Settings uses a square SVG gear, accessible SVG language flags and theme-aligned controls. Preview plays existing Supertonic 3 female/male samples; short device reads have no transport popup and preserve exact settings speed.

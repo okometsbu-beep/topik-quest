@@ -8,6 +8,7 @@ import {verifyWritingCurriculum} from './writing-curriculum-checks.mjs';
 import {verifyWritingLocalization} from './writing-localization-checks.mjs';
 import {verifyWritingUsability} from './writing-usability-checks.mjs';
 import {verifyThreeTabRedesign} from './three-tab-redesign-checks.mjs';
+import {verifyQuickPracticeMenus} from './quick-practice-checks.mjs';
 import {verifyVocabularyTranslation} from './vocabulary-translation-browser-checks.mjs';
 import {verifyVocabularySelection} from './vocabulary-selection-checks.mjs';
 import {verifyRetiredShorts} from './retired-shorts-checks.mjs';
@@ -20,8 +21,24 @@ import path from 'node:path';
 import {spawn,spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 
+// Deterministic provider-outage fixture, only in this disposable localhost browser.
+// All other requests use native fetch; live MyMemory availability is not tested.
+function installLegacyTranslationFixture(){
+  if(!['localhost','127.0.0.1','[::1]'].includes(location.hostname))return;
+  const nativeFetch=window.fetch.bind(window);window.__legacyTranslationQA={requests:0};
+  window.fetch=(input,init)=>{
+    const url=new URL(typeof input==='string'?input:input.url||String(input),location.href);
+    const method=String(init?.method||input?.method||'GET').toUpperCase();
+    if(method==='GET'&&url.origin==='https://api.mymemory.translated.net'&&url.pathname==='/get'){
+      window.__legacyTranslationQA.requests++;
+      return Promise.resolve(new Response(JSON.stringify({responseStatus:429,responseData:{translatedText:''},responseDetails:'Synthetic browser QA provider outage'}),{status:429,headers:{'content-type':'application/json','x-harumal-browser-qa':'synthetic-429'}}));
+    }
+    return nativeFetch(input,init);
+  };
+}
+
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
-const out=path.join(root,'artifacts',process.env.HARUMAL_FLASHCARDS_ONLY?'flashcards':process.env.HARUMAN_INTRO_BASELINE?'intro-baseline':process.env.HARUMAL_FOCUS_ONLY?'home-vocabulary':'travel-mobile');
+const out=path.join(root,'artifacts',process.env.HARUMAL_QUICK_PRACTICE_ONLY?'quick-practice':process.env.HARUMAL_FLASHCARDS_ONLY?'flashcards':process.env.HARUMAN_INTRO_BASELINE?'intro-baseline':process.env.HARUMAL_FOCUS_ONLY?'home-vocabulary':'travel-mobile');
 fs.mkdirSync(out,{recursive:true});
 for(const file of fs.readdirSync(out))if(file.endsWith('.png'))fs.unlinkSync(path.join(out,file));
 const chromePath=[process.env.CHROME_PATH,'/usr/bin/google-chrome','/usr/bin/google-chrome-stable','/usr/bin/chromium','/usr/bin/chromium-browser'].find(candidate=>candidate&&fs.existsSync(candidate));
@@ -266,8 +283,8 @@ try{
   };
   const assertHomeFits=async(label,theme)=>{
     if(await evaluate(`!!window.HARUMAL_HUB`)){
-      const f=await evaluate(`(()=>{const root=document.querySelector('.hubHome');const buttons=[...root.querySelectorAll('button')].filter(e=>e.getBoundingClientRect().width);return{overflow:document.documentElement.scrollWidth-innerWidth,small:buttons.filter(e=>{const r=e.getBoundingClientRect();return r.width<43||r.height<43}).map(e=>e.className),outside:buttons.filter(e=>{const r=e.getBoundingClientRect();return r.left< -1||r.right>innerWidth+1}).map(e=>e.className),cta:root.querySelectorAll('[data-hub-action="continue"]').length}})()`);
-      assert.ok(f.overflow<=1,label+' overflow');assert.deepEqual(f.small,[],label+' 44px targets');assert.deepEqual(f.outside,[],label+' horizontal containment');assert.equal(f.cta,1,label+' one primary lesson');return;
+      const f=await evaluate(`(()=>{const root=document.querySelector('.hubHome');const buttons=[...root.querySelectorAll('button')].filter(e=>e.getBoundingClientRect().width);return{overflow:document.documentElement.scrollWidth-innerWidth,small:buttons.filter(e=>{const r=e.getBoundingClientRect();return r.width<43||r.height<43}).map(e=>e.className),outside:buttons.filter(e=>{const r=e.getBoundingClientRect();return r.left< -1||r.right>innerWidth+1}).map(e=>e.className),cta:root.querySelectorAll('[data-hub-action="continue"]').length,cards:[...root.querySelectorAll('.hubQuickGrid .hubMenuCard')].map(e=>e.dataset.hubAction)}})()`);
+      assert.ok(f.overflow<=1,label+' overflow');assert.deepEqual(f.small,[],label+' 44px targets');assert.deepEqual(f.outside,[],label+' horizontal containment');if(process.env.HARUMAN_INTRO_BASELINE&&!f.cards.length)assert.equal(f.cta,1,label+' prior-production primary lesson');else{assert.equal(f.cta,0,label+' no primary Home Continue');assert.deepEqual(f.cards,['path','shorts','random','mock'],label+' four equal-priority practice entries')}return;
     }
     const fit=await evaluate(`(()=>{const root=document.querySelector('.tqHomeScreen');if(!root)return{missing:true};const visible=el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)!==0&&r.width>0&&r.height>0};const rect=el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),right:Math.round(r.right),width:Math.round(r.width),height:Math.round(r.height)}};const controls=[...root.querySelectorAll('button:not(:disabled)')].filter(visible);const levels=[...root.querySelectorAll(':scope>.t1level button')].filter(visible);const surfaces=[...root.querySelectorAll(':scope>.t1level,.tqTodayLesson,.tqHomeReview,.harumalDiscover,.tqTravelFeature:not(.harumalDiscover .tqTravelFeature),.tqV9Modes,.tqV9Utility,.tqV9Week')].filter(visible);const tiles=[...root.querySelectorAll('.tqV9Mode,.tqV9Utility button,.tqV9Week')].filter(visible);const copy=[...root.querySelectorAll('.tqV9Greeting small,.tqV9SectionHead span,.tqV9Mode small,.tqV9Utility small,.tqV9Week p,.tqV9Day small')].filter(visible);const channels=color=>(color.match(/[\d.]+/g)||[]).slice(0,3).map(Number);return{missing:false,innerWidth,rootWidth:document.documentElement.scrollWidth,bodyWidth:document.body.scrollWidth,levels:levels.map(el=>({...rect(el),text:el.textContent.trim(),labelVisible:el.matches('.v35BeginnerLevel')?visible(el.querySelector('b')):true})),outside:controls.filter(el=>{const r=el.getBoundingClientRect();return r.left<-1||r.right>innerWidth+1}).map(rect),small:controls.filter(el=>{const r=el.getBoundingClientRect();return r.width<43||r.height<43}).map(rect),offCenter:surfaces.filter(el=>{const r=el.getBoundingClientRect();return Math.abs(r.left-(innerWidth-r.right))>2}).map(el=>{const r=el.getBoundingClientRect();return{class:el.className,left:Math.round(r.left),rightGap:Math.round(innerWidth-r.right)}}),darkTiles:tiles.map(el=>({class:el.className,color:getComputedStyle(el).backgroundColor,rgb:channels(getComputedStyle(el).backgroundColor)})).filter(row=>row.rgb.length===3&&row.rgb.reduce((sum,value)=>sum+value,0)/3<170),tinyCopy:copy.map(el=>({class:el.className,size:parseFloat(getComputedStyle(el).fontSize)})).filter(row=>row.size<9.9)}})()`);
     assert.equal(fit.missing,false,`${label}: Home root missing`);
@@ -676,6 +693,7 @@ try{
   await setViewport(390,844);
   await send('Emulation.setLocaleOverride',{locale:'ja-JP'});
   await send('Network.setUserAgentOverride',{userAgent:await evaluate(`navigator.userAgent`),acceptLanguage:'ja-JP,ja;q=0.9,en;q=0.8'});
+  await send('Page.addScriptToEvaluateOnNewDocument',{source:`(${installLegacyTranslationFixture.toString()})()`});
   await send('Page.addScriptToEvaluateOnNewDocument',{source:`
     window.__introQA=[];
     for(const type of ['loadeddata','playing','ended'])document.addEventListener(type,e=>{
@@ -687,7 +705,12 @@ try{
   assert.ok(introQA.some(e=>e.type==='playing'&&e.muted&&e.inline&&e.width===540&&e.height===540&&e.fit==='contain'),'intro must actually decode and play inline, muted and proportionally');
   assert.ok(introQA.some(e=>e.type==='ended'&&e.time>2.7&&e.time<3),'intro must naturally end before the watchdog');
   console.log('Haruman actual browser playback passed',JSON.stringify(introQA));
-  if(!process.env.HARUMAL_FLASHCARDS_ONLY&&!process.env.HARUMAL_FOCUS_ONLY&&!process.env.HARUMAL_TRANSLATION_ONLY)await verifyIntro({evaluate,send,setViewport,shot,ready,sleep,baseline:!!process.env.HARUMAN_INTRO_BASELINE});
+  if(await evaluate(`['localhost','127.0.0.1','[::1]'].includes(location.hostname)`)){
+    const fixture=await evaluate(`(async()=>{const before=__legacyTranslationQA.requests,cache=JSON.stringify(S.transCache);try{const r=await fetch('https://api.mymemory.translated.net/get?q=synthetic-provider-outage&langpair=ko%7Cja'),body=await r.json();delete S.transCache.ko_ja_browserQaProviderOutage;const fallback=await translateCached('browserQaProviderOutage','합성 번역 확인','ko','ja');return{status:r.status,ok:r.ok,responseStatus:body.responseStatus,marker:r.headers.get('x-harumal-browser-qa'),fallback,requests:__legacyTranslationQA.requests-before}}finally{S.transCache=JSON.parse(cache);save()}})()`);
+    assert.deepEqual(fixture,{status:429,ok:false,responseStatus:429,marker:'synthetic-429',fallback:'합성 번역 확인',requests:2},'the synthetic 429 must exercise the real legacy translation fallback');
+    console.log('Legacy translation provider: localhost synthetic 429; real source fallback verified. Live translation availability is not tested.');
+  }
+  if(!process.env.HARUMAL_QUICK_PRACTICE_ONLY&&!process.env.HARUMAL_FLASHCARDS_ONLY&&!process.env.HARUMAL_FOCUS_ONLY&&!process.env.HARUMAL_TRANSLATION_ONLY)await verifyIntro({evaluate,send,setViewport,shot,ready,sleep,baseline:!!process.env.HARUMAN_INTRO_BASELINE});
   // Complete/default/re-entry playback is checked above. Only unrelated bulk reloads
   // use the existing data-saver opt-out; preserve all ordinary motion regressions.
   // The separate Home suite keeps default media and tests reduced-motion itself.
@@ -695,12 +718,14 @@ try{
     await send('Page.addScriptToEvaluateOnNewDocument',{source:`Object.defineProperty(navigator,'connection',{value:{saveData:true},configurable:true})`});
   await setViewport(390,844);
   assert.equal(await evaluate(`S.lang`),'ja','a fresh Japanese browser must open in Japanese');
-  assert.match(await evaluate(`document.querySelector('.hubCurrent h1,.tqV9Greeting h1')?.textContent||''`),/文字|ハングル|韓国語/,'the first Home heading must be localized before language-menu use');
-  assert.match(await evaluate(`document.querySelector('[data-hub-action="continue"],.tqLessonStart')?.textContent||''`),/学習/,'the first primary CTA must be localized before language-menu use');
+  assert.match(await evaluate(`document.querySelector('.hubMenuCard[data-hub-action="path"],.hubCurrent h1,.tqV9Greeting h1')?.textContent||''`),/学習|文字|ハングル|韓国語/,'the first Home learning entry must be localized before language-menu use');
+  assert.match(await evaluate(`document.querySelector('.hubMenuCard[data-hub-action="path"],[data-hub-action="continue"],.tqLessonStart')?.textContent||''`),/学習/,'the first learning entry must be localized before language-menu use');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);await assertHomeFits('fresh Japanese browser Home light','light');await shot('00renewal-home-ja-locale-first-visit-light.png');
   await evaluate(`malbitSetTheme('dark')`);await sleep(100);await assertHomeFits('fresh Japanese browser Home dark','dark');await shot('00renewal-home-ja-locale-first-visit-dark.png');
-  if(process.env.HARUMAL_FLASHCARDS_ONLY){await verifyVocabFlashcards({evaluate,tap,shot,setViewport,send,ready,sleep,record});assert.deepEqual(errors,[]);}else if(process.env.HARUMAL_TRANSLATION_ONLY){await verifyVocabularyTranslation({evaluate,tap,shot,setViewport,send,ready,sleep});assert.deepEqual(errors,[]);console.log('Translation-only MOCK browser checks passed');}else if(process.env.HARUMAN_INTRO_BASELINE){assert.deepEqual(errors,[]);console.log('Intro baseline captured');}else if(process.env.HARUMAL_BASELINE){for(const theme of ['light','dark'])for(const width of [320,375,390,430]){await evaluate(`setLang('ko');malbitSetTheme('${theme}');setView('home')`);await setViewport(width,844);await shot(`baseline-home-${theme}-${width}.png`)}console.log('Baseline captured');}else if(process.env.HARUMAL_FOCUS_ONLY){await verifyHomeVocabulary({evaluate,tap,shot,setViewport,send,ready,sleep});assert.deepEqual(errors,[]);console.log('Home/vocabulary focused mobile checks passed');}else{
+  if(process.env.HARUMAL_QUICK_PRACTICE_ONLY){await verifyQuickPracticeMenus({evaluate,tap,shot,setViewport,send,ready,sleep});assert.deepEqual(errors,[]);console.log('Quick-practice focused browser checks passed');}else if(process.env.HARUMAL_FLASHCARDS_ONLY){await verifyVocabFlashcards({evaluate,tap,shot,setViewport,send,ready,sleep,record});assert.deepEqual(errors,[]);}else if(process.env.HARUMAL_TRANSLATION_ONLY){await verifyVocabularyTranslation({evaluate,tap,shot,setViewport,send,ready,sleep});assert.deepEqual(errors,[]);console.log('Translation-only MOCK browser checks passed');}else if(process.env.HARUMAN_INTRO_BASELINE){assert.deepEqual(errors,[]);console.log('Intro baseline captured');}else if(process.env.HARUMAL_BASELINE){for(const theme of ['light','dark'])for(const width of [320,375,390,430]){await evaluate(`setLang('ko');malbitSetTheme('${theme}');setView('home')`);await setViewport(width,844);await shot(`baseline-home-${theme}-${width}.png`)}console.log('Baseline captured');}else if(process.env.HARUMAL_FOCUS_ONLY){await verifyHomeVocabulary({evaluate,tap,shot,setViewport,send,ready,sleep});assert.deepEqual(errors,[]);console.log('Home/vocabulary focused mobile checks passed');}else{
   await verifyThreeTabRedesign({evaluate,tap,shot,setViewport,send,ready,sleep});
+  await verifyQuickPracticeMenus({evaluate,tap,shot,setViewport,send,ready,sleep});
+  assert.deepEqual(errors,[],'Quick-practice menus must not add console errors');
   await verifyVocabularySelection({evaluate,tap,shot,setViewport,send,ready,sleep});
   await verifyVocabularyTranslation({evaluate,tap,shot,setViewport,send,ready,sleep});
   await verifyListeningPlayer({evaluate,tap,shot,setViewport,sleep});
@@ -711,17 +736,18 @@ try{
   await verifyAdventure({evaluate,tap,shot,setViewport,send,ready,sleep});
   // Preserve old-course regressions through its explicit archive route, never the new default.
   legacyTravelChecks=true;await ready();
-  await tap('[data-hub-action="continue"]',0,120);
+  await tap('[data-hub-action="path"]');await tap('[data-hub-action="continue"]',0,120);
   assert.equal(await evaluate(`S.view`),'beginner','fresh Japanese learner must enter the beginner course');
   await tap('.v33BeginnerTabs button',1,100);
   await tap('.v33LetterGrid button',0,100);
   assert.deepEqual(await evaluate(`(()=>{const value=JSON.parse(localStorage.getItem('malbitBeginnerV1'));return{activeTab:value.activeTab,known:value.known}})()`),{activeTab:'consonants',known:['c:ㄱ']},'the first learned consonant and its step must save together');
   await tap('.v33BeginnerTop>button',0,120);
-  assert.match(await evaluate(`document.querySelector('[data-hub-action="continue"],.tqLessonStart')?.textContent||''`),/学習/,'the Home CTA must recognize saved beginner progress');
+  await tap('[data-hub-action="path"]');
+  assert.match(await evaluate(`document.querySelector('[data-hub-action="continue"],.tqLessonStart')?.textContent||''`),/学習/,'the course-map CTA must recognize saved beginner progress');
   await send('Page.reload',{ignoreCache:true});await ready();
   await waitForSelector('[data-hub-action="continue"]');
   assert.equal(await evaluate(`S.lang`),'ja','the Japanese explanation language must survive beginner re-entry');
-  assert.match(await evaluate(`document.querySelector('[data-hub-action="continue"],.tqLessonStart')?.textContent||''`),/学習/,'reload must keep the beginner continuation CTA');
+  assert.match(await evaluate(`document.querySelector('[data-hub-action="continue"],.tqLessonStart')?.textContent||''`),/学習/,'reload must keep the course-map beginner continuation CTA');
   await tap('[data-hub-action="continue"]',0,120);
   assert.equal(await evaluate(`S.view`),'beginner');
   assert.match(await evaluate(`document.querySelector('.v33BeginnerTabs button.on')?.textContent||''`),/子音/,'Continue must restore the interrupted consonant step');
@@ -747,16 +773,16 @@ try{
   await setViewport(390,844);await shot('00e-home-visual-contract.png');
   assert.equal(await evaluate(`HARUMAL_HUB.getState().stage`),'hangul','fresh learner starts at Hangul');
   assert.equal(await evaluate(`localStorage.getItem('topikQuestExamLevel')`),null,'default Hangul does not invent exam level');
-  await tap('[data-hub-action="continue"]');assert.equal(await evaluate(`S.view`),'beginner');
+  await tap('[data-hub-action="path"]');await tap('[data-hub-action="continue"]');assert.equal(await evaluate(`S.view`),'beginner');
   await evaluate(`setView('home');HARUMAL_HUB.chooseStage('topik1');(()=>{const p=JSON.parse(localStorage.getItem('malbitProductPrefsV1')||'{}');p.listeningMode='off';localStorage.setItem('malbitProductPrefsV1',JSON.stringify(p))})()`);
-  await tap('[data-hub-action="continue"]');assert.equal(await evaluate(`S.view`),'t1quiz');
+  await tap('[data-hub-action="path"]');await tap('[data-hub-action="continue"]');assert.equal(await evaluate(`S.view`),'t1quiz');
   const interrupted=await evaluate(`localStorage.getItem('topikQuestTopik1Session')`);
-  await evaluate(`setView('home')`);await tap('[data-hub-action="continue"]');assert.equal(await evaluate(`S.view`),'t1quiz');
+  await evaluate(`setView('home')`);await tap('[data-hub-action="path"]');await tap('[data-hub-action="continue"]');assert.equal(await evaluate(`S.view`),'t1quiz');
   assert.equal(await evaluate(`localStorage.getItem('topikQuestTopik1Session')`),interrupted,'matching TOPIK I session continues without replacement');
   assert.equal(await evaluate(`localStorage.getItem('topikQuestExamLevel')`),null,'course continuation does not invent a separate exam-level preference');
   await evaluate(`setView('home');tqSetLevel(2)`);
   assert.equal(await evaluate(`localStorage.getItem('topikQuestExamLevel')`),'2','explicit exam-level selection is stored');
-  await evaluate(`HARUMAL_HUB.chooseStage('hangul')`);await tap('[data-hub-action="continue"]');assert.equal(await evaluate(`S.view`),'beginner');
+  await evaluate(`HARUMAL_HUB.chooseStage('hangul')`);await tap('[data-hub-action="path"]');await tap('[data-hub-action="continue"]');assert.equal(await evaluate(`S.view`),'beginner');
   assert.equal(await evaluate(`localStorage.getItem('topikQuestExamLevel')`),'2','Hangul must preserve the explicitly selected TOPIK II exam level');
   await evaluate(`setView('home');malbitSetTheme('dark')`);
 
@@ -1889,8 +1915,14 @@ try{
   await evaluate(`setView('home')`);await tap('.hubHomeHeader .harumalSettingsTrigger');
   assert.equal(await evaluate(`document.querySelector('#harumalSettingsDialog').hidden`),false);
   await tap('[data-hub-action="close-settings"]');
-  await evaluate(`HARUMAL_HUB.exam(1,'random')`);assert.equal(await evaluate('S.view'),'t1quiz');await tap('.t1RandomTop>button');assert.equal(await evaluate('S.view'),'home');
-  await evaluate(`HARUMAL_HUB.exam(2,'random')`);assert.equal(await evaluate('S.view'),'infinity');
+  for(const level of [1,2]){
+    await evaluate(`HARUMAL_HUB.exam(${level},'random')`);assert.equal(await evaluate('S.view'),'randomAreas','exam shortcut opens the area chooser');
+    assert.equal(await evaluate(`document.querySelector('[data-practice-level][aria-pressed="true"]').dataset.practiceLevel`),String(level),'exam shortcut preserves the requested level');
+    await tap('.hubAreaCard[data-area="reading"]');assert.equal(await evaluate('S.view'),level===1?'t1quiz':'infinity','reading card starts the matching engine');
+    assert.deepEqual(await evaluate(`(()=>{const p=HARUMAL_PRACTICE.getActive();return{level:p.level,area:p.area,mode:p.mode}})()`),{level,area:'reading',mode:'random'});
+    await tap(level===1?'.t1RandomTop>button':'.randomPracticeTop>button');assert.equal(await evaluate('S.view'),'randomAreas','question Back returns to the area chooser');
+    assert.equal(await evaluate(`document.querySelector('[data-practice-level][aria-pressed="true"]').dataset.practiceLevel`),String(level),'Back preserves the selected level');
+  }
   assert.deepEqual(errors,[],'Three-tab navigation must not add console errors');
   await verifyWritingCurriculum({evaluate,tap,shot,setViewport,send,ready,sleep});
   await verifyWritingLocalization({evaluate,tap,shot,setViewport,send,ready,sleep});
