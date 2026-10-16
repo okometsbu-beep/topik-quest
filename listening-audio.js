@@ -15,7 +15,7 @@ function play(script,options={}){
   let audio,index=0,played=0,started=0,timer=null,settled=false;
   const finish=result=>{if(settled)return;settled=true;if(timer)clearTimeout(timer);if(audio){audio.onended=null;audio.onerror=null;audio.onplaying=null;try{audio.pause();if(result.error||result.cancelled){audio.removeAttribute?.('src');audio.load?.()}}catch(error){}}if(active?.finish===finish)active=null;resolve({...result,engine:'listening-file',playedSegments:played,startedSegments:started,remainingScript:remaining(segments,index),remainingText:segments.slice(index).filter(x=>x.id).map(x=>TEXTS[x.id]).join(' ')})};
   try{audio=new Audio()}catch(error){finish({error:true});return}
-  active={audio,finish};audio.preload='auto';audio.playbackRate=Math.max(.65,Math.min(1.3,Number(options.rate)||.82));audio.preservesPitch=true;
+  active={audio,finish};audio.preload='auto';audio.playbackRate=Math.max(.65,Math.min(1.5,Number(options.rate)||.85));audio.preservesPitch=true;
   const failed=()=>finish({error:true});
   const advance=()=>{
    if(settled||token!==serial){finish({cancelled:true});return}if(index>=segments.length){finish({cancelled:false});return}

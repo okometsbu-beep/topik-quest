@@ -1,3 +1,14 @@
+## 2026-10-15 v169 staged original-content and intro release candidate
+
+- 1668 independently reviewed new items are included toward 2088, with 1548 four-language-ready items. Korean/Japanese complete sets: TOPIK I1–11 and II1–8. English/Chinese: I1–10 and II1–8. Incomplete locale/sets stay locked. This is a partial collection release, not a claim that all 24 sets are finished.
+- All730 included new listening questions have technically verified recordings:1565 MP3,577 distinct scripts. Original question and recording bytes are preserved. Pronunciation/naturalness have not been certified by listening review.
+- Default listening speed is0.85 with0.75 selectable; saved custom speeds are retained. Four-language submitted transcripts and exact answer cues are hidden until practice submission or full mock completion. Per-session choice orders persist across reload and review.
+- 252 legacy answer repairs,144 reviewed listening-script repairs with60 replacement recordings,34 legacy SVGs covering172 rows and12 structured writing tables are connected. IDs, correct-answer indexes and learner records remain. Legacy duplicate families and advanced-difficulty limitations are not claimed solved.
+- Visual-only answer labels are positional;262 original SVGs and56 neutral derivatives retain meaningful scene/graph information. 353280 counterfactual pre-submit comparisons and4416 retry flows passed. Actual-browser CI is a separate gate.
+- The V8 intro artwork with fixed B+FX sound uses newv3 media URLs and v169 cache keys. Audio follows actual media/title stages; denied autoplay finishes silently; no extra sound button. Prior intro assets remain.
+- 738 local tests passed after the final metadata and privacy regression changes. Metadata privacy cleanup is reviewed and applied. Exact-commit browser/CI, PR/Pages and live verification are still pending. Physical-device and audible-quality verification are not claimed.
+- Public source and validation contract: `docs/qa/original-exams-content.md`, `content/original-release-scope.json`, and the per-batch technical reports. Media, scripts, voices and original source versions are hash-bound. Publication requires the release-scope gate and exact generated-source equality.
+
 ## 2026-10-15 v168 quick-practice navigation candidate
 
 - Home has four equal sage cards: step-by-step course, Shorts, area random practice, and area mock exams. The latter two share light blue-gray area cards; four locales and both themes are preserved. Existing course continuation moved inside the course path.

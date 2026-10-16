@@ -1,0 +1,169 @@
+{
+  "version": 1,
+  "kind": "public-reviewer-identifier-projection",
+  "fieldCounts": {
+    "content/legacy-answer-repairs-v1.json:.items[].qa.reviewer": 252,
+    "content/legacy-question-visuals-v1.json:.assets[].independentReviewer": 34,
+    "content/legacy-question-visuals-v1.json:.items[].qa.reviewer": 172,
+    "content/original-exams-v1.json:.items[].qa.reviewBasis.inheritedApproval.reviewer": 1,
+    "content/original-exams-v1.json:.items[].qa.finalHashVerifiedBy": 34,
+    "audio/listening/original-v4/content-reapproval.json:.reviewer": 1,
+    "audio/listening/original-v4/content-reapproval.json:.coreItems[].qa.reviewer": 1,
+    "audio/listening/original-v4/content-reapproval.json:.coreItems[].qa.reviewBasis.inheritedApproval.reviewer": 1,
+    "audio/listening/original-v4/content-reapproval.json:.supportItems[].qa.reviewer": 1,
+    "audio/listening/original-v4/source-snapshot.json:.items[].qa.reviewBasis.inheritedApproval.reviewer": 1,
+    "audio/listening/original-v9/gender-reference-review.json:.reviewer": 1
+  },
+  "changedFiles": [
+    {
+      "file": "content/legacy-answer-repairs-v1.json",
+      "beforeSha256": "c941bf520312e10b0585509a617c766bf60431293e42cf77ba86132e04bf365c",
+      "afterSha256": "eedc1cc54638d554ede070df2b3c5c4cf5ee8d134d6cc0cf025f40d9e4fa039b"
+    },
+    {
+      "file": "content/legacy-question-visuals-v1.json",
+      "beforeSha256": "adc32ef8888c0b5e46ae1cb4e035b08a0687a8a75922fff9ed21f24c5c757268",
+      "afterSha256": "024de8d0f886410762a8af5b730bb8e64a90146c26bfca24fd05295ce5288dd4"
+    },
+    {
+      "file": "content/original-exams-v1.json",
+      "beforeSha256": "d8c93b3eaf6c33ae40cad75fd65863be4b6e639ba45b4cfb855b696fa8b75610",
+      "afterSha256": "eedaa972f3b5d35f6aa10b16c8c6acdec1fff5ed1e551dcd2172ec27dace9396"
+    },
+    {
+      "file": "content/original-release-scope.json",
+      "beforeSha256": "29e5d13eea7722caad41b03fc2a86b4105657bfe0571d367349f1ce123e9f517",
+      "afterSha256": "be125026743f47a99f9ae467130de9f60e82f05d9d44181db75cdbd3b7df2013"
+    },
+    {
+      "file": "data/original-exams-manifest.json",
+      "beforeSha256": "ffd19447b5b82b6934a022749ab84e5ab211d8699740062f36e813347f121df6",
+      "afterSha256": "4bbd9320c0d8c3b977c573e2a0397bb68d5d19239b09fc9f7f5034660092112e"
+    },
+    {
+      "file": "data/original-listening-audio-v4.js",
+      "beforeSha256": "78d0800abc753df82795d3d25ca6ac0f06103e2a2208253a6a6df2486ee11ec4",
+      "afterSha256": "d5ab767e7b9e2f821f45191a4f74a3d38414638fff364a55907fa97f4eea30f6"
+    },
+    {
+      "file": "data/original-listening-audio-v9.js",
+      "beforeSha256": "49aba9202675067c187cecc6023710c3b722d6d44b97f86479d56130baebca4a",
+      "afterSha256": "5a1611481e0ce5360f3d08e03884625b3edcdbe3869d30da19d6772ea50a6945"
+    },
+    {
+      "file": "data/original-support-manifest.json",
+      "beforeSha256": "53317947169b14a1b4c6198f7fe9fa59c31c8bdccd6791938f5a03d3c6c893d5",
+      "afterSha256": "b72096a11460a248dbf323f55bc64e1876355e36e10e7789ebf0aaaa7abcfc4f"
+    },
+    {
+      "file": "scripts/build-original-listening-corpus.mjs",
+      "beforeSha256": "d623b7a21bcd3369d4b6143367dcfebf20127f878e04fc3ecc20464419276613",
+      "afterSha256": "97fe783029309b6f71d81398d7a7a0f138430d01c8d427624ea52d088c203d71"
+    },
+    {
+      "file": "scripts/import-original-content.mjs",
+      "beforeSha256": "f2b17ecc8f867190aa53d6848e40935b69357a4e49305cd90d12cb58a7027108",
+      "afterSha256": "c091df459fc70eadc10b5745158ee714786a47fc5e15b6bfdf03e6b2cb123143"
+    },
+    {
+      "file": "docs/qa/release-metadata-anonymization.json",
+      "beforeSha256": "24bd0454c9e76ec9ffffc5fbcb1a0dcd05278972c3cd8e50137ad4e2c92660e7",
+      "afterSha256": "0f5a2892751eecafec00b3dffa3e15ef766373abf58a22610cea18e53107695b"
+    },
+    {
+      "file": "audio/listening/original-v4/content-reapproval.json",
+      "beforeSha256": "be91b494206be2cd40b4967d9184e5da3ec60cc339f0f4b954256c7318c6be9d",
+      "afterSha256": "120725933e456a049ab2135162aa2c72fa3594259135073bfa244a4c9d99c95e"
+    },
+    {
+      "file": "audio/listening/original-v4/corpus.json",
+      "beforeSha256": "21253ed3a7707b6fc96568316b63dd52e31824dfeffe378769fe6286960f5e12",
+      "afterSha256": "0e121d48f76f88b582ab555713c581c6d4df6f993a8f53e605dc73beab14772c"
+    },
+    {
+      "file": "audio/listening/original-v4/generation-records.json",
+      "beforeSha256": "022d9e92e169b7cb4d2d06ebfefe5ab0010b54d948cfc2f21256473e4daa7c18",
+      "afterSha256": "25c93527fabf093ce93fad636581182ee1aa3a90f46c3580ae10325b5a22de03"
+    },
+    {
+      "file": "audio/listening/original-v4/manifest.json",
+      "beforeSha256": "771a4f67ef32ba2459e093ef4ee38164e5b847a735ec4f2834bb8e2ad6598199",
+      "afterSha256": "4d48e5ce8ded039c43bebc8d73a5899da23fbf115b093c4cc5a1b16a91729e1e"
+    },
+    {
+      "file": "audio/listening/original-v4/source-snapshot.json",
+      "beforeSha256": "9a499a7e860be2bbaa8fb03ac1da044dfaa610de70c13b634de14d6a56deaed8",
+      "afterSha256": "8ebf592a8f8673cb2f90d510ed48e146cac6c32918f9f42a23b9b030c0a0d957"
+    },
+    {
+      "file": "audio/listening/original-v9/corpus.json",
+      "beforeSha256": "6ed4934133072c7ebdf499aadee424470d09956ebdef5cff64098677baa6f7f7",
+      "afterSha256": "26362dcaf372b77793067e18a39b79ac93feeb1952da38f9e76eaa6abf74f5bd"
+    },
+    {
+      "file": "audio/listening/original-v9/gender-reference-review.json",
+      "beforeSha256": "a6dafd553b3670cf1ec489e22e58dc18d5e524d255300bde2f53b53ecde9ff6d",
+      "afterSha256": "572dcaba8a8c8a52269d9707d1ca068de1c905fbd2dddf1c92bf5cfa6110ad34"
+    },
+    {
+      "file": "audio/listening/original-v9/generation-records.json",
+      "beforeSha256": "e093bd4dd3b309f0160440252db6bb0ef4e68e522a3fddf1c0b76e3f0b5cadbc",
+      "afterSha256": "15abb56500d9581ae9176dd68db9d573ceccdd235a6a06b69bd2019cb8d1c943"
+    },
+    {
+      "file": "audio/listening/original-v9/manifest.json",
+      "beforeSha256": "aa7cdc4929bbb8faa060423bf9b8b772afbcbda0f2d9450cd18442a9ebe48410",
+      "afterSha256": "f70dc26087109ffea6139d313df9ee10bc14f2dc79d782a6d8169204916f2484"
+    },
+    {
+      "file": "audio/listening/original-v9/source-snapshot.json",
+      "beforeSha256": "9459e559aaf74020cb52d48031f20dc2fac3f362a52ebb60fa7f3269f4c88356",
+      "afterSha256": "0d7a0e7087dc59b7eb5b862c6863c4e0128246772eb095236d1c5542f21c49bd"
+    },
+    {
+      "file": "scripts/public-review-metadata.cjs",
+      "beforeSha256": null,
+      "afterSha256": "4b0ea0432efb8bef340e20a56b966346a75bac5b8cd416a1ba6b1cd604e3dd89"
+    },
+    {
+      "file": "tests/public-review-metadata.test.cjs",
+      "beforeSha256": null,
+      "afterSha256": "e2660ee4ecea67cec7d3b43f88aeab164f71e7aa789cc48fd87e05507b3daf03"
+    }
+  ],
+  "audioMetadataRebindings": [
+    {
+      "pack": "original-v4",
+      "unchangedClips": 5,
+      "sourceContentHashesUnchanged": true,
+      "orderedSegmentsAndVoicesUnchanged": true,
+      "synthesisInputsUnchanged": true,
+      "reviewStateUnchanged": true,
+      "humanPronunciationReview": false
+    },
+    {
+      "pack": "original-v9",
+      "unchangedClips": 149,
+      "sourceContentHashesUnchanged": true,
+      "orderedSegmentsAndVoicesUnchanged": true,
+      "synthesisInputsUnchanged": true,
+      "reviewStateUnchanged": true,
+      "humanPronunciationReview": false
+    }
+  ],
+  "allItemContentHashesUnchanged": true,
+  "allLearningContentAndOriginalAssetsUnchanged": true,
+  "originalCoreMetahashReapprovalRepeated": false,
+  "audioResynthesisPerformed": false,
+  "freshDecodePerformed": false,
+  "publicScan": {
+    "folders": [
+      "content",
+      "data",
+      "audio",
+      "docs"
+    ],
+    "taskIdentifiers": 0,
+    "privatePaths": 0
+  }
+}

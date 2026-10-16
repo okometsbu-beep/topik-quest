@@ -13,6 +13,65 @@ const labels=()=>({
   reason:text('왜 이 답일까요?','なぜこの答え？','Why this answer?','为什么选这个？')
 });
 
+// Authored reasons belong to option text, never to its original numbered slot.
+function authoredCoach(q){
+  const requested=S.lang||'ko',lang=q?.coach?.[requested]?requested:q?.collectionId==='original12-v1'?null:q?.coach?.ko?'ko':q?.coach?.ja?'ja':null;
+  return lang?{...q.coach[lang],lang,fallback:lang!==requested}:null;
+}
+function authoredChoiceReason(q,choice,lang=S.lang||'ko'){
+  const pack=q?.coach?.[lang]?.choices;
+  return pack&&Object.prototype.hasOwnProperty.call(pack,choice)?String(pack[choice]||''):'';
+}
+function authoredCoaching(q){
+  const coach=authoredCoach(q);if(!coach)return q?.collectionId==='original12-v1'?`<p class="tqAuthoredPending">${text('이 언어의 검수 해설은 준비 중입니다.','この言語の確認済み解説は準備中です。','Reviewed explanations in this language are not ready yet.','此语言的校对解析尚未准备好。')}</p>`:'';
+  const note=coach.fallback?text('작성된 해설을 원문으로 표시합니다.','解説の原文を表示しています。',`Authored explanation is shown in ${coach.lang==='ko'?'Korean':'Japanese'}.`,`以下显示${coach.lang==='ko'?'韩语':'日语'}原文解析。`):'';
+  const sections=[[text('정답 근거','正解の根拠','Key evidence','正确依据'),coach.reason],[text('오답 함정','ひっかけ分析','Distractor trap','干扰项陷阱'),coach.trap],[text('빠르게 푸는 요령','素早く解くコツ','Quick solving strategy','快速解题技巧'),coach.strategy]];
+  const choices=(q.choices||[]).map((choice,index)=>({choice,index,reason:authoredChoiceReason(q,choice,coach.lang)}));
+  return `<div class="tqAuthoredCoaching" lang="${esc(coach.lang)}">${note?`<p class="muted">${esc(note)}</p>`:''}${sections.filter(([,value])=>value).map(([label,value])=>`<h4>${label}</h4><p>${esc(value)}</p>`).join('')}${choices.some(x=>x.reason)?`<h4>${text('선택지별 판단','選択肢ごとの判断','Option-by-option reasoning','逐项分析')}</h4><ol class="tqReviewChoiceAnalysis">${choices.map(({choice,index,reason})=>`<li class="${index===q.answerIndex?'right':''}"><b>${index+1}. ${esc(cleanChoice(choice))}</b><span>${esc(reason||text('이 보기의 상세 해설은 준비 중입니다.','この選択肢の詳しい解説は準備中です。','A detailed reason for this option is not available yet.','此选项的详细解析尚未提供。'))}</span></li>`).join('')}</ol>`:''}</div>`;
+}
+
+function localVisualSource(value){return typeof value==='string'&&/^assets\/(?:[A-Za-z0-9_-]+\/)*[A-Za-z0-9_-]+\.(?:svg|png|webp|jpe?g)$/i.test(value)}
+// Stable scene/graph names bind images and coaching; they are never answer labels.
+function visualOnlyChoices(q){
+  return q?.visualOptions?.kind==='options'&&(q.collectionId==='original12-v1'||Object.keys(q.visualOptions.byOption||{}).some(key=>/^(?:장면|그래프)\s*[가나다라]$/u.test(cleanChoice(key))));
+}
+function optionPositionLabel(position){
+  const n=Number.isInteger(position)&&position>=0?position+1:null;
+  return n===null?text('그림 보기','図の選択肢','Picture option','图片选项'):text(`보기 ${n}`,`選択肢${n}`,`Option ${n}`,`选项${n}`);
+}
+function visualChoice(q,choice,position=q?.choices?.indexOf(choice)){
+  const visual=q?.visualOptions;if(q?.visualPending||visual?.kind!=='options')return'';
+  const item=Object.prototype.hasOwnProperty.call(visual.byOption||{},choice)?visual.byOption[choice]:null;
+  // Data may name a checked-in image, never a remote URL or executable markup.
+  if(!item||!localVisualSource(item.src))return'';
+  let src=item.src,alt=item.alt||choice;
+  if(visualOnlyChoices(q)){
+    // Approved source SVGs may contain the stable key as painted text. Use only
+    // a catalogued label-free image (a derivative or a checked identity mapping).
+    const map=window.HARUMAL_NEUTRAL_VISUALS?.bySource,neutral=Object.prototype.hasOwnProperty.call(map||{},src)?map[src]:null;
+    if(!neutral||!localVisualSource(neutral.src)||!(/^assets\/original-neutral\/[A-Za-z0-9_-]+\.svg$/u.test(neutral.src)||neutral.src===src&&neutral.sha256===neutral.sourceSha256)||!/^[a-f0-9]{64}$/u.test(neutral.sourceSha256||'')||!/^[a-f0-9]{64}$/u.test(neutral.sha256||''))return'';
+    src=neutral.src;
+    let description=String(item.alt||'');
+    for(const key of Object.keys(visual.byOption||{}))if(cleanChoice(key))description=description.split(cleanChoice(key)).join('');
+    description=description.replace(/(?:장면|그래프)\s*[가나다라](?=$|[^\p{L}\p{N}])/gu,'').replace(/^[\s:：.,·—–-]+/gu,'').trim();
+    alt=optionPositionLabel(position)+(description?`: ${description}`:'');
+  }
+  return `<img class="tqOptionVisual" src="${esc(src)}" alt="${esc(alt)}" loading="lazy" style="display:block;max-width:100%;height:auto;margin:0 0 8px">`;
+}
+// One answer-facing presentation API for both engines and review. Keep the
+// original choice string untouched for grading, image lookup and later coaching.
+function choiceContent(q,choice,position,displayChoice=cleanChoice(choice)){
+  const image=visualChoice(q,choice,position);
+  return image+esc(visualOnlyChoices(q)?(image?'':`${optionPositionLabel(position)} · ${text('그림 준비 중','画像準備中','Image unavailable','图片暂不可用')}`):displayChoice);
+}
+function questionVisual(q){
+  const visual=q?.visualOptions;if(!visual)return'';
+  if(q.visualPending)return `<p class="tqVisualPending" role="status">${text('이 문항의 그림·표 자료는 준비 중입니다.','この問題の図・表は準備中です。','The visual for this question is not ready yet.','本题的图表资料尚未准备好。')}</p>`;
+  if(visual.kind==='image')return localVisualSource(visual.src)?`<figure class="tqQuestionVisual" style="margin:12px 0"><img src="${esc(visual.src)}" alt="${esc(visual.alt||'')}" style="display:block;max-width:100%;height:auto">${visual.caption?`<figcaption>${esc(visual.caption)}</figcaption>`:''}</figure>`:'';
+  if(visual.kind!=='table'||!Array.isArray(visual.columns)||!Array.isArray(visual.rows))return'';
+  return `<div class="tqQuestionTable" style="max-width:100%;overflow-x:auto"><table style="width:100%;border-collapse:collapse"><caption>${esc(visual.caption||text('문항 자료','問題資料','Question data','题目资料'))}</caption><thead><tr>${visual.columns.map(value=>`<th scope="col" style="padding:8px;border:1px solid var(--ui-border,#cbd5d1)">${esc(value)}</th>`).join('')}</tr></thead><tbody>${visual.rows.map(row=>`<tr>${visual.columns.map((_,index)=>index===0?`<th scope="row" style="padding:8px;border:1px solid var(--ui-border,#cbd5d1)">${esc(row?.[index]??'')}</th>`:`<td style="padding:8px;border:1px solid var(--ui-border,#cbd5d1)">${esc(row?.[index]??'')}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+}
+
 function listeningExplanation(q){
   const lang=S.lang||'ko',pack=I18N.topik2Listening?.[q.id]||{},n=answerNumber(q);
   if(q?.bankId&&q.explanationI18n?.[lang])return q.explanationI18n[lang];
@@ -37,13 +96,21 @@ function localizedAnswerChoice(type,q){
 }
 
 function explanationBlock(type,q,compact=false){
-  const l=labels(),reason=type==='listen'?listeningExplanation(q):readingExplanation(q),n=answerNumber(q),choice=localizedAnswerChoice(type,q);
-  return `<section class="tqInlineExplanation ${compact?'compact':''}" aria-live="polite"><div class="tqInlineTitle"><span>✓</span><b>${l.title}</b></div><div class="tqInlineAnswer"><small>${l.answer}</small><strong>${n}. ${esc(choice)}</strong></div><h4>${l.reason}</h4><p>${esc(reason)}</p></section>`;
+  const l=labels(),reason=type==='listen'?listeningExplanation(q):readingExplanation(q),n=answerNumber(q),choice=localizedAnswerChoice(type,q),authored=authoredCoaching(q);
+  return `<section class="tqInlineExplanation ${compact?'compact':''}" aria-live="polite"><div class="tqInlineTitle"><span>✓</span><b>${l.title}</b></div><div class="tqInlineAnswer"><small>${l.answer}</small><strong>${n}. ${esc(choice)}</strong></div>${authored||`<h4>${l.reason}</h4><p>${esc(reason)}</p>`}${type==='listen'?window.HARUMAL_TRANSCRIPTS?.markup(q,{submitted:true})||'':''}</section>`;
 }
 
 function writingExplanationBlock(q){
-  const guide=I18N.topik2Writing?.[q?.id]?.[S.lang]||text('문제의 모든 조건과 핵심 정보가 답안에 들어갔는지 확인하세요.','設問の全条件と重要情報が答案に入っているか確認してください。','Check that the answer covers every condition and key detail.','请确认答案包含全部条件和关键信息。');
-  return `<section class="tqInlineExplanation"><div class="tqInlineTitle"><span>✓</span><b>${text('바로 해설','すぐに解説','Instant explanation','即时解析')}</b></div><h4>${text('비교 포인트','比較ポイント','What to compare','对照要点')}</h4><p>${esc(guide)}</p></section>`;
+  const authored=authoredCoaching(q),guide=(q?.bankId?(q.explanationI18n?.[S.lang]||q.explanationKo||q.explanation):I18N.topik2Writing?.[q?.id]?.[S.lang])||text('문제의 모든 조건과 핵심 정보가 답안에 들어갔는지 확인하세요.','設問の全条件と重要情報が答案に入っているか確認してください。','Check that the answer covers every condition and key detail.','请确认答案包含全部条件和关键信息。');
+  return `<section class="tqInlineExplanation"><div class="tqInlineTitle"><span>✓</span><b>${text('바로 해설','すぐに解説','Instant explanation','即时解析')}</b></div>${authored||`<h4>${text('비교 포인트','比較ポイント','What to compare','对照要点')}</h4><p>${esc(guide)}</p>`}${writingRubric(q)}</section>`;
+}
+
+function writingRubric(q){
+  const rubric=q?.rubric;if(!rubric||typeof rubric!=='object')return'';
+  const requested=S.lang||'ko';if(q?.collectionId==='original12-v1'&&requested!=='ko'&&!rubric[requested])return `<p class="tqAuthoredPending">${text('이 언어의 쓰기 기준은 준비 중입니다.','この言語の作文基準は準備中です。','Writing criteria in this language are not ready yet.','此语言的写作标准尚未准备好。')}</p>`;const localized=rubric[requested],pack=localized&&typeof localized==='object'?localized:rubric.ko||rubric,fallback=requested!=='ko'&&!localized;
+  const criteria=Array.isArray(pack.criteria)?pack.criteria.filter(value=>typeof value==='string'):[];
+  if(!pack.note&&!criteria.length)return'';
+  return `<section class="tqWritingRubric"><h4>${text('쓰기 자체 점검 기준','作文の自己点検基準','Writing self-check criteria','写作自查标准')}</h4><p>${text('공식 채점이나 점수 예측이 아닙니다. 아래 기준으로 답안을 직접 점검하세요.','公式採点や得点予測ではありません。以下の基準で答案を点検してください。','This is not official grading or a score prediction. Use these criteria to check your answer.','这不是正式评分或分数预测，请根据以下标准自行检查答案。')}</p>${fallback?`<p class="muted">${text('점검 기준은 한국어 원문으로 표시합니다.','点検基準は韓国語の原文で表示します。','The self-check criteria are shown in the Korean original.','以下自查标准显示韩语原文。')}</p>`:''}${pack.note?`<p>${esc(pack.note)}</p>`:''}${criteria.length?`<ul>${criteria.map(value=>`<li>${esc(value)}</li>`).join('')}</ul>`:''}</section>`;
 }
 
 // ----- Persistent wrong-answer review -----
@@ -82,7 +149,7 @@ function resolveReview(key,ok,selected){
 }
 function scanLatestExamWrongAnswers(){
   try{
-    if(S.lastResult?.mockSet&&typeof activateTopik2BankSet==='function')activateTopik2BankSet(S.lastResult.mockSet);
+    if(S.lastResult?.mockSet&&typeof activateTopik2BankSet==='function')activateTopik2BankSet(S.lastResult.mockSet,S.lastResult.collectionId||'legacy-original-v1',S.lastResult.choiceOrders);
     const raw=JSON.stringify([S.lastResult||null,S.realAnswers||null]);let hash=2166136261;
     for(let i=0;i<raw.length;i++){hash^=raw.charCodeAt(i);hash=Math.imul(hash,16777619)}
     const signature=String(hash>>>0);if(REVIEW.latestExamSignature===signature)return;
@@ -103,6 +170,7 @@ function reviewSourceLabel(source){
 }
 function originalQuestionParts(q,type){
   return {
+    question:q,
     instruction:q.instruction||'',
     body:[q.stem,q.prompt&&q.prompt!==q.stem?q.prompt:''].filter(Boolean).join('\n\n'),
     script:type==='listen'?(q.script||''):'',
@@ -110,6 +178,7 @@ function originalQuestionParts(q,type){
   };
 }
 async function translatedReviewParts(item,q){
+  if(reviewExamBlocked())return null;
   const lang=S.lang||'ko',original=originalQuestionParts(q,item.type);
   if(lang==='ko')return original;
   const target=lang,base=`review_v3_${item.key}_${target}`;
@@ -133,7 +202,7 @@ async function translatedReviewParts(item,q){
 }
 function reviewQuestionMarkup(parts,translated=false){
   if(parts.fullText)return `<div class="tqReviewQuestion ${translated?'translated':''}">${parts.reviewed?`<small class="tqReviewedBadge">✓ ${text('문맥 검수 번역','文脈確認済み翻訳','Context-reviewed translation','语境校对翻译')}</small>`:''}<p>${esc(parts.fullText)}</p></div>`;
-  return `<div class="tqReviewQuestion ${translated?'translated':''}">${parts.instruction?`<small>${esc(parts.instruction)}</small>`:''}${parts.script?`<div class="tqReviewScript">${esc(parts.script)}</div>`:''}${parts.body?`<p>${esc(parts.body)}</p>`:''}<ol>${parts.choices.map(x=>`<li>${esc(x)}</li>`).join('')}</ol></div>`;
+  return `<div class="tqReviewQuestion ${translated?'translated':''}">${parts.instruction?`<small>${esc(parts.instruction)}</small>`:''}${parts.script?`<div class="tqReviewScript">${esc(parts.script)}</div>`:''}${parts.body?`<p>${esc(parts.body)}</p>`:''}${questionVisual(parts.question)}<ol>${parts.choices.map((x,i)=>`<li>${choiceContent(parts.question,parts.question?.choices?.[i]||x,i,x)}</li>`).join('')}</ol></div>`;
 }
 async function localizedField(value,key,source='ja'){
   if(!value)return'';const lang=S.lang||'ko';if(lang===source)return value;
@@ -162,7 +231,9 @@ function specificWrongChoiceReason(type,evidence,correct,wrong){
   ][{ko:0,ja:1,en:2,zh:3}[lang]??0];
 }
 async function detailedReviewExplanation(item,q){
+  if(reviewExamBlocked())return '';
   const type=item.type,lang=S.lang||'ko',n=answerNumber(q),answer=cleanChoice(q.choices?.[q.answerIndex]||q.answer||'');
+  if(authoredCoach(q)||q?.collectionId==='original12-v1'||type==='listen')return explanationBlock(type,q);
   let reason='',grammar='',vocab='',elimination='';
   if(q.bankId){
     reason=q.explanationI18n?.[lang]||q.explanationI18n?.ko||q.explanation||'';grammar=(q.targetSkills||[]).join(' · ');elimination=reason;
@@ -190,29 +261,51 @@ async function detailedReviewExplanation(item,q){
 function activeReviewItems(){return Object.values(REVIEW.items).filter(x=>x?.active&&reviewQuestion(x.level,x.type,x.id,x.choiceOrder)).sort((a,b)=>(Number(b.lastWrongAt)||0)-(Number(a.lastWrongAt)||0))}
 // The same saved wrong-answer episode has one identity, including across stale tabs.
 function reviewRewardSession(item){return `review:${item.key||reviewKey(item.level,item.type,item.id)}:${Number(item.lastWrongAt)||0}:${Number(item.wrongCount)||0}`}
+function reviewExamBlocked(){return !!(S.real?.active||window.HARUMAL_TRANSCRIPTS?.activeMock?.())}
+function reviewExamBlockedNotice(){return text('모의고사를 모두 제출한 뒤 복습할 수 있어요.','模擬試験をすべて提出してから復習できます。','Submit the entire mock exam before reviewing answers.','提交整场模拟考试后才能复习答案。')}
 function syncReviewRewardHelp(item){try{const saved=JSON.parse(localStorage.getItem(REVIEW_KEY)||'null')?.items?.[item.key]?.rewardAttempt;if(saved?.sessionId===item.rewardAttempt?.sessionId&&saved.assisted)item.rewardAttempt.assisted=true}catch(e){}}
 function openReviewRetry(key){
+  if(reviewExamBlocked()){window.HARUMAL_LISTENING_PLAYER?.cancel?.();toast(reviewExamBlockedNotice());return;}
   const item=REVIEW.items[key],q=item&&reviewQuestion(item.level,item.type,item.id,item.choiceOrder);if(!item||!q)return;
+  window.HARUMAL_LISTENING_PLAYER?.cancel?.();
   if(!item.rewardAttempt){item.rewardAttempt={sessionId:reviewRewardSession(item),assisted:false};syncReviewRewardHelp(item);saveReview()}
   reviewAttempt={key,selected:null,locked:false,showTranslation:false,translation:null};renderReviewRetry();
 }
+async function reviewListeningFile(id,level,request){
+ const number=String(id).padStart(3,'0'),folder=Number(level)===1?'topik1':'topik2';
+ for(const ext of ['mp3','m4a','aac','webm']){if(!request.isCurrent())return null;const url=`audio/${folder}/q${number}.${ext}`;try{const response=await fetch(url,{method:'HEAD',cache:'no-store'});if(!request.isCurrent())return null;if(response.ok)return url}catch{if(!request.isCurrent())return null}}
+ return null;
+}
+function playReviewListening(forceDevice=false){
+ const a=reviewAttempt,item=a&&REVIEW.items[a.key],q=item&&reviewQuestion(item.level,item.type,item.id,item.choiceOrder),player=window.HARUMAL_LISTENING_PLAYER;
+ if(reviewExamBlocked()||!a||item?.type!=='listen'||!q?.script||!player)return;
+ const key=`review:${a.key}`;if(player.busy(key)){player.cancel();return;}
+ return player.play({key,script:q.script,forceDevice,once:false,isCurrent:()=>!reviewExamBlocked()&&reviewAttempt===a&&document.getElementById('overlay')?.classList.contains('open')===true,
+  legacy:q.bankId?null:request=>reviewListeningFile(q.sourceId||q.id,item.level,request),onDevice:()=>playReviewListening(true)});
+}
+function closeReviewRetry(){window.HARUMAL_LISTENING_PLAYER?.cancel?.();reviewAttempt=null;closeSheet();render();}
 function renderReviewRetry(){
   const a=reviewAttempt,item=a&&REVIEW.items[a.key],q=item&&reviewQuestion(item.level,item.type,item.id,item.choiceOrder),body=document.getElementById('sheetBody');if(!a||!q||!body)return;
+  if(reviewExamBlocked()){window.HARUMAL_LISTENING_PLAYER?.cancel?.();body.innerHTML=`<p class="muted">${esc(reviewExamBlockedNotice())}</p><button class="closeBtn" onclick="closeReviewRetry()">${text('닫기','閉じる','Close','关闭')}</button>`;return;}
   const original=originalQuestionParts(q,item.type),selected=a.selected,locked=a.locked;
-  body.innerHTML=`<div class="reward"><b>TOPIK ${item.level} · ${localizedReviewType(item.type)} ${item.id}</b><small>${text(`누적 오답 ${item.wrongCount}회`,`累計誤答 ${item.wrongCount}回`,`${item.wrongCount} misses`,`${item.wrongCount}次错题`)}</small></div>${reviewQuestionMarkup(original)}<button class="tqTranslationToggle" onclick="toggleReviewTranslation()">🌐 ${a.showTranslation?text('전체 번역 숨기기','全文翻訳を隠す','Hide full translation','隐藏全文翻译'):text('문제 전체를 내 언어로 보기','問題全体を自分の言語で見る','View the full question in my language','用我的语言查看整道题')}</button><div id="tqReviewTranslation" class="tqReviewTranslation ${a.showTranslation?'open':''}">${a.showTranslation?(a.translation?reviewQuestionMarkup(a.translation,true):`<div class="translationLoading">${text('전체 번역을 불러오는 중…','全文翻訳を読み込み中…','Loading the full translation…','正在加载全文翻译…')}</div>`):''}</div><div class="choices tqReviewChoices">${(q.choices||[]).map((c,i)=>{let cls='choice';if(selected===i)cls+=' selected';if(locked&&i===q.answerIndex)cls+=' correct';if(locked&&selected===i&&i!==q.answerIndex)cls+=' wrong';return `<button class="${cls}" ${locked?'disabled':''} onclick="reviewSelect(${i})"><span class="n">${i+1}</span><span>${esc(cleanChoice(c))}</span></button>`}).join('')}</div>${locked?`<div class="resultStrip ${selected===q.answerIndex?'good':'bad'}">${selected===q.answerIndex?text('정답입니다. 오답 스택에서 해결 처리했어요.','正解です。誤答スタックを解決済みにしました。','Correct — removed from your active wrong-answer stack.','答对了，已从待复习错题中移除。'):text(`정답은 ${q.answerIndex+1}번입니다. 다시 오답 스택에 남겨 두었어요.`,`正解は${q.answerIndex+1}番です。復習スタックに残しました。`,`The answer is option ${q.answerIndex+1}. It remains in your review stack.`,`正确答案是第${q.answerIndex+1}项，仍保留在复习错题中。`)}</div><div id="tqReviewDeep" class="translationLoading">${text('상세 해설을 준비하는 중…','詳しい解説を準備中…','Preparing the detailed explanation…','正在准备详细解析…')}</div>`:`<div class="doubleTapHint">${text('한 번 탭해 선택 · 같은 답을 한 번 더 탭하면 제출','1回タップで選択・同じ答えをもう一度タップして提出','Tap once to select · tap the same answer again to submit','点一次选择，再点同一答案提交')}</div>`}<button class="closeBtn" onclick="closeSheet();reviewAttempt=null;render()">${text('복습 목록으로','復習一覧へ','Back to review list','返回复习列表')}</button>`;
+  body.innerHTML=`<div class="reward"><b>TOPIK ${item.level} · ${localizedReviewType(item.type)} ${item.id}</b><small>${text(`누적 오답 ${item.wrongCount}회`,`累計誤答 ${item.wrongCount}回`,`${item.wrongCount} misses`,`${item.wrongCount}次错题`)}</small></div>${reviewQuestionMarkup({...original,choices:[],script:item.type==='listen'?'':original.script})}${item.type==='listen'&&q.script?(window.HARUMAL_LISTENING_PLAYER?.markup?.('playReviewListening()',`review:${a.key}`,{script:q.script,catalogOnly:!!q.bankId,deviceAction:'playReviewListening(true)'})||`<p class="muted">${text('음성 플레이어를 불러오지 못했습니다.','音声プレーヤーを読み込めません。','The audio player is unavailable.','音频播放器未加载。')}</p>`):''}<button class="tqTranslationToggle" ${item.type==='listen'&&!locked?'disabled':''} onclick="toggleReviewTranslation()">🌐 ${a.showTranslation?text('전체 번역 숨기기','全文翻訳を隠す','Hide full translation','隐藏全文翻译'):text('문제 전체를 내 언어로 보기','問題全体を自分の言語で見る','View the full question in my language','用我的语言查看整道题')}</button><div id="tqReviewTranslation" class="tqReviewTranslation ${a.showTranslation?'open':''}">${a.showTranslation?(a.translation?reviewQuestionMarkup(a.translation,true):`<div class="translationLoading">${text('전체 번역을 불러오는 중…','全文翻訳を読み込み中…','Loading the full translation…','正在加载全文翻译…')}</div>`):''}</div><div class="choices tqReviewChoices">${(q.choices||[]).map((c,i)=>{let cls='choice';if(selected===i)cls+=' selected';if(locked&&i===q.answerIndex)cls+=' correct';if(locked&&selected===i&&i!==q.answerIndex)cls+=' wrong';return `<button class="${cls}" ${locked?'disabled':''} onclick="reviewSelect(${i})"><span class="n">${i+1}</span><span>${choiceContent(q,c,i)}</span></button>`}).join('')}</div>${locked?`<div class="resultStrip ${selected===q.answerIndex?'good':'bad'}">${selected===q.answerIndex?text('정답입니다. 오답 스택에서 해결 처리했어요.','正解です。誤答スタックを解決済みにしました。','Correct — removed from your active wrong-answer stack.','答对了，已从待复习错题中移除。'):text(`정답은 ${q.answerIndex+1}번입니다. 다시 오답 스택에 남겨 두었어요.`,`正解は${q.answerIndex+1}番です。復習スタックに残しました。`,`The answer is option ${q.answerIndex+1}. It remains in your review stack.`,`正确答案是第${q.answerIndex+1}项，仍保留在复习错题中。`)}</div><div id="tqReviewDeep" class="translationLoading">${text('상세 해설을 준비하는 중…','詳しい解説を準備中…','Preparing the detailed explanation…','正在准备详细解析…')}</div>`:`<div class="doubleTapHint">${text('한 번 탭해 선택 · 같은 답을 한 번 더 탭하면 제출','1回タップで選択・同じ答えをもう一度タップして提出','Tap once to select · tap the same answer again to submit','点一次选择，再点同一答案提交')}</div>`}<button class="closeBtn" onclick="closeReviewRetry()">${text('복습 목록으로','復習一覧へ','Back to review list','返回复习列表')}</button>`;
   document.getElementById('overlay')?.classList.add('open');
   if(a.showTranslation&&!a.translation)loadReviewTranslation();
-  if(locked)detailedReviewExplanation(item,q).then(html=>{const el=document.getElementById('tqReviewDeep');if(el){el.className='';el.innerHTML=html;enhance(el)}});
+  if(locked)detailedReviewExplanation(item,q).then(html=>{if(reviewAttempt!==a||!a.locked||reviewExamBlocked())return;const el=document.getElementById('tqReviewDeep');if(el){el.className='';el.innerHTML=html;enhance(el)}});
   enhance(body);
+  window.HARUMAL_LISTENING_PLAYER?.refresh?.();
 }
 async function loadReviewTranslation(){
   const a=reviewAttempt,item=a&&REVIEW.items[a.key],q=item&&reviewQuestion(item.level,item.type,item.id,item.choiceOrder);if(!a||!q)return;
-  a.translation=await translatedReviewParts(item,q);if(reviewAttempt===a&&a.showTranslation)renderReviewRetry();
+  if(reviewExamBlocked()||(item.type==='listen'&&!a.locked))return;
+  const translation=await translatedReviewParts(item,q);if(reviewAttempt!==a||reviewExamBlocked()||(item.type==='listen'&&!a.locked))return;
+  a.translation=translation;if(a.showTranslation)renderReviewRetry();
 }
-function toggleReviewTranslation(){if(!reviewAttempt)return;reviewAttempt.showTranslation=!reviewAttempt.showTranslation;if(reviewAttempt.showTranslation){const item=REVIEW.items[reviewAttempt.key];if(item){item.rewardAttempt=item.rewardAttempt||{sessionId:reviewRewardSession(item)};item.rewardAttempt.assisted=true;saveReview()}}renderReviewRetry()}
+function toggleReviewTranslation(){if(reviewExamBlocked()||!reviewAttempt||(REVIEW.items[reviewAttempt.key]?.type==='listen'&&!reviewAttempt.locked))return;reviewAttempt.showTranslation=!reviewAttempt.showTranslation;if(reviewAttempt.showTranslation){const item=REVIEW.items[reviewAttempt.key];if(item){item.rewardAttempt=item.rewardAttempt||{sessionId:reviewRewardSession(item)};item.rewardAttempt.assisted=true;saveReview()}}renderReviewRetry()}
 function reviewSelect(i){
-  const a=reviewAttempt,item=a&&REVIEW.items[a.key],q=item&&reviewQuestion(item.level,item.type,item.id,item.choiceOrder);if(!a||!q||a.locked)return;
+  const a=reviewAttempt,item=a&&REVIEW.items[a.key],q=item&&reviewQuestion(item.level,item.type,item.id,item.choiceOrder);if(reviewExamBlocked()||!a||!q||a.locked)return;
   i=Number(i);if(a.selected!==i){a.selected=i;return renderReviewRetry()}
+  if(item.type==='listen')window.HARUMAL_LISTENING_PLAYER?.cancel?.();
   a.locked=true;const ok=i===Number(q.answerIndex),attempt=item.rewardAttempt||(item.rewardAttempt={sessionId:reviewRewardSession(item),assisted:false});
   if(!attempt.sessionId&&window.HARUMAL_REWARDS)attempt.sessionId=reviewRewardSession(item);
   syncReviewRewardHelp(item);saveReview();window.HARUMAL_REWARDS?.answer({source:'review',sessionId:attempt.sessionId,slot:a.key,question:{...q,level:item.level},correct:ok,assisted:!!attempt.assisted||!!a.showTranslation});
@@ -223,11 +316,14 @@ function setReviewFilter(value){reviewFilter=['all','1','2'].includes(String(val
 
 window.MALBIT_REVIEW={record:recordReviewWrong,resolve:resolveReview,items:()=>REVIEW.items};
 window.openReviewRetry=openReviewRetry;window.reviewSelect=reviewSelect;window.toggleReviewTranslation=toggleReviewTranslation;window.clearMasteredReview=clearMasteredReview;window.setReviewFilter=setReviewFilter;
+window.playReviewListening=playReviewListening;window.closeReviewRetry=closeReviewRetry;
 
 if(typeof renderInfMCQ==='function'){
   const baseRenderInfMCQ=renderInfMCQ;
   renderInfMCQ=function(q,type){
-    return baseRenderInfMCQ(q,type);
+    const html=baseRenderInfMCQ(q,type);if(!S.infinity?.feedback||(!authoredCoach(q)&&q?.collectionId!=='original12-v1'&&type!=='listen'))return html;
+    const marker='<button class="primary" style="margin-top:10px"';
+    return html.replace(marker,explanationBlock(type,q)+marker);
   };
 }
 
@@ -263,7 +359,12 @@ if(typeof reviewPage==='function'){
     navActive('review');scanLatestExamWrongAnswers();const allItems=activeReviewItems(),items=reviewFilter==='all'?allItems:allItems.filter(item=>String(item.level)===reviewFilter),mastered=Object.values(REVIEW.items).filter(x=>x&&!x.active).length;
     sc.className='screen tqReviewScreen';
     const count=level=>allItems.filter(item=>item.level===level).length,filter=(value,label,total)=>`<button class="${reviewFilter===value?'on':''}" aria-pressed="${reviewFilter===value}" onclick="setReviewFilter('${value}')"><span>${label}</span><b>${total}</b></button>`;
-    sc.innerHTML=`<section class="tqReviewHero"><div><small>${text('누적 오답 복습','累積誤答レビュー','WRONG-ANSWER REVIEW','累计错题复习')}</small><h1>${text('틀린 문제를 끝까지 이해해요','間違えた問題を最後まで理解しよう','Understand every missed question','彻底理解每一道错题')}</h1><p>${text('오답은 자동으로 쌓이고, 다시 맞히면 해결 처리됩니다.','誤答は自動で蓄積され、解き直して正解すると解決済みになります。','Missed questions stack automatically and are resolved when you answer them correctly on retry.','错题会自动累积，重做答对后标记为已掌握。')}</p></div><strong>${allItems.length}<small>${text('복습 대기','復習待ち','to review','待复习')}</small></strong></section><div class="tqReviewStats"><div><b>${allItems.reduce((n,x)=>n+(Number(x.wrongCount)||0),0)}</b><small>${text('누적 오답','累積誤答','Total misses','累计错题')}</small></div><div><b>${mastered}</b><small>${text('해결한 문제','解決済み','Mastered','已掌握')}</small></div><div><b>${new Set(allItems.map(x=>x.level)).size}</b><small>${text('학습 급수','学習級','TOPIK levels','学习级别')}</small></div></div><div class="tqReviewFilters" aria-label="${text('복습 급수 필터','復習級フィルター','Review level filter','复习等级筛选')}">${filter('all',text('전체','すべて','All','全部'),allItems.length)}${filter('1','TOPIK I',count(1))}${filter('2','TOPIK II',count(2))}</div><div class="sectionTitle"><h2>${text('다시 풀 문제','解き直す問題','Retry queue','待重做题目')}</h2><span>${items.length}</span></div><div class="tqReviewQueue">${items.length?items.map(item=>{const q=reviewQuestion(item.level,item.type,item.id,item.choiceOrder),preview=String(q?.stem||q?.prompt||q?.script||'').replace(/\s+/g,' ').slice(0,68);return `<article class="tqReviewItem"><div class="tqReviewBadge">${item.type==='listen'?'🎧':'📖'}<small>TOPIK ${item.level}</small></div><div><b>${localizedReviewType(item.type)} ${item.id}</b><p>${esc(preview)}${preview.length>=68?'…':''}</p><small>${reviewSourceLabel(item.source)} · ${text(`${item.wrongCount}회 틀림`,`${item.wrongCount}回誤答`,`${item.wrongCount} misses`,`${item.wrongCount}次答错`)}</small></div><button onclick="openReviewRetry('${item.key}')">${text('다시 풀기','解き直す','Retry','重做')} ›</button></article>`}).join(''):`<div class="tqReviewEmpty"><span>✓</span><h3>${reviewFilter==='all'?text('지금은 복습할 오답이 없어요','今は復習する誤答がありません','No missed questions to review','目前没有待复习错题'):text('이 급수에는 복습할 오답이 없어요','この級には復習する誤答がありません','No missed questions for this level','该等级没有待复习错题')}</h3><p>${text('실전·랜덤·게임에서 틀린 문제가 자동으로 이곳에 쌓입니다.','模擬試験・ランダム・ゲームの誤答が自動でここに蓄積されます。','Misses from exams, random practice, and game battles appear here automatically.','实战、随机练习和游戏中的错题会自动出现在这里。')}</p></div>`}</div>${mastered?`<button class="tqClearMastered" onclick="clearMasteredReview()">${text(`해결 기록 ${mastered}개 정리`,`解決記録${mastered}件を整理`,`Clear ${mastered} mastered records`,`清理${mastered}条已掌握记录`)}</button>`:''}`;
+    sc.innerHTML=`<section class="tqReviewHero"><div><small>${text('누적 오답 복습','累積誤答レビュー','WRONG-ANSWER REVIEW','累计错题复习')}</small><h1>${text('틀린 문제를 끝까지 이해해요','間違えた問題を最後まで理解しよう','Understand every missed question','彻底理解每一道错题')}</h1><p>${text('오답은 자동으로 쌓이고, 다시 맞히면 해결 처리됩니다.','誤答は自動で蓄積され、解き直して正解すると解決済みになります。','Missed questions stack automatically and are resolved when you answer them correctly on retry.','错题会自动累积，重做答对后标记为已掌握。')}</p></div><strong>${allItems.length}<small>${text('복습 대기','復習待ち','to review','待复习')}</small></strong></section><div class="tqReviewStats"><div><b>${allItems.reduce((n,x)=>n+(Number(x.wrongCount)||0),0)}</b><small>${text('누적 오답','累積誤答','Total misses','累计错题')}</small></div><div><b>${mastered}</b><small>${text('해결한 문제','解決済み','Mastered','已掌握')}</small></div><div><b>${new Set(allItems.map(x=>x.level)).size}</b><small>${text('학습 급수','学習級','TOPIK levels','学习级别')}</small></div></div><div class="tqReviewFilters" aria-label="${text('복습 급수 필터','復習級フィルター','Review level filter','复习等级筛选')}">${filter('all',text('전체','すべて','All','全部'),allItems.length)}${filter('1','TOPIK I',count(1))}${filter('2','TOPIK II',count(2))}</div><div class="sectionTitle"><h2>${text('다시 풀 문제','解き直す問題','Retry queue','待重做题目')}</h2><span>${items.length}</span></div><div class="tqReviewQueue">${items.length?items.map(item=>{const q=reviewQuestion(item.level,item.type,item.id,item.choiceOrder),preview=String(item.type==='listen'?(q?.prompt||q?.instruction||''):(q?.stem||q?.prompt||'')).replace(/\s+/g,' ').slice(0,68);return `<article class="tqReviewItem"><div class="tqReviewBadge">${item.type==='listen'?'🎧':'📖'}<small>TOPIK ${item.level}</small></div><div><b>${localizedReviewType(item.type)} ${item.id}</b><p>${esc(preview)}${preview.length>=68?'…':''}</p><small>${reviewSourceLabel(item.source)} · ${text(`${item.wrongCount}회 틀림`,`${item.wrongCount}回誤答`,`${item.wrongCount} misses`,`${item.wrongCount}次答错`)}</small></div><button onclick="openReviewRetry('${item.key}')">${text('다시 풀기','解き直す','Retry','重做')} ›</button></article>`}).join(''):`<div class="tqReviewEmpty"><span>✓</span><h3>${reviewFilter==='all'?text('지금은 복습할 오답이 없어요','今は復習する誤答がありません','No missed questions to review','目前没有待复习错题'):text('이 급수에는 복습할 오답이 없어요','この級には復習する誤答がありません','No missed questions for this level','该等级没有待复习错题')}</h3><p>${text('실전·랜덤·게임에서 틀린 문제가 자동으로 이곳에 쌓입니다.','模擬試験・ランダム・ゲームの誤答が自動でここに蓄積されます。','Misses from exams, random practice, and game battles appear here automatically.','实战、随机练习和游戏中的错题会自动出现在这里。')}</p></div>`}</div>${mastered?`<button class="tqClearMastered" onclick="clearMasteredReview()">${text(`해결 기록 ${mastered}개 정리`,`解決記録${mastered}件を整理`,`Clear ${mastered} mastered records`,`清理${mastered}条已掌握记录`)}</button>`:''}`;
+    if(S.lastResult&&['listen','full'].includes(S.lastResult.mode)&&!reviewExamBlocked()){
+      if(S.lastResult.mockSet&&typeof activateTopik2BankSet==='function')activateTopik2BankSet(S.lastResult.mockSet,S.lastResult.collectionId||'legacy-original-v1',S.lastResult.choiceOrders);
+      const completed=typeof LS!=='undefined'?LS:[];
+      sc.innerHTML+=`<details class="listeningTranscript"><summary>${text('마지막 모의고사 듣기 전체 복습','最後の模擬試験の聴解全問復習','Review all listening from the last mock','复习上次模考的全部听力')}</summary>${completed.map(q=>`<details class="listeningTranscript"><summary>${esc(q.id)} · ${esc(q.prompt||q.instruction)}</summary>${explanationBlock('listen',q)}</details>`).join('')}</details>`;
+    }
     sc.innerHTML+=writingReviewMarkup();
   };
 }
@@ -538,8 +639,9 @@ const style=document.createElement('style');style.textContent=`
   html[data-theme="light"] .tqVocabScreen{color:#17243a}html[data-theme="light"] .tqVocabPageTabs,html[data-theme="light"] .tqManualVocab,html[data-theme="light"] .tqVocabCompactTip,html[data-theme="light"] .tqLibraryHero,html[data-theme="light"] .tqLibraryLevels button,html[data-theme="light"] .tqLibraryFilters button,html[data-theme="light"] .tqVocabEmpty{border-color:#d7e2f0;background:#fff;color:#17243a;box-shadow:0 9px 24px rgba(46,66,96,.07)}html[data-theme="light"] .tqVocabPageTabs button{color:#6f8098}html[data-theme="light"] .tqVocabPageTabs button.on{color:#fff;background:linear-gradient(135deg,#3476ed,#725ce9)}html[data-theme="light"] .tqManualVocab p,html[data-theme="light"] .tqLibraryHero p,html[data-theme="light"] .tqVocabCompactTip,html[data-theme="light"] .tqVocabEmpty p{color:#6d7e95}html[data-theme="light"] .tqManualVocab label{color:#5f7088}html[data-theme="light"] .tqLibraryLevels button.on,html[data-theme="light"] .tqLibraryFilters button.on{border-color:#5c85ee;background:#e6efff;color:#2558ad}html[data-theme="light"] .tqVocabTitle>span{border-color:#d6e1ef;background:#fff;color:#41689f}
   .tqReviewScreen{background:#f4f6fb!important;color:#18243b!important}.tqReviewHero{display:grid;grid-template-columns:1fr 76px;gap:13px;align-items:center;border-radius:24px;padding:18px;background:linear-gradient(145deg,#315fd7,#7755e8);color:#fff;box-shadow:0 17px 36px rgba(71,75,184,.2)}.tqReviewHero small{font-size:8px;font-weight:950;letter-spacing:.11em;color:#dce4ff}.tqReviewHero h1{font-size:20px;line-height:1.2;letter-spacing:-.045em;margin:6px 0}.tqReviewHero p{font-size:9px;line-height:1.5;color:#e5e9ff;margin:0}.tqReviewHero>strong{display:grid;place-items:center;width:72px;height:72px;border-radius:23px;background:rgba(255,255,255,.15);font-size:28px}.tqReviewHero>strong small{display:block;font-size:7px;letter-spacing:0}.tqReviewStats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:11px 0 17px}.tqReviewStats>div{border-radius:17px;padding:12px;background:#fff;box-shadow:0 8px 22px rgba(44,50,85,.07)}.tqReviewStats b{display:block;font-size:19px}.tqReviewStats small{font-size:8px;color:#8992a4}.tqReviewQueue{display:grid;gap:9px}.tqReviewItem{display:grid;grid-template-columns:51px 1fr auto;gap:10px;align-items:center;border:1px solid #e0e5ee;border-radius:19px;padding:11px;background:#fff;box-shadow:0 7px 21px rgba(42,52,87,.06)}.tqReviewBadge{display:grid;place-items:center;width:51px;height:51px;border-radius:16px;background:#edf2ff;font-size:19px}.tqReviewBadge small{display:block;color:#536fd4;font-size:6.5px;font-weight:950}.tqReviewItem b{font-size:12px}.tqReviewItem p{max-width:220px;margin:3px 0;color:#647187;font-size:8.5px;line-height:1.35}.tqReviewItem>div>small{font-size:7.5px;color:#a06a7b}.tqReviewItem>button{border:0;border-radius:12px;padding:9px;background:#315fd7;color:#fff;font-size:8px;font-weight:950;white-space:nowrap}.tqReviewEmpty{text-align:center;border:1px dashed #ccd4e1;border-radius:22px;padding:25px 17px;background:#fff}.tqReviewEmpty span{display:grid;place-items:center;width:46px;height:46px;margin:auto;border-radius:15px;background:#e8f8f0;color:#199267;font-size:21px;font-weight:950}.tqReviewEmpty h3{font-size:14px}.tqReviewEmpty p{color:#778398;font-size:9px;line-height:1.5}.tqClearMastered{display:block;margin:13px auto 0;border:0;background:transparent;color:#8a94a6;font-size:8.5px;text-decoration:underline}.tqReviewQuestion{margin:11px 0;border:1px solid #dce4ef;border-radius:17px;padding:13px;background:#f7f9fc;color:#1e2d44}.tqReviewQuestion.translated{background:#eef5ff;border-color:#c9dcfa}.tqReviewQuestion>small{display:block;color:#728199;font-size:9px;line-height:1.45}.tqReviewQuestion>p{white-space:pre-wrap;font-size:13px;font-weight:850;line-height:1.65}.tqReviewScript{white-space:pre-wrap;margin-top:9px;border-left:3px solid #7a9ee8;padding:8px 10px;background:#fff;border-radius:0 10px 10px 0;font-size:10px;line-height:1.55}.tqReviewQuestion ol{margin:9px 0 0;padding-left:24px}.tqReviewQuestion li{padding:3px 0;font-size:10px;line-height:1.45}.tqTranslationToggle{width:100%;border:1px solid #c9d9ef;border-radius:13px;padding:11px;background:#edf4ff;color:#315f9f;font-size:10px;font-weight:950}.tqReviewTranslation{display:none}.tqReviewTranslation.open{display:block}.tqReviewChoices{margin-top:11px}.tqReviewDeep{margin-top:12px;border:1px solid #cfe4ff;background:linear-gradient(145deg,#f1f7ff,#fff);border-radius:18px;padding:13px;color:#17243a}.tqReviewDeep h4{margin:12px 0 5px;font-size:10px;color:#62748d}.tqReviewDeep p{font-size:11px;line-height:1.65;color:#263850}.tqReviewDeep blockquote{margin:8px 0;border-left:3px solid #83a8ed;padding:8px 10px;background:#edf4ff;color:#40536e;font-size:9.5px;line-height:1.55;white-space:pre-wrap}.tqReviewChoiceAnalysis{display:grid;gap:7px;margin:8px 0 0;padding:0;list-style:none}.tqReviewChoiceAnalysis li{border:1px solid #e0e5ed;border-radius:12px;padding:9px;background:#f8f9fc}.tqReviewChoiceAnalysis li.right{border-color:#8bd3b7;background:#eaf9f2}.tqReviewChoiceAnalysis b,.tqReviewChoiceAnalysis span{display:block}.tqReviewChoiceAnalysis b{font-size:9.5px}.tqReviewChoiceAnalysis span{margin-top:3px;color:#68768a;font-size:8.5px;line-height:1.45}
 `;
+style.textContent+=`.tqAuthoredCoaching .tqReviewChoiceAnalysis li{background:var(--ui-surface-soft,#f8f9fc);border-color:var(--ui-border,#e0e5ed);color:var(--ui-ink,#263850)}.tqAuthoredCoaching .tqReviewChoiceAnalysis li.right{background:var(--ui-success-soft,#eaf9f2);border-color:var(--ui-success,#238a6c)}.tqAuthoredCoaching .tqReviewChoiceAnalysis b{font-size:13px;overflow-wrap:anywhere}.tqAuthoredCoaching .tqReviewChoiceAnalysis span{color:var(--ui-muted,#68768a);font-size:12px;line-height:1.6;white-space:pre-line;overflow-wrap:anywhere}`;
 document.head.appendChild(style);
-window.MALBIT_LEARNING={normalizeKoreanTerm,stripParticle,termFromToken,isSavableTerm,addVocabTerm,listeningExplanation,readingExplanation,writingExplanationBlock,enhance};
+window.MALBIT_LEARNING={visualChoice,visualOnlyChoices,choiceContent,questionVisual,authoredCoach,authoredChoiceReason,authoredCoaching,explanationBlock,normalizeKoreanTerm,stripParticle,termFromToken,isSavableTerm,addVocabTerm,listeningExplanation,readingExplanation,writingExplanationBlock,enhance};
 removeUnsafeSavedFragments();
 setTimeout(()=>enhance(document),0);
 })();

@@ -9,6 +9,7 @@ import {verifyWritingLocalization} from './writing-localization-checks.mjs';
 import {verifyWritingUsability} from './writing-usability-checks.mjs';
 import {verifyThreeTabRedesign} from './three-tab-redesign-checks.mjs';
 import {verifyQuickPracticeMenus} from './quick-practice-checks.mjs';
+import {verifyOriginalContent} from './original-content-checks.mjs';
 import {verifyVocabularyTranslation} from './vocabulary-translation-browser-checks.mjs';
 import {verifyVocabularySelection} from './vocabulary-selection-checks.mjs';
 import {verifyRetiredShorts} from './retired-shorts-checks.mjs';
@@ -38,7 +39,7 @@ function installLegacyTranslationFixture(){
 }
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
-const out=path.join(root,'artifacts',process.env.HARUMAL_QUICK_PRACTICE_ONLY?'quick-practice':process.env.HARUMAL_FLASHCARDS_ONLY?'flashcards':process.env.HARUMAN_INTRO_BASELINE?'intro-baseline':process.env.HARUMAL_FOCUS_ONLY?'home-vocabulary':'travel-mobile');
+const out=path.join(root,'artifacts',process.env.HARUMAL_ORIGINAL_CONTENT_ONLY?'original-content':process.env.HARUMAL_QUICK_PRACTICE_ONLY?'quick-practice':process.env.HARUMAL_FLASHCARDS_ONLY?'flashcards':process.env.HARUMAN_INTRO_BASELINE?'intro-baseline':process.env.HARUMAL_FOCUS_ONLY?'home-vocabulary':'travel-mobile');
 fs.mkdirSync(out,{recursive:true});
 for(const file of fs.readdirSync(out))if(file.endsWith('.png'))fs.unlinkSync(path.join(out,file));
 const chromePath=[process.env.CHROME_PATH,'/usr/bin/google-chrome','/usr/bin/google-chrome-stable','/usr/bin/chromium','/usr/bin/chromium-browser'].find(candidate=>candidate&&fs.existsSync(candidate));
@@ -722,10 +723,12 @@ try{
   assert.match(await evaluate(`document.querySelector('.hubMenuCard[data-hub-action="path"],[data-hub-action="continue"],.tqLessonStart')?.textContent||''`),/学習/,'the first learning entry must be localized before language-menu use');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);await assertHomeFits('fresh Japanese browser Home light','light');await shot('00renewal-home-ja-locale-first-visit-light.png');
   await evaluate(`malbitSetTheme('dark')`);await sleep(100);await assertHomeFits('fresh Japanese browser Home dark','dark');await shot('00renewal-home-ja-locale-first-visit-dark.png');
-  if(process.env.HARUMAL_QUICK_PRACTICE_ONLY){await verifyQuickPracticeMenus({evaluate,tap,shot,setViewport,send,ready,sleep});assert.deepEqual(errors,[]);console.log('Quick-practice focused browser checks passed');}else if(process.env.HARUMAL_FLASHCARDS_ONLY){await verifyVocabFlashcards({evaluate,tap,shot,setViewport,send,ready,sleep,record});assert.deepEqual(errors,[]);}else if(process.env.HARUMAL_TRANSLATION_ONLY){await verifyVocabularyTranslation({evaluate,tap,shot,setViewport,send,ready,sleep});assert.deepEqual(errors,[]);console.log('Translation-only MOCK browser checks passed');}else if(process.env.HARUMAN_INTRO_BASELINE){assert.deepEqual(errors,[]);console.log('Intro baseline captured');}else if(process.env.HARUMAL_BASELINE){for(const theme of ['light','dark'])for(const width of [320,375,390,430]){await evaluate(`setLang('ko');malbitSetTheme('${theme}');setView('home')`);await setViewport(width,844);await shot(`baseline-home-${theme}-${width}.png`)}console.log('Baseline captured');}else if(process.env.HARUMAL_FOCUS_ONLY){await verifyHomeVocabulary({evaluate,tap,shot,setViewport,send,ready,sleep});assert.deepEqual(errors,[]);console.log('Home/vocabulary focused mobile checks passed');}else{
+  if(process.env.HARUMAL_ORIGINAL_CONTENT_ONLY){await verifyOriginalContent({evaluate,tap,shot,setViewport,send,ready,sleep});assert.deepEqual(errors,[]);console.log('Original content focused browser checks passed');}else if(process.env.HARUMAL_QUICK_PRACTICE_ONLY){await verifyQuickPracticeMenus({evaluate,tap,shot,setViewport,send,ready,sleep});assert.deepEqual(errors,[]);console.log('Quick-practice focused browser checks passed');}else if(process.env.HARUMAL_FLASHCARDS_ONLY){await verifyVocabFlashcards({evaluate,tap,shot,setViewport,send,ready,sleep,record});assert.deepEqual(errors,[]);}else if(process.env.HARUMAL_TRANSLATION_ONLY){await verifyVocabularyTranslation({evaluate,tap,shot,setViewport,send,ready,sleep});assert.deepEqual(errors,[]);console.log('Translation-only MOCK browser checks passed');}else if(process.env.HARUMAN_INTRO_BASELINE){assert.deepEqual(errors,[]);console.log('Intro baseline captured');}else if(process.env.HARUMAL_BASELINE){for(const theme of ['light','dark'])for(const width of [320,375,390,430]){await evaluate(`setLang('ko');malbitSetTheme('${theme}');setView('home')`);await setViewport(width,844);await shot(`baseline-home-${theme}-${width}.png`)}console.log('Baseline captured');}else if(process.env.HARUMAL_FOCUS_ONLY){await verifyHomeVocabulary({evaluate,tap,shot,setViewport,send,ready,sleep});assert.deepEqual(errors,[]);console.log('Home/vocabulary focused mobile checks passed');}else{
   await verifyThreeTabRedesign({evaluate,tap,shot,setViewport,send,ready,sleep});
   await verifyQuickPracticeMenus({evaluate,tap,shot,setViewport,send,ready,sleep});
   assert.deepEqual(errors,[],'Quick-practice menus must not add console errors');
+  await verifyOriginalContent({evaluate,tap,shot,setViewport,send,ready,sleep});
+  assert.deepEqual(errors,[],'Original content must not add console errors');
   await verifyVocabularySelection({evaluate,tap,shot,setViewport,send,ready,sleep});
   await verifyVocabularyTranslation({evaluate,tap,shot,setViewport,send,ready,sleep});
   await verifyListeningPlayer({evaluate,tap,shot,setViewport,sleep});

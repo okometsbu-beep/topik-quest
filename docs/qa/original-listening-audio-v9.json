@@ -1,0 +1,130 @@
+{
+  "version": 1,
+  "snapshot": "20261015-221422-core1668-locale1548",
+  "questionCount": 80,
+  "scriptCount": 62,
+  "newClips": 149,
+  "reusedClips": 0,
+  "technicalVerification": {
+    "decodeVerified": true,
+    "loudnessMeasured": true,
+    "synthesisInputMappingVerified": true,
+    "missingFileCount": 0,
+    "invalidFileCount": 0,
+    "totalBytes": 10232339,
+    "totalDuration": 1268.3053,
+    "durationRateReviewWarnings": []
+  },
+  "cumulative": {
+    "checkedAt": "2026-10-15T22:25:05.547Z",
+    "questions": 730,
+    "scripts": 577,
+    "uniqueClips": 1565,
+    "bytes": 105056226,
+    "decodedSeconds": 13021.2511,
+    "svgFiles": 352,
+    "globalDuplicateAudioHashes": 0,
+    "httpAssetShaAndMimePassed": true,
+    "svgActiveOrRemoteReferencesFound": 0,
+    "readySets": {
+      "ko-1": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "ko-2": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "ja-1": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "ja-2": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "en-1": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "en-2": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "zh-1": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "zh-2": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    "browserRenderingVerified": false,
+    "audibleQualityVerified": false
+  },
+  "humanPronunciationReview": false,
+  "metadataAnonymization": "Independently approved nonsemantic reviewer-identifier cleanup;8 exact script/voice/media bindings refreshed,548 clips freshly decoded without resynthesis. See release-metadata-anonymization.json.",
+  "sourceValidation": "Initial 38 difficulty enum errors rejected without writes; independently approved difficulty-only correction imported.",
+  "castingException": "One independently reviewed incidental male character is not an interview speaker; the exact review document and four source hashes are pinned.",
+  "frozenPriorBoundaryFilesVerifiedBeforeMetadataCleanup": 1908,
+  "publicationSnapshot": "20261015-223354-core1668-locale1548"
+}

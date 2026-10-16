@@ -1,8 +1,8 @@
-// MALBIT bootstrap v168
+// MALBIT bootstrap v169
 // Load the shared core, reviewed data, TOPIK I engine, then learning interactions.
 (function(){
   'use strict';
-  const VERSION='168';
+  const VERSION='169';
   const RUNTIME_FILES=Object.freeze([
     'writing-answers.js',
     'site-patch-core.js',
@@ -30,6 +30,28 @@
     'data/question-bank-v1-part3.js',
     'data/question-bank-v1-part4.js',
     'data/question-bank-practice-v1.js',
+    'data/original-exams-v1-part1.js',
+    'data/original-exams-v1-part2.js',
+    'data/original-exams-v1-part3.js',
+    'data/original-exams-v1-part4.js',
+    'data/listening-register-audio-v1.js',
+    'listening-register-audio.js',
+    'data/original-listening-audio-v1.js',
+    'data/original-listening-audio-v2.js',
+    'data/original-listening-audio-v3.js',
+    'data/original-listening-audio-v4.js',
+    'data/original-listening-audio-v5.js',
+    'data/original-listening-audio-v6.js',
+    'data/original-listening-audio-v7.js','data/original-listening-audio-v8.js','data/original-listening-audio-v9.js',
+    'original-listening-audio.js',
+    'data/listening-register-corrections-v1.js',
+    'data/listening-register-release-v1.js',
+    'data/legacy-writing-tables-v1.js',
+    'data/legacy-answer-repairs-v1.js',
+    'data/legacy-question-visuals-v1.js',
+    'data/original-support-v1.js',
+    'data/neutral-choice-visuals-v1.js',
+    'listening-transcripts.js',
     'question-bank-engine.js',
     'shorts-cycle.js',
     'topik1.js',

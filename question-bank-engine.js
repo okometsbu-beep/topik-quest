@@ -13,6 +13,9 @@
   const DIFFICULTY = { e: 'easy', m: 'medium', h: 'hard', v: 'very_hard' };
   const RANK = { easy: 1, medium: 2, hard: 3, very_hard: 4 };
   const SYMBOLS = ['①', '②', '③', '④'];
+  const LEGACY_COLLECTION = 'legacy-original-v1';
+  const ORIGINAL_COLLECTION = 'original12-v1';
+  const COLLECTION_IDS = new Set([LEGACY_COLLECTION, ORIGINAL_COLLECTION]);
   // Shorts is lexical recall only; sentence paraphrase and grammar stay in full practice.
   const SHORT_TYPES = new Set(['vocabulary_blank']);
   const NOISY_PROBLEM_HEADER = /^\s*[<〈《][^>〉》\n]{2,120}[>〉》]\s*(?:\r?\n|$)/gmu;
@@ -36,26 +39,54 @@
 
   const rows = raw.rows;
   const reviewedCoach = window.MALBIT_EXPLANATIONS?.bankCoach || {};
-  const rowItem = (row) => ({
-    id: row[0], set: Number(row[1]), level: Number(row[2]), section: SECTION[row[3]], no: Number(row[4]),
+  // The reviewed repair layer cannot replace dialogue until its separate audio is verified.
+  const registerRepairs=window.HARUMAL_LISTENING_REGISTER_CORRECTIONS;
+  const registerAudio=window.HARUMAL_LISTENING_REGISTER_AUDIO;
+  function repairedListeningItem(item,originalScript){
+    const repair=registerRepairs?.byId?.[item.id];
+    const segments=repair&&registerAudio?.scripts?.[repair.script];
+    if(item.section!=='listening'||registerRepairs?.version!==1||registerRepairs.activationAllowed!==true||registerRepairs.audioReady!==true||
+      registerAudio?.version!==1||registerAudio.verified!==true||!Array.isArray(segments)||segments.length===0||
+      repair?.audioReady!==true||repair.reviewStatus!=='approved'||repair.originalScript!==originalScript||typeof repair.script!=='string'||!repair.script.trim()||
+      !Array.isArray(repair.utteranceHashes)||repair.utteranceHashes.length===0||!repair.utteranceHashes.every(hash=>segments.some(segment=>segment.id===hash.corrected&&segment.voice===hash.voice&&segment.file===`audio/listening/register-v1/${hash.voice}/${hash.corrected}.mp3`)))return item;
+    return {...item,script:cleanProblemText(repair.script),audioStatus:'recorded',registerCorrection:{version:1,originalScriptSha256:repair.originalScriptSha256,scriptSha256:repair.scriptSha256}};
+  }
+  function legacyTable(row){const data=window.HARUMAL_LEGACY_WRITING_TABLES,entry=data?.byId?.[row[0]];return data?.version===1&&data.verified===true&&entry?.visual?.kind==='table'&&JSON.stringify(entry.sourceRow)===JSON.stringify(row)?entry.visual:row[16]}
+  function legacyVisual(source,fallback){const row=Array.isArray(source),data=window.HARUMAL_LEGACY_QUESTION_VISUALS,entry=data?.byId?.[row?source[0]:source.id];return data?.version===1&&data.verified===true&&entry?.reviewStatus==='approved'&&JSON.stringify(row?entry.sourceRow:entry.sourceAuthored)===JSON.stringify(source)?entry.visual:fallback;}
+  function repairedAnswerItem(item,row){
+    const data=window.HARUMAL_LEGACY_ANSWER_REPAIRS,entry=data?.byId?.[row[0]],patch=entry?.patch,coach=data?.coaches?.[patch?.coachKey];
+    if(data?.version!==1||data.verified!==true||data.activationAllowed!==true||entry?.reviewStatus!=='approved'||JSON.stringify(entry.sourceRow)!==JSON.stringify(row)||
+      item.section==='writing'||patch?.answerIndex!==row[12]||!Array.isArray(patch.options)||patch.options.length!==4||new Set(patch.options).size!==4||
+      !['ko','ja','en','zh'].every(lang=>coach?.[lang]&&patch.options.every(option=>typeof coach[lang].choices?.[option]==='string')))return item;
+    return {...item,options:[...patch.options],coach,explanationKo:coach.ko.reason,explanationJa:coach.ja.reason,answerCorrection:{version:1,sourceRowSha256:entry.sourceRowSha256,contentSha256:entry.contentSha256}};
+  }
+  const rowItem = (row) => repairedListeningItem(repairedAnswerItem({
+    id: row[0], collectionId: LEGACY_COLLECTION, set: Number(row[1]), level: Number(row[2]), section: SECTION[row[3]], no: Number(row[4]),
     itemType: row[5], difficulty: DIFFICULTY[row[6]], difficultyRank: RANK[DIFFICULTY[row[6]]] || 1,
     instruction: cleanProblemText(row[7]), passage: cleanProblemText(row[8]), script: cleanProblemText(row[9]), prompt: cleanProblemText(row[10]), options: row[11],
     answerIndex: row[3] === 'w' ? null : Number(row[12]), acceptedAnswer: row[3] === 'w' ? row[12] : null,
-    explanationKo: row[13], explanationJa: row[14], targetSkills: row[15] || [], visual: row[16],
+    explanationKo: row[13], explanationJa: row[14], targetSkills: row[15] || [], visual: legacyVisual(row,legacyTable(row)),
     model: row[17], rubric: row[18], stimulusGroup: row[19] || null, coach: reviewedCoach[row[0]] || null
-  });
+  },row), row[9]);
+  const authoredSupport=source=>{const support=window.HARUMAL_ORIGINAL_SUPPORT?.verified?window.HARUMAL_ORIGINAL_SUPPORT.byId?.[source.id]:null;return support?.sourceContentSha256===source.contentSha256?support:null};
+  function authoredLocales(source){const support=authoredSupport(source),coach={...(source.coach||{}),...(support?.coach||{})};return ['ko','ja','en','zh'].filter(lang=>coach[lang]&&(source.section!=='listening'||support?.transcripts?.[lang])&&(source.section!=='writing'||lang==='ko'||source.rubric?.[lang]||support?.rubric?.[lang]))}
   const authoredItem = (source) => ({
-    id:String(source.id||''),set:Number(source.set)||0,level:Number(source.level)===1?1:2,section:String(source.section||'reading'),no:Number(source.no)||0,
+    id:String(source.id||''),contentSha256:source.contentSha256||null,collectionId:source.collectionId||LEGACY_COLLECTION,set:Number(source.set)||0,level:Number(source.level)===1?1:2,section:String(source.section||'reading'),no:Number(source.no)||0,
     itemType:String(source.itemType||'content_match'),difficulty:String(source.difficulty||'medium'),difficultyRank:RANK[String(source.difficulty||'medium')]||2,
     instruction:cleanProblemText(source.instruction),passage:cleanProblemText(source.passage),script:cleanProblemText(source.script),prompt:cleanProblemText(source.prompt),
-    options:Array.from(source.options||[]),answerIndex:Number(source.answerIndex),acceptedAnswer:null,
+    options:Array.from(source.options||[]),answerIndex:source.section==='writing'?null:Number(source.answerIndex),acceptedAnswer:source.section==='writing'?source.acceptedAnswer??null:null,
     explanationKo:String(source.explanationKo||source.coach?.ko?.reason||''),explanationJa:String(source.explanationJa||source.coach?.ja?.reason||''),
-    targetSkills:Array.from(source.targetSkills||[]),visual:null,model:null,rubric:null,stimulusGroup:null,coach:source.coach||null
+    targetSkills:Array.from(source.targetSkills||[]),visual:source.collectionId===ORIGINAL_COLLECTION?source.visual||null:legacyVisual(source,source.visual||null),visualReady:source.visualReady!==false,requiresVisual:source.requiresVisual===true||source.itemType==='picture_selection',
+    model:source.model??null,rubric:source.rubric?{...source.rubric,...(authoredSupport(source)?.rubric||{})}:null,stimulusGroup:source.stimulusGroup||null,coach:source.coach?{...source.coach,...(authoredSupport(source)?.coach||{})}:null,
+    reviewReady:source.collectionId===ORIGINAL_COLLECTION?source.reviewReady===true:true,points:Number(source.points)||null,examType:source.examType||null,
+    localesReady:authoredLocales(source),provenance:source.provenance||null,audioStatus:window.HARUMAL_ORIGINAL_AUDIO?.entry?.(source)?'recorded':source.audioStatus||null,dialogueContext:source.dialogueContext||null
   });
   const expansion=Array.isArray(window.MALBIT_QUESTION_BANK_EXPANSION)?window.MALBIT_QUESTION_BANK_EXPANSION:[];
-  const items=[...rows.map(rowItem),...expansion.map(authoredItem)];
+  const originalParts=Array.isArray(window.MALBIT_ORIGINAL_EXAM_PARTS)?window.MALBIT_ORIGINAL_EXAM_PARTS.flat():[];
+  const items=[...rows.map(rowItem),...expansion.map(authoredItem),...originalParts.map(authoredItem)];
   const uniqueIds=new Set();
   for(const item of items){
+    if(!COLLECTION_IDS.has(item.collectionId))throw new Error(`[MALBIT bank] unknown collection: ${item.collectionId}`);
     if(!item.id||uniqueIds.has(item.id))throw new Error(`[MALBIT bank] missing or duplicate id: ${item.id}`);
     if(item.section!=='writing'&&(item.options.length!==4||!Number.isInteger(item.answerIndex)||item.answerIndex<0||item.answerIndex>3))throw new Error(`[MALBIT bank] invalid authored MCQ: ${item.id}`);
     uniqueIds.add(item.id);
@@ -82,7 +113,7 @@
     if (!item || item.section === 'writing') return [];
     const key = `malbitBankAnswerSlot:${item.id}`;
     let previous = item.answerIndex;
-    try { const saved = Number(localStorage.getItem(key)); if (Number.isInteger(saved) && saved >= 0) previous = saved; } catch (error) {}
+    try { const stored = localStorage.getItem(key), saved = stored === null ? NaN : Number(stored); if (Number.isInteger(saved) && saved >= 0) previous = saved; } catch (error) {}
     let order = shuffledOrder(item.options.length), slot = order.indexOf(item.answerIndex), tries = 0;
     while (slot === previous && tries++ < 16) { order = shuffledOrder(item.options.length); slot = order.indexOf(item.answerIndex); }
     if (slot === previous) { order.push(order.shift()); slot = order.indexOf(item.answerIndex); }
@@ -229,11 +260,12 @@
       }
     };
     const plan=plans[item.itemType]||plans.writing_essay;
-    const sourceKo=String(item.explanationKo||'').trim();
-    const sourceJa=String(item.explanationJa||'').trim().replace(/\.$/u,'。');
+    const custom=item.coach||{};
+    const sourceKo=String(custom.ko?.reason||item.explanationKo||'').trim();
+    const sourceJa=String(custom.ja?.reason||item.explanationJa||'').trim().replace(/\.$/u,'。');
     return {
-      ko: `【문제 요구】“${task}”의 조건을 빠짐없이 반영합니다.\n【답안 설계】${sourceKo||'제시된 정보의 관계를 먼저 정리한 뒤 필요한 내용만 자연스러운 문장으로 씁니다.'}\n【유형별 작성법】${plan.ko}${skills?` 채점 핵심: ${skills}.`:''}`,
-      ja: `【設問の要求】「${task}」の条件を漏れなく反映します。\n【解答設計】${sourceJa||'提示された情報の関係を整理してから、必要な内容だけを自然な文で書きます。'}\n【タイプ別の書き方】${plan.ja}`,
+      ko: `【문제 요구】“${task}”의 조건을 빠짐없이 반영합니다.\n【답안 설계】${sourceKo||'제시된 정보의 관계를 먼저 정리한 뒤 필요한 내용만 자연스러운 문장으로 씁니다.'}\n【주의할 함정】${custom.ko?.trap||'요구하지 않은 정보와 근거 없는 수치를 추가하지 않습니다.'}\n【유형별 작성법】${custom.ko?.strategy||plan.ko}${skills?` 채점 핵심: ${skills}.`:''}`,
+      ja: `【設問の要求】「${task}」の条件を漏れなく反映します。\n【解答設計】${sourceJa||'提示された情報の関係を整理してから、必要な内容だけを自然な文で書きます。'}\n【注意すべき点】${custom.ja?.trap||'求められていない情報や根拠のない数値を加えません。'}\n【タイプ別の書き方】${custom.ja?.strategy||plan.ja}`,
       en: `【Task requirements】Cover every condition in “${task}.”\n【Answer design】Organize the relationship among the given facts, then write only the required information in natural sentences.\n【Type-specific method】${plan.en}`,
       zh: `【题目要求】完整回应“${task}”中的全部条件。\n【答案设计】先整理材料之间的关系，再用自然句子写出必要信息。\n【题型写法】${plan.zh}`
     };
@@ -542,14 +574,15 @@
     const explanationI18n = explanationPack(item, answerIndex, choices);
     const choiceExplanationsI18n = writing ? null : choiceExplanationPack(item, answerIndex, choices.map(cleanChoice), explanationI18n);
     return {
-      id: item.id, bankId: item.id, sourceId: item.no, mockSet: item.set, section: item.section,
+      id: item.id, bankId: item.id, collectionId: item.collectionId, sourceId: item.no, mockSet: item.set, section: item.section,
       itemType: item.itemType, difficulty: item.difficulty, difficultyRank: item.difficultyRank,
       group: ITEM_GROUPS[item.itemType] || item.targetSkills[0] || item.section,
-      instruction: item.instruction, stem: item.passage, passage: item.passage, prompt: item.prompt,
+      instruction: item.instruction, stem: item.passage, passage: item.passage, displayPassage:item.visual?.sourceFormat==='legacy-json'?'':item.passage, prompt: item.prompt,
       script: item.script, choices, answerIndex, answer: answerIndex == null ? item.acceptedAnswer : SYMBOLS[answerIndex],
       explanation: explanationI18n.ko, explanationKo: explanationI18n.ko, explanationJa: explanationI18n.ja,
       explanationI18n, choiceExplanationsI18n, targetSkills: item.targetSkills,
-      visualOptions: item.visual, visualPending: !!item.visual, model: item.model, rubric: item.rubric,
+      visual: item.visual, visualOptions: item.visual, visualPending: !!item.visual&&(item.collectionId===ORIGINAL_COLLECTION?!item.visualReady:!item.visual?.kind), model: item.model, rubric: item.rubric,
+      points:item.points,examType:item.examType,contentSha256:item.contentSha256,reviewReady:item.reviewReady,acceptedAnswer: item.acceptedAnswer, coach: item.coach, provenance: item.provenance, audioStatus: item.audioStatus, dialogueContext: item.dialogueContext,
       stimulusGroup: item.stimulusGroup, choiceOrder, recommendedSec: recommendedSeconds(item)
     };
   }
@@ -558,11 +591,16 @@
     const sections = options.sections ? new Set(options.sections) : null;
     const difficulties = options.difficulties ? new Set(options.difficulties) : null;
     const excluded = new Set((options.exclude || []).map(String));
+    const selectedLocale=options.locale??(typeof S==='object'&&S?S.lang:window.S?.lang);
+    const locale=selectedLocale==null?null:['ko','ja','en','zh'].includes(selectedLocale)?selectedLocale:'ko';
     return items.filter((item) => item.level === level
+      && (item.collectionId!==ORIGINAL_COLLECTION||(item.reviewReady&&item.visualReady&&(!item.requiresVisual||item.visual))||options.includeDraft===true)
+      && (item.collectionId!==ORIGINAL_COLLECTION||!locale||item.localesReady?.includes(locale))
+      && (!options.collectionId || item.collectionId===options.collectionId)
       && (!sections || sections.has(item.section))
       && (!difficulties || difficulties.has(item.difficulty))
       && (!options.mcqOnly || item.section !== 'writing')
-      && (!options.noVisual || !item.visual)
+      && (!options.noVisual || !item.visual || item.visual.optional===true)
       && !excluded.has(item.id));
   }
   function choose(list) { return list.length ? list[Math.floor(Math.random() * list.length)] : null; }
@@ -587,16 +625,37 @@
     if (item && recentKey) remember(recentKey, item.id, options.recentLimit || 240);
     return item;
   }
-  function mock(level, set, section) {
-    return items.filter((item) => item.level === Number(level) && item.set === Number(set) && (!section || item.section === section))
+  function mock(level, set, section, collectionId = LEGACY_COLLECTION) {
+    return items.filter((item) => item.collectionId === collectionId && item.level === Number(level) && item.set === Number(set) && (!section || item.section === section))
       .sort((a, b) => a.no - b.no);
   }
-  function nextMockSet(level) {
-    const key = `malbitNextMockSet:${Number(level) === 1 ? 1 : 2}`;
-    let previous = 0;
-    try { previous = Number(localStorage.getItem(key)) || 0; } catch (error) {}
-    const next = previous % 12 + 1;
-    try { localStorage.setItem(key, String(next)); } catch (error) {}
+  function mockSets(level, collectionId = LEGACY_COLLECTION, locale = null) {
+    level=Number(level)===1?1:2;
+    if(!COLLECTION_IDS.has(collectionId))return [];
+    const slots=level===1?{listening:[1,30],reading:[31,70]}:{listening:[1,50],reading:[1,50],writing:[51,54]};
+    return Array.from({length:12},(_,index)=>{
+      const set=index+1,questions=mock(level,set,null,collectionId),expected=level===1?70:104;
+      const complete=Object.entries(slots).every(([section,[first,last]])=>{
+        const group=questions.filter(q=>q.section===section);
+        return group.length===last-first+1&&new Set(group.map(q=>q.no)).size===group.length&&group.every(q=>q.no>=first&&q.no<=last);
+      });
+      const visualPending=collectionId===ORIGINAL_COLLECTION?questions.filter(q=>(q.requiresVisual&&!q.visual)||(q.visual&&!q.visualReady)).length:0;
+      const unreviewed=collectionId===ORIGINAL_COLLECTION?questions.filter(q=>!q.reviewReady).length:0;
+      const untranslated=collectionId===ORIGINAL_COLLECTION&&locale?questions.filter(q=>!q.localesReady?.includes(locale)).length:0;
+      const missingAudio=questions.filter(q=>q.section==='listening'&&['missing','unavailable','not-recorded'].includes(q.audioStatus)).length;
+      return Object.freeze({set,collectionId,level,count:questions.length,expected,ready:questions.length===expected&&complete&&!visualPending&&!unreviewed&&!untranslated,visualPending,unreviewed,untranslated,missingAudio});
+    });
+  }
+  function nextMockSet(level, collectionId = LEGACY_COLLECTION, locale = null) {
+    const validLevel=Number(level)===1?1:2;
+    const sets=mockSets(validLevel,collectionId,locale).filter(set=>set.ready).map(set=>set.set);
+    if(!sets.length)return null;
+    // Keep the legacy key and old saved sequence intact; each collection rotates independently.
+    const key=collectionId===LEGACY_COLLECTION?`malbitNextMockSet:${validLevel}`:`malbitNextMockSet:${collectionId}:${validLevel}`;
+    let previous=0;
+    try{previous=Number(localStorage.getItem(key))||0}catch(error){}
+    const index=sets.indexOf(previous),next=sets[(index+1)%sets.length];
+    try{localStorage.setItem(key,String(next))}catch(error){}
     return next;
   }
   function stageDifficulties(level, stage) {
@@ -616,8 +675,9 @@
   }
   function shorts(level) {
     const maxChars = Number(level) === 1 ? 150 : 180;
-    return items.filter((item) => item.level === Number(level) && SHORT_TYPES.has(item.itemType) && item.section !== 'writing'
-      && !item.visual && `${item.passage}${item.prompt}`.length <= maxChars)
+    // Exam-authored items need a separate lexical Shorts suitability review.
+    return items.filter((item) => item.collectionId===LEGACY_COLLECTION && item.level === Number(level) && SHORT_TYPES.has(item.itemType) && item.section !== 'writing'
+      && (!item.visual||item.visual.optional===true) && `${item.passage}${item.prompt}`.length <= maxChars)
       .map((item) => {
         const explanationI18n = explanationPack(item, item.answerIndex, item.options);
         return ({
@@ -628,30 +688,35 @@
       });
       });
   }
-  function toTopik2Legacy(item) {
-    const q = present(item, identity);
+  function mockChoiceOrders(level,set,section=null,collectionId=LEGACY_COLLECTION) {
+    if(collectionId!==ORIGINAL_COLLECTION)return {};
+    return Object.fromEntries(mock(level,set,section,collectionId).filter(q=>q.section!=='writing').map(q=>[q.id,freshOrder(q.id)]));
+  }
+  function toTopik2Legacy(item,order=identity) {
+    const q = present(item, order);
     if (item.section === 'listening') return {
-      ...q, id: item.no, prompt: item.prompt, choices: item.options, answerIndex: item.answerIndex,
-      answer: SYMBOLS[item.answerIndex], script: item.script, instruction: item.instruction,
+      ...q, id: item.no, prompt: item.prompt, choices: q.choices, answerIndex: q.answerIndex,
+      answer: SYMBOLS[q.answerIndex], script: item.script, instruction: item.instruction,
       recommendedSec: recommendedSeconds(item), scriptJa: '', bankId: item.id
     };
     if (item.section === 'writing') return {
-      ...q, id: item.no, section: 'writing', stem: [item.passage, item.prompt].filter(Boolean).join('\n\n'),
+      ...q, id: item.no, section: 'writing', stem: [q.displayPassage, item.prompt].filter(Boolean).join('\n\n'),
       model: item.model || '', min: item.no <= 52 ? 3 : item.no === 53 ? 200 : 600,
       max: item.no <= 52 ? 100 : item.no === 53 ? 300 : 700, bankId: item.id
     };
     return {
-      ...q, id: item.no, stem: [item.passage, item.prompt].filter(Boolean).join('\n\n'), choices: item.options,
-      answerIndex: item.answerIndex, answer: SYMBOLS[item.answerIndex], categoryKo: q.group,
+      ...q, id: item.no, stem: [item.passage, item.prompt].filter(Boolean).join('\n\n'), choices: q.choices,
+      answerIndex: q.answerIndex, answer: SYMBOLS[q.answerIndex], categoryKo: q.group,
       categoryJa: q.group, translation: '', grammar: item.targetSkills.join(' · '), vocab: '',
       why: q.explanationI18n.ja, bankId: item.id
     };
   }
-  function activateTopik2Set(set, listeningTarget, readingWritingTarget) {
+  function activateTopik2Set(set, listeningTarget, readingWritingTarget, collectionId = LEGACY_COLLECTION,choiceOrders=null) {
     if (!Array.isArray(listeningTarget) || !Array.isArray(readingWritingTarget)) return false;
-    const listening = mock(2, set, 'listening').map(toTopik2Legacy);
-    const reading = mock(2, set, 'reading').map(toTopik2Legacy);
-    const writing = mock(2, set, 'writing').map(toTopik2Legacy);
+    if(collectionId===ORIGINAL_COLLECTION&&!mockSets(2,collectionId).some(info=>info.set===Number(set)&&info.ready))return false;
+    const listening = mock(2, set, 'listening', collectionId).map(item=>toTopik2Legacy(item,collectionId===ORIGINAL_COLLECTION?choiceOrders?.[item.id]:identity));
+    const reading = mock(2, set, 'reading', collectionId).map(item=>toTopik2Legacy(item,collectionId===ORIGINAL_COLLECTION?choiceOrders?.[item.id]:identity));
+    const writing = mock(2, set, 'writing', collectionId).map(item=>toTopik2Legacy(item,collectionId===ORIGINAL_COLLECTION?choiceOrders?.[item.id]:identity));
     if (listening.length !== 50 || reading.length !== 50 || writing.length !== 4) return false;
     listeningTarget.splice(0, listeningTarget.length, ...listening);
     readingWritingTarget.splice(0, readingWritingTarget.length, ...reading, ...writing);
@@ -659,9 +724,9 @@
   }
 
   window.MALBIT_BANK = Object.freeze({
-    version: raw.version, total: items.length, items, byId: (id) => byId.get(String(id)) || null,
-    present, explain: explanationPack, filter, draw, remember, readRecent, mock, nextMockSet, gamePool, stageDifficulties,
-    shorts, shuffledOrder, freshOrder, cleanOrder, recommendedSeconds, activateTopik2Set,
+    version: raw.version, total: items.length, items, collections:Object.freeze([LEGACY_COLLECTION,ORIGINAL_COLLECTION]), byId: (id) => byId.get(String(id)) || null,
+    present, explain: explanationPack, filter, draw, remember, readRecent, mock, mockSets, nextMockSet, gamePool, stageDifficulties,
+    shorts, shuffledOrder, freshOrder, cleanOrder, recommendedSeconds, activateTopik2Set, mockChoiceOrders,
     stats: Object.freeze({ total: items.length, topik1: items.filter((item) => item.level === 1).length, topik2: items.filter((item) => item.level === 2).length })
   });
 })();

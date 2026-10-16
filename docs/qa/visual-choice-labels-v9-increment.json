@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "sourceSnapshot": "20261015-221422-core1668-locale1548",
+  "counts": {
+    "questions": 46,
+    "sources": 184,
+    "derivatives": 56,
+    "identityMappings": 128,
+    "removedNodes": 64,
+    "providedPngPairsRecompared": 56
+  },
+  "runtimeRegression": {
+    "passed": true,
+    "questions": 46,
+    "permutations": 24,
+    "locales": 4,
+    "selectedStates": 5,
+    "preSubmitBodyRenders": 88320,
+    "answerIndexInvarianceComparisons": 353280,
+    "exactImageAndAccessibleNameChecks": 388608,
+    "completeRetryFlows": 4416,
+    "method": "Independent oracle: changing the correct answerIndex across all four slots leaves complete pre-submit body HTML byte-identical with fixed choices/selection; exact source/alt mapping and actual stored-order retry state machine are checked. Source functions execute in a VM with minimal DOM, not a browser."
+  },
+  "newDerivedImagesVisuallyInspected": 8,
+  "meaningfulPixelsPreserved": true,
+  "metadataOnlyPixelIdenticalPairs": 4,
+  "actualBrowserVerified": false,
+  "method": "Reused separately authored XML/byte/pixel and runtime counterfactual oracles; this rerun is not a new independent content or browser review.",
+  "publicationSnapshot": "20261015-223354-core1668-locale1548",
+  "approvedSourceMetadataRevalidated": true
+}

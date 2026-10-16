@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "status": "approved",
+  "reviewer": "independent-content-review",
+  "reviewedAt": "2026-10-15T22:13:50.129336+00:00",
+  "scope": "Independent source-role reading only; does not certify synthesized audio or actual listening. Reviewer did not author this Korean source or casting code.",
+  "items": [
+    {
+      "id": "O08-II-L-48",
+      "gender": "남자",
+      "classification": "incidental_character_not_speaker",
+      "sourceContentSha256": "7893d31ebdf4ee7f42e18fd0ef29b0d2019e0dcc60d7f2c99c313f676069576c",
+      "sourceScriptSha256": "f43d2d3612cac0936ab1f7c381bdfe1949ca591340b4b088b42d0f7fb91cc954",
+      "promptSha256": "0ab8684cc490b42d8cd47a21175fb203e407be119d2fde1cfec2ed633ffa3bb4",
+      "instructionSha256": "77cadef6c90b3025b49b16e6407f2e424df204147936147e8c9af17485227c3d",
+      "reason": "The prompt explicitly introduces 다른 장면, a new fictional application scene. Its man holds his father's watch and performs silent visible actions; he is neither of the two interview speakers. The approved script and dialogueContext identify only 진행자 and 작가, neither with a stated gender. The prompt does not identify either interview speaker as 남자. Existing sequential F1/M1 casting may therefore remain; no gender-label mismatch exemption applies to any other item or source hash."
+    }
+  ]
+}

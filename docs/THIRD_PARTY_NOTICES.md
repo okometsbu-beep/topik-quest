@@ -2,9 +2,12 @@
 
 ## Pre-generated Korean listening audio
 
-`audio/listening/v1/` contains synthetic speech generated offline from the official
+`audio/listening/v1/`, the separate `audio/listening/register-v1/` correction pack,
+and the `audio/listening/original-v1/` through `original-v9/`
+original-question packs contain synthetic speech
+generated offline from the official
 [Supertonic 3 snapshot](https://huggingface.co/supertone-oss-archive/supertonic-3/tree/aafc6e32416a594460b32413efc49d7fe4ce6d46).
-Female preset F1 and male preset M1 are synthetic stock voices, not imitations of named people.
+Female presets F1/F2 and male preset M1 are synthetic stock voices, not imitations of named people.
 
 - Model license: [BigScience Open RAIL-M](licenses/supertonic-openrail-m.txt), including use restrictions.
 - Reference inference code: [Supertone archive](https://github.com/supertone-oss-archive/supertonic), [MIT copy](licenses/supertonic-code-mit.txt).

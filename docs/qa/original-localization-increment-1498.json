@@ -1,0 +1,26 @@
+{
+  "snapshot": "20261015-213159-core1498-locale1498",
+  "handoffSha256": "a3b27f17822dc44dc171cf8a00635ce09a258496bdc4b2aa5b68a7b43f39b95f",
+  "scope": "O10-I English/Chinese coaching, full transcripts and evidence only",
+  "coreAndJapaneseAndAssetsUnchanged": true,
+  "previousCompanionsUnchanged": true,
+  "newRecordings": 0,
+  "fourLanguageItems": 1498,
+  "fourLanguageCompleteSets": 17,
+  "listeningTranscriptCounts": {
+    "ja": 650,
+    "en": 650,
+    "zh": 650
+  },
+  "focusedTestsPassed": 39,
+  "fullTestsPassed": 695,
+  "runtimeFiles": 91,
+  "runtimeVersion": 168,
+  "httpAudioAndSvgShaChecks": {
+    "mp3": 1416,
+    "svg": 316
+  },
+  "actualBrowserVerified": false,
+  "audibleQualityVerified": false,
+  "githubWriteOrDeployment": false
+}

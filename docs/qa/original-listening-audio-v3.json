@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "date": "2026-10-15",
+  "status": "local_audio_generation_and_technical_verification_complete",
+  "batchId": "original-v3",
+  "questionCount": 30,
+  "scriptCount": 27,
+  "clipCount": 67,
+  "reusedClipCount": 0,
+  "voiceClipCounts": {
+    "F1": 34,
+    "M1": 33
+  },
+  "totalDurationSeconds": 312.9047,
+  "totalBytes": 2540910,
+  "integratedLufsRange": [
+    -21.74,
+    -17.13
+  ],
+  "maximumTruePeakDb": -1.84,
+  "invalidFiles": 0,
+  "missingFiles": 0,
+  "unexpectedFiles": [],
+  "duplicateAudioHashes": [],
+  "durationRateReviewWarnings": [],
+  "sourceAndArtifactHashes": {
+    "source-snapshot.json": {
+      "file": "audio/listening/original-v3/source-snapshot.json",
+      "sha256": "d0b798bd1a3842fd0a4962a1ebc93aae707cd84fc852a98f41a88798a2c21b53"
+    },
+    "corpus.json": {
+      "file": "audio/listening/original-v3/corpus.json",
+      "sha256": "6e5c0e97fdeff3d43fdf19fc2d3a5682e170a89811ca34968c392c0293b6d297"
+    },
+    "generation-records.json": {
+      "file": "audio/listening/original-v3/generation-records.json",
+      "sha256": "d0e9ccef0dc766457c92bc3ece7c40daf695d5f7dd71c6375ecb7b5a2e524b3d"
+    },
+    "manifest.json": {
+      "file": "audio/listening/original-v3/manifest.json",
+      "sha256": "a2ee7a10f20d2408743b4bccbf1bf10298379656405dfb6e41be1ac8d3c22fb0"
+    }
+  },
+  "catalog": {
+    "file": "data/original-listening-audio-v3.js",
+    "sha256": "bc42961f28d6b2c4eabc459707ffeecf080678d937c0fcd0eef11d2c50df75d0"
+  },
+  "textReviewScope": "Additional AI text inspection of all frozen scripts for polite-register consistency, explicit gender labels and intended script-sharing; not native-speaker or listening QA",
+  "l24ApprovedCoreSha256": "57a7964b9be303c3dda611904b6b9198b132cb7c9ef972b0d9b8085f50897880",
+  "l24ScriptSha256": "f28c9bc22165128f0ca7a6a86bad0a1702b065040eeefd8eb8b22a22f87ec447",
+  "preservation": {
+    "priorFilesChecked": 1068,
+    "priorFilesUnchanged": true,
+    "approvedSourceQuestionObjectsUnchanged": 30
+  },
+  "automatedChecks": {
+    "dedicatedTestsPassed": 18,
+    "fullMp3Decode": true,
+    "mono44100Hz64KbpsMp3": true,
+    "exactSourceAndSynthesisInputMapping": true,
+    "loudnessAndTruePeakMeasured": true,
+    "contentLaneTestsPassed": 148,
+    "runtimeContract": "v168"
+  },
+  "humanPronunciationReview": false,
+  "scriptToAudioMeaningVerified": false,
+  "physicalDevicePlaybackVerified": false,
+  "newInstallOrTermsOrPaidService": false,
+  "externalSynthesisApiUsed": false,
+  "gitHubWriteOrDeploymentPerformedByAudioTooling": false
+}

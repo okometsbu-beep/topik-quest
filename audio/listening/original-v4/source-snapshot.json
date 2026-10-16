@@ -1,0 +1,136 @@
+{
+  "version": 1,
+  "sourceFile": "content/original-exams-v1.json",
+  "sourceFileSha256": "e8a44d89abf56d7414b6bb423b6ff832efea63b2f44e982408c78078dd0708cb",
+  "frozenAt": "2026-10-15T14:56:41.534797+00:00",
+  "sourceItemCount": 748,
+  "reusePacks": [
+    "original-v1"
+  ],
+  "purpose": "Rebind unchanged recorded script after independently approved KO/JA coaching-only correction. No new question or audio clip.",
+  "revision": {
+    "id": "O01-II-L-27",
+    "previousContentSha256": "28b3b8afad2b2c3adcbc791221c0e22dea186cdbcf0ce9b2b8da86be107f4996",
+    "contentSha256": "2d84d7e8694f7710f72118d6eb8df035ba92290e8794fff4c14163ade4dc9bdf",
+    "unchangedScriptSha256": "c2911dfdfff0fcbda5e9b9b71dffa9fa1e30b563946c3d3268d499abb446fa50",
+    "independentReviewSha256": "120725933e456a049ab2135162aa2c72fa3594259135073bfa244a4c9d99c95e"
+  },
+  "items": [
+    {
+      "id": "O01-II-L-27",
+      "collectionId": "original12-v1",
+      "set": 1,
+      "level": 2,
+      "section": "listening",
+      "no": 27,
+      "itemType": "advanced_main_idea",
+      "examType": "opinion-exchange-speaker-purpose-or-main-idea",
+      "difficulty": "hard",
+      "instruction": "남자의 중심 생각으로 가장 알맞은 것을 고르십시오.",
+      "passage": "",
+      "script": "남자: 대학 강의 의견 조사는 학기가 끝난 뒤에 하잖아요. 그때는 불편했던 점을 적어도 이미 수업이 끝나 버려요. 저는 학기 중간에도 의견을 받으면 좋겠어요.\n여자: 중간에 조사하면 요구가 제각각이라 강사가 수업을 계속 바꾸게 되지 않을까요?\n남자: 모든 요구를 받아들이자는 건 아니에요. 이름을 쓰지 않고 의견을 모은 뒤, 강사가 바꿀 수 있는 것과 어려운 것을 다음 수업에서 설명하면 돼요. 예를 들어 과제 안내가 늦다는 의견은 남은 과제부터 개선할 수 있겠죠.\n여자: 학생들은 어떤 의견은 반영되고 어떤 의견은 반영하기 어려운지 그 이유를 알 수 있겠네요.\n남자: 네. 의견을 낸 사람이 실제 변화를 경험하고, 반영되지 않은 부분의 이유도 들을 수 있어야 조사가 의미 있다고 생각해요.",
+      "prompt": "남자의 중심 생각으로 가장 알맞은 것을 고르십시오.",
+      "options": [
+        "의견을 낸 학생이 개선을 경험하도록 수업이 진행되는 동안 의견을 받고 조정해야 한다.",
+        "학생들의 다양한 요구를 공통 항목으로 정리한 뒤 학기 말 평가에 집중해야 한다.",
+        "학생의 평가가 과제 수행에 영향을 주지 않도록 성적 확정 후 의견을 받아야 한다.",
+        "수업 변경이 가능한 항목으로만 질문을 제한해 학생들의 기대를 조절해야 한다."
+      ],
+      "answerIndex": 0,
+      "targetSkills": [
+        "문제와 대안 통합",
+        "피드백 목적 추론"
+      ],
+      "coach": {
+        "ko": {
+          "reason": "학기 종료 후에는 의견을 내도 자신이 변화를 경험하기 어렵습니다. 남자는 중간에 의견을 받아 남은 수업과 과제에 반영하자고 하므로, 현재 수강생이 개선을 경험할 수 있는 조사 시점이 핵심입니다.",
+          "trap": "익명 처리와 반영 이유 설명도 제안의 일부지만, 기존 학기 말 조사와 달라지는 핵심은 수업이 끝나기 전에 바꿀 기회를 확보하는 것입니다.",
+          "strategy": "처음의 ‘이미 끝나 버려요’와 사례의 ‘남은 과제부터’를 연결하세요. 의견을 내는 사람과 개선을 경험하는 사람이 같아지게 하는 시점을 찾습니다.",
+          "choices": {
+            "의견을 낸 학생이 개선을 경험하도록 수업이 진행되는 동안 의견을 받고 조정해야 한다.": "학기 말에는 이미 수업이 끝난다는 문제와 남은 과제부터 개선할 수 있다는 사례를 연결해 조사 시점의 의미를 설명합니다.",
+            "학생들의 다양한 요구를 공통 항목으로 정리한 뒤 학기 말 평가에 집중해야 한다.": "의견을 모으는 것만으로는 부족하며, 현재 학생들이 남은 수업에서 변화와 이유를 경험하도록 하자는 주장이다.",
+            "학생의 평가가 과제 수행에 영향을 주지 않도록 성적 확정 후 의견을 받아야 한다.": "대본이 지적한 문제는 학기 종료 후에는 의견을 수업에 반영하기 어렵다는 것이며, 학생의 평가가 과제 수행에 미치는 영향은 다루지 않습니다.",
+            "수업 변경이 가능한 항목으로만 질문을 제한해 학생들의 기대를 조절해야 한다.": "의견 수집을 변경 가능한 항목으로 제한하는 것이 아니라 반영하기 어려운 의견에도 이유를 설명한다."
+          }
+        },
+        "ja": {
+          "reason": "学期終了後では意見を出しても自分が変化を経験しにくいため、途中で意見を集め、残る授業や課題に反映しようとしています。現在の受講生が改善を経験できる調査時期が中心です。",
+          "trap": "匿名化や反映理由の説明も提案の一部ですが、従来の学期末調査との主な違いは、授業が終わる前に変える機会を確保することです。",
+          "strategy": "冒頭の「もう終わってしまう」と例の「残りの課題から」をつなげます。意見を出す人が改善も経験できる時期を捉えます。",
+          "choices": {
+            "의견을 낸 학생이 개선을 경험하도록 수업이 진행되는 동안 의견을 받고 조정해야 한다.": "学期末には授業が終わるという問題と、残る課題から改善できる例を結び、調査時期の意味を説明しています。",
+            "학생들의 다양한 요구를 공통 항목으로 정리한 뒤 학기 말 평가에 집중해야 한다.": "意見を集めるだけでなく、現在の受講生が残る授業で変化と理由を経験できるようにする主張です。",
+            "학생의 평가가 과제 수행에 영향을 주지 않도록 성적 확정 후 의견을 받아야 한다.": "指摘された問題は学期終了後では授業への反映が難しいことで、学生の評価が課題の遂行に及ぼす影響は述べられていません。",
+            "수업 변경이 가능한 항목으로만 질문을 제한해 학생들의 기대를 조절해야 한다.": "変更可能な項目に調査を限定せず、反映しにくい意見にも理由を説明します。"
+          }
+        }
+      },
+      "stimulusGroup": "O01-II-L-G27-28",
+      "points": 2,
+      "examFormat": "PBT_style_original",
+      "authorBatch": "original12-v1-S01-II-L",
+      "visualRequirement": null,
+      "audioStatus": "unavailable",
+      "dialogueContext": {
+        "situation": "대학 강의 의견 조사 시기와 후속 설명을 논의하는 대화",
+        "relationship": "같은 대학의 성인 학생 대표",
+        "speakers": [
+          {
+            "label": "남자",
+            "role": "학기 중 의견 조사를 제안하는 학생",
+            "register": "해요체 존댓말"
+          },
+          {
+            "label": "여자",
+            "role": "운영 부담을 질문하는 학생",
+            "register": "해요체 존댓말"
+          }
+        ]
+      },
+      "provenance": {
+        "classification": "original_app_practice",
+        "officialPastPaperVerified": false,
+        "authorshipNote": "공개 유형만 참고하여 대본·질문·오답·한일 해설을 새로 구성한 자체 연습문제."
+      },
+      "qa": {
+        "status": "approved",
+        "reviewer": "independent-content-review",
+        "reviewedAt": "2026-10-15T14:54:45.099879+00:00",
+        "contentSha256": "2d84d7e8694f7710f72118d6eb8df035ba92290e8794fff4c14163ade4dc9bdf",
+        "hashAlgorithm": "SHA-256 of UTF-8 compact JSON with recursively sorted keys, excluding item-level qa, visualReady, requiresVisual and reviewReady",
+        "report": "docs/qa/original-exams-content.md#pilot-review",
+        "revisionOfApprovedContentSha256": "28b3b8afad2b2c3adcbc791221c0e22dea186cdbcf0ce9b2b8da86be107f4996",
+        "checks": {
+          "answerUnique": true,
+          "bilingual": true,
+          "duplicateFree": true,
+          "register": true,
+          "visual": "not_applicable",
+          "difficultyFit": true
+        },
+        "reviewBasis": {
+          "fullKoreanJapaneseSemanticReread": true,
+          "answerUniquenessRecheckedWithAnswerVisible": true,
+          "duplicateFreeAndDifficultyFitCarriedForwardForUnchangedTask": true,
+          "inheritedApproval": {
+            "status": "approved",
+            "reviewer": "independent-content-review",
+            "reviewedAt": "2026-10-15T10:54:27.207231+00:00",
+            "contentSha256": "28b3b8afad2b2c3adcbc791221c0e22dea186cdbcf0ce9b2b8da86be107f4996",
+            "hashAlgorithm": "SHA-256 of UTF-8 compact JSON with recursively sorted keys, excluding item-level qa, visualReady, requiresVisual and reviewReady",
+            "checks": {
+              "answerUnique": true,
+              "bilingual": true,
+              "duplicateFree": true,
+              "register": true,
+              "visual": "not_applicable",
+              "difficultyFit": true
+            },
+            "report": "batches/O01-II-L-remainder-independent-review.json"
+          },
+          "changedFieldsDirectlyComparedWithActualOption": true
+        }
+      }
+    }
+  ]
+}

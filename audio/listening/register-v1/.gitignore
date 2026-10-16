@@ -1,0 +1,3 @@
+# Temporary local synthesis state is not a shipped asset.
+/.current.wav
+/.generation-progress.json

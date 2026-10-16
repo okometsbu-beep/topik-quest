@@ -17,6 +17,76 @@ export function assertIntroTimeline(result,{baseline=false}={}){
   assert.ok(result.removed>=result.ended+1450&&result.removed<=result.ended+1900,'post-video flow stays near 1500ms');
 }
 
+// These observers live only in the disposable browser fixture, never in the app.
+function installIntroAudioObserver(mode,forceMp4){
+  const NativeAudio=window.Audio;
+  const qa=window.__introAudioQA={mode,items:[],calls:[],events:[],unhandled:[]};
+  if(forceMp4){
+    const canPlayType=HTMLMediaElement.prototype.canPlayType;
+    HTMLMediaElement.prototype.canPlayType=function(type){
+      return this.id==='harumanIntroVideo'&&type.includes('video/webm')?'':canPlayType.call(this,type);
+    };
+  }
+  window.addEventListener('unhandledrejection',event=>qa.unhandled.push(String(event.reason?.message||event.reason)));
+  const kind=media=>media.src.includes('-title.')?'title':'character';
+  window.Audio=function(...args){
+    const media=new NativeAudio(...args),item={media,pauses:0,pending:[],kind:null,duration:null,exitOffset:0};
+    qa.items.push(item);
+    const sample=()=>{
+      if(media.getAttribute('src'))item.kind=kind(media);
+      if(Number.isFinite(media.duration))item.duration=media.duration;
+      if(document.querySelector('.harumanIntroLeaving'))item.exitOffset=Math.max(item.exitOffset,media.currentTime);
+    };
+    for(const type of ['loadedmetadata','canplay','playing','pause','ended','error','timeupdate'])media.addEventListener(type,()=>{
+      sample();qa.events.push({kind:item.kind,type,at:performance.now(),offset:media.currentTime});
+    });
+    const play=media.play.bind(media),pause=media.pause.bind(media);
+    media.pause=function(){sample();item.pauses++;return pause()};
+    media.play=function(){
+      const call={kind:kind(media),at:performance.now(),offset:media.currentTime,
+        titleVisible:!!document.querySelector('.harumanIntroShowingTitle'),state:'pending'};
+      qa.calls.push(call);
+      if(mode==='denied'){
+        call.state='synthetic-denied';
+        return Promise.reject(new DOMException('Synthetic intro audio autoplay denial','NotAllowedError'));
+      }
+      if(mode==='pending')return new Promise(resolve=>item.pending.push(()=>{call.state='synthetic-resolved';resolve()}));
+      try{
+        return Promise.resolve(play()).then(value=>{call.state='played';return value},error=>{
+          call.state='rejected';call.error=String(error?.name||error);throw error;
+        });
+      }catch(error){call.state='threw';throw error}
+    };
+    return media;
+  };
+  window.Audio.prototype=NativeAudio.prototype;
+  Object.setPrototypeOf(window.Audio,NativeAudio);
+}
+
+export function assertIntroAudioTrace(trace,timeline,{mode='native'}={}){
+  assert.deepEqual(trace.unhandled,[],'optional sound must not leak unhandled rejections');
+  assert.equal(trace.items.length,2,'character and title use two optional audio objects');
+  assert.ok(trace.items.every(item=>item.paused&&item.released),'both sounds are stopped and released before Home');
+  const title=trace.items.find(item=>item.kind==='title');
+  assert.ok(title?.duration>=1.18&&title.duration<=1.27,'the title clip retains its 1.2-second PCM tail, allowing MP3 padding');
+  if(mode==='native'){
+    assert.equal(trace.calls.filter(call=>call.kind==='title').length,1,'normal title playback has exactly one cue');
+    assert.ok(title.exitOffset>=1.1,'the title tail plays into the 200ms exit before Home');
+  }
+  for(const kind of ['character','title']){
+    const calls=trace.calls.filter(call=>call.kind===kind);
+    assert.ok(calls.length>0,kind+' sound was attempted');
+    assert.ok(trace.events.some(event=>event.kind===kind&&event.type==='loadedmetadata'),kind+' MP3 really decoded');
+    if(mode==='native')assert.ok(calls.some(call=>call.state==='played'),kind+' sound really started after trusted input');
+    else assert.ok(calls.every(call=>call.state==='synthetic-'+(mode==='denied'?'denied':'resolved')),kind+' synthetic fixture is explicit');
+    if(kind==='title')for(const call of calls){
+      assert.equal(call.titleVisible,true,'title sound cannot start before the title stage');
+      assert.ok(call.at>=timeline.ended+280&&call.at<=timeline.ended+500,'title sound request follows actual ended + 300ms');
+    }
+  }
+  if(mode!=='native')assert.ok(!trace.events.some(event=>event.type==='playing'),'synthetic silent fixtures never start native sound');
+}
+
 export async function verifyIntro({evaluate,send,setViewport,shot,ready,sleep,baseline=false}){
   const watch=await send('Page.addScriptToEvaluateOnNewDocument',{source:`
     window.__introCompletion={started:performance.now(),ended:null,mediaDuration:null,mediaEndedAt:null,whiteout:null,title:null,leaving:null,removed:null};
@@ -95,6 +165,45 @@ export async function verifyIntro({evaluate,send,setViewport,shot,ready,sleep,ba
         const result=await finish();assert.ok(result.ended>10000);
         console.log('Intro delayed start + slow real playback + no-skip passed',JSON.stringify(result));
       }finally{await send('Page.removeScriptToEvaluateOnNewDocument',{identifier:slow.identifier})}
+
+      // Native decoding/playback and synthetic failure contracts are separate runs.
+      // A real CDP click unlocks permitted audio without adding a product control.
+      for(const fixture of [
+        {mode:'native',forceMp4:false},{mode:'native',forceMp4:true},
+        {mode:'denied',forceMp4:false},{mode:'pending',forceMp4:false}
+      ]){
+        const {mode,forceMp4}=fixture;
+        const observer=await send('Page.addScriptToEvaluateOnNewDocument',{source:
+          `(${installIntroAudioObserver.toString()})(${JSON.stringify(mode)},${forceMp4})`});
+        try{
+          await setViewport(390,844);await reload();
+          await wait(`window.__introAudioQA?.items.length===2&&__introAudioQA.items.every(item=>item.media.readyState>=2)&&document.getElementById('harumanIntroVideo')?.currentTime>.1`,'decoded optional audio');
+          assert.equal(await evaluate(`document.querySelectorAll('.harumanIntro button').length`),0,'sound adds no controls');
+          assert.equal(await evaluate(`document.getElementById('harumanIntroVideo').muted`),true,'video remains muted');
+          if(forceMp4)assert.ok(await evaluate(`document.getElementById('harumanIntroVideo').src.endsWith('.mp4')`),'forced MP4 fallback is really used');
+          if(mode==='native'){
+            await send('Input.dispatchMouseEvent',{type:'mousePressed',x:195,y:400,button:'left',clickCount:1});
+            await send('Input.dispatchMouseEvent',{type:'mouseReleased',x:195,y:400,button:'left',clickCount:1});
+            await wait(`__introAudioQA.events.some(event=>event.kind==='character'&&event.type==='playing')`,'native character sound');
+            const start=await evaluate(`__introAudioQA.items[0].media.currentTime`);await sleep(120);
+            assert.ok(await evaluate(`__introAudioQA.items[0].media.currentTime>${start}+.04&&!__introAudioQA.items[0].media.paused`),'native character audio clock advances');
+            await wait(`__introAudioQA.events.some(event=>event.kind==='title'&&event.type==='playing')`,'native title sound');
+            await wait(`__introAudioQA.items[1].media.currentTime>.03&&!__introAudioQA.items[1].media.paused`,'native title audio clock advances');
+            await shot(`intro-audio-native${forceMp4?'-mp4':''}-title.png`);
+          }
+          const result=await finish();
+          if(mode==='pending'){
+            const before=await evaluate(`__introAudioQA.items.map(item=>item.pauses)`);
+            await evaluate(`__introAudioQA.items.forEach(item=>item.pending.splice(0).forEach(resolve=>resolve()))`);
+            await sleep(30);
+            const after=await evaluate(`__introAudioQA.items.map(item=>item.pauses)`);
+            assert.ok(after.every((pauses,index)=>pauses>before[index]),'late synthetic resolutions are actively stopped after Home');
+          }
+          const trace=await evaluate(`({calls:__introAudioQA.calls,events:__introAudioQA.events,unhandled:__introAudioQA.unhandled,items:__introAudioQA.items.map(item=>({kind:item.kind,duration:item.duration,exitOffset:item.exitOffset,paused:item.media.paused,released:!item.media.getAttribute('src')}))})`);
+          assertIntroAudioTrace(trace,result,{mode});
+          console.log(`Intro audio ${mode==='native'?'NATIVE decode/playback'+(forceMp4?' + forced MP4':''):'SYNTHETIC '+mode+' / silent completion'} passed`,JSON.stringify({timeline:result,calls:trace.calls,media:trace.items}));
+        }finally{await send('Page.removeScriptToEvaluateOnNewDocument',{identifier:observer.identifier})}
+      }
     }
     console.log('Intro mobile layout/playback passed: four widths, light/dark, baseline='+baseline);
   }finally{await send('Page.removeScriptToEvaluateOnNewDocument',{identifier:watch.identifier})}
