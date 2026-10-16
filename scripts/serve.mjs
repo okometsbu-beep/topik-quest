@@ -26,15 +26,38 @@ const server = http.createServer((request, response) => {
       response.end('Not found');
       return;
     }
-    response.writeHead(200, {
+    const size = fs.statSync(target).size;
+    const headers = {
       'content-type': mime.get(path.extname(target)) || 'application/octet-stream',
-      'cache-control': 'no-store'
-    });
-    fs.createReadStream(target).pipe(response);
+      'cache-control': 'no-store',
+      'accept-ranges': 'bytes',
+      'content-length': size
+    };
+    // Chrome needs byte ranges to seek MP3/MP4 media to the video clock.
+    // Ignoring Range makes native audio seek back to zero in browser CI.
+    let start = 0, end = size - 1, status = 200;
+    if (request.headers.range) {
+      const range = /^bytes=(\d*)-(\d*)$/.exec(request.headers.range);
+      if (range && (range[1] || range[2])) {
+        start = range[1] ? Number(range[1]) : Math.max(0, size - Number(range[2]));
+        end = range[1] && range[2] ? Math.min(Number(range[2]), size - 1) : size - 1;
+      }
+      if (!range || (!range[1] && !range[2]) || !Number.isSafeInteger(start) || !Number.isSafeInteger(end) || start > end || start >= size) {
+        response.writeHead(416, { 'content-range': `bytes */${size}`, 'content-length': 0 });
+        response.end();
+        return;
+      }
+      status = 206;
+      headers['content-range'] = `bytes ${start}-${end}/${size}`;
+      headers['content-length'] = end - start + 1;
+    }
+    response.writeHead(status, headers);
+    if (request.method === 'HEAD' || size === 0) response.end();
+    else fs.createReadStream(target, { start, end }).pipe(response);
   } catch (error) {
     response.writeHead(400, { 'content-type': 'text/plain; charset=utf-8' });
     response.end('Bad request');
   }
 });
 
-server.listen(port, host, () => console.log(`MALBIT dev server: http://${host}:${port}`));
+server.listen(port, host, () => console.log(`MALBIT dev server: http://${host}:${server.address().port}`));
