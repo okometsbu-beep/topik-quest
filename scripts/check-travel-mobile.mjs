@@ -834,7 +834,9 @@ try{
   await setViewport(390,844);await sleep(120);await evaluate(`document.querySelector('.writingReview details').open=true;document.querySelector('.writingReview').scrollIntoView({block:'start',behavior:'auto'})`);await sleep(80);await shot('00bw-writing-two-blanks-review-dark.png');
   await evaluate(`(()=>{S.real={active:true,mode:'write',phase:'write',id:51,mockSet:1,deadline:Date.now()+3000000,audioPlayed:{}};S.writing[51]='이전 통합 답안';S.view='real';save();render()})()`);await sleep(120);
   assert.deepEqual(await evaluate(`({notice:document.querySelector('.writingMigration')?.innerText,answers:Object.fromEntries([...document.querySelectorAll('[data-writing-part]')].map(el=>[el.dataset.writingPart,el.value]))})`),{notice:'以前の一体型答案を㉠に保存しました。2つの欄を確認して分けてください。',answers:{giyeok:'이전 통합 답안',nieun:''}},'an unlabelled legacy answer must stay in ㉠ with a migration notice');
-  await evaluate(`S.view='home';save();render()`);await sleep(180);
+  // End the synthetic writing fixture before unrelated lessons and Review checks.
+  await evaluate(`stopTimer();S.real.active=false;S.view='home';save();render()`);await sleep(180);
+  assert.equal(await evaluate(`HARUMAL_TRANSCRIPTS.activeMock()`),false,'writing fixture must not leave an unfinished mock blocking Review');
 
   await evaluate(`(()=>{localStorage.setItem('malbitBeginnerV1',JSON.stringify({known:['v:ㅏ'],legacyScore:7}));S.lang='ja';S.view='beginner';save();render()})()`);await sleep(220);
   assert.ok(await evaluate(`!!document.querySelector('.bgLaunch')`),'beginner grammar launch card missing');
