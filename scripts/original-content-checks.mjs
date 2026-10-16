@@ -45,7 +45,9 @@ export async function verifyOriginalContent({evaluate,tap,shot,setViewport,send,
   // Exercise the actual wrong-answer retry owner, including playback surviving
   // an answer-selection render and cancellation when its sheet closes.
   innerWidthForCheck=390;await setViewport(390,844);
-  await evaluate(`setLang('ko');malbitSetTheme('light');MALBIT_REVIEW.record(1,'listen','O01-I-L-01',-1,'random',{choiceOrder:[2,0,3,1]});openReviewRetry('1:listen:O01-I-L-01')`);
+  await evaluate(`setLang('ko');malbitSetTheme('light');malbitSetListeningMode('ask');MALBIT_REVIEW.record(1,'listen','O01-I-L-01',-1,'random',{choiceOrder:[2,0,3,1]});openReviewRetry('1:listen:O01-I-L-01')`);
+  assert.equal(await evaluate(`document.querySelector('#malbitListeningDialog')?.classList.contains('open')`),true,'review retry asks for listening consent');
+  await tap('#malbitListeningDialog .on');
   assert.equal(await evaluate(`document.querySelectorAll('#sheetBody .listeningPlayer').length`),1);
   assert.equal(await evaluate(`document.querySelectorAll('#sheetBody .listeningTranscript').length`),0);
   assert.equal(await evaluate(`document.querySelector('#sheetBody .tqTranslationToggle').disabled`),true);
