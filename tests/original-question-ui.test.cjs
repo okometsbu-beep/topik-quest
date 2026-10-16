@@ -6,7 +6,7 @@ function boot(lang='ko'){
  const c={S:{lang},console,esc:escape,E:escape};c.window=c;c.ml=c.T=(ko,ja,en,zh)=>({ko,ja,en,zh}[c.S.lang]||en);
  c.MALBIT_EXPLANATIONS={topik2Writing:{51:{ko:'LEGACY WRONG GUIDE'}}};vm.createContext(c);
  vm.runInContext(part('learning-features.js','const I18N=','// ----- Persistent wrong-answer review -----'),c);
- c.MALBIT_LEARNING={authoredCoaching:c.authoredCoaching,visualChoice:c.visualChoice,questionVisual:c.questionVisual};
+ c.MALBIT_LEARNING={authoredCoach:c.authoredCoach,authoredCoaching:c.authoredCoaching,visualChoice:c.visualChoice,questionVisual:c.questionVisual};
  vm.runInContext(part('topik1.js','function gameTutorMarkup(','async function fileAudio('),c);
  vm.runInContext(source('listening-transcripts.js'),c);
  vm.runInContext(part('learning-features.js','function reviewExamBlocked(){','function syncReviewRewardHelp('),c);
