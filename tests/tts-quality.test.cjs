@@ -69,3 +69,8 @@ test('preview is unavailable rather than disguised device speech before the play
 test('source label honestly distinguishes recorded preview and ordinary device reading',async()=>{
  const b=inlineBoot(),preview=b.c.malbitTtsPreview();assert.match(b.c.MALBIT_TTS.sourceLabel(),/SUPERTONIC 3 · MP3/);b.audio[0].onended();await preview;const read=b.c.MALBIT_TTS.play('나무');assert.match(b.c.MALBIT_TTS.sourceLabel(),/DEVICE SPEECH/);assert.doesNotMatch(b.c.MALBIT_TTS.sourceLabel(),/FALLBACK/);b.spoken[0].onend();await read;
 });
+
+test('unset/default rate is 0.85 while explicit stored rates and unrelated preferences survive',()=>{
+ for(const saved of [null,{}, {voiceId:'keep'}]){const {c,storage}=boot(saved);assert.equal(c.MALBIT_TTS.utterance('시험').rate,.85);assert.equal(c.MALBIT_TTS.rate,.85);if(saved)assert.deepEqual(JSON.parse(storage.get('malbitTtsPrefsV1')),saved);else assert.equal(storage.has('malbitTtsPrefsV1'),false)}
+ for(const rate of [.75,.85,.9,1,1.25]){const {c}=boot({rate,custom:'keep'});assert.equal(c.MALBIT_TTS.utterance('시험').rate,rate);assert.equal(c.MALBIT_TTS.preferences().custom,'keep')}
+});

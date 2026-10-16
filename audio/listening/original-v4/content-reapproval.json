@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "status": "approved",
+  "reviewer": "independent-content-review",
+  "reviewedAt": "2026-10-15T14:54:45.099879+00:00",
+  "reviewType": "independent_minimal_ko_ja_coaching_correction_and_support_rebinding",
+  "sourceCoreFile": "batches/O01-II-L27-coaching-correction-draft.json",
+  "sourceSupportFile": "batches/O01-II-L27-support-rebinding-draft.json",
+  "id": "O01-II-L-27",
+  "oldCoreHash": "28b3b8afad2b2c3adcbc791221c0e22dea186cdbcf0ce9b2b8da86be107f4996",
+  "newCoreHash": "2d84d7e8694f7710f72118d6eb8df035ba92290e8794fff4c14163ade4dc9bdf",
+  "unchangedSourceScriptSha256": "c2911dfdfff0fcbda5e9b9b71dffa9fa1e30b563946c3d3268d499abb446fa50",
+  "unchangedSupportContentSha256": "c56018b3d1929c0e893dea0907769d93f42488d35969a68f848f35508955e684",
+  "changes": [
+    {
+      "path": [
+        "coach",
+        "ko",
+        "choices",
+        "학생의 평가가 과제 수행에 영향을 주지 않도록 성적 확정 후 의견을 받아야 한다."
+      ],
+      "before": "대본이 지적한 문제는 학기 종료 후에는 의견을 수업에 반영하기 어렵다는 것이며 성적 영향은 나오지 않는다.",
+      "after": "대본이 지적한 문제는 학기 종료 후에는 의견을 수업에 반영하기 어렵다는 것이며, 학생의 평가가 과제 수행에 미치는 영향은 다루지 않습니다.",
+      "directlyReread": true
+    },
+    {
+      "path": [
+        "coach",
+        "ja",
+        "choices",
+        "학생의 평가가 과제 수행에 영향을 주지 않도록 성적 확정 후 의견을 받아야 한다."
+      ],
+      "before": "指摘された問題は終了後では授業への反映が難しいことで、成績への影響は述べられていません。",
+      "after": "指摘された問題は学期終了後では授業への反映が難しいことで、学生の評価が課題の遂行に及ぼす影響は述べられていません。",
+      "directlyReread": true
+    }
+  ],
+  "checks": [
+    "Directly reread complete Korean instruction/script/question/options/answer and all Korean/Japanese coach fields.",
+    "Verified option 3 concerns effects of students’ course evaluations on assignment completion, not effects on grades; corrected Korean and Japanese explanations now rebut that actual claim.",
+    "Verified main idea remains feedback during the course so current students experience improvements; other three option reasons remain accurate and answer index 0 remains uniquely supported.",
+    "Directly reread all five Japanese transcript turns and all three bilingual evidence cues against Korean and question 27.",
+    "Verified exact reconstruction, cue substrings, speaker roles, negation of accepting every demand, midsemester and next-class timing, possibility of improving remaining assignments, and identical shared full script/turns with item28.",
+    "Proved only the two stated coach fields changed; support content unchanged and final new full-core binding recomputed."
+  ],
+  "limitations": [
+    "This is a narrowly scoped correction/reapproval. Existing duplicate and difficulty gates are carried forward because the task/script/options/answer are byte-identical, not newly benchmarked.",
+    "No blind solve, audio rendering/playback, timing, runtime, UI, accessibility, deployment or comprehensive collection review.",
+    "Reviewer wrote reports only; promotion of authoritative/current files is left to coordinator."
+  ],
+  "correctionsMadeByReviewer": [],
+  "issues": [],
+  "coreItems": [
+    {
+      "id": "O01-II-L-27",
+      "qa": {
+        "status": "approved",
+        "reviewer": "independent-content-review",
+        "reviewedAt": "2026-10-15T14:54:45.099879+00:00",
+        "contentSha256": "2d84d7e8694f7710f72118d6eb8df035ba92290e8794fff4c14163ade4dc9bdf",
+        "hashAlgorithm": "SHA-256 of UTF-8 compact JSON with recursively sorted keys, excluding item-level qa, visualReady, requiresVisual and reviewReady",
+        "report": "batches/O01-II-L27-coaching-correction-independent-review.json",
+        "revisionOfApprovedContentSha256": "28b3b8afad2b2c3adcbc791221c0e22dea186cdbcf0ce9b2b8da86be107f4996",
+        "checks": {
+          "answerUnique": true,
+          "bilingual": true,
+          "duplicateFree": true,
+          "register": true,
+          "visual": "not_applicable",
+          "difficultyFit": true
+        },
+        "reviewBasis": {
+          "fullKoreanJapaneseSemanticReread": true,
+          "answerUniquenessRecheckedWithAnswerVisible": true,
+          "duplicateFreeAndDifficultyFitCarriedForwardForUnchangedTask": true,
+          "inheritedApproval": {
+            "status": "approved",
+            "reviewer": "independent-content-review",
+            "reviewedAt": "2026-10-15T10:54:27.207231+00:00",
+            "contentSha256": "28b3b8afad2b2c3adcbc791221c0e22dea186cdbcf0ce9b2b8da86be107f4996",
+            "hashAlgorithm": "SHA-256 of UTF-8 compact JSON with recursively sorted keys, excluding item-level qa, visualReady, requiresVisual and reviewReady",
+            "checks": {
+              "answerUnique": true,
+              "bilingual": true,
+              "duplicateFree": true,
+              "register": true,
+              "visual": "not_applicable",
+              "difficultyFit": true
+            },
+            "report": "batches/O01-II-L-remainder-independent-review.json"
+          },
+          "changedFieldsDirectlyComparedWithActualOption": true
+        }
+      }
+    }
+  ],
+  "supportItems": [
+    {
+      "id": "O01-II-L-27",
+      "qa": {
+        "status": "approved",
+        "reviewer": "independent-content-review",
+        "reviewedAt": "2026-10-15T14:54:45.099879+00:00",
+        "contentSha256": "c56018b3d1929c0e893dea0907769d93f42488d35969a68f848f35508955e684",
+        "hashAlgorithm": "SHA-256 of UTF-8 compact JSON with recursively sorted keys, excluding support-entry qa only",
+        "report": "batches/O01-II-L27-coaching-correction-independent-review.json",
+        "approvedSourceContentSha256": "2d84d7e8694f7710f72118d6eb8df035ba92290e8794fff4c14163ade4dc9bdf",
+        "sourceContentBindingReport": "batches/O01-II-L27-coaching-correction-independent-review.json",
+        "checks": {
+          "completeTranscript": true,
+          "sourceScriptHash": true,
+          "turnAlignment": true,
+          "translationFidelity": true,
+          "numericalTemporalNegationConditionalMeaning": true,
+          "speakerIntent": true,
+          "register": true,
+          "naturalJapanese": true,
+          "exactEvidenceSubstrings": true,
+          "evidenceSemanticAlignment": true,
+          "answerCueRelevance": true,
+          "sharedStimulusConsistency": true
+        }
+      }
+    }
+  ]
+}

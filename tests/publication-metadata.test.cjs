@@ -1,0 +1,3 @@
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+function files(dir){return fs.readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?files(path.join(dir,e.name)):[path.join(dir,e.name)])}
+test('public content, catalogs and QA documents contain no private workspace paths or conversation attachments',()=>{for(const file of ['content','data','audio','docs'].flatMap(files).filter(f=>/\.(json|js|md|txt)$/.test(f))){const text=fs.readFileSync(file,'utf8');assert.doesNotMatch(text,/\/workspace\/|\/root\/|libfile_[a-z0-9]+|chatgpt\.com\/c\//i,file)}});

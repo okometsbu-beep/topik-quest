@@ -4,7 +4,7 @@
 
 const LANGUAGE='ko-KR';
 const STORAGE_KEY='malbitTtsPrefsV1';
-const DEFAULTS=Object.freeze({rate:1,voiceId:'',engine:'device'});
+const DEFAULTS=Object.freeze({rate:.85,voiceId:'',engine:'device'});
 const SAMPLE='오늘도 한국어를 천천히, 또렷하게 연습해 봐요.';
 // Existing F1/M1 clips; exact text, voice, hashes and model revision are in corpus.json/manifest.json.
 const RECORDED_SAMPLE=Object.freeze({id:'0b2c5059104c9824',text:'주말에 뭐 했어요?'});

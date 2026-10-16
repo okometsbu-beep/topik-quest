@@ -1,0 +1,279 @@
+{
+  "version": 1,
+  "status": "proposal_metadata_only_not_downloaded_or_installed",
+  "observedAt": "2026-10-15",
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "python": "3.12.14",
+  "execution": "local CPU, no remote text synthesis",
+  "model": {
+    "repository": "supertone-oss-archive/supertonic-3",
+    "revision": "aafc6e32416a594460b32413efc49d7fe4ce6d46",
+    "metadataUrl": "https://huggingface.co/api/models/supertone-oss-archive/supertonic-3/tree/aafc6e32416a594460b32413efc49d7fe4ce6d46?recursive=true",
+    "license": "BigScience OpenRAIL-M",
+    "licenseUrl": "https://huggingface.co/supertone-oss-archive/supertonic-3/blob/aafc6e32416a594460b32413efc49d7fe4ce6d46/LICENSE",
+    "files": [
+      {
+        "path": "onnx/duration_predictor.onnx",
+        "bytes": 3700147,
+        "gitBlobSha1": "3dc0f3ca70185b0ecb20ee812832fa8fd87d5f77",
+        "sha256": "c3eb91414d5ff8a7a239b7fe9e34e7e2bf8a8140d8375ffb14718b1c639325db",
+        "url": "https://huggingface.co/supertone-oss-archive/supertonic-3/resolve/aafc6e32416a594460b32413efc49d7fe4ce6d46/onnx/duration_predictor.onnx"
+      },
+      {
+        "path": "onnx/text_encoder.onnx",
+        "bytes": 36416150,
+        "gitBlobSha1": "001b50875741258a8681a472d63929b2e18abe55",
+        "sha256": "c7befd5ea8c3119769e8a6c1486c4edc6a3bc8365c67621c881bbb774b9902ff",
+        "url": "https://huggingface.co/supertone-oss-archive/supertonic-3/resolve/aafc6e32416a594460b32413efc49d7fe4ce6d46/onnx/text_encoder.onnx"
+      },
+      {
+        "path": "onnx/vector_estimator.onnx",
+        "bytes": 256534781,
+        "gitBlobSha1": "e5e45d221db3825dc28fe20039cfca7e329cfd18",
+        "sha256": "883ac868ea0275ef0e991524dc64f16b3c0376efd7c320af6b53f5b780d7c61c",
+        "url": "https://huggingface.co/supertone-oss-archive/supertonic-3/resolve/aafc6e32416a594460b32413efc49d7fe4ce6d46/onnx/vector_estimator.onnx"
+      },
+      {
+        "path": "onnx/vocoder.onnx",
+        "bytes": 101424195,
+        "gitBlobSha1": "b50be323eb0a124468b665e0e3e8380710090744",
+        "sha256": "085de76dd8e8d5836d6ca66826601f615939218f90e519f70ee8a36ed2a4c4ba",
+        "url": "https://huggingface.co/supertone-oss-archive/supertonic-3/resolve/aafc6e32416a594460b32413efc49d7fe4ce6d46/onnx/vocoder.onnx"
+      },
+      {
+        "path": "onnx/tts.json",
+        "bytes": 8253,
+        "gitBlobSha1": "28575b0793c92607a0f0a292550df9bd17709a79",
+        "sha256": null,
+        "url": "https://huggingface.co/supertone-oss-archive/supertonic-3/resolve/aafc6e32416a594460b32413efc49d7fe4ce6d46/onnx/tts.json"
+      },
+      {
+        "path": "onnx/unicode_indexer.json",
+        "bytes": 277676,
+        "gitBlobSha1": "3aaf4d33024aff0be455633c24b3636b3a810150",
+        "sha256": null,
+        "url": "https://huggingface.co/supertone-oss-archive/supertonic-3/resolve/aafc6e32416a594460b32413efc49d7fe4ce6d46/onnx/unicode_indexer.json"
+      },
+      {
+        "path": "voice_styles/F1.json",
+        "bytes": 292046,
+        "gitBlobSha1": "421365f307ed1535d8da16845031d0e9fa3e60c5",
+        "sha256": null,
+        "url": "https://huggingface.co/supertone-oss-archive/supertonic-3/resolve/aafc6e32416a594460b32413efc49d7fe4ce6d46/voice_styles/F1.json"
+      },
+      {
+        "path": "voice_styles/M1.json",
+        "bytes": 291748,
+        "gitBlobSha1": "bddfff85a7c4c140c11620bd7005d86681dccdac",
+        "sha256": null,
+        "url": "https://huggingface.co/supertone-oss-archive/supertonic-3/resolve/aafc6e32416a594460b32413efc49d7fe4ce6d46/voice_styles/M1.json"
+      },
+      {
+        "path": "LICENSE",
+        "bytes": 15007,
+        "gitBlobSha1": "1e2cbe6cef94c8cdf3ed1fcebc0f5317ca7ad5a1",
+        "sha256": null,
+        "url": "https://huggingface.co/supertone-oss-archive/supertonic-3/resolve/aafc6e32416a594460b32413efc49d7fe4ce6d46/LICENSE"
+      }
+    ],
+    "totalBytes": 398960003
+  },
+  "referenceCode": {
+    "repository": "supertone-oss-archive/supertonic",
+    "revision": "1e9799e964ea4c0dad7cde993b65c3c813a7b373",
+    "metadataUrl": "https://api.github.com/repos/supertone-oss-archive/supertonic/git/trees/1e9799e964ea4c0dad7cde993b65c3c813a7b373?recursive=1",
+    "license": "MIT",
+    "licenseUrl": "https://github.com/supertone-oss-archive/supertonic/blob/1e9799e964ea4c0dad7cde993b65c3c813a7b373/LICENSE",
+    "files": [
+      {
+        "path": "py/helper.py",
+        "bytes": 15027,
+        "gitBlobSha1": "ff9e4dac3158a332e3179e268c7cadb095c1a59e",
+        "url": "https://raw.githubusercontent.com/supertone-oss-archive/supertonic/1e9799e964ea4c0dad7cde993b65c3c813a7b373/py/helper.py"
+      },
+      {
+        "path": "LICENSE",
+        "bytes": 1070,
+        "gitBlobSha1": "943171bd72aa0cb70e4e43c4d62ebeb336a2353c",
+        "url": "https://raw.githubusercontent.com/supertone-oss-archive/supertonic/1e9799e964ea4c0dad7cde993b65c3c813a7b373/LICENSE"
+      }
+    ],
+    "totalBytes": 16097
+  },
+  "pythonEnvironment": {
+    "kind": "isolated build-only virtual environment",
+    "requiresSystemPackageChanges": false,
+    "wheelOnly": true,
+    "dependenciesCheckedAgainstMetadata": true,
+    "packages": [
+      {
+        "name": "onnxruntime",
+        "version": "1.23.1",
+        "metadataUrl": "https://pypi.org/pypi/onnxruntime/1.23.1/json",
+        "filename": "onnxruntime-1.23.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+        "bytes": 17378483,
+        "sha256": "576502dad714ffe5f3b4e1918c5b3368766b222063c585e5fd88415c063e4c80",
+        "url": "https://files.pythonhosted.org/packages/c4/b0/4663a333a82c77f159e48fe8639b1f03e4a05036625be9129c20c4d71d12/onnxruntime-1.23.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+        "requiresDist": [
+          "coloredlogs",
+          "flatbuffers",
+          "numpy>=1.21.6",
+          "packaging",
+          "protobuf",
+          "sympy"
+        ]
+      },
+      {
+        "name": "numpy",
+        "version": "2.3.5",
+        "metadataUrl": "https://pypi.org/pypi/numpy/2.3.5/json",
+        "filename": "numpy-2.3.5-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+        "bytes": 16606086,
+        "sha256": "0d8163f43acde9a73c2a33605353a4f1bc4798745a8b1d73183b28e5b435ae28",
+        "url": "https://files.pythonhosted.org/packages/b6/23/2a1b231b8ff672b4c450dac27164a8b2ca7d9b7144f9c02d2396518352eb/numpy-2.3.5-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+        "requiresDist": []
+      },
+      {
+        "name": "soundfile",
+        "version": "0.13.1",
+        "metadataUrl": "https://pypi.org/pypi/soundfile/0.13.1/json",
+        "filename": "soundfile-0.13.1-py2.py3-none-manylinux_2_28_x86_64.whl",
+        "bytes": 1313646,
+        "sha256": "03267c4e493315294834a0870f31dbb3b28a95561b80b134f0bd3cf2d5f0e618",
+        "url": "https://files.pythonhosted.org/packages/57/5e/70bdd9579b35003a489fc850b5047beeda26328053ebadc1fb60f320f7db/soundfile-0.13.1-py2.py3-none-manylinux_2_28_x86_64.whl",
+        "requiresDist": [
+          "cffi>=1.0",
+          "numpy"
+        ]
+      },
+      {
+        "name": "coloredlogs",
+        "version": "15.0.1",
+        "metadataUrl": "https://pypi.org/pypi/coloredlogs/15.0.1/json",
+        "filename": "coloredlogs-15.0.1-py2.py3-none-any.whl",
+        "bytes": 46018,
+        "sha256": "612ee75c546f53e92e70049c9dbfcc18c935a2b9a53b66085ce9ef6a6e5c0934",
+        "url": "https://files.pythonhosted.org/packages/a7/06/3d6badcf13db419e25b07041d9c7b4a2c331d3f4e7134445ec5df57714cd/coloredlogs-15.0.1-py2.py3-none-any.whl",
+        "requiresDist": [
+          "humanfriendly (>=9.1)",
+          "capturer (>=2.4) ; extra == 'cron'"
+        ]
+      },
+      {
+        "name": "flatbuffers",
+        "version": "25.9.23",
+        "metadataUrl": "https://pypi.org/pypi/flatbuffers/25.9.23/json",
+        "filename": "flatbuffers-25.9.23-py2.py3-none-any.whl",
+        "bytes": 30869,
+        "sha256": "255538574d6cb6d0a79a17ec8bc0d30985913b87513a01cce8bcdb6b4c44d0e2",
+        "url": "https://files.pythonhosted.org/packages/ee/1b/00a78aa2e8fbd63f9af08c9c19e6deb3d5d66b4dda677a0f61654680ee89/flatbuffers-25.9.23-py2.py3-none-any.whl",
+        "requiresDist": []
+      },
+      {
+        "name": "packaging",
+        "version": "25.0",
+        "metadataUrl": "https://pypi.org/pypi/packaging/25.0/json",
+        "filename": "packaging-25.0-py3-none-any.whl",
+        "bytes": 66469,
+        "sha256": "29572ef2b1f17581046b3a2227d5c611fb25ec70ca1ba8554b24b0e69331a484",
+        "url": "https://files.pythonhosted.org/packages/20/12/38679034af332785aac8774540895e234f4d07f7545804097de4b666afd8/packaging-25.0-py3-none-any.whl",
+        "requiresDist": []
+      },
+      {
+        "name": "protobuf",
+        "version": "6.33.5",
+        "metadataUrl": "https://pypi.org/pypi/protobuf/6.33.5/json",
+        "filename": "protobuf-6.33.5-cp39-abi3-manylinux2014_x86_64.whl",
+        "bytes": 323465,
+        "sha256": "cbf16ba3350fb7b889fca858fb215967792dc125b35c7976ca4818bee3521cf0",
+        "url": "https://files.pythonhosted.org/packages/9b/53/a9443aa3ca9ba8724fdfa02dd1887c1bcd8e89556b715cfbacca6b63dbec/protobuf-6.33.5-cp39-abi3-manylinux2014_x86_64.whl",
+        "requiresDist": []
+      },
+      {
+        "name": "sympy",
+        "version": "1.14.0",
+        "metadataUrl": "https://pypi.org/pypi/sympy/1.14.0/json",
+        "filename": "sympy-1.14.0-py3-none-any.whl",
+        "bytes": 6299353,
+        "sha256": "e091cc3e99d2141a0ba2847328f5479b05d94a6635cb96148ccb3f34671bd8f5",
+        "url": "https://files.pythonhosted.org/packages/a2/09/77d55d46fd61b4a135c444fc97158ef34a095e5681d0a6c10b75bf356191/sympy-1.14.0-py3-none-any.whl",
+        "requiresDist": [
+          "mpmath<1.4,>=1.1.0",
+          "pytest>=7.1.0; extra == \"dev\"",
+          "hypothesis>=6.70.0; extra == \"dev\""
+        ]
+      },
+      {
+        "name": "cffi",
+        "version": "2.0.0",
+        "metadataUrl": "https://pypi.org/pypi/cffi/2.0.0/json",
+        "filename": "cffi-2.0.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+        "bytes": 219572,
+        "sha256": "3e17ed538242334bf70832644a32a7aae3d83b57567f9fd60a26257e992b79ba",
+        "url": "https://files.pythonhosted.org/packages/78/2d/7fa73dfa841b5ac06c7b8855cfc18622132e365f5b81d02230333ff26e9e/cffi-2.0.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+        "requiresDist": [
+          "pycparser; implementation_name != \"PyPy\""
+        ]
+      },
+      {
+        "name": "humanfriendly",
+        "version": "10.0",
+        "metadataUrl": "https://pypi.org/pypi/humanfriendly/10.0/json",
+        "filename": "humanfriendly-10.0-py2.py3-none-any.whl",
+        "bytes": 86794,
+        "sha256": "1697e1a8a8f550fd43c2865cd84542fc175a61dcb779b6fee18cf6b6ccba1477",
+        "url": "https://files.pythonhosted.org/packages/f0/0f/310fb31e39e2d734ccaa2c0fb981ee41f7bd5056ce9bc29b2248bd569169/humanfriendly-10.0-py2.py3-none-any.whl",
+        "requiresDist": [
+          "monotonic ; python_version == \"2.7\"",
+          "pyreadline ; sys_platform == \"win32\" and python_version<\"3.8\"",
+          "pyreadline3 ; sys_platform == \"win32\" and python_version>=\"3.8\""
+        ]
+      },
+      {
+        "name": "mpmath",
+        "version": "1.3.0",
+        "metadataUrl": "https://pypi.org/pypi/mpmath/1.3.0/json",
+        "filename": "mpmath-1.3.0-py3-none-any.whl",
+        "bytes": 536198,
+        "sha256": "a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c",
+        "url": "https://files.pythonhosted.org/packages/43/e3/7d92a15f894aa0c9c4b49b8ee9ac9850d6e63b03c9c32c0367a13ae62209/mpmath-1.3.0-py3-none-any.whl",
+        "requiresDist": [
+          "pytest (>=4.6) ; extra == 'develop'",
+          "pycodestyle ; extra == 'develop'",
+          "pytest-cov ; extra == 'develop'",
+          "codecov ; extra == 'develop'",
+          "wheel ; extra == 'develop'",
+          "sphinx ; extra == 'docs'",
+          "gmpy2 (>=2.1.0a4) ; (platform_python_implementation != \"PyPy\") and extra == 'gmpy'",
+          "pytest (>=4.6) ; extra == 'tests'"
+        ]
+      },
+      {
+        "name": "pycparser",
+        "version": "2.23",
+        "metadataUrl": "https://pypi.org/pypi/pycparser/2.23/json",
+        "filename": "pycparser-2.23-py3-none-any.whl",
+        "bytes": 118140,
+        "sha256": "e5c6e8d3fbad53479cab09ac03729e0a9faf2bee3db8208a550daf5af81a5934",
+        "url": "https://files.pythonhosted.org/packages/a0/e3/59cd50310fc9b59512193629e1984c1f95e5c8ae6e5d8c69532ccc65a7fe/pycparser-2.23-py3-none-any.whl",
+        "requiresDist": []
+      }
+    ],
+    "totalWheelBytes": 43025093
+  },
+  "dataTransmission": "Only public package/model/code download requests. The local generator and inspected helper do not transmit authored scripts or learner data to external synthesis APIs.",
+  "alreadyAvailable": [
+    "Python 3.12.14",
+    "ffmpeg"
+  ],
+  "noActionsPerformed": [
+    "no model or helper files downloaded",
+    "no wheels downloaded",
+    "no packages installed",
+    "no model/helper executed",
+    "no audio generated",
+    "no deployment"
+  ],
+  "totalProposedDownloadBytes": 442001193,
+  "recordScope": "Preauthorization metadata snapshot. Later authorized retrieval, installation, and synthesis are recorded in listening-audio-execution-v1.json."
+}

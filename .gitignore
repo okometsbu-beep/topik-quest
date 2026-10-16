@@ -7,3 +7,7 @@ artifacts/
 # Local speech-pack build state (never publish model or temporary waveform data)
 audio/listening/v1/.current.wav
 audio/listening/v1/.generation-progress.json
+
+# Original speech-pack checkpoints remain local.
+audio/listening/original-v*/.generation-progress.json
+audio/listening/original-v*/.current.wav

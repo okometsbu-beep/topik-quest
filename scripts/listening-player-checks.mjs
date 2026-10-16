@@ -12,7 +12,7 @@ export async function verifyListeningPlayer({evaluate,tap,shot,setViewport,sleep
   await sleep(1100);
   const progress=await evaluate(`({position:Number(document.querySelector('#listeningPlayerQA input').value),total:Number(document.querySelector('#listeningPlayerQA input').max),label:document.querySelector('#listeningPlayerQA .listeningToggle').textContent})`);
   assert.ok(progress.position>0&&progress.total>progress.position,'real MP3 advances within cumulative duration');assert.match(progress.label,/정지|停止|Stop/);
-  for(const value of [.75,1,1.25,1.5]){await evaluate(`HARUMAL_LISTENING_PLAYER.setRate(${value})`);assert.equal(await evaluate(`Number(document.querySelector('#listeningPlayerQA select').value)`),value)}
+  for(const value of [.75,.85,1,1.25,1.5]){await evaluate(`HARUMAL_LISTENING_PLAYER.setRate(${value})`);assert.equal(await evaluate(`Number(document.querySelector('#listeningPlayerQA select').value)`),value)}
   await evaluate(`HARUMAL_LISTENING_PLAYER.seek(Number(document.querySelector('#listeningPlayerQA input').max))`);
   await wait(`!!window.__qaPlayerResult`,'seek end settles');assert.equal(await evaluate(`__qaPlayerResult.heard`),false,'seeking cannot manufacture hearing');
   await tap('#listeningPlayerQA .listeningToggle');await sleep(200);await tap('#listeningPlayerQA .listeningToggle');
@@ -25,5 +25,5 @@ export async function verifyListeningPlayer({evaluate,tap,shot,setViewport,sleep
  }finally{
   await evaluate(`HARUMAL_LISTENING_PLAYER.cancel();document.querySelector('#listeningPlayerQA')?.remove();delete window.__qaPlayerDraw;delete window.__qaPlayerStart;delete window.__qaPlayerResult;S.lang=${JSON.stringify(original.lang)};document.documentElement.dataset.theme=${JSON.stringify(original.theme)};${original.prefs===null?"localStorage.removeItem('malbitTtsPrefsV1')":`localStorage.setItem('malbitTtsPrefsV1',${JSON.stringify(original.prefs)})`}`);
  }
- console.log('Listening browser QA: real MP3 progress, stop/reset, seek evidence, four speeds and 16 localized mobile layouts passed.');
+ console.log('Listening browser QA: real MP3 progress, stop/reset, seek evidence, five speeds and 16 localized mobile layouts passed.');
 }

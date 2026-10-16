@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "date": "2026-10-15",
+  "status": "local_audio_generation_and_technical_verification_complete",
+  "batchId": "original-v6",
+  "questionCount": 80,
+  "scriptCount": 62,
+  "clipCount": 166,
+  "reusedClipCount": 0,
+  "totalDurationSeconds": 1552.012,
+  "totalBytes": 12510934,
+  "integratedLufsRange": [
+    -20.39,
+    -17.1
+  ],
+  "maximumTruePeakDb": -1.53,
+  "invalidFiles": 0,
+  "missingFiles": 0,
+  "duplicateAudioHashes": [],
+  "durationRateReviewWarnings": [],
+  "sourceAndArtifactHashes": {
+    "source-snapshot.json": "47ed40dadb6d4e43507afdad8aa54f95eed3fa16a77e5a712a8380300da05ec1",
+    "corpus.json": "57d1075f7e4c50493d096758c96635ef5e9925cbe42b61082a2b50bff25ea0e7",
+    "generation-records.json": "c97ba7178fee5bc6800b225292428bf635a8cb5e91c6b2f62f7755aa89214e5d",
+    "manifest.json": "2aa6926543e75bee36769061dc86f63e572ce0147fed70bd97debf53ac4262f5"
+  },
+  "catalog": {
+    "file": "data/original-listening-audio-v6.js",
+    "sha256": "41d8713de117fa2181f57855e23215d73158d20836862618e9f2680fbefcaa01"
+  },
+  "preservation": {
+    "priorFilesChecked": 1296,
+    "priorFilesUnchanged": true
+  },
+  "automatedChecks": {
+    "fullUnitTestsPassed": 680,
+    "fullMp3Decode": true,
+    "exactSourceAndSynthesisInputMapping": true,
+    "loudnessAndTruePeakMeasured": true,
+    "runtimeContract": "v168"
+  },
+  "humanPronunciationReview": false,
+  "scriptToAudioMeaningVerified": false,
+  "physicalDevicePlaybackVerified": false,
+  "newInstallOrTermsOrPaidService": false,
+  "externalSynthesisApiUsed": false,
+  "gitHubWriteOrDeploymentPerformed": false,
+  "generationRecovery": {
+    "resumedFromVerifiedCheckpointFiles": 124,
+    "previousSessionUnavailable": true,
+    "interruptionCauseEstablished": false,
+    "allFilesReverifiedAfterResume": true
+  }
+}

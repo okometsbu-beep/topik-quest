@@ -42,13 +42,17 @@ function startRandom(level,area){
   const s=state();s.infinity={active:true,rewardSessionId:window.HARUMAL_REWARDS?.newSession('topik2-random'),examLevel:2,count:0,graded:0,correct:0,writing:0,totalSec:0,targetSec:0,last:null,feedback:null,seenIds:[],questionIds,practiceSession:{level:2,mode:'random',area,returnTo:'randomAreas',size:questionIds.length}};
   s.view='infinity';persist();window.nextInfinity();return true;
 }
-function startMock(level,area='full'){
+function startMock(level,area='full',options={}){
   level=normalizeLevel(level);const info=MOCKS[level]?.[area];if(!info)return false;
+  const collectionId=options.collectionId||'legacy-original-v1',mockSet=options.mockSet==null?null:Number(options.mockSet);
+  if(!['legacy-original-v1','original12-v1'].includes(collectionId)||(mockSet!=null&&(!Number.isInteger(mockSet)||mockSet<1||mockSet>12)))return false;
+  const sets=window.MALBIT_BANK?.mockSets?.(level,collectionId,S.lang||'ko');
+  if(sets?!(mockSet?sets.some(x=>x.set===mockSet&&x.ready):sets.some(x=>x.ready)):collectionId!=='legacy-original-v1')return false;
   setExamPreference(level);window.stopTimer?.();window.stopListeningAudio?.();window.HARUMAL_LISTENING_PLAYER?.cancel();
-  const meta={level,mode:'mock',area,returnTo:'mockAreas',size:info.count,minutes:info.minutes};
+  const meta={level,mode:'mock',area,collectionId,mockSet,returnTo:'mockAreas',size:info.count,minutes:info.minutes};
   // Only this confirmed start call creates deadlines; choosing menus never calls an exam engine.
-  if(level===1){window.t1Begin(area,{explicitArea:true,practiceSession:meta});return true}
-  window.beginReal(area==='full'?'full':TYPES[area],{explicitArea:true});
+  if(level===1){return window.t1Begin(area,{explicitArea:true,practiceSession:meta,collectionId,mockSet})!==false}
+  if(window.beginReal(area==='full'?'full':TYPES[area],{explicitArea:true,collectionId,mockSet})===false)return false;
   const s=state();if(!s?.real)return false;s.real.practiceSession=meta;persist();window.render?.();return true;
 }
 function back(){
@@ -61,7 +65,7 @@ function back(){
 }
 function restart(){
   const meta=getActive();if(!meta)return false;window.closeSheet?.();window.closeResult?.();
-  if(meta.mode==='mock'&&window.HARUMAL_HUB){window.HARUMAL_HUB.openAreas('mock',meta.level);window.HARUMAL_HUB.selectArea(meta.area);return true}
+  if(meta.mode==='mock'&&window.HARUMAL_HUB){window.HARUMAL_HUB.openAreas('mock',meta.level);window.HARUMAL_HUB.selectArea(meta.area,{collectionId:meta.collectionId,mockSet:meta.mockSet});return true}
   return meta.mode==='mock'?false:startRandom(meta.level,meta.area);
 }
 const baseNext=window.nextInfinity;

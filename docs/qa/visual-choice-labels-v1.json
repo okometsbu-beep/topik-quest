@@ -1,0 +1,1841 @@
+{
+  "title": "Independent visual-choice label leakage review",
+  "reviewedAt": "2026-10-15T20:43:00Z",
+  "decision": {
+    "codeDataMustFixGate": "closed",
+    "mustFixBlockers": [],
+    "actualBrowserGate": "pending",
+    "productionReleaseGate": "pending",
+    "productionReady": false
+  },
+  "findings": [
+    {
+      "severity": "pass",
+      "finding": "All original visual-only choice renderers use positional labels and catalogued label-free SVGs; no internal scene/graph key or answer-dependent pre-submit visible/accessible markup found."
+    },
+    {
+      "severity": "pass",
+      "finding": "Originals, source option strings, source answer indices, content hashes, visual maps, and authored Korean/Japanese coaching equal the immutable approved snapshot. All displayed permutations preserve the correct image and answer mapping; imported four-locale coaching remains intact."
+    },
+    {
+      "severity": "pass",
+      "finding": "Independent XML parser proves all 36 derivatives remove exactly one complete nonsemantic text node each; all other bytes unchanged. The 100 identity mappings are exact originals. All 136 source/display byte hashes agree with catalog and source QA."
+    },
+    {
+      "severity": "pass",
+      "finding": "All 36 provided Inkscape PNG pairs were independently compared. Changed pixels are confined to the top internal-label region, within rows 7–20 at 260 px width. The complete derived contact sheet was visually inspected; meaningful scene details, graph labels, axes and values remain."
+    },
+    {
+      "severity": "pass",
+      "finding": "Importer final prevalidation now calls deriveNeutralChoiceVisuals on incoming approved source and its SVGs before any replacement. Current immutable snapshot preview equals generated artifacts; an independently constructed hash-approved mixed-label SVG fixture is rejected without writes."
+    }
+  ],
+  "behavioralVerification": {
+    "passed": true,
+    "questions": 34,
+    "permutations": 24,
+    "locales": 4,
+    "selectedStates": 5,
+    "preSubmitBodyRenders": 65280,
+    "answerIndexInvarianceComparisons": 261120,
+    "exactImageAndAccessibleNameChecks": 287232,
+    "completeRetryFlows": 3264,
+    "method": "Independent oracle: changing the correct answerIndex across all four slots leaves complete pre-submit body HTML byte-identical with fixed choices/selection; exact source/alt mapping and actual stored-order retry state machine are checked. Source functions execute in a VM with minimal DOM, not a browser."
+  },
+  "flowCoverage": [
+    "TOPIK I/shared choice renderer in mock, random/quick and game modes; complete shared pre-submit question body",
+    "TOPIK II mock/practice renderMCQ including selected answers",
+    "TOPIK II random/infinite/quick renderInfMCQ including the learning-features wrapper",
+    "Review question markup and actual stored-order review retry entry, first tap, second-tap submit and close/reopen",
+    "All 24 orders, all four locales, answer-index counterfactuals and five selection states",
+    "Boss reordering/duplicate distractors, missing helper, missing/malformed catalog and unsafe/pending image fallbacks through the focused suite",
+    "After-submit authored option-by-option coaching and transcript gating; review-entry reset; stale async guards through focused suite"
+  ],
+  "limitations": [
+    "VM/minimal-DOM execution and SVG raster inspection are not actual-browser or screen-reader verification. Mobile layout, keyboard focus/announcements, and network-broken image behavior remain pending.",
+    "No actual audio listening or physical-device QA was performed.",
+    "The browser checks catalog shape and local paths; byte integrity is enforced by build/test verification, not by in-browser cryptographic checking.",
+    "Source keys remain in trusted client data and asset bindings as intended. This is learner-visible/accessibility leakage prevention, not anti-cheating protection against inspecting a static application.",
+    "No production deployment or GitHub mutation was performed or authorized in this review."
+  ],
+  "reviewedFileSha256": {
+    "learning-features.js": "62da5a779a856b5cd147ca4f73be5a5bb1b7503b02bcd6836135fd6844a1a1f2",
+    "legacy-core.js": "7dcba0be11308c0fc76113542451fb2172f092ecfab95a067f111f05b9647588",
+    "topik1.js": "86dd1f9950e7416d053ad647f8fb1613ed267036f5bae9b32fc15dfa64b41a07",
+    "question-bank-engine.js": "aa2fc782d9db32d20cb7920e8abd8f5d5d22dc1345ece32e7b6567d536d45f3c",
+    "site-patch.js": "89e9619180ec069f979945c1b21d2827672901b0d5b04aa0230ac6f419e2c226",
+    "scripts/build-neutral-choice-visuals.mjs": "d5856368a82a6cbff6719d6aa878dba75fa5e0d218f5fe5ce4936c1f6604f30c",
+    "scripts/import-original-content.mjs": "f2b17ecc8f867190aa53d6848e40935b69357a4e49305cd90d12cb58a7027108",
+    "scripts/build-original-exams.mjs": "d161fb2d79bb5fd010af491d8b32a0555c3c6e9ce4c2e31a138325269dc7eb36",
+    "data/neutral-choice-visuals-v1.js": "85ccea413080b7d633512058e66be666569c5e1a441ea40a089b0b549bb13c4a",
+    "content/original-exams-v1.json": "e37ae653b4470abcd9c6a34bcdccb56966b6d5f1485143fc36ffe315cc0d6a10",
+    "data/original-support-v1.js": "cd368b5a8326e6004b27782dea86607db0a613047a30ca2e4ebd2bef764420cc",
+    "data/original-exams-manifest.json": "69b3d4708fef8ea88b15f063f986eda2d6924665321b5c4cd5f3310473200e21",
+    "package.json": "993a3568ffc665e38b9be8b642ed33f2215e1c1186dd0bceba80968ba691d2d3",
+    "tests/visual-choice-labels.test.cjs": "ec4a2e979592f0083a551967757f86662d5f0e9e22b8c33c4ed40d2611f59422",
+    "tests/neutral-choice-visuals.test.cjs": "becbfd1acf2614702d0179d1607e4b45d3060e452a51bfa6e4a6ee0c05e5504d",
+    "tests/original-question-ui.test.cjs": "68f5fcf834b3ded5d78e71ca52e8a6b5cc1aff201d3f498816dd767f36c65449",
+    "tests/review-listening-retry.test.cjs": "ae84329bd45e948acfc8e86cd2e7d562b325b560ecfe6d7da29c593c8cfcf30d",
+    "listening-transcripts.js": "c276bd4116d8623fb7347b6dfb53d707712d7a66976d85359bee11884277293b",
+    "listening-player.js": "0e346584d5c4b646e24518bcff4ab9c58933d30d598e5ec6229ee9fd8838c927",
+    "app-polish-v24.js": "4fbe3ed708b25179a892189c6645c09563d3eafa4c92859090b6df56189f84f7",
+    "product-polish.js": "7acf4f1bba5749279ef9beaac9b5efe93500d4117fe2d2b1da52e0827c0b3add",
+    "random-practice-translation.js": "08b7565c87420a4b07dc1e5caf82c77190ed50121c79c4be21a7d2b7b9f5c239",
+    "random-practice-visual-system.js": "777ab6d2713e4dd9fafe503303a82d15a7d48bc31fd899b5d54a29d5280d2eaa",
+    "review-visual-system.js": "be7c85ccc892863da0440e853e1793c0ee944b6bdc15f74fdd48c7b3f5dea98e",
+    "practice-sessions.js": "e7014c99a774802dcd24b3803ba31517b06e6ab881f008880ea69c0fe130b4eb",
+    "data/original-exams-v1-part1.js": "2ea940be7f0085a75a6ad603d5f3a8914c5e1e9d5471790b9671e53b76ebd54f",
+    "data/original-exams-v1-part2.js": "91cc1827b6b80a33368a759769425875ea74db7df52aff054d94d5653546e405",
+    "data/original-exams-v1-part3.js": "990291a5dc6cc769d73f7d69ad7196e5a8611aee230c425a045b3c4e5853a132",
+    "data/original-exams-v1-part4.js": "f4c0195d1a91a339981b67be647ebc0d2b5b9e3030abc6f5e52b79ab317ce642"
+  },
+  "reviewedAssets": [
+    {
+      "question": "O01-I-L-15",
+      "key": "장면 가",
+      "source": "assets/original/O01-I-L-15-a.svg",
+      "display": "assets/original/O01-I-L-15-a.svg",
+      "sourceSha256": "e7a0802d62946e4718bba23241b059bd77e4818d9bea7186e9d89df57ad40c95",
+      "displaySha256": "e7a0802d62946e4718bba23241b059bd77e4818d9bea7186e9d89df57ad40c95",
+      "removed": []
+    },
+    {
+      "question": "O01-I-L-15",
+      "key": "장면 나",
+      "source": "assets/original/O01-I-L-15-b.svg",
+      "display": "assets/original/O01-I-L-15-b.svg",
+      "sourceSha256": "ce1996dd77b9fcad65b0abc5923f6348c7fa9a87055eec15eaf75e44b08b40d8",
+      "displaySha256": "ce1996dd77b9fcad65b0abc5923f6348c7fa9a87055eec15eaf75e44b08b40d8",
+      "removed": []
+    },
+    {
+      "question": "O01-I-L-15",
+      "key": "장면 다",
+      "source": "assets/original/O01-I-L-15-c.svg",
+      "display": "assets/original/O01-I-L-15-c.svg",
+      "sourceSha256": "e3b374bc26b8c2c9aa4cc288115f7b01ac90bb975c7a954df12f66dd69eb74a4",
+      "displaySha256": "e3b374bc26b8c2c9aa4cc288115f7b01ac90bb975c7a954df12f66dd69eb74a4",
+      "removed": []
+    },
+    {
+      "question": "O01-I-L-15",
+      "key": "장면 라",
+      "source": "assets/original/O01-I-L-15-d.svg",
+      "display": "assets/original/O01-I-L-15-d.svg",
+      "sourceSha256": "b1964fa6fb6f2a582f85f32c06bfdb86a129d4911cbf5a8c5ae039410fc7fc94",
+      "displaySha256": "b1964fa6fb6f2a582f85f32c06bfdb86a129d4911cbf5a8c5ae039410fc7fc94",
+      "removed": []
+    },
+    {
+      "question": "O01-I-L-16",
+      "key": "장면 가",
+      "source": "assets/original/O01-I-L-16-a.svg",
+      "display": "assets/original/O01-I-L-16-a.svg",
+      "sourceSha256": "0b7bb4f92a339f154824abafd8c26ea08717a7dd16a24942946ed20f3ce1e066",
+      "displaySha256": "0b7bb4f92a339f154824abafd8c26ea08717a7dd16a24942946ed20f3ce1e066",
+      "removed": []
+    },
+    {
+      "question": "O01-I-L-16",
+      "key": "장면 나",
+      "source": "assets/original/O01-I-L-16-b.svg",
+      "display": "assets/original/O01-I-L-16-b.svg",
+      "sourceSha256": "f7b5a736879ecee4c048d2c4029f4374373d74957a2a02ce5bf2db0ad916b1a7",
+      "displaySha256": "f7b5a736879ecee4c048d2c4029f4374373d74957a2a02ce5bf2db0ad916b1a7",
+      "removed": []
+    },
+    {
+      "question": "O01-I-L-16",
+      "key": "장면 다",
+      "source": "assets/original/O01-I-L-16-c.svg",
+      "display": "assets/original/O01-I-L-16-c.svg",
+      "sourceSha256": "a423d53c06264aa0e319f586558d0551ba82bb5eab45cccdf846e0c134b30227",
+      "displaySha256": "a423d53c06264aa0e319f586558d0551ba82bb5eab45cccdf846e0c134b30227",
+      "removed": []
+    },
+    {
+      "question": "O01-I-L-16",
+      "key": "장면 라",
+      "source": "assets/original/O01-I-L-16-d.svg",
+      "display": "assets/original/O01-I-L-16-d.svg",
+      "sourceSha256": "76f1494abad44eef1bad9778ae057d27eb068dce86436a7f29ecb31eb1e64249",
+      "displaySha256": "76f1494abad44eef1bad9778ae057d27eb068dce86436a7f29ecb31eb1e64249",
+      "removed": []
+    },
+    {
+      "question": "O01-II-L-01",
+      "key": "장면 가",
+      "source": "assets/original/O01-II-L-01-a.svg",
+      "display": "assets/original/O01-II-L-01-a.svg",
+      "sourceSha256": "fd792144514fe55e20245d947e5537385072688c1aa91f5d75b555ee00599078",
+      "displaySha256": "fd792144514fe55e20245d947e5537385072688c1aa91f5d75b555ee00599078",
+      "removed": []
+    },
+    {
+      "question": "O01-II-L-01",
+      "key": "장면 나",
+      "source": "assets/original/O01-II-L-01-b.svg",
+      "display": "assets/original/O01-II-L-01-b.svg",
+      "sourceSha256": "2762ef8ce6649c31f2931356cef772c11df8d7d60e724d46e77bcd055e1d84cd",
+      "displaySha256": "2762ef8ce6649c31f2931356cef772c11df8d7d60e724d46e77bcd055e1d84cd",
+      "removed": []
+    },
+    {
+      "question": "O01-II-L-01",
+      "key": "장면 다",
+      "source": "assets/original/O01-II-L-01-c.svg",
+      "display": "assets/original/O01-II-L-01-c.svg",
+      "sourceSha256": "edd2c84acbd3bc573a571b184d91c3c0842af925f6432a81e5a1a6bc5e7cfedb",
+      "displaySha256": "edd2c84acbd3bc573a571b184d91c3c0842af925f6432a81e5a1a6bc5e7cfedb",
+      "removed": []
+    },
+    {
+      "question": "O01-II-L-01",
+      "key": "장면 라",
+      "source": "assets/original/O01-II-L-01-d.svg",
+      "display": "assets/original/O01-II-L-01-d.svg",
+      "sourceSha256": "94acafa88f4a369a0ea02a2461a2a5225083280c77cf3455167bde1730cae821",
+      "displaySha256": "94acafa88f4a369a0ea02a2461a2a5225083280c77cf3455167bde1730cae821",
+      "removed": []
+    },
+    {
+      "question": "O01-II-L-02",
+      "key": "장면 가",
+      "source": "assets/original/O01-II-L-02-a.svg",
+      "display": "assets/original/O01-II-L-02-a.svg",
+      "sourceSha256": "1c55c07c9aac55be4c551abce26e7a076f7d727247ff9068853b2a180ab934da",
+      "displaySha256": "1c55c07c9aac55be4c551abce26e7a076f7d727247ff9068853b2a180ab934da",
+      "removed": []
+    },
+    {
+      "question": "O01-II-L-02",
+      "key": "장면 나",
+      "source": "assets/original/O01-II-L-02-b.svg",
+      "display": "assets/original/O01-II-L-02-b.svg",
+      "sourceSha256": "03cee49118e3c8aabdefdbea85772f6707a39a3b242c92367aee13af13179631",
+      "displaySha256": "03cee49118e3c8aabdefdbea85772f6707a39a3b242c92367aee13af13179631",
+      "removed": []
+    },
+    {
+      "question": "O01-II-L-02",
+      "key": "장면 다",
+      "source": "assets/original/O01-II-L-02-c.svg",
+      "display": "assets/original/O01-II-L-02-c.svg",
+      "sourceSha256": "fb43649e773772a4e413cc94c1401713a267944a3059a53c441933be158af5ea",
+      "displaySha256": "fb43649e773772a4e413cc94c1401713a267944a3059a53c441933be158af5ea",
+      "removed": []
+    },
+    {
+      "question": "O01-II-L-02",
+      "key": "장면 라",
+      "source": "assets/original/O01-II-L-02-d.svg",
+      "display": "assets/original/O01-II-L-02-d.svg",
+      "sourceSha256": "2932e5137d46d3f30bf28064a41ddec236f05055b93d4f350d9d2e069bc838c8",
+      "displaySha256": "2932e5137d46d3f30bf28064a41ddec236f05055b93d4f350d9d2e069bc838c8",
+      "removed": []
+    },
+    {
+      "question": "O01-II-L-03",
+      "key": "그래프 가",
+      "source": "assets/original/O01-II-L-03-a.svg",
+      "display": "assets/original/O01-II-L-03-a.svg",
+      "sourceSha256": "8ab910c5a240ea30e17ed35bd38bb665762cade0cf132aa8deb59ad3c7f8da36",
+      "displaySha256": "8ab910c5a240ea30e17ed35bd38bb665762cade0cf132aa8deb59ad3c7f8da36",
+      "removed": []
+    },
+    {
+      "question": "O01-II-L-03",
+      "key": "그래프 나",
+      "source": "assets/original/O01-II-L-03-b.svg",
+      "display": "assets/original/O01-II-L-03-b.svg",
+      "sourceSha256": "853a63fe3a325fb4bdf9010668a4818a076143ff41b9de296708e19bef3a6d08",
+      "displaySha256": "853a63fe3a325fb4bdf9010668a4818a076143ff41b9de296708e19bef3a6d08",
+      "removed": []
+    },
+    {
+      "question": "O01-II-L-03",
+      "key": "그래프 다",
+      "source": "assets/original/O01-II-L-03-c.svg",
+      "display": "assets/original/O01-II-L-03-c.svg",
+      "sourceSha256": "9757c12825b870f16f825ce80132cc4f7c6b86fa8cef8407f1810ff98da84368",
+      "displaySha256": "9757c12825b870f16f825ce80132cc4f7c6b86fa8cef8407f1810ff98da84368",
+      "removed": []
+    },
+    {
+      "question": "O01-II-L-03",
+      "key": "그래프 라",
+      "source": "assets/original/O01-II-L-03-d.svg",
+      "display": "assets/original/O01-II-L-03-d.svg",
+      "sourceSha256": "5865e399bb5fc67233d711c5dd344421200240d53a27c5cb3a1b00856800d379",
+      "displaySha256": "5865e399bb5fc67233d711c5dd344421200240d53a27c5cb3a1b00856800d379",
+      "removed": []
+    },
+    {
+      "question": "O02-I-L-15",
+      "key": "장면 가",
+      "source": "assets/original/O02-I-L-15-a.svg",
+      "display": "assets/original/O02-I-L-15-a.svg",
+      "sourceSha256": "8fceb122984320042a9497dbb2ab2f22c5b447c0f068efd7e3a3a7dedf6b62c8",
+      "displaySha256": "8fceb122984320042a9497dbb2ab2f22c5b447c0f068efd7e3a3a7dedf6b62c8",
+      "removed": []
+    },
+    {
+      "question": "O02-I-L-15",
+      "key": "장면 나",
+      "source": "assets/original/O02-I-L-15-b.svg",
+      "display": "assets/original/O02-I-L-15-b.svg",
+      "sourceSha256": "7a5d216ae23ac17e4a7fd845111079ba866343f1e9c6e10a9d23d732e7cc7795",
+      "displaySha256": "7a5d216ae23ac17e4a7fd845111079ba866343f1e9c6e10a9d23d732e7cc7795",
+      "removed": []
+    },
+    {
+      "question": "O02-I-L-15",
+      "key": "장면 다",
+      "source": "assets/original/O02-I-L-15-c.svg",
+      "display": "assets/original/O02-I-L-15-c.svg",
+      "sourceSha256": "c5d63b4c4bf06c840736c14558a05dede37324059be1a8e733b0ced168cf7010",
+      "displaySha256": "c5d63b4c4bf06c840736c14558a05dede37324059be1a8e733b0ced168cf7010",
+      "removed": []
+    },
+    {
+      "question": "O02-I-L-15",
+      "key": "장면 라",
+      "source": "assets/original/O02-I-L-15-d.svg",
+      "display": "assets/original/O02-I-L-15-d.svg",
+      "sourceSha256": "fc2650d3f6c0f8b7d66e8bd6789ad4a72e9f6ba66f502e268e49268e81e4e39a",
+      "displaySha256": "fc2650d3f6c0f8b7d66e8bd6789ad4a72e9f6ba66f502e268e49268e81e4e39a",
+      "removed": []
+    },
+    {
+      "question": "O02-I-L-16",
+      "key": "장면 가",
+      "source": "assets/original/O02-I-L-16-a.svg",
+      "display": "assets/original/O02-I-L-16-a.svg",
+      "sourceSha256": "74586660c4d75bea012d5dddf31ebf0c589b5285522a8c310db015632c31ce47",
+      "displaySha256": "74586660c4d75bea012d5dddf31ebf0c589b5285522a8c310db015632c31ce47",
+      "removed": []
+    },
+    {
+      "question": "O02-I-L-16",
+      "key": "장면 나",
+      "source": "assets/original/O02-I-L-16-b.svg",
+      "display": "assets/original/O02-I-L-16-b.svg",
+      "sourceSha256": "3a0d8da2a72fef34948817a7c3d23e4eb54e01ad4251abca6bdfc019eb0b26d2",
+      "displaySha256": "3a0d8da2a72fef34948817a7c3d23e4eb54e01ad4251abca6bdfc019eb0b26d2",
+      "removed": []
+    },
+    {
+      "question": "O02-I-L-16",
+      "key": "장면 다",
+      "source": "assets/original/O02-I-L-16-c.svg",
+      "display": "assets/original/O02-I-L-16-c.svg",
+      "sourceSha256": "bc45a116866c12d3916ead80b8c5cc8be5789f1344e02386d9770db19724ee89",
+      "displaySha256": "bc45a116866c12d3916ead80b8c5cc8be5789f1344e02386d9770db19724ee89",
+      "removed": []
+    },
+    {
+      "question": "O02-I-L-16",
+      "key": "장면 라",
+      "source": "assets/original/O02-I-L-16-d.svg",
+      "display": "assets/original/O02-I-L-16-d.svg",
+      "sourceSha256": "e00f02ac80037a36d815445af0a165f3b0bb7fd6c8817856a8378c5343437fe4",
+      "displaySha256": "e00f02ac80037a36d815445af0a165f3b0bb7fd6c8817856a8378c5343437fe4",
+      "removed": []
+    },
+    {
+      "question": "O02-II-L-01",
+      "key": "장면 가",
+      "source": "assets/original/O02-II-L-01-a.svg",
+      "display": "assets/original/O02-II-L-01-a.svg",
+      "sourceSha256": "18d950a58f98bdf2d062bf1a0f32cb5b554f66b3334fae8597636626d740d275",
+      "displaySha256": "18d950a58f98bdf2d062bf1a0f32cb5b554f66b3334fae8597636626d740d275",
+      "removed": []
+    },
+    {
+      "question": "O02-II-L-01",
+      "key": "장면 나",
+      "source": "assets/original/O02-II-L-01-b.svg",
+      "display": "assets/original/O02-II-L-01-b.svg",
+      "sourceSha256": "803c6a1f575ca48b0cd426fb6ef93b65c698c55f4c2965c32d066f429f49102e",
+      "displaySha256": "803c6a1f575ca48b0cd426fb6ef93b65c698c55f4c2965c32d066f429f49102e",
+      "removed": []
+    },
+    {
+      "question": "O02-II-L-01",
+      "key": "장면 다",
+      "source": "assets/original/O02-II-L-01-c.svg",
+      "display": "assets/original/O02-II-L-01-c.svg",
+      "sourceSha256": "ddd603950eeb35623a0ac90ab21ba43c5fb4e85d7bc7ca0a9f183fd1896acc17",
+      "displaySha256": "ddd603950eeb35623a0ac90ab21ba43c5fb4e85d7bc7ca0a9f183fd1896acc17",
+      "removed": []
+    },
+    {
+      "question": "O02-II-L-01",
+      "key": "장면 라",
+      "source": "assets/original/O02-II-L-01-d.svg",
+      "display": "assets/original/O02-II-L-01-d.svg",
+      "sourceSha256": "688f985510940fbcd9e591aa663af7489aefcb11b19850db14f90f109e991098",
+      "displaySha256": "688f985510940fbcd9e591aa663af7489aefcb11b19850db14f90f109e991098",
+      "removed": []
+    },
+    {
+      "question": "O02-II-L-02",
+      "key": "장면 가",
+      "source": "assets/original/O02-II-L-02-a.svg",
+      "display": "assets/original/O02-II-L-02-a.svg",
+      "sourceSha256": "a770f10ba5bfba3257e5a4c0fcb33a47a05a3b7474d29c662871b99eb9e1397c",
+      "displaySha256": "a770f10ba5bfba3257e5a4c0fcb33a47a05a3b7474d29c662871b99eb9e1397c",
+      "removed": []
+    },
+    {
+      "question": "O02-II-L-02",
+      "key": "장면 나",
+      "source": "assets/original/O02-II-L-02-b.svg",
+      "display": "assets/original/O02-II-L-02-b.svg",
+      "sourceSha256": "146fa4b9ddd81a21b19f72cd8f862b12af02d6d0943ddb10630a4560bdbfb8a2",
+      "displaySha256": "146fa4b9ddd81a21b19f72cd8f862b12af02d6d0943ddb10630a4560bdbfb8a2",
+      "removed": []
+    },
+    {
+      "question": "O02-II-L-02",
+      "key": "장면 다",
+      "source": "assets/original/O02-II-L-02-c.svg",
+      "display": "assets/original/O02-II-L-02-c.svg",
+      "sourceSha256": "ffbd107b492ab804f27135582041768a1d0afc48f8b60f6908852bb9b31f210b",
+      "displaySha256": "ffbd107b492ab804f27135582041768a1d0afc48f8b60f6908852bb9b31f210b",
+      "removed": []
+    },
+    {
+      "question": "O02-II-L-02",
+      "key": "장면 라",
+      "source": "assets/original/O02-II-L-02-d.svg",
+      "display": "assets/original/O02-II-L-02-d.svg",
+      "sourceSha256": "620cd6023f65a3f4b1907a594cfce23a81818e0e49674f7701211c08be43f10b",
+      "displaySha256": "620cd6023f65a3f4b1907a594cfce23a81818e0e49674f7701211c08be43f10b",
+      "removed": []
+    },
+    {
+      "question": "O02-II-L-03",
+      "key": "그래프 가",
+      "source": "assets/original/O02-II-L-03-a.svg",
+      "display": "assets/original/O02-II-L-03-a.svg",
+      "sourceSha256": "73d02002d4e9e784070112254a2d57c7da1fec34bdd5840130b90f62b69078b0",
+      "displaySha256": "73d02002d4e9e784070112254a2d57c7da1fec34bdd5840130b90f62b69078b0",
+      "removed": []
+    },
+    {
+      "question": "O02-II-L-03",
+      "key": "그래프 나",
+      "source": "assets/original/O02-II-L-03-b.svg",
+      "display": "assets/original/O02-II-L-03-b.svg",
+      "sourceSha256": "3593ebb7a644181324844fc7fcf70c891156af5203f9aa6abc473f9b31a89ce2",
+      "displaySha256": "3593ebb7a644181324844fc7fcf70c891156af5203f9aa6abc473f9b31a89ce2",
+      "removed": []
+    },
+    {
+      "question": "O02-II-L-03",
+      "key": "그래프 다",
+      "source": "assets/original/O02-II-L-03-c.svg",
+      "display": "assets/original/O02-II-L-03-c.svg",
+      "sourceSha256": "1d0278f38c03c1a7dc424942739d9b2cf5f57bd644b97773c1b62334e47db6a5",
+      "displaySha256": "1d0278f38c03c1a7dc424942739d9b2cf5f57bd644b97773c1b62334e47db6a5",
+      "removed": []
+    },
+    {
+      "question": "O02-II-L-03",
+      "key": "그래프 라",
+      "source": "assets/original/O02-II-L-03-d.svg",
+      "display": "assets/original/O02-II-L-03-d.svg",
+      "sourceSha256": "bf4a67dfff368e01888f35dc935d58f8933d3046981ba4d59a856760af2902e4",
+      "displaySha256": "bf4a67dfff368e01888f35dc935d58f8933d3046981ba4d59a856760af2902e4",
+      "removed": []
+    },
+    {
+      "question": "O03-I-L-15",
+      "key": "장면 가",
+      "source": "assets/original/O03-I-L-15-a.svg",
+      "display": "assets/original/O03-I-L-15-a.svg",
+      "sourceSha256": "d3086035286a78ecf908ff5b183e5c5bcd189af3eee3e8d15fd61f848d2eef53",
+      "displaySha256": "d3086035286a78ecf908ff5b183e5c5bcd189af3eee3e8d15fd61f848d2eef53",
+      "removed": []
+    },
+    {
+      "question": "O03-I-L-15",
+      "key": "장면 나",
+      "source": "assets/original/O03-I-L-15-b.svg",
+      "display": "assets/original/O03-I-L-15-b.svg",
+      "sourceSha256": "140d289cedbd11eb8fa6a8e49937c02d29da6ca6760e6c852846333a423ebb0f",
+      "displaySha256": "140d289cedbd11eb8fa6a8e49937c02d29da6ca6760e6c852846333a423ebb0f",
+      "removed": []
+    },
+    {
+      "question": "O03-I-L-15",
+      "key": "장면 다",
+      "source": "assets/original/O03-I-L-15-c.svg",
+      "display": "assets/original/O03-I-L-15-c.svg",
+      "sourceSha256": "9224ffd729bc4cd305a32f66eab317c11aaeee06e9eb602ff34ed0479648d36a",
+      "displaySha256": "9224ffd729bc4cd305a32f66eab317c11aaeee06e9eb602ff34ed0479648d36a",
+      "removed": []
+    },
+    {
+      "question": "O03-I-L-15",
+      "key": "장면 라",
+      "source": "assets/original/O03-I-L-15-d.svg",
+      "display": "assets/original/O03-I-L-15-d.svg",
+      "sourceSha256": "1d1546f9ac0462c420f4e2441aaaf757586d43127a0fa1dea525f2eb110ba8c0",
+      "displaySha256": "1d1546f9ac0462c420f4e2441aaaf757586d43127a0fa1dea525f2eb110ba8c0",
+      "removed": []
+    },
+    {
+      "question": "O03-I-L-16",
+      "key": "장면 가",
+      "source": "assets/original/O03-I-L-16-a.svg",
+      "display": "assets/original/O03-I-L-16-a.svg",
+      "sourceSha256": "a1312b2c85baa96b038db7a4468911233e64362a2038e9072957ca0f14ca7cdd",
+      "displaySha256": "a1312b2c85baa96b038db7a4468911233e64362a2038e9072957ca0f14ca7cdd",
+      "removed": []
+    },
+    {
+      "question": "O03-I-L-16",
+      "key": "장면 나",
+      "source": "assets/original/O03-I-L-16-b.svg",
+      "display": "assets/original/O03-I-L-16-b.svg",
+      "sourceSha256": "68f7e2ad12602809718d4f48c8bff41bad617f472c70d065b8dc74572b115117",
+      "displaySha256": "68f7e2ad12602809718d4f48c8bff41bad617f472c70d065b8dc74572b115117",
+      "removed": []
+    },
+    {
+      "question": "O03-I-L-16",
+      "key": "장면 다",
+      "source": "assets/original/O03-I-L-16-c.svg",
+      "display": "assets/original/O03-I-L-16-c.svg",
+      "sourceSha256": "f7a22d6896194a9199bd2ecbab0346702a576d2e490c3e462570a27541e034f3",
+      "displaySha256": "f7a22d6896194a9199bd2ecbab0346702a576d2e490c3e462570a27541e034f3",
+      "removed": []
+    },
+    {
+      "question": "O03-I-L-16",
+      "key": "장면 라",
+      "source": "assets/original/O03-I-L-16-d.svg",
+      "display": "assets/original/O03-I-L-16-d.svg",
+      "sourceSha256": "221c074e761d324f3afb71942fff3fd33f6091552022ace0836113bd93064bed",
+      "displaySha256": "221c074e761d324f3afb71942fff3fd33f6091552022ace0836113bd93064bed",
+      "removed": []
+    },
+    {
+      "question": "O03-II-L-01",
+      "key": "장면 가",
+      "source": "assets/original/O03-II-L-01-a.svg",
+      "display": "assets/original/O03-II-L-01-a.svg",
+      "sourceSha256": "e5e2d05b40ebaefc5f16eaf038c242df83e43e52b1076ad419db46b8a6e66e02",
+      "displaySha256": "e5e2d05b40ebaefc5f16eaf038c242df83e43e52b1076ad419db46b8a6e66e02",
+      "removed": []
+    },
+    {
+      "question": "O03-II-L-01",
+      "key": "장면 나",
+      "source": "assets/original/O03-II-L-01-b.svg",
+      "display": "assets/original/O03-II-L-01-b.svg",
+      "sourceSha256": "fa1ca315e4a021ba3da502d2431793f3c2de3501150c75d7d92ab6b3a7408828",
+      "displaySha256": "fa1ca315e4a021ba3da502d2431793f3c2de3501150c75d7d92ab6b3a7408828",
+      "removed": []
+    },
+    {
+      "question": "O03-II-L-01",
+      "key": "장면 다",
+      "source": "assets/original/O03-II-L-01-c.svg",
+      "display": "assets/original/O03-II-L-01-c.svg",
+      "sourceSha256": "8f0512a8bd85b1b8d056988439ecf28d1f9b865159ae2cf063cc894882075c6f",
+      "displaySha256": "8f0512a8bd85b1b8d056988439ecf28d1f9b865159ae2cf063cc894882075c6f",
+      "removed": []
+    },
+    {
+      "question": "O03-II-L-01",
+      "key": "장면 라",
+      "source": "assets/original/O03-II-L-01-d.svg",
+      "display": "assets/original/O03-II-L-01-d.svg",
+      "sourceSha256": "ad6258d9b0efad5b362d6bdebf3a56dd939bdebdd54ac33c762c5dc12e51523e",
+      "displaySha256": "ad6258d9b0efad5b362d6bdebf3a56dd939bdebdd54ac33c762c5dc12e51523e",
+      "removed": []
+    },
+    {
+      "question": "O03-II-L-02",
+      "key": "장면 가",
+      "source": "assets/original/O03-II-L-02-a.svg",
+      "display": "assets/original/O03-II-L-02-a.svg",
+      "sourceSha256": "18827ac9eb9756956b68e42e31ded0e8bb9862b94fb7332654ae8c38fbdcfa8f",
+      "displaySha256": "18827ac9eb9756956b68e42e31ded0e8bb9862b94fb7332654ae8c38fbdcfa8f",
+      "removed": []
+    },
+    {
+      "question": "O03-II-L-02",
+      "key": "장면 나",
+      "source": "assets/original/O03-II-L-02-b.svg",
+      "display": "assets/original/O03-II-L-02-b.svg",
+      "sourceSha256": "4f261ec8121062ffe89ad4c4dc84049cb63da7be34658890df02070112719c66",
+      "displaySha256": "4f261ec8121062ffe89ad4c4dc84049cb63da7be34658890df02070112719c66",
+      "removed": []
+    },
+    {
+      "question": "O03-II-L-02",
+      "key": "장면 다",
+      "source": "assets/original/O03-II-L-02-c.svg",
+      "display": "assets/original/O03-II-L-02-c.svg",
+      "sourceSha256": "399861fc7cfcc6c6ac9bd3301b738b90e29759f46cd3b3594ded276ddd29ab91",
+      "displaySha256": "399861fc7cfcc6c6ac9bd3301b738b90e29759f46cd3b3594ded276ddd29ab91",
+      "removed": []
+    },
+    {
+      "question": "O03-II-L-02",
+      "key": "장면 라",
+      "source": "assets/original/O03-II-L-02-d.svg",
+      "display": "assets/original/O03-II-L-02-d.svg",
+      "sourceSha256": "9dff1ba39f9691768bf5117c504ef9e732146976a263b9d97b765b9373429d11",
+      "displaySha256": "9dff1ba39f9691768bf5117c504ef9e732146976a263b9d97b765b9373429d11",
+      "removed": []
+    },
+    {
+      "question": "O03-II-L-03",
+      "key": "그래프 가",
+      "source": "assets/original/O03-II-L-03-a.svg",
+      "display": "assets/original/O03-II-L-03-a.svg",
+      "sourceSha256": "a20edd5cf86ef6cad12c8f0e66a02dbd757d4b530bf0e9f13caa904bbf6a3917",
+      "displaySha256": "a20edd5cf86ef6cad12c8f0e66a02dbd757d4b530bf0e9f13caa904bbf6a3917",
+      "removed": []
+    },
+    {
+      "question": "O03-II-L-03",
+      "key": "그래프 나",
+      "source": "assets/original/O03-II-L-03-b.svg",
+      "display": "assets/original/O03-II-L-03-b.svg",
+      "sourceSha256": "b073baa8712006629de382b0772c35a4d3c1ac53322ebc21fff6e30737a6140f",
+      "displaySha256": "b073baa8712006629de382b0772c35a4d3c1ac53322ebc21fff6e30737a6140f",
+      "removed": []
+    },
+    {
+      "question": "O03-II-L-03",
+      "key": "그래프 다",
+      "source": "assets/original/O03-II-L-03-c.svg",
+      "display": "assets/original/O03-II-L-03-c.svg",
+      "sourceSha256": "540feea244d8e7593fb13734aa13f3e52d1c1306d467331b337e3a16f9ec2108",
+      "displaySha256": "540feea244d8e7593fb13734aa13f3e52d1c1306d467331b337e3a16f9ec2108",
+      "removed": []
+    },
+    {
+      "question": "O03-II-L-03",
+      "key": "그래프 라",
+      "source": "assets/original/O03-II-L-03-d.svg",
+      "display": "assets/original/O03-II-L-03-d.svg",
+      "sourceSha256": "7b8868d02f850013b24890265d8434a8c7a4445bd41979d771efdaef6f6c9fad",
+      "displaySha256": "7b8868d02f850013b24890265d8434a8c7a4445bd41979d771efdaef6f6c9fad",
+      "removed": []
+    },
+    {
+      "question": "O04-I-L-15",
+      "key": "장면 가",
+      "source": "assets/original/O04-I-L-15-a.svg",
+      "display": "assets/original/O04-I-L-15-a.svg",
+      "sourceSha256": "007fbf3941a800c6df33fd2b2989d060a05ff88517250c17ee14936c96627554",
+      "displaySha256": "007fbf3941a800c6df33fd2b2989d060a05ff88517250c17ee14936c96627554",
+      "removed": []
+    },
+    {
+      "question": "O04-I-L-15",
+      "key": "장면 나",
+      "source": "assets/original/O04-I-L-15-b.svg",
+      "display": "assets/original/O04-I-L-15-b.svg",
+      "sourceSha256": "49b4207159c206195b82a4ab52b07dafb12875c0b0111d3b43a6b6a2905efaf5",
+      "displaySha256": "49b4207159c206195b82a4ab52b07dafb12875c0b0111d3b43a6b6a2905efaf5",
+      "removed": []
+    },
+    {
+      "question": "O04-I-L-15",
+      "key": "장면 다",
+      "source": "assets/original/O04-I-L-15-c.svg",
+      "display": "assets/original/O04-I-L-15-c.svg",
+      "sourceSha256": "8e5410e1f244a1ec7b6b0e6977daf584969ef2874f051caab6609cbcd682b06b",
+      "displaySha256": "8e5410e1f244a1ec7b6b0e6977daf584969ef2874f051caab6609cbcd682b06b",
+      "removed": []
+    },
+    {
+      "question": "O04-I-L-15",
+      "key": "장면 라",
+      "source": "assets/original/O04-I-L-15-d.svg",
+      "display": "assets/original/O04-I-L-15-d.svg",
+      "sourceSha256": "c7584d1f52cc85494e00a671661dddb26398d369fb9b4cb2c0ce589fb34fa650",
+      "displaySha256": "c7584d1f52cc85494e00a671661dddb26398d369fb9b4cb2c0ce589fb34fa650",
+      "removed": []
+    },
+    {
+      "question": "O04-I-L-16",
+      "key": "장면 가",
+      "source": "assets/original/O04-I-L-16-a.svg",
+      "display": "assets/original/O04-I-L-16-a.svg",
+      "sourceSha256": "dc1d628af0bc32945af83601d7145d361dce8987626df0ef8082d4ea35db2491",
+      "displaySha256": "dc1d628af0bc32945af83601d7145d361dce8987626df0ef8082d4ea35db2491",
+      "removed": []
+    },
+    {
+      "question": "O04-I-L-16",
+      "key": "장면 나",
+      "source": "assets/original/O04-I-L-16-b.svg",
+      "display": "assets/original/O04-I-L-16-b.svg",
+      "sourceSha256": "513ef71a2b088033130b423ec9732ae653e4630095f77ee94b83cf6d92cb668b",
+      "displaySha256": "513ef71a2b088033130b423ec9732ae653e4630095f77ee94b83cf6d92cb668b",
+      "removed": []
+    },
+    {
+      "question": "O04-I-L-16",
+      "key": "장면 다",
+      "source": "assets/original/O04-I-L-16-c.svg",
+      "display": "assets/original/O04-I-L-16-c.svg",
+      "sourceSha256": "c54b8153fd2c46fdf485ee3078f17439efa1171d047c99a24258ac7400f87ba8",
+      "displaySha256": "c54b8153fd2c46fdf485ee3078f17439efa1171d047c99a24258ac7400f87ba8",
+      "removed": []
+    },
+    {
+      "question": "O04-I-L-16",
+      "key": "장면 라",
+      "source": "assets/original/O04-I-L-16-d.svg",
+      "display": "assets/original/O04-I-L-16-d.svg",
+      "sourceSha256": "e783c78b7f85517b3c33e0e7770307f41a9a63143ecab121cc52b1f9d7f0ca1e",
+      "displaySha256": "e783c78b7f85517b3c33e0e7770307f41a9a63143ecab121cc52b1f9d7f0ca1e",
+      "removed": []
+    },
+    {
+      "question": "O04-II-L-01",
+      "key": "장면 다",
+      "source": "assets/original/O04-II-L-01-a.svg",
+      "display": "assets/original-neutral/O04-II-L-01-a.svg",
+      "sourceSha256": "2b32f5737221c6a48dfb0efee401a976ca2c6db1af04ea45cf6e70c6cd03f7ab",
+      "displaySha256": "8382c1a1ccfde5cd05367b5b845051f24fa84a821f12d4181e3dbe5ddaadcb06",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "장면 다",
+          "byteStart": 240,
+          "byteEnd": 368
+        }
+      ],
+      "independentPixelDiffBox": [
+        12,
+        9,
+        45,
+        20
+      ]
+    },
+    {
+      "question": "O04-II-L-01",
+      "key": "장면 나",
+      "source": "assets/original/O04-II-L-01-b.svg",
+      "display": "assets/original-neutral/O04-II-L-01-b.svg",
+      "sourceSha256": "fc167e58451a72a9a0e7872479f798745c638e23f18bc23f8bcf7cd33806505b",
+      "displaySha256": "f1efc36c7d538ab3c170f70974a58de1ab93a6221f3e5b11042e80aebc8f8f33",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "장면 나",
+          "byteStart": 240,
+          "byteEnd": 368
+        }
+      ],
+      "independentPixelDiffBox": [
+        12,
+        9,
+        45,
+        20
+      ]
+    },
+    {
+      "question": "O04-II-L-01",
+      "key": "장면 가",
+      "source": "assets/original/O04-II-L-01-c.svg",
+      "display": "assets/original-neutral/O04-II-L-01-c.svg",
+      "sourceSha256": "198502fbc961fd8a55e0e5162f77827ff63a49ba3ec8321f4ccde773b0a75af8",
+      "displaySha256": "bad9b7798f2d499f12d3bd5a8b15533f25746278fd7627756faa17508b79c05a",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "장면 가",
+          "byteStart": 240,
+          "byteEnd": 368
+        }
+      ],
+      "independentPixelDiffBox": [
+        12,
+        9,
+        45,
+        20
+      ]
+    },
+    {
+      "question": "O04-II-L-01",
+      "key": "장면 라",
+      "source": "assets/original/O04-II-L-01-d.svg",
+      "display": "assets/original-neutral/O04-II-L-01-d.svg",
+      "sourceSha256": "11cc9d86b69697944dcf2bdb39823586edd7ea032f125e949a479f96c4c7e0e3",
+      "displaySha256": "48dbe8fae6e79319dffbeeff1363e25b9c5a7c1aeaa7828d70578d50e2c235e0",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "장면 라",
+          "byteStart": 240,
+          "byteEnd": 368
+        }
+      ],
+      "independentPixelDiffBox": [
+        12,
+        9,
+        45,
+        20
+      ]
+    },
+    {
+      "question": "O04-II-L-02",
+      "key": "장면 나",
+      "source": "assets/original/O04-II-L-02-a.svg",
+      "display": "assets/original-neutral/O04-II-L-02-a.svg",
+      "sourceSha256": "4fe2ac501e73f3cefd0df1b6235341f0f449194ec63b9d7c850535b0ec0729d2",
+      "displaySha256": "1dc48ba48fa112c74fbb651540359070350d2386e5cc2bb468ae401e922d2cef",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "장면 나",
+          "byteStart": 240,
+          "byteEnd": 368
+        }
+      ],
+      "independentPixelDiffBox": [
+        12,
+        9,
+        45,
+        20
+      ]
+    },
+    {
+      "question": "O04-II-L-02",
+      "key": "장면 가",
+      "source": "assets/original/O04-II-L-02-b.svg",
+      "display": "assets/original-neutral/O04-II-L-02-b.svg",
+      "sourceSha256": "1d840131ce02ac2e2ecca0fe54526eb79914269b93a745fc8464c63fddccdf8f",
+      "displaySha256": "cec1c52759d1d9256038d4f966a3ee153ead4c88a2dac33ebb6cc2350bf812e0",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "장면 가",
+          "byteStart": 240,
+          "byteEnd": 368
+        }
+      ],
+      "independentPixelDiffBox": [
+        12,
+        9,
+        45,
+        20
+      ]
+    },
+    {
+      "question": "O04-II-L-02",
+      "key": "장면 다",
+      "source": "assets/original/O04-II-L-02-c.svg",
+      "display": "assets/original-neutral/O04-II-L-02-c.svg",
+      "sourceSha256": "9e63bc1a209800d368e2f722b0e60cc37bbb997f8cedadf4eb33424f7c6835a6",
+      "displaySha256": "5f3225788c135cfb84f98a3b1857738b1a21d290f8bb0861469759839423297a",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "장면 다",
+          "byteStart": 240,
+          "byteEnd": 368
+        }
+      ],
+      "independentPixelDiffBox": [
+        12,
+        9,
+        45,
+        20
+      ]
+    },
+    {
+      "question": "O04-II-L-02",
+      "key": "장면 라",
+      "source": "assets/original/O04-II-L-02-d.svg",
+      "display": "assets/original-neutral/O04-II-L-02-d.svg",
+      "sourceSha256": "3e1b280cf22173934e22f61f08a000e4515fbd3546bc988890267b707c1d8ff3",
+      "displaySha256": "df0c40ca17c9cdc342b5c6dee9504baa3174b9e48fd9e5c4341e4a47de63e367",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "장면 라",
+          "byteStart": 240,
+          "byteEnd": 368
+        }
+      ],
+      "independentPixelDiffBox": [
+        12,
+        9,
+        45,
+        20
+      ]
+    },
+    {
+      "question": "O04-II-L-03",
+      "key": "그래프 라",
+      "source": "assets/original/O04-II-L-03-a.svg",
+      "display": "assets/original-neutral/O04-II-L-03-a.svg",
+      "sourceSha256": "92dae1a956f255f6b2838f747b484c5d54dbe395552907689f95aac78a963176",
+      "displaySha256": "ac3c60294696ba8d0ac0f9c1cfe20968e685fe5b9f919bdbadb9a3d2ab309b46",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "그래프 라",
+          "byteStart": 240,
+          "byteEnd": 371
+        }
+      ],
+      "independentPixelDiffBox": [
+        12,
+        9,
+        55,
+        20
+      ]
+    },
+    {
+      "question": "O04-II-L-03",
+      "key": "그래프 나",
+      "source": "assets/original/O04-II-L-03-b.svg",
+      "display": "assets/original-neutral/O04-II-L-03-b.svg",
+      "sourceSha256": "248a6895aa88d1c94461dc153b857b9fbe6482c9547a5a408d8a9d7c5618147c",
+      "displaySha256": "66287b860648551b1a0190849df64136609821b51bed3ab0b1018976d6faa997",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "그래프 나",
+          "byteStart": 240,
+          "byteEnd": 371
+        }
+      ],
+      "independentPixelDiffBox": [
+        12,
+        9,
+        55,
+        20
+      ]
+    },
+    {
+      "question": "O04-II-L-03",
+      "key": "그래프 다",
+      "source": "assets/original/O04-II-L-03-c.svg",
+      "display": "assets/original-neutral/O04-II-L-03-c.svg",
+      "sourceSha256": "e83697ee62603753cb93e35458a2e90ca5d1507de31e36ab5d5775fe792efe66",
+      "displaySha256": "858fa8e56fed91c1166d267bb3136c7c9b232882da2cf82980eec3d2e3cf576b",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "그래프 다",
+          "byteStart": 240,
+          "byteEnd": 371
+        }
+      ],
+      "independentPixelDiffBox": [
+        12,
+        9,
+        55,
+        20
+      ]
+    },
+    {
+      "question": "O04-II-L-03",
+      "key": "그래프 가",
+      "source": "assets/original/O04-II-L-03-d.svg",
+      "display": "assets/original-neutral/O04-II-L-03-d.svg",
+      "sourceSha256": "10f494995454e32d944a5dd9a3482d07322af421ba4ec399ee1eaf76d140d87f",
+      "displaySha256": "2cb4810376a1f1832a37d651a1d65379c03fed45bc4842c3a32ca83658d5d5df",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "그래프 가",
+          "byteStart": 240,
+          "byteEnd": 371
+        }
+      ],
+      "independentPixelDiffBox": [
+        12,
+        9,
+        55,
+        20
+      ]
+    },
+    {
+      "question": "O05-I-L-15",
+      "key": "장면 가",
+      "source": "assets/original/O05-I-L-15-a.svg",
+      "display": "assets/original/O05-I-L-15-a.svg",
+      "sourceSha256": "8935215fabf0cd4b8554ec0d0a61631d847e56cbb72ef8f379b42bd8d2d7f612",
+      "displaySha256": "8935215fabf0cd4b8554ec0d0a61631d847e56cbb72ef8f379b42bd8d2d7f612",
+      "removed": []
+    },
+    {
+      "question": "O05-I-L-15",
+      "key": "장면 나",
+      "source": "assets/original/O05-I-L-15-b.svg",
+      "display": "assets/original/O05-I-L-15-b.svg",
+      "sourceSha256": "d54bedd0660c7223eb86fc64dd00a5d65b67722322d509527b5595a44e4d1911",
+      "displaySha256": "d54bedd0660c7223eb86fc64dd00a5d65b67722322d509527b5595a44e4d1911",
+      "removed": []
+    },
+    {
+      "question": "O05-I-L-15",
+      "key": "장면 다",
+      "source": "assets/original/O05-I-L-15-c.svg",
+      "display": "assets/original/O05-I-L-15-c.svg",
+      "sourceSha256": "336a8e475a30abad33e535b36796582a375e460821d2066b337a936efeba35de",
+      "displaySha256": "336a8e475a30abad33e535b36796582a375e460821d2066b337a936efeba35de",
+      "removed": []
+    },
+    {
+      "question": "O05-I-L-15",
+      "key": "장면 라",
+      "source": "assets/original/O05-I-L-15-d.svg",
+      "display": "assets/original/O05-I-L-15-d.svg",
+      "sourceSha256": "bc2ff3c53f3eba22e5a85a0eba8153783bdab813dfdebe9c8a9a007cec3672b9",
+      "displaySha256": "bc2ff3c53f3eba22e5a85a0eba8153783bdab813dfdebe9c8a9a007cec3672b9",
+      "removed": []
+    },
+    {
+      "question": "O05-I-L-16",
+      "key": "장면 가",
+      "source": "assets/original/O05-I-L-16-a.svg",
+      "display": "assets/original/O05-I-L-16-a.svg",
+      "sourceSha256": "667675401a8c72105a6a64525198015fa11c7b1267757258f363e2875064b3ab",
+      "displaySha256": "667675401a8c72105a6a64525198015fa11c7b1267757258f363e2875064b3ab",
+      "removed": []
+    },
+    {
+      "question": "O05-I-L-16",
+      "key": "장면 나",
+      "source": "assets/original/O05-I-L-16-b.svg",
+      "display": "assets/original/O05-I-L-16-b.svg",
+      "sourceSha256": "bcd564e6d7f07b5a07775572fe9523270949a25619e171ebb94073323855a419",
+      "displaySha256": "bcd564e6d7f07b5a07775572fe9523270949a25619e171ebb94073323855a419",
+      "removed": []
+    },
+    {
+      "question": "O05-I-L-16",
+      "key": "장면 다",
+      "source": "assets/original/O05-I-L-16-c.svg",
+      "display": "assets/original/O05-I-L-16-c.svg",
+      "sourceSha256": "f511f442824e7e7f00584f6afbd5f087ea421714f5ab40e5a7d61497e1dfd9d6",
+      "displaySha256": "f511f442824e7e7f00584f6afbd5f087ea421714f5ab40e5a7d61497e1dfd9d6",
+      "removed": []
+    },
+    {
+      "question": "O05-I-L-16",
+      "key": "장면 라",
+      "source": "assets/original/O05-I-L-16-d.svg",
+      "display": "assets/original/O05-I-L-16-d.svg",
+      "sourceSha256": "80682a6edb3bb35d869f4e6d68548a4fcd302e4ec1f7b7a9f7d2e104578bca5e",
+      "displaySha256": "80682a6edb3bb35d869f4e6d68548a4fcd302e4ec1f7b7a9f7d2e104578bca5e",
+      "removed": []
+    },
+    {
+      "question": "O05-II-L-01",
+      "key": "장면 다",
+      "source": "assets/original/O05-II-L-01-a.svg",
+      "display": "assets/original-neutral/O05-II-L-01-a.svg",
+      "sourceSha256": "cbe226a158372afc1ae6505be94988fad796742b0faeaffe099a5a8a4e398ea3",
+      "displaySha256": "b524bdf1486e4c09a25192adf4e459364b311295b0bee0d7965936d5e85728c8",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "장면 다",
+          "byteStart": 131,
+          "byteEnd": 261
+        }
+      ],
+      "independentPixelDiffBox": [
+        17,
+        8,
+        48,
+        19
+      ]
+    },
+    {
+      "question": "O05-II-L-01",
+      "key": "장면 라",
+      "source": "assets/original/O05-II-L-01-b.svg",
+      "display": "assets/original-neutral/O05-II-L-01-b.svg",
+      "sourceSha256": "0cd618ab8f2d90daef42c8017a3fa786a8dab2a02846b517f6a90450ddb0b679",
+      "displaySha256": "88d7bd4024270a2243f1b3545cd44e2861270af75e43bcdf36c38c3dd2204ef1",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "장면 라",
+          "byteStart": 131,
+          "byteEnd": 261
+        }
+      ],
+      "independentPixelDiffBox": [
+        17,
+        8,
+        48,
+        19
+      ]
+    },
+    {
+      "question": "O05-II-L-01",
+      "key": "장면 가",
+      "source": "assets/original/O05-II-L-01-c.svg",
+      "display": "assets/original-neutral/O05-II-L-01-c.svg",
+      "sourceSha256": "cb76372477e1d451c73774afe36df65ab427576398f6051f9b312e7f63f30f3a",
+      "displaySha256": "ca5a927e186c7f7bfc3fbe67ea3d2771a9d6bd91dd61f405f20da30beb1d55f7",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "장면 가",
+          "byteStart": 131,
+          "byteEnd": 261
+        }
+      ],
+      "independentPixelDiffBox": [
+        17,
+        8,
+        48,
+        19
+      ]
+    },
+    {
+      "question": "O05-II-L-01",
+      "key": "장면 나",
+      "source": "assets/original/O05-II-L-01-d.svg",
+      "display": "assets/original-neutral/O05-II-L-01-d.svg",
+      "sourceSha256": "d012a2b5ffbf37dbc6d34dbf688c1b3471e89338d783aa7d77fe73b79ba6097a",
+      "displaySha256": "5d3a91ce55a615e1341a0cec87486f305368f0986b1fd4c3396892c7fe04a7af",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "장면 나",
+          "byteStart": 131,
+          "byteEnd": 261
+        }
+      ],
+      "independentPixelDiffBox": [
+        17,
+        8,
+        48,
+        19
+      ]
+    },
+    {
+      "question": "O05-II-L-02",
+      "key": "장면 나",
+      "source": "assets/original/O05-II-L-02-a.svg",
+      "display": "assets/original-neutral/O05-II-L-02-a.svg",
+      "sourceSha256": "876d95f2998a99249ec33532cfa171d0037f996a60ad53007b918a2354a88a00",
+      "displaySha256": "87110a89ea18ebd7db73f17aff00921e28d198db1e3514ae19ded13e0095da7f",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "장면 나",
+          "byteStart": 131,
+          "byteEnd": 261
+        }
+      ],
+      "independentPixelDiffBox": [
+        17,
+        8,
+        48,
+        19
+      ]
+    },
+    {
+      "question": "O05-II-L-02",
+      "key": "장면 다",
+      "source": "assets/original/O05-II-L-02-b.svg",
+      "display": "assets/original-neutral/O05-II-L-02-b.svg",
+      "sourceSha256": "8fa0fb31467d1accdd20feee1affbca538179591b2acb972072911981af86056",
+      "displaySha256": "baa451ddb8e4bd065a73c8fb352fd9ac95518166881dc72017cca1410606ab74",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "장면 다",
+          "byteStart": 131,
+          "byteEnd": 261
+        }
+      ],
+      "independentPixelDiffBox": [
+        17,
+        8,
+        48,
+        19
+      ]
+    },
+    {
+      "question": "O05-II-L-02",
+      "key": "장면 라",
+      "source": "assets/original/O05-II-L-02-c.svg",
+      "display": "assets/original-neutral/O05-II-L-02-c.svg",
+      "sourceSha256": "6d47ff4111596903895aa9422d8520a91b1038325db183154db439b9acc71e5f",
+      "displaySha256": "eec0f658ce97d987843e26a15400876e784a8a99edc0c84dead79899a36121b7",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "장면 라",
+          "byteStart": 131,
+          "byteEnd": 261
+        }
+      ],
+      "independentPixelDiffBox": [
+        17,
+        8,
+        48,
+        19
+      ]
+    },
+    {
+      "question": "O05-II-L-02",
+      "key": "장면 가",
+      "source": "assets/original/O05-II-L-02-d.svg",
+      "display": "assets/original-neutral/O05-II-L-02-d.svg",
+      "sourceSha256": "15e5c05edb7091c499a6f83e72bc74fd2766b84785195716de68b129191ecc18",
+      "displaySha256": "a0bceba7d6e23ad55ce072d65e63bf033e0fa71665c71c0588136f1bfb1979a4",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "장면 가",
+          "byteStart": 131,
+          "byteEnd": 261
+        }
+      ],
+      "independentPixelDiffBox": [
+        17,
+        8,
+        48,
+        19
+      ]
+    },
+    {
+      "question": "O05-II-L-03",
+      "key": "그래프 라",
+      "source": "assets/original/O05-II-L-03-a.svg",
+      "display": "assets/original-neutral/O05-II-L-03-a.svg",
+      "sourceSha256": "5e61270af6137290d56540997b56d0bed2b453516189b1c3faac417c500de1a4",
+      "displaySha256": "7822a98ddbe5cb8cb7f3331fde218697158280f1fa9da828dedb47e95c7ebbae",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "그래프 라",
+          "byteStart": 131,
+          "byteEnd": 264
+        }
+      ],
+      "independentPixelDiffBox": [
+        17,
+        8,
+        57,
+        19
+      ]
+    },
+    {
+      "question": "O05-II-L-03",
+      "key": "그래프 가",
+      "source": "assets/original/O05-II-L-03-b.svg",
+      "display": "assets/original-neutral/O05-II-L-03-b.svg",
+      "sourceSha256": "7172176fcf9f1f5a1a6270cbebaa23cc755ab6b435dac67b5e4322d80a30359b",
+      "displaySha256": "bf7113b8a1b96297470123ed99da25644e0c54b69ca0c2f9a5bb47657fe55f23",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "그래프 가",
+          "byteStart": 131,
+          "byteEnd": 264
+        }
+      ],
+      "independentPixelDiffBox": [
+        17,
+        8,
+        57,
+        19
+      ]
+    },
+    {
+      "question": "O05-II-L-03",
+      "key": "그래프 나",
+      "source": "assets/original/O05-II-L-03-c.svg",
+      "display": "assets/original-neutral/O05-II-L-03-c.svg",
+      "sourceSha256": "1f8bc19b3d640862c0236d5953a6bb477e1940329df9cb293de22da494cddeec",
+      "displaySha256": "43c27a6c20c1e168e34ad8ba0aa938d1d93562ef8988a197084a8c8b81fb94c8",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "그래프 나",
+          "byteStart": 131,
+          "byteEnd": 264
+        }
+      ],
+      "independentPixelDiffBox": [
+        17,
+        8,
+        57,
+        19
+      ]
+    },
+    {
+      "question": "O05-II-L-03",
+      "key": "그래프 다",
+      "source": "assets/original/O05-II-L-03-d.svg",
+      "display": "assets/original-neutral/O05-II-L-03-d.svg",
+      "sourceSha256": "642c8d62340b32f9acd952cb3c91007b36249e7e453d7a2965fc908a93f3a2d3",
+      "displaySha256": "a3b1f835eed27385aaddc61e5552783657b62e06458f3a18436d6a1dead53579",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "그래프 다",
+          "byteStart": 131,
+          "byteEnd": 264
+        }
+      ],
+      "independentPixelDiffBox": [
+        17,
+        8,
+        57,
+        19
+      ]
+    },
+    {
+      "question": "O06-I-L-15",
+      "key": "장면 가",
+      "source": "assets/original/O06-I-L-15-a.svg",
+      "display": "assets/original/O06-I-L-15-a.svg",
+      "sourceSha256": "6f47fec76bf846f66c87908b200c62e35a6c42c61b51283963d136b7b6119665",
+      "displaySha256": "6f47fec76bf846f66c87908b200c62e35a6c42c61b51283963d136b7b6119665",
+      "removed": []
+    },
+    {
+      "question": "O06-I-L-15",
+      "key": "장면 나",
+      "source": "assets/original/O06-I-L-15-b.svg",
+      "display": "assets/original/O06-I-L-15-b.svg",
+      "sourceSha256": "d1fa6b4d1c8de5dec80d2baa39bcd951a5ac6ef047472750d02b8439693f1e2d",
+      "displaySha256": "d1fa6b4d1c8de5dec80d2baa39bcd951a5ac6ef047472750d02b8439693f1e2d",
+      "removed": []
+    },
+    {
+      "question": "O06-I-L-15",
+      "key": "장면 다",
+      "source": "assets/original/O06-I-L-15-c.svg",
+      "display": "assets/original/O06-I-L-15-c.svg",
+      "sourceSha256": "bb62600a223e026763c731770910bef51b890cb858a95073255b453936d194b2",
+      "displaySha256": "bb62600a223e026763c731770910bef51b890cb858a95073255b453936d194b2",
+      "removed": []
+    },
+    {
+      "question": "O06-I-L-15",
+      "key": "장면 라",
+      "source": "assets/original/O06-I-L-15-d.svg",
+      "display": "assets/original/O06-I-L-15-d.svg",
+      "sourceSha256": "a37b817fb33b4851734b0c741d3468a1bc885c931fc5b422644925220b87769a",
+      "displaySha256": "a37b817fb33b4851734b0c741d3468a1bc885c931fc5b422644925220b87769a",
+      "removed": []
+    },
+    {
+      "question": "O06-I-L-16",
+      "key": "장면 가",
+      "source": "assets/original/O06-I-L-16-a.svg",
+      "display": "assets/original/O06-I-L-16-a.svg",
+      "sourceSha256": "71b2c656b3b9d1a52ef33433e550b0209813d3a24fcbc9d4ea650de2af3607cd",
+      "displaySha256": "71b2c656b3b9d1a52ef33433e550b0209813d3a24fcbc9d4ea650de2af3607cd",
+      "removed": []
+    },
+    {
+      "question": "O06-I-L-16",
+      "key": "장면 나",
+      "source": "assets/original/O06-I-L-16-b.svg",
+      "display": "assets/original/O06-I-L-16-b.svg",
+      "sourceSha256": "b965a20d7e65f57640df403ef30e4083f9b8aab1c98e7574dc9c001c595a99a3",
+      "displaySha256": "b965a20d7e65f57640df403ef30e4083f9b8aab1c98e7574dc9c001c595a99a3",
+      "removed": []
+    },
+    {
+      "question": "O06-I-L-16",
+      "key": "장면 다",
+      "source": "assets/original/O06-I-L-16-c.svg",
+      "display": "assets/original/O06-I-L-16-c.svg",
+      "sourceSha256": "531329befd6f6a637efd65e91992366ec41a98c1c51753cbcd8bdf914e375338",
+      "displaySha256": "531329befd6f6a637efd65e91992366ec41a98c1c51753cbcd8bdf914e375338",
+      "removed": []
+    },
+    {
+      "question": "O06-I-L-16",
+      "key": "장면 라",
+      "source": "assets/original/O06-I-L-16-d.svg",
+      "display": "assets/original/O06-I-L-16-d.svg",
+      "sourceSha256": "5637e3cd98a8b0ce590f1e35ed60fd109c45840597509c4961e7ef6417a929f3",
+      "displaySha256": "5637e3cd98a8b0ce590f1e35ed60fd109c45840597509c4961e7ef6417a929f3",
+      "removed": []
+    },
+    {
+      "question": "O06-II-L-01",
+      "key": "장면 가",
+      "source": "assets/original/O06-II-L-01-a.svg",
+      "display": "assets/original-neutral/O06-II-L-01-a.svg",
+      "sourceSha256": "7319a1028b0fa17899d041c75327b0e7be4a87d40b1777cc00ed7f56742dd7e9",
+      "displaySha256": "b77dda7284ca3b1e3425242081bb6de9f4b29db1efb3e0c847ec6dcbf5d349b9",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "장면 가",
+          "byteStart": 205,
+          "byteEnd": 335
+        }
+      ],
+      "independentPixelDiffBox": [
+        13,
+        7,
+        44,
+        18
+      ]
+    },
+    {
+      "question": "O06-II-L-01",
+      "key": "장면 나",
+      "source": "assets/original/O06-II-L-01-b.svg",
+      "display": "assets/original-neutral/O06-II-L-01-b.svg",
+      "sourceSha256": "a706ab89bcdea6e28f59ff86f34f0b72640134eb64c59d3328a9098b83630276",
+      "displaySha256": "2350309218abc5fd1c6ddddcc761a09a842e888780451f17d4aaa36cd1560eb3",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "장면 나",
+          "byteStart": 246,
+          "byteEnd": 376
+        }
+      ],
+      "independentPixelDiffBox": [
+        13,
+        7,
+        44,
+        18
+      ]
+    },
+    {
+      "question": "O06-II-L-01",
+      "key": "장면 다",
+      "source": "assets/original/O06-II-L-01-c.svg",
+      "display": "assets/original-neutral/O06-II-L-01-c.svg",
+      "sourceSha256": "f30584323d27bade74de1174950c2bde55df978b9a3793fe16f18c59b8c794bf",
+      "displaySha256": "d1518a76ed79a3001bdc10871bb3fa32af93700c1d249005fd1d45e2172910b6",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "장면 다",
+          "byteStart": 229,
+          "byteEnd": 359
+        }
+      ],
+      "independentPixelDiffBox": [
+        13,
+        7,
+        44,
+        18
+      ]
+    },
+    {
+      "question": "O06-II-L-01",
+      "key": "장면 라",
+      "source": "assets/original/O06-II-L-01-d.svg",
+      "display": "assets/original-neutral/O06-II-L-01-d.svg",
+      "sourceSha256": "45bb2ebaa5548d52f0e04fab16049d7e3297dd4f77beb88a38d4abb8b28af03e",
+      "displaySha256": "ccf0b38917990b88ecec0989bc7f996baf0dbf93eb0e778c2e1eb10409b359b0",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "장면 라",
+          "byteStart": 219,
+          "byteEnd": 349
+        }
+      ],
+      "independentPixelDiffBox": [
+        13,
+        7,
+        44,
+        18
+      ]
+    },
+    {
+      "question": "O06-II-L-02",
+      "key": "장면 가",
+      "source": "assets/original/O06-II-L-02-a.svg",
+      "display": "assets/original-neutral/O06-II-L-02-a.svg",
+      "sourceSha256": "1fb4c97f20e75c1728439dbdb4c33758a54705fe945be9c394c22e572e374c12",
+      "displaySha256": "dd4250bf96392344703c3506890013e2886cba53254d18459ef6f11897ef120c",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "장면 가",
+          "byteStart": 256,
+          "byteEnd": 386
+        }
+      ],
+      "independentPixelDiffBox": [
+        13,
+        7,
+        44,
+        18
+      ]
+    },
+    {
+      "question": "O06-II-L-02",
+      "key": "장면 나",
+      "source": "assets/original/O06-II-L-02-b.svg",
+      "display": "assets/original-neutral/O06-II-L-02-b.svg",
+      "sourceSha256": "445dd9cf16e65dbe65bf853cecf457c713d14266d5453c3064dae6691f00f178",
+      "displaySha256": "05115da4e8bf5e0bc23f21308e9212c21cfaac4bb9fa0e7cdce19e6096ce1a60",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "장면 나",
+          "byteStart": 249,
+          "byteEnd": 379
+        }
+      ],
+      "independentPixelDiffBox": [
+        13,
+        7,
+        44,
+        18
+      ]
+    },
+    {
+      "question": "O06-II-L-02",
+      "key": "장면 다",
+      "source": "assets/original/O06-II-L-02-c.svg",
+      "display": "assets/original-neutral/O06-II-L-02-c.svg",
+      "sourceSha256": "517e0898e38999f0fc71980534cda5b50024a3ffe76488165e5fcdcd6a844b35",
+      "displaySha256": "335e998b1c51bed1578f5e09e066b1b0911eb8e7fd608f578c704bb01ae7b2d5",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "장면 다",
+          "byteStart": 249,
+          "byteEnd": 379
+        }
+      ],
+      "independentPixelDiffBox": [
+        13,
+        7,
+        44,
+        18
+      ]
+    },
+    {
+      "question": "O06-II-L-02",
+      "key": "장면 라",
+      "source": "assets/original/O06-II-L-02-d.svg",
+      "display": "assets/original-neutral/O06-II-L-02-d.svg",
+      "sourceSha256": "285540be6f300ccae44f0aa6c8118c15f02b8fee9a95d1784c0ce7ae551d792a",
+      "displaySha256": "dc360ccc6dbc4182a4289ed1a4efdf4aead162bae90d599399f0da2e31c2fb3c",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "장면 라",
+          "byteStart": 249,
+          "byteEnd": 379
+        }
+      ],
+      "independentPixelDiffBox": [
+        13,
+        7,
+        44,
+        18
+      ]
+    },
+    {
+      "question": "O06-II-L-03",
+      "key": "그래프 가",
+      "source": "assets/original/O06-II-L-03-a.svg",
+      "display": "assets/original-neutral/O06-II-L-03-a.svg",
+      "sourceSha256": "c877c399a9da0d1d79d0345e75a1ff0f3fbd1389016f530c8f4c6cb9c3f0061d",
+      "displaySha256": "fe1f3fb9179a204dd4bf2647506cb640d7bee517ec62b82ad2e90842e09bdea6",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "그래프 가",
+          "byteStart": 239,
+          "byteEnd": 372
+        }
+      ],
+      "independentPixelDiffBox": [
+        13,
+        7,
+        54,
+        18
+      ]
+    },
+    {
+      "question": "O06-II-L-03",
+      "key": "그래프 나",
+      "source": "assets/original/O06-II-L-03-b.svg",
+      "display": "assets/original-neutral/O06-II-L-03-b.svg",
+      "sourceSha256": "3f5fecbb8fa382492a30e8b0fd9966eeebde7c960ab37ba9c1d2c050035aabdc",
+      "displaySha256": "1a6ce38afed058fb4620f8754a577d5286614da10101b7bd0cfca9c897a8aeb8",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "그래프 나",
+          "byteStart": 239,
+          "byteEnd": 372
+        }
+      ],
+      "independentPixelDiffBox": [
+        13,
+        7,
+        54,
+        18
+      ]
+    },
+    {
+      "question": "O06-II-L-03",
+      "key": "그래프 다",
+      "source": "assets/original/O06-II-L-03-c.svg",
+      "display": "assets/original-neutral/O06-II-L-03-c.svg",
+      "sourceSha256": "b8c35707d226f140ba125cb1ced5b712a53a86fcdda084b2f64de0317cc045ca",
+      "displaySha256": "e11959db05ddeeef8fc97b78d176fb3bcb1576670edde2254de21419e782ae52",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "그래프 다",
+          "byteStart": 239,
+          "byteEnd": 372
+        }
+      ],
+      "independentPixelDiffBox": [
+        13,
+        7,
+        54,
+        18
+      ]
+    },
+    {
+      "question": "O06-II-L-03",
+      "key": "그래프 라",
+      "source": "assets/original/O06-II-L-03-d.svg",
+      "display": "assets/original-neutral/O06-II-L-03-d.svg",
+      "sourceSha256": "3edbb0ea7b64db3e79d300a2a8b50a5093ae4241e463596dc1fed74875fa93e7",
+      "displaySha256": "e0b2d15d65be90345c96bd80e3eecfcd2339c0009d3b714d499c30d6307421a5",
+      "removed": [
+        {
+          "tag": "text",
+          "text": "그래프 라",
+          "byteStart": 239,
+          "byteEnd": 372
+        }
+      ],
+      "independentPixelDiffBox": [
+        13,
+        7,
+        54,
+        18
+      ]
+    },
+    {
+      "question": "O07-I-L-15",
+      "key": "장면 가",
+      "source": "assets/original/O07-I-L-15-a.svg",
+      "display": "assets/original/O07-I-L-15-a.svg",
+      "sourceSha256": "9a5599a2247d63ac37756aeaa3b3fd456ecfad2ca8295cc0245c36d7cc3328eb",
+      "displaySha256": "9a5599a2247d63ac37756aeaa3b3fd456ecfad2ca8295cc0245c36d7cc3328eb",
+      "removed": []
+    },
+    {
+      "question": "O07-I-L-15",
+      "key": "장면 나",
+      "source": "assets/original/O07-I-L-15-b.svg",
+      "display": "assets/original/O07-I-L-15-b.svg",
+      "sourceSha256": "d8664694c56ad55c7fa38f53affd13080bdd228effeb3179e710e7872b232b4a",
+      "displaySha256": "d8664694c56ad55c7fa38f53affd13080bdd228effeb3179e710e7872b232b4a",
+      "removed": []
+    },
+    {
+      "question": "O07-I-L-15",
+      "key": "장면 다",
+      "source": "assets/original/O07-I-L-15-c.svg",
+      "display": "assets/original/O07-I-L-15-c.svg",
+      "sourceSha256": "03aafafd528859273d97e0431e792bf8f479f5681a507c60599ac789b497ea40",
+      "displaySha256": "03aafafd528859273d97e0431e792bf8f479f5681a507c60599ac789b497ea40",
+      "removed": []
+    },
+    {
+      "question": "O07-I-L-15",
+      "key": "장면 라",
+      "source": "assets/original/O07-I-L-15-d.svg",
+      "display": "assets/original/O07-I-L-15-d.svg",
+      "sourceSha256": "84af65203e7bfe9418d95dbb34f30999347835b09eea391bbbcb0edd998cb8b1",
+      "displaySha256": "84af65203e7bfe9418d95dbb34f30999347835b09eea391bbbcb0edd998cb8b1",
+      "removed": []
+    },
+    {
+      "question": "O07-I-L-16",
+      "key": "장면 가",
+      "source": "assets/original/O07-I-L-16-a.svg",
+      "display": "assets/original/O07-I-L-16-a.svg",
+      "sourceSha256": "e0b7601797c9d9d148d1ca0c2346f8e08094df77588152603ec39b52b499b909",
+      "displaySha256": "e0b7601797c9d9d148d1ca0c2346f8e08094df77588152603ec39b52b499b909",
+      "removed": []
+    },
+    {
+      "question": "O07-I-L-16",
+      "key": "장면 나",
+      "source": "assets/original/O07-I-L-16-b.svg",
+      "display": "assets/original/O07-I-L-16-b.svg",
+      "sourceSha256": "6dbf450bfcca2a2871579b93b75cddcfd28b1f4c2cebe2dc38822796a998400d",
+      "displaySha256": "6dbf450bfcca2a2871579b93b75cddcfd28b1f4c2cebe2dc38822796a998400d",
+      "removed": []
+    },
+    {
+      "question": "O07-I-L-16",
+      "key": "장면 다",
+      "source": "assets/original/O07-I-L-16-c.svg",
+      "display": "assets/original/O07-I-L-16-c.svg",
+      "sourceSha256": "2c2af11860492aff5101bbf73403e465fee9c4b424716d9bdda15ab2a513c68a",
+      "displaySha256": "2c2af11860492aff5101bbf73403e465fee9c4b424716d9bdda15ab2a513c68a",
+      "removed": []
+    },
+    {
+      "question": "O07-I-L-16",
+      "key": "장면 라",
+      "source": "assets/original/O07-I-L-16-d.svg",
+      "display": "assets/original/O07-I-L-16-d.svg",
+      "sourceSha256": "19b660438f0952b4bd182bb6654691d583fef79a178a6ef20428658f8d3982bf",
+      "displaySha256": "19b660438f0952b4bd182bb6654691d583fef79a178a6ef20428658f8d3982bf",
+      "removed": []
+    },
+    {
+      "question": "O08-I-L-15",
+      "key": "장면 다",
+      "source": "assets/original/O08-I-L-15-c.svg",
+      "display": "assets/original/O08-I-L-15-c.svg",
+      "sourceSha256": "944cd6d27fe4117dbc619e53808ace6cb075d46fac48e02d91c8f4b8b9e772fe",
+      "displaySha256": "944cd6d27fe4117dbc619e53808ace6cb075d46fac48e02d91c8f4b8b9e772fe",
+      "removed": []
+    },
+    {
+      "question": "O08-I-L-15",
+      "key": "장면 나",
+      "source": "assets/original/O08-I-L-15-b.svg",
+      "display": "assets/original/O08-I-L-15-b.svg",
+      "sourceSha256": "b552ac6b6380f83858292a8800e920762f546e1db4ebb8c6ee51a306b4042b62",
+      "displaySha256": "b552ac6b6380f83858292a8800e920762f546e1db4ebb8c6ee51a306b4042b62",
+      "removed": []
+    },
+    {
+      "question": "O08-I-L-15",
+      "key": "장면 가",
+      "source": "assets/original/O08-I-L-15-a.svg",
+      "display": "assets/original/O08-I-L-15-a.svg",
+      "sourceSha256": "eb915198c762db18bf2e6152ead51687d5334be83f38c5e523a28adcfaa2615f",
+      "displaySha256": "eb915198c762db18bf2e6152ead51687d5334be83f38c5e523a28adcfaa2615f",
+      "removed": []
+    },
+    {
+      "question": "O08-I-L-15",
+      "key": "장면 라",
+      "source": "assets/original/O08-I-L-15-d.svg",
+      "display": "assets/original/O08-I-L-15-d.svg",
+      "sourceSha256": "c158cb55a2a1d2dc21b741e692bda159548ae388f6b3e5cfe51492251bafbeb2",
+      "displaySha256": "c158cb55a2a1d2dc21b741e692bda159548ae388f6b3e5cfe51492251bafbeb2",
+      "removed": []
+    },
+    {
+      "question": "O08-I-L-16",
+      "key": "장면 나",
+      "source": "assets/original/O08-I-L-16-b.svg",
+      "display": "assets/original/O08-I-L-16-b.svg",
+      "sourceSha256": "f926f85f3925ee2a34f8d407af4e9f6dee7a029c75ebed3f53ae8d8848e27e9e",
+      "displaySha256": "f926f85f3925ee2a34f8d407af4e9f6dee7a029c75ebed3f53ae8d8848e27e9e",
+      "removed": []
+    },
+    {
+      "question": "O08-I-L-16",
+      "key": "장면 라",
+      "source": "assets/original/O08-I-L-16-d.svg",
+      "display": "assets/original/O08-I-L-16-d.svg",
+      "sourceSha256": "4405cfc8c9ed9949498e157ae7f4fc01af1969841f6d3b01126bf3b57115673b",
+      "displaySha256": "4405cfc8c9ed9949498e157ae7f4fc01af1969841f6d3b01126bf3b57115673b",
+      "removed": []
+    },
+    {
+      "question": "O08-I-L-16",
+      "key": "장면 가",
+      "source": "assets/original/O08-I-L-16-a.svg",
+      "display": "assets/original/O08-I-L-16-a.svg",
+      "sourceSha256": "824ad667b5df4e17d21a6c4ac41c6e19330394a8fd85941b24d972543a3f718b",
+      "displaySha256": "824ad667b5df4e17d21a6c4ac41c6e19330394a8fd85941b24d972543a3f718b",
+      "removed": []
+    },
+    {
+      "question": "O08-I-L-16",
+      "key": "장면 다",
+      "source": "assets/original/O08-I-L-16-c.svg",
+      "display": "assets/original/O08-I-L-16-c.svg",
+      "sourceSha256": "3ef5b52415a975341baef43c88242356df029a78b5905d910cc25b6eb6838eb8",
+      "displaySha256": "3ef5b52415a975341baef43c88242356df029a78b5905d910cc25b6eb6838eb8",
+      "removed": []
+    }
+  ],
+  "assetVerification": {
+    "method": "Independent Expat XML node/byte spans, approved immutable pack byte comparison, current QA hash comparison, and Pillow recomputation of provided Inkscape PNG diffs. No builder transformation code reused.",
+    "counts": {
+      "questions": 34,
+      "sources": 136,
+      "derivatives": 36,
+      "identityMappings": 100,
+      "removedNodes": 36,
+      "providedPngPairsRecompared": 36
+    }
+  },
+  "approvedSnapshot": {
+    "name": "20261015-202819-core1258-locale1208",
+    "coreSha256": "772ee094a8e4f8bee10a292802c1ab34a8c12859094aedc0c6fc49b8604fed39",
+    "internalHandoffSha256": "63ee55a72a1ea3738fc6811c7bd0d7a2d0fed469584a8f28a7426f1c68cec85a",
+    "externalHandoffSha256": "cd7fdbf5b16dfb361f3fac6b6abcbbb80c5620ce6819e51a7f8c51575198c278"
+  },
+  "evidenceReportSha256": "428c491ad92efff3f3859fb464ab3cadaf72183b33faced52fa30a20dcb93a43",
+  "tests": [
+    {
+      "command": "node --test tests/visual-choice-labels.test.cjs tests/neutral-choice-visuals.test.cjs tests/original-question-ui.test.cjs tests/review-listening-retry.test.cjs",
+      "result": "31/31 passed after final importer/generator patch"
+    },
+    {
+      "command": "node scripts/build-neutral-choice-visuals.mjs --check",
+      "result": "passed: 34 questions, 136 sources, 36 derivatives"
+    },
+    {
+      "command": "node scripts/check-runtime.mjs",
+      "result": "passed: v168, 90 ordered files, 16.22 MiB, bank hashes valid"
+    },
+    {
+      "command": "node --check scripts/build-neutral-choice-visuals.mjs && node --check scripts/import-original-content.mjs",
+      "result": "passed"
+    },
+    {
+      "command": "python visual-choice-independent-assets.py",
+      "result": "passed; independent XML parser/immutable-source/pixel checks"
+    },
+    {
+      "command": "node visual-choice-independent-runtime.cjs",
+      "result": "passed; independent answer-index-invariance and stored retry-flow oracle"
+    }
+  ],
+  "supplementaryIntegrationChecks": {
+    "fullSuite": 693,
+    "syntaxFiles": 225,
+    "runtimeFiles": 90,
+    "httpMP3HashAndMimeChecks": 1184,
+    "httpSVGHashAndMimeChecks": 265,
+    "actualBrowserVerified": false,
+    "physicalDeviceVerified": false,
+    "audibleQualityVerified": false,
+    "deployed": false
+  }
+}

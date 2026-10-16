@@ -5,7 +5,7 @@ const vm=require('node:vm');
 const source=fs.readFileSync('legacy-core.js','utf8');
 function setup(){
  const elements={};const c={S:{lang:'ko',writing:{},writingHistory:{}},ml:(ko)=>ko,tr:key=>key,esc:s=>String(s).replaceAll('<','&lt;'),save:()=>{},$:id=>elements[id]};
- vm.createContext(c);vm.runInContext(fs.readFileSync('writing-answers.js','utf8'),c);
+ c.window=c;vm.createContext(c);vm.runInContext(fs.readFileSync('writing-answers.js','utf8'),c);
  vm.runInContext(source.slice(source.indexOf('function writingPair('),source.indexOf('function renderWriting(')),c);
  vm.runInContext(source.slice(source.indexOf('function renderWriting('),source.indexOf('function bindMCQ(')),c);
  vm.runInContext(source.slice(source.indexOf('function bindWrite('),source.indexOf('function gameBack(')),c);

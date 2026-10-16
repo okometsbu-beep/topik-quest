@@ -1,0 +1,108 @@
+{
+  "version": 1,
+  "mode": "approved_subset",
+  "releaseVersion": 170,
+  "targetItems": 2088,
+  "approvedItems": 1668,
+  "fourLanguageItems": 1548,
+  "listeningItems": 730,
+  "sourceSnapshot": "20261015-223354-core1668-locale1548",
+  "sourceHashes": {
+    "content/original-exams-v1.json": "eedaa972f3b5d35f6aa10b16c8c6acdec1fff5ed1e551dcd2172ec27dace9396",
+    "content/original-localization-support.json": "1e5bb96b8de34eaeb6adb224bd018f6609c1390e2bd0db397d47463dfde1a595",
+    "content/original-listening-support.json": "15f0d339bab86f4813f106a408cecc3395862d7290b95f40635e90c01bd5e52e",
+    "content/original-listening-locale-support.json": "e9fe5570e131a5c5fd610cde098fb73174bc5762861f541b9825ce1355a4d222"
+  },
+  "readySets": {
+    "ko-1": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "ko-2": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "ja-1": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "ja-2": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "en-1": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "en-2": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "zh-1": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "zh-2": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ]
+  }
+}

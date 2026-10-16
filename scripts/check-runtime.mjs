@@ -56,6 +56,27 @@ for (const file of [...runtime, ...shell]) assert.ok(existing(file), `runtime ta
 
 for (let part = 1; part <= 4; part++) before(runtime, `data/question-bank-v1-part${part}.js`, 'question-bank-engine.js');
 before(runtime, 'data/question-bank-practice-v1.js', 'question-bank-engine.js');
+before(runtime, 'data/listening-register-corrections-v1.js', 'data/listening-register-release-v1.js');
+before(runtime, 'data/listening-register-audio-v1.js', 'data/listening-register-release-v1.js');
+before(runtime, 'data/listening-register-release-v1.js', 'question-bank-engine.js');
+before(runtime,'listening-register-audio.js','original-listening-audio.js');
+before(runtime,'data/original-listening-audio-v1.js','original-listening-audio.js');
+before(runtime,'data/original-listening-audio-v2.js','original-listening-audio.js');
+before(runtime,'data/original-listening-audio-v3.js','original-listening-audio.js');
+before(runtime,'data/original-listening-audio-v4.js','original-listening-audio.js');
+before(runtime,'data/original-listening-audio-v5.js','original-listening-audio.js');
+before(runtime,'data/original-listening-audio-v6.js','original-listening-audio.js');
+before(runtime,'data/original-listening-audio-v7.js','original-listening-audio.js');
+before(runtime,'data/original-listening-audio-v8.js','original-listening-audio.js');
+before(runtime,'data/original-listening-audio-v9.js','original-listening-audio.js');
+before(runtime,'original-listening-audio.js','question-bank-engine.js');
+before(runtime,'data/legacy-writing-tables-v1.js','question-bank-engine.js');
+before(runtime,'data/legacy-answer-repairs-v1.js','question-bank-engine.js');
+before(runtime,'data/legacy-question-visuals-v1.js','question-bank-engine.js');
+before(runtime,'data/original-support-v1.js','question-bank-engine.js');
+before(runtime,'data/neutral-choice-visuals-v1.js','learning-features.js');
+before(runtime,'listening-transcripts.js','topik1.js');
+for(let part=1;part<=4;part++)before(runtime,`data/original-exams-v1-part${part}.js`,'question-bank-engine.js');
 before(runtime, 'site-patch-core.js', 'tts-quality.js');
 
 before(runtime, 'site-patch-core.js', 'storage-guard.js');

@@ -1,0 +1,276 @@
+{
+  "version": 1,
+  "executionDate": "2026-10-15",
+  "status": "repair_pack_generated_automatically_verified_inactive",
+  "engine": "local Supertonic 3, CPUExecutionProvider",
+  "modelRevision": "aafc6e32416a594460b32413efc49d7fe4ce6d46",
+  "referenceCodeRevision": "1e9799e964ea4c0dad7cde993b65c3c813a7b373",
+  "verifiedDownloadBytes": 442001193,
+  "verifiedDownloads": [
+    {
+      "group": "model",
+      "file": "model/onnx/duration_predictor.onnx",
+      "bytes": 3700147,
+      "sha256": "c3eb91414d5ff8a7a239b7fe9e34e7e2bf8a8140d8375ffb14718b1c639325db",
+      "sourceUrl": "https://huggingface.co/supertone-oss-archive/supertonic-3/resolve/aafc6e32416a594460b32413efc49d7fe4ce6d46/onnx/duration_predictor.onnx"
+    },
+    {
+      "group": "model",
+      "file": "model/onnx/text_encoder.onnx",
+      "bytes": 36416150,
+      "sha256": "c7befd5ea8c3119769e8a6c1486c4edc6a3bc8365c67621c881bbb774b9902ff",
+      "sourceUrl": "https://huggingface.co/supertone-oss-archive/supertonic-3/resolve/aafc6e32416a594460b32413efc49d7fe4ce6d46/onnx/text_encoder.onnx"
+    },
+    {
+      "group": "model",
+      "file": "model/onnx/vector_estimator.onnx",
+      "bytes": 256534781,
+      "sha256": "883ac868ea0275ef0e991524dc64f16b3c0376efd7c320af6b53f5b780d7c61c",
+      "sourceUrl": "https://huggingface.co/supertone-oss-archive/supertonic-3/resolve/aafc6e32416a594460b32413efc49d7fe4ce6d46/onnx/vector_estimator.onnx"
+    },
+    {
+      "group": "model",
+      "file": "model/onnx/vocoder.onnx",
+      "bytes": 101424195,
+      "sha256": "085de76dd8e8d5836d6ca66826601f615939218f90e519f70ee8a36ed2a4c4ba",
+      "sourceUrl": "https://huggingface.co/supertone-oss-archive/supertonic-3/resolve/aafc6e32416a594460b32413efc49d7fe4ce6d46/onnx/vocoder.onnx"
+    },
+    {
+      "group": "model",
+      "file": "model/onnx/tts.json",
+      "bytes": 8253,
+      "sha256": "42078d3aef1cd43ab43021f3c54f47d2d75ceb4e75f627f118890128b06a0d09",
+      "sourceUrl": "https://huggingface.co/supertone-oss-archive/supertonic-3/resolve/aafc6e32416a594460b32413efc49d7fe4ce6d46/onnx/tts.json"
+    },
+    {
+      "group": "model",
+      "file": "model/onnx/unicode_indexer.json",
+      "bytes": 277676,
+      "sha256": "9bf7346e43883a81f8645c81224f786d43c5b57f3641f6e7671a7d6c493cb24f",
+      "sourceUrl": "https://huggingface.co/supertone-oss-archive/supertonic-3/resolve/aafc6e32416a594460b32413efc49d7fe4ce6d46/onnx/unicode_indexer.json"
+    },
+    {
+      "group": "model",
+      "file": "model/voice_styles/F1.json",
+      "bytes": 292046,
+      "sha256": "bbdec6ee00231c2c742ad05483df5334cab3b52fda3ba38e6a07059c4563dbc2",
+      "sourceUrl": "https://huggingface.co/supertone-oss-archive/supertonic-3/resolve/aafc6e32416a594460b32413efc49d7fe4ce6d46/voice_styles/F1.json"
+    },
+    {
+      "group": "model",
+      "file": "model/voice_styles/M1.json",
+      "bytes": 291748,
+      "sha256": "e35604687f5d23694b8e91593a93eec0e4eca6c0b02bb8ed69139ab2ea6b0a5b",
+      "sourceUrl": "https://huggingface.co/supertone-oss-archive/supertonic-3/resolve/aafc6e32416a594460b32413efc49d7fe4ce6d46/voice_styles/M1.json"
+    },
+    {
+      "group": "model",
+      "file": "model/LICENSE",
+      "bytes": 15007,
+      "sha256": "0d944a9110fed9a9602d60e0423a272903e7bd21ab060490774efc77c2275e9f",
+      "sourceUrl": "https://huggingface.co/supertone-oss-archive/supertonic-3/resolve/aafc6e32416a594460b32413efc49d7fe4ce6d46/LICENSE"
+    },
+    {
+      "group": "referenceCode",
+      "file": "reference/py/helper.py",
+      "bytes": 15027,
+      "sha256": "b14b1da8a018aa4db6ca8cbb927c32590bfc889b49116ea344c56e8351d94279",
+      "sourceUrl": "https://raw.githubusercontent.com/supertone-oss-archive/supertonic/1e9799e964ea4c0dad7cde993b65c3c813a7b373/py/helper.py"
+    },
+    {
+      "group": "referenceCode",
+      "file": "reference/LICENSE",
+      "bytes": 1070,
+      "sha256": "0dfe0d0ba84416fe3879d9a34f4909d8d0137c78d1e95834177b0414ac096fa2",
+      "sourceUrl": "https://raw.githubusercontent.com/supertone-oss-archive/supertonic/1e9799e964ea4c0dad7cde993b65c3c813a7b373/LICENSE"
+    },
+    {
+      "group": "pythonWheel",
+      "file": "wheels/onnxruntime-1.23.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+      "bytes": 17378483,
+      "sha256": "576502dad714ffe5f3b4e1918c5b3368766b222063c585e5fd88415c063e4c80",
+      "sourceUrl": "https://files.pythonhosted.org/packages/c4/b0/4663a333a82c77f159e48fe8639b1f03e4a05036625be9129c20c4d71d12/onnxruntime-1.23.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl"
+    },
+    {
+      "group": "pythonWheel",
+      "file": "wheels/numpy-2.3.5-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+      "bytes": 16606086,
+      "sha256": "0d8163f43acde9a73c2a33605353a4f1bc4798745a8b1d73183b28e5b435ae28",
+      "sourceUrl": "https://files.pythonhosted.org/packages/b6/23/2a1b231b8ff672b4c450dac27164a8b2ca7d9b7144f9c02d2396518352eb/numpy-2.3.5-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl"
+    },
+    {
+      "group": "pythonWheel",
+      "file": "wheels/soundfile-0.13.1-py2.py3-none-manylinux_2_28_x86_64.whl",
+      "bytes": 1313646,
+      "sha256": "03267c4e493315294834a0870f31dbb3b28a95561b80b134f0bd3cf2d5f0e618",
+      "sourceUrl": "https://files.pythonhosted.org/packages/57/5e/70bdd9579b35003a489fc850b5047beeda26328053ebadc1fb60f320f7db/soundfile-0.13.1-py2.py3-none-manylinux_2_28_x86_64.whl"
+    },
+    {
+      "group": "pythonWheel",
+      "file": "wheels/coloredlogs-15.0.1-py2.py3-none-any.whl",
+      "bytes": 46018,
+      "sha256": "612ee75c546f53e92e70049c9dbfcc18c935a2b9a53b66085ce9ef6a6e5c0934",
+      "sourceUrl": "https://files.pythonhosted.org/packages/a7/06/3d6badcf13db419e25b07041d9c7b4a2c331d3f4e7134445ec5df57714cd/coloredlogs-15.0.1-py2.py3-none-any.whl"
+    },
+    {
+      "group": "pythonWheel",
+      "file": "wheels/flatbuffers-25.9.23-py2.py3-none-any.whl",
+      "bytes": 30869,
+      "sha256": "255538574d6cb6d0a79a17ec8bc0d30985913b87513a01cce8bcdb6b4c44d0e2",
+      "sourceUrl": "https://files.pythonhosted.org/packages/ee/1b/00a78aa2e8fbd63f9af08c9c19e6deb3d5d66b4dda677a0f61654680ee89/flatbuffers-25.9.23-py2.py3-none-any.whl"
+    },
+    {
+      "group": "pythonWheel",
+      "file": "wheels/packaging-25.0-py3-none-any.whl",
+      "bytes": 66469,
+      "sha256": "29572ef2b1f17581046b3a2227d5c611fb25ec70ca1ba8554b24b0e69331a484",
+      "sourceUrl": "https://files.pythonhosted.org/packages/20/12/38679034af332785aac8774540895e234f4d07f7545804097de4b666afd8/packaging-25.0-py3-none-any.whl"
+    },
+    {
+      "group": "pythonWheel",
+      "file": "wheels/protobuf-6.33.5-cp39-abi3-manylinux2014_x86_64.whl",
+      "bytes": 323465,
+      "sha256": "cbf16ba3350fb7b889fca858fb215967792dc125b35c7976ca4818bee3521cf0",
+      "sourceUrl": "https://files.pythonhosted.org/packages/9b/53/a9443aa3ca9ba8724fdfa02dd1887c1bcd8e89556b715cfbacca6b63dbec/protobuf-6.33.5-cp39-abi3-manylinux2014_x86_64.whl"
+    },
+    {
+      "group": "pythonWheel",
+      "file": "wheels/sympy-1.14.0-py3-none-any.whl",
+      "bytes": 6299353,
+      "sha256": "e091cc3e99d2141a0ba2847328f5479b05d94a6635cb96148ccb3f34671bd8f5",
+      "sourceUrl": "https://files.pythonhosted.org/packages/a2/09/77d55d46fd61b4a135c444fc97158ef34a095e5681d0a6c10b75bf356191/sympy-1.14.0-py3-none-any.whl"
+    },
+    {
+      "group": "pythonWheel",
+      "file": "wheels/cffi-2.0.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "bytes": 219572,
+      "sha256": "3e17ed538242334bf70832644a32a7aae3d83b57567f9fd60a26257e992b79ba",
+      "sourceUrl": "https://files.pythonhosted.org/packages/78/2d/7fa73dfa841b5ac06c7b8855cfc18622132e365f5b81d02230333ff26e9e/cffi-2.0.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl"
+    },
+    {
+      "group": "pythonWheel",
+      "file": "wheels/humanfriendly-10.0-py2.py3-none-any.whl",
+      "bytes": 86794,
+      "sha256": "1697e1a8a8f550fd43c2865cd84542fc175a61dcb779b6fee18cf6b6ccba1477",
+      "sourceUrl": "https://files.pythonhosted.org/packages/f0/0f/310fb31e39e2d734ccaa2c0fb981ee41f7bd5056ce9bc29b2248bd569169/humanfriendly-10.0-py2.py3-none-any.whl"
+    },
+    {
+      "group": "pythonWheel",
+      "file": "wheels/mpmath-1.3.0-py3-none-any.whl",
+      "bytes": 536198,
+      "sha256": "a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c",
+      "sourceUrl": "https://files.pythonhosted.org/packages/43/e3/7d92a15f894aa0c9c4b49b8ee9ac9850d6e63b03c9c32c0367a13ae62209/mpmath-1.3.0-py3-none-any.whl"
+    },
+    {
+      "group": "pythonWheel",
+      "file": "wheels/pycparser-2.23-py3-none-any.whl",
+      "bytes": 118140,
+      "sha256": "e5c6e8d3fbad53479cab09ac03729e0a9faf2bee3db8208a550daf5af81a5934",
+      "sourceUrl": "https://files.pythonhosted.org/packages/a0/e3/59cd50310fc9b59512193629e1984c1f95e5c8ae6e5d8c69532ccc65a7fe/pycparser-2.23-py3-none-any.whl"
+    }
+  ],
+  "pythonDependencies": {
+    "onnxruntime": "1.23.1",
+    "numpy": "2.3.5",
+    "soundfile": "0.13.1",
+    "coloredlogs": "15.0.1",
+    "flatbuffers": "25.9.23",
+    "packaging": "25.0",
+    "protobuf": "6.33.5",
+    "sympy": "1.14.0",
+    "cffi": "2.0.0",
+    "humanfriendly": "10.0",
+    "mpmath": "1.3.0",
+    "pycparser": "2.23"
+  },
+  "pipCheckPassed": true,
+  "generatorSha256": "fb46293dbeff5e85b354a79e63972db00e2b1778384ebde01124640b025abbd4",
+  "inputCorpusSha256": "11d974c171f7f7c193bea95c7e0c45f332b4d2cb08809ac30d4669a74a08fd0c",
+  "sample": {
+    "questionId": "M01-II-L-09",
+    "exactSynthesisInputMappingVerified": true,
+    "actualListeningPerformed": false,
+    "humanPronunciationReview": false,
+    "speakerGapSeconds": 0.38,
+    "files": [
+      {
+        "file": "sample/M1/94759ea2e207423f.mp3",
+        "bytes": 37450,
+        "sha256": "d7b93dbb9ee1b4a151683ba833369657907676522f80650f3a577ce30185c024",
+        "duration": 4.6115,
+        "peak": 0.740377,
+        "rms": 0.108053,
+        "decodeVerified": true,
+        "text": "요즘 박물관의 참여형 전시에 대한 이야기가 많네요.",
+        "voice": "M1",
+        "textSha256": "94759ea2e207423f624bfcd389ebc98ec4f182d4cc229ae5100fd11f54cf8a67"
+      },
+      {
+        "file": "sample/F1/bf3a7a89779d25dc.mp3",
+        "bytes": 98681,
+        "sha256": "2951103dd17df69b4ef18c865260d11d2e31f00e189849f79b24df9cd6f56a03",
+        "duration": 12.2662,
+        "peak": 0.751806,
+        "rms": 0.112366,
+        "decodeVerified": true,
+        "text": "네. 단순히 버튼을 많이 누르게 하는 것보다 선택 결과를 설명해 주는 장치가 중요합니다. 그래서 관련 정책을 다시 살펴보는 곳도 늘고 있습니다.",
+        "voice": "F1",
+        "textSha256": "bf3a7a89779d25dc5e89753624f8b22cf3375e96bc0c1fc98209b29c31a58191"
+      },
+      {
+        "file": "sample/harumal-listening-sample-register-v1.mp3",
+        "bytes": 207874,
+        "sha256": "a8bd883033a19bdebb3d79578973f9ad2c739e7ff109774f5cb3c94eece2dd03",
+        "duration": 17.2577,
+        "peak": 0.713945,
+        "rms": 0.104487,
+        "decodeVerified": true,
+        "integratedLufs": -19.48,
+        "truePeakDb": -2.9,
+        "loudnessRangeLu": 3.2
+      }
+    ]
+  },
+  "externalSynthesisApiUsed": false,
+  "learnerDataTransmitted": false,
+  "actualListeningPerformed": false,
+  "humanPronunciationReview": false,
+  "serviceActivated": false,
+  "deploymentPerformed": false,
+  "repairPack": {
+    "questionCount": 144,
+    "scriptCount": 144,
+    "fileCount": 60,
+    "totalBytes": 9565040,
+    "totalDurationSeconds": 1191.4603,
+    "durationSeconds": {
+      "min": 10.8516,
+      "max": 27.9603
+    },
+    "integratedLufs": {
+      "min": -19.57,
+      "max": -18.16
+    },
+    "maximumTruePeakDb": -2.08,
+    "generationRecordMatchesManifest": true,
+    "exactInputTextHashesVerified": true,
+    "newToOriginalDurationRatio": {
+      "min": 1.0106,
+      "max": 1.0456
+    },
+    "durationOutliers": []
+  },
+  "manifestSha256": "dad274966b0f9305a64927e45146384625d9af8f99d8fe0a75e760794324975a",
+  "generationRecordSha256": "8dd11c15caf1c7fa39a64b7ff7146638121a364556a95bb0979970686b75b64f",
+  "verificationScriptSha256": "81ebad925ef710aad7939cf2dca59b90a4f49e2821a25a120bc4f547e20e4176",
+  "regressionTests": {
+    "focusedCorrectionAndAudio": {
+      "passed": 21,
+      "failed": 0
+    },
+    "contentLane": {
+      "passed": 106,
+      "failed": 0
+    }
+  }
+}

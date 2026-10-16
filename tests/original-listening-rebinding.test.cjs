@@ -1,0 +1,17 @@
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),vm=require('node:vm');
+const root=path.resolve(__dirname,'..'),base='audio/listening/original-v4/',json=p=>JSON.parse(fs.readFileSync(path.join(root,p),'utf8')),hash=x=>crypto.createHash('sha256').update(x).digest('hex');
+test('audio rebinding accepts only the two independently reviewed coaching corrections',()=>{
+ const frozen=json(base+'source-snapshot.json'),report=json(base+'content-reapproval.json'),current=frozen.items[0],old=json('audio/listening/original-v1/source-snapshot.json').items.find(q=>q.id===current.id);
+ assert.equal(frozen.items.length,1);assert.equal(current.id,'O01-II-L-27');assert.equal(report.status,'approved');assert.equal(frozen.revision.independentReviewSha256,hash(fs.readFileSync(path.join(root,base+'content-reapproval.json'))));assert.equal(old.qa.contentSha256,report.oldCoreHash);assert.equal(current.qa.contentSha256,report.newCoreHash);assert.equal(hash(current.script),report.unchangedSourceScriptSha256);
+ const a=structuredClone(old),b=structuredClone(current);delete a.qa;delete b.qa;assert.equal(report.changes.length,2);
+ for(const change of report.changes){assert.deepEqual(change.path.slice(0,1),['coach']);assert.ok(['ko','ja'].includes(change.path[1]));let before=a,after=b;for(const key of change.path.slice(0,-1)){before=before[key];after=after[key]}const key=change.path.at(-1);assert.equal(before[key],change.before);assert.equal(after[key],change.after);before[key]=after[key]}
+ assert.deepEqual(a,b,'script, prompt, options, answer and all other content are unchanged');
+});
+test('rebinding reuses exactly five verified original files and adds no MP3 or question',async()=>{
+ const {buildCorpus}=await import('../scripts/build-original-listening-corpus.mjs'),corpus=json(base+'corpus.json'),manifest=json(base+'manifest.json');assert.deepEqual(corpus,buildCorpus(root,'original-v4'));assert.equal(corpus.questionCount,1);assert.equal(corpus.newClipCount,0);assert.equal(corpus.reusedClipCount,5);assert.equal(manifest.newClipCount,0);assert.equal(manifest.invalidFileCount,0);assert.equal(manifest.decodeVerified,true);
+ const old=json('audio/listening/original-v1/corpus.json').byId['O01-II-L-27'];assert.deepEqual(corpus.byId['O01-II-L-27'].segments,old.segments);for(const file of manifest.files){assert.match(file.file,/^audio\/listening\/original-v1\//);assert.equal(file.sha256,hash(fs.readFileSync(path.join(root,file.file))))}
+ assert.equal(fs.readdirSync(path.join(root,base),{recursive:true}).filter(p=>p.endsWith('.mp3')).length,0);
+});
+test('new catalog has the corrected core binding while preserving original catalog bytes',async()=>{
+ const {buildCatalog}=await import('../scripts/build-original-listening-catalog.mjs'),c={window:{}};vm.runInNewContext(fs.readFileSync(path.join(root,'data/original-listening-audio-v4.js'),'utf8'),c);const catalog=JSON.parse(JSON.stringify(c.window.HARUMAL_ORIGINAL_LISTENING_AUDIO_V4));assert.deepEqual(catalog,buildCatalog(root,'original-v4'));assert.equal(catalog.byId['O01-II-L-27'].sourceContentSha256,'2d84d7e8694f7710f72118d6eb8df035ba92290e8794fff4c14163ade4dc9bdf');assert.equal(catalog.humanPronunciationReview,false);assert.equal(hash(fs.readFileSync(path.join(root,'data/original-listening-audio-v1.js'))),'81f07ffdeae9075fbc8733bdd7a140090fe49efce2f322e75e410660f82b8ff6');
+});
