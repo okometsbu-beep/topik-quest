@@ -37,7 +37,7 @@ function installIntroAudioObserver(mode,forceMp4){
       if(Number.isFinite(media.duration))item.duration=media.duration;
       if(document.querySelector('.harumanIntroLeaving'))item.exitOffset=Math.max(item.exitOffset,media.currentTime);
     };
-    for(const type of ['loadedmetadata','canplay','playing','pause','ended','error','timeupdate'])media.addEventListener(type,()=>{
+    for(const type of ['loadedmetadata','canplay','playing','pause','waiting','seeking','seeked','ended','error','timeupdate'])media.addEventListener(type,()=>{
       sample();qa.events.push({kind:item.kind,type,at:performance.now(),offset:media.currentTime});
     });
     const play=media.play.bind(media),pause=media.pause.bind(media);
@@ -186,7 +186,8 @@ export async function verifyIntro({evaluate,send,setViewport,shot,ready,sleep,ba
             await send('Input.dispatchMouseEvent',{type:'mouseReleased',x:195,y:400,button:'left',clickCount:1});
             await wait(`__introAudioQA.events.some(event=>event.kind==='character'&&event.type==='playing')`,'native character sound');
             const start=await evaluate(`__introAudioQA.items[0].media.currentTime`);await sleep(120);
-            assert.ok(await evaluate(`__introAudioQA.items[0].media.currentTime>${start}+.04&&!__introAudioQA.items[0].media.paused`),'native character audio clock advances');
+            const characterState=await evaluate(`({start:${start},currentTime:__introAudioQA.items[0].media.currentTime,paused:__introAudioQA.items[0].media.paused,readyState:__introAudioQA.items[0].media.readyState,videoTime:document.getElementById('harumanIntroVideo')?.currentTime,events:__introAudioQA.events,calls:__introAudioQA.calls})`);
+            assert.ok(characterState.currentTime>start+.04&&!characterState.paused,'native character audio clock advances: '+JSON.stringify(characterState));
             await wait(`__introAudioQA.events.some(event=>event.kind==='title'&&event.type==='playing')`,'native title sound');
             await wait(`__introAudioQA.items[1].media.currentTime>.03&&!__introAudioQA.items[1].media.paused`,'native title audio clock advances');
             await shot(`intro-audio-native${forceMp4?'-mp4':''}-title.png`);
