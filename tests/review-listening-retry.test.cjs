@@ -33,3 +33,17 @@ test('stale translation and explanation promises cannot paint a different retry 
  let finish;e.c.detailedReviewExplanation=()=>new Promise(resolve=>finish=resolve);e.c.reviewAttempt.locked=true;e.c.renderReviewRetry();e.c.S.real={active:true};finish('OLD ANSWER');await Promise.resolve();assert.doesNotMatch(e.deep.innerHTML,/OLD ANSWER/);
 });
 test('generic overlay close and a newly active mock invalidate retry audio ownership',()=>{const e=boot();e.c.openReviewRetry('k');const config=e.c.playReviewListening();e.classes.delete('open');assert.equal(config.isCurrent(),false);e.classes.add('open');e.c.S.real={active:true};assert.equal(config.isCurrent(),false)});
+
+test('partial legacy reading coaching retains detailed strategy and every option explanation',async()=>{
+ const e=boot('ja');e.item.type='read';e.item.level=2;
+ e.q.stem='Passage evidence';e.q.explanationI18n={ja:'Evidence, trap, and solving strategy'};
+ e.q.choiceExplanationsI18n={ja:['first reason','second reason','correct reason','fourth reason']};
+ const coach={reason:'Short evidence',trap:'Short trap'};e.c.authoredCoach=()=>coach;
+ const html=await e.c.detailedReviewExplanation(e.item,e.q);
+ assert.match(html,/class="tqReviewDeep"/);assert.match(html,/Evidence, trap, and solving strategy/);
+ assert.equal((html.match(/<li class=/g)||[]).length,4);
+ for(const reason of ['first reason','second reason','fourth reason'])assert.ok(html.includes(reason));
+ coach.strategy='Authored strategy';coach.choices=Object.fromEntries(e.q.choices.map(choice=>[choice,'Authored choice reason']));
+ assert.equal(await e.c.detailedReviewExplanation(e.item,e.q),'<b>ANSWER COACHING</b>');
+ e.c.S.real={active:true};assert.equal(await e.c.detailedReviewExplanation(e.item,e.q),'');
+});

@@ -233,7 +233,9 @@ function specificWrongChoiceReason(type,evidence,correct,wrong){
 async function detailedReviewExplanation(item,q){
   if(reviewExamBlocked())return '';
   const type=item.type,lang=S.lang||'ko',n=answerNumber(q),answer=cleanChoice(q.choices?.[q.answerIndex]||q.answer||'');
-  if(authoredCoach(q)||q?.collectionId==='original12-v1'||type==='listen')return explanationBlock(type,q);
+  const coach=authoredCoach(q),completeCoach=coach?.reason&&coach?.trap&&coach?.strategy&&(q.choices||[]).length>0&&(q.choices||[]).every(choice=>coach.choices?.[choice]);
+  // Partial legacy coaching must retain the detailed strategy and option analysis.
+  if(completeCoach||q?.collectionId==='original12-v1'||type==='listen')return explanationBlock(type,q);
   let reason='',grammar='',vocab='',elimination='';
   if(q.bankId){
     reason=q.explanationI18n?.[lang]||q.explanationI18n?.ko||q.explanation||'';grammar=(q.targetSkills||[]).join(' · ');elimination=reason;
