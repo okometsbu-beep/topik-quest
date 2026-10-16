@@ -16,6 +16,14 @@ function boot(lang='ko'){
 const options=['학교','도서관','병원','우체국'];
 function question(order=[0,1,2,3]){return{bankId:'O01-I-L-01',id:1,section:'listening',script:'여자: 책을 빌립니다.',choices:order.map(i=>options[i]),answerIndex:order.indexOf(1),explanationI18n:{ko:'generated legacy-style summary'},coach:Object.fromEntries(['ko','ja'].map(lang=>[lang,{reason:`${lang} authored evidence`,trap:`${lang} authored trap`,strategy:`${lang} quick strategy`,choices:Object.fromEntries(options.map((x,i)=>[x,`${lang} option-${i} exact reason`]))}]))}}
 const permutations=values=>values.length?values.flatMap((v,i)=>permutations(values.filter((_,j)=>i!==j)).map(rest=>[v,...rest])):[[]];
+test('partial legacy coaching cannot replace the full practice explanation',()=>{
+ const c=boot('ja'),q=question();q.coach.ja={reason:'Partial evidence',trap:'Partial trap'};
+ q.explanationI18n.ja='Full evidence; distinct distractors; reusable solving strategy';
+ assert.equal(c.authoredCoaching(q),'');
+ const html=c.explanationBlock('read',q);
+ assert.ok(html.includes(q.explanationI18n.ja));assert.doesNotMatch(html,/Partial evidence|Partial trap/);
+ q.collectionId='original12-v1';assert.match(c.authoredCoaching(q),/Partial evidence/);
+});
 test('TOPIK I/II practice, mock explanation and wrong-review keep all authored options in displayed shuffle order',async()=>{
  for(const lang of ['ko','ja']){const c=boot(lang);for(const order of permutations([0,1,2,3])){
   const q=question(order),outputs=[c.explanationBlock('listen',q),c.gameTutorMarkup(q,0),await c.detailedReviewExplanation({type:'listen',level:1},q)];

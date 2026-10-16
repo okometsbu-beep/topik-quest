@@ -24,6 +24,7 @@ function authoredChoiceReason(q,choice,lang=S.lang||'ko'){
 }
 function authoredCoaching(q){
   const coach=authoredCoach(q);if(!coach)return q?.collectionId==='original12-v1'?`<p class="tqAuthoredPending">${text('이 언어의 검수 해설은 준비 중입니다.','この言語の確認済み解説は準備中です。','Reviewed explanations in this language are not ready yet.','此语言的校对解析尚未准备好。')}</p>`:'';
+  if(q?.collectionId!=='original12-v1'&&(!coach.reason||!coach.trap||!coach.strategy||(q.choices||[]).some(choice=>!coach.choices?.[choice])))return '';
   const note=coach.fallback?text('작성된 해설을 원문으로 표시합니다.','解説の原文を表示しています。',`Authored explanation is shown in ${coach.lang==='ko'?'Korean':'Japanese'}.`,`以下显示${coach.lang==='ko'?'韩语':'日语'}原文解析。`):'';
   const sections=[[text('정답 근거','正解の根拠','Key evidence','正确依据'),coach.reason],[text('오답 함정','ひっかけ分析','Distractor trap','干扰项陷阱'),coach.trap],[text('빠르게 푸는 요령','素早く解くコツ','Quick solving strategy','快速解题技巧'),coach.strategy]];
   const choices=(q.choices||[]).map((choice,index)=>({choice,index,reason:authoredChoiceReason(q,choice,coach.lang)}));

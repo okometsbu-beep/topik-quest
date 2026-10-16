@@ -1,6 +1,6 @@
 ## 2026-10-16 v170 release verification repair
 
-- Preserves the verified v169 content, recordings, and source hashes. Partial legacy reading coaching keeps the existing detailed strategy and option analysis in Review and TOPIK I practice; complete authored coaching and original/listening feedback retain their existing paths.
+- Preserves the verified v169 content, recordings, and source hashes. Partial legacy reading coaching keeps the existing detailed strategy and option analysis in Review and TOPIK I/II practice; the shared authored renderer also rejects incomplete legacy coaching. Complete authored coaching and original/listening feedback retain their existing paths.
 - Preview HTTP byte ranges, explicit listening consent, and synthetic writing-mock cleanup repair browser QA setup. Existing mobile Review assertions remain intact. Local release checks and exact-head full browser CI gate publication.
 
 ## 2026-10-15 v169 staged original-content and intro release candidate
