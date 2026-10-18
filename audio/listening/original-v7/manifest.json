@@ -2,7 +2,7 @@
   "version": 1,
   "status": "technically_verified_listening_review_pending",
   "sourceSnapshotSha256": "4a8c8c963df2db4585041df30287411a034ce2ff3416ca0bea3641c85d6911e7",
-  "corpusSha256": "547288fb17dc894e33ddd5476c3ef2918f5a03dbda1a981d1e2a771f7e77459a",
+  "corpusSha256": "fa0801ae5bb30e8b7be280b685e46a8d80a3d1ac2cfd1261f439c242242d6786",
   "model": "Supertonic-3",
   "modelRevision": "aafc6e32416a594460b32413efc49d7fe4ce6d46",
   "voices": [
@@ -125,7 +125,7 @@
       "rms": 0.106009,
       "integratedLufs": -18.44,
       "truePeakDb": -3.56,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.428
     },
     {
@@ -305,7 +305,7 @@
       "rms": 0.102766,
       "integratedLufs": -18.48,
       "truePeakDb": -2.5,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.613
     },
     {
@@ -325,7 +325,7 @@
       "rms": 0.111033,
       "integratedLufs": -18.44,
       "truePeakDb": -3.63,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.394
     },
     {
@@ -585,7 +585,7 @@
       "rms": 0.102233,
       "integratedLufs": -18.43,
       "truePeakDb": -3.52,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.199
     },
     {
@@ -645,7 +645,7 @@
       "rms": 0.1067,
       "integratedLufs": -18.41,
       "truePeakDb": -4.13,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.282
     },
     {
@@ -725,7 +725,7 @@
       "rms": 0.112207,
       "integratedLufs": -18.79,
       "truePeakDb": -2.13,
-      "loudnessRangeLu": 3.0,
+      "loudnessRangeLu": 3,
       "charactersPerSecond": 6.754
     },
     {
@@ -805,7 +805,7 @@
       "rms": 0.097473,
       "integratedLufs": -19.16,
       "truePeakDb": -2.29,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.99
     },
     {
@@ -825,7 +825,7 @@
       "rms": 0.108126,
       "integratedLufs": -18.3,
       "truePeakDb": -1.64,
-      "loudnessRangeLu": 1.0,
+      "loudnessRangeLu": 1,
       "charactersPerSecond": 6.343
     },
     {
@@ -1045,7 +1045,7 @@
       "rms": 0.079782,
       "integratedLufs": -20.57,
       "truePeakDb": -2.43,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.453
     },
     {
@@ -1145,7 +1145,7 @@
       "rms": 0.109346,
       "integratedLufs": -18.91,
       "truePeakDb": -2.33,
-      "loudnessRangeLu": 2.0,
+      "loudnessRangeLu": 2,
       "charactersPerSecond": 6.791
     },
     {
@@ -1284,8 +1284,8 @@
       "peak": 0.630808,
       "rms": 0.111043,
       "integratedLufs": -18.4,
-      "truePeakDb": -4.0,
-      "loudnessRangeLu": 0.0,
+      "truePeakDb": -4,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.838
     },
     {
@@ -1765,7 +1765,7 @@
       "rms": 0.109081,
       "integratedLufs": -18.8,
       "truePeakDb": -2.31,
-      "loudnessRangeLu": 2.0,
+      "loudnessRangeLu": 2,
       "charactersPerSecond": 6.703
     },
     {
@@ -2065,7 +2065,7 @@
       "rms": 0.108195,
       "integratedLufs": -19.06,
       "truePeakDb": -2.31,
-      "loudnessRangeLu": 2.0,
+      "loudnessRangeLu": 2,
       "charactersPerSecond": 5.836
     },
     {
@@ -2085,7 +2085,7 @@
       "rms": 0.115115,
       "integratedLufs": -17.9,
       "truePeakDb": -2.2,
-      "loudnessRangeLu": 3.0,
+      "loudnessRangeLu": 3,
       "charactersPerSecond": 6.489
     },
     {
@@ -2125,7 +2125,7 @@
       "rms": 0.108689,
       "integratedLufs": -18.64,
       "truePeakDb": -2.27,
-      "loudnessRangeLu": 3.0,
+      "loudnessRangeLu": 3,
       "charactersPerSecond": 6.871
     },
     {
@@ -2185,7 +2185,7 @@
       "rms": 0.103059,
       "integratedLufs": -18.52,
       "truePeakDb": -2.35,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.102
     },
     {
@@ -2205,8 +2205,8 @@
       "rms": 0.102637,
       "integratedLufs": -18.63,
       "truePeakDb": -2.4,
-      "loudnessRangeLu": 0.0,
-      "charactersPerSecond": 6.0
+      "loudnessRangeLu": 0,
+      "charactersPerSecond": 6
     },
     {
       "id": "a7b0a5987de61d14",
@@ -2225,7 +2225,7 @@
       "rms": 0.114514,
       "integratedLufs": -18.43,
       "truePeakDb": -3.37,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.336
     },
     {
@@ -2245,7 +2245,7 @@
       "rms": 0.077203,
       "integratedLufs": -20.53,
       "truePeakDb": -2.43,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.024
     },
     {
@@ -2265,7 +2265,7 @@
       "rms": 0.105868,
       "integratedLufs": -18.51,
       "truePeakDb": -2.42,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.447
     },
     {
@@ -2345,7 +2345,7 @@
       "rms": 0.092644,
       "integratedLufs": -18.88,
       "truePeakDb": -2.38,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.377
     },
     {
@@ -2425,7 +2425,7 @@
       "rms": 0.076223,
       "integratedLufs": -20.18,
       "truePeakDb": -2.48,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.374
     },
     {
@@ -2445,7 +2445,7 @@
       "rms": 0.10733,
       "integratedLufs": -18.46,
       "truePeakDb": -3.18,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 5.818
     },
     {
@@ -2605,7 +2605,7 @@
       "rms": 0.08405,
       "integratedLufs": -20.11,
       "truePeakDb": -2.19,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.454
     },
     {
@@ -2665,7 +2665,7 @@
       "rms": 0.106766,
       "integratedLufs": -19.83,
       "truePeakDb": -4.26,
-      "loudnessRangeLu": 4.0,
+      "loudnessRangeLu": 4,
       "charactersPerSecond": 5.818
     },
     {
@@ -2725,7 +2725,7 @@
       "rms": 0.084702,
       "integratedLufs": -20.02,
       "truePeakDb": -2.25,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 5.812
     },
     {
@@ -2805,7 +2805,7 @@
       "rms": 0.087047,
       "integratedLufs": -19.06,
       "truePeakDb": -2.39,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.014
     },
     {
@@ -2825,7 +2825,7 @@
       "rms": 0.110805,
       "integratedLufs": -18.45,
       "truePeakDb": -2.56,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.537
     },
     {
@@ -2845,7 +2845,7 @@
       "rms": 0.10583,
       "integratedLufs": -19.08,
       "truePeakDb": -2.38,
-      "loudnessRangeLu": 3.0,
+      "loudnessRangeLu": 3,
       "charactersPerSecond": 6.084
     },
     {
@@ -2865,7 +2865,7 @@
       "rms": 0.111165,
       "integratedLufs": -18.47,
       "truePeakDb": -3.98,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 5.875
     },
     {
@@ -2925,7 +2925,7 @@
       "rms": 0.086583,
       "integratedLufs": -19.67,
       "truePeakDb": -2.48,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 5.825
     },
     {
@@ -2945,7 +2945,7 @@
       "rms": 0.113109,
       "integratedLufs": -18.47,
       "truePeakDb": -2.43,
-      "loudnessRangeLu": 1.0,
+      "loudnessRangeLu": 1,
       "charactersPerSecond": 6.425
     },
     {
@@ -3025,7 +3025,7 @@
       "rms": 0.111571,
       "integratedLufs": -18.59,
       "truePeakDb": -2.43,
-      "loudnessRangeLu": 2.0,
+      "loudnessRangeLu": 2,
       "charactersPerSecond": 5.752
     },
     {
@@ -3045,7 +3045,7 @@
       "rms": 0.091451,
       "integratedLufs": -18.73,
       "truePeakDb": -2.43,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 5.599
     },
     {
@@ -3105,7 +3105,7 @@
       "rms": 0.085861,
       "integratedLufs": -19.7,
       "truePeakDb": -2.55,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.898
     },
     {
@@ -3145,7 +3145,7 @@
       "rms": 0.105277,
       "integratedLufs": -18.74,
       "truePeakDb": -2.22,
-      "loudnessRangeLu": 3.0,
+      "loudnessRangeLu": 3,
       "charactersPerSecond": 6.137
     },
     {
@@ -3164,7 +3164,7 @@
       "peak": 0.707695,
       "rms": 0.111948,
       "integratedLufs": -18.88,
-      "truePeakDb": -3.0,
+      "truePeakDb": -3,
       "loudnessRangeLu": 2.1,
       "charactersPerSecond": 6.314
     },
@@ -3185,7 +3185,7 @@
       "rms": 0.102504,
       "integratedLufs": -18.68,
       "truePeakDb": -2.33,
-      "loudnessRangeLu": 2.0,
+      "loudnessRangeLu": 2,
       "charactersPerSecond": 5.413
     },
     {
@@ -3225,7 +3225,7 @@
       "rms": 0.110632,
       "integratedLufs": -19.21,
       "truePeakDb": -3.09,
-      "loudnessRangeLu": 3.0,
+      "loudnessRangeLu": 3,
       "charactersPerSecond": 5.916
     },
     {
@@ -3245,7 +3245,7 @@
       "rms": 0.099779,
       "integratedLufs": -18.5,
       "truePeakDb": -2.41,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.228
     },
     {
@@ -3385,7 +3385,7 @@
       "rms": 0.109633,
       "integratedLufs": -18.17,
       "truePeakDb": -2.2,
-      "loudnessRangeLu": 2.0,
+      "loudnessRangeLu": 2,
       "charactersPerSecond": 5.879
     },
     {
@@ -3425,7 +3425,7 @@
       "rms": 0.073422,
       "integratedLufs": -21.22,
       "truePeakDb": -2.87,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.483
     },
     {
@@ -3455,7 +3455,7 @@
   "unexpectedFiles": [],
   "duplicateAudioHashes": [],
   "durationRateReviewWarnings": [],
-  "generationRecordsSha256": "7140639326cda213f2445dc948ddd2ea6ed073f681bb3d94919910083d78cb92",
+  "generationRecordsSha256": "74e719cb3d852f9daaa19d90508015a6fe723712ff73f12c020e6df89e64f2e1",
   "packId": "original-v7",
   "newClipCount": 167,
   "reusedClipCount": 0

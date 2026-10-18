@@ -110,10 +110,10 @@ function runGate(change = '') {
   return result;
 }
 
-test('partial release gate accepts the exact frozen reviewed subset and rejects stale scope bindings', () => {
+test('complete release gate accepts the exact frozen reviewed collection and rejects stale scope bindings', () => {
   const clean = runGate();
   assert.equal(clean.status, 0, clean.stderr);
-  assert.match(clean.stdout, /1668\/2088 reviewed items; 1548 four-language items; 730 source-matched listening/);
+  assert.match(clean.stdout, /2088\/2088 reviewed items; 2088 four-language items; 960 source-matched listening/);
   for (const source of Object.keys(json('content/original-release-scope.json').sourceHashes)) {
     const result = runGate(`overrides.set(${JSON.stringify(source)}, read(${JSON.stringify(source)}) + ' ');`);
     assert.notEqual(result.status, 0, source);
@@ -125,7 +125,7 @@ test('partial release gate accepts the exact frozen reviewed subset and rejects 
   }
 });
 
-test('partial release gate rejects generated answer drift even with a freshly rehashed manifest', () => {
+test('complete release gate rejects generated answer drift even with a freshly rehashed manifest', () => {
   const result = runGate(`
     const file = 'data/original-exams-v1-part1.js', code = read(file), c = {window:{}};
     vm.runInNewContext(code, c);
@@ -143,7 +143,7 @@ test('partial release gate rejects generated answer drift even with a freshly re
   assert.match(result.stderr, /Generated original core payload differs from the approved source/);
 });
 
-test('partial release gate rejects changed runtime localization even when its output hash is refreshed', () => {
+test('complete release gate rejects changed runtime localization even when its output hash is refreshed', () => {
   const result = runGate(`
     const file = 'data/original-support-v1.js', c = {window:{}};
     vm.runInNewContext(read(file), c);
@@ -159,10 +159,10 @@ test('partial release gate rejects changed runtime localization even when its ou
   assert.match(result.stderr, /Runtime localization differs from independently approved source/);
 });
 
-test('partial release gate keeps locale-specific locked sets and exact listening coverage', () => {
+test('complete release gate keeps locale-specific locked sets and exact listening coverage', () => {
   for (const [change, message] of [
-    ['scope.listeningItems++;', /Original listening collection is incomplete/],
-    ["scope.readySets['en-1'].push(11);", /Locale set readiness must match the frozen approved release/]
+    ['scope.listeningItems++;', /Expected values to be strictly equal/],
+    ["scope.readySets['en-1'][11]=11;", /Locale set readiness must match the frozen approved release/]
   ]) {
     const result = runGate(`const scope = json('content/original-release-scope.json'); ${change} overrides.set('content/original-release-scope.json', JSON.stringify(scope));`);
     assert.notEqual(result.status, 0, change);

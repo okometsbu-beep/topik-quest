@@ -1,0 +1,20 @@
+{
+  "assets/original/O12-II-R-05.svg": {
+    "file": "O12-II-R-05.svg",
+    "sourceSha256": "a674be18805ef74bd439922d499af86bd1356e5dd532008fc3ea3ad3a11f2b71",
+    "review": "Meaning, function arrows and original text retained; approved for local v171 application.",
+    "geometryPreserved": false
+  },
+  "assets/original/O12-II-R-06.svg": {
+    "file": "O12-II-R-06.svg",
+    "sourceSha256": "dc11236993bd8b1b24cf2c6ffe62da6a2ddd61f86254ed9633ffd0ce5c94f251",
+    "review": "Meaning, function arrows and original text retained; approved for local v171 application.",
+    "geometryPreserved": false
+  },
+  "assets/original/O12-II-R-07.svg": {
+    "file": "O12-II-R-07.svg",
+    "sourceSha256": "c8528e81d8801ce1a7208369bfb23a3a44d19b8b497155c50ce3fe6004107c54",
+    "review": "Meaning, function arrows and original text retained; approved for local v171 application.",
+    "geometryPreserved": false
+  }
+}

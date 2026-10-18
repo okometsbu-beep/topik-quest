@@ -1,8 +1,8 @@
 {
   "version": 1,
   "status": "technically_verified_listening_review_pending",
-  "sourceSnapshotSha256": "47ed40dadb6d4e43507afdad8aa54f95eed3fa16a77e5a712a8380300da05ec1",
-  "corpusSha256": "57d1075f7e4c50493d096758c96635ef5e9925cbe42b61082a2b50bff25ea0e7",
+  "sourceSnapshotSha256": "950918615784f965348ea3d145fcbedd58536cac68845ee1952a977c37777813",
+  "corpusSha256": "6018764513104efe7b98bbf8bbc43122b9e0ceaebe20bfc855cb391937c4678c",
   "model": "Supertonic-3",
   "modelRevision": "aafc6e32416a594460b32413efc49d7fe4ce6d46",
   "voices": [
@@ -125,7 +125,7 @@
       "rms": 0.105945,
       "integratedLufs": -18.4,
       "truePeakDb": -3.78,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.589
     },
     {
@@ -185,7 +185,7 @@
       "rms": 0.1067,
       "integratedLufs": -19.79,
       "truePeakDb": -4.7,
-      "loudnessRangeLu": 3.0,
+      "loudnessRangeLu": 3,
       "charactersPerSecond": 5.816
     },
     {
@@ -425,7 +425,7 @@
       "rms": 0.095474,
       "integratedLufs": -18.51,
       "truePeakDb": -2.14,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.023
     },
     {
@@ -465,7 +465,7 @@
       "rms": 0.101856,
       "integratedLufs": -19.25,
       "truePeakDb": -2.25,
-      "loudnessRangeLu": 4.0,
+      "loudnessRangeLu": 4,
       "charactersPerSecond": 6.351
     },
     {
@@ -505,7 +505,7 @@
       "rms": 0.078066,
       "integratedLufs": -20.04,
       "truePeakDb": -2.43,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 4.75
     },
     {
@@ -565,7 +565,7 @@
       "rms": 0.108654,
       "integratedLufs": -19.34,
       "truePeakDb": -2.46,
-      "loudnessRangeLu": 4.0,
+      "loudnessRangeLu": 4,
       "charactersPerSecond": 5.874
     },
     {
@@ -645,7 +645,7 @@
       "rms": 0.121414,
       "integratedLufs": -18.42,
       "truePeakDb": -2.43,
-      "loudnessRangeLu": 2.0,
+      "loudnessRangeLu": 2,
       "charactersPerSecond": 6.496
     },
     {
@@ -843,9 +843,9 @@
       "duration": 2.2531,
       "peak": 0.765967,
       "rms": 0.098226,
-      "integratedLufs": -19.0,
+      "integratedLufs": -19,
       "truePeakDb": -2.32,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.657
     },
     {
@@ -1005,7 +1005,7 @@
       "rms": 0.102421,
       "integratedLufs": -18.92,
       "truePeakDb": -2.94,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 5.99
     },
     {
@@ -1085,7 +1085,7 @@
       "rms": 0.117143,
       "integratedLufs": -18.98,
       "truePeakDb": -4.2,
-      "loudnessRangeLu": 2.0,
+      "loudnessRangeLu": 2,
       "charactersPerSecond": 6.942
     },
     {
@@ -1105,7 +1105,7 @@
       "rms": 0.114344,
       "integratedLufs": -18.48,
       "truePeakDb": -1.99,
-      "loudnessRangeLu": 2.0,
+      "loudnessRangeLu": 2,
       "charactersPerSecond": 6.746
     },
     {
@@ -1265,7 +1265,7 @@
       "rms": 0.107743,
       "integratedLufs": -18.76,
       "truePeakDb": -2.21,
-      "loudnessRangeLu": 3.0,
+      "loudnessRangeLu": 3,
       "charactersPerSecond": 6.609
     },
     {
@@ -1385,7 +1385,7 @@
       "rms": 0.105278,
       "integratedLufs": -18.59,
       "truePeakDb": -2.09,
-      "loudnessRangeLu": 3.0,
+      "loudnessRangeLu": 3,
       "charactersPerSecond": 6.322
     },
     {
@@ -1505,7 +1505,7 @@
       "rms": 0.107877,
       "integratedLufs": -18.86,
       "truePeakDb": -2.19,
-      "loudnessRangeLu": 2.0,
+      "loudnessRangeLu": 2,
       "charactersPerSecond": 6.302
     },
     {
@@ -2185,7 +2185,7 @@
       "rms": 0.090672,
       "integratedLufs": -19.25,
       "truePeakDb": -2.53,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.098
     },
     {
@@ -2225,7 +2225,7 @@
       "rms": 0.101064,
       "integratedLufs": -18.43,
       "truePeakDb": -2.87,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.066
     },
     {
@@ -2245,7 +2245,7 @@
       "rms": 0.104959,
       "integratedLufs": -18.42,
       "truePeakDb": -4.75,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 5.627
     },
     {
@@ -2324,8 +2324,8 @@
       "peak": 0.702119,
       "rms": 0.119196,
       "integratedLufs": -18.42,
-      "truePeakDb": -3.0,
-      "loudnessRangeLu": 2.0,
+      "truePeakDb": -3,
+      "loudnessRangeLu": 2,
       "charactersPerSecond": 5.851
     },
     {
@@ -2405,7 +2405,7 @@
       "rms": 0.109002,
       "integratedLufs": -19.55,
       "truePeakDb": -3.96,
-      "loudnessRangeLu": 3.0,
+      "loudnessRangeLu": 3,
       "charactersPerSecond": 5.616
     },
     {
@@ -2485,7 +2485,7 @@
       "rms": 0.098551,
       "integratedLufs": -19.09,
       "truePeakDb": -2.23,
-      "loudnessRangeLu": 1.0,
+      "loudnessRangeLu": 1,
       "charactersPerSecond": 6.049
     },
     {
@@ -2543,7 +2543,7 @@
       "duration": 5.7059,
       "peak": 0.764362,
       "rms": 0.103614,
-      "integratedLufs": -19.0,
+      "integratedLufs": -19,
       "truePeakDb": -2.28,
       "loudnessRangeLu": 2.5,
       "charactersPerSecond": 6.134
@@ -2565,7 +2565,7 @@
       "rms": 0.09407,
       "integratedLufs": -19.79,
       "truePeakDb": -2.41,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.185
     },
     {
@@ -2585,7 +2585,7 @@
       "rms": 0.103239,
       "integratedLufs": -18.37,
       "truePeakDb": -2.18,
-      "loudnessRangeLu": 1.0,
+      "loudnessRangeLu": 1,
       "charactersPerSecond": 6.309
     },
     {
@@ -2645,7 +2645,7 @@
       "rms": 0.108767,
       "integratedLufs": -18.4,
       "truePeakDb": -4.25,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.47
     },
     {
@@ -2685,7 +2685,7 @@
       "rms": 0.092031,
       "integratedLufs": -19.31,
       "truePeakDb": -2.37,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.796
     },
     {
@@ -2725,7 +2725,7 @@
       "rms": 0.090363,
       "integratedLufs": -19.75,
       "truePeakDb": -2.38,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.473
     },
     {
@@ -2805,7 +2805,7 @@
       "rms": 0.107078,
       "integratedLufs": -18.73,
       "truePeakDb": -6.13,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 5.273
     },
     {
@@ -2845,7 +2845,7 @@
       "rms": 0.112376,
       "integratedLufs": -18.35,
       "truePeakDb": -2.1,
-      "loudnessRangeLu": 2.0,
+      "loudnessRangeLu": 2,
       "charactersPerSecond": 6.021
     },
     {
@@ -2945,7 +2945,7 @@
       "rms": 0.093337,
       "integratedLufs": -18.6,
       "truePeakDb": -2.6,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 5.883
     },
     {
@@ -3065,7 +3065,7 @@
       "rms": 0.094377,
       "integratedLufs": -18.41,
       "truePeakDb": -2.47,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.099
     },
     {
@@ -3125,7 +3125,7 @@
       "rms": 0.074083,
       "integratedLufs": -20.39,
       "truePeakDb": -2.28,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.036
     },
     {
@@ -3245,7 +3245,7 @@
       "rms": 0.101554,
       "integratedLufs": -19.78,
       "truePeakDb": -2.49,
-      "loudnessRangeLu": 4.0,
+      "loudnessRangeLu": 4,
       "charactersPerSecond": 6.376
     },
     {
@@ -3285,7 +3285,7 @@
       "rms": 0.121552,
       "integratedLufs": -18.04,
       "truePeakDb": -2.78,
-      "loudnessRangeLu": 1.0,
+      "loudnessRangeLu": 1,
       "charactersPerSecond": 6.351
     },
     {
@@ -3435,7 +3435,7 @@
   "unexpectedFiles": [],
   "duplicateAudioHashes": [],
   "durationRateReviewWarnings": [],
-  "generationRecordsSha256": "c97ba7178fee5bc6800b225292428bf635a8cb5e91c6b2f62f7755aa89214e5d",
+  "generationRecordsSha256": "d606995458f5c1aa6f4e3206acb2a73d9a7febc0564c50341b60313aefca8ac2",
   "packId": "original-v6",
   "newClipCount": 166,
   "reusedClipCount": 0

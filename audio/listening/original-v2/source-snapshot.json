@@ -1815,7 +1815,7 @@
           "difficultyFit": true
         },
         "report": "docs/qa/original-exams-content.md#pilot-review",
-        "additionalIndependentRevisionReviewer": "root",
+        "additionalIndependentRevisionReviewer": "independent-content-review",
         "revisionReviewReport": "batches/O03-II-L-root-revision-review.json"
       },
       "localizationScope": {
@@ -4698,7 +4698,7 @@
           "difficultyFit": true
         },
         "report": "docs/qa/original-exams-content.md#pilot-review",
-        "additionalIndependentRevisionReviewer": "root",
+        "additionalIndependentRevisionReviewer": "independent-content-review",
         "revisionReviewReport": "batches/O03-II-L-root-revision-review.json"
       },
       "localizationScope": {
@@ -5154,7 +5154,7 @@
           "difficultyFit": true
         },
         "report": "docs/qa/original-exams-content.md#pilot-review",
-        "additionalIndependentRevisionReviewer": "root",
+        "additionalIndependentRevisionReviewer": "independent-content-review",
         "revisionReviewReport": "batches/O03-II-L-root-revision-review.json"
       },
       "localizationScope": {

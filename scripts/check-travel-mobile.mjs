@@ -20,6 +20,7 @@ import {verifyVocabFlashcards} from './vocab-flashcards-checks.mjs';
 import {verifyLearningRefresh} from './learning-refresh-checks.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
 import {spawn,spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 
@@ -46,7 +47,7 @@ for(const file of fs.readdirSync(out))if(file.endsWith('.png'))fs.unlinkSync(pat
 const chromePath=[process.env.CHROME_PATH,'/usr/bin/google-chrome','/usr/bin/google-chrome-stable','/usr/bin/chromium','/usr/bin/chromium-browser'].find(candidate=>candidate&&fs.existsSync(candidate));
 assert.ok(chromePath,'Chrome/Chromium not found; set CHROME_PATH to the browser executable');
 const server=spawn(process.execPath,['scripts/serve.mjs'],{cwd:process.env.MALBIT_TEST_ROOT||root,stdio:'ignore'});
-const chromeArgs=['--headless','--no-sandbox','--disable-gpu','--disable-dev-shm-usage','--hide-scrollbars','--remote-debugging-address=127.0.0.1','--remote-debugging-port=9222',`--user-data-dir=/tmp/malbit-chrome-profile-${process.pid}`,'about:blank'];
+const chromeArgs=['--headless','--no-sandbox','--disable-gpu','--disable-dev-shm-usage','--hide-scrollbars','--remote-debugging-address=127.0.0.1','--remote-debugging-port=9222',`--user-data-dir=${path.join(os.tmpdir(),'malbit-chrome-profile-'+process.pid)}`,'about:blank'];
 const launchChrome=()=>spawn(chromePath,chromeArgs,{stdio:['ignore','ignore','inherit']});
 let chrome=launchChrome();
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
@@ -89,6 +90,10 @@ try{
     const frames=recording.frames;recording=null;assert.ok(frames.length>20,'motion preview must contain actual rendered browser frames');
     const manifest=frames.map((f,i)=>`file '${f.frame}'\nduration ${Math.max(1/60,Math.min(2,(frames[i+1]?.time||f.time+.8)-f.time))}`).join('\n')+`\nfile '${frames.at(-1).frame}'\n`;
     const list=path.join(dir,'frames.txt');fs.writeFileSync(list,manifest);
+    if(process.env.HARUMAL_QA_FRAMES_ONLY==='1'){
+      console.warn('MP4 encoding explicitly omitted; actual browser frame assertions passed and raw frames retained:',name,frames.length);
+      return;
+    }
     const movie=spawnSync('ffmpeg',['-y','-loglevel','error','-f','concat','-safe','0','-i',list,'-vf','fps=30','-c:v','libx264','-pix_fmt','yuv420p','-movflags','+faststart',path.join(out,name+'.mp4')],{encoding:'utf8'});
     assert.equal(movie.status,0,'encode actual browser motion: '+movie.stderr);console.log('Recorded actual browser motion:',name,frames.length,'frames');
   };

@@ -1,0 +1,6641 @@
+{
+  "svgCount": 474,
+  "files": [
+    {
+      "source": "assets/original/O01-I-L-15-a.svg",
+      "derivative": "assets/question-polish/original-O01-I-L-15-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        400.0,
+        290.0
+      ]
+    },
+    {
+      "source": "assets/original/O01-I-L-15-b.svg",
+      "derivative": "assets/question-polish/original-O01-I-L-15-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        400.0,
+        290.0
+      ]
+    },
+    {
+      "source": "assets/original/O01-I-L-15-c.svg",
+      "derivative": "assets/question-polish/original-O01-I-L-15-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        400.0,
+        290.0
+      ]
+    },
+    {
+      "source": "assets/original/O01-I-L-15-d.svg",
+      "derivative": "assets/question-polish/original-O01-I-L-15-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        400.0,
+        290.0
+      ]
+    },
+    {
+      "source": "assets/original/O01-I-L-16-a.svg",
+      "derivative": "assets/question-polish/original-O01-I-L-16-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        440.0,
+        330.0
+      ]
+    },
+    {
+      "source": "assets/original/O01-I-L-16-b.svg",
+      "derivative": "assets/question-polish/original-O01-I-L-16-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        440.0,
+        330.0
+      ]
+    },
+    {
+      "source": "assets/original/O01-I-L-16-c.svg",
+      "derivative": "assets/question-polish/original-O01-I-L-16-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        440.0,
+        330.0
+      ]
+    },
+    {
+      "source": "assets/original/O01-I-L-16-d.svg",
+      "derivative": "assets/question-polish/original-O01-I-L-16-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 7,
+      "viewBox": [
+        0.0,
+        0.0,
+        440.0,
+        330.0
+      ]
+    },
+    {
+      "source": "assets/original/O01-I-R-40.svg",
+      "derivative": "assets/question-polish/original-O01-I-R-40.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        760.0,
+        536.0
+      ]
+    },
+    {
+      "source": "assets/original/O01-I-R-41.svg",
+      "derivative": "assets/question-polish/original-O01-I-R-41.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        760.0,
+        536.0
+      ]
+    },
+    {
+      "source": "assets/original/O01-I-R-42.svg",
+      "derivative": "assets/question-polish/original-O01-I-R-42.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        760.0,
+        587.0
+      ]
+    },
+    {
+      "source": "assets/original/O01-II-L-01-a.svg",
+      "derivative": "assets/question-polish/original-O01-II-L-01-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        440.0
+      ]
+    },
+    {
+      "source": "assets/original/O01-II-L-01-b.svg",
+      "derivative": "assets/question-polish/original-O01-II-L-01-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        440.0
+      ]
+    },
+    {
+      "source": "assets/original/O01-II-L-01-c.svg",
+      "derivative": "assets/question-polish/original-O01-II-L-01-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        440.0
+      ]
+    },
+    {
+      "source": "assets/original/O01-II-L-01-d.svg",
+      "derivative": "assets/question-polish/original-O01-II-L-01-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        440.0
+      ]
+    },
+    {
+      "source": "assets/original/O01-II-L-02-a.svg",
+      "derivative": "assets/question-polish/original-O01-II-L-02-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        440.0
+      ]
+    },
+    {
+      "source": "assets/original/O01-II-L-02-b.svg",
+      "derivative": "assets/question-polish/original-O01-II-L-02-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        440.0
+      ]
+    },
+    {
+      "source": "assets/original/O01-II-L-02-c.svg",
+      "derivative": "assets/question-polish/original-O01-II-L-02-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        440.0
+      ]
+    },
+    {
+      "source": "assets/original/O01-II-L-02-d.svg",
+      "derivative": "assets/question-polish/original-O01-II-L-02-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        440.0
+      ]
+    },
+    {
+      "source": "assets/original/O01-II-L-03-a.svg",
+      "derivative": "assets/question-polish/original-O01-II-L-03-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        440.0
+      ]
+    },
+    {
+      "source": "assets/original/O01-II-L-03-b.svg",
+      "derivative": "assets/question-polish/original-O01-II-L-03-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        440.0
+      ]
+    },
+    {
+      "source": "assets/original/O01-II-L-03-c.svg",
+      "derivative": "assets/question-polish/original-O01-II-L-03-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        440.0
+      ]
+    },
+    {
+      "source": "assets/original/O01-II-L-03-d.svg",
+      "derivative": "assets/question-polish/original-O01-II-L-03-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        440.0
+      ]
+    },
+    {
+      "source": "assets/original/O01-II-R-05.svg",
+      "derivative": "assets/question-polish/original-O01-II-R-05.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        840.0,
+        336.0
+      ]
+    },
+    {
+      "source": "assets/original/O01-II-R-06.svg",
+      "derivative": "assets/question-polish/original-O01-II-R-06.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        840.0,
+        336.0
+      ]
+    },
+    {
+      "source": "assets/original/O01-II-R-07.svg",
+      "derivative": "assets/question-polish/original-O01-II-R-07.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        840.0,
+        336.0
+      ]
+    },
+    {
+      "source": "assets/original/O01-II-R-08.svg",
+      "derivative": "assets/question-polish/original-O01-II-R-08.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        840.0,
+        336.0
+      ]
+    },
+    {
+      "source": "assets/original/O01-II-R-09.svg",
+      "derivative": "assets/question-polish/original-O01-II-R-09.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        840.0,
+        388.0
+      ]
+    },
+    {
+      "source": "assets/original/O02-I-L-15-a.svg",
+      "derivative": "assets/question-polish/original-O02-I-L-15-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        400.0
+      ]
+    },
+    {
+      "source": "assets/original/O02-I-L-15-b.svg",
+      "derivative": "assets/question-polish/original-O02-I-L-15-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        400.0
+      ]
+    },
+    {
+      "source": "assets/original/O02-I-L-15-c.svg",
+      "derivative": "assets/question-polish/original-O02-I-L-15-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        400.0
+      ]
+    },
+    {
+      "source": "assets/original/O02-I-L-15-d.svg",
+      "derivative": "assets/question-polish/original-O02-I-L-15-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        400.0
+      ]
+    },
+    {
+      "source": "assets/original/O02-I-L-16-a.svg",
+      "derivative": "assets/question-polish/original-O02-I-L-16-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        400.0
+      ]
+    },
+    {
+      "source": "assets/original/O02-I-L-16-b.svg",
+      "derivative": "assets/question-polish/original-O02-I-L-16-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        400.0
+      ]
+    },
+    {
+      "source": "assets/original/O02-I-L-16-c.svg",
+      "derivative": "assets/question-polish/original-O02-I-L-16-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        400.0
+      ]
+    },
+    {
+      "source": "assets/original/O02-I-L-16-d.svg",
+      "derivative": "assets/question-polish/original-O02-I-L-16-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        400.0
+      ]
+    },
+    {
+      "source": "assets/original/O02-I-R-40.svg",
+      "derivative": "assets/question-polish/original-O02-I-R-40.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        760.0,
+        650.0
+      ]
+    },
+    {
+      "source": "assets/original/O02-I-R-41.svg",
+      "derivative": "assets/question-polish/original-O02-I-R-41.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        760.0,
+        650.0
+      ]
+    },
+    {
+      "source": "assets/original/O02-I-R-42.svg",
+      "derivative": "assets/question-polish/original-O02-I-R-42.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        760.0,
+        650.0
+      ]
+    },
+    {
+      "source": "assets/original/O02-II-L-01-a.svg",
+      "derivative": "assets/question-polish/original-O02-II-L-01-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 13,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O02-II-L-01-b.svg",
+      "derivative": "assets/question-polish/original-O02-II-L-01-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 13,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O02-II-L-01-c.svg",
+      "derivative": "assets/question-polish/original-O02-II-L-01-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 14,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O02-II-L-01-d.svg",
+      "derivative": "assets/question-polish/original-O02-II-L-01-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 14,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O02-II-L-02-a.svg",
+      "derivative": "assets/question-polish/original-O02-II-L-02-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 8,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O02-II-L-02-b.svg",
+      "derivative": "assets/question-polish/original-O02-II-L-02-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 8,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O02-II-L-02-c.svg",
+      "derivative": "assets/question-polish/original-O02-II-L-02-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 8,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O02-II-L-02-d.svg",
+      "derivative": "assets/question-polish/original-O02-II-L-02-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 8,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O02-II-L-03-a.svg",
+      "derivative": "assets/question-polish/original-O02-II-L-03-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O02-II-L-03-b.svg",
+      "derivative": "assets/question-polish/original-O02-II-L-03-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O02-II-L-03-c.svg",
+      "derivative": "assets/question-polish/original-O02-II-L-03-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O02-II-L-03-d.svg",
+      "derivative": "assets/question-polish/original-O02-II-L-03-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        640.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O02-II-R-05.svg",
+      "derivative": "assets/question-polish/original-O02-II-R-05.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        800.0
+      ]
+    },
+    {
+      "source": "assets/original/O02-II-R-06.svg",
+      "derivative": "assets/question-polish/original-O02-II-R-06.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        780.0
+      ]
+    },
+    {
+      "source": "assets/original/O02-II-R-07.svg",
+      "derivative": "assets/question-polish/original-O02-II-R-07.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        800.0
+      ]
+    },
+    {
+      "source": "assets/original/O02-II-R-08.svg",
+      "derivative": "assets/question-polish/original-O02-II-R-08.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        770.0
+      ]
+    },
+    {
+      "source": "assets/original/O02-II-R-09.svg",
+      "derivative": "assets/question-polish/original-O02-II-R-09.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        980.0
+      ]
+    },
+    {
+      "source": "assets/original/O03-I-L-15-a.svg",
+      "derivative": "assets/question-polish/original-O03-I-L-15-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 7,
+      "viewBox": [
+        0.0,
+        0.0,
+        360.0,
+        360.0
+      ]
+    },
+    {
+      "source": "assets/original/O03-I-L-15-b.svg",
+      "derivative": "assets/question-polish/original-O03-I-L-15-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 7,
+      "viewBox": [
+        0.0,
+        0.0,
+        360.0,
+        360.0
+      ]
+    },
+    {
+      "source": "assets/original/O03-I-L-15-c.svg",
+      "derivative": "assets/question-polish/original-O03-I-L-15-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 7,
+      "viewBox": [
+        0.0,
+        0.0,
+        360.0,
+        360.0
+      ]
+    },
+    {
+      "source": "assets/original/O03-I-L-15-d.svg",
+      "derivative": "assets/question-polish/original-O03-I-L-15-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 7,
+      "viewBox": [
+        0.0,
+        0.0,
+        360.0,
+        360.0
+      ]
+    },
+    {
+      "source": "assets/original/O03-I-L-16-a.svg",
+      "derivative": "assets/question-polish/original-O03-I-L-16-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        360.0,
+        400.0
+      ]
+    },
+    {
+      "source": "assets/original/O03-I-L-16-b.svg",
+      "derivative": "assets/question-polish/original-O03-I-L-16-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        360.0,
+        400.0
+      ]
+    },
+    {
+      "source": "assets/original/O03-I-L-16-c.svg",
+      "derivative": "assets/question-polish/original-O03-I-L-16-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        360.0,
+        400.0
+      ]
+    },
+    {
+      "source": "assets/original/O03-I-L-16-d.svg",
+      "derivative": "assets/question-polish/original-O03-I-L-16-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        360.0,
+        400.0
+      ]
+    },
+    {
+      "source": "assets/original/O03-I-R-40.svg",
+      "derivative": "assets/question-polish/original-O03-I-R-40.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        690.0
+      ]
+    },
+    {
+      "source": "assets/original/O03-I-R-41.svg",
+      "derivative": "assets/question-polish/original-O03-I-R-41.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        720.0
+      ]
+    },
+    {
+      "source": "assets/original/O03-I-R-42.svg",
+      "derivative": "assets/question-polish/original-O03-I-R-42.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        840.0
+      ]
+    },
+    {
+      "source": "assets/original/O03-II-L-01-a.svg",
+      "derivative": "assets/question-polish/original-O03-II-L-01-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O03-II-L-01-b.svg",
+      "derivative": "assets/question-polish/original-O03-II-L-01-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O03-II-L-01-c.svg",
+      "derivative": "assets/question-polish/original-O03-II-L-01-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O03-II-L-01-d.svg",
+      "derivative": "assets/question-polish/original-O03-II-L-01-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 7,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O03-II-L-02-a.svg",
+      "derivative": "assets/question-polish/original-O03-II-L-02-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 9,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O03-II-L-02-b.svg",
+      "derivative": "assets/question-polish/original-O03-II-L-02-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 9,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O03-II-L-02-c.svg",
+      "derivative": "assets/question-polish/original-O03-II-L-02-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 9,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O03-II-L-02-d.svg",
+      "derivative": "assets/question-polish/original-O03-II-L-02-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 8,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O03-II-L-03-a.svg",
+      "derivative": "assets/question-polish/original-O03-II-L-03-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O03-II-L-03-b.svg",
+      "derivative": "assets/question-polish/original-O03-II-L-03-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O03-II-L-03-c.svg",
+      "derivative": "assets/question-polish/original-O03-II-L-03-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O03-II-L-03-d.svg",
+      "derivative": "assets/question-polish/original-O03-II-L-03-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O03-II-R-05.svg",
+      "derivative": "assets/question-polish/original-O03-II-R-05.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        820.0
+      ]
+    },
+    {
+      "source": "assets/original/O03-II-R-06.svg",
+      "derivative": "assets/question-polish/original-O03-II-R-06.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        850.0
+      ]
+    },
+    {
+      "source": "assets/original/O03-II-R-07.svg",
+      "derivative": "assets/question-polish/original-O03-II-R-07.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        870.0
+      ]
+    },
+    {
+      "source": "assets/original/O03-II-R-08.svg",
+      "derivative": "assets/question-polish/original-O03-II-R-08.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        900.0
+      ]
+    },
+    {
+      "source": "assets/original/O03-II-R-09.svg",
+      "derivative": "assets/question-polish/original-O03-II-R-09.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        1000.0
+      ]
+    },
+    {
+      "source": "assets/original/O04-I-L-15-a.svg",
+      "derivative": "assets/question-polish/original-O04-I-L-15-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 8,
+      "viewBox": [
+        0.0,
+        0.0,
+        360.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O04-I-L-15-b.svg",
+      "derivative": "assets/question-polish/original-O04-I-L-15-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 8,
+      "viewBox": [
+        0.0,
+        0.0,
+        360.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O04-I-L-15-c.svg",
+      "derivative": "assets/question-polish/original-O04-I-L-15-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 8,
+      "viewBox": [
+        0.0,
+        0.0,
+        360.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O04-I-L-15-d.svg",
+      "derivative": "assets/question-polish/original-O04-I-L-15-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 8,
+      "viewBox": [
+        0.0,
+        0.0,
+        360.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O04-I-L-16-a.svg",
+      "derivative": "assets/question-polish/original-O04-I-L-16-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        360.0,
+        360.0
+      ]
+    },
+    {
+      "source": "assets/original/O04-I-L-16-b.svg",
+      "derivative": "assets/question-polish/original-O04-I-L-16-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        360.0,
+        360.0
+      ]
+    },
+    {
+      "source": "assets/original/O04-I-L-16-c.svg",
+      "derivative": "assets/question-polish/original-O04-I-L-16-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        360.0,
+        360.0
+      ]
+    },
+    {
+      "source": "assets/original/O04-I-L-16-d.svg",
+      "derivative": "assets/question-polish/original-O04-I-L-16-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        360.0,
+        360.0
+      ]
+    },
+    {
+      "source": "assets/original/O04-I-R-40.svg",
+      "derivative": "assets/question-polish/original-O04-I-R-40.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        760.0,
+        650.0
+      ]
+    },
+    {
+      "source": "assets/original/O04-I-R-41.svg",
+      "derivative": "assets/question-polish/original-O04-I-R-41.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        760.0,
+        650.0
+      ]
+    },
+    {
+      "source": "assets/original/O04-I-R-42.svg",
+      "derivative": "assets/question-polish/original-O04-I-R-42.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        760.0,
+        710.0
+      ]
+    },
+    {
+      "source": "assets/original/O04-II-L-01-a.svg",
+      "derivative": "assets/question-polish/original-O04-II-L-01-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 9,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O04-II-L-01-b.svg",
+      "derivative": "assets/question-polish/original-O04-II-L-01-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 8,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O04-II-L-01-c.svg",
+      "derivative": "assets/question-polish/original-O04-II-L-01-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O04-II-L-01-d.svg",
+      "derivative": "assets/question-polish/original-O04-II-L-01-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O04-II-L-02-a.svg",
+      "derivative": "assets/question-polish/original-O04-II-L-02-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O04-II-L-02-b.svg",
+      "derivative": "assets/question-polish/original-O04-II-L-02-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O04-II-L-02-c.svg",
+      "derivative": "assets/question-polish/original-O04-II-L-02-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O04-II-L-02-d.svg",
+      "derivative": "assets/question-polish/original-O04-II-L-02-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 7,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O04-II-L-03-a.svg",
+      "derivative": "assets/question-polish/original-O04-II-L-03-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O04-II-L-03-b.svg",
+      "derivative": "assets/question-polish/original-O04-II-L-03-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O04-II-L-03-c.svg",
+      "derivative": "assets/question-polish/original-O04-II-L-03-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O04-II-L-03-d.svg",
+      "derivative": "assets/question-polish/original-O04-II-L-03-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O04-II-R-05.svg",
+      "derivative": "assets/question-polish/original-O04-II-R-05.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        900.0
+      ]
+    },
+    {
+      "source": "assets/original/O04-II-R-06.svg",
+      "derivative": "assets/question-polish/original-O04-II-R-06.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        920.0
+      ]
+    },
+    {
+      "source": "assets/original/O04-II-R-07.svg",
+      "derivative": "assets/question-polish/original-O04-II-R-07.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        970.0
+      ]
+    },
+    {
+      "source": "assets/original/O04-II-R-08.svg",
+      "derivative": "assets/question-polish/original-O04-II-R-08.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        1000.0
+      ]
+    },
+    {
+      "source": "assets/original/O04-II-R-09.svg",
+      "derivative": "assets/question-polish/original-O04-II-R-09.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        1060.0
+      ]
+    },
+    {
+      "source": "assets/original/O05-I-L-15-a.svg",
+      "derivative": "assets/question-polish/original-O05-I-L-15-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 7,
+      "viewBox": [
+        0.0,
+        0.0,
+        360.0,
+        400.0
+      ]
+    },
+    {
+      "source": "assets/original/O05-I-L-15-b.svg",
+      "derivative": "assets/question-polish/original-O05-I-L-15-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 7,
+      "viewBox": [
+        0.0,
+        0.0,
+        360.0,
+        400.0
+      ]
+    },
+    {
+      "source": "assets/original/O05-I-L-15-c.svg",
+      "derivative": "assets/question-polish/original-O05-I-L-15-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 7,
+      "viewBox": [
+        0.0,
+        0.0,
+        360.0,
+        400.0
+      ]
+    },
+    {
+      "source": "assets/original/O05-I-L-15-d.svg",
+      "derivative": "assets/question-polish/original-O05-I-L-15-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 7,
+      "viewBox": [
+        0.0,
+        0.0,
+        360.0,
+        400.0
+      ]
+    },
+    {
+      "source": "assets/original/O05-I-L-16-a.svg",
+      "derivative": "assets/question-polish/original-O05-I-L-16-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        360.0,
+        360.0
+      ]
+    },
+    {
+      "source": "assets/original/O05-I-L-16-b.svg",
+      "derivative": "assets/question-polish/original-O05-I-L-16-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        360.0,
+        360.0
+      ]
+    },
+    {
+      "source": "assets/original/O05-I-L-16-c.svg",
+      "derivative": "assets/question-polish/original-O05-I-L-16-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        360.0,
+        360.0
+      ]
+    },
+    {
+      "source": "assets/original/O05-I-L-16-d.svg",
+      "derivative": "assets/question-polish/original-O05-I-L-16-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        360.0,
+        360.0
+      ]
+    },
+    {
+      "source": "assets/original/O05-I-R-40.svg",
+      "derivative": "assets/question-polish/original-O05-I-R-40.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        760.0,
+        820.0
+      ]
+    },
+    {
+      "source": "assets/original/O05-I-R-41.svg",
+      "derivative": "assets/question-polish/original-O05-I-R-41.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        760.0,
+        760.0
+      ]
+    },
+    {
+      "source": "assets/original/O05-I-R-42.svg",
+      "derivative": "assets/question-polish/original-O05-I-R-42.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        760.0,
+        760.0
+      ]
+    },
+    {
+      "source": "assets/original/O05-II-L-01-a.svg",
+      "derivative": "assets/question-polish/original-O05-II-L-01-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O05-II-L-01-b.svg",
+      "derivative": "assets/question-polish/original-O05-II-L-01-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O05-II-L-01-c.svg",
+      "derivative": "assets/question-polish/original-O05-II-L-01-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O05-II-L-01-d.svg",
+      "derivative": "assets/question-polish/original-O05-II-L-01-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O05-II-L-02-a.svg",
+      "derivative": "assets/question-polish/original-O05-II-L-02-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O05-II-L-02-b.svg",
+      "derivative": "assets/question-polish/original-O05-II-L-02-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O05-II-L-02-c.svg",
+      "derivative": "assets/question-polish/original-O05-II-L-02-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O05-II-L-02-d.svg",
+      "derivative": "assets/question-polish/original-O05-II-L-02-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O05-II-L-03-a.svg",
+      "derivative": "assets/question-polish/original-O05-II-L-03-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O05-II-L-03-b.svg",
+      "derivative": "assets/question-polish/original-O05-II-L-03-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O05-II-L-03-c.svg",
+      "derivative": "assets/question-polish/original-O05-II-L-03-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O05-II-L-03-d.svg",
+      "derivative": "assets/question-polish/original-O05-II-L-03-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O05-II-R-05.svg",
+      "derivative": "assets/question-polish/original-O05-II-R-05.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        560.0,
+        585.0
+      ]
+    },
+    {
+      "source": "assets/original/O05-II-R-06.svg",
+      "derivative": "assets/question-polish/original-O05-II-R-06.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        560.0,
+        585.0
+      ]
+    },
+    {
+      "source": "assets/original/O05-II-R-07.svg",
+      "derivative": "assets/question-polish/original-O05-II-R-07.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        560.0,
+        585.0
+      ]
+    },
+    {
+      "source": "assets/original/O05-II-R-08.svg",
+      "derivative": "assets/question-polish/original-O05-II-R-08.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        560.0,
+        585.0
+      ]
+    },
+    {
+      "source": "assets/original/O05-II-R-09.svg",
+      "derivative": "assets/question-polish/original-O05-II-R-09.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        560.0,
+        693.0
+      ]
+    },
+    {
+      "source": "assets/original/O06-I-L-15-a.svg",
+      "derivative": "assets/question-polish/original-O06-I-L-15-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        440.0,
+        320.0
+      ]
+    },
+    {
+      "source": "assets/original/O06-I-L-15-b.svg",
+      "derivative": "assets/question-polish/original-O06-I-L-15-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        440.0,
+        320.0
+      ]
+    },
+    {
+      "source": "assets/original/O06-I-L-15-c.svg",
+      "derivative": "assets/question-polish/original-O06-I-L-15-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        440.0,
+        320.0
+      ]
+    },
+    {
+      "source": "assets/original/O06-I-L-15-d.svg",
+      "derivative": "assets/question-polish/original-O06-I-L-15-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        440.0,
+        320.0
+      ]
+    },
+    {
+      "source": "assets/original/O06-I-L-16-a.svg",
+      "derivative": "assets/question-polish/original-O06-I-L-16-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        440.0,
+        320.0
+      ]
+    },
+    {
+      "source": "assets/original/O06-I-L-16-b.svg",
+      "derivative": "assets/question-polish/original-O06-I-L-16-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        440.0,
+        320.0
+      ]
+    },
+    {
+      "source": "assets/original/O06-I-L-16-c.svg",
+      "derivative": "assets/question-polish/original-O06-I-L-16-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        440.0,
+        320.0
+      ]
+    },
+    {
+      "source": "assets/original/O06-I-L-16-d.svg",
+      "derivative": "assets/question-polish/original-O06-I-L-16-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        440.0,
+        320.0
+      ]
+    },
+    {
+      "source": "assets/original/O06-I-R-40.svg",
+      "derivative": "assets/question-polish/original-O06-I-R-40.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        520.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O06-I-R-41.svg",
+      "derivative": "assets/question-polish/original-O06-I-R-41.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        520.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O06-I-R-42.svg",
+      "derivative": "assets/question-polish/original-O06-I-R-42.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        520.0,
+        463.0
+      ]
+    },
+    {
+      "source": "assets/original/O06-II-L-01-a.svg",
+      "derivative": "assets/question-polish/original-O06-II-L-01-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O06-II-L-01-b.svg",
+      "derivative": "assets/question-polish/original-O06-II-L-01-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O06-II-L-01-c.svg",
+      "derivative": "assets/question-polish/original-O06-II-L-01-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O06-II-L-01-d.svg",
+      "derivative": "assets/question-polish/original-O06-II-L-01-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O06-II-L-02-a.svg",
+      "derivative": "assets/question-polish/original-O06-II-L-02-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O06-II-L-02-b.svg",
+      "derivative": "assets/question-polish/original-O06-II-L-02-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O06-II-L-02-c.svg",
+      "derivative": "assets/question-polish/original-O06-II-L-02-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O06-II-L-02-d.svg",
+      "derivative": "assets/question-polish/original-O06-II-L-02-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O06-II-L-03-a.svg",
+      "derivative": "assets/question-polish/original-O06-II-L-03-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O06-II-L-03-b.svg",
+      "derivative": "assets/question-polish/original-O06-II-L-03-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O06-II-L-03-c.svg",
+      "derivative": "assets/question-polish/original-O06-II-L-03-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O06-II-L-03-d.svg",
+      "derivative": "assets/question-polish/original-O06-II-L-03-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O06-II-R-05.svg",
+      "derivative": "assets/question-polish/original-O06-II-R-05.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        560.0,
+        618.0
+      ]
+    },
+    {
+      "source": "assets/original/O06-II-R-06.svg",
+      "derivative": "assets/question-polish/original-O06-II-R-06.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        560.0,
+        716.0
+      ]
+    },
+    {
+      "source": "assets/original/O06-II-R-07.svg",
+      "derivative": "assets/question-polish/original-O06-II-R-07.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        560.0,
+        618.0
+      ]
+    },
+    {
+      "source": "assets/original/O06-II-R-08.svg",
+      "derivative": "assets/question-polish/original-O06-II-R-08.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        560.0,
+        667.0
+      ]
+    },
+    {
+      "source": "assets/original/O06-II-R-09.svg",
+      "derivative": "assets/question-polish/original-O06-II-R-09.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        560.0,
+        667.0
+      ]
+    },
+    {
+      "source": "assets/original/O07-I-L-15-a.svg",
+      "derivative": "assets/question-polish/original-O07-I-L-15-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        520.0,
+        380.0
+      ]
+    },
+    {
+      "source": "assets/original/O07-I-L-15-b.svg",
+      "derivative": "assets/question-polish/original-O07-I-L-15-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        520.0,
+        380.0
+      ]
+    },
+    {
+      "source": "assets/original/O07-I-L-15-c.svg",
+      "derivative": "assets/question-polish/original-O07-I-L-15-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        520.0,
+        380.0
+      ]
+    },
+    {
+      "source": "assets/original/O07-I-L-15-d.svg",
+      "derivative": "assets/question-polish/original-O07-I-L-15-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        520.0,
+        380.0
+      ]
+    },
+    {
+      "source": "assets/original/O07-I-L-16-a.svg",
+      "derivative": "assets/question-polish/original-O07-I-L-16-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        520.0,
+        380.0
+      ]
+    },
+    {
+      "source": "assets/original/O07-I-L-16-b.svg",
+      "derivative": "assets/question-polish/original-O07-I-L-16-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        520.0,
+        380.0
+      ]
+    },
+    {
+      "source": "assets/original/O07-I-L-16-c.svg",
+      "derivative": "assets/question-polish/original-O07-I-L-16-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        520.0,
+        380.0
+      ]
+    },
+    {
+      "source": "assets/original/O07-I-L-16-d.svg",
+      "derivative": "assets/question-polish/original-O07-I-L-16-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        520.0,
+        380.0
+      ]
+    },
+    {
+      "source": "assets/original/O07-I-R-40.svg",
+      "derivative": "assets/question-polish/original-O07-I-R-40.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        520.0,
+        425.0
+      ]
+    },
+    {
+      "source": "assets/original/O07-I-R-41.svg",
+      "derivative": "assets/question-polish/original-O07-I-R-41.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        520.0,
+        425.0
+      ]
+    },
+    {
+      "source": "assets/original/O07-I-R-42.svg",
+      "derivative": "assets/question-polish/original-O07-I-R-42.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        520.0,
+        469.0
+      ]
+    },
+    {
+      "source": "assets/original/O07-II-L-01-a.svg",
+      "derivative": "assets/question-polish/original-O07-II-L-01-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O07-II-L-01-b.svg",
+      "derivative": "assets/question-polish/original-O07-II-L-01-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O07-II-L-01-c.svg",
+      "derivative": "assets/question-polish/original-O07-II-L-01-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O07-II-L-01-d.svg",
+      "derivative": "assets/question-polish/original-O07-II-L-01-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O07-II-L-02-a.svg",
+      "derivative": "assets/question-polish/original-O07-II-L-02-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O07-II-L-02-b.svg",
+      "derivative": "assets/question-polish/original-O07-II-L-02-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O07-II-L-02-c.svg",
+      "derivative": "assets/question-polish/original-O07-II-L-02-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O07-II-L-02-d.svg",
+      "derivative": "assets/question-polish/original-O07-II-L-02-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O07-II-L-03-a.svg",
+      "derivative": "assets/question-polish/original-O07-II-L-03-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O07-II-L-03-b.svg",
+      "derivative": "assets/question-polish/original-O07-II-L-03-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O07-II-L-03-c.svg",
+      "derivative": "assets/question-polish/original-O07-II-L-03-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O07-II-L-03-d.svg",
+      "derivative": "assets/question-polish/original-O07-II-L-03-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O07-II-R-05.svg",
+      "derivative": "assets/question-polish/original-O07-II-R-05.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        560.0,
+        691.0
+      ]
+    },
+    {
+      "source": "assets/original/O07-II-R-06.svg",
+      "derivative": "assets/question-polish/original-O07-II-R-06.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        560.0,
+        691.0
+      ]
+    },
+    {
+      "source": "assets/original/O07-II-R-07.svg",
+      "derivative": "assets/question-polish/original-O07-II-R-07.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        560.0,
+        691.0
+      ]
+    },
+    {
+      "source": "assets/original/O07-II-R-08.svg",
+      "derivative": "assets/question-polish/original-O07-II-R-08.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        560.0,
+        787.0
+      ]
+    },
+    {
+      "source": "assets/original/O07-II-R-09.svg",
+      "derivative": "assets/question-polish/original-O07-II-R-09.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        560.0,
+        739.0
+      ]
+    },
+    {
+      "source": "assets/original/O08-I-L-15-a.svg",
+      "derivative": "assets/question-polish/original-O08-I-L-15-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O08-I-L-15-b.svg",
+      "derivative": "assets/question-polish/original-O08-I-L-15-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O08-I-L-15-c.svg",
+      "derivative": "assets/question-polish/original-O08-I-L-15-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O08-I-L-15-d.svg",
+      "derivative": "assets/question-polish/original-O08-I-L-15-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O08-I-L-16-a.svg",
+      "derivative": "assets/question-polish/original-O08-I-L-16-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O08-I-L-16-b.svg",
+      "derivative": "assets/question-polish/original-O08-I-L-16-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O08-I-L-16-c.svg",
+      "derivative": "assets/question-polish/original-O08-I-L-16-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O08-I-L-16-d.svg",
+      "derivative": "assets/question-polish/original-O08-I-L-16-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O08-I-R-40.svg",
+      "derivative": "assets/question-polish/original-O08-I-R-40.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        780.0,
+        660.0
+      ]
+    },
+    {
+      "source": "assets/original/O08-I-R-41.svg",
+      "derivative": "assets/question-polish/original-O08-I-R-41.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        780.0,
+        660.0
+      ]
+    },
+    {
+      "source": "assets/original/O08-I-R-42.svg",
+      "derivative": "assets/question-polish/original-O08-I-R-42.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        780.0,
+        660.0
+      ]
+    },
+    {
+      "source": "assets/original/O08-II-L-01-a.svg",
+      "derivative": "assets/question-polish/original-O08-II-L-01-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O08-II-L-01-b.svg",
+      "derivative": "assets/question-polish/original-O08-II-L-01-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O08-II-L-01-c.svg",
+      "derivative": "assets/question-polish/original-O08-II-L-01-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O08-II-L-01-d.svg",
+      "derivative": "assets/question-polish/original-O08-II-L-01-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O08-II-L-02-a.svg",
+      "derivative": "assets/question-polish/original-O08-II-L-02-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O08-II-L-02-b.svg",
+      "derivative": "assets/question-polish/original-O08-II-L-02-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O08-II-L-02-c.svg",
+      "derivative": "assets/question-polish/original-O08-II-L-02-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O08-II-L-02-d.svg",
+      "derivative": "assets/question-polish/original-O08-II-L-02-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O08-II-L-03-a.svg",
+      "derivative": "assets/question-polish/original-O08-II-L-03-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O08-II-L-03-b.svg",
+      "derivative": "assets/question-polish/original-O08-II-L-03-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O08-II-L-03-c.svg",
+      "derivative": "assets/question-polish/original-O08-II-L-03-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O08-II-L-03-d.svg",
+      "derivative": "assets/question-polish/original-O08-II-L-03-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O08-II-R-05.svg",
+      "derivative": "assets/question-polish/original-O08-II-R-05.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        560.0,
+        537.0
+      ]
+    },
+    {
+      "source": "assets/original/O08-II-R-06.svg",
+      "derivative": "assets/question-polish/original-O08-II-R-06.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        560.0,
+        537.0
+      ]
+    },
+    {
+      "source": "assets/original/O08-II-R-07.svg",
+      "derivative": "assets/question-polish/original-O08-II-R-07.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        560.0,
+        537.0
+      ]
+    },
+    {
+      "source": "assets/original/O08-II-R-08.svg",
+      "derivative": "assets/question-polish/original-O08-II-R-08.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        560.0,
+        537.0
+      ]
+    },
+    {
+      "source": "assets/original/O08-II-R-09.svg",
+      "derivative": "assets/question-polish/original-O08-II-R-09.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        560.0,
+        873.0
+      ]
+    },
+    {
+      "source": "assets/original/O09-I-L-15-a.svg",
+      "derivative": "assets/question-polish/original-O09-I-L-15-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O09-I-L-15-b.svg",
+      "derivative": "assets/question-polish/original-O09-I-L-15-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O09-I-L-15-c.svg",
+      "derivative": "assets/question-polish/original-O09-I-L-15-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O09-I-L-15-d.svg",
+      "derivative": "assets/question-polish/original-O09-I-L-15-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O09-I-L-16-a.svg",
+      "derivative": "assets/question-polish/original-O09-I-L-16-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O09-I-L-16-b.svg",
+      "derivative": "assets/question-polish/original-O09-I-L-16-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O09-I-L-16-c.svg",
+      "derivative": "assets/question-polish/original-O09-I-L-16-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O09-I-L-16-d.svg",
+      "derivative": "assets/question-polish/original-O09-I-L-16-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O09-I-R-40.svg",
+      "derivative": "assets/question-polish/original-O09-I-R-40.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        780.0,
+        526.0
+      ]
+    },
+    {
+      "source": "assets/original/O09-I-R-41.svg",
+      "derivative": "assets/question-polish/original-O09-I-R-41.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        780.0,
+        526.0
+      ]
+    },
+    {
+      "source": "assets/original/O09-I-R-42.svg",
+      "derivative": "assets/question-polish/original-O09-I-R-42.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        780.0,
+        592.0
+      ]
+    },
+    {
+      "source": "assets/original/O09-II-L-01-a.svg",
+      "derivative": "assets/question-polish/original-O09-II-L-01-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 7,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O09-II-L-01-b.svg",
+      "derivative": "assets/question-polish/original-O09-II-L-01-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O09-II-L-01-c.svg",
+      "derivative": "assets/question-polish/original-O09-II-L-01-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O09-II-L-01-d.svg",
+      "derivative": "assets/question-polish/original-O09-II-L-01-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O09-II-L-02-a.svg",
+      "derivative": "assets/question-polish/original-O09-II-L-02-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O09-II-L-02-b.svg",
+      "derivative": "assets/question-polish/original-O09-II-L-02-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O09-II-L-02-c.svg",
+      "derivative": "assets/question-polish/original-O09-II-L-02-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O09-II-L-02-d.svg",
+      "derivative": "assets/question-polish/original-O09-II-L-02-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O09-II-L-03-a.svg",
+      "derivative": "assets/question-polish/original-O09-II-L-03-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O09-II-L-03-b.svg",
+      "derivative": "assets/question-polish/original-O09-II-L-03-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O09-II-L-03-c.svg",
+      "derivative": "assets/question-polish/original-O09-II-L-03-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O09-II-L-03-d.svg",
+      "derivative": "assets/question-polish/original-O09-II-L-03-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O09-II-R-05.svg",
+      "derivative": "assets/question-polish/original-O09-II-R-05.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        666.0
+      ]
+    },
+    {
+      "source": "assets/original/O09-II-R-06.svg",
+      "derivative": "assets/question-polish/original-O09-II-R-06.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        666.0
+      ]
+    },
+    {
+      "source": "assets/original/O09-II-R-07.svg",
+      "derivative": "assets/question-polish/original-O09-II-R-07.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        666.0
+      ]
+    },
+    {
+      "source": "assets/original/O09-II-R-08.svg",
+      "derivative": "assets/question-polish/original-O09-II-R-08.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        666.0
+      ]
+    },
+    {
+      "source": "assets/original/O09-II-R-09.svg",
+      "derivative": "assets/question-polish/original-O09-II-R-09.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        828.0
+      ]
+    },
+    {
+      "source": "assets/original/O10-I-L-15-a.svg",
+      "derivative": "assets/question-polish/original-O10-I-L-15-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O10-I-L-15-b.svg",
+      "derivative": "assets/question-polish/original-O10-I-L-15-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O10-I-L-15-c.svg",
+      "derivative": "assets/question-polish/original-O10-I-L-15-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O10-I-L-15-d.svg",
+      "derivative": "assets/question-polish/original-O10-I-L-15-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 9,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O10-I-L-16-a.svg",
+      "derivative": "assets/question-polish/original-O10-I-L-16-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O10-I-L-16-b.svg",
+      "derivative": "assets/question-polish/original-O10-I-L-16-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O10-I-L-16-c.svg",
+      "derivative": "assets/question-polish/original-O10-I-L-16-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O10-I-L-16-d.svg",
+      "derivative": "assets/question-polish/original-O10-I-L-16-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 7,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O10-I-R-40.svg",
+      "derivative": "assets/question-polish/original-O10-I-R-40.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        780.0,
+        521.0
+      ]
+    },
+    {
+      "source": "assets/original/O10-I-R-41.svg",
+      "derivative": "assets/question-polish/original-O10-I-R-41.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        780.0,
+        521.0
+      ]
+    },
+    {
+      "source": "assets/original/O10-I-R-42.svg",
+      "derivative": "assets/question-polish/original-O10-I-R-42.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        780.0,
+        586.0
+      ]
+    },
+    {
+      "source": "assets/original/O10-II-L-01-a.svg",
+      "derivative": "assets/question-polish/original-O10-II-L-01-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O10-II-L-01-b.svg",
+      "derivative": "assets/question-polish/original-O10-II-L-01-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O10-II-L-01-c.svg",
+      "derivative": "assets/question-polish/original-O10-II-L-01-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O10-II-L-01-d.svg",
+      "derivative": "assets/question-polish/original-O10-II-L-01-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O10-II-L-02-a.svg",
+      "derivative": "assets/question-polish/original-O10-II-L-02-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O10-II-L-02-b.svg",
+      "derivative": "assets/question-polish/original-O10-II-L-02-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 9,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O10-II-L-02-c.svg",
+      "derivative": "assets/question-polish/original-O10-II-L-02-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 9,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O10-II-L-02-d.svg",
+      "derivative": "assets/question-polish/original-O10-II-L-02-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 8,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O10-II-L-03-a.svg",
+      "derivative": "assets/question-polish/original-O10-II-L-03-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O10-II-L-03-b.svg",
+      "derivative": "assets/question-polish/original-O10-II-L-03-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O10-II-L-03-c.svg",
+      "derivative": "assets/question-polish/original-O10-II-L-03-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O10-II-L-03-d.svg",
+      "derivative": "assets/question-polish/original-O10-II-L-03-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O10-II-R-05.svg",
+      "derivative": "assets/question-polish/original-O10-II-R-05.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        601.0
+      ]
+    },
+    {
+      "source": "assets/original/O10-II-R-06.svg",
+      "derivative": "assets/question-polish/original-O10-II-R-06.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        601.0
+      ]
+    },
+    {
+      "source": "assets/original/O10-II-R-07.svg",
+      "derivative": "assets/question-polish/original-O10-II-R-07.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        601.0
+      ]
+    },
+    {
+      "source": "assets/original/O10-II-R-08.svg",
+      "derivative": "assets/question-polish/original-O10-II-R-08.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        657.0
+      ]
+    },
+    {
+      "source": "assets/original/O10-II-R-09.svg",
+      "derivative": "assets/question-polish/original-O10-II-R-09.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        769.0
+      ]
+    },
+    {
+      "source": "assets/original/O11-I-L-15-a.svg",
+      "derivative": "assets/question-polish/original-O11-I-L-15-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O11-I-L-15-b.svg",
+      "derivative": "assets/question-polish/original-O11-I-L-15-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O11-I-L-15-c.svg",
+      "derivative": "assets/question-polish/original-O11-I-L-15-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O11-I-L-15-d.svg",
+      "derivative": "assets/question-polish/original-O11-I-L-15-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O11-I-L-16-a.svg",
+      "derivative": "assets/question-polish/original-O11-I-L-16-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O11-I-L-16-b.svg",
+      "derivative": "assets/question-polish/original-O11-I-L-16-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O11-I-L-16-c.svg",
+      "derivative": "assets/question-polish/original-O11-I-L-16-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O11-I-L-16-d.svg",
+      "derivative": "assets/question-polish/original-O11-I-L-16-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O11-I-R-40.svg",
+      "derivative": "assets/question-polish/original-O11-I-R-40.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        780.0,
+        521.0
+      ]
+    },
+    {
+      "source": "assets/original/O11-I-R-41.svg",
+      "derivative": "assets/question-polish/original-O11-I-R-41.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        780.0,
+        521.0
+      ]
+    },
+    {
+      "source": "assets/original/O11-I-R-42.svg",
+      "derivative": "assets/question-polish/original-O11-I-R-42.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        780.0,
+        521.0
+      ]
+    },
+    {
+      "source": "assets/original/O11-II-L-01-a.svg",
+      "derivative": "assets/question-polish/original-O11-II-L-01-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O11-II-L-01-b.svg",
+      "derivative": "assets/question-polish/original-O11-II-L-01-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O11-II-L-01-c.svg",
+      "derivative": "assets/question-polish/original-O11-II-L-01-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O11-II-L-01-d.svg",
+      "derivative": "assets/question-polish/original-O11-II-L-01-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O11-II-L-02-a.svg",
+      "derivative": "assets/question-polish/original-O11-II-L-02-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O11-II-L-02-b.svg",
+      "derivative": "assets/question-polish/original-O11-II-L-02-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O11-II-L-02-c.svg",
+      "derivative": "assets/question-polish/original-O11-II-L-02-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O11-II-L-02-d.svg",
+      "derivative": "assets/question-polish/original-O11-II-L-02-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O11-II-L-03-a.svg",
+      "derivative": "assets/question-polish/original-O11-II-L-03-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O11-II-L-03-b.svg",
+      "derivative": "assets/question-polish/original-O11-II-L-03-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O11-II-L-03-c.svg",
+      "derivative": "assets/question-polish/original-O11-II-L-03-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O11-II-L-03-d.svg",
+      "derivative": "assets/question-polish/original-O11-II-L-03-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O11-II-R-05.svg",
+      "derivative": "assets/question-polish/original-O11-II-R-05.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        652.0
+      ]
+    },
+    {
+      "source": "assets/original/O11-II-R-06.svg",
+      "derivative": "assets/question-polish/original-O11-II-R-06.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        652.0
+      ]
+    },
+    {
+      "source": "assets/original/O11-II-R-07.svg",
+      "derivative": "assets/question-polish/original-O11-II-R-07.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        652.0
+      ]
+    },
+    {
+      "source": "assets/original/O11-II-R-08.svg",
+      "derivative": "assets/question-polish/original-O11-II-R-08.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        707.0
+      ]
+    },
+    {
+      "source": "assets/original/O11-II-R-09.svg",
+      "derivative": "assets/question-polish/original-O11-II-R-09.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        922.0
+      ]
+    },
+    {
+      "source": "assets/original/O12-I-L-15-a.svg",
+      "derivative": "assets/question-polish/original-O12-I-L-15-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O12-I-L-15-b.svg",
+      "derivative": "assets/question-polish/original-O12-I-L-15-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O12-I-L-15-c.svg",
+      "derivative": "assets/question-polish/original-O12-I-L-15-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O12-I-L-15-d.svg",
+      "derivative": "assets/question-polish/original-O12-I-L-15-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O12-I-L-16-a.svg",
+      "derivative": "assets/question-polish/original-O12-I-L-16-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O12-I-L-16-b.svg",
+      "derivative": "assets/question-polish/original-O12-I-L-16-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O12-I-L-16-c.svg",
+      "derivative": "assets/question-polish/original-O12-I-L-16-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O12-I-L-16-d.svg",
+      "derivative": "assets/question-polish/original-O12-I-L-16-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        420.0,
+        420.0
+      ]
+    },
+    {
+      "source": "assets/original/O12-I-R-40.svg",
+      "derivative": "assets/question-polish/original-O12-I-R-40.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        780.0,
+        521.0
+      ]
+    },
+    {
+      "source": "assets/original/O12-I-R-41.svg",
+      "derivative": "assets/question-polish/original-O12-I-R-41.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        780.0,
+        521.0
+      ]
+    },
+    {
+      "source": "assets/original/O12-I-R-42.svg",
+      "derivative": "assets/question-polish/original-O12-I-R-42.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        780.0,
+        521.0
+      ]
+    },
+    {
+      "source": "assets/original/O12-II-L-01-a.svg",
+      "derivative": "assets/question-polish/original-O12-II-L-01-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O12-II-L-01-b.svg",
+      "derivative": "assets/question-polish/original-O12-II-L-01-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O12-II-L-01-c.svg",
+      "derivative": "assets/question-polish/original-O12-II-L-01-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O12-II-L-01-d.svg",
+      "derivative": "assets/question-polish/original-O12-II-L-01-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O12-II-L-02-a.svg",
+      "derivative": "assets/question-polish/original-O12-II-L-02-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 7,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O12-II-L-02-b.svg",
+      "derivative": "assets/question-polish/original-O12-II-L-02-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O12-II-L-02-c.svg",
+      "derivative": "assets/question-polish/original-O12-II-L-02-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O12-II-L-02-d.svg",
+      "derivative": "assets/question-polish/original-O12-II-L-02-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 7,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O12-II-L-03-a.svg",
+      "derivative": "assets/question-polish/original-O12-II-L-03-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O12-II-L-03-b.svg",
+      "derivative": "assets/question-polish/original-O12-II-L-03-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O12-II-L-03-c.svg",
+      "derivative": "assets/question-polish/original-O12-II-L-03-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O12-II-L-03-d.svg",
+      "derivative": "assets/question-polish/original-O12-II-L-03-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original/O12-II-R-05.svg",
+      "derivative": "assets/question-polish/original-O12-II-R-05.svg",
+      "textAndGeometryPreserved": false,
+      "textPreserved": true,
+      "reviewedRedraw": true,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        560.0,
+        736.0
+      ]
+    },
+    {
+      "source": "assets/original/O12-II-R-06.svg",
+      "derivative": "assets/question-polish/original-O12-II-R-06.svg",
+      "textAndGeometryPreserved": false,
+      "textPreserved": true,
+      "reviewedRedraw": true,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        560.0,
+        736.0
+      ]
+    },
+    {
+      "source": "assets/original/O12-II-R-07.svg",
+      "derivative": "assets/question-polish/original-O12-II-R-07.svg",
+      "textAndGeometryPreserved": false,
+      "textPreserved": true,
+      "reviewedRedraw": true,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        560.0,
+        780.0
+      ]
+    },
+    {
+      "source": "assets/original/O12-II-R-08.svg",
+      "derivative": "assets/question-polish/original-O12-II-R-08.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        560.0,
+        578.0
+      ]
+    },
+    {
+      "source": "assets/original/O12-II-R-09.svg",
+      "derivative": "assets/question-polish/original-O12-II-R-09.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        560.0,
+        813.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O04-II-L-01-a.svg",
+      "derivative": "assets/question-polish/original-neutral-O04-II-L-01-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 9,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O04-II-L-01-b.svg",
+      "derivative": "assets/question-polish/original-neutral-O04-II-L-01-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 8,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O04-II-L-01-c.svg",
+      "derivative": "assets/question-polish/original-neutral-O04-II-L-01-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O04-II-L-01-d.svg",
+      "derivative": "assets/question-polish/original-neutral-O04-II-L-01-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O04-II-L-02-a.svg",
+      "derivative": "assets/question-polish/original-neutral-O04-II-L-02-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O04-II-L-02-b.svg",
+      "derivative": "assets/question-polish/original-neutral-O04-II-L-02-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O04-II-L-02-c.svg",
+      "derivative": "assets/question-polish/original-neutral-O04-II-L-02-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O04-II-L-02-d.svg",
+      "derivative": "assets/question-polish/original-neutral-O04-II-L-02-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 7,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O04-II-L-03-a.svg",
+      "derivative": "assets/question-polish/original-neutral-O04-II-L-03-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O04-II-L-03-b.svg",
+      "derivative": "assets/question-polish/original-neutral-O04-II-L-03-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O04-II-L-03-c.svg",
+      "derivative": "assets/question-polish/original-neutral-O04-II-L-03-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O04-II-L-03-d.svg",
+      "derivative": "assets/question-polish/original-neutral-O04-II-L-03-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O05-II-L-01-a.svg",
+      "derivative": "assets/question-polish/original-neutral-O05-II-L-01-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O05-II-L-01-b.svg",
+      "derivative": "assets/question-polish/original-neutral-O05-II-L-01-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O05-II-L-01-c.svg",
+      "derivative": "assets/question-polish/original-neutral-O05-II-L-01-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O05-II-L-01-d.svg",
+      "derivative": "assets/question-polish/original-neutral-O05-II-L-01-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O05-II-L-02-a.svg",
+      "derivative": "assets/question-polish/original-neutral-O05-II-L-02-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O05-II-L-02-b.svg",
+      "derivative": "assets/question-polish/original-neutral-O05-II-L-02-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O05-II-L-02-c.svg",
+      "derivative": "assets/question-polish/original-neutral-O05-II-L-02-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O05-II-L-02-d.svg",
+      "derivative": "assets/question-polish/original-neutral-O05-II-L-02-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O05-II-L-03-a.svg",
+      "derivative": "assets/question-polish/original-neutral-O05-II-L-03-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O05-II-L-03-b.svg",
+      "derivative": "assets/question-polish/original-neutral-O05-II-L-03-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O05-II-L-03-c.svg",
+      "derivative": "assets/question-polish/original-neutral-O05-II-L-03-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O05-II-L-03-d.svg",
+      "derivative": "assets/question-polish/original-neutral-O05-II-L-03-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O06-II-L-01-a.svg",
+      "derivative": "assets/question-polish/original-neutral-O06-II-L-01-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O06-II-L-01-b.svg",
+      "derivative": "assets/question-polish/original-neutral-O06-II-L-01-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O06-II-L-01-c.svg",
+      "derivative": "assets/question-polish/original-neutral-O06-II-L-01-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O06-II-L-01-d.svg",
+      "derivative": "assets/question-polish/original-neutral-O06-II-L-01-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O06-II-L-02-a.svg",
+      "derivative": "assets/question-polish/original-neutral-O06-II-L-02-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O06-II-L-02-b.svg",
+      "derivative": "assets/question-polish/original-neutral-O06-II-L-02-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O06-II-L-02-c.svg",
+      "derivative": "assets/question-polish/original-neutral-O06-II-L-02-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O06-II-L-02-d.svg",
+      "derivative": "assets/question-polish/original-neutral-O06-II-L-02-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O06-II-L-03-a.svg",
+      "derivative": "assets/question-polish/original-neutral-O06-II-L-03-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O06-II-L-03-b.svg",
+      "derivative": "assets/question-polish/original-neutral-O06-II-L-03-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O06-II-L-03-c.svg",
+      "derivative": "assets/question-polish/original-neutral-O06-II-L-03-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O06-II-L-03-d.svg",
+      "derivative": "assets/question-polish/original-neutral-O06-II-L-03-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O07-II-L-01-a.svg",
+      "derivative": "assets/question-polish/original-neutral-O07-II-L-01-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O07-II-L-01-b.svg",
+      "derivative": "assets/question-polish/original-neutral-O07-II-L-01-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O07-II-L-01-c.svg",
+      "derivative": "assets/question-polish/original-neutral-O07-II-L-01-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O07-II-L-01-d.svg",
+      "derivative": "assets/question-polish/original-neutral-O07-II-L-01-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O07-II-L-02-a.svg",
+      "derivative": "assets/question-polish/original-neutral-O07-II-L-02-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O07-II-L-02-b.svg",
+      "derivative": "assets/question-polish/original-neutral-O07-II-L-02-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O07-II-L-02-c.svg",
+      "derivative": "assets/question-polish/original-neutral-O07-II-L-02-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O07-II-L-02-d.svg",
+      "derivative": "assets/question-polish/original-neutral-O07-II-L-02-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O07-II-L-03-a.svg",
+      "derivative": "assets/question-polish/original-neutral-O07-II-L-03-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O07-II-L-03-b.svg",
+      "derivative": "assets/question-polish/original-neutral-O07-II-L-03-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O07-II-L-03-c.svg",
+      "derivative": "assets/question-polish/original-neutral-O07-II-L-03-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O07-II-L-03-d.svg",
+      "derivative": "assets/question-polish/original-neutral-O07-II-L-03-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O08-II-L-01-a.svg",
+      "derivative": "assets/question-polish/original-neutral-O08-II-L-01-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O08-II-L-01-b.svg",
+      "derivative": "assets/question-polish/original-neutral-O08-II-L-01-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O08-II-L-01-c.svg",
+      "derivative": "assets/question-polish/original-neutral-O08-II-L-01-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O08-II-L-01-d.svg",
+      "derivative": "assets/question-polish/original-neutral-O08-II-L-01-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O08-II-L-02-a.svg",
+      "derivative": "assets/question-polish/original-neutral-O08-II-L-02-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O08-II-L-02-b.svg",
+      "derivative": "assets/question-polish/original-neutral-O08-II-L-02-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O08-II-L-02-c.svg",
+      "derivative": "assets/question-polish/original-neutral-O08-II-L-02-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O08-II-L-02-d.svg",
+      "derivative": "assets/question-polish/original-neutral-O08-II-L-02-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O09-II-L-01-a.svg",
+      "derivative": "assets/question-polish/original-neutral-O09-II-L-01-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 7,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O09-II-L-01-b.svg",
+      "derivative": "assets/question-polish/original-neutral-O09-II-L-01-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O09-II-L-01-c.svg",
+      "derivative": "assets/question-polish/original-neutral-O09-II-L-01-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O09-II-L-01-d.svg",
+      "derivative": "assets/question-polish/original-neutral-O09-II-L-01-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O09-II-L-02-a.svg",
+      "derivative": "assets/question-polish/original-neutral-O09-II-L-02-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O09-II-L-02-b.svg",
+      "derivative": "assets/question-polish/original-neutral-O09-II-L-02-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O09-II-L-02-c.svg",
+      "derivative": "assets/question-polish/original-neutral-O09-II-L-02-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O09-II-L-02-d.svg",
+      "derivative": "assets/question-polish/original-neutral-O09-II-L-02-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O09-II-L-03-a.svg",
+      "derivative": "assets/question-polish/original-neutral-O09-II-L-03-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O09-II-L-03-b.svg",
+      "derivative": "assets/question-polish/original-neutral-O09-II-L-03-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O09-II-L-03-c.svg",
+      "derivative": "assets/question-polish/original-neutral-O09-II-L-03-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O09-II-L-03-d.svg",
+      "derivative": "assets/question-polish/original-neutral-O09-II-L-03-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O10-II-L-01-a.svg",
+      "derivative": "assets/question-polish/original-neutral-O10-II-L-01-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O10-II-L-01-b.svg",
+      "derivative": "assets/question-polish/original-neutral-O10-II-L-01-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O10-II-L-01-c.svg",
+      "derivative": "assets/question-polish/original-neutral-O10-II-L-01-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O10-II-L-01-d.svg",
+      "derivative": "assets/question-polish/original-neutral-O10-II-L-01-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 2,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O10-II-L-02-a.svg",
+      "derivative": "assets/question-polish/original-neutral-O10-II-L-02-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O10-II-L-02-b.svg",
+      "derivative": "assets/question-polish/original-neutral-O10-II-L-02-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 9,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O10-II-L-02-c.svg",
+      "derivative": "assets/question-polish/original-neutral-O10-II-L-02-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 9,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O10-II-L-02-d.svg",
+      "derivative": "assets/question-polish/original-neutral-O10-II-L-02-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 8,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O10-II-L-03-a.svg",
+      "derivative": "assets/question-polish/original-neutral-O10-II-L-03-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O10-II-L-03-b.svg",
+      "derivative": "assets/question-polish/original-neutral-O10-II-L-03-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O10-II-L-03-c.svg",
+      "derivative": "assets/question-polish/original-neutral-O10-II-L-03-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O10-II-L-03-d.svg",
+      "derivative": "assets/question-polish/original-neutral-O10-II-L-03-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O11-II-L-01-a.svg",
+      "derivative": "assets/question-polish/original-neutral-O11-II-L-01-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O11-II-L-01-b.svg",
+      "derivative": "assets/question-polish/original-neutral-O11-II-L-01-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O11-II-L-01-c.svg",
+      "derivative": "assets/question-polish/original-neutral-O11-II-L-01-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O11-II-L-01-d.svg",
+      "derivative": "assets/question-polish/original-neutral-O11-II-L-01-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O11-II-L-02-a.svg",
+      "derivative": "assets/question-polish/original-neutral-O11-II-L-02-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O11-II-L-02-b.svg",
+      "derivative": "assets/question-polish/original-neutral-O11-II-L-02-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O11-II-L-02-c.svg",
+      "derivative": "assets/question-polish/original-neutral-O11-II-L-02-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O11-II-L-02-d.svg",
+      "derivative": "assets/question-polish/original-neutral-O11-II-L-02-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O11-II-L-03-a.svg",
+      "derivative": "assets/question-polish/original-neutral-O11-II-L-03-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O11-II-L-03-b.svg",
+      "derivative": "assets/question-polish/original-neutral-O11-II-L-03-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O11-II-L-03-c.svg",
+      "derivative": "assets/question-polish/original-neutral-O11-II-L-03-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O11-II-L-03-d.svg",
+      "derivative": "assets/question-polish/original-neutral-O11-II-L-03-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O12-II-L-01-a.svg",
+      "derivative": "assets/question-polish/original-neutral-O12-II-L-01-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O12-II-L-01-b.svg",
+      "derivative": "assets/question-polish/original-neutral-O12-II-L-01-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O12-II-L-01-c.svg",
+      "derivative": "assets/question-polish/original-neutral-O12-II-L-01-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O12-II-L-01-d.svg",
+      "derivative": "assets/question-polish/original-neutral-O12-II-L-01-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O12-II-L-02-a.svg",
+      "derivative": "assets/question-polish/original-neutral-O12-II-L-02-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 7,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O12-II-L-02-b.svg",
+      "derivative": "assets/question-polish/original-neutral-O12-II-L-02-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 6,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O12-II-L-02-c.svg",
+      "derivative": "assets/question-polish/original-neutral-O12-II-L-02-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O12-II-L-02-d.svg",
+      "derivative": "assets/question-polish/original-neutral-O12-II-L-02-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 7,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O12-II-L-03-a.svg",
+      "derivative": "assets/question-polish/original-neutral-O12-II-L-03-a.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O12-II-L-03-b.svg",
+      "derivative": "assets/question-polish/original-neutral-O12-II-L-03-b.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O12-II-L-03-c.svg",
+      "derivative": "assets/question-polish/original-neutral-O12-II-L-03-c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/original-neutral/O12-II-L-03-d.svg",
+      "derivative": "assets/question-polish/original-neutral-O12-II-L-03-d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        720.0,
+        480.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/picture-4878408ac287-option-3c708283.svg",
+      "derivative": "assets/question-polish/legacy-original-picture-4878408ac287-option-3c708283.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        220.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/picture-4878408ac287-option-8e12a7a6.svg",
+      "derivative": "assets/question-polish/legacy-original-picture-4878408ac287-option-8e12a7a6.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        220.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/picture-4878408ac287-option-d26464bf.svg",
+      "derivative": "assets/question-polish/legacy-original-picture-4878408ac287-option-d26464bf.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        220.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/picture-4878408ac287-option-d98ba238.svg",
+      "derivative": "assets/question-polish/legacy-original-picture-4878408ac287-option-d98ba238.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        220.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/picture-6334f2f3401d-option-1852b8ef.svg",
+      "derivative": "assets/question-polish/legacy-original-picture-6334f2f3401d-option-1852b8ef.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        220.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/picture-6334f2f3401d-option-a443564c.svg",
+      "derivative": "assets/question-polish/legacy-original-picture-6334f2f3401d-option-a443564c.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        220.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/picture-6334f2f3401d-option-ae10121d.svg",
+      "derivative": "assets/question-polish/legacy-original-picture-6334f2f3401d-option-ae10121d.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        220.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/picture-6334f2f3401d-option-c5c2a7c9.svg",
+      "derivative": "assets/question-polish/legacy-original-picture-6334f2f3401d-option-c5c2a7c9.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        220.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/picture-b19371912d7e-option-2b2d5e46.svg",
+      "derivative": "assets/question-polish/legacy-original-picture-b19371912d7e-option-2b2d5e46.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 5,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        220.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/picture-b19371912d7e-option-2c59bd62.svg",
+      "derivative": "assets/question-polish/legacy-original-picture-b19371912d7e-option-2c59bd62.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        220.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/picture-b19371912d7e-option-d2b0e276.svg",
+      "derivative": "assets/question-polish/legacy-original-picture-b19371912d7e-option-d2b0e276.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        220.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/picture-b19371912d7e-option-d7316bef.svg",
+      "derivative": "assets/question-polish/legacy-original-picture-b19371912d7e-option-d7316bef.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        220.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/picture-f3e45575f111-option-7ee0b0be.svg",
+      "derivative": "assets/question-polish/legacy-original-picture-f3e45575f111-option-7ee0b0be.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        220.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/picture-f3e45575f111-option-9e9baa87.svg",
+      "derivative": "assets/question-polish/legacy-original-picture-f3e45575f111-option-9e9baa87.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        220.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/picture-f3e45575f111-option-aaf002a2.svg",
+      "derivative": "assets/question-polish/legacy-original-picture-f3e45575f111-option-aaf002a2.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 3,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        220.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/picture-f3e45575f111-option-da6e35e9.svg",
+      "derivative": "assets/question-polish/legacy-original-picture-f3e45575f111-option-da6e35e9.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 4,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        220.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/practical-card-04fb7b30f3ad.svg",
+      "derivative": "assets/question-polish/legacy-original-practical-card-04fb7b30f3ad.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        146.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/practical-card-0c1f8bce9935.svg",
+      "derivative": "assets/question-polish/legacy-original-practical-card-0c1f8bce9935.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        146.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/practical-card-13f44b5b5949.svg",
+      "derivative": "assets/question-polish/legacy-original-practical-card-13f44b5b5949.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        272.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/practical-card-17dd91fbb983.svg",
+      "derivative": "assets/question-polish/legacy-original-practical-card-17dd91fbb983.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        332.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/practical-card-23a2903fc501.svg",
+      "derivative": "assets/question-polish/legacy-original-practical-card-23a2903fc501.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        261.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/practical-card-281b13265c32.svg",
+      "derivative": "assets/question-polish/legacy-original-practical-card-281b13265c32.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        302.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/practical-card-3a366d002d16.svg",
+      "derivative": "assets/question-polish/legacy-original-practical-card-3a366d002d16.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        291.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/practical-card-6298052fba89.svg",
+      "derivative": "assets/question-polish/legacy-original-practical-card-6298052fba89.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        239.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/practical-card-6959297863b3.svg",
+      "derivative": "assets/question-polish/legacy-original-practical-card-6959297863b3.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        231.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/practical-card-6bfa8a1a7bc2.svg",
+      "derivative": "assets/question-polish/legacy-original-practical-card-6bfa8a1a7bc2.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        272.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/practical-card-7f565b87a8d7.svg",
+      "derivative": "assets/question-polish/legacy-original-practical-card-7f565b87a8d7.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        272.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/practical-card-8dd17dfb8e13.svg",
+      "derivative": "assets/question-polish/legacy-original-practical-card-8dd17dfb8e13.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        146.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/practical-card-c0e1fb691706.svg",
+      "derivative": "assets/question-polish/legacy-original-practical-card-c0e1fb691706.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        403.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/practical-card-c6d383145f70.svg",
+      "derivative": "assets/question-polish/legacy-original-practical-card-c6d383145f70.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        272.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/practical-card-cf406e492326.svg",
+      "derivative": "assets/question-polish/legacy-original-practical-card-cf406e492326.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        231.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/practical-card-f15e623bd1f8.svg",
+      "derivative": "assets/question-polish/legacy-original-practical-card-f15e623bd1f8.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        209.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/practical-card-f3c7aa325917.svg",
+      "derivative": "assets/question-polish/legacy-original-practical-card-f3c7aa325917.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 1,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        146.0
+      ]
+    },
+    {
+      "source": "assets/legacy-original/practical-card-f98dfcc7ef93.svg",
+      "derivative": "assets/question-polish/legacy-original-practical-card-f98dfcc7ef93.svg",
+      "textAndGeometryPreserved": true,
+      "textPreserved": true,
+      "reviewedRedraw": false,
+      "shadedColors": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        320.0,
+        231.0
+      ]
+    }
+  ]
+}

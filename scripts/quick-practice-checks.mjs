@@ -164,10 +164,10 @@ export async function verifyQuickPracticeMenus({evaluate,tap,shot,setViewport,se
         await tap(level===1?'button[onclick="t1Next()"]':'button[onclick="nextInfinity()"]',0,130);
       }
       const result=await active();assert.equal(result.completed,true,'the tenth question opens completion');assert.equal(result.answered,10,'completion has exactly ten answers');
-      if(level===1)assert.equal(await view(),'t1result');else assert.equal(await evaluate(`!!document.querySelector('#overlay.open #sheetBody')`),true,'TOPIK II completion sheet is visible');
+      if(level===1)assert.equal(await view(),'t1result');assert.equal(await evaluate(`!!document.querySelector('#harumalPracticeResult[open]')`),true,'Centered completion dialog is visible for both levels');
       await shot(`quick-random-topik${level}-reading-complete-ko-light-390.png`);
       const earned=await rewards();
-      await tap(level===1?'[data-practice-restart]':'#sheetBody .primary');
+      await tap('#harumalPracticeResult [data-result-action="restart"]');
       const restarted=await active();assert.deepEqual([restarted.mode,restarted.level,restarted.area,restarted.answered,restarted.size],['random',level,'reading',0,10],'Again starts a fresh same-area session');
       assert.equal(await rewards(),earned,'restarting does not grant a duplicate result reward');
       await tap(level===1?'.t1RandomTop>button':'.randomPracticeTop>button');assert.equal(await view(),'randomAreas');

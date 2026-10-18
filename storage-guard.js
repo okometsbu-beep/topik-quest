@@ -7,6 +7,7 @@
     'topikQuestV8',
     'harumalWritingCurriculumV1',
     'harumalRewardsV1',
+    'harumalQuestionReportsV1',
     'harumalLearningPathV1','harumalGrowthLearningV1',
     'topikQuestExamLevel',
     'topikQuestShortsV1',

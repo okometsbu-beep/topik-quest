@@ -3,9 +3,9 @@
   "collectionId": "original12-v1",
   "contentKind": "original_mock_exams",
   "expectedItems": 2088,
-  "totalItems": 1668,
-  "releaseReady": false,
-  "sourceSha256": "eedaa972f3b5d35f6aa10b16c8c6acdec1fff5ed1e551dcd2172ec27dace9396",
+  "totalItems": 2088,
+  "releaseReady": true,
+  "sourceSha256": "14c5760c409f733b29d412d442ed08601307a0ea1b802c2c0650efac127fed6d",
   "sets": [
     {
       "level": 1,
@@ -109,11 +109,11 @@
     {
       "level": 1,
       "set": 12,
-      "count": 0,
+      "count": 70,
       "expected": 70,
-      "ready": false,
-      "reviewed": 0,
-      "missingAudio": 0
+      "ready": true,
+      "reviewed": 70,
+      "missingAudio": 30
     },
     {
       "level": 2,
@@ -190,60 +190,60 @@
     {
       "level": 2,
       "set": 9,
-      "count": 54,
+      "count": 104,
       "expected": 104,
-      "ready": false,
-      "reviewed": 54,
-      "missingAudio": 0
+      "ready": true,
+      "reviewed": 104,
+      "missingAudio": 50
     },
     {
       "level": 2,
       "set": 10,
-      "count": 4,
+      "count": 104,
       "expected": 104,
-      "ready": false,
-      "reviewed": 4,
-      "missingAudio": 0
+      "ready": true,
+      "reviewed": 104,
+      "missingAudio": 50
     },
     {
       "level": 2,
       "set": 11,
-      "count": 4,
+      "count": 104,
       "expected": 104,
-      "ready": false,
-      "reviewed": 4,
-      "missingAudio": 0
+      "ready": true,
+      "reviewed": 104,
+      "missingAudio": 50
     },
     {
       "level": 2,
       "set": 12,
-      "count": 4,
+      "count": 104,
       "expected": 104,
-      "ready": false,
-      "reviewed": 4,
-      "missingAudio": 0
+      "ready": true,
+      "reviewed": 104,
+      "missingAudio": 50
     }
   ],
   "files": [
     {
       "file": "data/original-exams-v1-part1.js",
-      "count": 417,
-      "sha256": "8a4207da1af90f7dab4a0523b30027a0ec7a948858cce17bf36b023b3593d867"
+      "count": 522,
+      "sha256": "9c7281796308eb2e58c8e6d1e945ad751bdd55e6a68f75f8c32851e068ace672"
     },
     {
       "file": "data/original-exams-v1-part2.js",
-      "count": 417,
-      "sha256": "f714141df488026fc33b6518a70053509db446131abdd3a04346a11464378d6d"
+      "count": 522,
+      "sha256": "9576d1b293a848665253caff9c7b5758da75ede0214949903b36366b09633d75"
     },
     {
       "file": "data/original-exams-v1-part3.js",
-      "count": 417,
-      "sha256": "fefe786c68ae47caa47c96f3c6e5694f0133a2a1ea636f205b26c399c4b1d7e5"
+      "count": 522,
+      "sha256": "734520e4a95fe4f104eba105facbc5345e28ffe3fc6094fe65d4629bc3c4f7d8"
     },
     {
       "file": "data/original-exams-v1-part4.js",
-      "count": 417,
-      "sha256": "eb5d7e6ffc53bd1d9fd7ae3089f1701fc59408549b7ecf3052c9aeb599c3a78f"
+      "count": 522,
+      "sha256": "ff890d7f6c60569efe0cbbeb83346361cd0d47cdbbb54fd9fddb833d90291263"
     }
   ]
 }

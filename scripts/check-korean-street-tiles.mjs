@@ -2,6 +2,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
 import {spawn} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 
@@ -11,7 +12,7 @@ const chromePath=[process.env.CHROME_PATH,'/usr/bin/google-chrome','/usr/bin/goo
 assert.ok(chromePath,'Chrome/Chromium not found; set CHROME_PATH to the browser executable');
 const serverPort=4174,debugPort=9224;
 const server=spawn(process.execPath,['scripts/serve.mjs'],{cwd:root,env:{...process.env,PORT:String(serverPort)},stdio:'ignore'});
-const chromeArgs=['--headless','--no-sandbox','--disable-gpu','--disable-dev-shm-usage','--hide-scrollbars','--remote-debugging-address=127.0.0.1',`--remote-debugging-port=${debugPort}`,`--user-data-dir=/tmp/malbit-street-tiles-${process.pid}`,'about:blank'];
+const chromeArgs=['--headless','--no-sandbox','--disable-gpu','--disable-dev-shm-usage','--hide-scrollbars','--remote-debugging-address=127.0.0.1',`--remote-debugging-port=${debugPort}`,`--user-data-dir=${path.join(os.tmpdir(),'malbit-street-tiles-'+process.pid)}`,'about:blank'];
 const launchChrome=()=>spawn(chromePath,chromeArgs,{stdio:['ignore','ignore','inherit']});
 let chrome=launchChrome(),socket;
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
