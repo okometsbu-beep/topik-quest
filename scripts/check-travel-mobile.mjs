@@ -1027,7 +1027,7 @@ try{
   await tap('.choice',topik1Answer,100);await tap('.choice',topik1Answer,250);
   assert.equal(await evaluate(`document.querySelectorAll('.t1TutorCoach>div').length`),3,'TOPIK I feedback must keep evidence, selected-choice analysis, and a solving tip');
   const entranceCoach=await evaluate(`document.querySelector('.t1TutorCoach')?.innerText`);
-  assert.match(entranceCoach,/正解の根拠[\s\S]*誤答選択肢の分析[\s\S]*解き方のコツ/);
+  assert.match(entranceCoach,/正解の根拠[\s\S]*誤答選択肢の分析[\s\S]*解き方/);
   assert.match(entranceCoach,/오른쪽 출입구를 이용해 주세요[\s\S]*金額・割引[\s\S]*申請・日時[\s\S]*紛失物・連絡先[\s\S]*-아\/어 주세요/,'rendered Japanese coaching must show decisive evidence, three distinct distractor cues, and the reusable ending method');
   assert.equal((entranceCoach.match(/오른쪽 출입구를 이용해 주세요/gu)||[]).length,1,'decisive evidence must not be duplicated across coaching sections');
   const unavailableTranslation=await evaluate(`(()=>{const card=document.querySelector('.malbitQuestionTranslation'),copy=card?.querySelector('p')?.textContent||'';return{status:card?.dataset.translationStatus,copy,hangul:/[\uac00-\ud7a3]/u.test(copy)}})()`);
@@ -1124,7 +1124,8 @@ try{
   const bankShortsAnswer=await evaluate(`(()=>{const item=HARUMAL_SHORTS_DECK(2)[${bankShortsIndex}];return item.choices[item.answerIndex]})()`);
   await openStoredShorts(bankShortsIndex);await submitShortsLabel(bankShortsAnswer);
   const bankCoach=await evaluate(`document.querySelector('.shortsFeedback small')?.innerText`);
-  assert.match(bankCoach,/【正解の根拠】[\s\S]*【ひっかけ分析】[\s\S]*【タイプ別の解き方】/);
+  assert.match(bankCoach,/【正解の根拠】[\s\S]*【ひっかけ分析】/);
+  assert.doesNotMatch(bankCoach,/【タイプ別の解き方】/,'generic repeated coaching is omitted when no authored method exists');
   const bankReview=await evaluate(`(()=>{const details=document.querySelector('.shortsExplanation'),next=document.querySelector('.shortsAction button');return{closed:details?!details.open:null,nextBeforeDetails:!!(next&&details&&(next.compareDocumentPosition(details)&Node.DOCUMENT_POSITION_FOLLOWING)),proposal:!!document.querySelector('.malbitShortProposal'),tools:!!document.querySelector('.malbitShortTools'),exampleTranslation:!!document.querySelector('.malbitExampleTranslation'),nextText:next?.innerText,nextColor:getComputedStyle(next).color}})()`);
   assert.equal(bankReview.closed,null,'unflagged vocabulary bank card renders its complete coaching inline');assert.equal(bankReview.nextBeforeDetails,false);assert.equal(bankReview.proposal,false);assert.equal(bankReview.tools,false);assert.equal(bankReview.exampleTranslation,false);assert.match(bankReview.nextText,/次の問題/u);assert.ok(['rgb(255, 255, 255)','rgb(16, 37, 35)'].includes(bankReview.nextColor));
   for(const theme of ['light','dark']){await evaluate(`malbitSetTheme('${theme}')`);for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertShortsFits(`vocabulary bank Shorts ${theme} ${width}px`,theme)}await setViewport(390,844);await shot(`00b-vocabulary-bank-${theme}.png`)}
