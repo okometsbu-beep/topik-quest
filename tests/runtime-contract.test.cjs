@@ -52,11 +52,10 @@ test('game feedback stays scroll-stable and teaches a repeatable solving method'
   assert.doesNotMatch(focus, /scrollIntoView|scrollTo/,'rendering a battle must not move the page automatically');
   assert.match(topik, /function gameTutorMarkup/);
   assert.match(topik, /function explanationSections/);
-  assert.match(topik, /correctSelection&&sections\.trap\?sections\.trap/,'a correct answer should show distractor analysis instead of duplicating the full explanation');
-  assert.match(topik, /sections\.strategy\|\|gameSolveTip\(q\)/,'reviewed item strategy should reach the third coaching section');
+  assert.match(topik, /correctSelection\?sections\.trap/,'a correct answer should show distractor analysis instead of duplicating the full explanation');
+  assert.match(topik, /sections\.strategy\?/,'reviewed item strategy should reach the third coaching section');
   assert.match(topik, /gameTutorMarkup\(q,sel\)/);
-  assert.match(topik, /시간이 끝나 보기를 고르지 못했습니다/);
-  assert.match(topik, /時間切れで選択できませんでした/);
+  assert.doesNotMatch(topik, /specific\|\|T\(`고른/,'no invented distractor facts');
   assert.match(styles, /body\.tq-game-active #screen[\s\S]{0,180}overflow-anchor:none/);
   assert.match(styles, /body\.tq-game-active #screen \.t1hud\{display:grid/);
   assert.match(styles, /body\.tq-game-active #screen \.t1hud>\.t1ModeLang[\s\S]{0,120}width:44px;height:44px/);

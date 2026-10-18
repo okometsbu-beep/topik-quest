@@ -119,7 +119,9 @@ for (const item of mcqItems) {
         en: ['【Why this is correct】', '【Distractor trap】', '【Type-solving method】'],
         zh: ['【正确依据】', '【干扰项陷阱】', '【题型解法】']
       }[lang];
-      assert.ok(requiredSections.every((section) => explanation.includes(section)), `${item.id} ${lang} explanation should teach evidence, traps, and a type-solving method`);
+      assert.ok(explanation.includes(requiredSections[0]), `${item.id} ${lang} must explain the answer`);
+      if(item.coach?.[lang]?.trap)assert.ok(explanation.includes(requiredSections[1]));
+      if(item.coach?.[lang]?.strategy)assert.ok(explanation.includes(requiredSections[2]));
       assert.doesNotMatch(explanation, /(?:undefined|null|\[object Object\])/u, `${item.id} ${lang} explanation should be clean`);
       uniqueExplanations.add(`${lang}:${explanation}`);
     }

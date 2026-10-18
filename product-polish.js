@@ -25,17 +25,17 @@ function currentT1(){return readJSON(T1_SESSION,null)}
 function t1Attempt(q){const n=Math.max(0,Number(q?.total??q?.i)||0);return q?.locked?Math.max(0,n-1):n}
 function visibleQuestionKey(){
   if(S?.view==='shorts'){const sh=readJSON(SHORTS_KEY,{}),lv=Number(sh.activeLevel)||level(),p=sh.levels?.[lv]||sh.levels?.[String(lv)]||{};return`shorts:${lv}:${p.index||0}:${p.total||0}`}
-  if(S?.view==='infinity'&&S.infinity?.current){const x=S.infinity.current;return`inf:${S.infinity.count||0}:${x.type}:${x.id}`}
-  if(S?.view==='t1quiz'){const q=currentT1(),id=q?.ids?.[q.i];return q?`t1:${q.mode}:${q.started||'run'}:${q.gameStage||0}:${id}:${t1Attempt(q)}`:''}
+  if(S?.view==='infinity'&&S.infinity?.current){const x=S.infinity.current;return`inf:${S.infinity.rewardSessionId||'legacy'}:${S.infinity.count||0}:${x.type}:${x.id}`}
+  if(S?.view==='t1quiz'){const q=currentT1(),id=q?.ids?.[q.i];return q?`t1:${q.mode}:${q.rewardSessionId||q.started||'run'}:${q.gameStage||0}:${id}:${t1Attempt(q)}`:''}
   if(S?.view==='real'&&S.real?.active)return`real2:${S.real.deadline}:${S.real.phase}:${S.real.id}`;
   return'';
 }
-function beginVisibleTimer(){if(S?.view==='t1quiz'&&currentT1()?.locked)return;const key=visibleQuestionKey();if(key&&!questionStarted.has(key))questionStarted.set(key,Date.now())}
-function durationFor(key){const t=questionStarted.get(key);questionStarted.delete(key);return Math.max(1,Math.min(3600,Math.round((Date.now()-(t||Date.now()-1000))/1000)))}
+function beginVisibleTimer(){if(S?.view==='t1quiz'&&currentT1()?.locked)return;if(S?.view==='infinity'&&S.infinity?.feedback)return;const key=visibleQuestionKey();if(key&&!questionStarted.has(key))questionStarted.set(key,Date.now())}
+function durationFor(key){const t=questionStarted.get(key);questionStarted.delete(key);return typeof t==='number'?Math.max(0,(Date.now()-t)/1000):null}
 function events(){const value=readJSON(EVENTS_KEY,[]);return Array.isArray(value)?value:[]}
 function recordEvent(event){
   if(!event?.key)return;const list=events();if(list.some(x=>x.key===event.key))return;
-  list.push({ts:Date.now(),level:Number(event.level)===2?2:1,mode:event.mode||'practice',skill:event.skill||'mixed',id:event.id??'',correct:event.correct===true,duration:Math.max(1,Number(event.duration)||1),key:event.key});
+  list.push({ts:Date.now(),level:Number(event.level)===2?2:1,mode:event.mode||'practice',skill:event.skill||'mixed',id:event.id??'',correct:event.correct===true,timingVersion:1,duration:typeof event.duration==='number'&&Number.isFinite(event.duration)?Math.max(0,event.duration):null,key:event.key});
   writeJSON(EVENTS_KEY,list.slice(-1500));
 }
 function questionForT1(id){
@@ -47,7 +47,7 @@ function observeCompletedT1(){
   if(S?.view!=='t1quiz')return;const q=currentT1();if(!q?.locked||q.mode==='real')return;
   const key=visibleQuestionKey();if(!key||!questionStarted.has(key))return;const id=q.ids?.[q.i],item=questionForT1(id);if(!item)return;
   const selected=q.answers?.[id],correct=q.mode==='game'?q.last?.ok===true:Number(selected)===Number(item.answerIndex);
-  recordEvent({key,level:Number(q.examLevel)||1,mode:q.mode==='game'?'game':'random',skill:item.section==='listening'?'listening':'reading',id:item.sourceId||item.id,correct,duration:durationFor(key)});
+  recordEvent({key,level:Number(q.examLevel)||1,mode:q.mode==='game'?'game':'random',skill:item.section==='listening'?'listening':'reading',id:item.sourceId||item.id,correct,duration:q.questionTiming?.seconds??null});
 }
 
 window.MALBIT_REVIEWED_TRANSLATIONS={
@@ -74,7 +74,7 @@ if(typeof window.checkShorts==='function'){
   const base=window.checkShorts;
   window.checkShorts=function(){
     const sh=readJSON(SHORTS_KEY,{}),lv=Number(sh.activeLevel)||level(),p=sh.levels?.[lv]||sh.levels?.[String(lv)]||{},key=`shorts:${lv}:${p.index||0}:${p.total||0}`,selected=Number(p.selected),bank=p.orderId&&window.MALBIT_BANK?.present(p.orderId,p.choiceOrder),correct=bank?Number(bank.answerIndex):((Number(p.index)||0)*3+lv)%4,item=bank||window.HARUMAL_SHORTS_DECK?.(lv)?.[Number(p.index)||0];
-    const out=base.apply(this,arguments);recordEvent({key,level:lv,mode:'shorts',skill:item?.section||item?.type||'vocab',id:item?.bankId||item?.term||p.index,correct:selected===correct,duration:durationFor(key)});return out;
+    const out=base.apply(this,arguments);if(p.locked||p.selected==null)return out;const done=readJSON(SHORTS_KEY,{}).levels?.[lv];recordEvent({key,level:lv,mode:'shorts',skill:item?.section||item?.type||'vocab',id:item?.bankId||item?.term||p.index,correct:selected===correct,duration:done?.lastAnswerSeconds??null});return out;
   };
 }
 
@@ -83,7 +83,7 @@ if(typeof window.t1Next==='function'){
   window.t1Next=function(){
     const q=currentT1(),id=q?.ids?.[q.i],item=questionForT1(id),selected=q?.answers?.[id],canSubmit=q&&item&&selected!=null&&!q.locked;
     const key=visibleQuestionKey(),out=base.apply(this,arguments);
-    if(canSubmit)recordEvent({key,level:Number(q.examLevel)||1,mode:q.mode==='game'?'game':q.mode==='real'?'exam':'random',skill:item.section==='listening'?'listening':'reading',id:item.sourceId||item.id,correct:Number(selected)===Number(item.answerIndex),duration:durationFor(key)});
+    if(canSubmit)recordEvent({key,level:Number(q.examLevel)||1,mode:q.mode==='game'?'game':q.mode==='real'?'exam':'random',skill:item.section==='listening'?'listening':'reading',id:item.sourceId||item.id,correct:Number(selected)===Number(item.answerIndex),duration:(q.mode==='real'?currentT1()?.previousQuestionTiming?.seconds:currentT1()?.questionTiming?.seconds)??null});
     return out;
   };
 }
@@ -92,13 +92,13 @@ if(typeof window.submitInfinity==='function'){
   const base=window.submitInfinity;
   window.submitInfinity=function(){
     const inf=S.infinity,x=inf?.current,q=x&&(typeof infinityCurrentQuestion==='function'?infinityCurrentQuestion():(x.type==='listen'?LS[x.id-1]:RW[x.id-1])),picked=typeof selected==='number'?selected:null,key=visibleQuestionKey();
-    const out=base.apply(this,arguments);if(q&&picked!=null)recordEvent({key,level:2,mode:'random',skill:x.type==='listen'?'listening':'reading',id:q.bankId||x.id,correct:picked===Number(q.answerIndex),duration:durationFor(key)});return out;
+    const out=base.apply(this,arguments);if(q&&picked!=null)recordEvent({key,level:2,mode:'random',skill:x.type==='listen'?'listening':'reading',id:q.bankId||x.id,correct:picked===Number(q.answerIndex),duration:S.infinity?.feedback?.sec??null});return out;
   };
 }
 
 if(typeof window.infTimeout==='function'){
   const base=window.infTimeout;
-  window.infTimeout=function(){const x=S.infinity?.current,key=visibleQuestionKey(),out=base.apply(this,arguments);if(x)recordEvent({key,level:2,mode:'random',skill:x.type==='listen'?'listening':x.type==='read'?'reading':'writing',id:x.id,correct:false,duration:durationFor(key)});return out};
+  window.infTimeout=function(){const x=S.infinity?.current,key=visibleQuestionKey(),out=base.apply(this,arguments);if(x)recordEvent({key,level:2,mode:'random',skill:x.type==='listen'?'listening':x.type==='read'?'reading':'writing',id:x.id,correct:false,duration:S.infinity?.feedback?.sec??null});return out};
 }
 
 if(typeof window.realMove==='function'){
@@ -166,7 +166,7 @@ if(typeof window.submitInfinityWriting==='function'){
   window.submitInfinityWriting=function(){
     const inf=S.infinity,x=inf?.current;if(!inf||x?.type!=='write')return;const q=infinityCurrentQuestion(),txt=MALBIT_WRITING.text(x.id,S.writing?.[x.id]).trim(),need=writingMinimum(x.id),key=visibleQuestionKey();
     if(!MALBIT_WRITING.ready(x.id,S.writing[x.id],need)){updateWritingGate(x.id);document.getElementById('writeBox')?.focus();return toast(L(`최소 ${need}자까지 작성해 주세요.`,`最低${need}字まで書いてください。`,`Write at least ${need} characters.`,`请至少写${need}字。`))}
-    const sec=elapsed();stopTimer();inf.count++;inf.writing=(Number(inf.writing)||0)+1;inf.totalSec+=sec;inf.targetSec+=infLimit(x);rememberWriting(q,'random');inf.feedback={write:true,sec,answers:MALBIT_WRITING.short(x.id)?{...writingPair(x.id).answers}:undefined};save();durationFor(key);render();
+    const sec=finishInfinityTime();stopTimer();inf.count++;inf.writing=(Number(inf.writing)||0)+1;if(sec===null)inf.timeUnmeasured=true;inf.totalSec+=sec??0;inf.targetSec+=infLimit(x);rememberWriting(q,'random');inf.feedback={write:true,sec,timingVersion:1,answers:MALBIT_WRITING.short(x.id)?{...writingPair(x.id).answers}:undefined};save();durationFor(key);render();
   };
 }
 
@@ -176,16 +176,16 @@ function activitySnapshot(){
   const today=dayKey(),todayShorts=Number(sh.daily?.[today]?.total)||0,todayOther=list.filter(x=>dayKey(x.ts)===today&&x.mode!=='shorts').length,todayCount=todayShorts+todayOther;
   let streak=0,d=new Date();if(!active.has(dayKey(d)))d.setDate(d.getDate()-1);while(active.has(dayKey(d))){streak++;d.setDate(d.getDate()-1)}
   const monday=new Date(),dow=(monday.getDay()+6)%7;monday.setHours(0,0,0,0);monday.setDate(monday.getDate()-dow);
-  const week=Array.from({length:7},(_,i)=>{const d=new Date(monday);d.setDate(monday.getDate()+i);return{date:d,key:dayKey(d),on:active.has(dayKey(d))}}),durations=list.map(x=>Number(x.duration)).filter(x=>x>0),skills={};
+  const week=Array.from({length:7},(_,i)=>{const d=new Date(monday);d.setDate(monday.getDate()+i);return{date:d,key:dayKey(d),on:active.has(dayKey(d))}}),durations=list.filter(x=>typeof x.duration==='number'&&Number.isFinite(x.duration)&&(x.duration>0||(x.duration===0&&x.timingVersion===1))).map(x=>x.duration),skills={};
   for(const e of list){const k=e.skill||'mixed';skills[k]=skills[k]||{n:0,ok:0,time:0};skills[k].n++;skills[k].ok+=e.correct?1:0;skills[k].time+=Number(e.duration)||0}
-  return{list,answered,correct,accuracy:answered?Math.round(correct/answered*100):0,todayCount,streak,week,weekCount:week.filter(x=>x.on).length,avg:durations.length?Math.round(durations.reduce((a,b)=>a+b,0)/durations.length):0,best:durations.length?Math.min(...durations):0,slowest:durations.length?Math.max(...durations):0,skills};
+  return{list,answered,correct,accuracy:answered?Math.round(correct/answered*100):0,todayCount,streak,week,weekCount:week.filter(x=>x.on).length,avg:durations.length?durations.reduce((a,b)=>a+b,0)/durations.length:null,best:durations.length?Math.min(...durations):null,slowest:durations.length?Math.max(...durations):null,skills};
 }
 function skillName(skill){return({listening:L('듣기','聴解','Listening','听力'),reading:L('읽기','読解','Reading','阅读'),writing:L('쓰기','作文','Writing','写作'),word:L('단어','単語','Words','单词'),vocab:L('어휘','語彙','Vocabulary','词汇'),grammar:L('문법','文法','Grammar','语法'),idiom:L('숙어','慣用表現','Idioms','惯用语'),expression:L('표현','表現','Expressions','表达'),mixed:L('종합','総合','Mixed','综合')}[skill]||skill)}
 function formatTime(sec){sec=Math.max(0,Number(sec)||0);return sec>=60?`${Math.floor(sec/60)}m ${sec%60}s`:`${sec}s`}
 function renderPolishedStats(sc){
   const a=activitySnapshot(),rows=Object.entries(a.skills).sort((x,y)=>y[1].n-x[1].n),weak=rows.filter(x=>x[1].n>=2).sort((x,y)=>(x[1].ok/x[1].n)-(y[1].ok/y[1].n))[0],vocab=Array.isArray(S.vocab)?S.vocab.length:0,goal=Math.max(1,Number(prefs.dailyGoal)||5),progress=Math.min(100,Math.round(a.todayCount/goal*100));
   sc.className='screen tqStatsScreen malbitStats';
-  sc.innerHTML=`<div class="malbitPageTitle"><div><small>LEARNING INSIGHTS</small><h1>${L('학습 통계','学習統計','Learning insights','学习统计')}</h1></div><button onclick="setView('more')">⚙️</button></div><section class="malbitStatsHero"><div class="malbitGoalRing" style="--p:${progress*3.6}deg"><b>${a.todayCount}<small>/${goal}</small></b></div><div><small>${L('오늘 완료한 문제','今日完了した問題','Questions completed today','今日完成题目')}</small><h2>${progress>=100?L('오늘 목표 달성!','今日の目標達成！','Daily goal complete!','今日目标已完成！'):L(`${goal-a.todayCount}문제만 더 풀면 목표 달성`,`あと${goal-a.todayCount}問で目標達成`,`${goal-a.todayCount} more to reach your goal`,`再做${goal-a.todayCount}题即可达标`)}</h2><p>🔥 ${a.streak} ${L('일 연속 학습','日連続学習','day streak','天连续学习')}</p></div></section><div class="malbitStatGrid"><article><b>${a.accuracy}%</b><small>${L('전체 정답률','全体正答率','Overall accuracy','总体正确率')}</small></article><article><b>${a.answered}</b><small>${L('완료 문제','完了問題','Completed','已完成')}</small></article><article><b>${a.weekCount}/7</b><small>${L('이번 주 학습','今週の学習','Active this week','本周学习')}</small></article><article><b>${vocab}</b><small>${L('저장한 표현','保存した表現','Saved words','已存词汇')}</small></article></div><section class="malbitPace"><h2>${L('풀이 속도','解答ペース','Answer pace','答题速度')}</h2><div><span><b>${a.avg?formatTime(a.avg):'–'}</b><small>${L('평균','平均','Average','平均')}</small></span><span><b>${a.best?formatTime(a.best):'–'}</b><small>${L('가장 빠름','最速','Fastest','最快')}</small></span><span><b>${a.slowest?formatTime(a.slowest):'–'}</b><small>${L('가장 느림','最遅','Slowest','最慢')}</small></span></div></section><section class="malbitSkills"><div class="malbitSectionTitle"><h2>${L('영역별 정확도','分野別正答率','Accuracy by skill','分项正确率')}</h2><span>${L('완료 답안 기준','完了答案ベース','Completed answers','按已完成答题')}</span></div>${rows.length?rows.map(([name,x])=>{const acc=Math.round(x.ok/x.n*100);return`<article><div><b>${skillName(name)}</b><small>${x.ok}/${x.n} · ${formatTime(Math.round(x.time/x.n))}</small></div><div class="malbitSkillBar"><i style="width:${acc}%"></i></div><strong>${acc}%</strong></article>`}).join(''):`<div class="malbitEmptyCompact">${L('문제를 제출하면 영역별 기록이 여기에 쌓여요.','問題を提出すると分野別記録がここに表示されます。','Submit answers to build your skill breakdown.','提交答案后，这里会显示分项记录。')}</div>`}</section><section class="malbitRecommendation"><small>NEXT BEST ACTION</small><h2>${weak?L(`${skillName(weak[0])}를 5문제만 집중해 보세요.`,`${skillName(weak[0])}を5問だけ集中練習しましょう。`,`Focus on 5 ${skillName(weak[0])} questions next.`,`接下来集中练习5道${skillName(weak[0])}题。`):L('숏츠 5문제로 첫 기준점을 만들어 보세요.','ショーツ5問で最初の基準を作りましょう。','Start with 5 Shorts questions.','先做5道短题建立起点。')}</h2><button onclick="malbitStartRecommendation('${weak?.[0]||'vocab'}')">${L('추천 학습 시작','おすすめ学習を開始','Start recommended practice','开始推荐练习')} ›</button></section>`;
+  sc.innerHTML=`<div class="malbitPageTitle"><div><small>LEARNING INSIGHTS</small><h1>${L('학습 통계','学習統計','Learning insights','学习统计')}</h1></div><button onclick="setView('more')">⚙️</button></div><section class="malbitStatsHero"><div class="malbitGoalRing" style="--p:${progress*3.6}deg"><b>${a.todayCount}<small>/${goal}</small></b></div><div><small>${L('오늘 완료한 문제','今日完了した問題','Questions completed today','今日完成题目')}</small><h2>${progress>=100?L('오늘 목표 달성!','今日の目標達成！','Daily goal complete!','今日目标已完成！'):L(`${goal-a.todayCount}문제만 더 풀면 목표 달성`,`あと${goal-a.todayCount}問で目標達成`,`${goal-a.todayCount} more to reach your goal`,`再做${goal-a.todayCount}题即可达标`)}</h2><p>🔥 ${a.streak} ${L('일 연속 학습','日連続学習','day streak','天连续学习')}</p></div></section><div class="malbitStatGrid"><article><b>${a.accuracy}%</b><small>${L('전체 정답률','全体正答率','Overall accuracy','总体正确率')}</small></article><article><b>${a.answered}</b><small>${L('완료 문제','完了問題','Completed','已完成')}</small></article><article><b>${a.weekCount}/7</b><small>${L('이번 주 학습','今週の学習','Active this week','本周学习')}</small></article><article><b>${vocab}</b><small>${L('저장한 표현','保存した表現','Saved words','已存词汇')}</small></article></div><section class="malbitPace"><h2>${L('풀이 속도','解答ペース','Answer pace','答题速度')}</h2><div><span><b>${a.avg===null?L('미측정','未計測','Not measured','未测量'):a.avg<1?'&lt;1s':formatTime(a.avg)}</b><small>${L('평균','平均','Average','平均')}</small></span><span><b>${a.best===null?L('미측정','未計測','Not measured','未测量'):a.best<1?'&lt;1s':formatTime(a.best)}</b><small>${L('가장 빠름','最速','Fastest','最快')}</small></span><span><b>${a.slowest===null?L('미측정','未計測','Not measured','未测量'):a.slowest<1?'&lt;1s':formatTime(a.slowest)}</b><small>${L('가장 느림','最遅','Slowest','最慢')}</small></span></div></section><section class="malbitSkills"><div class="malbitSectionTitle"><h2>${L('영역별 정확도','分野別正答率','Accuracy by skill','分项正确率')}</h2><span>${L('완료 답안 기준','完了答案ベース','Completed answers','按已完成答题')}</span></div>${rows.length?rows.map(([name,x])=>{const acc=Math.round(x.ok/x.n*100);return`<article><div><b>${skillName(name)}</b><small>${x.ok}/${x.n} · ${formatTime(Math.round(x.time/x.n))}</small></div><div class="malbitSkillBar"><i style="width:${acc}%"></i></div><strong>${acc}%</strong></article>`}).join(''):`<div class="malbitEmptyCompact">${L('문제를 제출하면 영역별 기록이 여기에 쌓여요.','問題を提出すると分野別記録がここに表示されます。','Submit answers to build your skill breakdown.','提交答案后，这里会显示分项记录。')}</div>`}</section><section class="malbitRecommendation"><small>NEXT BEST ACTION</small><h2>${weak?L(`${skillName(weak[0])}를 5문제만 집중해 보세요.`,`${skillName(weak[0])}を5問だけ集中練習しましょう。`,`Focus on 5 ${skillName(weak[0])} questions next.`,`接下来集中练习5道${skillName(weak[0])}题。`):L('숏츠 5문제로 첫 기준점을 만들어 보세요.','ショーツ5問で最初の基準を作りましょう。','Start with 5 Shorts questions.','先做5道短题建立起点。')}</h2><button onclick="malbitStartRecommendation('${weak?.[0]||'vocab'}')">${L('추천 학습 시작','おすすめ学習を開始','Start recommended practice','开始推荐练习')} ›</button></section>`;
 }
 
 window.malbitStartRecommendation=skill=>{if(['word','vocab','grammar','idiom','expression'].includes(skill))return window.startShorts?.();prefs.randomMix=skill==='writing'?'writing':'lr';writeJSON(PREFS_KEY,prefs);if(skill==='writing'){localStorage.setItem('topikQuestExamLevel','2');return startRandomPractice(2)}return window.tqStartMode?.('random')};

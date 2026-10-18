@@ -1,12 +1,12 @@
 const test=require('node:test'),assert=require('node:assert/strict'),vm=require('node:vm'),fs=require('node:fs'),path=require('node:path');
 const read=f=>fs.readFileSync(path.join(__dirname,'..',f),'utf8');
-function boot({recent=false,reduced=false,saveData=false,webm=true,alpha=0,reject=false,storageFails=false,titleLoaded=true,sound=false,soundReady=true,soundMode='allow'}={}){
+function boot({recent=false,reduced=false,saveData=false,webm=true,alpha=0,reject=false,storageFails=false,titleLoaded=true,sound=false,soundReady=true,soundMode='allow',reloadMarker=null,navigation='navigate'}={}){
   let clock=0,id=0,removed=false,plays=0,loads=0,pauses=0,seen=null;
   const titleEvents={},title={naturalWidth:titleLoaded?1448:0,addEventListener:(k,fn)=>titleEvents[k]=fn};
   const timers=new Map(),events={},panelEvents={},classes=new Set(),rejections=[],audios=[];
   const video={currentTime:0,playbackRate:1,paused:true,ended:false,style:{},muted:false,addEventListener:(k,fn)=>events[k]=fn,canPlayType:()=>webm?'probably':'',play(){plays++;this.paused=false;return{catch(fn){rejections.push(fn);if(reject)fn()}}},pause(){pauses++;this.paused=true},load(){loads++},removeAttribute(){delete this.src}};
   const panel={style:{},classList:{add:v=>classes.add(v),toggle:(v,on)=>on?classes.add(v):classes.delete(v)},addEventListener:(k,fn)=>panelEvents[k]=fn,remove(){removed=true}};
-  const c={performance:{now:()=>clock},navigator:{connection:{saveData}},matchMedia:()=>({matches:reduced}),sessionStorage:{getItem(){if(storageFails)throw Error();return recent?String(Date.now()):null},setItem(k,v){if(storageFails)throw Error();seen=v}},setTimeout(fn,ms){timers.set(++id,{fn,at:clock+ms});return id},clearTimeout:id=>timers.delete(id),document:{hidden:false,documentElement:{classList:{add:v=>classes.add(v),remove:v=>classes.delete(v)}},querySelector:()=>panel,getElementById:id=>id==='harumanIntroTitle'?title:video,addEventListener:(k,fn)=>events[k]=fn,removeEventListener:k=>delete events[k],createElement:()=>({getContext:()=>({drawImage(){},getImageData:()=>({data:[0,0,0,alpha]})})})}};c.window=c;
+  const c={performance:{now:()=>clock,getEntriesByType:()=>[{type:navigation}]},navigator:{connection:{saveData}},matchMedia:()=>({matches:reduced}),sessionStorage:{getItem(){if(storageFails)throw Error();return reloadMarker?JSON.stringify(reloadMarker):recent?String(Date.now()):null},removeItem(){reloadMarker=null},setItem(k,v){if(storageFails)throw Error();seen=v}},setTimeout(fn,ms){timers.set(++id,{fn,at:clock+ms});return id},clearTimeout:id=>timers.delete(id),document:{currentScript:{src:'http://localhost/haruman-intro.js?v=172'},hidden:false,documentElement:{classList:{add:v=>classes.add(v),remove:v=>classes.delete(v)}},querySelector:()=>panel,getElementById:id=>id==='harumanIntroTitle'?title:video,addEventListener:(k,fn)=>events[k]=fn,removeEventListener:k=>delete events[k],createElement:()=>({getContext:()=>({drawImage(){},getImageData:()=>({data:[0,0,0,alpha]})})})}};c.window=c;
   if(sound)c.Audio=function(){
     const media={readyState:soundReady?4:0,duration:2.8,currentTime:0,playbackRate:1,paused:true,events:{},requests:[],
       addEventListener(k,fn){this.events[k]=fn},pause(){this.paused=true},load(){},removeAttribute(){delete this.src},
@@ -26,7 +26,7 @@ function boot({recent=false,reduced=false,saveData=false,webm=true,alpha=0,rejec
 }
 test('transparent playback completes the title sequence and releases media',()=>{const b=boot();assert.match(b.video.src,/webm$/);b.emit('loadeddata');b.emit('playing');assert.equal(b.video.style.opacity,'1');b.emit('ended');assert.ok(!b.removed());b.tick(1500);assert.ok(b.removed());assert.equal(b.video.src,undefined)});
 test('opaque WebM decoder or unsupported codec chooses matching MP4',()=>{const b=boot({alpha:255});b.emit('loadeddata');assert.match(b.video.src,/mp4$/);b.emit('loadeddata');assert.equal(b.video.style.opacity,'1');assert.match(boot({webm:false}).video.src,/mp4$/)});
-test('click and Escape cannot skip; no skip button is shipped',()=>{const b=boot();b.click();b.escape();b.tick(220);assert.ok(!b.removed());assert.equal(b.pauses(),0);const intro=read('index.html').split('<script src="haruman-intro.js')[0];assert.doesNotMatch(intro,/<button|Skip|건너뛰기/);assert.equal(b.c.HARUMAN_INTRO,undefined)});
+test('click and Escape cannot skip; no skip button is shipped',()=>{const b=boot();b.click();b.escape();b.tick(220);assert.ok(!b.removed());assert.equal(b.pauses(),0);const intro=read('index.html').split('<script src="haruman-intro.js')[0];assert.doesNotMatch(intro,/<button|Skip|건너뛰기/);assert.equal(typeof b.c.HARUMAN_INTRO.finish,'function')});
 test('load error and denied autoplay immediately dispose',()=>{const b=boot();b.emit('error');assert.ok(b.removed());assert.ok(boot({reject:true}).removed())});
 test('delayed loading and playback beyond the old deadline wait for ended',()=>{const b=boot();b.tick(4500);assert.ok(!b.removed());b.emit('loadeddata');b.emit('playing');b.video.currentTime=1;b.emit('timeupdate');b.tick(4500);assert.ok(!b.removed());assert.ok(!b.classes.has('harumanIntroLeaving'));b.emit('ended');assert.ok(b.classes.has('harumanIntroWhiteout'));assert.ok(!b.classes.has('harumanIntroLeaving'));b.tick(1500);assert.ok(b.removed())});
 test('healthy playback is never cut off by total elapsed duration',()=>{const b=boot();for(let i=1;i<=30;i++){b.tick(1000);b.video.currentTime=i/20;b.emit('timeupdate');assert.ok(!b.removed())}b.emit('ended');b.tick(1500);assert.ok(b.removed())});
@@ -287,4 +287,27 @@ test('browser audio contracts require real native playback or explicitly silent 
   const synthetic={...trace,calls:trace.calls.map(c=>({...c,state:'synthetic-denied'}))};
   assert.doesNotThrow(()=>assertIntroAudioTrace(synthetic,timeline,{mode:'denied'}));
   assert.throws(()=>assertIntroAudioTrace({...synthetic,events:[...synthetic.events,{kind:'character',type:'playing'}]},timeline,{mode:'denied'}),/never start native/);
+});
+
+
+test('reinitialization during playback and after disposal never duplicates video or audio owners',()=>{
+ const b=boot({sound:true});b.emit('playing');const owner=b.c.HARUMAN_INTRO;
+ for(let i=0;i<3;i++)vm.runInNewContext(read('haruman-intro.js'),b.c);
+ assert.equal(b.plays(),1);assert.equal(b.audios.length,2);assert.equal(b.audios[0].requests.length,1);assert.equal(b.c.HARUMAN_INTRO,owner);
+ b.emit('ended');b.tick(1500);vm.runInNewContext(read('haruman-intro.js'),b.c);assert.equal(b.plays(),1);assert.ok(b.removed());
+});
+test('worker reload waits for natural completion and is consumed only on the matching reload',async()=>{
+ const first=boot({sound:true});first.emit('playing');const waiting=first.c.HARUMAN_INTRO.prepareReload('172');assert.ok(!first.removed());first.emit('ended');first.tick(1499);assert.ok(!first.removed());first.tick(1);await waiting;
+ assert.ok(first.removed());assert.ok(first.audios.every(a=>a.paused));assert.deepEqual(JSON.parse(first.seen()),{version:'172'});
+ const second=boot({reloadMarker:JSON.parse(first.seen()),navigation:'reload',sound:true});assert.equal(second.plays(),0);assert.equal(second.audios.length,0);assert.ok(second.removed());
+ assert.equal(boot({navigation:'reload'}).plays(),1,'ordinary later refresh is a new entry');
+ assert.equal(boot({reloadMarker:{version:'172'},navigation:'navigate'}).plays(),1);
+ assert.equal(boot({reloadMarker:{version:'171'},navigation:'reload'}).plays(),1);
+});
+test('recovery during whiteout or title is immediate and repeated cleanup is harmless',()=>{
+ for(const delay of [0,400]){const b=boot({sound:true});b.emit('playing');b.emit('ended');b.tick(delay);b.c.HARUMAN_INTRO.finish(true);b.c.HARUMAN_INTRO.finish(true);b.tick(10000);assert.ok(b.removed());assert.equal(b.loads(),1);assert.ok(b.audios.every(a=>a.paused));}
+});
+test('history fallback preserves unrelated state when session storage is unavailable',()=>{
+ const b=boot({storageFails:true,sound:true});let state={route:'keep',learning:{score:7}};b.c.history={get state(){return state},replaceState(value){state=value}};
+ b.c.HARUMAN_INTRO.prepareReload('172');assert.equal(state.route,'keep');assert.equal(state.learning.score,7);assert.equal(state.harumalIntroReload.version,'172');assert.ok(!b.removed());b.emit('ended');b.tick(1500);assert.ok(b.removed());
 });

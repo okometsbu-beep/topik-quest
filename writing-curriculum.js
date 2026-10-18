@@ -237,7 +237,7 @@ window.harumalWritingSubmit=id=>{const result=E.submit(id);if(result.blocked)ret
 window.harumalWritingReady=(id,value)=>{E.readiness(id,value);renderPage()};
 window.harumalWritingSelfCheck=(id,value)=>{E.selfCheck(id,value);renderPage()};
 window.harumalWritingModel=id=>{if(E.revealModel(id))renderPage()};
-window.harumalWritingOpenExam=()=>{if(typeof tqSetLevel==='function')tqSetLevel(2);setView('realSetup')};
+window.harumalWritingOpenExam=()=>{if(typeof tqSetLevel==='function')tqSetLevel(2);if(window.HARUMAL_HUB)return window.HARUMAL_HUB.openAreas('mock',2);setView('realSetup')};
 window.addEventListener?.('popstate',event=>{if(event.state?.harumalWritingRoute){if(event.state.harumalWritingGuided)E.resumeGuided?.();else if(event.state.harumalWritingGuided===false&&guided().active)E.leaveGuided?.();if(guided().active)E.setGuidedRoute?.(event.state.harumalWritingRoute);E.route(event.state.harumalWritingRoute);changingHistory=true;baseSetView(VIEW);changingHistory=false}else if(S.view===VIEW||event.state?.harumalReturnView){changingHistory=true;baseSetView(event.state?.harumalReturnView||'learn');changingHistory=false}});
 window.HARUMAL_WRITING=Object.freeze({engine:E,data:DATA,render:renderPage,localeText:T,updateActionLayout,mergeImport:raw=>E.mergeImport(raw)});
 if(S.view===VIEW)rememberHistory(state().route,true);

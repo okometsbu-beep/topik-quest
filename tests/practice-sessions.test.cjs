@@ -18,7 +18,7 @@ function boot({listening='off',mix='writing'}={}){
  const recent=new Map();c.MALBIT_BANK=c.BANK={filter:opts=>rows.filter(q=>q.level===opts.level&&opts.sections.includes(q.section)&&!opts.exclude?.includes(q.id)),draw(opts){return this.filter(opts)[0]},byId:id=>rows.find(q=>q.id===id),present(id,order){const q=typeof id==='string'?this.byId(id):id;return{...q,bankId:q.id,answerIndex:1,choiceOrder:order||[0,1,2,3]}},freshOrder:()=>[0,1,2,3],readRecent:key=>recent.get(key)||[],remember(key,id){recent.set(key,[...(recent.get(key)||[]),id])},nextMockSet:()=>1};
  c.find=id=>c.MALBIT_BANK.present(id);c.cur=()=>c.find(c.Q.ids[c.Q.i]);c.pool=k=>rows.filter(q=>q.level===1&&(k==='full'||q.section===k));c.restore=()=>c.Q;c.clearQ=()=>{c.Q=null};c.infinityDifficulties=()=>['medium'];c.infinityCurrentQuestion=()=>c.MALBIT_BANK.present(c.S.infinity.current.bankId);c.activateTopik2BankSet=()=>true;
  vm.createContext(c);const run=src=>vm.runInContext(src,c),load=file=>run(read(file));
- run(line('topik1.js','function saveQ()'));
+ run(part('topik1.js','function questionTimeKey()','function body('));run(part('legacy-core.js','window.HARUMAL_QUESTION_TIME=','let timerId='));run(line('topik1.js','function saveQ()'));
  run(line('topik1.js','window.t1Begin='));
  run(part('topik1.js','function practiceDifficulty()','window.t1ExitRandom='));
  run(part('topik1.js','window.t1Next=()=>{','window.t1Prev='));
