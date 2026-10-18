@@ -260,7 +260,7 @@
       }
     };
     const plan=plans[item.itemType]||plans.writing_essay;
-    const custom=item.coach||{};
+    const custom=item.coach||{},mode=explanationMode(item),taskAdvice=['reason','purpose','insertion','presentation','expression','headline','order','response','situation','blank','action','wordmeaning','picture'].includes(mode);
     const sourceKo=String(custom.ko?.reason||item.explanationKo||'').trim();
     const sourceJa=String(custom.ja?.reason||item.explanationJa||'').trim().replace(/\.$/u,'。');
     return {
@@ -479,9 +479,9 @@
     const reason=explanationReason(item,answer,evidence),trap=instructorTrap(item),strategy=instructorStrategy(item),position=answerPositionLine(index+1);
     const headings={ko:['정답 근거','오답 함정','유형별 풀이법'],ja:['正解の根拠','ひっかけ分析','タイプ別の解き方'],en:['Why this is correct','Distractor trap','Type-solving method'],zh:['正确依据','干扰项陷阱','题型解法']};
     const answerLines={ko:`정답 표현은 “${answer}”입니다.`,ja:`正解の表現は「${answer}」です。`,en:`The correct expression is ${sentenceQuote(answer)}`,zh:`正确表达是“${answer}”。`};
-    const custom=item.coach||{};
+    const custom=item.coach||{},mode=explanationMode(item),taskAdvice=['reason','purpose','insertion','presentation','expression','headline','order','response','situation','blank','action','wordmeaning','picture'].includes(mode);
     return Object.freeze({
-      ...Object.fromEntries(Object.keys(headings).map((lang)=>[lang,`【${headings[lang][0]}】${custom[lang]?.reason||reason[lang]} ${answerLines[lang]}\n【${headings[lang][1]}】${custom[lang]?.trap||trap[lang]}\n【${headings[lang][2]}】${custom[lang]?.strategy||strategy[lang]} ${position[lang]}`]))
+      ...Object.fromEntries(Object.keys(headings).map((lang)=>[lang,`【${headings[lang][0]}】${custom[lang]?.reason||reason[lang]}${(custom[lang]?.reason||reason[lang]).includes(answer)?'':` ${answerLines[lang]}`}${(custom[lang]?.trap||taskAdvice)?`\n【${headings[lang][1]}】${custom[lang]?.trap||trap[lang]}`:''}${(custom[lang]?.strategy||taskAdvice)?`\n【${headings[lang][2]}】${custom[lang]?.strategy||strategy[lang]}`:''}\n${position[lang]}`]))
     });
   }
   function choiceExplanationPack(item, answerIndex, choices, overall) {

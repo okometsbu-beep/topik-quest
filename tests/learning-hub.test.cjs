@@ -32,3 +32,13 @@ test('new original mock collection remains disabled until a complete reviewed se
  c.MALBIT_BANK.mockSets=(level,collection)=>[{set:4,ready:true,count:104,expected:104,missingAudio:50}];let captured;c.HARUMAL_PRACTICE.startMock=(level,area,options)=>{captured={level,area,...options};return true};
  api.chooseMockSet(4);api.startMock();assert.deepEqual(captured,{level:2,area:'reading',collectionId:'original12-v1',mockSet:4});api.startMock();
 });
+
+
+test('saved and direct legacy exam routes normalize before any renderer runs without changing learner data',()=>{
+ for(const [view,level] of [['realSetup',2],['t1setup',1]])for(const lang of ['ko','ja','en','zh']){
+  const data=new Map([['topikQuestExamLevel','1'],['learner-record','unchanged']]),seen=[],starts=[];
+  const c={S:{view,lang,real:{active:true,id:7},realAnswers:{read:{7:2}}},localStorage:{getItem:k=>data.get(k)||null,setItem:(k,v)=>data.set(k,v)},document:{getElementById:()=>null},render:()=>seen.push(c.S.view),save:()=>{},setView:()=>{},addEventListener:()=>{},HARUMAL_PRACTICE:{getActive:()=>null,startMock:(n,a)=>starts.push([n,a])}};c.window=c;vm.createContext(c);vm.runInContext(read('learning-hub.js'),c);
+  c.S.view=view;c.render();assert.deepEqual(seen,['mockAreas']);assert.equal(c.S.real.id,7);assert.equal(c.S.realAnswers.read[7],2);assert.equal(data.get('learner-record'),'unchanged');assert.equal(data.get('topikQuestExamLevel'),'1');
+  c.HARUMAL_HUB.selectArea('reading');c.HARUMAL_HUB.startMock();assert.deepEqual(starts,[[level,'reading']]);
+ }
+});

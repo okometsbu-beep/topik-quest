@@ -1,3 +1,10 @@
+## v173 question experience release candidate
+
+- User-approved release on `agent/unify-exam-intro`, based on main `037624a`; version bumped once from v172 to v173. PR CI, merge and live Pages checks gate publication.
+- Includes unified mock entry, single-owner intro/reload handoff, rounded question surfaces, source-bound explanation navigation, optional coaching, report-only IDs, frozen fractional answer times, insertion sentence/position styling and selected-word candidate review.
+- Existing learner storage, vocabulary, question payloads and grading remain preserved. New browser regressions are included in Verify MALBIT alongside the existing suites.
+- Verification and limits: `docs/qa/question-followup-local.md` and `docs/qa/entry-ui-local.md`. Unknown word forms remain editable and unselected; unverified source quotations are not highlighted.
+
 ## v172 release candidate
 
 - Publishes the verified v171 complete 2,088-question candidate together with compact random practice, centered accuracy results and four Haruman poses, recording-bound listening transcripts, stable question IDs, Google Forms reporting and three reviewed object redraws.

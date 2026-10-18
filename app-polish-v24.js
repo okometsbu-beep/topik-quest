@@ -108,11 +108,11 @@ async function localizedExplanation(state){
   return value||L('정답의 근거를 본문과 선택지에서 다시 확인해 보세요.','本文と選択肢から正解の根拠を確認しましょう。','Review the passage and options for the evidence behind the answer.','请再次对照原文和选项，确认正确答案的依据。');
 }
 
-window.malbitToggleRandomExplanation=()=>{const panel=document.querySelector('.malbitRandomExplanation'),button=document.querySelector('.malbitExplanationToggle');if(!panel||!button)return;const open=!panel.classList.contains('open');panel.classList.toggle('open',open);button.setAttribute('aria-expanded',String(open));button.querySelector('span').textContent=open?L('해설 닫기','解説を閉じる','Hide explanation','收起解析'):L('해설 보기','解説を見る','Show explanation','查看解析')};
+window.malbitToggleRandomExplanation=()=>{const panel=document.querySelector('.malbitRandomExplanation'),button=document.querySelector('.malbitExplanationToggle');if(!panel||!button)return;const open=!panel.classList.contains('open');panel.classList.toggle('open',open);button.setAttribute('aria-expanded',String(open));button.querySelector('span').textContent=open?L('해설 닫기','解説を閉じる','Hide explanation','收起解析'):L('해설 보기','解説を見る','Show explanation','查看解析');if(open){const state=randomQuestionState();if(state)window.MALBIT_LEARNING?.guideEvidence?.(state.q,panel.closest('.card'),panel)}};
 
 function patchRandomFeedback(){
   const state=randomQuestionState(),card=document.querySelector('.card');if(!state||!card||card.dataset.v24Feedback===state.key)return;card.dataset.v24Feedback=state.key;
-  const strip=card.querySelector('.resultStrip'),inline=card.querySelector('.tqInlineExplanation'),detailed=card.querySelector('.malbitDetailedReviewLink');
+  const strip=card.querySelector('.resultStrip'),inline=card.querySelector('.tqInlineExplanation'),detailed=card.querySelector('.malbitDetailedReviewLink'),recordedTranscript=strip?.querySelector('.listeningTranscript');
   if(state.level===1&&strip){const correct=strip.classList.contains('good'),answer=Number(state.q.answerIndex)+1,tutorCoach=strip.querySelector('.t1TutorCoach');strip.textContent=correct?L('정답입니다.','正解です。','Correct.','回答正确。'):L(`오답 · 정답은 ${answer}번입니다.`,`不正解 · 正解は${answer}番です。`,`Incorrect · The answer is option ${answer}.`,`答错 · 正确答案是第${answer}项。`);if(tutorCoach)strip.appendChild(tutorCoach)}
   const translation=document.createElement('section');translation.className='malbitQuestionTranslation';translation.dataset.key=state.key;translation.innerHTML=`<div><span>🌐</span><b>${L('문제 전체 번역','問題全体の翻訳','Full question translation','整题翻译')}</b><small>${L('문맥을 유지해 한 번에 읽어요','文脈を保ってまとめて読みます','Read as one context-preserving question','保留完整语境阅读')}</small></div><p>${L('번역을 준비하는 중…','翻訳を準備中…','Preparing translation…','正在准备翻译…')}</p>`;
   strip?.insertAdjacentElement('afterend',translation)||card.querySelector('.choices')?.insertAdjacentElement('afterend',translation);
@@ -122,11 +122,12 @@ function patchRandomFeedback(){
   // Korean is the source language, not a translation. Keep the anchor for
   // explanation placement but do not repeat the question or make a request.
   if((appState()?.lang||'ko')==='ko')translation.hidden=true;
-  if(inline){panel.replaceChildren(inline);if(detailed)panel.appendChild(detailed)}
+  const concise=window.MALBIT_LEARNING?.conciseEvidenceMarkup?.(state.q);if(concise){panel.innerHTML=concise;inline?.remove();strip?.querySelector('.t1TutorCoach')?.remove()}else if(inline){panel.replaceChildren(inline);if(detailed)panel.appendChild(detailed)}
+  if(recordedTranscript&&!panel.querySelector('.listeningTranscript'))panel.appendChild(recordedTranscript);
   [...card.querySelectorAll('.closeBtn')].filter(button=>/\uD574설|\u89E3説|Explain|\u89E3析/.test(button.textContent)).forEach(button=>button.remove());
   const source=originalQuestionText(state);
   translatedQuestion(state,source).then(result=>{const node=translation.isConnected&&translation.dataset.key===state.key?translation.querySelector('p'):null;if(!node)return;const resolved=typeof result==='string'?{status:'reviewed',text:result}:result;translation.dataset.translationStatus=resolved.status;translation.classList.toggle('unavailable',resolved.status==='unavailable');node.textContent=resolved.text}).catch(()=>{const node=translation.querySelector('p');if(node){translation.dataset.translationStatus='unavailable';translation.classList.add('unavailable');node.textContent=L('이 문제의 전체 번역은 현재 제공되지 않습니다. 한국어 원문은 위에 표시되어 있습니다.','この問題の全文翻訳は現在利用できません。韓国語の原文は上に表示されています。','A full translation is not available for this question. The Korean original is shown above.','这道题暂时无法提供全文翻译。上方显示的是韩语原文。')}});
-  if(!inline)localizedExplanation(state).then(value=>{const node=panel.querySelector('.malbitExplanationLoading');if(node){node.className='malbitExplanationBody';node.textContent=value}});
+  if(!inline&&!concise)localizedExplanation(state).then(value=>{const node=panel.querySelector('.malbitExplanationLoading');if(node){node.className='malbitExplanationBody';node.textContent=value}});
 }
 
 function randomNextButton(){if(!randomQuestionState())return null;return [...document.querySelectorAll('.card button')].find(button=>/\uB2E4음|\u6B21|Next|\u4E0B一题/.test(button.textContent)&&!button.disabled)||null}

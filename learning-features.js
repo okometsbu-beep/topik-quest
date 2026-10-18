@@ -97,6 +97,69 @@ function localizedAnswerChoice(type,q){
   return answerChoice(q);
 }
 
+function insertionParts(q){
+ const raw=window.MALBIT_BANK?.byId?.(q?.bankId||q?.id)||q;
+ if(!/^sentence_insertion(?:_long)?$/.test(raw?.itemType||''))return null;
+ let source=raw.passage||q.stem||'',prompt=raw.prompt||q.prompt||'',sentence='';
+ const label=/^(?:\[(?:삽입할|삽입|넣을|주어진) 문장\]|(?:삽입할|삽입|넣을|주어진) 문장\s*[:：])\s*/u;
+ const promptBody=prompt.replace(/^[^\n]*고르십시오[.。]\s*\n/u,'').trim();
+ if(label.test(promptBody))sentence=promptBody.replace(label,'').trim();
+ else if(promptBody!==prompt)sentence=promptBody;
+ const blocks=source.split(/\n\s*\n/),index=blocks.findIndex(x=>label.test(x.trim()));
+ if(index>=0){const fromSource=blocks[index].trim().replace(label,'').trim();if(sentence&&sentence!==fromSource)return null;sentence=fromSource;blocks.splice(index,1);source=blocks.join('\n\n')}
+ if(!sentence)return null;
+ const marker=/\(\s*(?:[가나다라ㄱㄴㄷㄹ㉠㉡㉢㉣])\s*\)|[㉠㉡㉢㉣]/gu;
+ const positions=[...source.matchAll(marker)].map(m=>m[0]);if(positions.length!==4)return null;
+ return {sentence,passage:source,positions};
+}
+function insertionMarkup(q){
+ const parts=insertionParts(q);if(!parts)return '';
+ const marker=/\(\s*(?:[가나다라ㄱㄴㄷㄹ㉠㉡㉢㉣])\s*\)|[㉠㉡㉢㉣]/gu;
+ return `<div class="hqInsertionSentence" role="group" aria-label="${text('삽입할 문장','挿入する文','Sentence to insert','待插入的句子')}">${esc(parts.sentence)}</div><div class="stem hqInsertionPassage">${esc(parts.passage).replace(marker,token=>`<span class="hqInsertionPosition" data-insertion-position="${esc(token.replace(/[()\s]/g,''))}">${token}</span>`)}</div>`;
+}
+// Literal evidence only: semantic similarity is not proof of a source citation.
+function sourceEvidence(q){
+  if(q.section==='listening'||q.script){
+    const support=window.HARUMAL_ORIGINAL_SUPPORT,record=support?.verified&&support.byId?.[q.bankId||q.id];
+    if(!record||record.sourceScript!==q.script||!record.sourceContentSha256||record.sourceContentSha256!==(q.contentSha256||q.qa?.contentSha256))return [];
+    const turns=window.HARUMAL_TRANSCRIPTS?.recordedTurns(q)||[];
+    return (record.transcripts?.ko?.evidence||[]).filter(e=>typeof e.quote==='string'&&e.quote.length>2&&turns[e.turnIndex]?.text.includes(e.quote)).map(e=>({quote:e.quote,turnIndex:e.turnIndex})).filter((e,i,a)=>a.findIndex(x=>x.quote===e.quote&&x.turnIndex===e.turnIndex)===i);
+  }
+  const raw=window.MALBIT_BANK?.byId?.(q.bankId||q.id),type=raw?.itemType||q.itemType||'',source=q.displayPassage||q.stem||q.passage||'';
+  if(!/^(main_idea|main_idea_advanced|content_match|detail|topic)/.test(type)||/inference|picture|mismatch/.test(type)||q.visualOptions)return [];
+  const answer=cleanChoice(q.choices?.[q.answerIndex]||'');
+  return answer.length>5&&source.includes(answer)?[{quote:answer}]:[];
+}
+function conciseEvidenceMarkup(q){
+ const evidence=sourceEvidence(q);if(!evidence.length||q.section==='listening'||q.script)return '';
+ const raw=window.MALBIT_BANK?.byId?.(q.bankId||q.id),lang=S.lang||'ko',n=Number(q.answerIndex)+1;
+ let reason=q.coach?.[lang]?.reason||(lang==='ko'?raw?.explanationKo:lang==='ja'?raw?.explanationJa:'');
+ if(!reason)reason=text('원문의 이 문장이 선택지의 내용을 직접 뒷받침합니다.','本文のこの文が選択肢の内容を直接裏付けています。','This sentence in the passage directly supports the option.','原文中的这句话直接支持该选项。');
+ reason=reason.replace(/정답은\s*\d+\s*(?:번)?입니다[.。]?\s*/g,'').replace(/正解は\s*\d+\s*(?:番)?です[.。]?\s*/g,'');
+ for(const {quote}of evidence)reason=reason.replaceAll(quote,'').replace(/[“”「」]{2}/g,'');
+ const labels=text('원문 근거','本文の根拠','Source evidence','原文依据');
+ return `<div class="tqEvidenceExplanation"><p>${text(`정답: ${n}번`,`正解: ${n}番`,`Answer: option ${n}`,`正确答案：第${n}项`)}</p><h4>${labels}</h4>${evidence.map(e=>`<blockquote>${esc(e.quote)}</blockquote>`).join('')}<p>${esc(reason)}</p>${q.coach?.[lang]?.trap?`<h4>${text('오답 함정','ひっかけ分析','Distractor trap','干扰项陷阱')}</h4><p>${esc(q.coach[lang].trap)}</p>`:''}${q.coach?.[lang]?.strategy?`<h4>${text('풀이 요령','解き方','Strategy','解题方法')}</h4><p>${esc(q.coach[lang].strategy)}</p>`:''}</div>`;
+}
+function guideEvidence(q,card,panel){
+ if(panel.dataset.evidenceGuided)return;panel.dataset.evidenceGuided='1';
+ const evidence=sourceEvidence(q),targets=[];const insertion=insertionParts(q);if(insertion){const token=cleanChoice(q.choices?.[q.answerIndex]||'').replace(/[()\s]/g,'');const found=[...card.querySelectorAll('[data-insertion-position]')].filter(x=>x.dataset.insertionPosition===token&&!panel.contains(x));if(found.length===1){found[0].classList.add('hqEvidence');found[0].setAttribute('aria-label',text(`정답 삽입 위치 ${token}`,`正しい挿入位置 ${token}`,`Correct insertion position ${token}`,`正确插入位置 ${token}`));found[0].tabIndex=-1;targets.push(found[0])}}
+ for(const e of evidence){
+  const roots=q.section==='listening'||q.script?[...panel.querySelectorAll('[data-recorded-transcript] p>span')].filter((_,i)=>i===e.turnIndex):[...card.querySelectorAll('.stem')].filter(x=>!panel.contains(x));
+  for(const root of roots){
+   // Rendering uses escaped plain text; never match explanations, options or translations.
+   const at=root.textContent.indexOf(e.quote);if(at<0)continue;
+   const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT),nodes=[];let node,offset=0;
+   while((node=walker.nextNode())){nodes.push({node,start:offset,end:offset+node.length});offset+=node.length}
+   const start=nodes.find(x=>x.end>at),end=nodes.find(x=>x.end>=at+e.quote.length);if(!start||!end)continue;
+   const range=document.createRange();range.setStart(start.node,at-start.start);range.setEnd(end.node,at+e.quote.length-end.start);const mark=document.createElement('mark');mark.className='hqEvidence';mark.tabIndex=-1;mark.setAttribute('aria-label',text(`근거 ${targets.length+1}`,`根拠 ${targets.length+1}`,`Evidence ${targets.length+1}`,`依据 ${targets.length+1}`));mark.appendChild(range.extractContents());range.insertNode(mark);targets.push(mark);
+   if(targets.length&&targets.at(-1).textContent===e.quote)break;
+  }
+ }
+ if(!targets.length)return;
+ const nav=document.createElement('nav');nav.className='hqEvidenceNav';nav.setAttribute('aria-label',text('원문 근거 다시 보기','本文の根拠を再表示','Revisit source evidence','重看原文依据'));
+ const visit=(target,pulse)=>{target.closest('details')?.setAttribute('open','');target.scrollIntoView({block:'center',behavior:window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});target.focus({preventScroll:true});if(pulse){target.classList.add('hqEvidencePulse');setTimeout(()=>target.classList.remove('hqEvidencePulse'),1400)}};
+ targets.forEach((target,i)=>{target.dataset.evidenceNumber=String(i+1);const b=document.createElement('button');b.type='button';b.textContent=text(`근거 ${i+1} 다시 보기`,`根拠 ${i+1} を再表示`,`Revisit evidence ${i+1}`,`重看依据 ${i+1}`);b.onclick=()=>visit(target,false);nav.appendChild(b)});panel.prepend(nav);visit(targets[0],true);
+}
 function explanationBlock(type,q,compact=false){
   const l=labels(),reason=type==='listen'?listeningExplanation(q):readingExplanation(q),n=answerNumber(q),choice=localizedAnswerChoice(type,q),authored=authoredCoaching(q);
   return `<section class="tqInlineExplanation ${compact?'compact':''}" aria-live="polite">${window.HARUMAL_QUESTION_TOOLS?.badge(q,{section:type})||''}<div class="tqInlineTitle"><span>✓</span><b>${l.title}</b></div><div class="tqInlineAnswer"><small>${l.answer}</small><strong>${n}. ${esc(choice)}</strong></div>${authored||`<h4>${l.reason}</h4><p>${esc(reason)}</p>`}${type==='listen'?window.HARUMAL_TRANSCRIPTS?.markup(q,{submitted:true})||'':''}</section>`;
@@ -204,7 +267,7 @@ async function translatedReviewParts(item,q){
 }
 function reviewQuestionMarkup(parts,translated=false){
   if(parts.fullText)return `<div class="tqReviewQuestion ${translated?'translated':''}">${parts.reviewed?`<small class="tqReviewedBadge">✓ ${text('문맥 검수 번역','文脈確認済み翻訳','Context-reviewed translation','语境校对翻译')}</small>`:''}<p>${esc(parts.fullText)}</p></div>`;
-  return `<div class="tqReviewQuestion ${translated?'translated':''}">${parts.instruction?`<small>${esc(parts.instruction)}</small>`:''}${parts.script?`<div class="tqReviewScript">${esc(parts.script)}</div>`:''}${parts.body?`<p>${esc(parts.body)}</p>`:''}${questionVisual(parts.question)}<ol>${parts.choices.map((x,i)=>`<li>${choiceContent(parts.question,parts.question?.choices?.[i]||x,i,x)}</li>`).join('')}</ol></div>`;
+  return `<div class="tqReviewQuestion ${translated?'translated':''}">${parts.instruction?`<small>${esc(parts.instruction)}</small>`:''}${parts.script?`<div class="tqReviewScript">${esc(parts.script)}</div>`:''}${(!translated&&window.MALBIT_LEARNING?.insertionMarkup?.(parts.question))||(parts.body?`<p>${esc(parts.body)}</p>`:'')}${questionVisual(parts.question)}<ol>${parts.choices.map((x,i)=>`<li>${choiceContent(parts.question,parts.question?.choices?.[i]||x,i,x)}</li>`).join('')}</ol></div>`;
 }
 async function localizedField(value,key,source='ja'){
   if(!value)return'';const lang=S.lang||'ko';if(lang===source)return value;
@@ -456,7 +519,39 @@ function sourceForVocab(){
 
 function popup(){return document.getElementById('tqVocabPopup')}
 function closeVocabPopup(){pendingVocab=null;popup()?.classList.remove('open')}
+function selectedWordCandidates(value){
+ const selected=String(value||'').slice(0,10000),known=new Set([...LEXICAL_WORDS,...ONE_SYLLABLE_STEMS,...[1,2].flatMap(level=>(window.MALBIT_SHORTS_DECKS?.[level]||[]).map(x=>x.term))]),rows=[],seen=new Set();let rest=selected;
+ const add=(term,raw,verified)=>{const key=vocabKey(term);if(!term||seen.has(key)||(!verified&&PARTICLES.includes(term))||BLOCKED_FRAGMENTS.has(term))return;seen.add(key);rows.push({term,raw,verified,saved:hasVocabTerm(term)})};
+ // Reviewed multiword expressions take precedence over individual constituents.
+ for(const phrase of PHRASES){const re=new RegExp(phrase.re.source,'gu');rest=rest.replace(re,raw=>{add(phrase.term,raw,true);return ' '.repeat(raw.length)})}
+ rest=rest.replace(/\(\s*[가나다라ㄱㄴㄷㄹ㉠㉡㉢㉣]\s*\)|[㉠㉡㉢㉣①②③④]/gu,' ');
+ for(const raw of rest.match(/[가-힣]+/gu)||[]){
+  let term=KNOWN_FORMS.get(raw)||raw,verified=KNOWN_FORMS.has(raw)||known.has(raw);
+  if(!verified)for(const suffix of PARTICLES){if(raw.endsWith(suffix)&&known.has(raw.slice(0,-suffix.length))){term=raw.slice(0,-suffix.length);verified=true;break}}
+  // No guessed verb stem: unresolved surface forms stay editable and unselected.
+  add(term,raw,verified);
+ }
+ return rows;
+}
+function showVocabCandidates(raw,context=raw){
+ const p=popup();if(!p)return;const rows=selectedWordCandidates(raw);pendingVocab={candidates:rows,raw,context:String(context||raw).slice(0,10000),type:'word'};
+ p.querySelector('.tqVocabTerm').textContent=text('추가할 단어 선택','追加する単語を選択','Choose words to add','选择要添加的单词');
+ p.querySelector('.tqVocabInput').closest('label').hidden=true;p.querySelector('.tqVocabType').closest('label').hidden=true;
+ p.querySelector('.tqVocabNormalize').textContent=text('사전에서 확인한 형태를 우선 선택했습니다. 미확인 표현은 직접 고쳐 선택하세요.','辞書で確認できた形を選択しました。未確認の表現は編集して選んでください。','Verified forms are selected. Edit and select unverified expressions yourself.','已选中词典确认的词形。未确认的表达请编辑后选择。');
+ let list=p.querySelector('.tqVocabCandidates');if(!list){list=document.createElement('div');list.className='tqVocabCandidates';p.querySelector('.tqVocabNormalize').after(list)}list.hidden=false;
+ list.innerHTML=rows.map((row,i)=>`<label class="tqVocabCandidate"><input type="checkbox" data-vocab-check="${i}" ${row.verified&&!row.saved?'checked':''} ${row.saved?'disabled':''}><input data-vocab-candidate="${i}" value="${esc(row.term)}" aria-label="${text('저장할 단어','保存する単語','Word to save','要保存的单词')}" ${row.saved?'disabled':''}><small>${row.saved?text('저장됨','保存済み','Saved','已保存'):row.verified?text('확인된 형태','確認済み','Verified','已确认'):text('수정·확인 필요','編集・確認が必要','Review / edit','需要确认或编辑')}</small></label>`).join('')||`<p>${text('추출할 단어가 없습니다.','抽出する単語がありません。','No words found.','没有可提取的单词。')}</p>`;
+ p.querySelector('.tqVocabContext').textContent=pendingVocab.context;p.classList.add('open');list.querySelector('input:not(:disabled)')?.focus();
+}
+function saveVocabCandidates(){
+ const p=popup(),selected=[...p.querySelectorAll('[data-vocab-check]:checked')];if(!selected.length)return toast(text('추가할 단어를 선택하세요.','追加する単語を選んでください。','Select words to add.','请选择要添加的单词。'));
+ const rows=selected.map(box=>({candidate:pendingVocab.candidates[Number(box.dataset.vocabCheck)],word:p.querySelector(`[data-vocab-candidate="${box.dataset.vocabCheck}"]`).value.trim()}));
+ if(rows.some(x=>!isSavableTerm(x.word)||/[.!?。！？\n]/.test(x.word)||x.word.split(/\s+/).length>5))return toast(text('문장 대신 단어나 짧은 표현으로 수정하세요.','文ではなく単語や短い表現にしてください。','Edit each entry into a word or short expression.','请将各项改为单词或简短表达。'));
+ let count=0;for(const {candidate,word}of rows)if(storeVocab({text:word,source:sourceForVocab(),inputOriginal:candidate.raw,context:pendingVocab.context,type:word.includes(' ')?'expression':'word'}))count++;
+ window.MALBIT_VOCAB_SELECTION?.clear();try{window.getSelection?.()?.removeAllRanges()}catch{}if(typeof hideSelection==='function')hideSelection();closeVocabPopup();toast(text(`${count}개 추가했습니다.`,`${count}語追加しました。`,`Added ${count} words.`,`已添加${count}个词。`));
+}
 function showVocabPopup(term,raw,context='',type='word'){
+  if(type==='expression'&&/\s/.test(raw)&&!PHRASES.some(x=>x.term===raw.trim()))return showVocabCandidates(raw,context);
+  const panel=popup();panel?.querySelector('.tqVocabCandidates')?.setAttribute('hidden','');for(const selector of ['.tqVocabInput','.tqVocabType']){const label=panel?.querySelector(selector)?.closest?.('label');if(label)label.hidden=false}
   if(!isSavableTerm(term))return toast(text('완전한 단어나 표현을 눌러 주세요.','完全な単語・表現を長押ししてください。','Long-press a complete word or expression.','请长按完整的单词或表达。'));
   pendingVocab={term,raw,context,type};const p=popup();if(!p)return;
   p.querySelector('.tqVocabTerm').textContent=term;
@@ -481,6 +576,7 @@ function storeVocab(entry){
 }
 
 function addVocabTerm(term=pendingVocab?.term){
+  if(pendingVocab?.candidates)return saveVocabCandidates();
   const edited=popup()?.querySelector('.tqVocabInput')?.value;
   const word=String(edited??term??'').trim();if(!isSavableTerm(word))return toast(text('완전한 단어나 표현으로 고쳐 주세요.','完全な単語・表現に直してください。','Edit this into a complete word or expression.','请修改为完整的单词或表达。'));
   if(hasVocabTerm(word)){
@@ -502,7 +598,7 @@ function tokenizeElement(el){
   if(!el||el.dataset.vocabReady==='1')return;el.dataset.vocabReady='1';el.classList.add('vocab-zone');
   const walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
   for(const node of nodes){
-    if(node.parentElement?.closest('.vocab-token'))continue;
+    if(node.parentElement?.closest('.vocab-token,.hqInsertionPosition'))continue;
     const value=node.nodeValue||'',re=/[가-힣]+/g;if(!re.test(value))continue;re.lastIndex=0;
     const frag=document.createDocumentFragment();let at=0,m;
     while((m=re.exec(value))){if(m.index>at)frag.append(value.slice(at,m.index));const span=document.createElement('span');span.className='vocab-token';span.textContent=m[0];span.dataset.vocabTerm=m[0];frag.append(span);at=m.index+m[0].length}if(at<value.length)frag.append(value.slice(at));node.replaceWith(frag);
@@ -612,7 +708,7 @@ function addDiscovery(root=document){
 
 function enhance(root=document){
   installPopup();addDiscovery(root);
-  root.querySelectorAll('.card .stem,.card .choice>span:last-child,.card .instruction,.shortsCard .shortsWord,.shortsCard .shortsFeedback p,.shortsCard .shortsFeedback small,.answerBox p,.tqInlineExplanation p').forEach(tokenizeElement);
+  root.querySelectorAll('.hqInsertionSentence,.card .stem,.card .choice>span:last-child,.card .instruction,.shortsCard .shortsWord,.shortsCard .shortsFeedback p,.shortsCard .shortsFeedback small,.answerBox p,.tqInlineExplanation p').forEach(tokenizeElement);
   try{hideSelection()}catch(e){}
 }
 
@@ -643,9 +739,10 @@ const style=document.createElement('style');style.textContent=`
   html[data-theme="light"] .tqVocabScreen{color:#17243a}html[data-theme="light"] .tqVocabPageTabs,html[data-theme="light"] .tqManualVocab,html[data-theme="light"] .tqVocabCompactTip,html[data-theme="light"] .tqLibraryHero,html[data-theme="light"] .tqLibraryLevels button,html[data-theme="light"] .tqLibraryFilters button,html[data-theme="light"] .tqVocabEmpty{border-color:#d7e2f0;background:#fff;color:#17243a;box-shadow:0 9px 24px rgba(46,66,96,.07)}html[data-theme="light"] .tqVocabPageTabs button{color:#6f8098}html[data-theme="light"] .tqVocabPageTabs button.on{color:#fff;background:linear-gradient(135deg,#3476ed,#725ce9)}html[data-theme="light"] .tqManualVocab p,html[data-theme="light"] .tqLibraryHero p,html[data-theme="light"] .tqVocabCompactTip,html[data-theme="light"] .tqVocabEmpty p{color:#6d7e95}html[data-theme="light"] .tqManualVocab label{color:#5f7088}html[data-theme="light"] .tqLibraryLevels button.on,html[data-theme="light"] .tqLibraryFilters button.on{border-color:#5c85ee;background:#e6efff;color:#2558ad}html[data-theme="light"] .tqVocabTitle>span{border-color:#d6e1ef;background:#fff;color:#41689f}
   .tqReviewScreen{background:#f4f6fb!important;color:#18243b!important}.tqReviewHero{display:grid;grid-template-columns:1fr 76px;gap:13px;align-items:center;border-radius:24px;padding:18px;background:linear-gradient(145deg,#315fd7,#7755e8);color:#fff;box-shadow:0 17px 36px rgba(71,75,184,.2)}.tqReviewHero small{font-size:8px;font-weight:950;letter-spacing:.11em;color:#dce4ff}.tqReviewHero h1{font-size:20px;line-height:1.2;letter-spacing:-.045em;margin:6px 0}.tqReviewHero p{font-size:9px;line-height:1.5;color:#e5e9ff;margin:0}.tqReviewHero>strong{display:grid;place-items:center;width:72px;height:72px;border-radius:23px;background:rgba(255,255,255,.15);font-size:28px}.tqReviewHero>strong small{display:block;font-size:7px;letter-spacing:0}.tqReviewStats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:11px 0 17px}.tqReviewStats>div{border-radius:17px;padding:12px;background:#fff;box-shadow:0 8px 22px rgba(44,50,85,.07)}.tqReviewStats b{display:block;font-size:19px}.tqReviewStats small{font-size:8px;color:#8992a4}.tqReviewQueue{display:grid;gap:9px}.tqReviewItem{display:grid;grid-template-columns:51px 1fr auto;gap:10px;align-items:center;border:1px solid #e0e5ee;border-radius:19px;padding:11px;background:#fff;box-shadow:0 7px 21px rgba(42,52,87,.06)}.tqReviewBadge{display:grid;place-items:center;width:51px;height:51px;border-radius:16px;background:#edf2ff;font-size:19px}.tqReviewBadge small{display:block;color:#536fd4;font-size:6.5px;font-weight:950}.tqReviewItem b{font-size:12px}.tqReviewItem p{max-width:220px;margin:3px 0;color:#647187;font-size:8.5px;line-height:1.35}.tqReviewItem>div>small{font-size:7.5px;color:#a06a7b}.tqReviewItem>button{border:0;border-radius:12px;padding:9px;background:#315fd7;color:#fff;font-size:8px;font-weight:950;white-space:nowrap}.tqReviewEmpty{text-align:center;border:1px dashed #ccd4e1;border-radius:22px;padding:25px 17px;background:#fff}.tqReviewEmpty span{display:grid;place-items:center;width:46px;height:46px;margin:auto;border-radius:15px;background:#e8f8f0;color:#199267;font-size:21px;font-weight:950}.tqReviewEmpty h3{font-size:14px}.tqReviewEmpty p{color:#778398;font-size:9px;line-height:1.5}.tqClearMastered{display:block;margin:13px auto 0;border:0;background:transparent;color:#8a94a6;font-size:8.5px;text-decoration:underline}.tqReviewQuestion{margin:11px 0;border:1px solid #dce4ef;border-radius:17px;padding:13px;background:#f7f9fc;color:#1e2d44}.tqReviewQuestion.translated{background:#eef5ff;border-color:#c9dcfa}.tqReviewQuestion>small{display:block;color:#728199;font-size:9px;line-height:1.45}.tqReviewQuestion>p{white-space:pre-wrap;font-size:13px;font-weight:850;line-height:1.65}.tqReviewScript{white-space:pre-wrap;margin-top:9px;border-left:3px solid #7a9ee8;padding:8px 10px;background:#fff;border-radius:0 10px 10px 0;font-size:10px;line-height:1.55}.tqReviewQuestion ol{margin:9px 0 0;padding-left:24px}.tqReviewQuestion li{padding:3px 0;font-size:10px;line-height:1.45}.tqTranslationToggle{width:100%;border:1px solid #c9d9ef;border-radius:13px;padding:11px;background:#edf4ff;color:#315f9f;font-size:10px;font-weight:950}.tqReviewTranslation{display:none}.tqReviewTranslation.open{display:block}.tqReviewChoices{margin-top:11px}.tqReviewDeep{margin-top:12px;border:1px solid #cfe4ff;background:linear-gradient(145deg,#f1f7ff,#fff);border-radius:18px;padding:13px;color:#17243a}.tqReviewDeep h4{margin:12px 0 5px;font-size:10px;color:#62748d}.tqReviewDeep p{font-size:11px;line-height:1.65;color:#263850}.tqReviewDeep blockquote{margin:8px 0;border-left:3px solid #83a8ed;padding:8px 10px;background:#edf4ff;color:#40536e;font-size:9.5px;line-height:1.55;white-space:pre-wrap}.tqReviewChoiceAnalysis{display:grid;gap:7px;margin:8px 0 0;padding:0;list-style:none}.tqReviewChoiceAnalysis li{border:1px solid #e0e5ed;border-radius:12px;padding:9px;background:#f8f9fc}.tqReviewChoiceAnalysis li.right{border-color:#8bd3b7;background:#eaf9f2}.tqReviewChoiceAnalysis b,.tqReviewChoiceAnalysis span{display:block}.tqReviewChoiceAnalysis b{font-size:9.5px}.tqReviewChoiceAnalysis span{margin-top:3px;color:#68768a;font-size:8.5px;line-height:1.45}
 `;
+style.textContent+=`.tqVocabPopup [hidden]{display:none!important}.tqVocabPopup>section{max-height:90vh;overflow:auto}.tqVocabCandidates{max-height:40vh;overflow:auto}.tqVocabCandidate{display:grid!important;grid-template-columns:24px minmax(0,1fr);gap:6px;align-items:center;margin:8px 0}.tqVocabCandidate small{grid-column:2}.tqVocabCandidate input{min-width:0}.tqVocabCandidate input[type=checkbox]{width:20px;height:20px}.tqVocabContext{white-space:pre-line;max-height:7em;overflow:auto}.hqInsertionSentence{margin:14px 0;padding:16px;border:2px solid var(--ui-border,#7892a7);border-radius:12px;font-weight:700;line-height:1.8;background:var(--ui-surface-soft,#edf3fa);color:var(--ui-ink,#263850);overflow-wrap:anywhere}.hqInsertionPosition.hqEvidence::after{content:' ✓'}.hqInsertionPosition{display:inline-block;white-space:nowrap;margin:0 .3em;padding:0 .35em;border:1px solid currentColor;border-radius:5px;background:var(--ui-surface-soft,#edf3fa);font-weight:800;font-size:.95em}`;
 style.textContent+=`.tqAuthoredCoaching .tqReviewChoiceAnalysis li{background:var(--ui-surface-soft,#f8f9fc);border-color:var(--ui-border,#e0e5ed);color:var(--ui-ink,#263850)}.tqAuthoredCoaching .tqReviewChoiceAnalysis li.right{background:var(--ui-success-soft,#eaf9f2);border-color:var(--ui-success,#238a6c)}.tqAuthoredCoaching .tqReviewChoiceAnalysis b{font-size:13px;overflow-wrap:anywhere}.tqAuthoredCoaching .tqReviewChoiceAnalysis span{color:var(--ui-muted,#68768a);font-size:12px;line-height:1.6;white-space:pre-line;overflow-wrap:anywhere}`;
 document.head.appendChild(style);
-window.MALBIT_LEARNING={visualChoice,visualOnlyChoices,choiceContent,questionVisual,authoredCoach,authoredChoiceReason,authoredCoaching,explanationBlock,normalizeKoreanTerm,stripParticle,termFromToken,isSavableTerm,addVocabTerm,listeningExplanation,readingExplanation,writingExplanationBlock,enhance};
+window.MALBIT_LEARNING={visualChoice,visualOnlyChoices,choiceContent,sourceEvidence,conciseEvidenceMarkup,guideEvidence,insertionParts,insertionMarkup,selectedWordCandidates,showVocabCandidates,questionVisual,authoredCoach,authoredChoiceReason,authoredCoaching,explanationBlock,normalizeKoreanTerm,stripParticle,termFromToken,isSavableTerm,addVocabTerm,listeningExplanation,readingExplanation,writingExplanationBlock,enhance};
 removeUnsafeSavedFragments();
 setTimeout(()=>enhance(document),0);
 })();

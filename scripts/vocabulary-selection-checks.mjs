@@ -11,15 +11,17 @@ export async function verifyVocabularySelection({evaluate,tap,shot,setViewport,s
   await evaluate(`(()=>{S.vocab=[];setLang('ja');setView('home');const p=document.createElement('p');p.className='selectable';p.id='qaSelectedSentence';p.innerHTML='이전 문장입니다. 불을 <span id="qaRangeStart">켠 </span><strong id="qaRangeEnd">채로</strong> 잠이 들었어요. 다음 문장입니다.';document.querySelector('#screen').prepend(p);const range=document.createRange();range.setStart(document.querySelector('#qaRangeStart').firstChild,0);range.setEnd(document.querySelector('#qaRangeEnd').firstChild,2);const selection=getSelection();selection.removeAllRanges();selection.addRange(range)})()`);
   await sleep(350);assert.equal(await evaluate(`document.querySelector('#selectionBar').classList.contains('show')`),true,'native range exposes save action');
   await tap('#selectionBar button');assert.equal(await evaluate(`document.querySelector('#tqVocabPopup').classList.contains('open')`),true,'range save opens preview');
-  assert.deepEqual(await evaluate(`(()=>{const p=document.querySelector('#tqVocabPopup');return{term:p.querySelector('.tqVocabInput').value,context:p.querySelector('.tqVocabContext').textContent}})()`),{term:'켠 채로',context:'原文の文脈 · 불을 켠 채로 잠이 들었어요.'});
+  assert.deepEqual(await evaluate(`(()=>{const p=document.querySelector('#tqVocabPopup');return{terms:[...p.querySelectorAll('[data-vocab-candidate]')].map(x=>x.value),checked:p.querySelectorAll('[data-vocab-check]:checked').length,context:p.querySelector('.tqVocabContext').textContent}})()`),{terms:['켠','채로'],checked:0,context:'불을 켠 채로 잠이 들었어요.'});
+  // Unknown forms require an explicit edit and selection; preserve the source sentence.
+  await evaluate(`document.querySelector('[data-vocab-candidate="0"]').value='켠 채로';document.querySelector('[data-vocab-check="0"]').checked=true`);
  };
  let failed;
  try{
   for(const theme of ['light','dark'])for(const width of [320,390]){
    await setViewport(width,844);await evaluate(`malbitSetTheme('${theme}')`);await fixture();
-   const fit=await evaluate(`(()=>{const p=document.querySelector('#tqVocabPopup section'),r=p.getBoundingClientRect();return{overflow:p.scrollWidth-p.clientWidth,left:r.left,right:r.right,screen:innerWidth,controls:[...p.querySelectorAll('button,input,select')].map(e=>({width:e.getBoundingClientRect().width,height:e.getBoundingClientRect().height}))}})()`);
+   const fit=await evaluate(`(()=>{const p=document.querySelector('#tqVocabPopup section'),r=p.getBoundingClientRect();return{overflow:p.scrollWidth-p.clientWidth,left:r.left,right:r.right,screen:innerWidth,controls:[...p.querySelectorAll('button,input,select')].filter(e=>e.getClientRects().length).map(e=>{const r=(e.type==='checkbox'?e.closest('label'):e).getBoundingClientRect();return{width:r.width,height:r.height}})}})()`);
    assert.ok(fit.overflow<=1&&fit.left>=-1&&fit.right<=fit.screen+1,`${width} ${theme} range preview fits`);assert.ok(fit.controls.every(r=>r.width>=43&&r.height>=43),'preview has usable controls');await shot(`vocab-range-preview-ja-${width}-${theme}.png`);
-   await tap('.tqVocabAdd');const entry=await evaluate(`S.vocab[0]`);assert.equal(entry.text,'켠 채로');assert.equal(entry.inputOriginal,'켠 채로');assert.equal(entry.context,'불을 켠 채로 잠이 들었어요.');assert.equal(entry.type,'expression');assert.equal(await evaluate(`getSelection().toString()`),'');assert.equal(await evaluate(`document.querySelector('#selectionBar').classList.contains('show')`),false);
+   await tap('.tqVocabAdd');const entry=await evaluate(`S.vocab[0]`);assert.equal(entry.text,'켠 채로');assert.equal(entry.inputOriginal,'켠');assert.equal(entry.context,'불을 켠 채로 잠이 들었어요.');assert.equal(entry.type,'expression');assert.equal(await evaluate(`getSelection().toString()`),'');assert.equal(await evaluate(`document.querySelector('#selectionBar').classList.contains('show')`),false);
    await evaluate(`setView('vocab')`);await shot(`vocab-range-saved-ja-${width}-${theme}.png`);
   }
   await evaluate(`setView('home')`);await tap('.hubHomeHeader .harumalSettingsTrigger');

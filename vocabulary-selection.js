@@ -14,13 +14,15 @@ function sentence(text,start,end){
 function classify(term){return window.MALBIT_VOCAB_GRAMMAR?.lookup(term)||/^[-~]|^[AVN]-|[+·]/.test(term)?'grammar':/\s/.test(term)?'expression':'word'}
 function capture(selection){
  if(!selection||selection.isCollapsed||!selection.rangeCount)return null;
- const term=clean(selection.toString());if(!term||term.length>500||!/[가-힣]/.test(term))return null;
+ const fragments=[];for(let i=0;i<selection.rangeCount;i++){const range=selection.getRangeAt(i),copy=range.cloneContents?.();copy?.querySelectorAll?.('.hqInsertionPosition,.n,.picBadge,.hqReport,.hqEvidenceNav,button:not(.choice),input,textarea').forEach(x=>x.remove());fragments.push(copy?.textContent??selection.toString())}const term=clean(fragments.join(' '));if(!term||term.length>10000||!/[가-힣]/.test(term))return null;
  const range=selection.getRangeAt(0),element=node=>node?.nodeType===1?node:node?.parentElement;
  const first=element(range.startContainer),last=element(range.endContainer);
  const zone=first?.closest?.('.selectable,.vocab-zone');
- if(!zone||!zone.contains(last)||first.closest('input,textarea,[contenteditable="true"]'))return null;
+ const shared=zone?.contains(last)?zone:first?.closest?.('.card,.tqReviewQuestion,.shortsCard');
+ if(!zone||!shared?.contains(last)||first.closest('input,textarea,[contenteditable="true"]'))return null;
+ for(let i=1;i<selection.rangeCount;i++){const extra=selection.getRangeAt(i);if(!shared.contains(element(extra.startContainer))||!shared.contains(element(extra.endContainer)))return null}
  const a=first.closest('p,li,blockquote,h1,h2,h3,h4'),b=last?.closest?.('p,li,blockquote,h1,h2,h3,h4');
- const scope=a&&a===b?a:zone;let context=term;
+ const scope=a&&a===b?a:shared;let context=term;
  try{const before=range.cloneRange();before.selectNodeContents(scope);before.setEnd(range.startContainer,range.startOffset);const start=before.toString().length;context=sentence(scope.textContent,start,start+selection.toString().length)}catch(_){}
  return{term,raw:term,context,type:classify(term),selection:true};
 }

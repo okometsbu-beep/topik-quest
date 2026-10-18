@@ -45,6 +45,12 @@ jobs:
           if-no-files-found: warn
       - name: Verify saved vocabulary flashcards
         run: HARUMAL_FLASHCARDS_ONLY=1 node scripts/check-travel-mobile.mjs
+      - name: Verify entry routes, intro update and question surfaces
+        run: |
+          git fetch --depth=1 origin 037624aae3e373da02f476b8a2920ade7dd6319d
+          node scripts/check-entry-ui.mjs
+      - name: Verify explanations, answer timing, insertion and vocabulary selection
+        run: node scripts/check-explanation-timing.mjs
       - name: Verify question identity, reports, transcripts and centered results
         run: node scripts/check-question-experience.mjs
       - name: Upload question experience evidence

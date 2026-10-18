@@ -1,12 +1,15 @@
 // Boot runs underneath; a healthy intro stays visible until the video ends.
 (function(){
   'use strict';
+  // One owner per document, including repeated bootstrap/script evaluation.
+  if(window.HARUMAN_INTRO)return;
   const panel=document.querySelector('.harumanIntro');
   const video=document.getElementById('harumanIntroVideo');
   if(!panel||!video)return;
   const root=document.documentElement;
   const title=document.getElementById('harumanIntroTitle');
   let closed=false, fading=false, alphaChecked=false, sourceId=0;
+  const finishWaiters=[];
   let stallTimer, stageTimer, stageNext, stageDue=0, stageRemaining=0, lastTime=0;
   // Optional sound never owns the video clock or the presentation timers.
   let soundPhase='character', soundSerial=0, soundCurrent=null, videoSoundPlaying=false;
@@ -88,12 +91,14 @@
     root.classList.remove('haruman-intro-active');
     document.removeEventListener('visibilitychange',onVisibility);
     document.removeEventListener('click',retrySound);
+    for(const resolve of finishWaiters.splice(0))resolve();
   };
   const finish=(immediate=false)=>{
-    if(closed||fading)return;
+    if(closed)return;
+    if(immediate){sourceId++;fading=true;dispose();return}
+    if(fading)return;
     fading=true;sourceId++;clearTimeout(stallTimer);video.pause();
     soundPhase='whiteout';videoSoundPlaying=false;stopSound();
-    if(immediate){dispose();return}
     panel.classList.add('harumanIntroWhiteout');
     // The completed 2.8s video is followed by a 1.5s presentation, never a cutoff.
     scheduleStage(()=>{
@@ -119,6 +124,21 @@
       if(stageNext)scheduleStage(stageNext,stageRemaining);
     }else{watchProgress();play()}
   };
+  const reloadKey='harumalIntroReloadV1';
+  const version=document.currentScript?.src?.match(/[?&]v=(\d+)/)?.[1]||'';
+  const prepareReload=nextVersion=>{
+    const marker={version:String(nextVersion)};
+    try{sessionStorage.setItem(reloadKey,JSON.stringify(marker))}catch(_){
+      try{history.replaceState({...history.state,harumalIntroReload:marker},'')}catch(_){}
+    }
+    return closed?Promise.resolve():new Promise(resolve=>finishWaiters.push(resolve));
+  };
+  window.HARUMAN_INTRO=Object.freeze({finish,prepareReload});
+  // Consume only the deliberate worker-update handoff, never a permanent seen flag.
+  let reloadMarker=null;
+  try{reloadMarker=JSON.parse(sessionStorage.getItem(reloadKey)||'null');sessionStorage.removeItem(reloadKey)}catch(_){}
+  try{if(history.state?.harumalIntroReload){reloadMarker=reloadMarker||history.state.harumalIntroReload;const state={...history.state};delete state.harumalIntroReload;history.replaceState(state,'')}}catch(_){}
+  if(reloadMarker?.version===version&&performance.getEntriesByType?.('navigation')?.[0]?.type==='reload'){dispose();return}
   if(matchMedia('(prefers-reduced-motion: reduce)').matches||navigator.connection?.saveData){dispose();return}
   root.classList.add('haruman-intro-active');
   document.addEventListener('visibilitychange',onVisibility);
@@ -152,7 +172,7 @@
     }
     video.style.opacity='1';
   });
-  video.addEventListener('error',()=>finish(true));
+  video.addEventListener('error',()=>{if(!fading)finish(true)});
   video.addEventListener('ended',()=>finish());
   video.addEventListener('playing',()=>{videoSoundPlaying=true;syncSound()});
   video.addEventListener('pause',()=>{videoSoundPlaying=false;if(soundPhase==='character')stopSound()});
