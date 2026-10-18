@@ -533,14 +533,14 @@ function selectedWordCandidates(value){
  }
  return rows;
 }
-function showVocabCandidates(raw){
- const p=popup();if(!p)return;const rows=selectedWordCandidates(raw);pendingVocab={candidates:rows,raw,context:String(raw).slice(0,10000),type:'word'};
+function showVocabCandidates(raw,context=raw){
+ const p=popup();if(!p)return;const rows=selectedWordCandidates(raw);pendingVocab={candidates:rows,raw,context:String(context||raw).slice(0,10000),type:'word'};
  p.querySelector('.tqVocabTerm').textContent=text('추가할 단어 선택','追加する単語を選択','Choose words to add','选择要添加的单词');
  p.querySelector('.tqVocabInput').closest('label').hidden=true;p.querySelector('.tqVocabType').closest('label').hidden=true;
  p.querySelector('.tqVocabNormalize').textContent=text('사전에서 확인한 형태를 우선 선택했습니다. 미확인 표현은 직접 고쳐 선택하세요.','辞書で確認できた形を選択しました。未確認の表現は編集して選んでください。','Verified forms are selected. Edit and select unverified expressions yourself.','已选中词典确认的词形。未确认的表达请编辑后选择。');
  let list=p.querySelector('.tqVocabCandidates');if(!list){list=document.createElement('div');list.className='tqVocabCandidates';p.querySelector('.tqVocabNormalize').after(list)}list.hidden=false;
  list.innerHTML=rows.map((row,i)=>`<label class="tqVocabCandidate"><input type="checkbox" data-vocab-check="${i}" ${row.verified&&!row.saved?'checked':''} ${row.saved?'disabled':''}><input data-vocab-candidate="${i}" value="${esc(row.term)}" aria-label="${text('저장할 단어','保存する単語','Word to save','要保存的单词')}" ${row.saved?'disabled':''}><small>${row.saved?text('저장됨','保存済み','Saved','已保存'):row.verified?text('확인된 형태','確認済み','Verified','已确认'):text('수정·확인 필요','編集・確認が必要','Review / edit','需要确认或编辑')}</small></label>`).join('')||`<p>${text('추출할 단어가 없습니다.','抽出する単語がありません。','No words found.','没有可提取的单词。')}</p>`;
- p.querySelector('.tqVocabContext').textContent=String(raw);p.classList.add('open');list.querySelector('input:not(:disabled)')?.focus();
+ p.querySelector('.tqVocabContext').textContent=pendingVocab.context;p.classList.add('open');list.querySelector('input:not(:disabled)')?.focus();
 }
 function saveVocabCandidates(){
  const p=popup(),selected=[...p.querySelectorAll('[data-vocab-check]:checked')];if(!selected.length)return toast(text('추가할 단어를 선택하세요.','追加する単語を選んでください。','Select words to add.','请选择要添加的单词。'));
@@ -550,7 +550,7 @@ function saveVocabCandidates(){
  window.MALBIT_VOCAB_SELECTION?.clear();try{window.getSelection?.()?.removeAllRanges()}catch{}if(typeof hideSelection==='function')hideSelection();closeVocabPopup();toast(text(`${count}개 추가했습니다.`,`${count}語追加しました。`,`Added ${count} words.`,`已添加${count}个词。`));
 }
 function showVocabPopup(term,raw,context='',type='word'){
-  if(type==='expression'&&/\s/.test(raw)&&!PHRASES.some(x=>x.term===raw.trim()))return showVocabCandidates(raw);
+  if(type==='expression'&&/\s/.test(raw)&&!PHRASES.some(x=>x.term===raw.trim()))return showVocabCandidates(raw,context);
   const panel=popup();panel?.querySelector('.tqVocabCandidates')?.setAttribute('hidden','');for(const selector of ['.tqVocabInput','.tqVocabType']){const label=panel?.querySelector(selector)?.closest?.('label');if(label)label.hidden=false}
   if(!isSavableTerm(term))return toast(text('완전한 단어나 표현을 눌러 주세요.','完全な単語・表現を長押ししてください。','Long-press a complete word or expression.','请长按完整的单词或表达。'));
   pendingVocab={term,raw,context,type};const p=popup();if(!p)return;
