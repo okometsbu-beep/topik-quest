@@ -45,6 +45,15 @@ jobs:
           if-no-files-found: warn
       - name: Verify saved vocabulary flashcards
         run: HARUMAL_FLASHCARDS_ONLY=1 node scripts/check-travel-mobile.mjs
+      - name: Verify question identity, reports, transcripts and centered results
+        run: node scripts/check-question-experience.mjs
+      - name: Upload question experience evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: question-experience-${{ github.sha }}
+          path: artifacts/question-experience/
+          if-no-files-found: warn
       - name: Upload flashcard mobile evidence
         if: always()
         uses: actions/upload-artifact@v4

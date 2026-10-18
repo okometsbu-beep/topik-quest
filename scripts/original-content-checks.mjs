@@ -27,14 +27,14 @@ export async function verifyOriginalContent({evaluate,tap,shot,setViewport,send,
     await evaluate(`(()=>{const host=document.querySelector('#originalContentQA');if('${kind}'==='listening'){const q=MALBIT_BANK.present('O01-I-L-01');if(HARUMAL_TRANSCRIPTS.markup(q))throw Error('Unsubmitted transcript leaked');host.innerHTML=MALBIT_LEARNING.explanationBlock('listen',q)}else if(['writing','legacy-writing'].includes('${kind}')){const q=MALBIT_BANK.present('${kind}'==='writing'?'O01-II-W-53':'M01-II-W-53');host.innerHTML=MALBIT_LEARNING.questionVisual(q)+MALBIT_LEARNING.writingExplanationBlock(q)}else if('${kind}'==='legacy-notice'){const q=MALBIT_BANK.present('P01-I-R-05');host.innerHTML=MALBIT_LEARNING.questionVisual(q)}else{const q=MALBIT_BANK.present('${kind}'==='legacy-visual'?'M01-I-L-15':'${kind}'==='neutral-visual'?'O05-II-L-01':'O01-I-L-15',[2,0,3,1]);host.innerHTML=q.choices.map((choice,i)=>'<section><b>'+(i+1)+'</b>'+MALBIT_LEARNING.choiceContent(q,choice,i)+'</section>').join('')}host.querySelectorAll('details').forEach(d=>d.open=true);host.querySelectorAll('img').forEach(img=>img.loading='eager');host.scrollTop=0})()`);
     await evaluate(`Promise.all([...document.querySelectorAll('#originalContentQA img')].map(img=>img.decode()))`);await sleep(50);
     if(kind==='listening'){
-     assert.equal(await evaluate(`!!document.querySelector('#originalContentQA .listeningTranscriptBody[lang="${lang}"] mark')`),true);
+     assert.equal(await evaluate(`!!document.querySelector('#originalContentQA ${lang==='ko'?'.listeningRecordedScript':'.listeningTranscriptBody'}[lang="${lang}"] mark')`),true);
      assert.equal(await evaluate(`!!document.querySelector('#originalContentQA [data-transcript-pending]')`),false);
     }
     if(['visual','neutral-visual'].includes(kind)){
      const visible=await evaluate(`(()=>{const host=document.querySelector('#originalContentQA');return{content:host.textContent+' '+[...host.querySelectorAll('[alt],[aria-label],[title]')].map(e=>[e.alt,e.getAttribute('aria-label'),e.title].filter(Boolean).join(' ')).join(' '),images:[...host.querySelectorAll('img')].map(e=>e.getAttribute('src'))}})()`);
      assert.doesNotMatch(visible.content,/(?:장면|그래프)\s*[가나다라]/u,'pre-submit visual names must not disclose stable keys');
      assert.equal(visible.images.length,4);
-     if(kind==='neutral-visual')assert.ok(visible.images.every(src=>src.startsWith('assets/original-neutral/')),'embedded stable labels use reviewed display derivatives');
+     if(kind==='neutral-visual')assert.ok(visible.images.every(src=>src.startsWith('assets/question-polish/original-neutral-')),'embedded stable labels use reviewed display derivatives');
     }
     if(kind==='writing')assert.equal(await evaluate(`!!document.querySelector('#originalContentQA table th[scope="col"]')&&!!document.querySelector('#originalContentQA .tqWritingRubric')`),true);
     if(kind==='legacy-writing')assert.equal(await evaluate(`document.querySelectorAll('#originalContentQA tbody tr').length`),5);

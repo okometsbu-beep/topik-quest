@@ -1,7 +1,7 @@
 {
   "version": 1,
   "sourceSnapshotSha256": "d0b798bd1a3842fd0a4962a1ebc93aae707cd84fc852a98f41a88798a2c21b53",
-  "corpusSha256": "6e5c0e97fdeff3d43fdf19fc2d3a5682e170a89811ca34968c392c0293b6d297",
+  "corpusSha256": "ff080d6c2e3231ec444130cf84b2201ab44f56cf46518a279c4dc91f2860c255",
   "model": "Supertonic-3",
   "modelRevision": "aafc6e32416a594460b32413efc49d7fe4ce6d46",
   "referenceHelperSha256": "b14b1da8a018aa4db6ca8cbb927c32590bfc889b49116ea344c56e8351d94279",
@@ -12,7 +12,7 @@
   "provider": "CPUExecutionProvider",
   "language": "ko",
   "denoisingSteps": 8,
-  "speed": 1.0,
+  "speed": 1,
   "seedBase": 20261015,
   "seedRule": "seedBase + corpus row index",
   "encoding": "ffmpeg loudnorm I=-18:TP=-2:LRA=7; 44100 Hz mono libmp3lame 64 kbps",

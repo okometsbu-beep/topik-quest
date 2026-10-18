@@ -32,11 +32,11 @@ test('V3 uses a separate fail-closed catalog and keeps perceptual QA unclaimed',
  if(c.verified){assert.deepEqual(c,buildCatalog(root,'original-v3'));assert.equal(Object.keys(c.byId).length,30);assert.equal(read('manifest.json').fileCount,67)}else{assert.deepEqual(c.byId,{});assert.deepEqual(c,buildCatalog(root,'original-v3',{allowPending:true}));assert.throws(()=>buildCatalog(root,'original-v3'))}
 });
 
-test('third-batch work does not change either prior public audio catalog or manifest',()=>{
+test('prior catalogs retain exact frozen or documented QA-only public projection hashes',()=>{
  for(const [file,digest]of Object.entries({
   'audio/listening/original-v1/manifest.json':'a8e13178756181c78813bd0b1577e9996640312c61ca1209ac76e6e1477832f9',
   'data/original-listening-audio-v1.js':'81f07ffdeae9075fbc8733bdd7a140090fe49efce2f322e75e410660f82b8ff6',
-  'audio/listening/original-v2/manifest.json':'0c0aa689e5ed5132a3d3ee77a192027ede23994cd01cf710c7a52b68ff5f1884',
-  'data/original-listening-audio-v2.js':'cabc985b9c6bc9213d6646e4fba77bb8cfbf6c8f731d9ebdb6b55932a9223b64'
+  'audio/listening/original-v2/manifest.json':'44fe3bc42417ce41fefb1dbff68616b34940a693ffc2694ae6fa23dc021a0792',
+  'data/original-listening-audio-v2.js':'14d9d68c08b5a36f5ca28ade3064f5e289b9909fdd1b1bf908d7b1a39b09b7d4'
  }))assert.equal(hash(fs.readFileSync(path.join(root,file))),digest,file);
 });

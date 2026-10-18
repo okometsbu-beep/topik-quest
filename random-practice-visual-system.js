@@ -71,6 +71,37 @@ body.tq-random-practice-active .malbitQuestionTranslation p{color:var(--random-i
 body.tq-random-practice-active .malbitRandomExplanation>.tqInlineExplanation,body.tq-random-practice-active .malbitExplanationBody{margin-top:var(--ui-space-2)!important}
 body.tq-random-practice-active .tqInlineExplanation p{color:var(--random-ink)!important;font-size:12px!important;line-height:1.7!important}
 @media(max-width:380px){body.tq-random-practice-active{--ui-page-pad:12px}body.tq-random-practice-active .card{padding:var(--ui-space-3)}body.tq-random-practice-active .randomPracticeTop b{font-size:15px}body.tq-random-practice-active .infinityBar{gap:4px}body.tq-random-practice-active .infinityBar div{padding:8px 2px}body.tq-random-practice-active .stem{font-size:15px}body.tq-random-practice-active .choice{padding:9px}}
+
+body.tq-random-practice-active .listeningPlayer{gap:4px}
+body.tq-random-practice-active .listeningMessage:empty{display:none}
+body.tq-random-practice-active .hqRedundantInstruction{display:none}
+body.tq-random-practice-active .hqIdentity .hqCopyId{background:transparent;border:0;box-shadow:none;text-align:left}
+/* One compact question surface; session statistics live in the result dialog. */
+body.tq-random-practice-active .infinityBar,body.tq-random-practice-active .screen>.hud,body.tq-random-practice-active .screen>.countdown,body.tq-random-practice-active .card>.qmeta{display:none}
+body.tq-random-practice-active .randomPracticeTop,body.tq-random-practice-active .t1RandomTop{margin:0 0 8px;gap:8px}
+body.tq-random-practice-active .randomPracticeTop>button,body.tq-random-practice-active .t1RandomTop>button{border:0;background:none;box-shadow:none}
+body.tq-random-practice-active .randomPracticeTop>div{display:flex;align-items:center;justify-content:space-between;gap:8px}
+body.tq-random-practice-active .randomPracticeTop b{font-size:15px;font-weight:650}
+body.tq-random-practice-active .randomPracticeTop small{font-size:12px;margin:0;white-space:nowrap}
+body.tq-random-practice-active .t1RandomTop .t1hud{display:flex;justify-content:space-between;gap:8px}
+body.tq-random-practice-active .t1RandomTop .t1hud span{min-height:0;border:0;background:none;box-shadow:none;padding:0;font-size:13px}
+body.tq-random-practice-active .t1RandomTop .t1hud span:nth-child(n+3){display:none}
+body.tq-random-practice-active .hqProgress{height:3px;margin:0 0 14px;background:var(--random-border);border-radius:3px;overflow:hidden}
+body.tq-random-practice-active .hqProgress i{display:block;height:100%;background:var(--random-accent)}
+body.tq-random-practice-active .card{padding:0;border:0;background:none;box-shadow:none;overflow:visible;border-radius:0}
+body.tq-random-practice-active .instruction{padding:0;margin:0 0 10px;border:0;background:none;border-radius:0;font-size:12px;line-height:1.45}
+body.tq-random-practice-active .stem{font-size:17px;line-height:1.6;margin-bottom:14px}
+body.tq-random-practice-active .hqIdentity{margin:0 0 10px}
+body.tq-random-practice-active .hqIdentity>span:first-child,body.tq-random-practice-active .card .tqInlineExplanation .hqIdentity{display:none}
+body.tq-random-practice-active .hqCopyId{padding:0;min-height:28px;font-size:11px;border:0;background:none;box-shadow:none;color:var(--random-muted)}
+body.tq-random-practice-active .choice{min-height:52px;padding:10px 12px;box-shadow:none;border-radius:10px;font-size:14px}
+body.tq-random-practice-active .choice .n{background:none;border-radius:0;font-size:12px}
+body.tq-random-practice-active .listeningPlayer{padding:10px 0;margin:8px 0 16px;border:0;border-block:1px solid var(--random-border);background:none;border-radius:0;box-shadow:none}
+body.tq-random-practice-active .listeningPlayerTop{gap:10px}
+body.tq-random-practice-active .listeningToggle{min-height:44px;width:auto;flex:1;padding:8px 14px}
+body.tq-random-practice-active .listeningTime{font-size:11px}
+body.tq-random-practice-active .listeningMessage{font-size:11px;line-height:1.35;margin:4px 0 0}
+body.tq-random-practice-active .hqReport{margin-top:24px}
 `;
 document.head.appendChild(style);
 
@@ -80,6 +111,13 @@ function sync(){
   const random=view==='infinity'||(view==='t1quiz'&&storedSession()?.mode==='random');
   document.body.classList.toggle('tq-random-practice-active',random);
   const screen=document.getElementById('screen');if(screen)screen.classList.toggle('tqRandomPracticeScreen',random);
+  if(random&&screen){
+   for(const instruction of screen.querySelectorAll('.instruction'))instruction.classList.toggle('hqRedundantInstruction',/^(?:다음을 듣고 알맞은 답을 고르십시오[.]?|다음을 읽고 알맞은 답을 고르십시오[.]?)$/.test(instruction.textContent.trim()));
+   const meta=window.HARUMAL_PRACTICE?.getActive?.(),top=screen.querySelector('.randomPracticeTop,.t1RandomTop');
+   if(top&&meta){let bar=screen.querySelector('.hqProgress');if(!bar){bar=document.createElement('div');bar.className='hqProgress';bar.setAttribute('role','progressbar');bar.innerHTML='<i></i>';top.after(bar)}
+    bar.setAttribute('aria-label',({ko:'문제 진행',ja:'問題の進行',en:'Question progress',zh:'题目进度'}[S.lang]||'Question progress'));bar.setAttribute('aria-valuemin','0');bar.setAttribute('aria-valuemax',String(meta.total));bar.setAttribute('aria-valuenow',String(meta.position));bar.firstChild.style.width=Math.min(100,meta.position/meta.total*100)+'%';
+   }
+  }
 }
 if(typeof window.render==='function'){
   const baseRender=window.render;

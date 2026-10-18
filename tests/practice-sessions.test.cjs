@@ -81,7 +81,7 @@ test('legacy full mocks retain listening preference; explicit legacy listening i
 });
 
 test('finishing early blocks stale answers/timeouts and reopens the same result after render',()=>{
- const {c,nodes}=boot();c.HARUMAL_PRACTICE.startRandom(2,'reading');c.finishInfinity();c.selected=1;c.submitInfinity();c.infTimeout();assert.equal(c.S.infinity.count,0);nodes.sheetBody.innerHTML='';c.render();assert.match(nodes.sheetBody.innerHTML,/RANDOM PRACTICE RESULT/);assert.equal(c.S.infinity.practiceSession.area,'reading');
+ const {c,nodes}=boot();c.HARUMAL_RESULTS={show:data=>c.resultData=data};c.HARUMAL_PRACTICE.startRandom(2,'reading');c.finishInfinity();c.selected=1;c.submitInfinity();c.infTimeout();assert.equal(c.S.infinity.count,0);c.resultData=null;c.render();assert.equal(c.resultData.level,2);assert.equal(c.resultData.graded,0);assert.equal(c.S.infinity.practiceSession.area,'reading');
 });
 
 test('completed TOPIK II section/full mock results keep same-area restart and Back after async construction',()=>{

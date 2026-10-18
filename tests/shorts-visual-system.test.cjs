@@ -37,7 +37,7 @@ test('Shorts visual contract keeps readable copy and a fixed compatibility bridg
   assert.match(runtime,/set\.items\[p\.selected\]\?\.explanationI18n\?\.\[S\.lang\]/,'reviewed curated choices should explain the selected distractor');
   assert.match(runtime,/SHORTS_CYCLE\.pick\(p,deck,lv\)/,'runtime must select Shorts with stable semantic-cycle state');
   assert.match(runtime,/shortsReviewBadge/,'intentional repeats must be disclosed as review');
-  assert.match(runtime,/\$\{feedback\}<div class="shortsAction">[\s\S]*\$\{fullReview\}<\/article>/u,'Next action should precede the optional full explanation');
+  assert.match(runtime,/\$\{feedback\}<div class="shortsAction">[\s\S]*\$\{fullReview\}\$\{window\.HARUMAL_QUESTION_TOOLS\?\.footer[\s\S]*<\/article>/u,'Next action should precede the optional full explanation');
   assert.match(growth,/document\.querySelector\('\.shortsWord\.bank'\)/,'bank questions must not propose an unrelated curated vocabulary card');
   assert.match(polish,/deck=window\.HARUMAL_SHORTS_DECK\?\.\(lv\)/,'returning Shorts state must resolve against the same vocabulary-only deck');
 });

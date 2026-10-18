@@ -1,8 +1,8 @@
 {
   "version": 1,
   "status": "technically_verified_listening_review_pending",
-  "sourceSnapshotSha256": "61a67e528b70ec9bcbee5f95d733e474305ba48a40c803200b652fdaec27d5f5",
-  "corpusSha256": "42035747cb4a8c5c700b27b6e107cf1b6a256dcb4418e5251b70dc06fdbb90dc",
+  "sourceSnapshotSha256": "8f135db8b604b64186163e5b8bca9371a755592bc22465e2ed09fd9e8485316a",
+  "corpusSha256": "7dc4b185a9e3198b274bbd7a26d46d26cc76a4e5e931b7d33f8f88aa778768c8",
   "model": "Supertonic-3",
   "modelRevision": "aafc6e32416a594460b32413efc49d7fe4ce6d46",
   "voices": [
@@ -136,7 +136,7 @@
       "rms": 0.103259,
       "integratedLufs": -18.28,
       "truePeakDb": -2.12,
-      "loudnessRangeLu": 1.0,
+      "loudnessRangeLu": 1,
       "charactersPerSecond": 5.946
     },
     {
@@ -216,7 +216,7 @@
       "rms": 0.09525,
       "integratedLufs": -19.43,
       "truePeakDb": -2.55,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.338
     },
     {
@@ -316,7 +316,7 @@
       "rms": 0.108868,
       "integratedLufs": -19.2,
       "truePeakDb": -2.27,
-      "loudnessRangeLu": 2.0,
+      "loudnessRangeLu": 2,
       "charactersPerSecond": 6.276
     },
     {
@@ -456,7 +456,7 @@
       "rms": 0.076075,
       "integratedLufs": -20.51,
       "truePeakDb": -2.3,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 5.812
     },
     {
@@ -476,7 +476,7 @@
       "rms": 0.116453,
       "integratedLufs": -18.42,
       "truePeakDb": -2.38,
-      "loudnessRangeLu": 2.0,
+      "loudnessRangeLu": 2,
       "charactersPerSecond": 6.238
     },
     {
@@ -534,7 +534,7 @@
       "duration": 3.5196,
       "peak": 0.767558,
       "rms": 0.111274,
-      "integratedLufs": -18.0,
+      "integratedLufs": -18,
       "truePeakDb": -2.28,
       "loudnessRangeLu": 0.3,
       "charactersPerSecond": 6.251
@@ -576,7 +576,7 @@
       "rms": 0.103747,
       "integratedLufs": -18.44,
       "truePeakDb": -4.9,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 5.523
     },
     {
@@ -616,7 +616,7 @@
       "rms": 0.109891,
       "integratedLufs": -17.81,
       "truePeakDb": -2.48,
-      "loudnessRangeLu": 1.0,
+      "loudnessRangeLu": 1,
       "charactersPerSecond": 6.288
     },
     {
@@ -776,7 +776,7 @@
       "rms": 0.113952,
       "integratedLufs": -18.92,
       "truePeakDb": -3.11,
-      "loudnessRangeLu": 3.0,
+      "loudnessRangeLu": 3,
       "charactersPerSecond": 6.824
     },
     {
@@ -794,7 +794,7 @@
       "duration": 3.5232,
       "peak": 0.779215,
       "rms": 0.10883,
-      "integratedLufs": -18.0,
+      "integratedLufs": -18,
       "truePeakDb": -2.16,
       "loudnessRangeLu": 0.4,
       "charactersPerSecond": 6.812
@@ -876,7 +876,7 @@
       "rms": 0.109173,
       "integratedLufs": -18.46,
       "truePeakDb": -4.94,
-      "loudnessRangeLu": 0.0,
+      "loudnessRangeLu": 0,
       "charactersPerSecond": 6.169
     },
     {
@@ -976,7 +976,7 @@
       "rms": 0.115484,
       "integratedLufs": -18.99,
       "truePeakDb": -2.33,
-      "loudnessRangeLu": 2.0,
+      "loudnessRangeLu": 2,
       "charactersPerSecond": 6.616
     },
     {
@@ -1316,7 +1316,7 @@
       "rms": 0.111496,
       "integratedLufs": -18.51,
       "truePeakDb": -2.14,
-      "loudnessRangeLu": 2.0,
+      "loudnessRangeLu": 2,
       "charactersPerSecond": 6.853
     },
     {
@@ -1375,7 +1375,7 @@
       "peak": 0.558613,
       "rms": 0.114057,
       "integratedLufs": -18.46,
-      "truePeakDb": -5.0,
+      "truePeakDb": -5,
       "loudnessRangeLu": 1.1,
       "charactersPerSecond": 6.333
     },
@@ -1656,7 +1656,7 @@
       "rms": 0.111242,
       "integratedLufs": -18.77,
       "truePeakDb": -2.07,
-      "loudnessRangeLu": 3.0,
+      "loudnessRangeLu": 3,
       "charactersPerSecond": 7.038
     },
     {
@@ -2016,7 +2016,7 @@
       "rms": 0.105147,
       "integratedLufs": -18.87,
       "truePeakDb": -2.18,
-      "loudnessRangeLu": 2.0,
+      "loudnessRangeLu": 2,
       "charactersPerSecond": 6.374
     },
     {
@@ -2076,7 +2076,7 @@
       "rms": 0.122654,
       "integratedLufs": -18.31,
       "truePeakDb": -1.94,
-      "loudnessRangeLu": 3.0,
+      "loudnessRangeLu": 3,
       "charactersPerSecond": 6.706
     }
   ],
@@ -2086,7 +2086,7 @@
   "unexpectedFiles": [],
   "duplicateAudioHashes": [],
   "durationRateReviewWarnings": [],
-  "generationRecordsSha256": "0421e00ae947c17cf3f51f190e50c4ec84728a7c0006a81d2b79dc76ed65ae00",
+  "generationRecordsSha256": "b01aa4555e2e2c488e21381cecea6805c8050b36757c1ce9fd739ee937983758",
   "packId": "original-v2",
   "newClipCount": 100,
   "reusedClipCount": 0

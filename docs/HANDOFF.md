@@ -1,3 +1,23 @@
+## v172 release candidate
+
+- Publishes the verified v171 complete 2,088-question candidate together with compact random practice, centered accuracy results and four Haruman poses, recording-bound listening transcripts, stable question IDs, Google Forms reporting and three reviewed object redraws.
+- The parent confirmed the isolated anonymous synthetic submission's six values in the private response Sheet. Do not repeat that submission. Drafts remain local-only until the learner submits the external form; the app never claims receipt.
+- No new credentials, paid service, private response data or local QA captures are included. Original media, stable question IDs, grading and learner storage are preserved. Remaining limitations are audible/physical-device review and the existing low-level audio pause.
+- Version bumped once from the local v171 candidate to v172 for cache refresh. Final release CI and Pages verification are recorded by the release task.
+
+## Local v171 question experience candidate
+
+- Connected Google Forms reporting with verified public fields, seven issue choices and preserved legacy drafts. Anonymous prefill and the response Sheet check are complete. See `docs/qa/question-report-google-form.md`.
+- Applied three reviewed object redraws (O12-II-R-05/06/07) through the existing display-derivative catalog. Original SVGs, question text, choices and answers remain unchanged. `content/question-visual-redraws/manifest.json` binds each redraw to its original hash; the generator preserves these three redraws and the other 471 geometry-preserving derivatives. See `docs/qa/question-visual-redraws-local.md`. Local only; no deployment.
+- Added stable source IDs, per-question local issue drafts/copy, recording-bound speaker transcripts, compact random practice, and centered accuracy results with four existing Haruman poses. No collection server is configured; reports explicitly remain on the device.
+- Display-only derivatives refine 474 question SVGs; all original media bytes remain intact. Two measured text overflows are fixed in derivatives. See `docs/qa/question-experience-local.md` for verification boundaries and remaining review.
+- Candidate remains local and unpublished; audible review and the existing 2.06-second pause remain pending.
+
+## 2026-10-16 complete original collection local v171 candidate
+
+- Local integration adds the remaining 420 original questions, 540 four-language coaching records and V10 audio, preserving v170 fixes and existing media. Full source readiness reaches 2088 questions and 24 sets in four locales.
+- Public attribution correction imported with its dependent source/support/V10 chain. Recursive inspection additionally projected 53 QA-only reviewer fields in prior V2/V6 snapshots and rebound dependent audio metadata; scripts, casting and MP3 remain unchanged. All seven local functional browser lanes pass; flashcards retain 202 browser frames with MP4 encoding explicitly omitted because ffmpeg is unavailable. Actual listening, physical devices and remote exact-commit CI remain pending. See `docs/qa/original2088-local-v171.md`. No publication performed.
+
 ## 2026-10-16 v170 release verification repair
 
 - Preserves the verified v169 content, recordings, and source hashes. Partial legacy reading coaching keeps the existing detailed strategy and option analysis in Review and TOPIK I/II practice; the shared authored renderer also rejects incomplete legacy coaching. Complete authored coaching and original/listening feedback retain their existing paths.

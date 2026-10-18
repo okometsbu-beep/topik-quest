@@ -43,7 +43,11 @@ function safe(html,q,label){
 function matchingImages(html,q){
   const sources=[...html.matchAll(/class="tqOptionVisual" src="([^"]+)"/g)].map(match=>match[1]);
   assert.deepEqual(sources,Array.from(q.choices,choice=>catalog.bySource[q.visualOptions.byOption[choice].src].src));
-  for(const [i,choice] of q.choices.entries())assert.ok(html.includes(`alt="Option ${i+1}: ${escape(q.visualOptions.byOption[choice].alt)}"`));
+  for(const [i,choice] of q.choices.entries()){
+    // New approved alt text may end in a stable source label; presentation must omit it.
+    const description=q.visualOptions.byOption[choice].alt.replace(/\s*(?:\uC7A5\uBA74|\uADF8\uB798\uD504)\s*[\uAC00\uB098\uB2E4\uB77C]$/u,'');
+    assert.ok(html.includes(`alt="Option ${i+1}: ${escape(description)}"`),`${q.id} option ${i+1}`);
+  }
 }
 
 test('every approved original visual uses neutral choices in both engines for all 24 orders and four locales',()=>{

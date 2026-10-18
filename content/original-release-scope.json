@@ -1,17 +1,17 @@
 {
   "version": 1,
-  "mode": "approved_subset",
-  "releaseVersion": 170,
+  "mode": "complete",
+  "releaseVersion": 172,
   "targetItems": 2088,
-  "approvedItems": 1668,
-  "fourLanguageItems": 1548,
-  "listeningItems": 730,
-  "sourceSnapshot": "20261015-223354-core1668-locale1548",
+  "approvedItems": 2088,
+  "fourLanguageItems": 2088,
+  "listeningItems": 960,
+  "sourceSnapshot": "20261016-core2088-locale2088-public-attribution-corrected",
   "sourceHashes": {
-    "content/original-exams-v1.json": "eedaa972f3b5d35f6aa10b16c8c6acdec1fff5ed1e551dcd2172ec27dace9396",
-    "content/original-localization-support.json": "1e5bb96b8de34eaeb6adb224bd018f6609c1390e2bd0db397d47463dfde1a595",
-    "content/original-listening-support.json": "15f0d339bab86f4813f106a408cecc3395862d7290b95f40635e90c01bd5e52e",
-    "content/original-listening-locale-support.json": "e9fe5570e131a5c5fd610cde098fb73174bc5762861f541b9825ce1355a4d222"
+    "content/original-exams-v1.json": "14c5760c409f733b29d412d442ed08601307a0ea1b802c2c0650efac127fed6d",
+    "content/original-localization-support.json": "8e9d9c8ef38bbefa95591a70f001c3eacf034b690a549c6460257fddfd8e7485",
+    "content/original-listening-support.json": "0ce88009502aaa88ee076eda6ab1d8dda4ffbab2506ec9a452fdcdf451008703",
+    "content/original-listening-locale-support.json": "e21a949e88d1a99941f1d98ff3b198ed5f1f9c317a6f4901a48d60c4f42830fa"
   },
   "readySets": {
     "ko-1": [
@@ -25,7 +25,8 @@
       8,
       9,
       10,
-      11
+      11,
+      12
     ],
     "ko-2": [
       1,
@@ -35,7 +36,11 @@
       5,
       6,
       7,
-      8
+      8,
+      9,
+      10,
+      11,
+      12
     ],
     "ja-1": [
       1,
@@ -48,7 +53,8 @@
       8,
       9,
       10,
-      11
+      11,
+      12
     ],
     "ja-2": [
       1,
@@ -58,7 +64,11 @@
       5,
       6,
       7,
-      8
+      8,
+      9,
+      10,
+      11,
+      12
     ],
     "en-1": [
       1,
@@ -70,7 +80,9 @@
       7,
       8,
       9,
-      10
+      10,
+      11,
+      12
     ],
     "en-2": [
       1,
@@ -80,7 +92,11 @@
       5,
       6,
       7,
-      8
+      8,
+      9,
+      10,
+      11,
+      12
     ],
     "zh-1": [
       1,
@@ -92,7 +108,9 @@
       7,
       8,
       9,
-      10
+      10,
+      11,
+      12
     ],
     "zh-2": [
       1,
@@ -102,7 +120,11 @@
       5,
       6,
       7,
-      8
+      8,
+      9,
+      10,
+      11,
+      12
     ]
   }
 }

@@ -1,15 +1,29 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const source=JSON.parse(fs.readFileSync('content/original-exams-v1.json','utf8'));
-function boot(lang='ko'){const c={S:{lang},console};c.window=c;vm.createContext(c);vm.runInContext(fs.readFileSync('data/original-support-v1.js','utf8'),c);vm.runInContext(fs.readFileSync('listening-transcripts.js','utf8'),c);return c}
+function boot(lang='ko'){const c={S:{lang},console};c.window=c;vm.createContext(c);vm.runInContext(fs.readFileSync('data/original-support-v1.js','utf8'),c);for(let n=1;n<=10;n++)vm.runInContext(fs.readFileSync(`data/original-listening-audio-v${n}.js`,'utf8'),c);c.MALBIT_ORIGINAL_EXAM_PARTS=[];vm.runInContext(fs.readFileSync('original-listening-audio.js','utf8'),c);const actual=c.HARUMAL_ORIGINAL_AUDIO;c.HARUMAL_ORIGINAL_AUDIO={entry:q=>actual.entry({...q,reviewReady:q.qa?.status==='approved',contentSha256:q.contentSha256||q.qa?.contentSha256})};vm.runInContext(fs.readFileSync('listening-transcripts.js','utf8'),c);return c}
 const question=source.items.find(q=>q.id==='O01-I-L-01');
+
+test('all 960 listening questions reveal reviewed transcripts in each locale only after submission and outside an active mock',()=>{
+ const questions=source.items.filter(q=>q.section==='listening');assert.equal(questions.length,960);
+ for(const lang of ['ko','ja','en','zh']){
+  const c=boot(lang),api=c.HARUMAL_TRANSCRIPTS;
+  for(const q of questions){
+   assert.equal(api.markup(q),'',`${q.id} ${lang}: before submission`);
+   assert.equal(api.markup(q,{submitted:true,examActive:true}),'',`${q.id} ${lang}: active mock`);
+   const html=api.markup(q,{submitted:true});
+   assert.ok(html.includes(`lang="${lang}"`)&&html.includes('<mark>'),`${q.id} ${lang}: reviewed transcript and answer cue`);
+   assert.doesNotMatch(html,/data-transcript-pending|undefined|\[object Object\]/);
+  }
+ }
+});
 test('listening script and answer cues never render before submission or during an active full mock',()=>{
  const c=boot(),api=c.HARUMAL_TRANSCRIPTS;assert.equal(api.markup(question),'');assert.equal(api.markup(question,{submitted:false}),'');assert.equal(api.markup(question,{submitted:true,examActive:true}),'');c.S.real={active:true};assert.equal(api.markup(question,{submitted:true}),'');
 });
 test('submitted transcript follows all four locales and highlights only reviewed exact quotes',()=>{
- for(const [lang,word]of [['ko','창문'],['ja','窓'],['en','window'],['zh','窗户']]){const c=boot(lang),html=c.HARUMAL_TRANSCRIPTS.markup(question,{submitted:true});assert.match(html,new RegExp('lang="'+lang+'"'));assert.match(html,new RegExp(word));assert.match(html,/<mark>/);assert.doesNotMatch(html,/data-transcript-pending|undefined|\[object Object\]/);assert.match(html,/<details class="listeningTranscript"><summary>/)}
+ for(const [lang,word]of [['ko','창문'],['ja','窓'],['en','window'],['zh','窗户']]){const c=boot(lang),html=c.HARUMAL_TRANSCRIPTS.markup(question,{submitted:true});assert.match(html,new RegExp('lang="'+lang+'"'));assert.match(html,new RegExp(word));assert.match(html,/<mark>/);assert.doesNotMatch(html,/data-transcript-pending|undefined|\[object Object\]/);assert.match(html,/<details class="listeningTranscript" open><summary>/)}
 });
 test('stale or missing support uses an honest pending notice, never wrong-language translation or cues',()=>{
- const c=boot('en'),q={...question,script:question.script+' 변경'};const html=c.HARUMAL_TRANSCRIPTS.markup(q,{submitted:true});assert.match(html,/data-transcript-pending/);assert.doesNotMatch(html,/<mark>|lang="ja"/);assert.match(html,/Korean original/);assert.match(html,/변경/);
+ const c=boot('en'),q={...question,script:question.script+' 변경'};const html=c.HARUMAL_TRANSCRIPTS.markup(q,{submitted:true});assert.match(html,/data-transcript-pending/);assert.doesNotMatch(html,/<mark>|lang="ja"/);assert.match(html,/data-transcript-missing/);assert.doesNotMatch(html,/변경/);
 });
 test('transcript and highlight markup escapes all authored text and merges overlapping quotes',()=>{
  const c=boot(),html=c.HARUMAL_TRANSCRIPTS.highlighted('<script>학교</script>',['학교','학교</script>']);assert.doesNotMatch(html,/<script>/);assert.equal((html.match(/<mark>/g)||[]).length,1);assert.match(html,/&lt;script&gt;/);

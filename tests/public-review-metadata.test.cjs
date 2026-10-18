@@ -57,3 +57,26 @@ test('anonymous casting review retains only the exact approved incidental-charac
   assert.equal(item.promptSha256, '0ab8684cc490b42d8cd47a21175fb203e407be119d2fde1cfec2ed633ffa3bb4');
   assert.equal(item.instructionSha256, '77cadef6c90b3025b49b16e6407f2e424df204147936147e8c9af17485227c3d');
 });
+
+
+test('recursive attribution variants and all metadata strings exclude private identities and paths', () => {
+  let identities=0;
+  function inspect(value, location) {
+    if(Array.isArray(value)){value.forEach((v,i)=>inspect(v,location+'/'+i));return;}
+    if(!value||typeof value!=='object')return;
+    for(const [key,entry] of Object.entries(value)){
+      const at=location+'/'+key;
+      if(typeof entry==='string'){
+        assert.doesNotMatch(entry,/(?:[A-Za-z]:[\\/](?:Users|workspace)[\\/]|\/(?:workspace|agent_notes|user_notes|home|Users|root)\/|codex:\/\/)/i,at);
+        if(/(?:^author$|replacementAuthor$|reviewer$|identity$|verifiedBy$)/i.test(key)){
+          identities++;assert.notEqual(entry,'root',at);
+          assert.doesNotMatch(entry,/^[a-z][a-z0-9]*(?:_[a-z0-9]+)+$/i,at);
+        }
+      }else inspect(entry,at);
+    }
+  }
+  for(const folder of ['content','audio'])for(const entry of fs.readdirSync(path.join(root,folder),{recursive:true,withFileTypes:true})){
+    if(entry.isFile()&&entry.name.endsWith('.json')){const file=path.join(entry.parentPath,entry.name);inspect(JSON.parse(fs.readFileSync(file,'utf8')),path.relative(root,file));}
+  }
+  assert.ok(identities>8000);
+});

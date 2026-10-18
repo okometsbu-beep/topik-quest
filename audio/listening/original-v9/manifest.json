@@ -2,7 +2,7 @@
   "version": 1,
   "status": "technically_verified_listening_review_pending",
   "sourceSnapshotSha256": "0d7a0e7087dc59b7eb5b862c6863c4e0128246772eb095236d1c5542f21c49bd",
-  "corpusSha256": "26362dcaf372b77793067e18a39b79ac93feeb1952da38f9e76eaa6abf74f5bd",
+  "corpusSha256": "eae3ef576fa6b834aa8dc47982c041775b6cb74f44e3fd3237b9aec05ee7b9ec",
   "model": "Supertonic-3",
   "modelRevision": "aafc6e32416a594460b32413efc49d7fe4ce6d46",
   "voices": [
@@ -3095,7 +3095,7 @@
   "unexpectedFiles": [],
   "duplicateAudioHashes": [],
   "durationRateReviewWarnings": [],
-  "generationRecordsSha256": "15abb56500d9581ae9176dd68db9d573ceccdd235a6a06b69bd2019cb8d1c943",
+  "generationRecordsSha256": "18b0ea15f01bd7fe30d8437a76c2e9a8723f3c364add13eec838b7e05565cacd",
   "packId": "original-v9",
   "newClipCount": 149,
   "reusedClipCount": 0
