@@ -82,7 +82,7 @@ body.tq-random-practice-active .randomPracticeTop,body.tq-random-practice-active
 body.tq-random-practice-active .randomPracticeTop>button,body.tq-random-practice-active .t1RandomTop>button{border:0;background:none;box-shadow:none}
 body.tq-random-practice-active .randomPracticeTop>div{display:flex;align-items:center;justify-content:space-between;gap:8px}
 body.tq-random-practice-active .randomPracticeTop b{font-size:15px;font-weight:650}
-body.tq-random-practice-active .randomPracticeTop small{font-size:12px;margin:0;white-space:nowrap}
+body.tq-random-practice-active .randomPracticeTop small{font-size:12px;margin:0;white-space:normal;overflow-wrap:anywhere;text-align:right}
 body.tq-random-practice-active .t1RandomTop .t1hud{display:flex;justify-content:space-between;gap:8px}
 body.tq-random-practice-active .t1RandomTop .t1hud span{min-height:0;border:0;background:none;box-shadow:none;padding:0;font-size:13px}
 body.tq-random-practice-active .t1RandomTop .t1hud span:nth-child(n+3){display:none}

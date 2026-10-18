@@ -36,6 +36,13 @@ try{
   fs.writeFileSync(path.join(out,'table-small-screen-audit.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));
  }else if(before){await run('finishInfinity()');await shot('result-before-390');console.log('Baseline screenshots captured from exact pre-edit UI files.');}
  else{
+  // Restored legacy sessions retain the longer header when area-session metadata is absent.
+  // It must wrap instead of widening the mobile layout viewport.
+  for(const lang of ['ko','ja','en','zh'])for(const theme of ['light','dark']){
+   await viewport(320,700);await run(`S.lang='${lang}';S.view='infinity';S.infinity={active:true,examLevel:2,count:0,graded:0,correct:0,writing:0,totalSec:0,targetSec:0,last:null,feedback:null,seenIds:[],current:{type:'read',id:956,bankId:'P01-II-R-06',choiceOrder:[0,1,2,3]}};render();malbitSetTheme('${theme}');stopTimer()`);await sleep(150);
+   const fit=await run(`(()=>{const r=document.querySelector('#screen .card').getBoundingClientRect();return{width:innerWidth,scroll:document.documentElement.scrollWidth,center:Math.abs(r.left-(innerWidth-r.right))}})()`);assert.ok(fit.width<=320&&fit.scroll<=320&&fit.center<=2,JSON.stringify({lang,theme,...fit}));
+  }
+  await viewport(390);await run(setup);
   const id=await run(`document.querySelector('#screen>.card>.hqIdentity').dataset.questionId`);assert.equal(id,'O12-II-L-22');
   const layout=await run(`(()=>{const choice=document.querySelector('.choice').getBoundingClientRect();return{firstChoiceY:choice.y,overflow:document.documentElement.scrollWidth>innerWidth,visibleStats:[...document.querySelectorAll('.infinityBar,.screen>.hud,.qmeta')].filter(e=>e.getBoundingClientRect().height>0).length}})()`);assert.equal(layout.overflow,false);assert.equal(layout.visibleStats,0);assert.ok(layout.firstChoiceY<510,JSON.stringify(layout));
   await run(`(()=>{const r=document.querySelector('.hqReport');r.open=true;const t=r.querySelector('textarea');t.value='QA draft: audio check';t.dispatchEvent(new Event('input',{bubbles:true}));r.scrollIntoView()})()`);assert.match(await run(`document.querySelector('.hqReportStatus').textContent`),/전송되지/);await shot('report-saved-390');
