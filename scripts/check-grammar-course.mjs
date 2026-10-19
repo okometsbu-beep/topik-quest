@@ -63,6 +63,10 @@ try{
   await solve();await run(`const originalNow=Date.now;Date.now=()=>originalNow()+25*60*60*1000;malbitOpenGrammar()`);for(let i=0;i<5;i++){if(await run(`HARUMAL_GRAMMAR_ENGINE.progress(HARUMAL_GRAMMAR.getState(),'${lessonId}',HARUMAL_GRAMMAR.course,Date.now()).retained`))break;await run(`malbitOpenGrammar();document.querySelector('[data-gc-action=review]').click()`);await solve()}
   assert.equal(await run(`HARUMAL_GRAMMAR_ENGINE.progress(HARUMAL_GRAMMAR.getState(),'${lessonId}',HARUMAL_GRAMMAR.course,Date.now()).status`),'retained');await shot('delayed-recall-summary');
  }
+ const rewardBefore=await run('HARUMAL_REWARDS.getState().xp');
+ await run(`malbitOpenGrammar();document.querySelector('[data-gc-action=sound]').click();document.querySelector('[data-gc-action=lesson][data-id=extended-past-experience]').click();document.querySelector('[data-gc-action=start]').click()`);assert.equal(await run('S.grammarCourseSound'),false);await solve();
+ const rewardAfter=await run('HARUMAL_REWARDS.getState().xp');assert.equal(rewardAfter-rewardBefore,35,'first independent construction and course completion earn bounded milestones');await shot('skill-and-reward-summary');
+ await run(`document.querySelector('[data-gc-action=restart]').click()`);await solve();assert.equal(await run('HARUMAL_REWARDS.getState().xp'),rewardAfter,'restarting the same point cannot farm XP');
  assert.equal(await run(`localStorage.getItem('malbitBeginnerV1')`),beforeLegacy);assert.equal(errors.length,0);
  console.log(JSON.stringify({layouts:rows,legacyPreserved:true,reloadDraft:true,retryHelp:true,optionalHandwriting:true,delayedReview:!!lessonId,errors}));
 }finally{socket?.close();chrome.kill();server?.close()}
