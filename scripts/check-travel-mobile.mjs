@@ -847,7 +847,7 @@ try{
   await evaluate(`(()=>{localStorage.setItem('malbitBeginnerV1',JSON.stringify({known:['v:ㅏ'],legacyScore:7}));S.lang='ja';S.view='beginner';save();render()})()`);await sleep(220);
   assert.ok(await evaluate(`!!document.querySelector('.bgLaunch')`),'beginner grammar launch card missing');
   assert.equal(await evaluate(`MALBIT_BEGINNER_GRAMMAR_INTERNALS.lessonCount`),64);
-  await tap('.bgLaunch',0,180);
+  await tap('.bgLaunch',0,180);await tap('[data-gc-action=handwritingCatalog]',0,120);
   assert.equal(await evaluate(`document.querySelectorAll('.bgChapterCard').length`),9,'grammar catalog must show nine chapters');
   assert.equal(await evaluate(`document.querySelectorAll('.bgLessonRow').length`),5,'sentence chapter must show five lessons');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);
@@ -874,7 +874,7 @@ try{
   await evaluate(`setView('home')`);await sleep(100);
   await send('Page.reload',{ignoreCache:true});await ready();
   for(let i=0;i<100&&!(await evaluate(`typeof tqSetLearningPath==='function'`));i++)await sleep(100);
-  await evaluate(`tqSetLearningPath('beginner');setView('beginner')`);await sleep(120);await tap('.bgLaunch',0,120);await tap('.bgResume',0,120);
+  await evaluate(`tqSetLearningPath('beginner');setView('beginner')`);await sleep(120);await tap('.bgLaunch',0,120);await tap('[data-gc-action=handwritingCatalog]',0,120);await tap('.bgResume',0,120);
   assert.equal(await evaluate(`document.querySelector('#malbitGrammarAnswer')?.value`),'저는 한국어','Japanese beginner grammar draft must survive exit, reload, and course re-entry');
   for(const theme of ['light','dark']){await evaluate(`malbitSetTheme('${theme}')`);await sleep(80);for(const width of [320,375,390,430]){
     await setViewport(width,width===320?700:844);await assertBeginnerGrammarFits(`Beginner grammar draft re-entry ${theme} ${width}px`,theme);
@@ -890,7 +890,7 @@ try{
   await evaluate(`setView('home')`);await sleep(100);
   await send('Page.reload',{ignoreCache:true});await ready();
   for(let i=0;i<100&&!(await evaluate(`typeof tqSetLearningPath==='function'`));i++)await sleep(100);
-  await evaluate(`tqSetLearningPath('beginner');setView('beginner')`);await sleep(120);await tap('.bgLaunch',0,120);await tap('.bgResume',0,120);
+  await evaluate(`tqSetLearningPath('beginner');setView('beginner')`);await sleep(120);await tap('.bgLaunch',0,120);await tap('[data-gc-action=handwritingCatalog]',0,120);await tap('.bgResume',0,120);
   const restoredFirstGrammarUnit=await evaluate(`(()=>{const value=JSON.parse(localStorage.getItem('malbitBeginnerV1'));return{units:value.grammarV1.writingUnits['sentence-order'],count:value.grammarV1.writingCount['sentence-order'],done:value.grammarV1.writingDone['sentence-order'],visibleCount:document.querySelector('.bgWriting header>span')?.textContent,current:document.querySelector('.bgCurrent b')?.textContent,position:document.querySelector('.bgCurrent small')?.textContent,firstDone:document.querySelectorAll('.bgUnitStrip button')[0]?.classList.contains('done'),secondActive:document.querySelectorAll('.bgUnitStrip button')[1]?.classList.contains('on'),known:value.known,legacyScore:value.legacyScore}})()`);
   assert.deepEqual(restoredFirstGrammarUnit,{units:[0],count:1,visibleCount:'1/8',current:'국',position:'2/8',firstDone:true,secondActive:true,known:['v:ㅏ'],legacyScore:7},'completed handwriting units and the next position must survive exit, reload, and course re-entry');
   for(const theme of ['light','dark']){await evaluate(`malbitSetTheme('${theme}')`);await sleep(80);for(const width of [320,375,390,430]){
@@ -931,7 +931,7 @@ try{
   await evaluate(`setView('home')`);await sleep(100);
   await send('Page.reload',{ignoreCache:true});await ready();
   for(let i=0;i<100&&!(await evaluate(`typeof tqSetLearningPath==='function'`));i++)await sleep(100);
-  await evaluate(`tqSetLearningPath('beginner');setView('beginner')`);await sleep(120);await tap('.bgLaunch',0,120);
+  await evaluate(`tqSetLearningPath('beginner');setView('beginner')`);await sleep(120);await tap('.bgLaunch',0,120);await tap('[data-gc-action=handwritingCatalog]',0,120);
   assert.equal(await evaluate(`document.querySelector('.bgResume b')?.textContent`),'文脈による主語・目的語の省略','reload must preserve the next grammar destination');
   await tap('.bgResume',0,120);
   assert.equal(await evaluate(`document.querySelector('.bgHeader h1')?.textContent`),'文脈による主語・目的語の省略','the restored next-learning CTA must not repeat the completed first item');

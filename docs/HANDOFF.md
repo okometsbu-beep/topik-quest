@@ -1,3 +1,15 @@
+## v175 combined grammar and recovery candidate
+
+- Combines the independently verified grammar course (PR #245, f2f79a0, 838 tests and full browser CI passed) with bootstrap recovery (PR #244, 74835fe, 783 tests and full browser CI passed). Combined exact-commit CI must pass before release. Deployment remains on hold.
+- 208 actual grammar targets, preserving the original 64 IDs and progress; 1,188 activities include 208 reviewed full-sentence constructions and 208 visible-model assemblies. Four-language guidance, optional handwriting, durable drafts and delayed full-sentence retrieval are integrated. See `GRAMMAR_COURSE.md` and `GRAMMAR_CONTENT_REVIEW.md`.
+- Haruman feedback and bounded rewards distinguish guided practice, independent construction and later retrieval. No repeated-lesson XP farming, imported-history rewards, new paid services or claim of complete Korean grammar coverage.
+- v175 keeps the bounded loader retries and visible-viewport Reload recovery from PR #244. No question payload, answer key, audio or report endpoint changes.
+
+## v174 interrupted bootstrap recovery candidate
+
+- Definite script network failures receive two bounded retries in the existing execution order; ambiguous timeouts are not retried in the same document. Failed boot has a persistent, truthful Reload notice instead of claiming success. Existing records remain untouched.
+- Adds controlled dependency-failure and M03 locale regression coverage. Publication awaits explicit approval and exact-commit CI. See `docs/qa/bootstrap-recovery-v174.md` for scope and verification limits.
+
 ## v173 question experience release candidate
 
 - User-approved release on `agent/unify-exam-intro`, based on main `037624a`; version bumped once from v172 to v173. PR CI, merge and live Pages checks gate publication.

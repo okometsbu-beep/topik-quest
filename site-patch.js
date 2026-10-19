@@ -1,8 +1,8 @@
-// MALBIT bootstrap v173
+// MALBIT bootstrap v175
 // Load the shared core, reviewed data, TOPIK I engine, then learning interactions.
 (function(){
   'use strict';
-  const VERSION='173';
+  const VERSION='175';
   const RUNTIME_FILES=Object.freeze([
     'writing-answers.js',
     'site-patch-core.js',
@@ -96,7 +96,19 @@
     'growth-learning.js',
     'growth-learning-entrypoints.js',
     'practice-sessions.js',
-    'learning-hub.js'
+    'learning-hub.js',
+    'data/grammar-course-foundations.js',
+    'data/grammar-course-events.js',
+    'data/grammar-course-perspective.js',
+    'data/grammar-course-formal.js',
+    'data/grammar-course-discourse.js',
+    'data/grammar-course-legacy-core.js',
+    'data/grammar-course-legacy-functions.js',
+    'data/grammar-course-legacy-morphology.js',
+    'data/grammar-course.js',
+    'grammar-course-engine.js',
+    'grammar-course-feedback.js',
+    'grammar-course.js'
   ]);
   const versioned=src=>src+(src.includes('?')?'&':'?')+'v='+VERSION;
   const finishBoot=reason=>{
@@ -124,19 +136,25 @@
       if(settled)return;
       settled=true;
       clearTimeout(timeout);
+      s.onload=null;s.onerror=null;
+      if(!ok)s.remove();
       ok?resolve():reject(error);
     };
     s.src=versioned(src);
     s.async=false;
     s.onload=()=>settle(true);
-    s.onerror=()=>settle(false,new Error('Failed to load '+src));
+    s.onerror=()=>settle(false,Object.assign(new Error('Failed to load '+src),{retryable:true}));
     const timeout=setTimeout(()=>{
       s.remove();
       settle(false,new Error('Timed out loading '+src));
     },15000);
     document.body.appendChild(s);
   });
-  const loadSeries=async files=>{for(const file of files)await load(file)};
+  // Retry only definite network failures. A timed-out script could still execute;
+  // restarting that script in this document risks installing its wrappers twice.
+  const loadSeries=async files=>{for(const file of files){for(let attempt=0;;attempt++){
+    try{await load(file);break}catch(error){if(!error.retryable||attempt>=2)throw error;await new Promise(resolve=>setTimeout(resolve,250*(attempt+1)))}
+  }}};
   window.__MALBIT_RUNTIME__=Object.freeze({version:VERSION,files:RUNTIME_FILES});
   preloadImage('assets/art/travel/rpg/traveler-blue-4dir-v1.png');
   preloadImage('assets/art/travel/rpg/travel-stamina-game-over-v1.webp');
