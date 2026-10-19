@@ -19,9 +19,9 @@ test('ambiguous script timeouts never retry in the same document',async()=>{
  const b=boot({},'practice-sessions.js');await new Promise(r=>setImmediate(r));for(const fn of b.timers.values())fn();await flush();
  assert.equal(b.attempts.filter(x=>x==='practice-sessions.js').length,1);assert.deepEqual(b.finished,['dependency-error']);
 });
-function shell(){
+function shell(viewport){
  const nodes=new Map(),timers=new Map();let reloads=0,id=0;
- const c={document:{documentElement:{classList:{remove(){}}},getElementById:key=>nodes.get(key),createElement:()=>({children:[],setAttribute(){},style:{},appendChild(n){this.children.push(n)},remove(){nodes.delete(this.id)}}),body:{appendChild(n){if(n.id)nodes.set(n.id,n)}}},location:{protocol:'https:',reload(){reloads++}},navigator:{},sessionStorage:{getItem:()=>null},setTimeout(fn,ms){timers.set(++id,{fn,ms});return id},clearTimeout(k){timers.delete(k)},ml:ko=>ko,render(){},HARUMAN_INTRO:{finish(){}},console};c.window=c;
+ const c={document:{documentElement:{classList:{remove(){}}},getElementById:key=>nodes.get(key),createElement:()=>({children:[],setAttribute(){},style:{},appendChild(n){this.children.push(n)},remove(){nodes.delete(this.id)}}),body:{appendChild(n){if(n.id)nodes.set(n.id,n)}}},location:{protocol:'https:',reload(){reloads++}},navigator:{},sessionStorage:{getItem:()=>null},setTimeout(fn,ms){timers.set(++id,{fn,ms});return id},clearTimeout(k){timers.delete(k)},ml:ko=>ko,render(){},HARUMAN_INTRO:{finish(){}},console};c.window=c;if(viewport)c.visualViewport=viewport;
  const html=fs.readFileSync('index.html','utf8'),start=html.indexOf('(function(){'),end=html.indexOf('})();',start)+5;vm.runInNewContext(html.slice(start,end),c);return{c,nodes,timers,reloads:()=>reloads};
 }
 test('failed boot offers persistent honest recovery and reload without clearing storage',()=>{
@@ -31,3 +31,11 @@ test('late successful boot removes recovery notice',()=>{const b=shell();b.c.__m
 
 test('recovery notice is constrained to the mobile viewport without intrinsic width expansion',()=>{const b=shell();b.c.__malbitBoot.finish('dependency-error');const css=b.nodes.get('malbitBootRecovery').style.cssText;assert.match(css,/width:calc\(100vw - 32px\)/);assert.doesNotMatch(css,/width:max-content/)});
 test('browser recovery geometry expression parses before browser evaluation',()=>{const source=fs.readFileSync('scripts/check-bootstrap-recovery.mjs','utf8');const expression=source.match(/const recoveryGeometry=await run\(`(.*?)`\)/)[1];assert.doesNotThrow(()=>new vm.Script(expression))});
+
+test('recovery follows the visual viewport and removes listeners after success',()=>{
+ const listeners=new Map(),viewport={width:390,height:844,offsetLeft:0,offsetTop:0,addEventListener:(name,fn)=>listeners.set(name,fn),removeEventListener:name=>listeners.delete(name)};
+ const b=shell(viewport);b.c.__malbitBoot.finish('dependency-error');const css=b.nodes.get('malbitBootRecovery').style;
+ assert.equal(css.width,'358px');assert.equal(css.left,'195px');assert.equal(css.top,'756px');assert.equal(css.bottom,'auto');
+ viewport.width=320;viewport.height=640;viewport.offsetTop=30;listeners.get('resize')();assert.equal(css.width,'288px');assert.equal(css.top,'582px');
+ b.c.__malbitBoot.finish('ready');assert.equal(listeners.size,0);
+});
