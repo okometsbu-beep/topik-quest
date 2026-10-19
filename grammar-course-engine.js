@@ -23,7 +23,7 @@ function normalizeText(v){return typeof v==='string'?v.normalize('NFC').trim().r
 function activityType(q){return q?.type||q?.kind}
 function activitiesFor(lesson,mode='learn'){
  if(!Array.isArray(lesson?.activities))return[];
- return lesson.activities.filter(q=>mode==='review'?q.phase==='review':q.phase!=='review');
+ return lesson.activities.filter(q=>mode==='review'?(q.phase==='review'||q.role==='construction'):q.phase!=='review');
 }
 function validActivity(q){
  if(!object(q)||!safeId(q.id)||q.phase!=null&&!['practice','transfer','review'].includes(q.phase))return false;

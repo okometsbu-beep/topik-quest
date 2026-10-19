@@ -78,6 +78,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_CORE = [
           "en": "저는 차를 마셔요 — 저는 marks the subject-side topic; 차를 is the object; 마셔요 is the final predicate.",
           "zh": "저는 차를 마셔요 — 저는是主语侧的话题，차를是宾语，마셔요是句末谓语。"
         }
+      },
+      {
+        "id": "sentence-order-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "처음 만난 사람에게 자신의 아침 식사 습관을 기본 어순으로 소개합니다.",
+        "contextMeaning": {
+          "ko": "처음 만난 사람에게 자신의 아침 식사 습관을 기본 어순으로 소개합니다.",
+          "ja": "初対面の人に朝食の習慣を基本語順で紹介します。",
+          "en": "Introduce your breakfast habit to someone new using basic word order.",
+          "zh": "用基本语序向初次见面的人介绍早餐习惯。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: 주어–목적어–서술어, 해요체\n제시어: 저는 / 아침에 / 과일을 / 먹다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：主語–目的語–述語、ヘヨ体\n語句：저는 / 아침에 / 과일을 / 먹다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: subject–object–predicate, polite 해요 style\nCues: 저는 / 아침에 / 과일을 / 먹다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：主语–宾语–谓语，해요体\n提示词：저는 / 아침에 / 과일을 / 먹다"
+        },
+        "accepted": [
+          "저는 아침에 과일을 먹어요"
+        ],
+        "explanation": {
+          "ko": "저는 아침에 과일을 먹어요\n형태를 만드는 과정: 먹다 → 먹- + -어요; 서술어는 마지막",
+          "ja": "저는 아침에 과일을 먹어요\n形の作り方：먹다 → 먹- + -어요; 述語は最後",
+          "en": "저는 아침에 과일을 먹어요\nFormation: 먹다 → 먹- + -어요; predicate last",
+          "zh": "저는 아침에 과일을 먹어요\n变形过程：먹다 → 먹- + -어요; 谓语在最后"
+        }
       }
     ]
   },
@@ -158,6 +186,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_CORE = [
           "ja": "사과를 먹어요 — 主語저는だけ除き、사과를と먹어요は残します。",
           "en": "사과를 먹어요 — Remove only 저는; keep 사과를 and 먹어요.",
           "zh": "사과를 먹어요 — 只去掉저는，保留사과를和먹어요。"
+        }
+      },
+      {
+        "id": "sentence-omission-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "상대가 나에게 아침으로 무엇을 먹는지 묻습니다. 내가 먹는다는 것은 분명하므로 주어를 덧붙이지 않고 답합니다.",
+        "contextMeaning": {
+          "ko": "상대가 나에게 아침으로 무엇을 먹는지 묻습니다. 내가 먹는다는 것은 분명하므로 주어를 덧붙이지 않고 답합니다.",
+          "ja": "相手が自分の朝食を尋ねます。自分の話だと明らかなので主語を加えず答えます。",
+          "en": "Someone asks what you eat for breakfast. The subject is clearly you, so answer without adding it.",
+          "zh": "对方问你的早餐，明确是在说自己，因此不加主语回答。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: 주어 생략, 을/를 사용, 해요체\n제시어: 빵 / 먹다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：主語を省略、을/를を使用、ヘヨ体\n語句：빵 / 먹다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: omit the subject, use 을/를, polite 해요 style\nCues: 빵 / 먹다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：省略主语，使用을/를，해요体\n提示词：빵 / 먹다"
+        },
+        "accepted": [
+          "빵을 먹어요"
+        ],
+        "explanation": {
+          "ko": "빵을 먹어요\n형태를 만드는 과정: 빵 + 을; 먹다 → 먹어요; 주어는 문맥으로 생략",
+          "ja": "빵을 먹어요\n形の作り方：빵 + 을; 먹다 → 먹어요; 主語は文脈から省略",
+          "en": "빵을 먹어요\nFormation: 빵 + 을; 먹다 → 먹어요; subject omitted from context",
+          "zh": "빵을 먹어요\n变形过程：빵 + 을; 먹다 → 먹어요; 根据语境省略主语"
         }
       }
     ]
@@ -240,6 +296,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_CORE = [
           "en": "친구예요 — 친구 ends in a vowel: 친구예요, not 친구이예요.",
           "zh": "친구예요 — 친구以元音结尾，正确形式为친구예요，不是친구이예요。"
         }
+      },
+      {
+        "id": "copula-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "가족사진에서 한 사람을 가리키며 그 사람이 자신의 동생임을 소개합니다.",
+        "contextMeaning": {
+          "ko": "가족사진에서 한 사람을 가리키며 그 사람이 자신의 동생임을 소개합니다.",
+          "ja": "家族写真の一人を指し、自分の弟・妹だと紹介します。",
+          "en": "Point to someone in a family photo and introduce them as your younger sibling.",
+          "zh": "指着家庭照片中的一个人，介绍是自己的弟弟或妹妹。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: 이에요/예요\n제시어: 이 사람은 / 제 동생",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：이에요/예요\n語句：이 사람은 / 제 동생",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: 이에요/예요\nCues: 이 사람은 / 제 동생",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：이에요/예요\n提示词：이 사람은 / 제 동생"
+        },
+        "accepted": [
+          "이 사람은 제 동생이에요"
+        ],
+        "explanation": {
+          "ko": "이 사람은 제 동생이에요\n형태를 만드는 과정: 동생 + 이에요 (받침 뒤)",
+          "ja": "이 사람은 제 동생이에요\n形の作り方：동생 + 이에요 (パッチムの後)",
+          "en": "이 사람은 제 동생이에요\nFormation: 동생 + 이에요 (after a final consonant)",
+          "zh": "이 사람은 제 동생이에요\n变形过程：동생 + 이에요 (收音后)"
+        }
       }
     ]
   },
@@ -320,6 +404,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_CORE = [
           "ja": "가수가 아니에요 — 가수は母音で終わるので가を付けて아니에요を使います。",
           "en": "가수가 아니에요 — 가수 ends in a vowel, so add 가 and 아니에요.",
           "zh": "가수가 아니에요 — 가수以元音结尾，接가再加아니에요。"
+        }
+      },
+      {
+        "id": "not-copula-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "상대가 사무실을 교실로 착각했습니다. 이곳이 교실이라는 말을 부정합니다.",
+        "contextMeaning": {
+          "ko": "상대가 사무실을 교실로 착각했습니다. 이곳이 교실이라는 말을 부정합니다.",
+          "ja": "相手が事務所を教室と勘違いしたので、その認識を否定します。",
+          "en": "Someone mistakes the office for a classroom. Deny that this is a classroom.",
+          "zh": "对方误把办公室当教室，请否定这里是教室。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: 이/가 아니에요\n제시어: 여기는 / 교실 / 아니다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：이/가 아니에요\n語句：여기는 / 교실 / 아니다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: 이/가 아니에요\nCues: 여기는 / 교실 / 아니다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：이/가 아니에요\n提示词：여기는 / 교실 / 아니다"
+        },
+        "accepted": [
+          "여기는 교실이 아니에요"
+        ],
+        "explanation": {
+          "ko": "여기는 교실이 아니에요\n형태를 만드는 과정: 교실 + 이; 아니다 → 아니에요",
+          "ja": "여기는 교실이 아니에요\n形の作り方：교실 + 이; 아니다 → 아니에요",
+          "en": "여기는 교실이 아니에요\nFormation: 교실 + 이; 아니다 → 아니에요",
+          "zh": "여기는 교실이 아니에요\n变形过程：교실 + 이; 아니다 → 아니에요"
         }
       }
     ]
@@ -402,6 +514,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_CORE = [
           "en": "어디 — 어디 asks location; 에 is already supplied in the sentence.",
           "zh": "어디 — 位置用어디，句中已经有에。"
         }
+      },
+      {
+        "id": "question-words-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "공항에 가는 방법을 모릅니다. 이유나 장소가 아니라 이동 방법을 질문합니다.",
+        "contextMeaning": {
+          "ko": "공항에 가는 방법을 모릅니다. 이유나 장소가 아니라 이동 방법을 질문합니다.",
+          "ja": "空港への行き方が分かりません。理由や場所ではなく方法を尋ねます。",
+          "en": "You do not know how to reach the airport. Ask about the method, not the reason or place.",
+          "zh": "不知道如何去机场，请问方法而非原因或地点。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: 해요체 질문\n제시어: 공항에 / 어떻게 / 가다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：ヘヨ体の質問\n語句：공항에 / 어떻게 / 가다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: question in polite 해요 style\nCues: 공항에 / 어떻게 / 가다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：해요体问句\n提示词：공항에 / 어떻게 / 가다"
+        },
+        "accepted": [
+          "공항에 어떻게 가요?"
+        ],
+        "explanation": {
+          "ko": "공항에 어떻게 가요?\n형태를 만드는 과정: 가다 → 가요; 어떻게는 방법 질문",
+          "ja": "공항에 어떻게 가요?\n形の作り方：가다 → 가요; 어떻게は方法の質問",
+          "en": "공항에 어떻게 가요?\nFormation: 가다 → 가요; 어떻게 asks how",
+          "zh": "공항에 어떻게 가요?\n变形过程：가다 → 가요; 어떻게询问方法"
+        }
       }
     ]
   },
@@ -482,6 +622,35 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_CORE = [
           "ja": "오늘은 — 오늘にはㄹパッチムがあるので은を付けます。",
           "en": "오늘은 — 오늘 ends in ㄹ, so attach 은.",
           "zh": "오늘은 — 오늘有ㄹ收音，因此接은。"
+        }
+      },
+      {
+        "id": "topic-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "월요일과 화요일의 일정을 대조합니다. 앞에는 바쁨, 뒤에는 한가함을 말합니다.",
+        "contextMeaning": {
+          "ko": "월요일과 화요일의 일정을 대조합니다. 앞에는 바쁨, 뒤에는 한가함을 말합니다.",
+          "ja": "月曜と火曜の予定を対比し、前者は忙しく後者は暇だと述べます。",
+          "en": "Contrast Monday and Tuesday: busy on the former, free on the latter.",
+          "zh": "比较周一与周二的安排：前者忙，后者有空。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: 은/는 대조\n제시어: 월요일 / 바쁘지만 / 화요일 / 한가해요",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：은/는で対比\n語句：월요일 / 바쁘지만 / 화요일 / 한가해요",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: contrast with 은/는\nCues: 월요일 / 바쁘지만 / 화요일 / 한가해요",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：用은/는对比\n提示词：월요일 / 바쁘지만 / 화요일 / 한가해요"
+        },
+        "accepted": [
+          "월요일은 바쁘지만 화요일은 한가해요",
+          "월요일은 바쁘지만, 화요일은 한가해요"
+        ],
+        "explanation": {
+          "ko": "월요일은 바쁘지만 화요일은 한가해요\n형태를 만드는 과정: 월요일 + 은; 화요일 + 은 (받침 뒤)",
+          "ja": "월요일은 바쁘지만 화요일은 한가해요\n形の作り方：월요일 + 은; 화요일 + 은 (パッチムの後)",
+          "en": "월요일은 바쁘지만 화요일은 한가해요\nFormation: 월요일 + 은; 화요일 + 은 (after a final consonant)",
+          "zh": "월요일은 바쁘지만 화요일은 한가해요\n变形过程：월요일 + 은; 화요일 + 은 (收音后)"
         }
       }
     ]
@@ -564,6 +733,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_CORE = [
           "en": "꽃이 — 꽃 ends in ㅊ, so attach 이.",
           "zh": "꽃이 — 꽃有ㅊ收音，因此接이。"
         }
+      },
+      {
+        "id": "subject-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "창문을 연 사람이 누구냐는 질문에, 유나가 그 일을 했다고 답합니다.",
+        "contextMeaning": {
+          "ko": "창문을 연 사람이 누구냐는 질문에, 유나가 그 일을 했다고 답합니다.",
+          "ja": "窓を開けたのは誰かと聞かれ、ユナがしたと答えます。",
+          "en": "Asked who opened the window, answer that Yuna did.",
+          "zh": "被问谁开了窗，回答是有娜。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: 이/가 초점\n제시어: 유나 / 창문을 / 열었어요",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：이/가で焦点を示す\n語句：유나 / 창문을 / 열었어요",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: focus with 이/가\nCues: 유나 / 창문을 / 열었어요",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：用이/가标记焦点\n提示词：유나 / 창문을 / 열었어요"
+        },
+        "accepted": [
+          "유나가 창문을 열었어요"
+        ],
+        "explanation": {
+          "ko": "유나가 창문을 열었어요\n형태를 만드는 과정: 유나 + 가 (모음 뒤)",
+          "ja": "유나가 창문을 열었어요\n形の作り方：유나 + 가 (母音の後)",
+          "en": "유나가 창문을 열었어요\nFormation: 유나 + 가 (after a vowel)",
+          "zh": "유나가 창문을 열었어요\n变形过程：유나 + 가 (元音后)"
+        }
       }
     ]
   },
@@ -644,6 +841,35 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_CORE = [
           "ja": "사과를 — 사과は母音で終わるので를です。",
           "en": "사과를 — 사과 ends in a vowel, so attach 를.",
           "zh": "사과를 — 사과以元音结尾，因此接를。"
+        }
+      },
+      {
+        "id": "object-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "아이의 행동을 관찰합니다. 아이가 마시는 대상은 우유입니다.",
+        "contextMeaning": {
+          "ko": "아이의 행동을 관찰합니다. 아이가 마시는 대상은 우유입니다.",
+          "ja": "子どもの行動を観察しています。飲んでいるものは牛乳です。",
+          "en": "Describe a child’s action: the thing being drunk is milk.",
+          "zh": "观察孩子的行为，喝的对象是牛奶。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: 을/를 + 해요체\n제시어: 아이가 / 우유 / 마시다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：을/를＋ヘヨ体\n語句：아이가 / 우유 / 마시다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: 을/를 + polite 해요 style\nCues: 아이가 / 우유 / 마시다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：을/를＋해요体\n提示词：아이가 / 우유 / 마시다"
+        },
+        "accepted": [
+          "아이가 우유를 마셔요",
+          "아이가 우유를 마시어요"
+        ],
+        "explanation": {
+          "ko": "아이가 우유를 마셔요\n형태를 만드는 과정: 우유 + 를; 마시다 → 마셔요",
+          "ja": "아이가 우유를 마셔요\n形の作り方：우유 + 를; 마시다 → 마셔요",
+          "en": "아이가 우유를 마셔요\nFormation: 우유 + 를; 마시다 → 마셔요",
+          "zh": "아이가 우유를 마셔요\n变形过程：우유 + 를; 마시다 → 마셔요"
         }
       }
     ]
@@ -726,6 +952,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_CORE = [
           "en": "학교에 — Add 에 to the destination 학교: 학교에.",
           "zh": "학교에 — 到达点학교接에，成为학교에。"
         }
+      },
+      {
+        "id": "destination-time-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "출발 시각을 정오로 알려 줍니다. 시각에 알맞은 조사를 붙입니다.",
+        "contextMeaning": {
+          "ko": "출발 시각을 정오로 알려 줍니다. 시각에 알맞은 조사를 붙입니다.",
+          "ja": "出発時刻が正午だと伝え、時刻に合う助詞を使います。",
+          "en": "Tell someone the departure time is noon, marking the time appropriately.",
+          "zh": "告知出发时间为中午，使用正确时间助词。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: 시각 에\n제시어: 정오 / 출발해요",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：時刻の에\n語句：정오 / 출발해요",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: time marker 에\nCues: 정오 / 출발해요",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：时间助词에\n提示词：정오 / 출발해요"
+        },
+        "accepted": [
+          "정오에 출발해요"
+        ],
+        "explanation": {
+          "ko": "정오에 출발해요\n형태를 만드는 과정: 정오 + 에 (시각)",
+          "ja": "정오에 출발해요\n形の作り方：정오 + 에 (時刻)",
+          "en": "정오에 출발해요\nFormation: 정오 + 에 (time)",
+          "zh": "정오에 출발해요\n变形过程：정오 + 에 (时刻)"
+        }
       }
     ]
   },
@@ -806,6 +1060,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_CORE = [
           "ja": "공원에서 — 공원에서 운동해요のように、行動場所공원に에서を付けます。",
           "en": "공원에서 — Add 에서 to 공원 as in 공원에서 운동해요.",
           "zh": "공원에서 — 如공원에서 운동해요，把에서接在动作地点공원后。"
+        }
+      },
+      {
+        "id": "action-place-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "쉬는 행동을 하는 장소가 집이라고 말합니다. 도착점을 말하는 것이 아닙니다.",
+        "contextMeaning": {
+          "ko": "쉬는 행동을 하는 장소가 집이라고 말합니다. 도착점을 말하는 것이 아닙니다.",
+          "ja": "休む行動の場所が家だと述べます。到着点ではありません。",
+          "en": "Say the place where you rest is home, not a destination.",
+          "zh": "说明休息发生的地方是家，而非到达点。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: 행동 장소 에서\n제시어: 저는 / 집 / 쉬어요",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：行動場所の에서\n語句：저는 / 집 / 쉬어요",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: action-place marker 에서\nCues: 저는 / 집 / 쉬어요",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：动作场所助词에서\n提示词：저는 / 집 / 쉬어요"
+        },
+        "accepted": [
+          "저는 집에서 쉬어요"
+        ],
+        "explanation": {
+          "ko": "저는 집에서 쉬어요\n형태를 만드는 과정: 집 + 에서 (행동 장소)",
+          "ja": "저는 집에서 쉬어요\n形の作り方：집 + 에서 (行動場所)",
+          "en": "저는 집에서 쉬어요\nFormation: 집 + 에서 (place of action)",
+          "zh": "저는 집에서 쉬어요\n变形过程：집 + 에서 (动作场所)"
         }
       }
     ]
@@ -888,6 +1170,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_CORE = [
           "en": "물만 — Attach limiting 만 to 물: 물만.",
           "zh": "물만 — 名词물接限定助词만，成为물만。"
         }
+      },
+      {
+        "id": "addition-limit-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "오늘 마실 것은 차 하나로 제한합니다. 다른 음료는 포함하지 않습니다.",
+        "contextMeaning": {
+          "ko": "오늘 마실 것은 차 하나로 제한합니다. 다른 음료는 포함하지 않습니다.",
+          "ja": "今日飲むものをお茶だけに限定し、ほかの飲み物は含めません。",
+          "en": "Limit today’s drinks to tea, excluding other drinks.",
+          "zh": "将今天喝的东西限定为茶，不包括其他饮料。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: 한정 만\n제시어: 오늘은 / 차 / 마셔요",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：限定の만\n語句：오늘은 / 차 / 마셔요",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: restriction with 만\nCues: 오늘은 / 차 / 마셔요",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：限定助词만\n提示词：오늘은 / 차 / 마셔요"
+        },
+        "accepted": [
+          "오늘은 차만 마셔요"
+        ],
+        "explanation": {
+          "ko": "오늘은 차만 마셔요\n형태를 만드는 과정: 차 + 만 (한정)",
+          "ja": "오늘은 차만 마셔요\n形の作り方：차 + 만 (限定)",
+          "en": "오늘은 차만 마셔요\nFormation: 차 + 만 (restriction)",
+          "zh": "오늘은 차만 마셔요\n变形过程：차 + 만 (限定)"
+        }
       }
     ]
   },
@@ -968,6 +1278,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_CORE = [
           "ja": "책과 — 책にはㄱパッチムがあるので과です。",
           "en": "책과 — 책 ends in ㄱ, so attach 과.",
           "zh": "책과 — 책有ㄱ收音，因此接과。"
+        }
+      },
+      {
+        "id": "and-particles-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "장보기에서 양파와 당근 두 가지를 모두 샀다고 말합니다.",
+        "contextMeaning": {
+          "ko": "장보기에서 양파와 당근 두 가지를 모두 샀다고 말합니다.",
+          "ja": "買い物で玉ねぎとにんじんの両方を買ったと伝えます。",
+          "en": "Say you bought both onions and carrots while shopping.",
+          "zh": "说购物时买了洋葱和胡萝卜两种。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: 와/과 나열\n제시어: 양파 / 당근을 / 샀어요",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：와/과で並列\n語句：양파 / 당근을 / 샀어요",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: listing with 와/과\nCues: 양파 / 당근을 / 샀어요",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：用와/과并列\n提示词：양파 / 당근을 / 샀어요"
+        },
+        "accepted": [
+          "양파와 당근을 샀어요"
+        ],
+        "explanation": {
+          "ko": "양파와 당근을 샀어요\n형태를 만드는 과정: 양파 + 와 (모음 뒤)",
+          "ja": "양파와 당근을 샀어요\n形の作り方：양파 + 와 (母音の後)",
+          "en": "양파와 당근을 샀어요\nFormation: 양파 + 와 (after a vowel)",
+          "zh": "양파와 당근을 샀어요\n变形过程：양파 + 와 (元音后)"
         }
       }
     ]
@@ -1050,6 +1388,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_CORE = [
           "en": "언니의 책 — Attach 의 to 언니 and place it before 책. 의 is written with the preceding noun.",
           "zh": "언니의 책 — 将의接在언니后，放在책前；의与前面的名词连写。"
         }
+      },
+      {
+        "id": "possessive-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "가방의 주인이 동생임을 의를 사용하여 말합니다.",
+        "contextMeaning": {
+          "ko": "가방의 주인이 동생임을 의를 사용하여 말합니다.",
+          "ja": "かばんの持ち主が弟・妹だと의を使って述べます。",
+          "en": "Use 의 to say the bag belongs to your younger sibling.",
+          "zh": "用의说明包属于弟弟或妹妹。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: 소유 의\n제시어: 이것은 / 동생 / 가방이에요",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：所有の의\n語句：이것은 / 동생 / 가방이에요",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: possession with 의\nCues: 이것은 / 동생 / 가방이에요",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：所属助词의\n提示词：이것은 / 동생 / 가방이에요"
+        },
+        "accepted": [
+          "이것은 동생의 가방이에요"
+        ],
+        "explanation": {
+          "ko": "이것은 동생의 가방이에요\n형태를 만드는 과정: 동생 + 의 → 동생의",
+          "ja": "이것은 동생의 가방이에요\n形の作り方：동생 + 의 → 동생의",
+          "en": "이것은 동생의 가방이에요\nFormation: 동생 + 의 → 동생의",
+          "zh": "이것은 동생의 가방이에요\n变形过程：동생 + 의 → 동생의"
+        }
       }
     ]
   },
@@ -1130,6 +1496,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_CORE = [
           "ja": "지하철로 — 지하철はㄹパッチムなので으なしの로です。지하철으로ではありません。",
           "en": "지하철로 — 지하철 ends in ㄹ, so add 로 without 으: 지하철로.",
           "zh": "지하철로 — 지하철以ㄹ收音结尾，因此不用으，接로。"
+        }
+      },
+      {
+        "id": "direction-tool-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "종이를 자르는 데 사용한 도구가 가위임을 말합니다.",
+        "contextMeaning": {
+          "ko": "종이를 자르는 데 사용한 도구가 가위임을 말합니다.",
+          "ja": "紙を切るための道具がはさみだと述べます。",
+          "en": "Say scissors are the tool used to cut the paper.",
+          "zh": "说明剪纸所用的工具是剪刀。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: 수단 (으)로\n제시어: 가위 / 종이를 / 잘라요",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：手段の(으)로\n語句：가위 / 종이를 / 잘라요",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: means with (으)로\nCues: 가위 / 종이를 / 잘라요",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：手段助词(으)로\n提示词：가위 / 종이를 / 잘라요"
+        },
+        "accepted": [
+          "가위로 종이를 잘라요"
+        ],
+        "explanation": {
+          "ko": "가위로 종이를 잘라요\n형태를 만드는 과정: 가위 + 로 (모음 뒤)",
+          "ja": "가위로 종이를 잘라요\n形の作り方：가위 + 로 (母音の後)",
+          "en": "가위로 종이를 잘라요\nFormation: 가위 + 로 (after a vowel)",
+          "zh": "가위로 종이를 잘라요\n变形过程：가위 + 로 (元音后)"
         }
       }
     ]
@@ -1212,6 +1606,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_CORE = [
           "en": "동생한테 — Attach conversational recipient marker 한테 to 동생.",
           "zh": "동생한테 — 在表示人的동생后接口语接受者助词한테。"
         }
+      },
+      {
+        "id": "recipient-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "이메일을 받는 사람이 선배라고 말합니다. 출처가 아니라 받는 사람입니다.",
+        "contextMeaning": {
+          "ko": "이메일을 받는 사람이 선배라고 말합니다. 출처가 아니라 받는 사람입니다.",
+          "ja": "メールの受け手が先輩だと述べます。出どころではありません。",
+          "en": "State that a senior colleague receives the email, not that they are its source.",
+          "zh": "说明邮件接受者是前辈，而非发件来源。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: 받는 상대 에게\n제시어: 선배 / 이메일을 / 보냈어요",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：受け手の에게\n語句：선배 / 이메일을 / 보냈어요",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: recipient marker 에게\nCues: 선배 / 이메일을 / 보냈어요",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：接受对象助词에게\n提示词：선배 / 이메일을 / 보냈어요"
+        },
+        "accepted": [
+          "선배에게 이메일을 보냈어요"
+        ],
+        "explanation": {
+          "ko": "선배에게 이메일을 보냈어요\n형태를 만드는 과정: 선배 + 에게 (받는 상대)",
+          "ja": "선배에게 이메일을 보냈어요\n形の作り方：선배 + 에게 (受け手)",
+          "en": "선배에게 이메일을 보냈어요\nFormation: 선배 + 에게 (recipient)",
+          "zh": "선배에게 이메일을 보냈어요\n变形过程：선배 + 에게 (接受者)"
+        }
       }
     ]
   },
@@ -1292,6 +1714,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_CORE = [
           "ja": "월요일부터 금요일까지 — 始まりの월요일に부터、終わりの금요일に까지です。",
           "en": "월요일부터 금요일까지 — Attach 부터 to Monday and 까지 to Friday.",
           "zh": "월요일부터 금요일까지 — 周一接부터，周五接까지。"
+        }
+      },
+      {
+        "id": "range-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "도서관이 여는 기간은 화요일에 시작하여 토요일에 끝납니다.",
+        "contextMeaning": {
+          "ko": "도서관이 여는 기간은 화요일에 시작하여 토요일에 끝납니다.",
+          "ja": "図書館の開館期間は火曜日から土曜日までです。",
+          "en": "The library’s opening period begins Tuesday and ends Saturday.",
+          "zh": "图书馆开放从周二开始，周六结束。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: 부터 … 까지\n제시어: 화요일 / 토요일 / 문을 열어요",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：부터 … 까지\n語句：화요일 / 토요일 / 문을 열어요",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: 부터 … 까지\nCues: 화요일 / 토요일 / 문을 열어요",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：부터 … 까지\n提示词：화요일 / 토요일 / 문을 열어요"
+        },
+        "accepted": [
+          "화요일부터 토요일까지 문을 열어요"
+        ],
+        "explanation": {
+          "ko": "화요일부터 토요일까지 문을 열어요\n형태를 만드는 과정: 화요일 + 부터; 토요일 + 까지",
+          "ja": "화요일부터 토요일까지 문을 열어요\n形の作り方：화요일 + 부터; 토요일 + 까지",
+          "en": "화요일부터 토요일까지 문을 열어요\nFormation: 화요일 + 부터; 토요일 + 까지",
+          "zh": "화요일부터 토요일까지 문을 열어요\n变形过程：화요일 + 부터; 토요일 + 까지"
         }
       }
     ]
@@ -1374,6 +1824,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_CORE = [
           "en": "어제보다 — Attach 보다 to the comparison standard 어제.",
           "zh": "어제보다 — 比较基准어제后接보다。"
         }
+      },
+      {
+        "id": "comparison-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "기차의 빠르기를 버스를 기준으로 비교하여 더 빠르다고 말합니다.",
+        "contextMeaning": {
+          "ko": "기차의 빠르기를 버스를 기준으로 비교하여 더 빠르다고 말합니다.",
+          "ja": "列車の速さをバスと比べ、より速いと述べます。",
+          "en": "Compare the train’s speed with the bus and say it is faster.",
+          "zh": "以公交为基准比较火车速度，说火车更快。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: 비교 보다\n제시어: 기차가 / 버스 / 더 빨라요",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：比較の보다\n語句：기차가 / 버스 / 더 빨라요",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: comparison with 보다\nCues: 기차가 / 버스 / 더 빨라요",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：比较助词보다\n提示词：기차가 / 버스 / 더 빨라요"
+        },
+        "accepted": [
+          "기차가 버스보다 더 빨라요"
+        ],
+        "explanation": {
+          "ko": "기차가 버스보다 더 빨라요\n형태를 만드는 과정: 버스 + 보다 (비교 기준)",
+          "ja": "기차가 버스보다 더 빨라요\n形の作り方：버스 + 보다 (比較基準)",
+          "en": "기차가 버스보다 더 빨라요\nFormation: 버스 + 보다 (comparison standard)",
+          "zh": "기차가 버스보다 더 빨라요\n变形过程：버스 + 보다 (比较基准)"
+        }
       }
     ]
   },
@@ -1454,6 +1932,35 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_CORE = [
           "ja": "공부하 — 공부하다から다だけ除くので공부하です。하は消しません。",
           "en": "공부하 — Remove only 다, leaving 공부하; do not remove 하.",
           "zh": "공부하 — 只去掉다，保留공부하，不要把하也去掉。"
+        }
+      },
+      {
+        "id": "dictionary-stem-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "자신의 일상 습관을 말합니다. 제시된 동사의 다를 뺀 뒤 현재 해요체 문장을 만듭니다.",
+        "contextMeaning": {
+          "ko": "자신의 일상 습관을 말합니다. 제시된 동사의 다를 뺀 뒤 현재 해요체 문장을 만듭니다.",
+          "ja": "日常の習慣を述べます。動詞の다を取り、現在ヘヨ体の文を作ります。",
+          "en": "Describe a daily habit. Remove dictionary 다 and form a present polite sentence.",
+          "zh": "描述日常习惯，去掉动词词典形다后组成现在敬语句。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: 어간 + 현재 해요체\n제시어: 저는 / 매일 / 산책하다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：語幹＋現在ヘヨ体\n語句：저는 / 매일 / 산책하다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: stem + present polite 해요 style\nCues: 저는 / 매일 / 산책하다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：词干＋现在해요体\n提示词：저는 / 매일 / 산책하다"
+        },
+        "accepted": [
+          "저는 매일 산책해요",
+          "저는 매일 산책하여요"
+        ],
+        "explanation": {
+          "ko": "저는 매일 산책해요\n형태를 만드는 과정: 산책하다 → 산책하- → 산책해요",
+          "ja": "저는 매일 산책해요\n形の作り方：산책하다 → 산책하- → 산책해요",
+          "en": "저는 매일 산책해요\nFormation: 산책하다 → 산책하- → 산책해요",
+          "zh": "저는 매일 산책해요\n变形过程：산책하다 → 산책하- → 산책해요"
         }
       }
     ]
@@ -1538,6 +2045,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_CORE = [
           "en": "마셔요 — 마시- plus -어요 yields 마시어요; 시어 contracts to 셔 in 마셔요.",
           "zh": "마셔요 — 마시-接-어요为마시어요，시어缩为셔成为마셔요。"
         }
+      },
+      {
+        "id": "present-haeyo-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "동네에서 자주 보는 친구의 행동을 현재 해요체로 말합니다.",
+        "contextMeaning": {
+          "ko": "동네에서 자주 보는 친구의 행동을 현재 해요체로 말합니다.",
+          "ja": "近所でよく見る友だちの行動を現在ヘヨ体で述べます。",
+          "en": "Describe a friend’s usual action in the neighborhood using present polite style.",
+          "zh": "用现在敬语体描述邻居朋友平常的行动。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: 현재 해요체\n제시어: 친구가 / 매일 / 걷다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：現在ヘヨ体\n語句：친구가 / 매일 / 걷다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: present polite 해요 style\nCues: 친구가 / 매일 / 걷다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：现在해요体\n提示词：친구가 / 매일 / 걷다"
+        },
+        "accepted": [
+          "친구가 매일 걸어요"
+        ],
+        "explanation": {
+          "ko": "친구가 매일 걸어요\n형태를 만드는 과정: 걷다 → 걸- + -어요 (ㄷ 불규칙)",
+          "ja": "친구가 매일 걸어요\n形の作り方：걷다 → 걸- + -어요 (ㄷ変則)",
+          "en": "친구가 매일 걸어요\nFormation: 걷다 → 걸- + -어요 (ㄷ irregular)",
+          "zh": "친구가 매일 걸어요\n变形过程：걷다 → 걸- + -어요 (ㄷ不规则)"
+        }
       }
     ]
   },
@@ -1618,6 +2153,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_CORE = [
           "ja": "갑니다 — 母音語幹가-に-ㅂ니다を付けて갑니다です。",
           "en": "갑니다 — Add -ㅂ니다 to vowel stem 가-: 갑니다.",
           "zh": "갑니다 — 元音词干가-接-ㅂ니다，成为갑니다。"
+        }
+      },
+      {
+        "id": "formal-present-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "공식 안내에서 다음 행사 순서를 시작한다고 발표합니다.",
+        "contextMeaning": {
+          "ko": "공식 안내에서 다음 행사 순서를 시작한다고 발표합니다.",
+          "ja": "公式案内で、次のプログラムを開始すると発表します。",
+          "en": "In a formal announcement, say the next part of the event is starting.",
+          "zh": "在正式通知中宣布下一个活动环节开始。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: -ㅂ니다/습니다\n제시어: 다음 순서를 / 시작하다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：-ㅂ니다/습니다\n語句：다음 순서를 / 시작하다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: -ㅂ니다/습니다\nCues: 다음 순서를 / 시작하다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：-ㅂ니다/습니다\n提示词：다음 순서를 / 시작하다"
+        },
+        "accepted": [
+          "다음 순서를 시작합니다"
+        ],
+        "explanation": {
+          "ko": "다음 순서를 시작합니다\n형태를 만드는 과정: 시작하다 → 시작하- + -ㅂ니다",
+          "ja": "다음 순서를 시작합니다\n形の作り方：시작하다 → 시작하- + -ㅂ니다",
+          "en": "다음 순서를 시작합니다\nFormation: 시작하다 → 시작하- + -ㅂ니다",
+          "zh": "다음 순서를 시작합니다\n变形过程：시작하다 → 시작하- + -ㅂ니다"
         }
       }
     ]
@@ -1702,6 +2265,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_CORE = [
           "en": "배웠어요 — 배우- plus -었어요 gives 배우었어요, contracted to 배웠어요.",
           "zh": "배웠어요 — 배우-接-었어요为배우었어요，缩为배웠어요。"
         }
+      },
+      {
+        "id": "past-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "어제 운동장에서 친구와 놀았던 일을 보고합니다.",
+        "contextMeaning": {
+          "ko": "어제 운동장에서 친구와 놀았던 일을 보고합니다.",
+          "ja": "昨日、運動場で友だちと遊んだことを伝えます。",
+          "en": "Report playing with a friend on the playground yesterday.",
+          "zh": "叙述昨天与朋友在操场玩的事。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: 과거 해요체\n제시어: 어제 / 운동장에서 / 친구와 / 놀다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：過去ヘヨ体\n語句：어제 / 운동장에서 / 친구와 / 놀다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: past polite 해요 style\nCues: 어제 / 운동장에서 / 친구와 / 놀다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：过去해요体\n提示词：어제 / 운동장에서 / 친구와 / 놀다"
+        },
+        "accepted": [
+          "어제 운동장에서 친구와 놀았어요"
+        ],
+        "explanation": {
+          "ko": "어제 운동장에서 친구와 놀았어요\n형태를 만드는 과정: 놀다 → 놀- + -았어요",
+          "ja": "어제 운동장에서 친구와 놀았어요\n形の作り方：놀다 → 놀- + -았어요",
+          "en": "어제 운동장에서 친구와 놀았어요\nFormation: 놀다 → 놀- + -았어요",
+          "zh": "어제 운동장에서 친구와 놀았어요\n变形过程：놀다 → 놀- + -았어요"
+        }
       }
     ]
   },
@@ -1782,6 +2373,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_CORE = [
           "ja": "읽을 거예요 — 읽-にはパッチムがあるので-을 거예요を付け、거예요の前を空けます。",
           "en": "읽을 거예요 — 읽- has a final consonant, so add -을 거예요 with a space before 거예요.",
           "zh": "읽을 거예요 — 읽-有收音，接-을 거예요，거예요前空格。"
+        }
+      },
+      {
+        "id": "future-plan-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "다가오는 주말에 가족을 방문할 계획을 말합니다.",
+        "contextMeaning": {
+          "ko": "다가오는 주말에 가족을 방문할 계획을 말합니다.",
+          "ja": "今度の週末に家族を訪ねる計画を述べます。",
+          "en": "Describe your plan to visit family this coming weekend.",
+          "zh": "说出即将到来的周末探望家人的计划。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: -(으)ㄹ 거예요\n제시어: 이번 주말에 / 가족을 / 방문하다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：-(으)ㄹ 거예요\n語句：이번 주말에 / 가족을 / 방문하다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: -(으)ㄹ 거예요\nCues: 이번 주말에 / 가족을 / 방문하다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：-(으)ㄹ 거예요\n提示词：이번 주말에 / 가족을 / 방문하다"
+        },
+        "accepted": [
+          "이번 주말에 가족을 방문할 거예요"
+        ],
+        "explanation": {
+          "ko": "이번 주말에 가족을 방문할 거예요\n형태를 만드는 과정: 방문하다 → 방문하- + -ㄹ 거예요",
+          "ja": "이번 주말에 가족을 방문할 거예요\n形の作り方：방문하다 → 방문하- + -ㄹ 거예요",
+          "en": "이번 주말에 가족을 방문할 거예요\nFormation: 방문하다 → 방문하- + -ㄹ 거예요",
+          "zh": "이번 주말에 가족을 방문할 거예요\n变形过程：방문하다 → 방문하- + -ㄹ 거예요"
         }
       }
     ]
@@ -1864,6 +2483,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_CORE = [
           "en": "공부하고 있어요 — Attach -고 있어요 to 공부하-.",
           "zh": "공부하고 있어요 — 词干공부하-后接-고 있어요。"
         }
+      },
+      {
+        "id": "progressive-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "지금 밖에서 아이들이 노는 행동이 진행 중이라고 묘사합니다.",
+        "contextMeaning": {
+          "ko": "지금 밖에서 아이들이 노는 행동이 진행 중이라고 묘사합니다.",
+          "ja": "今外で子どもたちが遊んでいる最中だと述べます。",
+          "en": "Describe children who are in the middle of playing outside now.",
+          "zh": "描述孩子们现在正在外面玩的动作。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: -고 있어요\n제시어: 아이들이 / 밖에서 / 놀다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：-고 있어요\n語句：아이들이 / 밖에서 / 놀다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: -고 있어요\nCues: 아이들이 / 밖에서 / 놀다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：-고 있어요\n提示词：아이들이 / 밖에서 / 놀다"
+        },
+        "accepted": [
+          "아이들이 밖에서 놀고 있어요"
+        ],
+        "explanation": {
+          "ko": "아이들이 밖에서 놀고 있어요\n형태를 만드는 과정: 놀다 → 놀- + -고 있어요 (ㄹ 유지)",
+          "ja": "아이들이 밖에서 놀고 있어요\n形の作り方：놀다 → 놀- + -고 있어요 (ㄹを保持)",
+          "en": "아이들이 밖에서 놀고 있어요\nFormation: 놀다 → 놀- + -고 있어요 (retain ㄹ)",
+          "zh": "아이들이 밖에서 놀고 있어요\n变形过程：놀다 → 놀- + -고 있어요 (保留ㄹ)"
+        }
       }
     ]
   },
@@ -1944,6 +2591,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_CORE = [
           "ja": "먹지 않아요 — 먹-に-지 않아요を付けます。指定の長い否定形なので안 먹어요でなく먹지 않아요です。",
           "en": "먹지 않아요 — Add -지 않아요 to 먹-. The requested long negative is 먹지 않아요 rather than 안 먹어요.",
           "zh": "먹지 않아요 — 먹-接-지 않아요；题目要求长否定，因此用먹지 않아요而非안 먹어요。"
+        }
+      },
+      {
+        "id": "negation-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "먹을 수 없다는 뜻이 아니라 평소 고기를 먹지 않는다는 습관을 긴 부정으로 말합니다.",
+        "contextMeaning": {
+          "ko": "먹을 수 없다는 뜻이 아니라 평소 고기를 먹지 않는다는 습관을 긴 부정으로 말합니다.",
+          "ja": "食べられないのでなく、普段肉を食べない習慣を長い否定形で述べます。",
+          "en": "Use the long negative to state a habit of not eating meat, not an inability.",
+          "zh": "用长否定表达平时不吃肉的习惯，而非不能吃。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: -지 않아요\n제시어: 저는 / 고기를 / 먹다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：-지 않아요\n語句：저는 / 고기를 / 먹다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: -지 않아요\nCues: 저는 / 고기를 / 먹다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：-지 않아요\n提示词：저는 / 고기를 / 먹다"
+        },
+        "accepted": [
+          "저는 고기를 먹지 않아요"
+        ],
+        "explanation": {
+          "ko": "저는 고기를 먹지 않아요\n형태를 만드는 과정: 먹다 → 먹- + -지 않아요",
+          "ja": "저는 고기를 먹지 않아요\n形の作り方：먹다 → 먹- + -지 않아요",
+          "en": "저는 고기를 먹지 않아요\nFormation: 먹다 → 먹- + -지 않아요",
+          "zh": "저는 고기를 먹지 않아요\n变形过程：먹다 → 먹- + -지 않아요"
         }
       }
     ]

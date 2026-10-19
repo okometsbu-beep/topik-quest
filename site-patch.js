@@ -107,6 +107,7 @@
     'data/grammar-course-legacy-morphology.js',
     'data/grammar-course.js',
     'grammar-course-engine.js',
+    'grammar-course-feedback.js',
     'grammar-course.js'
   ]);
   const versioned=src=>src+(src.includes('?')?'&':'?')+'v='+VERSION;

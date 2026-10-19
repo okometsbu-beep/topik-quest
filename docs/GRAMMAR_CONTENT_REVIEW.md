@@ -23,3 +23,18 @@ These activities establish recognition, targeted formation, contextual selection
 - Nuri Sejong learning roadmap: https://nuri.iksi.or.kr/front/page/siteguide/learning/roadmap/main.do
 
 All lesson examples, explanations and exercises were originally authored; official sources guide coverage and verification rather than supplying copied course prose.
+
+## Productive-construction upgrade checkpoint
+
+Each of the 208 lesson targets now has an additional authored `role: construction`, `type: text`, `phase: transfer` activity. These require a complete sentence or explicitly constrained short reply in a fresh scenario. They preserve the original activities and stable lesson IDs.
+
+- Foundations 29 + discourse 12 + legacy core 24: 65 newly authored sentence constructions.
+- Events 23 + legacy functions 27: 50.
+- Perspective stages 5–6: 44.
+- Formal stages 7–8 + legacy morphology 13: 49.
+
+All prompts specify cue order, retained particles, target grammar and/or register. Accepted variants cover licensed contractions, permitted auxiliary spacing, relevant optional particles and clause-boundary commas. These deterministic exercises assess the stated constrained task; they are not automatic semantic evaluation of arbitrary free writing. Free composition needs self-review or a separate assessment method.
+
+The runtime also derives 208 guided assembly practices from visible, already authored examples. Those are guided practice, never unseen transfer or unaided recall. The content total is 772 prior authored activities + 208 new authored constructions + 208 runtime-derived guided practices = 1,188 activities, without duplicate IDs. Authored source packs themselves contain 980 activities.
+
+Independent review of the new constructions corrected ambiguous constraints, optional-particle acceptance, a source-context answer leak, compound-verb auxiliary spacing, untranslated instructional labels, causal morphology wording, and necessary-condition phrasing. Final release remains subject to the integration owner’s test and browser checkpoint. Productive progress and later retention must not be inferred solely from the older multiple-choice transfer or isolated-conjugation review items.

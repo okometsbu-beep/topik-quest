@@ -3,7 +3,7 @@ const read=f=>fs.readFileSync(f,'utf8');
 function boot(seed={},lang='ja',options={}){
  const storage=options.storage||new Map(Object.entries(seed)),screen={innerHTML:'',className:''},results={innerHTML:''},notice={hidden:true,textContent:''},submit={disabled:true},events={};let now=options.now??100000000,seq=0,failSave=false,writes=0,rewardCalls=0;
  const c={console,S:{view:'home',lang},Date:class extends Date{static now(){return now}},crypto:{randomUUID:()=>`${options.tabId||'tab'}-${++seq}`},localStorage:{getItem:k=>storage.get(k)??null,setItem(k,v){if(failSave)throw Error('quota');writes++;storage.set(k,String(v))}},document:{querySelector:()=>submit,getElementById:id=>id==='screen'?screen:id==='gcResults'?results:id==='gcSaveWarning'?notice:null},render(){},navActive(){},addEventListener:(type,fn)=>events[type]=fn,malbitGrammarSpeak(){},malbitGrammarLesson(id){c.handwriting=id},HARUMAL_REWARDS:{answer(){rewardCalls++},stage(){rewardCalls++}}};c.window=c;c.setView=v=>{c.S.view=v;c.render()};vm.createContext(c);
- for(const f of ['data/beginner-grammar-v1.js','data/grammar-course.js','grammar-course-engine.js'])vm.runInContext(read(f),c);
+ for(const f of ['data/beginner-grammar-v1.js',...(options.packs?fs.readdirSync('data').filter(f=>/^grammar-course-.+\.js$/.test(f)).map(f=>'data/'+f):[]),'data/grammar-course.js','grammar-course-engine.js','grammar-course-feedback.js'])vm.runInContext(read(f),c);
  if(options.course)c.HARUMAL_GRAMMAR_COURSE=JSON.parse(JSON.stringify(options.course));
  vm.runInContext(read('grammar-course.js'),c);
  const click=(action,extra={})=>screen.onclick({target:{closest:()=>({disabled:false,dataset:{gcAction:action,...extra}})}});
@@ -28,7 +28,7 @@ function finish(b){
  for(let i=0;i<20;i++){
   const state=b.c.HARUMAL_GRAMMAR.getState(),s=state.sessions[state.currentId];if(s.stage==='summary')return;
   const a=E.currentActivity(s,D.lessons.find(l=>l.id===s.lessonId));
-  if(a.type==='text')b.input('gcAnswer',a.accepted[0]);else if(a.type==='choice')b.click('choice',{value:a.answer});else for(const value of a.answer)b.click('order',{index:String(a.tokens.findIndex(t=>t.id===value))});
+  if(a.type==='text')b.input('gcAnswer',a.accepted[0]);else if(a.type==='choice')b.click('choice',{value:a.answer});else for(const value of a.answer)b.click('order',{index:String(a.tokens.findIndex(t=>(typeof t==='object'?t.id:t)===value))});
   b.click('submit');b.click('continue');
  }
  throw Error('session did not finish');
@@ -102,8 +102,8 @@ test('object order tiles submit stable IDs, display labels and cannot be reused 
 });
 
 test('summary promises later recall only for lessons with authored review activities',()=>{
- const old=boot({},'en');old.c.HARUMAL_GRAMMAR.open();old.click('start',{id:'sentence-order'});finish(old);assert.match(old.screen.innerHTML,/no separate recall exercise yet/);assert.doesNotMatch(old.screen.innerHTML,/later with a new sentence/);
- const extended=boot({},'en',{course:fixture});extended.c.HARUMAL_GRAMMAR.open();extended.click('start',{id:'alpha'});finish(extended);assert.match(extended.screen.innerHTML,/later with a new sentence/);
+ const old=boot({},'en');old.c.HARUMAL_GRAMMAR.open();old.click('start',{id:'sentence-order'});finish(old);assert.match(old.screen.innerHTML,/no separate recall exercise yet/);assert.doesNotMatch(old.screen.innerHTML,/later with a new task/);
+ const extended=boot({},'en',{course:fixture});extended.c.HARUMAL_GRAMMAR.open();extended.click('start',{id:'alpha'});finish(extended);assert.match(extended.screen.innerHTML,/later with a new task/);
 });
 
 test('legacy migration is saved once so reload cannot postpone its due review forever',()=>{
@@ -119,7 +119,7 @@ test('empty malformed storage is not silently replaced, and failed draft saves w
 
 test('render, restore and imported completions do not manufacture reward transactions',()=>{
  const b=boot({},'en',{course:fixture});b.c.HARUMAL_GRAMMAR.open();b.click('start',{id:'alpha'});finish(b);const raw=JSON.stringify(b.c.HARUMAL_GRAMMAR.getState()),other=boot({},'en',{course:fixture});
- other.c.HARUMAL_GRAMMAR.mergeImport(raw);other.c.HARUMAL_GRAMMAR.open();other.c.HARUMAL_GRAMMAR.render();assert.equal(other.rewardCalls(),0);assert.equal(b.rewardCalls(),0);
+ other.c.HARUMAL_GRAMMAR.mergeImport(raw);other.c.HARUMAL_GRAMMAR.open();other.c.HARUMAL_GRAMMAR.render();assert.equal(other.rewardCalls(),0);assert.equal(b.rewardCalls(),1);
  const restored=boot({harumalGrammarCourseV1:raw},'en',{course:fixture});restored.c.HARUMAL_GRAMMAR.open();assert.equal(restored.rewardCalls(),0);
 });
 
@@ -141,3 +141,5 @@ test('two open reference tabs do not mint fresh exposures or trigger a storage-w
  for(let i=0;i<3;i++){const raw=storage.get('harumalGrammarCourseV1');a.events.storage({key:'harumalGrammarCourseV1',newValue:raw});b.events.storage({key:'harumalGrammarCourseV1',newValue:raw});a.tick(10);b.tick(10)}
  const before=a.writes()+b.writes(),raw=storage.get('harumalGrammarCourseV1');a.events.storage({key:'harumalGrammarCourseV1',newValue:raw});b.events.storage({key:'harumalGrammarCourseV1',newValue:raw});assert.equal(a.writes()+b.writes(),before);assert.equal(JSON.parse(raw).references.alpha.length,2);
 });
+
+test('loaded curriculum teaches model assembly then independent construction and later full-sentence retrieval',()=>{const b=boot({},'ja',{packs:true}),E=b.c.HARUMAL_GRAMMAR_ENGINE;b.c.HARUMAL_GRAMMAR.open();b.click('lesson',{id:'sentence-order'});b.click('start',{id:'sentence-order'});assert.match(b.screen.innerHTML,/gcModel/);assert.equal(b.c.HARUMAL_GRAMMAR_FEEDBACK.skills(b.c.HARUMAL_GRAMMAR.getState(),b.c.HARUMAL_GRAMMAR.course.lessons[0]).constructed,false);finish(b);const state=b.c.HARUMAL_GRAMMAR.getState(),l=b.c.HARUMAL_GRAMMAR.course.lessons.find(l=>l.id==='sentence-order');assert.equal(b.c.HARUMAL_GRAMMAR_FEEDBACK.skills(state,l).constructed,true);assert.equal(E.progress(state,l.id,b.c.HARUMAL_GRAMMAR.course,b.clock()).retained,false);assert.equal(b.rewardCalls(),2);b.tick(25*60*60*1000);b.c.HARUMAL_GRAMMAR.open();b.click('review');const reviewing=b.c.HARUMAL_GRAMMAR.getState(),session=reviewing.sessions[reviewing.currentId];assert.ok(session.activityIds.some(id=>l.activities.find(a=>a.id===id)?.role==='construction'));assert.match(b.screen.innerHTML,/前に練習した場面/);assert.doesNotMatch(b.screen.innerHTML,/class="gcModel"/);finish(b);assert.equal(E.progress(b.c.HARUMAL_GRAMMAR.getState(),l.id,b.c.HARUMAL_GRAMMAR.course,b.clock()).retained,true);assert.equal(b.rewardCalls(),3)});

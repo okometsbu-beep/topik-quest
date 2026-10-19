@@ -223,6 +223,34 @@ window.HARUMAL_GRAMMAR_PACK_FOUNDATIONS = [
           "en": "타다 → No prior experience; polite 해요 style",
           "zh": "타다 → 没有经历；해요体"
         }
+      },
+      {
+        "id": "extended-past-experience-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "친구에게 부산을 방문한 경험이 없다고 말합니다.",
+        "contextMeaning": {
+          "ko": "친구에게 부산을 방문한 경험이 없다고 말합니다.",
+          "ja": "友だちに釜山を訪れた経験がないと伝えます。",
+          "en": "Tell a friend you have never visited Busan.",
+          "zh": "告诉朋友你没有去过釜山。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: -(으)ㄴ 적이 없어요\n제시어: 저는 / 부산에 / 가다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：-(으)ㄴ 적이 없어요\n語句：저는 / 부산에 / 가다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: -(으)ㄴ 적이 없어요\nCues: 저는 / 부산에 / 가다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：-(으)ㄴ 적이 없어요\n提示词：저는 / 부산에 / 가다"
+        },
+        "accepted": [
+          "저는 부산에 간 적이 없어요"
+        ],
+        "explanation": {
+          "ko": "저는 부산에 간 적이 없어요\n형태를 만드는 과정: 가다 → 가- + -ㄴ 적이 없어요 → 간 적이 없어요",
+          "ja": "저는 부산에 간 적이 없어요\n形の作り方：가다 → 가- + -ㄴ 적이 없어요 → 간 적이 없어요",
+          "en": "저는 부산에 간 적이 없어요\nFormation: 가다 → 가- + -ㄴ 적이 없어요 → 간 적이 없어요",
+          "zh": "저는 부산에 간 적이 없어요\n变形过程：가다 → 가- + -ㄴ 적이 없어요 → 간 적이 없어요"
+        }
       }
     ]
   },
@@ -448,6 +476,34 @@ window.HARUMAL_GRAMMAR_PACK_FOUNDATIONS = [
           "ja": "크다 → 過去の状態変化・ヘヨ体",
           "en": "크다 → Past change of state; polite 해요 style",
           "zh": "크다 → 过去的状态变化；해요体"
+        }
+      },
+      {
+        "id": "extended-change-state-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "청소 후 방의 상태가 이전보다 깨끗하게 변했다고 말합니다.",
+        "contextMeaning": {
+          "ko": "청소 후 방의 상태가 이전보다 깨끗하게 변했다고 말합니다.",
+          "ja": "掃除後、部屋が以前よりきれいになったと伝えます。",
+          "en": "After cleaning, say the room has become cleaner.",
+          "zh": "打扫后，说房间变干净了。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: -아/어졌어요\n제시어: 방이 / 깨끗하다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：-아/어졌어요\n語句：방이 / 깨끗하다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: -아/어졌어요\nCues: 방이 / 깨끗하다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：-아/어졌어요\n提示词：방이 / 깨끗하다"
+        },
+        "accepted": [
+          "방이 깨끗해졌어요"
+        ],
+        "explanation": {
+          "ko": "방이 깨끗해졌어요\n형태를 만드는 과정: 깨끗하다 → 깨끗해 + 지다 → 깨끗해졌어요",
+          "ja": "방이 깨끗해졌어요\n形の作り方：깨끗하다 → 깨끗해 + 지다 → 깨끗해졌어요",
+          "en": "방이 깨끗해졌어요\nFormation: 깨끗하다 → 깨끗해 + 지다 → 깨끗해졌어요",
+          "zh": "방이 깨끗해졌어요\n变形过程：깨끗하다 → 깨끗해 + 지다 → 깨끗해졌어요"
         }
       }
     ]
@@ -679,6 +735,35 @@ window.HARUMAL_GRAMMAR_PACK_FOUNDATIONS = [
           "en": "알다 → New outcome; past polite 해요 style",
           "zh": "알다 → 新的结果；过去해요体"
         }
+      },
+      {
+        "id": "extended-change-circumstance-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "회사의 결정으로 다음 주부터 야간에 일하는 상황이 되었습니다.",
+        "contextMeaning": {
+          "ko": "회사의 결정으로 다음 주부터 야간에 일하는 상황이 되었습니다.",
+          "ja": "会社の決定で来週から夜に働くことになりました。",
+          "en": "A company decision means you will work nights from next week.",
+          "zh": "公司的安排使你从下周开始上夜班。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: -게 됐어요\n제시어: 다음 주부터 / 밤에 / 일하다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：-게 됐어요\n語句：다음 주부터 / 밤에 / 일하다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: -게 됐어요\nCues: 다음 주부터 / 밤에 / 일하다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：-게 됐어요\n提示词：다음 주부터 / 밤에 / 일하다"
+        },
+        "accepted": [
+          "다음 주부터 밤에 일하게 됐어요",
+          "다음 주부터 밤에 일하게 되었어요"
+        ],
+        "explanation": {
+          "ko": "다음 주부터 밤에 일하게 됐어요\n형태를 만드는 과정: 일하다 → 일하- + -게 됐어요",
+          "ja": "다음 주부터 밤에 일하게 됐어요\n形の作り方：일하다 → 일하- + -게 됐어요",
+          "en": "다음 주부터 밤에 일하게 됐어요\nFormation: 일하다 → 일하- + -게 됐어요",
+          "zh": "다음 주부터 밤에 일하게 됐어요\n变形过程：일하다 → 일하- + -게 됐어요"
+        }
       }
     ]
   },
@@ -905,6 +990,34 @@ window.HARUMAL_GRAMMAR_PACK_FOUNDATIONS = [
           "ja": "눕다 → 動作後の状態・ヘヨ体",
           "en": "눕다 → Resultant state; polite 해요 style",
           "zh": "눕다 → 动作后的状态；해요体"
+        }
+      },
+      {
+        "id": "extended-result-state-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "기차에 탄 승객이 이미 일어선 뒤 계속 서 있는 모습을 묘사합니다.",
+        "contextMeaning": {
+          "ko": "기차에 탄 승객이 이미 일어선 뒤 계속 서 있는 모습을 묘사합니다.",
+          "ja": "列車の乗客が立ち上がり、そのまま立っている様子を述べます。",
+          "en": "Describe a passenger who has stood up and remains standing.",
+          "zh": "描述乘客起身后仍然站着的状态。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: -아/어 있어요\n제시어: 승객이 / 통로에 / 서다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：-아/어 있어요\n語句：승객이 / 통로에 / 서다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: -아/어 있어요\nCues: 승객이 / 통로에 / 서다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：-아/어 있어요\n提示词：승객이 / 통로에 / 서다"
+        },
+        "accepted": [
+          "승객이 통로에 서 있어요"
+        ],
+        "explanation": {
+          "ko": "승객이 통로에 서 있어요\n형태를 만드는 과정: 서다 → 서- + -어 있다 → 서 있다 → 서 있어요",
+          "ja": "승객이 통로에 서 있어요\n形の作り方：서다 → 서- + -어 있다 → 서 있다 → 서 있어요",
+          "en": "승객이 통로에 서 있어요\nFormation: 서다 → 서- + -어 있다 → 서 있다 → 서 있어요",
+          "zh": "승객이 통로에 서 있어요\n变形过程：서다 → 서- + -어 있다 → 서 있다 → 서 있어요"
         }
       }
     ]
@@ -1137,6 +1250,35 @@ window.HARUMAL_GRAMMAR_PACK_FOUNDATIONS = [
           "en": "사다 → Prepare in advance; past polite style",
           "zh": "사다 → 提前准备；过去해요体"
         }
+      },
+      {
+        "id": "extended-preparation-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "나중에 쓸 자료를 이미 내려받아 준비해 두었다고 동료에게 말합니다.",
+        "contextMeaning": {
+          "ko": "나중에 쓸 자료를 이미 내려받아 준비해 두었다고 동료에게 말합니다.",
+          "ja": "後で使う資料をダウンロードして準備しておいたと同僚に伝えます。",
+          "en": "Tell a colleague you downloaded the material and left it ready for later.",
+          "zh": "告诉同事你已经下载好之后要用的资料。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: -아/어 놓았어요\n제시어: 자료를 / 미리 / 내려받다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：-아/어 놓았어요\n語句：자료를 / 미리 / 내려받다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: -아/어 놓았어요\nCues: 자료를 / 미리 / 내려받다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：-아/어 놓았어요\n提示词：자료를 / 미리 / 내려받다"
+        },
+        "accepted": [
+          "자료를 미리 내려받아 놓았어요",
+          "자료를 미리 내려받아 놨어요"
+        ],
+        "explanation": {
+          "ko": "자료를 미리 내려받아 놓았어요\n형태를 만드는 과정: 내려받다 → 내려받아 + 놓았어요",
+          "ja": "자료를 미리 내려받아 놓았어요\n形の作り方：내려받다 → 내려받아 + 놓았어요",
+          "en": "자료를 미리 내려받아 놓았어요\nFormation: 내려받다 → 내려받아 + 놓았어요",
+          "zh": "자료를 미리 내려받아 놓았어요\n变形过程：내려받다 → 내려받아 + 놓았어요"
+        }
       }
     ]
   },
@@ -1364,6 +1506,34 @@ window.HARUMAL_GRAMMAR_PACK_FOUNDATIONS = [
           "en": "돕다 → Promise the listener",
           "zh": "돕다 → 向对方承诺"
         }
+      },
+      {
+        "id": "extended-intention-promise-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "친구가 기다리고 있습니다. 내가 직접 표를 사겠다고 약속합니다.",
+        "contextMeaning": {
+          "ko": "친구가 기다리고 있습니다. 내가 직접 표를 사겠다고 약속합니다.",
+          "ja": "友だちが待っています。自分が切符を買うと約束します。",
+          "en": "Your friend is waiting. Promise that you will buy the tickets.",
+          "zh": "朋友在等，你承诺自己来买票。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: -(으)ㄹ게요\n제시어: 제가 / 표를 / 사다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：-(으)ㄹ게요\n語句：제가 / 표를 / 사다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: -(으)ㄹ게요\nCues: 제가 / 표를 / 사다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：-(으)ㄹ게요\n提示词：제가 / 표를 / 사다"
+        },
+        "accepted": [
+          "제가 표를 살게요"
+        ],
+        "explanation": {
+          "ko": "제가 표를 살게요\n형태를 만드는 과정: 사다 → 사- + -ㄹ게요 → 살게요",
+          "ja": "제가 표를 살게요\n形の作り方：사다 → 사- + -ㄹ게요 → 살게요",
+          "en": "제가 표를 살게요\nFormation: 사다 → 사- + -ㄹ게요 → 살게요",
+          "zh": "제가 표를 살게요\n变形过程：사다 → 사- + -ㄹ게요 → 살게요"
+        }
       }
     ]
   },
@@ -1589,6 +1759,34 @@ window.HARUMAL_GRAMMAR_PACK_FOUNDATIONS = [
           "ja": "쉬다 → 自分の意向",
           "en": "쉬다 → Your own willingness",
           "zh": "쉬다 → 自己的意愿"
+        }
+      },
+      {
+        "id": "extended-choice-willingness-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "점원이 좌석을 묻자 창가에 앉는 쪽을 선택합니다.",
+        "contextMeaning": {
+          "ko": "점원이 좌석을 묻자 창가에 앉는 쪽을 선택합니다.",
+          "ja": "店員に席を聞かれ、窓際に座るほうを選びます。",
+          "en": "A server asks about seating. Choose to sit by the window.",
+          "zh": "店员问座位，你选择坐窗边。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: -(으)ㄹ래요\n제시어: 저는 / 창가에 / 앉다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：-(으)ㄹ래요\n語句：저는 / 창가에 / 앉다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: -(으)ㄹ래요\nCues: 저는 / 창가에 / 앉다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：-(으)ㄹ래요\n提示词：저는 / 창가에 / 앉다"
+        },
+        "accepted": [
+          "저는 창가에 앉을래요"
+        ],
+        "explanation": {
+          "ko": "저는 창가에 앉을래요\n형태를 만드는 과정: 앉다 → 앉- + -을래요",
+          "ja": "저는 창가에 앉을래요\n形の作り方：앉다 → 앉- + -을래요",
+          "en": "저는 창가에 앉을래요\nFormation: 앉다 → 앉- + -을래요",
+          "zh": "저는 창가에 앉을래요\n变形过程：앉다 → 앉- + -을래요"
         }
       }
     ]
@@ -1817,6 +2015,34 @@ window.HARUMAL_GRAMMAR_PACK_FOUNDATIONS = [
           "en": "배우다 → Decision already made; polite style",
           "zh": "배우다 → 已经决定；해요体"
         }
+      },
+      {
+        "id": "extended-decision-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "친구와 이번 방학에 함께 등산하기로 합의했습니다.",
+        "contextMeaning": {
+          "ko": "친구와 이번 방학에 함께 등산하기로 합의했습니다.",
+          "ja": "友だちと今度の休みに一緒に登山すると決めました。",
+          "en": "You agreed with a friend to hike together during the coming vacation.",
+          "zh": "你和朋友约定这个假期一起登山。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: -기로 했어요\n제시어: 이번 방학에 / 같이 / 등산하다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：-기로 했어요\n語句：이번 방학에 / 같이 / 등산하다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: -기로 했어요\nCues: 이번 방학에 / 같이 / 등산하다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：-기로 했어요\n提示词：이번 방학에 / 같이 / 등산하다"
+        },
+        "accepted": [
+          "이번 방학에 같이 등산하기로 했어요"
+        ],
+        "explanation": {
+          "ko": "이번 방학에 같이 등산하기로 했어요\n형태를 만드는 과정: 등산하다 → 등산하- + -기로 했어요",
+          "ja": "이번 방학에 같이 등산하기로 했어요\n形の作り方：등산하다 → 등산하- + -기로 했어요",
+          "en": "이번 방학에 같이 등산하기로 했어요\nFormation: 등산하다 → 등산하- + -기로 했어요",
+          "zh": "이번 방학에 같이 등산하기로 했어요\n变形过程：등산하다 → 등산하- + -기로 했어요"
+        }
       }
     ]
   },
@@ -2042,6 +2268,34 @@ window.HARUMAL_GRAMMAR_PACK_FOUNDATIONS = [
           "ja": "읽다 → 方法を知っている・ヘヨ体",
           "en": "읽다 → Know how; polite style",
           "zh": "읽다 → 知道方法；해요体"
+        }
+      },
+      {
+        "id": "extended-knowledge-method-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "요리 수업에서 배운 기술을 소개합니다. 떡국을 만드는 방법을 압니다.",
+        "contextMeaning": {
+          "ko": "요리 수업에서 배운 기술을 소개합니다. 떡국을 만드는 방법을 압니다.",
+          "ja": "料理教室で習った技能として、トッククの作り方を知っていると伝えます。",
+          "en": "Describe a skill learned in cooking class: you know how to make tteokguk.",
+          "zh": "介绍烹饪课学到的技能：你会做年糕汤。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: -(으)ㄹ 줄 알아요\n제시어: 저는 / 떡국을 / 만들다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：-(으)ㄹ 줄 알아요\n語句：저는 / 떡국을 / 만들다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: -(으)ㄹ 줄 알아요\nCues: 저는 / 떡국을 / 만들다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：-(으)ㄹ 줄 알아요\n提示词：저는 / 떡국을 / 만들다"
+        },
+        "accepted": [
+          "저는 떡국을 만들 줄 알아요"
+        ],
+        "explanation": {
+          "ko": "저는 떡국을 만들 줄 알아요\n형태를 만드는 과정: 만들다 → 만들- + 줄 알아요 (ㄹ 유지)",
+          "ja": "저는 떡국을 만들 줄 알아요\n形の作り方：만들다 → 만들- + 줄 알아요 (ㄹを保持)",
+          "en": "저는 떡국을 만들 줄 알아요\nFormation: 만들다 → 만들- + 줄 알아요 (retain ㄹ)",
+          "zh": "저는 떡국을 만들 줄 알아요\n变形过程：만들다 → 만들- + 줄 알아요 (保留ㄹ)"
         }
       }
     ]
@@ -2269,6 +2523,34 @@ window.HARUMAL_GRAMMAR_PACK_FOUNDATIONS = [
           "en": "작다 → Visual impression; polite style",
           "zh": "작다 → 外观印象；해요体"
         }
+      },
+      {
+        "id": "extended-appearance-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "아직 신어 보지는 않았습니다. 신발의 겉모습이 편안한 인상을 줍니다.",
+        "contextMeaning": {
+          "ko": "아직 신어 보지는 않았습니다. 신발의 겉모습이 편안한 인상을 줍니다.",
+          "ja": "まだ履いていませんが、靴の見た目が楽そうな印象です。",
+          "en": "You have not tried the shoes on; their appearance suggests comfort.",
+          "zh": "还没试穿，鞋子的外观看起来很舒适。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: -아/어 보여요\n제시어: 이 신발은 / 편하다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：-아/어 보여요\n語句：이 신발은 / 편하다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: -아/어 보여요\nCues: 이 신발은 / 편하다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：-아/어 보여요\n提示词：이 신발은 / 편하다"
+        },
+        "accepted": [
+          "이 신발은 편해 보여요"
+        ],
+        "explanation": {
+          "ko": "이 신발은 편해 보여요\n형태를 만드는 과정: 편하다 → 편해 + 보여요",
+          "ja": "이 신발은 편해 보여요\n形の作り方：편하다 → 편해 + 보여요",
+          "en": "이 신발은 편해 보여요\nFormation: 편하다 → 편해 + 보여요",
+          "zh": "이 신발은 편해 보여요\n变形过程：편하다 → 편해 + 보여요"
+        }
       }
     ]
   },
@@ -2494,6 +2776,35 @@ window.HARUMAL_GRAMMAR_PACK_FOUNDATIONS = [
           "ja": "아프다 → -기 때문에でつなぐ",
           "en": "아프다 → Connect with -기 때문에",
           "zh": "아프다 → 用-기 때문에连接"
+        }
+      },
+      {
+        "id": "extended-reason-noun-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "오늘은 일이 많아서 약속에 가지 못한다는 이유를 설명합니다.",
+        "contextMeaning": {
+          "ko": "오늘은 일이 많아서 약속에 가지 못한다는 이유를 설명합니다.",
+          "ja": "今日は仕事が多く約束に行けない理由を説明します。",
+          "en": "Explain that you cannot attend because you are busy today.",
+          "zh": "解释今天很忙，所以不能赴约。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: -기 때문에\n제시어: 오늘은 / 바쁘다 / 약속에 / 못 가요",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：-기 때문에\n語句：오늘은 / 바쁘다 / 약속에 / 못 가요",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: -기 때문에\nCues: 오늘은 / 바쁘다 / 약속에 / 못 가요",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：-기 때문에\n提示词：오늘은 / 바쁘다 / 약속에 / 못 가요"
+        },
+        "accepted": [
+          "오늘은 바쁘기 때문에 약속에 못 가요",
+          "오늘은 바쁘기 때문에, 약속에 못 가요"
+        ],
+        "explanation": {
+          "ko": "오늘은 바쁘기 때문에 약속에 못 가요\n형태를 만드는 과정: 바쁘다 → 바쁘- + -기 때문에",
+          "ja": "오늘은 바쁘기 때문에 약속에 못 가요\n形の作り方：바쁘다 → 바쁘- + -기 때문에",
+          "en": "오늘은 바쁘기 때문에 약속에 못 가요\nFormation: 바쁘다 → 바쁘- + -기 때문에",
+          "zh": "오늘은 바쁘기 때문에 약속에 못 가요\n变形过程：바쁘다 → 바쁘- + -기 때문에"
         }
       }
     ]
@@ -2721,6 +3032,35 @@ window.HARUMAL_GRAMMAR_PACK_FOUNDATIONS = [
           "en": "춥다 → Link alternatives",
           "zh": "춥다 → 连接选项"
         }
+      },
+      {
+        "id": "extended-choice-verb-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "비 오는 날 실내에서 하는 두 가지 활동을 선택 관계로 말합니다.",
+        "contextMeaning": {
+          "ko": "비 오는 날 실내에서 하는 두 가지 활동을 선택 관계로 말합니다.",
+          "ja": "雨の日に室内でする二つの活動を選択肢として述べます。",
+          "en": "Describe two alternative indoor activities for rainy days.",
+          "zh": "说出下雨天在室内可选择的两种活动。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: -거나\n제시어: 비 오는 날에는 / 음악을 / 듣다 / 영화를 / 봐요",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：-거나\n語句：비 오는 날에는 / 음악을 / 듣다 / 영화를 / 봐요",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: -거나\nCues: 비 오는 날에는 / 음악을 / 듣다 / 영화를 / 봐요",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：-거나\n提示词：비 오는 날에는 / 음악을 / 듣다 / 영화를 / 봐요"
+        },
+        "accepted": [
+          "비 오는 날에는 음악을 듣거나 영화를 봐요",
+          "비 오는 날에는 음악을 듣거나, 영화를 봐요"
+        ],
+        "explanation": {
+          "ko": "비 오는 날에는 음악을 듣거나 영화를 봐요\n형태를 만드는 과정: 듣다 → 듣- + -거나 (ㄷ 유지)",
+          "ja": "비 오는 날에는 음악을 듣거나 영화를 봐요\n形の作り方：듣다 → 듣- + -거나 (ㄷを保持)",
+          "en": "비 오는 날에는 음악을 듣거나 영화를 봐요\nFormation: 듣다 → 듣- + -거나 (retain ㄷ)",
+          "zh": "비 오는 날에는 음악을 듣거나 영화를 봐요\n变形过程：듣다 → 듣- + -거나 (保留ㄷ)"
+        }
       }
     ]
   },
@@ -2946,6 +3286,35 @@ window.HARUMAL_GRAMMAR_PACK_FOUNDATIONS = [
           "ja": "읽다 → 때につなぐ",
           "en": "읽다 → Connect to 때",
           "zh": "읽다 → 与때连接"
+        }
+      },
+      {
+        "id": "extended-time-when-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "평소 식사 시간에 뉴스를 보는 습관을 말합니다.",
+        "contextMeaning": {
+          "ko": "평소 식사 시간에 뉴스를 보는 습관을 말합니다.",
+          "ja": "普段、食事の時にニュースを見る習慣を述べます。",
+          "en": "Describe your habit of watching the news at mealtimes.",
+          "zh": "描述平时吃饭时看新闻的习惯。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: -(으)ㄹ 때\n제시어: 밥을 / 먹다 / 뉴스를 / 봐요",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：-(으)ㄹ 때\n語句：밥을 / 먹다 / 뉴스를 / 봐요",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: -(으)ㄹ 때\nCues: 밥을 / 먹다 / 뉴스를 / 봐요",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：-(으)ㄹ 때\n提示词：밥을 / 먹다 / 뉴스를 / 봐요"
+        },
+        "accepted": [
+          "밥을 먹을 때 뉴스를 봐요",
+          "밥을 먹을 때, 뉴스를 봐요"
+        ],
+        "explanation": {
+          "ko": "밥을 먹을 때 뉴스를 봐요\n형태를 만드는 과정: 먹다 → 먹- + -을 때",
+          "ja": "밥을 먹을 때 뉴스를 봐요\n形の作り方：먹다 → 먹- + -을 때",
+          "en": "밥을 먹을 때 뉴스를 봐요\nFormation: 먹다 → 먹- + -을 때",
+          "zh": "밥을 먹을 때 뉴스를 봐요\n变形过程：먹다 → 먹- + -을 때"
         }
       }
     ]
@@ -3173,6 +3542,35 @@ window.HARUMAL_GRAMMAR_PACK_FOUNDATIONS = [
           "en": "기다리다 → Period during the action",
           "zh": "기다리다 → 动作进行期间"
         }
+      },
+      {
+        "id": "extended-duration-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "언니가 공부하는 시간과 내가 요리하는 시간이 겹쳤습니다.",
+        "contextMeaning": {
+          "ko": "언니가 공부하는 시간과 내가 요리하는 시간이 겹쳤습니다.",
+          "ja": "姉が勉強している時間と自分が料理した時間が重なりました。",
+          "en": "Your sister’s study time overlapped with your cooking.",
+          "zh": "姐姐学习的时间与你做饭的时间重合。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: -는 동안\n제시어: 언니가 / 공부하다 / 저는 / 요리했어요",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：-는 동안\n語句：언니가 / 공부하다 / 저는 / 요리했어요",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: -는 동안\nCues: 언니가 / 공부하다 / 저는 / 요리했어요",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：-는 동안\n提示词：언니가 / 공부하다 / 저는 / 요리했어요"
+        },
+        "accepted": [
+          "언니가 공부하는 동안 저는 요리했어요",
+          "언니가 공부하는 동안, 저는 요리했어요"
+        ],
+        "explanation": {
+          "ko": "언니가 공부하는 동안 저는 요리했어요\n형태를 만드는 과정: 공부하다 → 공부하- + -는 동안",
+          "ja": "언니가 공부하는 동안 저는 요리했어요\n形の作り方：공부하다 → 공부하- + -는 동안",
+          "en": "언니가 공부하는 동안 저는 요리했어요\nFormation: 공부하다 → 공부하- + -는 동안",
+          "zh": "언니가 공부하는 동안 저는 요리했어요\n变形过程：공부하다 → 공부하- + -는 동안"
+        }
       }
     ]
   },
@@ -3398,6 +3796,37 @@ window.HARUMAL_GRAMMAR_PACK_FOUNDATIONS = [
           "ja": "졸업하다 → 経過時間の前に置く部分",
           "en": "졸업하다 → Phrase before the elapsed duration",
           "zh": "졸업하다 → 放在经过时间之前的部分"
+        }
+      },
+      {
+        "id": "extended-since-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "마지막으로 친구를 만난 뒤 석 달이 흘렀다고 말합니다.",
+        "contextMeaning": {
+          "ko": "마지막으로 친구를 만난 뒤 석 달이 흘렀다고 말합니다.",
+          "ja": "最後に友だちに会ってから3か月経ったと伝えます。",
+          "en": "Say three months have passed since you met your friend.",
+          "zh": "说距上次见朋友已经过去三个月。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: -(으)ㄴ 지\n제시어: 친구를 / 만나다 / 석 달 / 됐어요",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：-(으)ㄴ 지\n語句：친구를 / 만나다 / 석 달 / 됐어요",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: -(으)ㄴ 지\nCues: 친구를 / 만나다 / 석 달 / 됐어요",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：-(으)ㄴ 지\n提示词：친구를 / 만나다 / 석 달 / 됐어요"
+        },
+        "accepted": [
+          "친구를 만난 지 석 달 됐어요",
+          "친구를 만난 지 석 달 되었어요",
+          "친구를 만난 지 석 달이 됐어요",
+          "친구를 만난 지 석 달이 되었어요"
+        ],
+        "explanation": {
+          "ko": "친구를 만난 지 석 달 됐어요\n형태를 만드는 과정: 만나다 → 만나- + -ㄴ 지",
+          "ja": "친구를 만난 지 석 달 됐어요\n形の作り方：만나다 → 만나- + -ㄴ 지",
+          "en": "친구를 만난 지 석 달 됐어요\nFormation: 만나다 → 만나- + -ㄴ 지",
+          "zh": "친구를 만난 지 석 달 됐어요\n变形过程：만나다 → 만나- + -ㄴ 지"
         }
       }
     ]
@@ -3627,6 +4056,34 @@ window.HARUMAL_GRAMMAR_PACK_FOUNDATIONS = [
           "en": "먹다 → Infer a completed action; polite style",
           "zh": "먹다 → 推测已完成动作；해요体"
         }
+      },
+      {
+        "id": "extended-seems-basic-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "복도에서 타는 냄새를 맡고, 현재 진행 중인 일을 추측합니다.",
+        "contextMeaning": {
+          "ko": "복도에서 타는 냄새를 맡고, 현재 진행 중인 일을 추측합니다.",
+          "ja": "廊下で焦げるにおいを感じ、今起きていることを推測します。",
+          "en": "Smelling something burning in the corridor, infer what is happening now.",
+          "zh": "在走廊闻到焦味，推测现在正在发生的事。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: -는 것 같아요\n제시어: 주방에서 / 음식이 / 타다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：-는 것 같아요\n語句：주방에서 / 음식이 / 타다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: -는 것 같아요\nCues: 주방에서 / 음식이 / 타다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：-는 것 같아요\n提示词：주방에서 / 음식이 / 타다"
+        },
+        "accepted": [
+          "주방에서 음식이 타는 것 같아요"
+        ],
+        "explanation": {
+          "ko": "주방에서 음식이 타는 것 같아요\n형태를 만드는 과정: 타다 → 타- + -는 것 같아요",
+          "ja": "주방에서 음식이 타는 것 같아요\n形の作り方：타다 → 타- + -는 것 같아요",
+          "en": "주방에서 음식이 타는 것 같아요\nFormation: 타다 → 타- + -는 것 같아요",
+          "zh": "주방에서 음식이 타는 것 같아요\n变形过程：타다 → 타- + -는 것 같아요"
+        }
       }
     ]
   },
@@ -3854,6 +4311,35 @@ window.HARUMAL_GRAMMAR_PACK_FOUNDATIONS = [
           "en": "없다 → Connect as present background",
           "zh": "없다 → 作为当前背景连接"
         }
+      },
+      {
+        "id": "extended-background-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "오늘 덥다는 사실을 배경으로 말한 뒤 창문을 열자고 제안합니다.",
+        "contextMeaning": {
+          "ko": "오늘 덥다는 사실을 배경으로 말한 뒤 창문을 열자고 제안합니다.",
+          "ja": "今日の暑さを背景として示し、窓を開けようと提案します。",
+          "en": "Mention today’s heat as background, then suggest opening the window.",
+          "zh": "以今天很热为背景，再提议打开窗户。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: -(으)ㄴ데\n제시어: 오늘은 / 덥다 / 창문을 / 열까요?",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：-(으)ㄴ데\n語句：오늘은 / 덥다 / 창문을 / 열까요?",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: -(으)ㄴ데\nCues: 오늘은 / 덥다 / 창문을 / 열까요?",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：-(으)ㄴ데\n提示词：오늘은 / 덥다 / 창문을 / 열까요?"
+        },
+        "accepted": [
+          "오늘은 더운데 창문을 열까요?",
+          "오늘은 더운데, 창문을 열까요?"
+        ],
+        "explanation": {
+          "ko": "오늘은 더운데 창문을 열까요?\n형태를 만드는 과정: 덥다 → 더우- + -ㄴ데 → 더운데",
+          "ja": "오늘은 더운데 창문을 열까요?\n形の作り方：덥다 → 더우- + -ㄴ데 → 더운데",
+          "en": "오늘은 더운데 창문을 열까요?\nFormation: 덥다 → 더우- + -ㄴ데 → 더운데",
+          "zh": "오늘은 더운데 창문을 열까요?\n变形过程：덥다 → 더우- + -ㄴ데 → 더운데"
+        }
       }
     ]
   },
@@ -4079,6 +4565,35 @@ window.HARUMAL_GRAMMAR_PACK_FOUNDATIONS = [
           "ja": "많다 → 確認・-지요を使う",
           "en": "많다 → Confirmation; use -지요",
           "zh": "많다 → 确认；使用-지요"
+        }
+      },
+      {
+        "id": "extended-confirmation-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "두 사람이 알고 있는 퇴근 시각을 다시 확인합니다.",
+        "contextMeaning": {
+          "ko": "두 사람이 알고 있는 퇴근 시각을 다시 확인합니다.",
+          "ja": "二人が知っている退勤時刻をもう一度確認します。",
+          "en": "Confirm the finishing time you both know.",
+          "zh": "再次确认双方知道的下班时间。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: -지요?\n제시어: 오늘은 / 여섯 시에 / 끝나다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：-지요?\n語句：오늘은 / 여섯 시에 / 끝나다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: -지요?\nCues: 오늘은 / 여섯 시에 / 끝나다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：-지요?\n提示词：오늘은 / 여섯 시에 / 끝나다"
+        },
+        "accepted": [
+          "오늘은 여섯 시에 끝나지요?",
+          "오늘은 여섯 시에 끝나죠?"
+        ],
+        "explanation": {
+          "ko": "오늘은 여섯 시에 끝나지요?\n형태를 만드는 과정: 끝나다 → 끝나- + -지요?",
+          "ja": "오늘은 여섯 시에 끝나지요?\n形の作り方：끝나다 → 끝나- + -지요?",
+          "en": "오늘은 여섯 시에 끝나지요?\nFormation: 끝나다 → 끝나- + -지요?",
+          "zh": "오늘은 여섯 시에 끝나지요?\n变形过程：끝나다 → 끝나- + -지요?"
         }
       }
     ]
@@ -4307,6 +4822,34 @@ window.HARUMAL_GRAMMAR_PACK_FOUNDATIONS = [
           "en": "만들다 → Joint proposal with -(으)ㅂ시다",
           "zh": "만들다 → 用-(으)ㅂ시다提议"
         }
+      },
+      {
+        "id": "extended-suggestion-jayo-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "동료 모임에서 모두 함께 회의를 시작하자고 제안합니다.",
+        "contextMeaning": {
+          "ko": "동료 모임에서 모두 함께 회의를 시작하자고 제안합니다.",
+          "ja": "同僚の集まりで、皆で会議を始めようと提案します。",
+          "en": "At a gathering of colleagues, propose starting the meeting together.",
+          "zh": "在同事聚会中提议大家开始开会。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: -(으)ㅂ시다\n제시어: 이제 / 회의를 / 시작하다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：-(으)ㅂ시다\n語句：이제 / 회의를 / 시작하다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: -(으)ㅂ시다\nCues: 이제 / 회의를 / 시작하다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：-(으)ㅂ시다\n提示词：이제 / 회의를 / 시작하다"
+        },
+        "accepted": [
+          "이제 회의를 시작합시다"
+        ],
+        "explanation": {
+          "ko": "이제 회의를 시작합시다\n형태를 만드는 과정: 시작하다 → 시작하- + -ㅂ시다",
+          "ja": "이제 회의를 시작합시다\n形の作り方：시작하다 → 시작하- + -ㅂ시다",
+          "en": "이제 회의를 시작합시다\nFormation: 시작하다 → 시작하- + -ㅂ시다",
+          "zh": "이제 회의를 시작합시다\n变形过程：시작하다 → 시작하- + -ㅂ시다"
+        }
       }
     ]
   },
@@ -4534,6 +5077,34 @@ window.HARUMAL_GRAMMAR_PACK_FOUNDATIONS = [
           "en": "시간 + 없다 → Use 이/가 and polite 해요 style",
           "zh": "시간 + 없다 → 使用이/가与해요体"
         }
+      },
+      {
+        "id": "extended-existence-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "손님에게 냉장고 안에 우유가 있다는 사실을 알려 줍니다.",
+        "contextMeaning": {
+          "ko": "손님에게 냉장고 안에 우유가 있다는 사실을 알려 줍니다.",
+          "ja": "客に冷蔵庫の中に牛乳があると伝えます。",
+          "en": "Tell a guest there is milk in the refrigerator.",
+          "zh": "告诉客人冰箱里有牛奶。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: 이/가 + 있어요\n제시어: 냉장고에 / 우유 / 있다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：이/가 + 있어요\n語句：냉장고에 / 우유 / 있다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: 이/가 + 있어요\nCues: 냉장고에 / 우유 / 있다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：이/가 + 있어요\n提示词：냉장고에 / 우유 / 있다"
+        },
+        "accepted": [
+          "냉장고에 우유가 있어요"
+        ],
+        "explanation": {
+          "ko": "냉장고에 우유가 있어요\n형태를 만드는 과정: 우유 + 가; 있다 → 있어요",
+          "ja": "냉장고에 우유가 있어요\n形の作り方：우유 + 가; 있다 → 있어요",
+          "en": "냉장고에 우유가 있어요\nFormation: 우유 + 가; 있다 → 있어요",
+          "zh": "냉장고에 우유가 있어요\n变形过程：우유 + 가; 있다 → 있어요"
+        }
       }
     ]
   },
@@ -4759,6 +5330,35 @@ window.HARUMAL_GRAMMAR_PACK_FOUNDATIONS = [
           "ja": "배우다 → 他の人の希望を描写・ヘヨ体",
           "en": "배우다 → Describe another person’s desire; polite style",
           "zh": "배우다 → 描述别人的愿望；해요体"
+        }
+      },
+      {
+        "id": "extended-desiderative-other-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "동생의 소망을 관찰자의 입장에서 친구에게 설명합니다.",
+        "contextMeaning": {
+          "ko": "동생의 소망을 관찰자의 입장에서 친구에게 설명합니다.",
+          "ja": "弟・妹の希望を観察者の立場で友だちに説明します。",
+          "en": "Describe your younger sibling’s desire to a friend as an observer.",
+          "zh": "以观察者身份向朋友描述弟弟或妹妹的愿望。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: -고 싶어 해요\n제시어: 동생은 / 피아노를 / 배우다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：-고 싶어 해요\n語句：동생은 / 피아노를 / 배우다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: -고 싶어 해요\nCues: 동생은 / 피아노를 / 배우다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：-고 싶어 해요\n提示词：동생은 / 피아노를 / 배우다"
+        },
+        "accepted": [
+          "동생은 피아노를 배우고 싶어 해요",
+          "동생은 피아노를 배우고 싶어해요"
+        ],
+        "explanation": {
+          "ko": "동생은 피아노를 배우고 싶어 해요\n형태를 만드는 과정: 배우다 → 배우- + -고 싶어 해요",
+          "ja": "동생은 피아노를 배우고 싶어 해요\n形の作り方：배우다 → 배우- + -고 싶어 해요",
+          "en": "동생은 피아노를 배우고 싶어 해요\nFormation: 배우다 → 배우- + -고 싶어 해요",
+          "zh": "동생은 피아노를 배우고 싶어 해요\n变形过程：배우다 → 배우- + -고 싶어 해요"
         }
       }
     ]
@@ -4986,6 +5586,34 @@ window.HARUMAL_GRAMMAR_PACK_FOUNDATIONS = [
           "en": "차 + (이)나",
           "zh": "차 + (이)나"
         }
+      },
+      {
+        "id": "extended-choice-noun-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "간식으로 두 과일 가운데 하나를 먹자고 제안합니다.",
+        "contextMeaning": {
+          "ko": "간식으로 두 과일 가운데 하나를 먹자고 제안합니다.",
+          "ja": "おやつに二つの果物のどちらかを食べようと提案します。",
+          "en": "Suggest either of two fruits as a snack.",
+          "zh": "提议点心吃两种水果中的一种。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: (이)나\n제시어: 간식으로 / 사과 / 귤을 / 먹어요",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：(이)나\n語句：간식으로 / 사과 / 귤을 / 먹어요",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: (이)나\nCues: 간식으로 / 사과 / 귤을 / 먹어요",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：(이)나\n提示词：간식으로 / 사과 / 귤을 / 먹어요"
+        },
+        "accepted": [
+          "간식으로 사과나 귤을 먹어요"
+        ],
+        "explanation": {
+          "ko": "간식으로 사과나 귤을 먹어요\n형태를 만드는 과정: 사과 + 나 (모음 뒤)",
+          "ja": "간식으로 사과나 귤을 먹어요\n形の作り方：사과 + 나 (母音の後)",
+          "en": "간식으로 사과나 귤을 먹어요\nFormation: 사과 + 나 (after a vowel)",
+          "zh": "간식으로 사과나 귤을 먹어요\n变形过程：사과 + 나 (元音后)"
+        }
       }
     ]
   },
@@ -5212,6 +5840,35 @@ window.HARUMAL_GRAMMAR_PACK_FOUNDATIONS = [
           "en": "두 개 + 쯤",
           "zh": "두 개 + 쯤"
         }
+      },
+      {
+        "id": "extended-approximate-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "정확하게 재지 않았지만 걷는 데 대략 삼십 분 걸립니다.",
+        "contextMeaning": {
+          "ko": "정확하게 재지 않았지만 걷는 데 대략 삼십 분 걸립니다.",
+          "ja": "正確には測っていませんが、歩くのに約30分かかります。",
+          "en": "You have not timed it exactly, but the walk takes about thirty minutes.",
+          "zh": "虽然没准确计时，但走路大约需三十分钟。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: 쯤\n제시어: 걸어서 / 삼십 분 / 걸려요",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：쯤\n語句：걸어서 / 삼십 분 / 걸려요",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: 쯤\nCues: 걸어서 / 삼십 분 / 걸려요",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：쯤\n提示词：걸어서 / 삼십 분 / 걸려요"
+        },
+        "accepted": [
+          "걸어서 삼십 분쯤 걸려요",
+          "걸어서 삼십 분쯤이 걸려요"
+        ],
+        "explanation": {
+          "ko": "걸어서 삼십 분쯤 걸려요\n형태를 만드는 과정: 삼십 분 + 쯤 → 삼십 분쯤",
+          "ja": "걸어서 삼십 분쯤 걸려요\n形の作り方：삼십 분 + 쯤 → 삼십 분쯤",
+          "en": "걸어서 삼십 분쯤 걸려요\nFormation: 삼십 분 + 쯤 → 삼십 분쯤",
+          "zh": "걸어서 삼십 분쯤 걸려요\n变形过程：삼십 분 + 쯤 → 삼십 분쯤"
+        }
       }
     ]
   },
@@ -5437,6 +6094,34 @@ window.HARUMAL_GRAMMAR_PACK_FOUNDATIONS = [
           "en": "언니 + 한테서",
           "zh": "언니 + 한테서"
         }
+      },
+      {
+        "id": "extended-source-person-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "같은 반 친구가 알려 준 소식을 어디에서 들었는지 말합니다.",
+        "contextMeaning": {
+          "ko": "같은 반 친구가 알려 준 소식을 어디에서 들었는지 말합니다.",
+          "ja": "クラスの友だちが教えた知らせを、誰から聞いたか伝えます。",
+          "en": "State which classmate was the source of the news.",
+          "zh": "说明消息是从哪位同班朋友那里听来的。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: 에게서\n제시어: 민수 / 그 소식을 / 들었어요",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：에게서\n語句：민수 / 그 소식을 / 들었어요",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: 에게서\nCues: 민수 / 그 소식을 / 들었어요",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：에게서\n提示词：민수 / 그 소식을 / 들었어요"
+        },
+        "accepted": [
+          "민수에게서 그 소식을 들었어요"
+        ],
+        "explanation": {
+          "ko": "민수에게서 그 소식을 들었어요\n형태를 만드는 과정: 민수 + 에게서",
+          "ja": "민수에게서 그 소식을 들었어요\n形の作り方：민수 + 에게서",
+          "en": "민수에게서 그 소식을 들었어요\nFormation: 민수 + 에게서",
+          "zh": "민수에게서 그 소식을 들었어요\n变形过程：민수 + 에게서"
+        }
       }
     ]
   },
@@ -5661,6 +6346,34 @@ window.HARUMAL_GRAMMAR_PACK_FOUNDATIONS = [
           "ja": "아침 + 마다",
           "en": "아침 + 마다",
           "zh": "아침 + 마다"
+        }
+      },
+      {
+        "id": "extended-distribution-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "매주 같은 요일에 도서관을 방문하는 습관을 말합니다.",
+        "contextMeaning": {
+          "ko": "매주 같은 요일에 도서관을 방문하는 습관을 말합니다.",
+          "ja": "毎週同じ曜日に図書館へ行く習慣を述べます。",
+          "en": "Describe a weekly habit of visiting the library on the same day.",
+          "zh": "描述每周同一天去图书馆的习惯。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: 마다\n제시어: 금요일 / 도서관에 / 가요",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：마다\n語句：금요일 / 도서관에 / 가요",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: 마다\nCues: 금요일 / 도서관에 / 가요",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：마다\n提示词：금요일 / 도서관에 / 가요"
+        },
+        "accepted": [
+          "금요일마다 도서관에 가요"
+        ],
+        "explanation": {
+          "ko": "금요일마다 도서관에 가요\n형태를 만드는 과정: 금요일 + 마다",
+          "ja": "금요일마다 도서관에 가요\n形の作り方：금요일 + 마다",
+          "en": "금요일마다 도서관에 가요\nFormation: 금요일 + 마다",
+          "zh": "금요일마다 도서관에 가요\n变形过程：금요일 + 마다"
         }
       }
     ]
@@ -5889,6 +6602,34 @@ window.HARUMAL_GRAMMAR_PACK_FOUNDATIONS = [
           "en": "한 명 + 밖에 + 없다 → Polite 해요 style",
           "zh": "한 명 + 밖에 + 없다 → 해요体"
         }
+      },
+      {
+        "id": "extended-only-negative-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "냉장고에 달걀이 두 개만 남아 있다고 제한해 말합니다.",
+        "contextMeaning": {
+          "ko": "냉장고에 달걀이 두 개만 남아 있다고 제한해 말합니다.",
+          "ja": "冷蔵庫に卵が二つしか残っていないと述べます。",
+          "en": "Say there are only two eggs left in the refrigerator.",
+          "zh": "说冰箱里只剩两个鸡蛋。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: 밖에 + 없어요\n제시어: 냉장고에 / 달걀이 / 두 개 / 없다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：밖에 + 없어요\n語句：냉장고에 / 달걀이 / 두 개 / 없다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: 밖에 + 없어요\nCues: 냉장고에 / 달걀이 / 두 개 / 없다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：밖에 + 없어요\n提示词：냉장고에 / 달걀이 / 두 개 / 없다"
+        },
+        "accepted": [
+          "냉장고에 달걀이 두 개밖에 없어요"
+        ],
+        "explanation": {
+          "ko": "냉장고에 달걀이 두 개밖에 없어요\n형태를 만드는 과정: 두 개 + 밖에; 없다 → 없어요",
+          "ja": "냉장고에 달걀이 두 개밖에 없어요\n形の作り方：두 개 + 밖에; 없다 → 없어요",
+          "en": "냉장고에 달걀이 두 개밖에 없어요\nFormation: 두 개 + 밖에; 없다 → 없어요",
+          "zh": "냉장고에 달걀이 두 개밖에 없어요\n变形过程：두 개 + 밖에; 없다 → 없어요"
+        }
       }
     ]
   },
@@ -6113,6 +6854,34 @@ window.HARUMAL_GRAMMAR_PACK_FOUNDATIONS = [
           "ja": "꽃 + 처럼",
           "en": "꽃 + 처럼",
           "zh": "꽃 + 처럼"
+        }
+      },
+      {
+        "id": "extended-similarity-noun-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "바다의 파란 빛을 하늘과 닮은 모습으로 비유합니다.",
+        "contextMeaning": {
+          "ko": "바다의 파란 빛을 하늘과 닮은 모습으로 비유합니다.",
+          "ja": "海の青さを空に似た様子としてたとえます。",
+          "en": "Compare the sea’s blue color to the sky.",
+          "zh": "用比喻把海的蓝色与天空相比。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: 처럼\n제시어: 바다가 / 하늘 / 파래요",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：처럼\n語句：바다가 / 하늘 / 파래요",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: 처럼\nCues: 바다가 / 하늘 / 파래요",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：처럼\n提示词：바다가 / 하늘 / 파래요"
+        },
+        "accepted": [
+          "바다가 하늘처럼 파래요"
+        ],
+        "explanation": {
+          "ko": "바다가 하늘처럼 파래요\n형태를 만드는 과정: 하늘 + 처럼",
+          "ja": "바다가 하늘처럼 파래요\n形の作り方：하늘 + 처럼",
+          "en": "바다가 하늘처럼 파래요\nFormation: 하늘 + 처럼",
+          "zh": "바다가 하늘처럼 파래요\n变形过程：하늘 + 처럼"
         }
       }
     ]
@@ -6341,6 +7110,35 @@ window.HARUMAL_GRAMMAR_PACK_FOUNDATIONS = [
           "en": "읽다 → Dictionary form using -아/어 드리다",
           "zh": "읽다 → 使用-아/어 드리다的词典形"
         }
+      },
+      {
+        "id": "extended-polite-offer-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "선생님에게 필요한 자료를 내가 보내겠다고 공손히 약속합니다.",
+        "contextMeaning": {
+          "ko": "선생님에게 필요한 자료를 내가 보내겠다고 공손히 약속합니다.",
+          "ja": "先生に必要な資料を自分が送ると丁寧に約束します。",
+          "en": "Respectfully promise to send the teacher the needed material.",
+          "zh": "恭敬地向老师承诺自己会发送所需资料。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: -아/어 드릴게요\n제시어: 제가 / 자료를 / 보내다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：-아/어 드릴게요\n語句：제가 / 자료를 / 보내다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: -아/어 드릴게요\nCues: 제가 / 자료를 / 보내다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：-아/어 드릴게요\n提示词：제가 / 자료를 / 보내다"
+        },
+        "accepted": [
+          "제가 자료를 보내 드릴게요",
+          "제가 자료를 보내드릴게요"
+        ],
+        "explanation": {
+          "ko": "제가 자료를 보내 드릴게요\n형태를 만드는 과정: 보내다 → 보내 + 드리다 → 드릴게요",
+          "ja": "제가 자료를 보내 드릴게요\n形の作り方：보내다 → 보내 + 드리다 → 드릴게요",
+          "en": "제가 자료를 보내 드릴게요\nFormation: 보내다 → 보내 + 드리다 → 드릴게요",
+          "zh": "제가 자료를 보내 드릴게요\n变形过程：보내다 → 보내 + 드리다 → 드릴게요"
+        }
       }
     ]
   },
@@ -6566,6 +7364,34 @@ window.HARUMAL_GRAMMAR_PACK_FOUNDATIONS = [
           "ja": "좋아요 → くだけたヘ体",
           "en": "좋아요 → Informal 해 style",
           "zh": "좋아요 → 非敬语해体"
+        }
+      },
+      {
+        "id": "extended-informal-style-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "서로 반말을 쓰는 친구와 다음 날 재회할 계획을 함께 정하려고 제안합니다.",
+        "contextMeaning": {
+          "ko": "서로 반말을 쓰는 친구와 다음 날 재회할 계획을 함께 정하려고 제안합니다.",
+          "ja": "互いにタメ口で話す友だちに、明日また会おうと言います。",
+          "en": "Suggest meeting again tomorrow to a friend with whom you use informal speech.",
+          "zh": "对约定互用非敬语的好友说，明天再见面吧。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: -자\n제시어: 내일 / 다시 / 만나다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：-자\n語句：내일 / 다시 / 만나다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: -자\nCues: 내일 / 다시 / 만나다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：-자\n提示词：내일 / 다시 / 만나다"
+        },
+        "accepted": [
+          "내일 다시 만나자"
+        ],
+        "explanation": {
+          "ko": "내일 다시 만나자\n형태를 만드는 과정: 만나다 → 만나- + -자",
+          "ja": "내일 다시 만나자\n形の作り方：만나다 → 만나- + -자",
+          "en": "내일 다시 만나자\nFormation: 만나다 → 만나- + -자",
+          "zh": "내일 다시 만나자\n变形过程：만나다 → 만나- + -자"
         }
       }
     ]

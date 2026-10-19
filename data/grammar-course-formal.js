@@ -223,6 +223,35 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "en": "친절할 뿐만 아니라 — Use -(으)ㄹ 뿐만 아니라 with verbs/adjectives and 일 뿐만 아니라 with nouns. This -(으)ㄹ need not indicate future time. Past events take -았/었을 뿐만 아니라.",
           "zh": "친절할 뿐만 아니라 — 动词、形容词用-(으)ㄹ 뿐만 아니라，名词用일 뿐만 아니라。此处-(으)ㄹ未必表示将来，过去用-았/었을 뿐만 아니라。"
         }
+      },
+      {
+        "id": "extended-addition-formal-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "새 노트북의 두 장점을 소개해요.",
+        "contextMeaning": {
+          "ko": "새 노트북의 두 장점을 소개해요.",
+          "ja": "新しいノートパソコンの長所を二つ紹介します。",
+          "en": "Introduce two advantages of a new laptop.",
+          "zh": "介绍新笔记本电脑的两项优点。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n이 노트북은 / [빠르다] / 배터리도 오래가요\n-(으)ㄹ 뿐만 아니라",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n이 노트북은 / [빠르다] / 배터리도 오래가요\n-(으)ㄹ 뿐만 아니라",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n이 노트북은 / [빠르다] / 배터리도 오래가요\n-(으)ㄹ 뿐만 아니라",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n이 노트북은 / [빠르다] / 배터리도 오래가요\n-(으)ㄹ 뿐만 아니라"
+        },
+        "accepted": [
+          "이 노트북은 빠를 뿐만 아니라 배터리도 오래가요",
+          "이 노트북은 빠를 뿐만 아니라, 배터리도 오래가요"
+        ],
+        "explanation": {
+          "ko": "이 노트북은 빠를 뿐만 아니라 배터리도 오래가요\n빠르다의 어간 빠르-에 -ㄹ을 붙이고 두 번째 장점을 이어 씁니다.",
+          "ja": "이 노트북은 빠를 뿐만 아니라 배터리도 오래가요\n빠르-に-ㄹを付け、二つ目の長所を続けます。",
+          "en": "이 노트북은 빠를 뿐만 아니라 배터리도 오래가요\nAttach -ㄹ to 빠르- and add the second advantage.",
+          "zh": "이 노트북은 빠를 뿐만 아니라 배터리도 오래가요\n빠르-接-ㄹ，再连接第二项优点。"
+        }
       }
     ]
   },
@@ -451,6 +480,34 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "en": "확인했을 뿐이에요 — Space 뿐이다 after a predicate modifier. Use -(으)ㄹ 뿐이다 for a current/general limitation and -았/었을 뿐이다, rather than -(으)ㄴ 뿐이다, for a completed act. Attach noun + 뿐이다 without a space.",
           "zh": "확인했을 뿐이에요 — 谓词后뿐이다前空格。当前或一般限定用-(으)ㄹ 뿐이다，完成动作用-았/었을 뿐이다而非-(으)ㄴ 뿐이다。名词后直接接뿐이다。"
         }
+      },
+      {
+        "id": "extended-only-result-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "주소를 베끼기만 했고 수정하지는 않았어요.",
+        "contextMeaning": {
+          "ko": "주소를 베끼기만 했고 수정하지는 않았어요.",
+          "ja": "住所を書き写しただけで修正していません。",
+          "en": "You only copied the address; you did not edit it.",
+          "zh": "只是抄了地址，没有修改。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n저는 / 주소를 / [적다]\n-았/었을 뿐이에요",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n저는 / 주소를 / [적다]\n-았/었을 뿐이에요",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n저는 / 주소를 / [적다]\n-았/었을 뿐이에요",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n저는 / 주소를 / [적다]\n-았/었을 뿐이에요"
+        },
+        "accepted": [
+          "저는 주소를 적었을 뿐이에요"
+        ],
+        "explanation": {
+          "ko": "저는 주소를 적었을 뿐이에요\n적다에 과거 -었-을 붙여 이미 한 행동의 범위를 한정합니다.",
+          "ja": "저는 주소를 적었을 뿐이에요\n적다に過去-었-を付け、既にした行動を限定します。",
+          "en": "저는 주소를 적었을 뿐이에요\nPast -었- on 적다 limits the scope of the completed act.",
+          "zh": "저는 주소를 적었을 뿐이에요\n적다接过去-었-，限定已经完成的行为。"
+        }
       }
     ]
   },
@@ -676,6 +733,35 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "ja": "튼튼하거니와 — 動詞・形容詞の語幹に-거니와、名詞に이거니와を付けます。ここでは二つの事実を加える用法を扱います。文章的で、日常会話なら-고や뿐만 아니라が軽い表現です。",
           "en": "튼튼하거니와 — Attach -거니와 to verb/adjective stems and 이거니와 to nouns. This lesson covers adding two facts. It is literary/formal; -고 or 뿐만 아니라 is less weighty in conversation.",
           "zh": "튼튼하거니와 — 动词、形容词词干接-거니와，名词接이거니와。本课讲两个事实的叠加，多用于正式书面语，日常可用-고或뿐만 아니라。"
+        }
+      },
+      {
+        "id": "extended-addition-geodeuniwa-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "계획의 실용성을 뒷받침하는 두 사실을 글로 써요.",
+        "contextMeaning": {
+          "ko": "계획의 실용성을 뒷받침하는 두 사실을 글로 써요.",
+          "ja": "計画の実用性を支える二つの事実を文章にします。",
+          "en": "Write two facts supporting a plan’s practicality.",
+          "zh": "书面列出支持计划实用性的两项事实。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n이 계획은 / [현실적이다] / 예산도 적게 든다\n-거니와",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n이 계획은 / [현실적이다] / 예산도 적게 든다\n-거니와",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n이 계획은 / [현실적이다] / 예산도 적게 든다\n-거니와",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n이 계획은 / [현실적이다] / 예산도 적게 든다\n-거니와"
+        },
+        "accepted": [
+          "이 계획은 현실적이거니와 예산도 적게 든다",
+          "이 계획은 현실적이거니와, 예산도 적게 든다"
+        ],
+        "explanation": {
+          "ko": "이 계획은 현실적이거니와 예산도 적게 든다\n현실적이다의 이-에 -거니와를 붙여 또 다른 근거를 더합니다.",
+          "ja": "이 계획은 현실적이거니와 예산도 적게 든다\n현실적이다の이-に-거니와を付け、根拠を追加します。",
+          "en": "이 계획은 현실적이거니와 예산도 적게 든다\nAttach -거니와 to the copular stem 이- to add another supporting point.",
+          "zh": "이 계획은 현실적이거니와 예산도 적게 든다\n系词词干이-接-거니와，补充另一依据。"
         }
       }
     ]
@@ -903,6 +989,35 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "en": "생각할수록 — Use -(으)ㄹ수록 with verbs/adjectives and 일수록 with nouns. Consonants take -을수록; vowels and ㄹ take -ㄹ수록: 읽을수록, 갈수록, 알수록. Do not space 수록.",
           "zh": "생각할수록 — 动词、形容词用-(으)ㄹ수록，名词用일수록。辅音后接-을수록，元音、ㄹ后接-ㄹ수록：읽을수록、갈수록、알수록。수록不分写。"
         }
+      },
+      {
+        "id": "extended-increasing-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "산책 시간이 길어지면서 기분이 점점 좋아져요.",
+        "contextMeaning": {
+          "ko": "산책 시간이 길어지면서 기분이 점점 좋아져요.",
+          "ja": "散歩を続けるほど気分が良くなります。",
+          "en": "Your mood improves as you keep walking.",
+          "zh": "散步越久心情越好。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n공원을 / [걷다] / 기분이 좋아져요\n-(으)ㄹ수록",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n공원을 / [걷다] / 기분이 좋아져요\n-(으)ㄹ수록",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n공원을 / [걷다] / 기분이 좋아져요\n-(으)ㄹ수록",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n공원을 / [걷다] / 기분이 좋아져요\n-(으)ㄹ수록"
+        },
+        "accepted": [
+          "공원을 걸을수록 기분이 좋아져요",
+          "공원을 걸을수록, 기분이 좋아져요"
+        ],
+        "explanation": {
+          "ko": "공원을 걸을수록 기분이 좋아져요\n걷다는 모음 앞에서 ㄷ이 ㄹ로 바뀌어 걸을수록이 됩니다.",
+          "ja": "공원을 걸을수록 기분이 좋아져요\n걷다は母音の前でㄷがㄹになり걸을수록です。",
+          "en": "공원을 걸을수록 기분이 좋아져요\n걷다 changes ㄷ to ㄹ before the vowel: 걸을수록.",
+          "zh": "공원을 걸을수록 기분이 좋아져요\n걷다在元音前将ㄷ变为ㄹ，成为걸을수록。"
+        }
       }
     ]
   },
@@ -1129,6 +1244,34 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "en": "눈물이 나도록 — Degree -도록 attaches to verb/adjective stems; -(으)ㄹ 정도로 builds a degree clause. Use a resulting state as a measure, as in 귀가 아프도록/아플 정도로.",
           "zh": "눈물이 나도록 — 程度用法的-도록接动词、形容词词干，-(으)ㄹ 정도로构成程度修饰语，例如귀가 아프도록/아플 정도로，以结果状态衡量程度。"
         }
+      },
+      {
+        "id": "extended-degree-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "알람이 아주 작아서 잠에서 깨어나지 못했어요.",
+        "contextMeaning": {
+          "ko": "알람이 아주 작아서 잠에서 깨어나지 못했어요.",
+          "ja": "アラームが小さすぎて目が覚めませんでした。",
+          "en": "The alarm was so quiet that it could not wake you.",
+          "zh": "闹钟声音太小，没能醒来。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n알람 소리가 / [들리지 않다] / 작았어요\n-(으)ㄹ 정도로",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n알람 소리가 / [들리지 않다] / 작았어요\n-(으)ㄹ 정도로",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n알람 소리가 / [들리지 않다] / 작았어요\n-(으)ㄹ 정도로",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n알람 소리가 / [들리지 않다] / 작았어요\n-(으)ㄹ 정도로"
+        },
+        "accepted": [
+          "알람 소리가 들리지 않을 정도로 작았어요"
+        ],
+        "explanation": {
+          "ko": "알람 소리가 들리지 않을 정도로 작았어요\n않다에 -을 정도로를 붙여 작은 정도를 들리지 않는 상태로 나타냅니다.",
+          "ja": "알람 소리가 들리지 않을 정도로 작았어요\n않다に-을 정도로を付け、聞こえない状態で小ささの程度を示します。",
+          "en": "알람 소리가 들리지 않을 정도로 작았어요\nUse 않을 정도로 to measure quietness by inaudibility.",
+          "zh": "알람 소리가 들리지 않을 정도로 작았어요\n用않을 정도로，以听不见的状态衡量音量小的程度。"
+        }
       }
     ]
   },
@@ -1354,6 +1497,35 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "ja": "노력한 만큼 — 動詞現在は-는 만큼、完了は-(으)ㄴ 만큼、形容詞は-(으)ㄴ 만큼、名詞はN만큼。ここでは量・程度の比較です。아는 만큼ではㄹが-는の前で落ちます。 これから食べる量・必要な量は-(으)ㄹ 만큼でも表せます。먹을 만큼。",
           "en": "노력한 만큼 — Use -는 만큼 for present verbs, -(으)ㄴ 만큼 for completed verbs/adjectives, and N만큼 for nouns. This lesson compares amounts/degrees. ㄹ drops before -는 in 아는 만큼. Use -(으)ㄹ 만큼 for a prospective or required amount, as in 먹을 만큼.",
           "zh": "노력한 만큼 — 动词现在用-는 만큼，完成用-(으)ㄴ 만큼，形容词用-(으)ㄴ 만큼，名词用N만큼。本课比较数量或程度，아는 만큼中ㄹ在-는前脱落。 预期或所需数量也可用-(으)ㄹ 만큼，如먹을 만큼。"
+        }
+      },
+      {
+        "id": "extended-comparison-degree-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "참가한 시간과 자원봉사 인정 시간이 같아요.",
+        "contextMeaning": {
+          "ko": "참가한 시간과 자원봉사 인정 시간이 같아요.",
+          "ja": "参加時間と認められる奉仕時間が一致します。",
+          "en": "Your credited volunteer hours match your participation time.",
+          "zh": "认定的志愿服务时间与实际参加时长相同。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n행사에 / [참여하다] / 봉사 시간을 인정받아요\n완료 -(으)ㄴ 만큼",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n행사에 / [참여하다] / 봉사 시간을 인정받아요\n完了 -(으)ㄴ 만큼",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n행사에 / [참여하다] / 봉사 시간을 인정받아요\ncompleted action -(으)ㄴ 만큼",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n행사에 / [참여하다] / 봉사 시간을 인정받아요\n完成动作 -(으)ㄴ 만큼"
+        },
+        "accepted": [
+          "행사에 참여한 만큼 봉사 시간을 인정받아요",
+          "행사에 참여한 만큼, 봉사 시간을 인정받아요"
+        ],
+        "explanation": {
+          "ko": "행사에 참여한 만큼 봉사 시간을 인정받아요\n이미 참여한 양이 기준이므로 완료 관형형 참여한 뒤에 만큼을 씁니다.",
+          "ja": "행사에 참여한 만큼 봉사 시간을 인정받아요\n既に参加した量が基準なので完了形참여한に만큼を続けます。",
+          "en": "행사에 참여한 만큼 봉사 시간을 인정받아요\nCompleted 참여한 supplies the amount used as the benchmark.",
+          "zh": "행사에 참여한 만큼 봉사 시간을 인정받아요\n用完成修饰形참여한表示作为标准的参与量。"
         }
       }
     ]
@@ -1583,6 +1755,34 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "en": "예상에 비해서 — Attach 에 비해/에 비해서 to a noun as the comparison standard. Nominalize a clause, as in -는 것에 비해. The construction need not imply a surprising result.",
           "zh": "예상에 비해서 — 名词后接에 비해/에 비해서，表示比较标准。分句需名词化，如-는 것에 비해。该形式不一定表示出乎预期。"
         }
+      },
+      {
+        "id": "extended-in-proportion-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "새 건물과 옛 건물의 높이를 비교해요.",
+        "contextMeaning": {
+          "ko": "새 건물과 옛 건물의 높이를 비교해요.",
+          "ja": "新旧の建物の高さを比べます。",
+          "en": "Compare the new and old buildings’ heights.",
+          "zh": "比较新旧楼房的高度。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n새 건물은 / [옛 건물] / 높아요\n에 비해",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n새 건물은 / [옛 건물] / 높아요\n에 비해",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n새 건물은 / [옛 건물] / 높아요\n에 비해",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n새 건물은 / [옛 건물] / 높아요\n에 비해"
+        },
+        "accepted": [
+          "새 건물은 옛 건물에 비해 높아요"
+        ],
+        "explanation": {
+          "ko": "새 건물은 옛 건물에 비해 높아요\n옛 건물에 에 비해를 붙여 비교 기준으로 삼습니다.",
+          "ja": "새 건물은 옛 건물에 비해 높아요\n옛 건물に에 비해を付けて比較基準にします。",
+          "en": "새 건물은 옛 건물에 비해 높아요\nAttach 에 비해 to 옛 건물 as the comparison standard.",
+          "zh": "새 건물은 옛 건물에 비해 높아요\n옛 건물后接에 비해，作为比较标准。"
+        }
       }
     ]
   },
@@ -1808,6 +2008,35 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "ja": "설명과 달리 — 名詞の子音末には과 달리、母音末には와 달리。節は-는 것과 달리と名詞化します。共通点より違いを取り上げます。",
           "en": "설명과 달리 — Use 과 달리 after a consonant-final noun and 와 달리 after a vowel-final noun. Nominalize clauses with -는 것과 달리. This highlights a difference rather than similarity.",
           "zh": "설명과 달리 — 名词辅音后接과 달리，元音后接와 달리。分句用-는 것과 달리等名词化，强调差异而非共性。"
+        }
+      },
+      {
+        "id": "extended-unlike-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "실제 메뉴는 사진보다 훨씬 단순해요. 차이를 말해요.",
+        "contextMeaning": {
+          "ko": "실제 메뉴는 사진보다 훨씬 단순해요. 차이를 말해요.",
+          "ja": "実際のメニューは写真よりずっと単純です。違いを述べます。",
+          "en": "The actual menu is much simpler than the picture. State the difference.",
+          "zh": "实际菜单比照片简单得多，请说明差异。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n실제 메뉴는 / [사진] / 단순해요\n와/과 달리",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n실제 메뉴는 / [사진] / 단순해요\n와/과 달리",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n실제 메뉴는 / [사진] / 단순해요\n와/과 달리",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n실제 메뉴는 / [사진] / 단순해요\n와/과 달리"
+        },
+        "accepted": [
+          "실제 메뉴는 사진과 달리 단순해요",
+          "실제 메뉴는 사진과 달리 단순하여요"
+        ],
+        "explanation": {
+          "ko": "실제 메뉴는 사진과 달리 단순해요\n사진은 받침이 있으므로 과 달리를 붙입니다.",
+          "ja": "실제 메뉴는 사진과 달리 단순해요\n사진は子音末なので과 달리を付けます。",
+          "en": "실제 메뉴는 사진과 달리 단순해요\n사진 ends in a consonant, so use 과 달리.",
+          "zh": "실제 메뉴는 사진과 달리 단순해요\n사진有收音，因此接과 달리。"
         }
       }
     ]
@@ -2035,6 +2264,36 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "en": "이용하는 데 반해 — Use 에 반해 with nouns, -는 데 반해 with present verbs, and -(으)ㄴ 데 반해 with adjectives/completed verbs. Space 데: 작은 데 반해.",
           "zh": "이용하는 데 반해 — 名词用에 반해，动词现在用-는 데 반해，形容词、完成动作用-(으)ㄴ 데 반해。데须分写，如작은 데 반해。"
         }
+      },
+      {
+        "id": "extended-contrary-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "형은 말을 많이 하지만 동생은 조용해요.",
+        "contextMeaning": {
+          "ko": "형은 말을 많이 하지만 동생은 조용해요.",
+          "ja": "兄はよく話しますが弟は静かです。",
+          "en": "The older brother talks a lot, while the younger one is quiet.",
+          "zh": "哥哥话多，而弟弟安静。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n형은 / 말을 많이 / [하다] / 동생은 조용해요\n현재 -는 데 반해",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n형은 / 말을 많이 / [하다] / 동생은 조용해요\n現在 -는 데 반해",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n형은 / 말을 많이 / [하다] / 동생은 조용해요\npresent -는 데 반해",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n형은 / 말을 많이 / [하다] / 동생은 조용해요\n现在 -는 데 반해"
+        },
+        "accepted": [
+          "형은 말을 많이 하는 데 반해 동생은 조용해요",
+          "형은 말을 많이 하는 데 반해 동생은 조용하여요",
+          "형은 말을 많이 하는 데 반해, 동생은 조용해요"
+        ],
+        "explanation": {
+          "ko": "형은 말을 많이 하는 데 반해 동생은 조용해요\n현재 동작은 하는으로 만들고 의존 명사 데를 띄어 씁니다.",
+          "ja": "형은 말을 많이 하는 데 반해 동생은 조용해요\n現在動作は하는とし、依存名詞데を分けます。",
+          "en": "형은 말을 많이 하는 데 반해 동생은 조용해요\nUse present 하는, and space the dependent noun 데.",
+          "zh": "형은 말을 많이 하는 데 반해 동생은 조용해요\n当前动作用하는，依存名词데前空格。"
+        }
       }
     ]
   },
@@ -2260,6 +2519,36 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "ja": "바쁜 대신에 — 動詞現在は-는 대신(에)、形容詞は-(으)ㄴ 대신(에)、名詞はN 대신(에)。ある行動を別の行動に替えたり、利点と負担を交換条件として結びます。",
           "en": "바쁜 대신에 — Use -는 대신(에) with present verbs, -(으)ㄴ 대신(에) with adjectives, and N 대신(에) with nouns. It expresses replacement or a trade-off between benefits and costs.",
           "zh": "바쁜 대신에 — 动词现在用-는 대신(에)，形容词用-(으)ㄴ 대신(에)，名词用N 대신(에)。表示以另一行为替代，或连接好处与代价。"
+        }
+      },
+      {
+        "id": "extended-instead-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "물건을 새로 사지 않고 고쳐 쓰기로 했어요.",
+        "contextMeaning": {
+          "ko": "물건을 새로 사지 않고 고쳐 쓰기로 했어요.",
+          "ja": "新品を買わず修理して使うことにしました。",
+          "en": "You decided to repair the item rather than buy a new one.",
+          "zh": "决定不买新的，而是修好再用。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n새 제품을 / [사다] / 기존 제품을 수리했어요\n-는 대신에",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n새 제품을 / [사다] / 기존 제품을 수리했어요\n-는 대신에",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n새 제품을 / [사다] / 기존 제품을 수리했어요\n-는 대신에",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n새 제품을 / [사다] / 기존 제품을 수리했어요\n-는 대신에"
+        },
+        "accepted": [
+          "새 제품을 사는 대신에 기존 제품을 수리했어요",
+          "새 제품을 사는 대신에 기존 제품을 수리하였어요",
+          "새 제품을 사는 대신에, 기존 제품을 수리했어요"
+        ],
+        "explanation": {
+          "ko": "새 제품을 사는 대신에 기존 제품을 수리했어요\n사는 대신에는 하지 않은 구매를 수리로 대체합니다.",
+          "ja": "새 제품을 사는 대신에 기존 제품을 수리했어요\n사는 대신에はしなかった購入を修理に置き換えます。",
+          "en": "새 제품을 사는 대신에 기존 제품을 수리했어요\n사는 대신에 replaces the unperformed purchase with repair.",
+          "zh": "새 제품을 사는 대신에 기존 제품을 수리했어요\n사는 대신에把未进行的购买替换为修理。"
         }
       }
     ]
@@ -2487,6 +2776,35 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "en": "정리하는 김에 — Use -는 김에 for an ongoing/planned action and -(으)ㄴ 김에 for an action already done. Typically the same actor adds an action to an existing occasion. Do not extend this action-opportunity use directly to adjectives.",
           "zh": "정리하는 김에 — 进行或计划动作接-는 김에，已做动作接-(으)ㄴ 김에。通常同一行为人借原有行动之机做额外事情，此动作机会用法不能直接套用于形容词。"
         }
+      },
+      {
+        "id": "extended-while-at-it-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "부산에 도착한 기회를 이용해 친척도 만났어요.",
+        "contextMeaning": {
+          "ko": "부산에 도착한 기회를 이용해 친척도 만났어요.",
+          "ja": "釜山に着いた機会を利用して親戚にも会いました。",
+          "en": "After reaching Busan, you used the opportunity to visit relatives.",
+          "zh": "来到釜山后，已借机见了亲戚。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n부산에 / [오다] / 친척도 만났어요\n완료 -(으)ㄴ 김에",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n부산에 / [오다] / 친척도 만났어요\n完了 -(으)ㄴ 김에",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n부산에 / [오다] / 친척도 만났어요\ncompleted action -(으)ㄴ 김에",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n부산에 / [오다] / 친척도 만났어요\n完成动作 -(으)ㄴ 김에"
+        },
+        "accepted": [
+          "부산에 온 김에 친척도 만났어요",
+          "부산에 온 김에, 친척도 만났어요"
+        ],
+        "explanation": {
+          "ko": "부산에 온 김에 친척도 만났어요\n도착이 끝났으므로 오는이 아니라 온 김에로 기회를 연결합니다.",
+          "ja": "부산에 온 김에 친척도 만났어요\n到着済みなので오는でなく온 김에で機会をつなぎます。",
+          "en": "부산에 온 김에 친척도 만났어요\nArrival is complete, so use 온 김에 rather than 오는 김에.",
+          "zh": "부산에 온 김에 친척도 만났어요\n已经到达，所以用온 김에，而非오는 김에。"
+        }
       }
     ]
   },
@@ -2712,6 +3030,35 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "ja": "읽을 겸 — 動詞に-(으)ㄹ 겸(해서)を付けます。A도 할 겸 B도 할 겸と目的を並べられます。一つだけ述べても他の目的を含意します。名詞のN 겸 Nは役割の兼用です。",
           "en": "읽을 겸 — Attach -(으)ㄹ 겸(해서) to action verbs. A도 할 겸 B도 할 겸 lists two purposes; naming one still implies another. N 겸 N combines noun roles.",
           "zh": "읽을 겸 — 动作动词接-(으)ㄹ 겸(해서)。可用A도 할 겸 B도 할 겸列举目的，只说一个也暗含其他目的。N 겸 N表示兼具身份或用途。"
+        }
+      },
+      {
+        "id": "extended-serve-both-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "여행 준비도 하고 외국어 연습도 하려고 안내서를 읽어요.",
+        "contextMeaning": {
+          "ko": "여행 준비도 하고 외국어 연습도 하려고 안내서를 읽어요.",
+          "ja": "旅行準備と語学練習を兼ねてガイドを読みます。",
+          "en": "Read a guide both to prepare for travel and practice a language.",
+          "zh": "读指南兼顾旅行准备与语言练习。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n여행 준비도 / [하다] / 영어 안내서를 읽어요\n-(으)ㄹ 겸",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n여행 준비도 / [하다] / 영어 안내서를 읽어요\n-(으)ㄹ 겸",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n여행 준비도 / [하다] / 영어 안내서를 읽어요\n-(으)ㄹ 겸",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n여행 준비도 / [하다] / 영어 안내서를 읽어요\n-(으)ㄹ 겸"
+        },
+        "accepted": [
+          "여행 준비도 할 겸 영어 안내서를 읽어요",
+          "여행 준비도 할 겸, 영어 안내서를 읽어요"
+        ],
+        "explanation": {
+          "ko": "여행 준비도 할 겸 영어 안내서를 읽어요\n하다를 할로 만들어 추가 목적을 나타내고 본 행동을 이어 씁니다.",
+          "ja": "여행 준비도 할 겸 영어 안내서를 읽어요\n하다を할にして追加目的を示し、主な動作を続けます。",
+          "en": "여행 준비도 할 겸 영어 안내서를 읽어요\nForm 할 from 하다 to give an additional purpose before the main action.",
+          "zh": "여행 준비도 할 겸 영어 안내서를 읽어요\n하다变为할，表达兼有目的，再接主要动作。"
         }
       }
     ]
@@ -2943,6 +3290,35 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "en": "괜찮은 척하다 — Use -는 척하다 for present verbs, -(으)ㄴ 척하다 for completed verbs/adjectives, and 인 척하다 for nouns. It describes deliberate pretense. 알다 drops ㄹ: 아는 척하다.",
           "zh": "괜찮은 척하다 — 动词现在用-는 척하다，完成用-(으)ㄴ 척하다，形容词用-(으)ㄴ 척하다，名词用인 척하다，表示故意伪装。알다脱落ㄹ，成为아는 척하다。"
         }
+      },
+      {
+        "id": "extended-pretend-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "사실은 선물을 봤지만 못 본 것처럼 행동했어요.",
+        "contextMeaning": {
+          "ko": "사실은 선물을 봤지만 못 본 것처럼 행동했어요.",
+          "ja": "実際には贈り物を見ましたが見ていないふりをしました。",
+          "en": "You saw the gift but pretended you had not.",
+          "zh": "实际看到了礼物，却装作没看见。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n저는 / 선물을 / [못 보다]\n완료 -(으)ㄴ 척했어요",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n저는 / 선물을 / [못 보다]\n完了 -(으)ㄴ 척했어요",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n저는 / 선물을 / [못 보다]\ncompleted action -(으)ㄴ 척했어요",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n저는 / 선물을 / [못 보다]\n完成动作 -(으)ㄴ 척했어요"
+        },
+        "accepted": [
+          "저는 선물을 못 본 척했어요",
+          "저는 선물을 못 본 척하였어요"
+        ],
+        "explanation": {
+          "ko": "저는 선물을 못 본 척했어요\n못 보다의 완료 관형형 못 본 뒤에 척했어요를 붙여 가장을 말합니다.",
+          "ja": "저는 선물을 못 본 척했어요\n못 보다の完了形못 본に척했어요を続けてふりを表します。",
+          "en": "저는 선물을 못 본 척했어요\nUse completed 못 본 before 척했어요 to describe the pretense.",
+          "zh": "저는 선물을 못 본 척했어요\n못 보다的完成修饰形못 본后接척했어요，表达伪装。"
+        }
       }
     ]
   },
@@ -3168,6 +3544,34 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "ja": "많이 걷는 편이다 — 動詞は-는 편이다、形容詞は-(으)ㄴ 편이다。通常の基準や他者と比べどちら側に近いかを述べます。一回の出来事より習慣や比較的持続する特徴に合います。",
           "en": "많이 걷는 편이다 — Use -는 편이다 with verbs and -(으)ㄴ 편이다 with adjectives. It places something on a side of a relative scale, typically for habits or sustained qualities rather than a single event.",
           "zh": "많이 걷는 편이다 — 动词用-는 편이다，形容词用-(으)ㄴ 편이다，根据常规标准或其他对象判断偏向哪一边，通常用于习惯或较持续的特点。"
+        }
+      },
+      {
+        "id": "extended-tendency-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "평소에 다른 사람보다 질문을 자주 해요.",
+        "contextMeaning": {
+          "ko": "평소에 다른 사람보다 질문을 자주 해요.",
+          "ja": "普段ほかの人より質問をよくします。",
+          "en": "You usually ask more questions than other people.",
+          "zh": "平时比别人更常提问。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n저는 / 질문을 많이 / [하다]\n-는 편이에요",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n저는 / 질문을 많이 / [하다]\n-는 편이에요",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n저는 / 질문을 많이 / [하다]\n-는 편이에요",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n저는 / 질문을 많이 / [하다]\n-는 편이에요"
+        },
+        "accepted": [
+          "저는 질문을 많이 하는 편이에요"
+        ],
+        "explanation": {
+          "ko": "저는 질문을 많이 하는 편이에요\n습관적 행동을 하는 편이에요로 표현해 절대적인 항상과 구별합니다.",
+          "ja": "저는 질문을 많이 하는 편이에요\n習慣を하는 편이에요で示し、絶対的ないつもとは区別します。",
+          "en": "저는 질문을 많이 하는 편이에요\n하는 편이에요 describes a habit without claiming “always.”",
+          "zh": "저는 질문을 많이 하는 편이에요\n하는 편이에요描述倾向，不断言“总是”。"
         }
       }
     ]
@@ -3399,6 +3803,35 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "en": "끝난 듯하다 — Use -는 듯하다 for present verbs, -(으)ㄴ 듯하다 for completed verbs/adjectives, and 인 듯하다 for nouns. -(으)ㄹ 듯하다 predicts a possibility. Spacing before 듯하다 is the principle. Attachment is allowed in cases such as this lesson’s 자는듯하다 and 끝난듯하다, but not with every verb.",
           "zh": "끝난 듯하다 — 当前动作用-는 듯하다，完成动作、形容词用-(으)ㄴ 듯하다，名词用인 듯하다。-(으)ㄹ 듯하다表示预期可能性，듯하다前原则上空格。本课的자는듯하다、끝난듯하다等情况也允许连写，但并非所有动词均可连写。"
         }
+      },
+      {
+        "id": "extended-appear-as-if-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "복도에서 발소리가 들려 누군가 다가오는 것 같아요.",
+        "contextMeaning": {
+          "ko": "복도에서 발소리가 들려 누군가 다가오는 것 같아요.",
+          "ja": "廊下の足音から誰かが近づいていると推測します。",
+          "en": "Footsteps in the hall suggest someone is approaching.",
+          "zh": "走廊传来脚步声，推测有人正在靠近。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n누군가 / 복도에서 / [다가오다]\n현재 -는 듯해요",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n누군가 / 복도에서 / [다가오다]\n現在 -는 듯해요",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n누군가 / 복도에서 / [다가오다]\npresent -는 듯해요",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n누군가 / 복도에서 / [다가오다]\n现在 -는 듯해요"
+        },
+        "accepted": [
+          "누군가 복도에서 다가오는 듯해요",
+          "누군가 복도에서 다가오는 듯하여요"
+        ],
+        "explanation": {
+          "ko": "누군가 복도에서 다가오는 듯해요\n현재 진행되는 행동의 추측이므로 다가오는 뒤에 듯해요를 씁니다.",
+          "ja": "누군가 복도에서 다가오는 듯해요\n進行中の動作の推測なので다가오는に듯해요を続けます。",
+          "en": "누군가 복도에서 다가오는 듯해요\nThe inference concerns a current action, so use 다가오는 듯해요.",
+          "zh": "누군가 복도에서 다가오는 듯해요\n推测当前动作，因此用다가오는 듯해요。"
+        }
       }
     ]
   },
@@ -3624,6 +4057,34 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "ja": "부족할 우려가 있다 — 動詞・形容詞の-(으)ㄹ連体形に우려가 있다を続けます。案内・報告で今後の望ましくない結果を慎重に述べます。可能性であり確定ではありません。",
           "en": "부족할 우려가 있다 — Follow the -(으)ㄹ modifier of a verb/adjective with 우려가 있다. Notices and reports use it for an undesirable prospective outcome. It signals risk, not certainty.",
           "zh": "부족할 우려가 있다 — 动词、形容词的-(으)ㄹ修饰形后接우려가 있다，多用于通知或报告，谨慎表达未来不利结果的可能性，而非确定发生。"
+        }
+      },
+      {
+        "id": "extended-likely-risk-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "추위 때문에 수도관이 터질 가능성을 공식적으로 경고해요.",
+        "contextMeaning": {
+          "ko": "추위 때문에 수도관이 터질 가능성을 공식적으로 경고해요.",
+          "ja": "寒さで水道管が破裂する可能性を正式に警告します。",
+          "en": "Formally warn that cold weather could burst a water pipe.",
+          "zh": "正式警示低温可能导致水管破裂。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n한파로 / 수도관이 / [터지다]\n-(으)ㄹ 우려가 있다",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n한파로 / 수도관이 / [터지다]\n-(으)ㄹ 우려가 있다",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n한파로 / 수도관이 / [터지다]\n-(으)ㄹ 우려가 있다",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n한파로 / 수도관이 / [터지다]\n-(으)ㄹ 우려가 있다"
+        },
+        "accepted": [
+          "한파로 수도관이 터질 우려가 있다"
+        ],
+        "explanation": {
+          "ko": "한파로 수도관이 터질 우려가 있다\n터질은 앞으로의 가능성을 나타내고 우려가 있다는 부정적 결과를 경고합니다.",
+          "ja": "한파로 수도관이 터질 우려가 있다\n터질は今後の可能性、우려가 있다は不利な結果への警告です。",
+          "en": "한파로 수도관이 터질 우려가 있다\n터질 marks a future possibility; 우려가 있다 frames it as a risk.",
+          "zh": "한파로 수도관이 터질 우려가 있다\n터질表示未来可能性，우려가 있다将其表为风险。"
         }
       }
     ]
@@ -3851,6 +4312,34 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "en": "개선될 전망이다 — Follow the -(으)ㄹ modifier of a verb/adjective with 전망이다. News and reports use it for evidence- or trend-based forecasts. It is not restricted to positive outcomes.",
           "zh": "개선될 전망이다 — 动词、形容词的-(으)ㄹ修饰形后接전망이다，多在新闻报告中依据资料或趋势预测未来，不限于积极结果。"
         }
+      },
+      {
+        "id": "extended-expected-positive-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "자료를 바탕으로 다음 분기의 비용 감소를 예측해요.",
+        "contextMeaning": {
+          "ko": "자료를 바탕으로 다음 분기의 비용 감소를 예측해요.",
+          "ja": "資料をもとに次の四半期の費用減少を予測します。",
+          "en": "Forecast lower costs next quarter based on data.",
+          "zh": "依据资料预测下一季度成本下降。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n다음 분기에는 / 비용이 / [줄다]\n-(으)ㄹ 전망이다",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n다음 분기에는 / 비용이 / [줄다]\n-(으)ㄹ 전망이다",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n다음 분기에는 / 비용이 / [줄다]\n-(으)ㄹ 전망이다",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n다음 분기에는 / 비용이 / [줄다]\n-(으)ㄹ 전망이다"
+        },
+        "accepted": [
+          "다음 분기에는 비용이 줄 전망이다"
+        ],
+        "explanation": {
+          "ko": "다음 분기에는 비용이 줄 전망이다\n줄다의 ㄹ을 겹쳐 쓰지 않고 줄 전망이다로 미래 추세를 말합니다.",
+          "ja": "다음 분기에는 비용이 줄 전망이다\n줄다のㄹを重ねず줄 전망이다とし、今後の傾向を述べます。",
+          "en": "다음 분기에는 비용이 줄 전망이다\nKeep a single ㄹ in 줄 전망이다 to forecast the trend.",
+          "zh": "다음 분기에는 비용이 줄 전망이다\n줄다的ㄹ不重复，写줄 전망이다预测趋势。"
+        }
       }
     ]
   },
@@ -4076,6 +4565,35 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "ja": "안내문에 따르면 — 調査・発表・報道など情報源の名詞に에 따르면を付け、その情報源の内容を続けます。引用した情報の真実性を保証する表現ではありません。",
           "en": "안내문에 따르면 — Attach 에 따르면 to an information-source noun such as a survey, announcement, or report, then state its content. Attribution does not guarantee the source is correct.",
           "zh": "안내문에 따르면 — 调查、发布、报道等信息来源名词后接에 따르면，再写其内容。标明来源并不保证内容一定正确。"
+        }
+      },
+      {
+        "id": "extended-according-to-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "공식 공지에서 토요일에도 운영한다고 읽었어요.",
+        "contextMeaning": {
+          "ko": "공식 공지에서 토요일에도 운영한다고 읽었어요.",
+          "ja": "公式のお知らせで土曜も営業と読みました。",
+          "en": "An official notice says it is open on Saturdays too.",
+          "zh": "官方通知说周六也营业。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n[공식 공지] / 토요일에도 운영해요\n에 따르면",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n[공식 공지] / 토요일에도 운영해요\n에 따르면",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n[공식 공지] / 토요일에도 운영해요\n에 따르면",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n[공식 공지] / 토요일에도 운영해요\n에 따르면"
+        },
+        "accepted": [
+          "공식 공지에 따르면 토요일에도 운영해요",
+          "공식 공지에 따르면 토요일에도 운영하여요"
+        ],
+        "explanation": {
+          "ko": "공식 공지에 따르면 토요일에도 운영해요\n공식 공지는 비교 대상이 아니라 정보 출처이므로 에 따르면을 씁니다.",
+          "ja": "공식 공지에 따르면 토요일에도 운영해요\n공식 공지は比較対象でなく情報源なので에 따르면です。",
+          "en": "공식 공지에 따르면 토요일에도 운영해요\nUse 에 따르면 because the notice is a source, not a comparison.",
+          "zh": "공식 공지에 따르면 토요일에도 운영해요\n通知是来源而非比较对象，因此用에 따르면。"
         }
       }
     ]
@@ -4305,6 +4823,35 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "en": "수량에 따라 — Attach 에 따라/에 따라서 to nouns to mark variation by condition or category. Clauses can use -느냐에 따라. This lesson separates dependence from the compliance sense in 규칙에 따라 행동하다.",
           "zh": "수량에 따라 — 名词后接에 따라/에 따라서，表示随条件、种类而异。分句可用-느냐에 따라。本课区分条件变化与규칙에 따라 행동하다的遵从义。"
         }
+      },
+      {
+        "id": "extended-depending-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "포장 방식마다 배송 기간이 달라요.",
+        "contextMeaning": {
+          "ko": "포장 방식마다 배송 기간이 달라요.",
+          "ja": "梱包方法によって配送日数が変わります。",
+          "en": "Delivery time varies with the packaging method.",
+          "zh": "配送时间随包装方式而异。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n[포장 방식] / 배송 기간이 달라져요\n에 따라",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n[포장 방식] / 배송 기간이 달라져요\n에 따라",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n[포장 방식] / 배송 기간이 달라져요\n에 따라",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n[포장 방식] / 배송 기간이 달라져요\n에 따라"
+        },
+        "accepted": [
+          "포장 방식에 따라 배송 기간이 달라져요",
+          "포장 방식에 따라서 배송 기간이 달라져요"
+        ],
+        "explanation": {
+          "ko": "포장 방식에 따라 배송 기간이 달라져요\n포장 방식은 결과를 달라지게 하는 조건이므로 에 따라로 연결합니다.",
+          "ja": "포장 방식에 따라 배송 기간이 달라져요\n포장 방식は結果を変える条件なので에 따라でつなぎます。",
+          "en": "포장 방식에 따라 배송 기간이 달라져요\n에 따라 marks the packaging method as the condition governing variation.",
+          "zh": "포장 방식에 따라 배송 기간이 달라져요\n에 따라将包装方式标为影响结果变化的条件。"
+        }
       }
     ]
   },
@@ -4530,6 +5077,34 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "ja": "대화를 통해서 — 子音末名詞は을 통해(서)、母音末名詞は를 통해(서)。人・機関・媒体・活動を介して得た情報や結果を述べます。通過経路の意味もありますが、ここでは媒介に焦点を当てます。",
           "en": "대화를 통해서 — Use 을 통해(서) after consonant-final nouns and 를 통해(서) after vowel-final nouns. It marks a person, institution, medium, or activity that mediates information or a result. This lesson focuses on mediation, not physical passage.",
           "zh": "대화를 통해서 — 辅音结尾名词用을 통해(서)，元音结尾用를 통해(서)。表示经由人、机构、媒体或活动获得信息或结果。本课聚焦媒介义，而非空间经过义。"
+        }
+      },
+      {
+        "id": "extended-through-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "박물관 영상을 보고 옛 생활을 배웠어요.",
+        "contextMeaning": {
+          "ko": "박물관 영상을 보고 옛 생활을 배웠어요.",
+          "ja": "博物館の映像で昔の生活を学びました。",
+          "en": "You learned about past daily life from a museum video.",
+          "zh": "通过博物馆视频了解了过去的生活。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n[박물관 영상] / 옛 생활을 배웠어요\n을/를 통해",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n[박물관 영상] / 옛 생활을 배웠어요\n을/를 통해",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n[박물관 영상] / 옛 생활을 배웠어요\n을/를 통해",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n[박물관 영상] / 옛 생활을 배웠어요\n을/를 통해"
+        },
+        "accepted": [
+          "박물관 영상을 통해 옛 생활을 배웠어요"
+        ],
+        "explanation": {
+          "ko": "박물관 영상을 통해 옛 생활을 배웠어요\n영상은 받침이 있으므로 을 통해를 붙여 학습 매체를 나타냅니다.",
+          "ja": "박물관 영상을 통해 옛 생활을 배웠어요\n영상は子音末なので을 통해で学習媒体を示します。",
+          "en": "박물관 영상을 통해 옛 생활을 배웠어요\nConsonant-final 영상 takes 을 통해 to mark the learning medium.",
+          "zh": "박물관 영상을 통해 옛 생활을 배웠어요\n영상有收音，接을 통해表示学习媒介。"
         }
       }
     ]
@@ -4757,6 +5332,35 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "en": "알므로 — Verbs/adjectives take -으므로 after consonants and -므로 after vowels or ㄹ; nouns take (이)므로: 작으므로, 가므로, 살므로, 학생이므로. Formal notices may follow the reason with a command.",
           "zh": "알므로 — 动词、形容词辅音后接-으므로，元音或ㄹ后接-므로；名词接(이)므로，如작으므로、가므로、살므로、학생이므로。正式通知中后项也可接命令。"
         }
+      },
+      {
+        "id": "extended-formal-cause-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "전기 점검이 필요해서 엘리베이터 사용을 금지하는 안내예요.",
+        "contextMeaning": {
+          "ko": "전기 점검이 필요해서 엘리베이터 사용을 금지하는 안내예요.",
+          "ja": "電気点検が必要なためエレベーター使用を禁じる案内です。",
+          "en": "A notice bans elevator use because electrical inspection is needed.",
+          "zh": "因需电路检查，通知禁止使用电梯。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n전기 점검이 / [필요하다] / 엘리베이터를 이용하지 마십시오\n-(으)므로",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n전기 점검이 / [필요하다] / 엘리베이터를 이용하지 마십시오\n-(으)므로",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n전기 점검이 / [필요하다] / 엘리베이터를 이용하지 마십시오\n-(으)므로",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n전기 점검이 / [필요하다] / 엘리베이터를 이용하지 마십시오\n-(으)므로"
+        },
+        "accepted": [
+          "전기 점검이 필요하므로 엘리베이터를 이용하지 마십시오",
+          "전기 점검이 필요하므로, 엘리베이터를 이용하지 마십시오"
+        ],
+        "explanation": {
+          "ko": "전기 점검이 필요하므로 엘리베이터를 이용하지 마십시오\n필요하-는 모음으로 끝나므로 -므로를 붙여 금지의 이유를 제시합니다.",
+          "ja": "전기 점검이 필요하므로 엘리베이터를 이용하지 마십시오\n필요하-は母音末なので-므로を付け、禁止の理由を示します。",
+          "en": "전기 점검이 필요하므로 엘리베이터를 이용하지 마십시오\nVowel-final 필요하- takes -므로 to supply the reason for the ban.",
+          "zh": "전기 점검이 필요하므로 엘리베이터를 이용하지 마십시오\n필요하-以元音结尾，接-므로说明禁止的理由。"
+        }
       }
     ]
   },
@@ -4982,6 +5586,35 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "ja": "살며 — 動詞・形容詞は子音末に-으며、母音・ㄹ末に-며、名詞は(이)며。읽으며・가며・살며・학생이며。性質の列挙や動作の同時性を表し、文章でよく使います。",
           "en": "살며 — Verbs/adjectives take -으며 after consonants and -며 after vowels or ㄹ; nouns take (이)며: 읽으며, 가며, 살며, 학생이며. It lists properties or coordinates simultaneous actions, especially in prose.",
           "zh": "살며 — 动词、形容词辅音后接-으며，元音或ㄹ后接-며；名词接(이)며，如읽으며、가며、살며、학생이며。常用于书面语列举性质或同时动作。"
+        }
+      },
+      {
+        "id": "extended-formal-and-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "행사장의 위치와 주차 시설을 나란히 소개해요.",
+        "contextMeaning": {
+          "ko": "행사장의 위치와 주차 시설을 나란히 소개해요.",
+          "ja": "会場の立地と駐車設備を並べて紹介します。",
+          "en": "Present the venue’s location and parking facilities together.",
+          "zh": "并列介绍会场位置与停车设施。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n행사장은 / 역에서 / [가깝다] / 주차장도 넓다\n-(으)며",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n행사장은 / 역에서 / [가깝다] / 주차장도 넓다\n-(으)며",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n행사장은 / 역에서 / [가깝다] / 주차장도 넓다\n-(으)며",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n행사장은 / 역에서 / [가깝다] / 주차장도 넓다\n-(으)며"
+        },
+        "accepted": [
+          "행사장은 역에서 가까우며 주차장도 넓다",
+          "행사장은 역에서 가까우며, 주차장도 넓다"
+        ],
+        "explanation": {
+          "ko": "행사장은 역에서 가까우며 주차장도 넓다\n가깝다는 ㅂ 불규칙이므로 가까우며로 바꿔 두 특성을 병렬로 연결합니다.",
+          "ja": "행사장은 역에서 가까우며 주차장도 넓다\n가깝다はㅂ変則なので가까우며にして特徴を並列します。",
+          "en": "행사장은 역에서 가까우며 주차장도 넓다\nThe ㅂ-irregular adjective becomes 가까우며 to coordinate two features.",
+          "zh": "행사장은 역에서 가까우며 주차장도 넓다\n가깝다属ㅂ不规则，变为가까우며并列两个特点。"
         }
       }
     ]
@@ -5209,6 +5842,39 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "en": "어려움에도 불구하고 — Use -(으)ㅁ에도 불구하고 for verbs/adjectives; nouns allow 임에도 불구하고 or N에도 불구하고. Vowels take -ㅁ, ordinary consonants -음, and ㄹ combines as ㄻ: 옴, 많음, 삶. Past takes -았/었음에도 불구하고.",
           "zh": "어려움에도 불구하고 — 动词、形容词用-(으)ㅁ에도 불구하고，名词用임에도 불구하고或N에도 불구하고。元音后-ㅁ，普通辅音后-음，ㄹ与ㅁ合为ㄻ：옴、많음、삶。过去用-았/었음에도 불구하고。"
         }
+      },
+      {
+        "id": "extended-formal-concession-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "비용을 줄였지만 당시 예산은 여전히 부족했어요.",
+        "contextMeaning": {
+          "ko": "비용을 줄였지만 당시 예산은 여전히 부족했어요.",
+          "ja": "費用を減らしましたが、その時の予算はまだ不足していました。",
+          "en": "Costs were reduced, yet the budget was still insufficient at the time.",
+          "zh": "当时已降低费用，但预算仍然不足。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n비용을 / [줄이다] / 예산이 부족했다\n과거 -았/었음에도 불구하고",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n비용을 / [줄이다] / 예산이 부족했다\n過去 -았/었음에도 불구하고",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n비용을 / [줄이다] / 예산이 부족했다\npast -았/었음에도 불구하고",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n비용을 / [줄이다] / 예산이 부족했다\n过去 -았/었음에도 불구하고"
+        },
+        "accepted": [
+          "비용을 줄였음에도 불구하고 예산이 부족했다",
+          "비용을 줄이었음에도 불구하고 예산이 부족했다",
+          "비용을 줄였음에도 불구하고 예산이 부족하였다",
+          "비용을 줄이었음에도 불구하고 예산이 부족하였다",
+          "비용을 줄였음에도 불구하고, 예산이 부족했다",
+          "비용을 줄이었음에도 불구하고, 예산이 부족했다"
+        ],
+        "explanation": {
+          "ko": "비용을 줄였음에도 불구하고 예산이 부족했다\n이미 줄인 사실은 줄였음으로 명사화한 뒤 양보 표현을 연결합니다.",
+          "ja": "비용을 줄였음에도 불구하고 예산이 부족했다\n削減済みの事実を줄였음で名詞化し譲歩につなぎます。",
+          "en": "비용을 줄였음에도 불구하고 예산이 부족했다\nNominalize the completed reduction as 줄였음 before the concession.",
+          "zh": "비용을 줄였음에도 불구하고 예산이 부족했다\n将已削减的事实名词化为줄였음，再接让步表达。"
+        }
       }
     ]
   },
@@ -5434,6 +6100,35 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "ja": "만듦 — 動詞・形容詞の母音末は-ㅁ、一般の子音末は-음、ㄹ末はㄻで감・먹음・앎。名詞+이다は임です。助詞と結び사실임을 확인하다のように使います。",
           "en": "만듦 — Verbs/adjectives take -ㅁ after vowels, -음 after ordinary consonants, and ㄻ after ㄹ: 감, 먹음, 앎. Noun + 이다 becomes 임. Add particles to embed a proposition, as in 사실임을 확인하다.",
           "zh": "만듦 — 动词、形容词元音后-ㅁ，普通辅音后-음，ㄹ后合为ㄻ：감、먹음、앎。名词+이다成为임，可接助词构成사실임을 확인하다等句子。"
+        }
+      },
+      {
+        "id": "extended-formal-nominalization-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "조사 결과 참가자가 모두 성인이라는 사실을 확인했어요.",
+        "contextMeaning": {
+          "ko": "조사 결과 참가자가 모두 성인이라는 사실을 확인했어요.",
+          "ja": "調査で参加者全員が成人と確認しました。",
+          "en": "The investigation confirmed all participants were adults.",
+          "zh": "调查确认参与者均为成人。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n조사로 / 참가자가 모두 / [성인이다] / 확인했다\n-(으)ㅁ + 을",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n조사로 / 참가자가 모두 / [성인이다] / 확인했다\n-(으)ㅁ + 을",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n조사로 / 참가자가 모두 / [성인이다] / 확인했다\n-(으)ㅁ + 을",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n조사로 / 참가자가 모두 / [성인이다] / 확인했다\n-(으)ㅁ + 을"
+        },
+        "accepted": [
+          "조사로 참가자가 모두 성인임을 확인했다",
+          "조사로 참가자가 모두 성인임을 확인하였다"
+        ],
+        "explanation": {
+          "ko": "조사로 참가자가 모두 성인임을 확인했다\n명사 성인에 이다의 명사형 임과 목적격 을을 붙여 확인한 내용을 만듭니다.",
+          "ja": "조사로 참가자가 모두 성인임을 확인했다\n名詞성인に이다の名詞形임と目的格을を付けます。",
+          "en": "조사로 참가자가 모두 성인임을 확인했다\nNominalize 성인이다 as 성인임 and add object particle 을.",
+          "zh": "조사로 참가자가 모두 성인임을 확인했다\n성인이다名词化为성인임，再加宾格을。"
         }
       }
     ]
@@ -5661,6 +6356,34 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "en": "발표한 바와 같다 — This lesson covers dependent noun 바. Use -는 바 for present verbs and -(으)ㄴ 바 for completed actions, then add a particle: 아는 바가 없다, 조사한 바에 따르면. Space 바.",
           "zh": "발표한 바와 같다 — 本课讲依存名词바。动词现在用-는 바，完成用-(으)ㄴ 바，可再接助词：아는 바가 없다、조사한 바에 따르면。바前空格。"
         }
+      },
+      {
+        "id": "extended-formal-fact-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "아직 직접 확인한 정보가 없다고 보고해요.",
+        "contextMeaning": {
+          "ko": "아직 직접 확인한 정보가 없다고 보고해요.",
+          "ja": "まだ直接確かめた情報はないと報告します。",
+          "en": "Report that you have not yet personally verified anything.",
+          "zh": "报告目前尚无亲自核实的信息。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n아직 / 직접 / [확인하다] / 없다\n완료 -(으)ㄴ 바가",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n아직 / 직접 / [확인하다] / 없다\n完了 -(으)ㄴ 바가",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n아직 / 직접 / [확인하다] / 없다\ncompleted action -(으)ㄴ 바가",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n아직 / 직접 / [확인하다] / 없다\n完成动作 -(으)ㄴ 바가"
+        },
+        "accepted": [
+          "아직 직접 확인한 바가 없다"
+        ],
+        "explanation": {
+          "ko": "아직 직접 확인한 바가 없다\n확인한은 완료 관형형이고 바는 의존 명사라 띄어 씁니다.",
+          "ja": "아직 직접 확인한 바가 없다\n확인한は完了連体形、바は依存名詞なので分けます。",
+          "en": "아직 직접 확인한 바가 없다\n확인한 is the completed modifier; dependent noun 바 is spaced.",
+          "zh": "아직 직접 확인한 바가 없다\n확인한为完成修饰形，依存名词바前空格。"
+        }
       }
     ]
   },
@@ -5886,6 +6609,34 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "ja": "매일 두 번 방문하는 셈이다 — 完了動詞は-(으)ㄴ 셈이다、現在・一般動詞は-는 셈이다、形容詞は-(으)ㄴ 셈이다。完全に同じでなくても計算や解釈上は同じと評価します。",
           "en": "매일 두 번 방문하는 셈이다 — Use -(으)ㄴ 셈이다 for completed verbs/adjectives and -는 셈이다 for present/general verbs. It treats a situation as effectively equivalent in calculation or interpretation.",
           "zh": "매일 두 번 방문하는 셈이다 — 完成动作、形容词用-(으)ㄴ 셈이다，当前一般动作用-는 셈이다。虽非完全相同，但从计算或解释上看相当于某结果。"
+        }
+      },
+      {
+        "id": "extended-result-ending-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "무료 표를 받아 입장료를 내지 않았어요. 절약한 것으로 평가해요.",
+        "contextMeaning": {
+          "ko": "무료 표를 받아 입장료를 내지 않았어요. 절약한 것으로 평가해요.",
+          "ja": "無料券で入場し、入場料を節約したと評価します。",
+          "en": "A free ticket meant no admission fee. Assess this as saving money.",
+          "zh": "获赠免费票没付门票，评价为节省费用。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n무료 표를 받아서 / 입장료를 / [아끼다]\n완료 -(으)ㄴ 셈이에요",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n무료 표를 받아서 / 입장료를 / [아끼다]\n完了 -(으)ㄴ 셈이에요",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n무료 표를 받아서 / 입장료를 / [아끼다]\ncompleted action -(으)ㄴ 셈이에요",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n무료 표를 받아서 / 입장료를 / [아끼다]\n完成动作 -(으)ㄴ 셈이에요"
+        },
+        "accepted": [
+          "무료 표를 받아서 입장료를 아낀 셈이에요"
+        ],
+        "explanation": {
+          "ko": "무료 표를 받아서 입장료를 아낀 셈이에요\n완료 행동 아낀에 셈이에요를 붙여 실질적인 절약으로 평가합니다.",
+          "ja": "무료 표를 받아서 입장료를 아낀 셈이에요\n完了形아낀に셈이에요を付け、実質的な節約とみなします。",
+          "en": "무료 표를 받아서 입장료를 아낀 셈이에요\nCompleted 아낀 plus 셈이에요 assesses the effective saving.",
+          "zh": "무료 표를 받아서 입장료를 아낀 셈이에요\n完成形아낀接셈이에요，评价为实际节省。"
         }
       }
     ]
@@ -6113,6 +6864,34 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "en": "살 셈이다 — Use a verb’s -(으)ㄹ modifier before 셈이다 for deliberate plans. It is not a general future-state construction for adjectives. A question directed at someone can sound challenging.",
           "zh": "살 셈이다 — 动词-(으)ㄹ修饰形后接셈이다，表达有意的计划，并非形容词状态的一般将来形式。用于向对方提问可能带责问语气。"
         }
+      },
+      {
+        "id": "extended-intended-as-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "정원에서 채소를 직접 기를 계획이에요.",
+        "contextMeaning": {
+          "ko": "정원에서 채소를 직접 기를 계획이에요.",
+          "ja": "庭で野菜を自分で育てる計画です。",
+          "en": "You intend to grow vegetables in the garden yourself.",
+          "zh": "打算自己在花园种菜。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n저는 / 정원에서 / 채소를 / [기르다]\n-(으)ㄹ 셈이에요",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n저는 / 정원에서 / 채소를 / [기르다]\n-(으)ㄹ 셈이에요",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n저는 / 정원에서 / 채소를 / [기르다]\n-(으)ㄹ 셈이에요",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n저는 / 정원에서 / 채소를 / [기르다]\n-(으)ㄹ 셈이에요"
+        },
+        "accepted": [
+          "저는 정원에서 채소를 기를 셈이에요"
+        ],
+        "explanation": {
+          "ko": "저는 정원에서 채소를 기를 셈이에요\n기르-에 -ㄹ 셈이에요를 붙여 앞으로 실행하려는 의도를 나타냅니다.",
+          "ja": "저는 정원에서 채소를 기를 셈이에요\n기르-に-ㄹ 셈이에요を付けて今後の意図を示します。",
+          "en": "저는 정원에서 채소를 기를 셈이에요\nAttach -ㄹ 셈이에요 to 기르- to express deliberate intention.",
+          "zh": "저는 정원에서 채소를 기를 셈이에요\n기르-接-ㄹ 셈이에요表示今后打算。"
+        }
       }
     ]
   },
@@ -6338,6 +7117,35 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "ja": "좋아지기는커녕 — 動詞・形容詞語幹に-기는커녕を付けます。期待Aが実現せず、より基本的なBさえ難しい、または反対の結果になったことを強調します。기는커녕は続けて書きます。",
           "en": "좋아지기는커녕 — Attach -기는커녕 to verb/adjective stems. Expected A fails, and even a more basic B is difficult, or the opposite happens. Write 기는커녕 as one attached sequence.",
           "zh": "좋아지기는커녕 — 动词、形容词词干接-기는커녕，强调预期A未实现，甚至更基本的B也难以实现，或出现相反结果。기는커녕连写。"
+        }
+      },
+      {
+        "id": "extended-far-from-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "문제가 해결되기를 바랐지만 더 복잡해졌어요.",
+        "contextMeaning": {
+          "ko": "문제가 해결되기를 바랐지만 더 복잡해졌어요.",
+          "ja": "問題解決を期待したのにさらに複雑になりました。",
+          "en": "You hoped the problem would be solved, but it became more complicated.",
+          "zh": "本希望问题解决，却更复杂了。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n문제가 / [해결되다] / 더 복잡해졌어요\n-기는커녕",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n문제가 / [해결되다] / 더 복잡해졌어요\n-기는커녕",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n문제가 / [해결되다] / 더 복잡해졌어요\n-기는커녕",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n문제가 / [해결되다] / 더 복잡해졌어요\n-기는커녕"
+        },
+        "accepted": [
+          "문제가 해결되기는커녕 더 복잡해졌어요",
+          "문제가 해결되기는커녕, 더 복잡해졌어요"
+        ],
+        "explanation": {
+          "ko": "문제가 해결되기는커녕 더 복잡해졌어요\n해결되기에 는커녕을 붙여 해결 기대와 반대 결과를 대비합니다.",
+          "ja": "문제가 해결되기는커녕 더 복잡해졌어요\n해결되기に는커녕を付け、解決の期待と逆の結果を対比します。",
+          "en": "문제가 해결되기는커녕 더 복잡해졌어요\nUse 해결되기는커녕 to contrast expected resolution with the opposite result.",
+          "zh": "문제가 해결되기는커녕 더 복잡해졌어요\n用해결되기는커녕对比预期解决与相反结果。"
         }
       }
     ]
@@ -6565,6 +7373,34 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "en": "선물은커녕 — Attach 은커녕 after a consonant-final noun and 는커녕 after a vowel-final noun. Bare 커녕 also occurs, but this lesson practices 은/는커녕. Contrast an ambitious A with the lack of even a basic B.",
           "zh": "선물은커녕 — 名词辅音后接은커녕，元音后接는커녕，也有直接接커녕的形式，本课练习은/는커녕。表示别说较高期待A，连基本B也没有。"
         }
+      },
+      {
+        "id": "extended-let-alone-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "월급을 받지 못했고 교통비도 돌려받지 못했어요.",
+        "contextMeaning": {
+          "ko": "월급을 받지 못했고 교통비도 돌려받지 못했어요.",
+          "ja": "給料も交通費の払い戻しもありませんでした。",
+          "en": "You received neither salary nor even travel reimbursement.",
+          "zh": "没收到工资，连交通费也没报销。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n[월급] / 교통비도 못 받았어요\n은/는커녕",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n[월급] / 교통비도 못 받았어요\n은/는커녕",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n[월급] / 교통비도 못 받았어요\n은/는커녕",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n[월급] / 교통비도 못 받았어요\n은/는커녕"
+        },
+        "accepted": [
+          "월급은커녕 교통비도 못 받았어요"
+        ],
+        "explanation": {
+          "ko": "월급은커녕 교통비도 못 받았어요\n월급은 받침이 있어 은커녕을 붙이고 더 작은 교통비조차 못 받았다고 강조합니다.",
+          "ja": "월급은커녕 교통비도 못 받았어요\n월급は子音末なので은커녕を付け、交通費さえないと強調します。",
+          "en": "월급은커녕 교통비도 못 받았어요\nUse 은커녕 after consonant-final 월급 and emphasize the lower unmet threshold.",
+          "zh": "월급은커녕 교통비도 못 받았어요\n월급有收音，接은커녕，强调更低的交通费也没拿到。"
+        }
       }
     ]
   },
@@ -6790,6 +7626,35 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "ja": "학생이든지 — 動詞・形容詞語幹に-든지/-든 간에、名詞に(이)든지/(이)든 간에を付けます。어디에 가든지のように疑問詞と使ったり、A든 B든 간에と選択肢を並べます。",
           "en": "학생이든지 — Attach -든지 or -든 간에 to verbs/adjectives and (이)든지/(이)든 간에 to nouns. Use a question word in 어디에 가든지 or list alternatives as A든 B든 간에.",
           "zh": "학생이든지 — 动词、形容词词干接-든지/-든 간에，名词接(이)든지/(이)든 간에。可与疑问词合用如어디에 가든지，或以A든 B든 간에列举选项。"
+        }
+      },
+      {
+        "id": "extended-regardless-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "앉는 위치는 상관없지만 안전띠는 꼭 매야 해요.",
+        "contextMeaning": {
+          "ko": "앉는 위치는 상관없지만 안전띠는 꼭 매야 해요.",
+          "ja": "座る位置は問わずシートベルトが必要です。",
+          "en": "Seat choice does not matter, but a seat belt is required.",
+          "zh": "坐哪里都行，但必须系安全带。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n어디에 / [앉다] / 안전띠를 매세요\n-든지",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n어디에 / [앉다] / 안전띠를 매세요\n-든지",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n어디에 / [앉다] / 안전띠를 매세요\n-든지",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n어디에 / [앉다] / 안전띠를 매세요\n-든지"
+        },
+        "accepted": [
+          "어디에 앉든지 안전띠를 매세요",
+          "어디에 앉든지, 안전띠를 매세요"
+        ],
+        "explanation": {
+          "ko": "어디에 앉든지 안전띠를 매세요\n앉다의 어간에 -든지를 붙여 자리 선택과 무관한 의무를 말합니다.",
+          "ja": "어디에 앉든지 안전띠를 매세요\n앉-に-든지を付け、座席選択と無関係な義務を述べます。",
+          "en": "어디에 앉든지 안전띠를 매세요\nAttach -든지 to 앉- to make the obligation independent of seat choice.",
+          "zh": "어디에 앉든지 안전띠를 매세요\n앉-接-든지，说明义务不受座位选择影响。"
         }
       }
     ]
@@ -7017,6 +7882,39 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "en": "먹는다니 — For a reaction to reported content, use -ㄴ/는다니 with present verbs, -다니 with adjectives, (이)라니 with nouns, and -았/었다니 for past: 간다니, 먹는다니, 좋다니, 학생이라니. This lesson targets surprise at reported information.",
           "zh": "먹는다니 — 对听闻内容作反应时，动词现在用-ㄴ/는다니，形容词用-다니，名词用(이)라니，过去用-았/었다니，如간다니、먹는다니、좋다니、학생이라니。本课讲惊讶感叹的引述反应。"
         }
+      },
+      {
+        "id": "extended-repeat-reported-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "이미 다섯 개 언어를 배웠다는 소식을 듣고 감탄해요.",
+        "contextMeaning": {
+          "ko": "이미 다섯 개 언어를 배웠다는 소식을 듣고 감탄해요.",
+          "ja": "既に五つの言語を学んだと聞き感心します。",
+          "en": "React with admiration to hearing that someone learned five languages.",
+          "zh": "听说已学会五种语言，表示赞叹。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n벌써 / 다섯 개 언어를 / [배우다] / 대단해요\n과거 -았/었다니",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n벌써 / 다섯 개 언어를 / [배우다] / 대단해요\n過去 -았/었다니",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n벌써 / 다섯 개 언어를 / [배우다] / 대단해요\npast -았/었다니",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n벌써 / 다섯 개 언어를 / [배우다] / 대단해요\n过去 -았/었다니"
+        },
+        "accepted": [
+          "벌써 다섯 개 언어를 배웠다니 대단해요",
+          "벌써 다섯 개 언어를 배우었다니 대단해요",
+          "벌써 다섯 개 언어를 배웠다니 대단하여요",
+          "벌써 다섯 개 언어를 배우었다니 대단하여요",
+          "벌써 다섯 개 언어를 배웠다니, 대단해요",
+          "벌써 다섯 개 언어를 배우었다니, 대단해요"
+        ],
+        "explanation": {
+          "ko": "벌써 다섯 개 언어를 배웠다니 대단해요\n배우다의 과거 배웠-에 -다니를 붙여 들은 사실에 감탄합니다.",
+          "ja": "벌써 다섯 개 언어를 배웠다니 대단해요\n배웠-に-다니を付け、聞いた事実への感嘆を示します。",
+          "en": "벌써 다섯 개 언어를 배웠다니 대단해요\nUse past 배웠- plus -다니 to react to the reported achievement.",
+          "zh": "벌써 다섯 개 언어를 배웠다니 대단해요\n过去形배웠-接-다니，对听到的成就表示感叹。"
+        }
       }
     ]
   },
@@ -7240,6 +8138,34 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "ja": "바쁘다면서요? — 現在動詞は-ㄴ/는다면서요?、形容詞は-다면서요?、名詞は(이)라면서요?、過去は-았/었다면서요?。既に聞いた情報があり、その真偽を確認します。",
           "en": "바쁘다면서요? — Use -ㄴ/는다면서요? for present verbs, -다면서요? for adjectives, (이)라면서요? for nouns, and -았/었다면서요? for past. The speaker signals prior information and checks it.",
           "zh": "바쁘다면서요? — 动词现在用-ㄴ/는다면서요?，形容词用-다면서요?，名词用(이)라면서요?，过去用-았/었다면서요?。说话人表明已有听闻，并确认是否属实。"
+        }
+      },
+      {
+        "id": "extended-reported-background-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "그 가게가 월요일에는 일찍 문을 닫는다고 들었어요. 확인해요.",
+        "contextMeaning": {
+          "ko": "그 가게가 월요일에는 일찍 문을 닫는다고 들었어요. 확인해요.",
+          "ja": "その店は月曜に早く閉まると聞き、確認します。",
+          "en": "You heard the shop closes early on Mondays. Check the report.",
+          "zh": "听说店铺周一早关门，请确认。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n그 가게는 / 월요일에 / 일찍 / [닫다]\n현재 -는다면서요?",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n그 가게는 / 월요일에 / 일찍 / [닫다]\n現在 -는다면서요?",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n그 가게는 / 월요일에 / 일찍 / [닫다]\npresent -는다면서요?",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n그 가게는 / 월요일에 / 일찍 / [닫다]\n现在 -는다면서요?"
+        },
+        "accepted": [
+          "그 가게는 월요일에 일찍 닫는다면서요?"
+        ],
+        "explanation": {
+          "ko": "그 가게는 월요일에 일찍 닫는다면서요?\n받침 있는 현재 동사 닫다에 -는다면서요를 붙여 들은 내용을 확인합니다.",
+          "ja": "그 가게는 월요일에 일찍 닫는다면서요?\n子音末の現在動詞닫다に-는다면서요を付け伝聞を確認します。",
+          "en": "그 가게는 월요일에 일찍 닫는다면서요?\nConsonant-final present verb 닫다 takes -는다면서요 for confirmation.",
+          "zh": "그 가게는 월요일에 일찍 닫는다면서요?\n带收音的当前动词닫다接-는다면서요确认听闻。"
         }
       }
     ]
@@ -7466,6 +8392,35 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "ja": "학생이라더니 — 現在動詞は-ㄴ/는다더니、形容詞は-다더니、名詞は(이)라더니、過去は-았/었다더니。前に聞いた内容、後ろに後から確認した結果や対照を置きます。",
           "en": "학생이라더니 — Use -ㄴ/는다더니 with present verbs, -다더니 with adjectives, (이)라더니 with nouns, and -았/었다더니 for past. A reported claim precedes a later confirming or contrasting observation.",
           "zh": "학생이라더니 — 动词现在用-ㄴ/는다더니，形容词用-다더니，名词用(이)라더니，过去用-았/었다더니。前项为听闻内容，后项为后来证实或相反的情况。"
+        }
+      },
+      {
+        "id": "extended-reported-contrast-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "동네가 시끄럽다고 들었는데 직접 와 보니 조용해요.",
+        "contextMeaning": {
+          "ko": "동네가 시끄럽다고 들었는데 직접 와 보니 조용해요.",
+          "ja": "騒がしいと聞いた町が実際には静かです。",
+          "en": "You heard the neighborhood was noisy but found it quiet.",
+          "zh": "听说街区吵，实地却很安静。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n동네가 / [시끄럽다] / 와 보니 조용하네요\n-다더니",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n동네가 / [시끄럽다] / 와 보니 조용하네요\n-다더니",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n동네가 / [시끄럽다] / 와 보니 조용하네요\n-다더니",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n동네가 / [시끄럽다] / 와 보니 조용하네요\n-다더니"
+        },
+        "accepted": [
+          "동네가 시끄럽다더니 와 보니 조용하네요",
+          "동네가 시끄럽다더니, 와 보니 조용하네요"
+        ],
+        "explanation": {
+          "ko": "동네가 시끄럽다더니 와 보니 조용하네요\n형용사 시끄럽다에는 -다더니를 붙여 들은 평가와 관찰을 대비합니다.",
+          "ja": "동네가 시끄럽다더니 와 보니 조용하네요\n形容詞시끄럽다には-다더니を付け、伝聞と観察を対比します。",
+          "en": "동네가 시끄럽다더니 와 보니 조용하네요\nThe adjective takes -다더니 to contrast the report with observation.",
+          "zh": "동네가 시끄럽다더니 와 보니 조용하네요\n形容词接-다더니，对比听闻评价与实际观察。"
         }
       }
     ]
@@ -7695,6 +8650,35 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "en": "보낸다는 것이 — Use present quotative -ㄴ/는다는 것이 before an unintended outcome: 누른다는 것이, 먹는다는 것이. The intended and actual actions usually share an actor. Distinguish this mishap use from simple quotative nominalization.",
           "zh": "보낸다는 것이 — 用现在引述形-ㄴ/는다는 것이连接意图与意外结果，如누른다는 것이、먹는다는 것이。失误用法中意图与实际行为通常由同一人完成，需与普通引述名词化区别。"
         }
+      },
+      {
+        "id": "extended-self-correct-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "창문을 닫으려다가 실수로 더 열었어요.",
+        "contextMeaning": {
+          "ko": "창문을 닫으려다가 실수로 더 열었어요.",
+          "ja": "窓を閉めるつもりが誤ってもっと開けました。",
+          "en": "You meant to close the window but opened it further by mistake.",
+          "zh": "本想关窗，却误把窗开得更大。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n창문을 / [닫다] / 더 열었어요\n-는다는 것이",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n창문을 / [닫다] / 더 열었어요\n-는다는 것이",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n창문을 / [닫다] / 더 열었어요\n-는다는 것이",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n창문을 / [닫다] / 더 열었어요\n-는다는 것이"
+        },
+        "accepted": [
+          "창문을 닫는다는 것이 더 열었어요",
+          "창문을 닫는다는 것이, 더 열었어요"
+        ],
+        "explanation": {
+          "ko": "창문을 닫는다는 것이 더 열었어요\n닫-은 받침이 있으므로 닫는다는 것이로 의도한 행동과 실수를 연결합니다.",
+          "ja": "창문을 닫는다는 것이 더 열었어요\n닫-は子音末なので닫는다는 것이で意図と失敗をつなぎます。",
+          "en": "창문을 닫는다는 것이 더 열었어요\nConsonant-final 닫- forms 닫는다는 것이 to link intent to the mistake.",
+          "zh": "창문을 닫는다는 것이 더 열었어요\n닫-有收音，形成닫는다는 것이连接意图与失误。"
+        }
       }
     ]
   },
@@ -7923,6 +8907,34 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "en": "필요한 것은 아니다 — Use -는 것은 아니다 with present verbs, -(으)ㄴ 것은 아니다 with adjectives/completed verbs, and 인 것은 아니다 with nouns. With 모두, 항상, or 반드시, it typically rejects a universal claim.",
           "zh": "필요한 것은 아니다 — 动词现在用-는 것은 아니다，形容词、完成动作用-(으)ㄴ 것은 아니다，名词用인 것은 아니다。与모두、항상、반드시合用时通常否定全称判断。"
         }
+      },
+      {
+        "id": "extended-not-necessarily-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "두 번의 방문 중 한 번만 줄을 섰어요. 언제나 기다린다는 일반화를 부정해요.",
+        "contextMeaning": {
+          "ko": "두 번의 방문 중 한 번만 줄을 섰어요. 언제나 기다린다는 일반화를 부정해요.",
+          "ja": "二回の訪問中一回だけ並びました。毎回待つという一般化を否定します。",
+          "en": "You queued on only one of two visits. Deny that waiting always happens.",
+          "zh": "两次到访只有一次排队，否定总要等待的概括。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n이 가게에서 / 항상 / [기다리다]\n-는 것은 아니에요",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n이 가게에서 / 항상 / [기다리다]\n-는 것은 아니에요",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n이 가게에서 / 항상 / [기다리다]\n-는 것은 아니에요",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n이 가게에서 / 항상 / [기다리다]\n-는 것은 아니에요"
+        },
+        "accepted": [
+          "이 가게에서 항상 기다리는 것은 아니에요"
+        ],
+        "explanation": {
+          "ko": "이 가게에서 항상 기다리는 것은 아니에요\n항상이라는 전면적 빈도를 부정하며 한 번도 안 기다렸다고 말하지는 않습니다.",
+          "ja": "이 가게에서 항상 기다리는 것은 아니에요\n항상という全面的な頻度を否定し、一度も待たないとは述べません。",
+          "en": "이 가게에서 항상 기다리는 것은 아니에요\nNegate “always” without claiming that waiting never occurs.",
+          "zh": "이 가게에서 항상 기다리는 것은 아니에요\n否定“总是”，并非声称从不等待。"
+        }
       }
     ]
   },
@@ -8150,6 +9162,34 @@ window.HARUMAL_GRAMMAR_PACK_FORMAL = [
           "ja": "많으냐에 달려 있다 — 動詞は-느냐에 달려 있다、形容詞は-(으)냐에 달려 있다、名詞は(이)냐에 달려 있다と疑問内容をつなぎます。있다/없다は있느냐/없느냐。名詞だけならN에 달려 있다です。 形容詞では-으냐の으を省く-냐も認められ、많냐も正しい形です。",
           "en": "많으냐에 달려 있다 — Use -느냐에 달려 있다 with verbs, -(으)냐에 달려 있다 with adjectives, and (이)냐에 달려 있다 with nouns to embed the determining question. 있다/없다 take 있느냐/없느냐. A bare noun takes N에 달려 있다. Adjectives also allow -냐 with 으 omitted, so 많냐 is valid alongside 많으냐.",
           "zh": "많으냐에 달려 있다 — 动词用-느냐에 달려 있다，形容词用-(으)냐에 달려 있다，名词用(이)냐에 달려 있다，嵌入决定结果的疑问内容。있다/없다用있느냐/없느냐，单个名词则用N에 달려 있다。 形容词也允许省略-으냐中的으，因此많냐和많으냐均正确。"
+        }
+      },
+      {
+        "id": "extended-critical-aspect-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "마지막 버스를 탈 수 있는지는 회의가 언제 끝나는지에 달려 있어요.",
+        "contextMeaning": {
+          "ko": "마지막 버스를 탈 수 있는지는 회의가 언제 끝나는지에 달려 있어요.",
+          "ja": "終バスに乗れるかは会議が終わる時刻次第です。",
+          "en": "Catching the last bus depends on when the meeting ends.",
+          "zh": "能否赶上末班车取决于会议何时结束。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n막차를 탈 수 있는지는 / 회의가 언제 / [끝나다]\n-느냐에 달려 있어요",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n막차를 탈 수 있는지는 / 회의가 언제 / [끝나다]\n-느냐에 달려 있어요",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n막차를 탈 수 있는지는 / 회의가 언제 / [끝나다]\n-느냐에 달려 있어요",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n막차를 탈 수 있는지는 / 회의가 언제 / [끝나다]\n-느냐에 달려 있어요"
+        },
+        "accepted": [
+          "막차를 탈 수 있는지는 회의가 언제 끝나느냐에 달려 있어요"
+        ],
+        "explanation": {
+          "ko": "막차를 탈 수 있는지는 회의가 언제 끝나느냐에 달려 있어요\n끝나다에 -느냐를 붙여 회의 종료 시각을 묻는 내용을 결정 조건으로 삼습니다.",
+          "ja": "막차를 탈 수 있는지는 회의가 언제 끝나느냐에 달려 있어요\n끝나다に-느냐を付け、終了時刻という問いを決定条件にします。",
+          "en": "막차를 탈 수 있는지는 회의가 언제 끝나느냐에 달려 있어요\nUse 끝나느냐 to embed the determining question of the ending time.",
+          "zh": "막차를 탈 수 있는지는 회의가 언제 끝나느냐에 달려 있어요\n끝나다接-느냐，把结束时刻这一疑问内容作为决定条件。"
         }
       }
     ]

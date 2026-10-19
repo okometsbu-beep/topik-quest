@@ -78,6 +78,35 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_MORPHOLOGY = [
           "en": "Answer: 입으면\n입- + -으면 → 입으면. Include 으 after final ㅂ.",
           "zh": "答案：입으면\n입-＋-으면→입으면，ㅂ收音后加으。"
         }
+      },
+      {
+        "id": "batchim-eu-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "물건이 많을 때 가방을 빌리라고 권해요.",
+        "contextMeaning": {
+          "ko": "물건이 많을 때 가방을 빌리라고 권해요.",
+          "ja": "荷物が多い場合は袋を借りるよう勧めます。",
+          "en": "Recommend borrowing a bag if there are many items.",
+          "zh": "建议东西多时借个袋子。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n물건이 / [많다] / 가방을 빌리세요\n조건 -(으)면",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n물건이 / [많다] / 가방을 빌리세요\n条件 -(으)면",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n물건이 / [많다] / 가방을 빌리세요\ncondition -(으)면",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n물건이 / [많다] / 가방을 빌리세요\n条件 -(으)면"
+        },
+        "accepted": [
+          "물건이 많으면 가방을 빌리세요",
+          "물건이 많으면, 가방을 빌리세요"
+        ],
+        "explanation": {
+          "ko": "물건이 많으면 가방을 빌리세요\n많-은 ㄹ이 아닌 받침으로 끝나므로 -으면을 붙입니다.",
+          "ja": "물건이 많으면 가방을 빌리세요\n많-はㄹ以外の子音末なので-으면を付けます。",
+          "en": "물건이 많으면 가방을 빌리세요\n많- ends in a consonant other than ㄹ, so use -으면.",
+          "zh": "물건이 많으면 가방을 빌리세요\n많-以非ㄹ辅音结尾，因此接-으면。"
+        }
       }
     ]
   },
@@ -159,6 +188,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_MORPHOLOGY = [
           "en": "Answer: 열 거예요\nRetain the ㄹ of 열- and add 거예요; do not add another 을.",
           "zh": "答案：열 거예요\n保留열-的ㄹ，后接거예요，不再加을。"
         }
+      },
+      {
+        "id": "rieul-selection-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "학교에 갈 때 이용하는 교통수단을 말해요.",
+        "contextMeaning": {
+          "ko": "학교에 갈 때 이용하는 교통수단을 말해요.",
+          "ja": "通学に使う交通手段を述べます。",
+          "en": "State your means of transport to school.",
+          "zh": "说明上学的交通方式。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n저는 / [지하철] / 학교에 가요\n수단 -(으)로",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n저는 / [지하철] / 학교에 가요\n手段 -(으)로",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n저는 / [지하철] / 학교에 가요\nmeans -(으)로",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n저는 / [지하철] / 학교에 가요\n手段 -(으)로"
+        },
+        "accepted": [
+          "저는 지하철로 학교에 가요"
+        ],
+        "explanation": {
+          "ko": "저는 지하철로 학교에 가요\n지하철의 ㄹ 받침 뒤에는 으로가 아니라 로를 붙입니다.",
+          "ja": "저는 지하철로 학교에 가요\n지하철のㄹの後は으로でなく로です。",
+          "en": "저는 지하철로 학교에 가요\nAfter final ㄹ in 지하철, use 로 rather than 으로.",
+          "zh": "저는 지하철로 학교에 가요\n지하철的ㄹ收音后接로，而非으로。"
+        }
       }
     ]
   },
@@ -239,6 +296,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_MORPHOLOGY = [
           "ja": "正解：비워요\n비우-＋-어요→비우어요→비워요。",
           "en": "Answer: 비워요\n비우- + -어요 → 비우어요 → 비워요.",
           "zh": "答案：비워요\n비우-＋-어요→비우어요→비워요。"
+        }
+      },
+      {
+        "id": "vowel-contraction-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "청소하면서 바닥에 놓인 상자를 정리해요.",
+        "contextMeaning": {
+          "ko": "청소하면서 바닥에 놓인 상자를 정리해요.",
+          "ja": "掃除中に床の箱を片付けます。",
+          "en": "While cleaning, you put away a box on the floor.",
+          "zh": "打扫时收起地上的箱子。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n저는 / 바닥의 상자를 / [치우다]\n현재 해요체, 축약형",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n저는 / 바닥의 상자를 / [치우다]\n現在ヘヨ体, 縮約形",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n저는 / 바닥의 상자를 / [치우다]\npresent polite 해요 style, contracted form",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n저는 / 바닥의 상자를 / [치우다]\n现在해요体, 缩约形"
+        },
+        "accepted": [
+          "저는 바닥의 상자를 치워요"
+        ],
+        "explanation": {
+          "ko": "저는 바닥의 상자를 치워요\n치우-에 -어요가 붙고 우+어가 워로 줄어 치워요가 됩니다.",
+          "ja": "저는 바닥의 상자를 치워요\n치우-に-어요が付き、우+어が워に縮まり치워요です。",
+          "en": "저는 바닥의 상자를 치워요\n치우- plus -어요 contracts 우+어 to 워: 치워요.",
+          "zh": "저는 바닥의 상자를 치워요\n치우-加-어요，우+어缩为워，形成치워요。"
         }
       }
     ]
@@ -323,6 +408,35 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_MORPHOLOGY = [
           "en": "Answer: 앉으셨어요\n앉- + -으시- + -었어요 → 앉으셨어요. The final consonant requires 으시.",
           "zh": "答案：앉으셨어요\n앉-＋-으시-＋-었어요→앉으셨어요，有收音所以用으시。"
         }
+      },
+      {
+        "id": "honorific-si-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "할아버지가 어제 가족사진을 봤어요. 주체를 높여 말해요.",
+        "contextMeaning": {
+          "ko": "할아버지가 어제 가족사진을 봤어요. 주체를 높여 말해요.",
+          "ja": "祖父が昨日家族写真を見ました。主語を敬って述べます。",
+          "en": "Your grandfather looked at a family photo yesterday. Honor the subject.",
+          "zh": "爷爷昨天看了全家福，请尊称主语。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n할아버지께서 / 어제 / 가족사진을 / [보다]\n주체 높임 과거 해요체",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n할아버지께서 / 어제 / 가족사진을 / [보다]\n主語尊敬・過去ヘヨ体",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n할아버지께서 / 어제 / 가족사진을 / [보다]\nsubject-honorific past polite 해요 style",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n할아버지께서 / 어제 / 가족사진을 / [보다]\n主语尊敬的过去해요体"
+        },
+        "accepted": [
+          "할아버지께서 어제 가족사진을 보셨어요",
+          "할아버지께서 어제 가족사진을 보시었어요"
+        ],
+        "explanation": {
+          "ko": "할아버지께서 어제 가족사진을 보셨어요\n보-에 높임 -시-와 과거 -었어요를 결합해 보셨어요로 줄입니다.",
+          "ja": "할아버지께서 어제 가족사진을 보셨어요\n보-に尊敬-시-と過去-었어요を付け、보셨어요と縮めます。",
+          "en": "할아버지께서 어제 가족사진을 보셨어요\nCombine 보-, honorific -시-, and past -었어요: 보셨어요.",
+          "zh": "할아버지께서 어제 가족사진을 보셨어요\n보-结合尊敬-시-及过去-었어요，缩为보셨어요。"
+        }
       }
     ]
   },
@@ -403,6 +517,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_MORPHOLOGY = [
           "ja": "正解：책 스무 권\n스물→스무：책＋스무＋권→책 스무 권。",
           "en": "Answer: 책 스무 권\n스물 → 스무 before a counter: 책 스무 권.",
           "zh": "答案：책 스무 권\n스물在量词前变为스무：책 스무 권。"
+        }
+      },
+      {
+        "id": "numbers-counters-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "책상 위에 연필이 정확히 셋 있어요. 자루로 세어요.",
+        "contextMeaning": {
+          "ko": "책상 위에 연필이 정확히 셋 있어요. 자루로 세어요.",
+          "ja": "机に鉛筆がちょうど三本あります。자루で数えます。",
+          "en": "There are exactly three pencils on the desk. Count with 자루.",
+          "zh": "桌上正好三支铅笔，用자루计数。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n책상 위에 / 연필 / [셋] / 자루가 있어요\n고유어 수 + 단위 명사",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n책상 위에 / 연필 / [셋] / 자루가 있어요\n固有数詞＋助数詞",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n책상 위에 / 연필 / [셋] / 자루가 있어요\nnative Korean number + classifier",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n책상 위에 / 연필 / [셋] / 자루가 있어요\n固有数词＋量词"
+        },
+        "accepted": [
+          "책상 위에 연필 세 자루가 있어요"
+        ],
+        "explanation": {
+          "ko": "책상 위에 연필 세 자루가 있어요\n단위 명사 자루 앞에서 셋은 세가 되며 수와 단위를 띄어 씁니다.",
+          "ja": "책상 위에 연필 세 자루가 있어요\n単位名詞자루の前で셋は세になり、数と単位は分けます。",
+          "en": "책상 위에 연필 세 자루가 있어요\n셋 becomes 세 before classifier 자루; space the number and classifier.",
+          "zh": "책상 위에 연필 세 자루가 있어요\n셋在量词자루前变为세，数字与量词分写。"
         }
       }
     ]
@@ -485,6 +627,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_MORPHOLOGY = [
           "en": "Answer: 가벼워요\n가볍- → 가벼우- + -어요 → 가벼워요; ㅂ changes to 우.",
           "zh": "答案：가벼워요\n가볍-→가벼우-＋-어요→가벼워요，ㅂ变为우。"
         }
+      },
+      {
+        "id": "bieup-irregular-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "오늘 불어오는 바람의 차가운 느낌을 말해요.",
+        "contextMeaning": {
+          "ko": "오늘 불어오는 바람의 차가운 느낌을 말해요.",
+          "ja": "今日吹く風の冷たさを述べます。",
+          "en": "Describe the cold wind blowing today.",
+          "zh": "描述今天风很冷。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n오늘은 / 바람이 / [차갑다]\n현재 해요체",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n오늘은 / 바람이 / [차갑다]\n現在ヘヨ体",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n오늘은 / 바람이 / [차갑다]\npresent polite 해요 style",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n오늘은 / 바람이 / [차갑다]\n现在해요体"
+        },
+        "accepted": [
+          "오늘은 바람이 차가워요"
+        ],
+        "explanation": {
+          "ko": "오늘은 바람이 차가워요\n차갑다의 ㅂ이 우로 바뀌고 우+어가 워로 줄어듭니다.",
+          "ja": "오늘은 바람이 차가워요\n차갑다のㅂが우になり、우+어が워に縮まります。",
+          "en": "오늘은 바람이 차가워요\n차갑다 changes ㅂ to 우, then 우+어 contracts to 워.",
+          "zh": "오늘은 바람이 차가워요\n차갑다的ㅂ变为우，우+어再缩为워。"
+        }
       }
     ]
   },
@@ -565,6 +735,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_MORPHOLOGY = [
           "ja": "正解：실어요\n싣-のㄷ→ㄹ：실-＋-어요→실어요。",
           "en": "Answer: 실어요\n싣- changes ㄷ to ㄹ: 실- + -어요 → 실어요.",
           "zh": "答案：실어요\n싣-的ㄷ变为ㄹ：실-＋-어요→실어요。"
+        }
+      },
+      {
+        "id": "digeut-irregular-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "매일 강 옆에서 걷는 습관을 말해요.",
+        "contextMeaning": {
+          "ko": "매일 강 옆에서 걷는 습관을 말해요.",
+          "ja": "毎日川沿いを歩く習慣を述べます。",
+          "en": "Describe your habit of walking beside the river each day.",
+          "zh": "描述每天沿河散步的习惯。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n저는 / 매일 / 강변을 / [걷다]\n현재 해요체",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n저는 / 매일 / 강변을 / [걷다]\n現在ヘヨ体",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n저는 / 매일 / 강변을 / [걷다]\npresent polite 해요 style",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n저는 / 매일 / 강변을 / [걷다]\n现在해요体"
+        },
+        "accepted": [
+          "저는 매일 강변을 걸어요"
+        ],
+        "explanation": {
+          "ko": "저는 매일 강변을 걸어요\n걷다는 모음으로 시작하는 -어요 앞에서 ㄷ이 ㄹ로 바뀝니다.",
+          "ja": "저는 매일 강변을 걸어요\n걷다は母音で始まる-어요の前でㄷがㄹに変わります。",
+          "en": "저는 매일 강변을 걸어요\n걷다 changes ㄷ to ㄹ before vowel-initial -어요.",
+          "zh": "저는 매일 강변을 걸어요\n걷다在元音开头的-어요前将ㄷ变为ㄹ。"
         }
       }
     ]
@@ -647,6 +845,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_MORPHOLOGY = [
           "en": "Answer: 골라요\n고르- + -아요 → 골라요. Add ㄹ to 고 and change 르 to 라.",
           "zh": "答案：골라요\n고르-＋-아요→골라요，在고后增加ㄹ，르变为라。"
         }
+      },
+      {
+        "id": "reu-irregular-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "동생이 멀리서 내 이름을 부르고 있어요. 현재형으로 말해요.",
+        "contextMeaning": {
+          "ko": "동생이 멀리서 내 이름을 부르고 있어요. 현재형으로 말해요.",
+          "ja": "弟が遠くで私の名前を呼んでいます。現在形で述べます。",
+          "en": "Your younger brother calls your name from a distance. Use present tense.",
+          "zh": "弟弟从远处叫你的名字，请用现在时。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n동생이 / 멀리서 / 제 이름을 / [부르다]\n현재 해요체",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n동생이 / 멀리서 / 제 이름을 / [부르다]\n現在ヘヨ体",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n동생이 / 멀리서 / 제 이름을 / [부르다]\npresent polite 해요 style",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n동생이 / 멀리서 / 제 이름을 / [부르다]\n现在해요体"
+        },
+        "accepted": [
+          "동생이 멀리서 제 이름을 불러요"
+        ],
+        "explanation": {
+          "ko": "동생이 멀리서 제 이름을 불러요\n부르다의 르에서 ㅡ가 빠지고 앞 음절에 ㄹ이 더해져 불러요가 됩니다.",
+          "ja": "동생이 멀리서 제 이름을 불러요\n부르다の르からㅡが落ち、前の音節にㄹを加えて불러요です。",
+          "en": "동생이 멀리서 제 이름을 불러요\nDrop ㅡ from 르 and add ㄹ to the preceding syllable: 불러요.",
+          "zh": "동생이 멀리서 제 이름을 불러요\n르中ㅡ脱落，前一音节补ㄹ，形成불러요。"
+        }
       }
     ]
   },
@@ -727,6 +953,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_MORPHOLOGY = [
           "ja": "正解：저어요\n젓-→저-＋-어요→저어요。ㅅが落ちても二つの어を一つにしません。",
           "en": "Answer: 저어요\n젓- → 저- + -어요 → 저어요. After dropping ㅅ, retain both 어 vowels.",
           "zh": "答案：저어요\n젓-→저-＋-어요→저어요；ㅅ脱落后，两个어仍保留。"
+        }
+      },
+      {
+        "id": "siot-irregular-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "농부가 새 집을 짓는 중이에요. 현재형으로 말해요.",
+        "contextMeaning": {
+          "ko": "농부가 새 집을 짓는 중이에요. 현재형으로 말해요.",
+          "ja": "農家の人が新しい家を建てています。現在形で述べます。",
+          "en": "A farmer is building a new house. Use present tense.",
+          "zh": "农民正在建新房，请用现在时。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n농부가 / 새 집을 / [짓다]\n현재 해요체",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n농부가 / 새 집을 / [짓다]\n現在ヘヨ体",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n농부가 / 새 집을 / [짓다]\npresent polite 해요 style",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n농부가 / 새 집을 / [짓다]\n现在해요体"
+        },
+        "accepted": [
+          "농부가 새 집을 지어요"
+        ],
+        "explanation": {
+          "ko": "농부가 새 집을 지어요\n짓다는 -어요 앞에서 ㅅ이 빠집니다. 지어요의 두 모음은 이 형태에서 줄이지 않습니다.",
+          "ja": "농부가 새 집을 지어요\n짓다は-어요の前でㅅが落ちます。この形の지어요は母音を縮めません。",
+          "en": "농부가 새 집을 지어요\n짓다 drops ㅅ before -어요; retain the two vowels in 지어요.",
+          "zh": "농부가 새 집을 지어요\n짓다在-어요前脱落ㅅ，지어요的两个元音不缩合。"
         }
       }
     ]
@@ -809,6 +1063,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_MORPHOLOGY = [
           "en": "Answer: 노래요\n노랗- + -아요 → 노래요. Drop ㅎ and change ㅏ to ㅐ.",
           "zh": "答案：노래요\n노랗-＋-아요→노래요，ㅎ脱落，ㅏ变为ㅐ。"
         }
+      },
+      {
+        "id": "hieut-irregular-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "겨울 하늘의 푸른색을 말해요.",
+        "contextMeaning": {
+          "ko": "겨울 하늘의 푸른색을 말해요.",
+          "ja": "冬の空の青さを述べます。",
+          "en": "Describe the blue winter sky.",
+          "zh": "描述冬日天空的蓝色。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n겨울 하늘이 / [파랗다]\n현재 해요체",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n겨울 하늘이 / [파랗다]\n現在ヘヨ体",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n겨울 하늘이 / [파랗다]\npresent polite 해요 style",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n겨울 하늘이 / [파랗다]\n现在해요体"
+        },
+        "accepted": [
+          "겨울 하늘이 파래요"
+        ],
+        "explanation": {
+          "ko": "겨울 하늘이 파래요\n파랗다의 ㅎ이 빠지며 모음이 결합해 파래요가 됩니다.",
+          "ja": "겨울 하늘이 파래요\n파랗다のㅎが落ちて母音が結び、파래요になります。",
+          "en": "겨울 하늘이 파래요\nDrop ㅎ and combine the vowels: 파래요.",
+          "zh": "겨울 하늘이 파래요\n파랗다脱落ㅎ后元音结合，成为파래요。"
+        }
       }
     ]
   },
@@ -890,6 +1172,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_MORPHOLOGY = [
           "en": "Answer: 아파요\nDrop 으 from 아프-; preceding ㅏ selects 아요: 아파요.",
           "zh": "答案：아파요\n아프-脱落으，前一元音ㅏ决定接아요，成为아파요。"
         }
+      },
+      {
+        "id": "eu-irregular-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "선반에 넣기에는 상자가 너무 커요. 크기를 말해요.",
+        "contextMeaning": {
+          "ko": "선반에 넣기에는 상자가 너무 커요. 크기를 말해요.",
+          "ja": "棚に入れるには箱が大きすぎます。大きさを述べます。",
+          "en": "The box is too big for the shelf. State its size.",
+          "zh": "箱子太大，放不进架子，请描述尺寸。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n그 상자는 / 너무 / [크다]\n현재 해요체",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n그 상자는 / 너무 / [크다]\n現在ヘヨ体",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n그 상자는 / 너무 / [크다]\npresent polite 해요 style",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n그 상자는 / 너무 / [크다]\n现在해요体"
+        },
+        "accepted": [
+          "그 상자는 너무 커요"
+        ],
+        "explanation": {
+          "ko": "그 상자는 너무 커요\n크-의 ㅡ가 빠지고 앞 음절이 없으므로 -어요를 선택해 커요가 됩니다.",
+          "ja": "그 상자는 너무 커요\n크-のㅡが落ち、前の音節がないため-어요で커요になります。",
+          "en": "그 상자는 너무 커요\nDrop ㅡ in 크-; with no preceding syllable, use -어요 to form 커요.",
+          "zh": "그 상자는 너무 커요\n크-的ㅡ脱落，无前一音节，选择-어요形成커요。"
+        }
       }
     ]
   },
@@ -970,6 +1280,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_MORPHOLOGY = [
           "ja": "正解：파는\n팔-のㄹがㄴの前で落ち、파-＋-는→파는になります。",
           "en": "Answer: 파는\n팔- drops ㄹ before ㄴ: 파- + -는 → 파는.",
           "zh": "答案：파는\n팔-的ㄹ在ㄴ前脱落：파-＋-는→파는。"
+        }
+      },
+      {
+        "id": "rieul-drop-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "공장에서 만드는 물건을 격식 있게 소개해요.",
+        "contextMeaning": {
+          "ko": "공장에서 만드는 물건을 격식 있게 소개해요.",
+          "ja": "工場で製造する物を改まって紹介します。",
+          "en": "Formally introduce what the factory makes.",
+          "zh": "正式介绍工厂制作的物品。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n이 공장에서는 / 나무 의자를 / [만들다]\n현재 격식체 -ㅂ니다/습니다",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n이 공장에서는 / 나무 의자를 / [만들다]\n現在の格式体 -ㅂ니다/습니다",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n이 공장에서는 / 나무 의자를 / [만들다]\npresent formal style -ㅂ니다/습니다",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n이 공장에서는 / 나무 의자를 / [만들다]\n现在正式体 -ㅂ니다/습니다"
+        },
+        "accepted": [
+          "이 공장에서는 나무 의자를 만듭니다"
+        ],
+        "explanation": {
+          "ko": "이 공장에서는 나무 의자를 만듭니다\n만들-의 ㄹ은 -ㅂ니다 앞에서 탈락하므로 만들습니다가 아니라 만듭니다입니다.",
+          "ja": "이 공장에서는 나무 의자를 만듭니다\n만들-のㄹは-ㅂ니다の前で落ち、만들습니다ではなく만듭니다です。",
+          "en": "이 공장에서는 나무 의자를 만듭니다\nDrop ㄹ from 만들- before -ㅂ니다: 만듭니다, not 만들습니다.",
+          "zh": "이 공장에서는 나무 의자를 만듭니다\n만들-的ㄹ在-ㅂ니다前脱落，形成만듭니다，而非만들습니다。"
         }
       }
     ]
@@ -1053,6 +1391,34 @@ window.HARUMAL_GRAMMAR_PACK_LEGACY_MORPHOLOGY = [
           "ja": "正解：청소했어요\n청소하-＋-였어요→청소하였어요→청소했어요。どちらの形も正しいです。",
           "en": "Answer: 청소했어요\n청소하- + -였어요 → 청소하였어요 → 청소했어요. Both full and contracted forms are correct.",
           "zh": "答案：청소했어요\n청소하-＋-였어요→청소하였어요→청소했어요，完整形式和缩约形都正确。"
+        }
+      },
+      {
+        "id": "hada-doeda-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "고장 났던 결제기가 다시 작동해서 카드를 쓸 수 있어요.",
+        "contextMeaning": {
+          "ko": "고장 났던 결제기가 다시 작동해서 카드를 쓸 수 있어요.",
+          "ja": "故障していた決済端末が直りカードを使えます。",
+          "en": "The repaired payment terminal now accepts cards.",
+          "zh": "支付机器修好了，现在可以刷卡。"
+        },
+        "prompt": {
+          "ko": "주어진 조각의 순서를 유지해 한 문장 전체를 쓰세요. 대괄호 속 기본형만 지정 문법으로 바꾸고 나머지 말은 추가·생략하지 마세요. 보조 용언은 띄어쓰기 원칙을 따르세요.\n이제는 / 카드 결제가 / [되다]\n현재 해요체, 축약형",
+          "ja": "示された順で文全体を書いてください。角括弧内だけ指定文法に変え、他の語は加除しないでください。補助用言は原則どおり分かち書きします。\n이제는 / 카드 결제가 / [되다]\n現在ヘヨ体, 縮約形",
+          "en": "Write the entire sentence in the supplied order. Change only the bracketed base using the specified grammar; do not add or omit other words. Use the principle of spacing auxiliary predicates.\n이제는 / 카드 결제가 / [되다]\npresent polite 해요 style, contracted form",
+          "zh": "按给定顺序写完整句子。仅将方括号内基本形变为指定语法，不增删其他词。辅助谓词按原则分写。\n이제는 / 카드 결제가 / [되다]\n现在해요体, 缩约形"
+        },
+        "accepted": [
+          "이제는 카드 결제가 돼요"
+        ],
+        "explanation": {
+          "ko": "이제는 카드 결제가 돼요\n되-에 -어요가 붙은 되어요를 돼요로 줄입니다. 되요로 쓰지 않습니다.",
+          "ja": "이제는 카드 결제가 돼요\n되-+-어요の되어요を돼요に縮めます。되요とは書きません。",
+          "en": "이제는 카드 결제가 돼요\nContract 되어요 to 돼요; do not write 되요.",
+          "zh": "이제는 카드 결제가 돼요\n되어요缩为돼요，不能写되요。"
         }
       }
     ]

@@ -227,6 +227,35 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "en": "잡다 → Passive; past polite 해요 style",
           "zh": "잡다 → 被动；过去해요体"
         }
+      },
+      {
+        "id": "extended-passive-suffix-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "멀리 있는 탑의 종소리가 귀에 들어와요. 종소리를 주어로 삼아 지금의 상황을 전하세요.",
+        "contextMeaning": {
+          "ko": "멀리 있는 탑의 종소리가 귀에 들어와요. 종소리를 주어로 삼아 지금의 상황을 전하세요.",
+          "ja": "遠くの塔の鐘の音が聞こえてきます。鐘の音を主語にして現在の状況を伝えてください。",
+          "en": "The sound of a bell in a distant tower reaches your ears. Make the bell sound the subject and describe the current situation.",
+          "zh": "远处塔楼的钟声传入耳中。请以钟声为主语描述当前情况。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. 끝 서술어는 현재 해요체로 쓰세요.\n재료: 멀리서 / 종소리가 / 듣다★\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。文末は現在のヘヨ体にしてください。\n材料：멀리서 / 종소리가 / 듣다★\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. End with a present-tense polite 해요 statement.\nCues: 멀리서 / 종소리가 / 듣다★\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。句末用现在时해요体。\n材料：멀리서 / 종소리가 / 듣다★\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "멀리서 종소리가 들려요",
+          "멀리서 종소리가 들리어요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 멀리서 종소리가 들려요\n끝 서술어는 현재 해요체로 쓰세요. 타동사의 일부는 접미사로 피동사가 됩니다: 닫다→닫히다, 잡다→잡히다, 듣다→들리다. 접미사는 단어별로 익혀야 하며 모든 동사에 자유롭게 붙이지 않습니다.",
+          "ja": "解答例：멀리서 종소리가 들려요\n文末は現在のヘヨ体にしてください。 一部の他動詞は接尾辞で受動詞になります。닫다→닫히다、잡다→잡히다、듣다→들리다。接尾辞は語ごとに覚え、どの動詞にも自由に付けるわけではありません。",
+          "en": "Model response: 멀리서 종소리가 들려요\nEnd with a present-tense polite 해요 statement. Some transitive verbs form passives with a lexical suffix: 닫다→닫히다, 잡다→잡히다, 듣다→들리다. Learn the suffix with each word; this is not freely productive.",
+          "zh": "参考答案：멀리서 종소리가 들려요\n句末用现在时해요体。 部分及物动词通过后缀构成被动：닫다→닫히다、잡다→잡히다、듣다→들리다。后缀须逐词记忆，不能任意添加。"
+        }
       }
     ]
   },
@@ -456,6 +485,35 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "ja": "쓰다 → -아/어지다, 現在のヘヨ体",
           "en": "쓰다 → -아/어지다, Present polite 해요 style",
           "zh": "쓰다 → -아/어지다, 现在해요体"
+        }
+      },
+      {
+        "id": "extended-passive-periphrastic-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "회의에서 사람들이 새 규칙을 만들었어요. 만든 사람보다 완성된 규칙에 초점을 맞추세요.",
+        "contextMeaning": {
+          "ko": "회의에서 사람들이 새 규칙을 만들었어요. 만든 사람보다 완성된 규칙에 초점을 맞추세요.",
+          "ja": "会議で新しい規則を作りました。作り手より完成した規則に焦点を当ててください。",
+          "en": "People made new rules at a meeting. Focus on the rules produced rather than their makers.",
+          "zh": "大家在会议上制定了新规则。请聚焦制定出的规则，而非制定者。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. 끝 서술어는 과거 해요체로 쓰세요.\n재료: 회의에서 / 새로운 규칙이 / 만들다★\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。文末は過去のヘヨ体にしてください。\n材料：회의에서 / 새로운 규칙이 / 만들다★\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. End with a past-tense polite 해요 statement.\nCues: 회의에서 / 새로운 규칙이 / 만들다★\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。句末用过去时해요体。\n材料：회의에서 / 새로운 규칙이 / 만들다★\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "회의에서 새로운 규칙이 만들어졌어요",
+          "회의에서 새로운 규칙이 만들어지었어요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 회의에서 새로운 규칙이 만들어졌어요\n끝 서술어는 과거 해요체로 쓰세요. 동사에 -아/어지다를 붙여 피동을 나타낼 수 있습니다: 만들다→만들어지다, 쓰다→써지다. 형용사 뒤의 -아/어지다는 피동이 아니라 상태 변화입니다.",
+          "ja": "解答例：회의에서 새로운 규칙이 만들어졌어요\n文末は過去のヘヨ体にしてください。 動詞の-아/어지다は受動を表せます。만들다→만들어지다、쓰다→써지다。形容詞に付くと受動でなく状態変化です。",
+          "en": "Model response: 회의에서 새로운 규칙이 만들어졌어요\nEnd with a past-tense polite 해요 statement. With verbs, -아/어지다 can express passive results: 만들어지다, 써지다. After an adjective it expresses a change of state, not a passive.",
+          "zh": "参考答案：회의에서 새로운 규칙이 만들어졌어요\n句末用过去时해요体。 动词后-아/어지다可表示被动结果，如만들어지다、써지다；形容词后则表示状态变化，而非被动。"
         }
       }
     ]
@@ -687,6 +745,35 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "en": "기다리다 → -게 하다, Past polite 해요 style",
           "zh": "기다리다 → -게 하다, 过去해요体"
         }
+      },
+      {
+        "id": "extended-causative-ge-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "감독님은 선수들에게 운동장을 달리라고 지시했어요. 감독님의 지시로 이루어진 행동을 말하세요.",
+        "contextMeaning": {
+          "ko": "감독님은 선수들에게 운동장을 달리라고 지시했어요. 감독님의 지시로 이루어진 행동을 말하세요.",
+          "ja": "監督は選手たちに走るよう指示しました。監督がさせた行動を表してください。",
+          "en": "The coach told the athletes to run. Describe the action the coach had them perform.",
+          "zh": "教练让运动员跑步。请表达教练让他们做的动作。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. 선수들이 아니라 지시한 감독님을 높이고 끝 서술어는 과거 해요체로 쓰세요.\n재료: 감독님이 / 선수들을 / 달리다★\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。走る選手ではなく指示した監督を敬い、文末は過去のヘヨ体にしてください。\n材料：감독님이 / 선수들을 / 달리다★\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Honor the coach who gave the instruction, not the runners, and end in past polite 해요 style.\nCues: 감독님이 / 선수들을 / 달리다★\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。尊敬发出指示的教练而非跑步的运动员，句末用过去时해요体。\n材料：감독님이 / 선수들을 / 달리다★\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "감독님이 선수들을 달리게 하셨어요",
+          "감독님이 선수들을 달리게 하시었어요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 감독님이 선수들을 달리게 하셨어요\n선수들이 아니라 지시한 감독님을 높이고 끝 서술어는 과거 해요체로 쓰세요. 동사 어간에 -게 하다를 붙여 다른 사람에게 행동하게 함을 나타냅니다. “아이가 쉬게 했어요”는 문맥에 따라 쉬도록 시켰거나 쉬도록 허용했다는 뜻입니다.",
+          "ja": "解答例：감독님이 선수들을 달리게 하셨어요\n走る選手ではなく指示した監督を敬い、文末は過去のヘヨ体にしてください。 動詞語幹に-게 하다を付け、人に行動させます。아이가 쉬게 했어요は、文脈により休ませた、または休むことを許したという意味です。",
+          "en": "Model response: 감독님이 선수들을 달리게 하셨어요\nHonor the coach who gave the instruction, not the runners, and end in past polite 해요 style. Attach -게 하다 to a verb stem to cause someone to act. 아이가 쉬게 했어요 can mean making or allowing the child to rest, depending on context.",
+          "zh": "参考答案：감독님이 선수들을 달리게 하셨어요\n尊敬发出指示的教练而非跑步的运动员，句末用过去时해요体。 动词词干后接-게 하다表示让别人行动。아이가 쉬게 했어요可指让孩子休息或允许孩子休息，须看语境。"
+        }
       }
     ]
   },
@@ -716,10 +803,10 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
       "zh": "逐词学习使动动词"
     },
     "use": {
-      "ko": "일부 동사는 접미사로 사동사가 됩니다: 먹다→먹이다, 앉다→앉히다, 자다→재우다, 낮다→낮추다. 형태와 의미를 단어별로 익힙니다. 피동과 같은 접미사도 있어 문장 속 역할을 확인해야 합니다.",
-      "ja": "一部の語は接尾辞で使役動詞になります。먹다→먹이다、앉다→앉히다、자다→재우다、낮다→낮추다。形と意味を語ごとに覚えます。受動と同じ接尾辞もあるため文中の役割を確認します。",
-      "en": "Some words form lexical causatives: 먹이다, 앉히다, 재우다, 낮추다. Learn each form and meaning. Some suffixes also occur in passives; identify participant roles.",
-      "zh": "部分词通过后缀构成使动词：먹이다、앉히다、재우다、낮추다。须逐词学习；某些后缀与被动相同，要判断句中角色。"
+      "ko": "일부 용언은 접미사로 사동사가 됩니다: 먹다→먹이다, 앉다→앉히다, 자다→재우다, 낮다→낮추다. 형태와 의미를 단어별로 익힙니다. 피동과 같은 접미사도 있어 문장 속 역할을 확인해야 합니다.",
+      "ja": "動詞・形容詞の一部は接尾辞で使役動詞になります。먹다→먹이다、앉다→앉히다、자다→재우다、낮다→낮추다。形と意味を語ごとに覚えます。受動と同じ接尾辞もあるため文中の役割を確認します。",
+      "en": "Some verbs and adjectives form lexical causatives: 먹이다, 앉히다, 재우다, 낮추다. Learn each form and meaning. Some suffixes also occur in passives; identify participant roles.",
+      "zh": "部分动词、形容词通过后缀构成使动词：먹이다、앉히다、재우다、낮추다。须逐词学习；某些后缀与被动相同，要判断句中角色。"
     },
     "register": {
       "ko": "예문은 일상적인 해요체입니다. 높임 표현은 행동 주체와 상대의 관계에 맞춥니다.",
@@ -739,10 +826,10 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
         "source": "먹다 → 접미사 사동, 과거 해요체",
         "result": "먹였어요",
         "explanation": {
-          "ko": "정답: 먹였어요. 일부 동사는 접미사로 사동사가 됩니다: 먹다→먹이다, 앉다→앉히다, 자다→재우다, 낮다→낮추다. 형태와 의미를 단어별로 익힙니다. 피동과 같은 접미사도 있어 문장 속 역할을 확인해야 합니다.",
-          "ja": "正解：먹였어요。 一部の語は接尾辞で使役動詞になります。먹다→먹이다、앉다→앉히다、자다→재우다、낮다→낮추다。形と意味を語ごとに覚えます。受動と同じ接尾辞もあるため文中の役割を確認します。",
-          "en": "Answer: 먹였어요. Some words form lexical causatives: 먹이다, 앉히다, 재우다, 낮추다. Learn each form and meaning. Some suffixes also occur in passives; identify participant roles.",
-          "zh": "正确答案：먹였어요。 部分词通过后缀构成使动词：먹이다、앉히다、재우다、낮추다。须逐词学习；某些后缀与被动相同，要判断句中角色。"
+          "ko": "정답: 먹였어요. 일부 용언은 접미사로 사동사가 됩니다: 먹다→먹이다, 앉다→앉히다, 자다→재우다, 낮다→낮추다. 형태와 의미를 단어별로 익힙니다. 피동과 같은 접미사도 있어 문장 속 역할을 확인해야 합니다.",
+          "ja": "正解：먹였어요。 動詞・形容詞の一部は接尾辞で使役動詞になります。먹다→먹이다、앉다→앉히다、자다→재우다、낮다→낮추다。形と意味を語ごとに覚えます。受動と同じ接尾辞もあるため文中の役割を確認します。",
+          "en": "Answer: 먹였어요. Some verbs and adjectives form lexical causatives: 먹이다, 앉히다, 재우다, 낮추다. Learn each form and meaning. Some suffixes also occur in passives; identify participant roles.",
+          "zh": "正确答案：먹였어요。 部分动词、形容词通过后缀构成使动词：먹이다、앉히다、재우다、낮추다。须逐词学习；某些后缀与被动相同，要判断句中角色。"
         },
         "sourceMeaning": {
           "ko": "먹다 → 접미사 사동, 과거 해요체",
@@ -790,10 +877,10 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
             "id": "yes",
             "text": "아이를 재웠어요.",
             "feedback": {
-              "ko": "정답: 아이를 재웠어요. 일부 동사는 접미사로 사동사가 됩니다: 먹다→먹이다, 앉다→앉히다, 자다→재우다, 낮다→낮추다. 형태와 의미를 단어별로 익힙니다. 피동과 같은 접미사도 있어 문장 속 역할을 확인해야 합니다.",
-              "ja": "正解：아이를 재웠어요。 一部の語は接尾辞で使役動詞になります。먹다→먹이다、앉다→앉히다、자다→재우다、낮다→낮추다。形と意味を語ごとに覚えます。受動と同じ接尾辞もあるため文中の役割を確認します。",
-              "en": "Answer: 아이를 재웠어요. Some words form lexical causatives: 먹이다, 앉히다, 재우다, 낮추다. Learn each form and meaning. Some suffixes also occur in passives; identify participant roles.",
-              "zh": "正确答案：아이를 재웠어요。 部分词通过后缀构成使动词：먹이다、앉히다、재우다、낮추다。须逐词学习；某些后缀与被动相同，要判断句中角色。"
+              "ko": "정답: 아이를 재웠어요. 일부 용언은 접미사로 사동사가 됩니다: 먹다→먹이다, 앉다→앉히다, 자다→재우다, 낮다→낮추다. 형태와 의미를 단어별로 익힙니다. 피동과 같은 접미사도 있어 문장 속 역할을 확인해야 합니다.",
+              "ja": "正解：아이를 재웠어요。 動詞・形容詞の一部は接尾辞で使役動詞になります。먹다→먹이다、앉다→앉히다、자다→재우다、낮다→낮추다。形と意味を語ごとに覚えます。受動と同じ接尾辞もあるため文中の役割を確認します。",
+              "en": "Answer: 아이를 재웠어요. Some verbs and adjectives form lexical causatives: 먹이다, 앉히다, 재우다, 낮추다. Learn each form and meaning. Some suffixes also occur in passives; identify participant roles.",
+              "zh": "正确答案：아이를 재웠어요。 部分动词、形容词通过后缀构成使动词：먹이다、앉히다、재우다、낮추다。须逐词学习；某些后缀与被动相同，要判断句中角色。"
             }
           }
         ],
@@ -829,10 +916,10 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "먹이었어요."
         ],
         "explanation": {
-          "ko": "정답: 먹였어요. 일부 동사는 접미사로 사동사가 됩니다: 먹다→먹이다, 앉다→앉히다, 자다→재우다, 낮다→낮추다. 형태와 의미를 단어별로 익힙니다. 피동과 같은 접미사도 있어 문장 속 역할을 확인해야 합니다.",
-          "ja": "正解：먹였어요。 一部の語は接尾辞で使役動詞になります。먹다→먹이다、앉다→앉히다、자다→재우다、낮다→낮추다。形と意味を語ごとに覚えます。受動と同じ接尾辞もあるため文中の役割を確認します。",
-          "en": "Answer: 먹였어요. Some words form lexical causatives: 먹이다, 앉히다, 재우다, 낮추다. Learn each form and meaning. Some suffixes also occur in passives; identify participant roles.",
-          "zh": "正确答案：먹였어요。 部分词通过后缀构成使动词：먹이다、앉히다、재우다、낮추다。须逐词学习；某些后缀与被动相同，要判断句中角色。"
+          "ko": "정답: 먹였어요. 일부 용언은 접미사로 사동사가 됩니다: 먹다→먹이다, 앉다→앉히다, 자다→재우다, 낮다→낮추다. 형태와 의미를 단어별로 익힙니다. 피동과 같은 접미사도 있어 문장 속 역할을 확인해야 합니다.",
+          "ja": "正解：먹였어요。 動詞・形容詞の一部は接尾辞で使役動詞になります。먹다→먹이다、앉다→앉히다、자다→재우다、낮다→낮추다。形と意味を語ごとに覚えます。受動と同じ接尾辞もあるため文中の役割を確認します。",
+          "en": "Answer: 먹였어요. Some verbs and adjectives form lexical causatives: 먹이다, 앉히다, 재우다, 낮추다. Learn each form and meaning. Some suffixes also occur in passives; identify participant roles.",
+          "zh": "正确答案：먹였어요。 部分动词、形容词通过后缀构成使动词：먹이다、앉히다、재우다、낮추다。须逐词学习；某些后缀与被动相同，要判断句中角色。"
         },
         "contextMeaning": {
           "ko": "먹다 → 접미사 사동, 과거 해요체",
@@ -867,10 +954,10 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
             "id": "yes",
             "text": "할머니를 앉혔어요.",
             "feedback": {
-              "ko": "정답: 할머니를 앉혔어요. 일부 동사는 접미사로 사동사가 됩니다: 먹다→먹이다, 앉다→앉히다, 자다→재우다, 낮다→낮추다. 형태와 의미를 단어별로 익힙니다. 피동과 같은 접미사도 있어 문장 속 역할을 확인해야 합니다.",
-              "ja": "正解：할머니를 앉혔어요。 一部の語は接尾辞で使役動詞になります。먹다→먹이다、앉다→앉히다、자다→재우다、낮다→낮추다。形と意味を語ごとに覚えます。受動と同じ接尾辞もあるため文中の役割を確認します。",
-              "en": "Answer: 할머니를 앉혔어요. Some words form lexical causatives: 먹이다, 앉히다, 재우다, 낮추다. Learn each form and meaning. Some suffixes also occur in passives; identify participant roles.",
-              "zh": "正确答案：할머니를 앉혔어요。 部分词通过后缀构成使动词：먹이다、앉히다、재우다、낮추다。须逐词学习；某些后缀与被动相同，要判断句中角色。"
+              "ko": "정답: 할머니를 앉혔어요. 일부 용언은 접미사로 사동사가 됩니다: 먹다→먹이다, 앉다→앉히다, 자다→재우다, 낮다→낮추다. 형태와 의미를 단어별로 익힙니다. 피동과 같은 접미사도 있어 문장 속 역할을 확인해야 합니다.",
+              "ja": "正解：할머니를 앉혔어요。 動詞・形容詞の一部は接尾辞で使役動詞になります。먹다→먹이다、앉다→앉히다、자다→재우다、낮다→낮추다。形と意味を語ごとに覚えます。受動と同じ接尾辞もあるため文中の役割を確認します。",
+              "en": "Answer: 할머니를 앉혔어요. Some verbs and adjectives form lexical causatives: 먹이다, 앉히다, 재우다, 낮추다. Learn each form and meaning. Some suffixes also occur in passives; identify participant roles.",
+              "zh": "正确答案：할머니를 앉혔어요。 部分动词、形容词通过后缀构成使动词：먹이다、앉히다、재우다、낮추다。须逐词学习；某些后缀与被动相同，要判断句中角色。"
             }
           }
         ],
@@ -906,16 +993,45 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "낮추어요."
         ],
         "explanation": {
-          "ko": "정답: 낮춰요. 일부 동사는 접미사로 사동사가 됩니다: 먹다→먹이다, 앉다→앉히다, 자다→재우다, 낮다→낮추다. 형태와 의미를 단어별로 익힙니다. 피동과 같은 접미사도 있어 문장 속 역할을 확인해야 합니다.",
-          "ja": "正解：낮춰요。 一部の語は接尾辞で使役動詞になります。먹다→먹이다、앉다→앉히다、자다→재우다、낮다→낮추다。形と意味を語ごとに覚えます。受動と同じ接尾辞もあるため文中の役割を確認します。",
-          "en": "Answer: 낮춰요. Some words form lexical causatives: 먹이다, 앉히다, 재우다, 낮추다. Learn each form and meaning. Some suffixes also occur in passives; identify participant roles.",
-          "zh": "正确答案：낮춰요。 部分词通过后缀构成使动词：먹이다、앉히다、재우다、낮추다。须逐词学习；某些后缀与被动相同，要判断句中角色。"
+          "ko": "정답: 낮춰요. 일부 용언은 접미사로 사동사가 됩니다: 먹다→먹이다, 앉다→앉히다, 자다→재우다, 낮다→낮추다. 형태와 의미를 단어별로 익힙니다. 피동과 같은 접미사도 있어 문장 속 역할을 확인해야 합니다.",
+          "ja": "正解：낮춰요。 動詞・形容詞の一部は接尾辞で使役動詞になります。먹다→먹이다、앉다→앉히다、자다→재우다、낮다→낮추다。形と意味を語ごとに覚えます。受動と同じ接尾辞もあるため文中の役割を確認します。",
+          "en": "Answer: 낮춰요. Some verbs and adjectives form lexical causatives: 먹이다, 앉히다, 재우다, 낮추다. Learn each form and meaning. Some suffixes also occur in passives; identify participant roles.",
+          "zh": "正确答案：낮춰요。 部分动词、形容词通过后缀构成使动词：먹이다、앉히다、재우다、낮추다。须逐词学习；某些后缀与被动相同，要判断句中角色。"
         },
         "contextMeaning": {
           "ko": "낮다 → 접미사 사동, 현재 해요체",
           "ja": "낮다 → 接尾辞による使役・現在のヘヨ体",
           "en": "낮다 → Suffix causative; present polite 해요 style",
           "zh": "낮다 → 后缀使动；现在해요体"
+        }
+      },
+      {
+        "id": "extended-causative-suffix-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "음악 소리가 너무 커서 엄마가 소리를 작게 조절했어요. 접미사 사동사로 표현하세요.",
+        "contextMeaning": {
+          "ko": "음악 소리가 너무 커서 엄마가 소리를 작게 조절했어요. 접미사 사동사로 표현하세요.",
+          "ja": "音楽がうるさかったので母が音量を下げました。接尾辞による使役動詞で表してください。",
+          "en": "The music was too loud, so my mother turned the volume down. Use the suffix causative.",
+          "zh": "音乐太响，妈妈调低了音量。请用后缀使动词表达。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. 끝 서술어는 과거 해요체로 쓰세요.\n재료: 엄마가 / 음악 소리를 / 낮다★\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。文末は過去のヘヨ体にしてください。\n材料：엄마가 / 음악 소리를 / 낮다★\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. End with a past-tense polite 해요 statement.\nCues: 엄마가 / 음악 소리를 / 낮다★\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。句末用过去时해요体。\n材料：엄마가 / 음악 소리를 / 낮다★\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "엄마가 음악 소리를 낮췄어요",
+          "엄마가 음악 소리를 낮추었어요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 엄마가 음악 소리를 낮췄어요\n끝 서술어는 과거 해요체로 쓰세요. 일부 용언은 접미사로 사동사가 됩니다: 먹다→먹이다, 앉다→앉히다, 자다→재우다, 낮다→낮추다. 형태와 의미를 단어별로 익힙니다. 피동과 같은 접미사도 있어 문장 속 역할을 확인해야 합니다.",
+          "ja": "解答例：엄마가 음악 소리를 낮췄어요\n文末は過去のヘヨ体にしてください。 動詞・形容詞の一部は接尾辞で使役動詞になります。먹다→먹이다、앉다→앉히다、자다→재우다、낮다→낮추다。形と意味を語ごとに覚えます。受動と同じ接尾辞もあるため文中の役割を確認します。",
+          "en": "Model response: 엄마가 음악 소리를 낮췄어요\nEnd with a past-tense polite 해요 statement. Some verbs and adjectives form lexical causatives: 먹이다, 앉히다, 재우다, 낮추다. Learn each form and meaning. Some suffixes also occur in passives; identify participant roles.",
+          "zh": "参考答案：엄마가 음악 소리를 낮췄어요\n句末用过去时해요体。 部分动词、形容词通过后缀构成使动词：먹이다、앉히다、재우다、낮추다。须逐词学习；某些后缀与被动相同，要判断句中角色。"
         }
       }
     ]
@@ -1149,6 +1265,35 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "en": "있다 → Existence of a person being honored; present polite 해요 style",
           "zh": "있다 → 尊敬的人的存在；现在해요体"
         }
+      },
+      {
+        "id": "extended-honorific-lexicon-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "내가 과장님에게 서류를 건넸어요. 받는 사람을 높이는 겸양 어휘로 그 행동을 전하세요.",
+        "contextMeaning": {
+          "ko": "내가 과장님에게 서류를 건넸어요. 받는 사람을 높이는 겸양 어휘로 그 행동을 전하세요.",
+          "ja": "自分が課長に書類を渡しました。受け手への敬意を表す謙譲語で伝えてください。",
+          "en": "You handed documents to your manager. Use humble giving vocabulary that honors the recipient.",
+          "zh": "你把文件交给了科长。请用尊敬接受者的谦让词汇表达。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. 끝 서술어는 과거 해요체로 쓰세요.\n재료: 과장님께 / 서류를 / 주다★\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。文末は過去のヘヨ体にしてください。\n材料：과장님께 / 서류를 / 주다★\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. End with a past-tense polite 해요 statement.\nCues: 과장님께 / 서류를 / 주다★\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。句末用过去时해요体。\n材料：과장님께 / 서류를 / 주다★\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "과장님께 서류를 드렸어요",
+          "과장님께 서류를 드리었어요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 과장님께 서류를 드렸어요\n끝 서술어는 과거 해요체로 쓰세요. 계시다는 높이는 사람의 존재, 드시다는 그 사람의 먹는 행동을 나타냅니다. 드리다는 내가 높이는 사람에게 주는 행동을 낮춰 말합니다. 말씀은 말의 높임말입니다. 대상과 행동 주체를 먼저 확인하세요.",
+          "ja": "解答例：과장님께 서류를 드렸어요\n文末は過去のヘヨ体にしてください。 계시다は敬う人の存在、드시다はその人が食べる行為です。드리다は自分から目上へ与える行為をへりくだって言います。말씀は말の敬語です。誰を敬うか、誰が行うかを確認します。",
+          "en": "Model response: 과장님께 서류를 드렸어요\nEnd with a past-tense polite 해요 statement. 계시다 honors the person present; 드시다 honors the eater. 드리다 humbles giving to a respected recipient. 말씀 is the honorific noun for speech. First identify actor and respected person.",
+          "zh": "参考答案：과장님께 서류를 드렸어요\n句末用过去时해요体。 계시다尊称某人在场，드시다尊称其进食；드리다谦称自己向尊敬者给予的行为。말씀是말的敬语。先确定行为者和尊敬对象。"
+        }
       }
     ]
   },
@@ -1376,6 +1521,35 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "en": "할머니 + Particle honoring the recipient",
           "zh": "할머니 + 尊敬接受者的助词"
         }
+      },
+      {
+        "id": "extended-recipient-honorific-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "교수님이 강의를 시작했어요. 주어를 나타내는 조사와 동사를 모두 높여 말하세요.",
+        "contextMeaning": {
+          "ko": "교수님이 강의를 시작했어요. 주어를 나타내는 조사와 동사를 모두 높여 말하세요.",
+          "ja": "教授が講義を始めました。主語の助詞と動詞の両方に敬意を表してください。",
+          "en": "The professor began the lecture. Honor the subject in both the particle and the verb.",
+          "zh": "教授开始讲课了。请在主语助词和动词中都体现敬意。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. 행동 주체를 높이고 끝 서술어는 과거 해요체로 쓰세요.\n재료: 교수님★ / 강의를 / 시작하다\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。行為者を敬い、文末は過去のヘヨ体にしてください。\n材料：교수님★ / 강의를 / 시작하다\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Honor the actor and end with past-tense polite 해요 style.\nCues: 교수님★ / 강의를 / 시작하다\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。尊敬行为主体，句末用过去时해요体。\n材料：교수님★ / 강의를 / 시작하다\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "교수님께서 강의를 시작하셨어요",
+          "교수님께서 강의를 시작하시었어요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 교수님께서 강의를 시작하셨어요\n행동 주체를 높이고 끝 서술어는 과거 해요체로 쓰세요. 께는 에게/한테의 높임으로 받는 사람에게, 께서는 이/가의 높임으로 주어에게 붙입니다. 주체를 높일 때 서술어에도 보통 -(으)시- 또는 높임 어휘를 씁니다.",
+          "ja": "解答例：교수님께서 강의를 시작하셨어요\n行為者を敬い、文末は過去のヘヨ体にしてください。 께は에게/한테の敬語で受け手に、께서は이/가の敬語で主語に付きます。主語を敬う時は述語にも通常-(으)시-や敬語語彙を使います。",
+          "en": "Model response: 교수님께서 강의를 시작하셨어요\nHonor the actor and end with past-tense polite 해요 style. 께 honors the recipient marked by 에게/한테; 께서 honors the subject marked by 이/가. Subject honorification normally also uses -(으)시- or honorific vocabulary.",
+          "zh": "参考答案：교수님께서 강의를 시작하셨어요\n尊敬行为主体，句末用过去时해요体。 께是에게/한테的敬语，用于接受者；께서是이/가的敬语，用于主语。尊称主语时，谓语通常也用-(으)시-或敬语词。"
+        }
       }
     ]
   },
@@ -1601,6 +1775,35 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "ja": "놀다 → -느라고 (ㄹの脱落)",
           "en": "놀다 → -느라고 (Drop ㄹ)",
           "zh": "놀다 → -느라고 (脱落ㄹ)"
+        }
+      },
+      {
+        "id": "extended-reason-busy-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "나는 짐을 싸는 데 시간을 다 써서 저녁을 먹지 못했어요. 두 행동의 주어는 모두 나예요.",
+        "contextMeaning": {
+          "ko": "나는 짐을 싸는 데 시간을 다 써서 저녁을 먹지 못했어요. 두 행동의 주어는 모두 나예요.",
+          "ja": "荷造りに時間を使い、夕食を食べられませんでした。両方の行為者は自分です。",
+          "en": "You spent the time packing and could not eat dinner. You are the actor in both clauses.",
+          "zh": "你忙于收拾行李，没能吃晚饭。前后动作的主体都是你。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. 끝 서술어는 과거 해요체로 쓰세요.\n재료: 짐을 / 싸다★ / 저녁을 / 못 먹다\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。文末は過去のヘヨ体にしてください。\n材料：짐을 / 싸다★ / 저녁을 / 못 먹다\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. End with a past-tense polite 해요 statement.\nCues: 짐을 / 싸다★ / 저녁을 / 못 먹다\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。句末用过去时해요体。\n材料：짐을 / 싸다★ / 저녁을 / 못 먹다\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "짐을 싸느라고 저녁을 못 먹었어요",
+          "짐을 싸느라고, 저녁을 못 먹었어요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 짐을 싸느라고 저녁을 못 먹었어요\n끝 서술어는 과거 해요체로 쓰세요. 동사 어간에 -느라고를 붙입니다. 앞 행동에 시간·힘을 써서 뒤에 주로 부정적 결과가 생깁니다. 두 절의 행위자는 보통 같고, 이 용법에서는 앞에 과거 -았/었-을 붙이지 않습니다.",
+          "ja": "解答例：짐을 싸느라고 저녁을 못 먹었어요\n文末は過去のヘヨ体にしてください。 動詞語幹に-느라고を付けます。前の行為に時間・労力を使い、後ろに主に不都合な結果が続きます。主語は通常同じで、この用法では前に過去の-았/었-を付けません。",
+          "en": "Model response: 짐을 싸느라고 저녁을 못 먹었어요\nEnd with a past-tense polite 해요 statement. Attach -느라고 to a verb stem. Time or effort spent on that action leads mainly to an unfavorable result. The actor is normally shared; do not add past -았/었- before it in this use.",
+          "zh": "参考答案：짐을 싸느라고 저녁을 못 먹었어요\n句末用过去时해요体。 动词词干后接-느라고。前项动作耗费时间或精力，通常造成不利结果。两句行为者一般相同；此用法前不加过去时-았/었-。"
         }
       }
     ]
@@ -1828,6 +2031,37 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "en": "쏟아지다 → -는 바람에",
           "zh": "쏟아지다 → -는 바람에"
         }
+      },
+      {
+        "id": "extended-reason-blame-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "컴퓨터가 갑자기 멈춰서 나는 제출 마감을 놓쳤어요. 예상하지 못한 사건과 나쁜 결과를 연결하세요.",
+        "contextMeaning": {
+          "ko": "컴퓨터가 갑자기 멈춰서 나는 제출 마감을 놓쳤어요. 예상하지 못한 사건과 나쁜 결과를 연결하세요.",
+          "ja": "パソコンが突然止まり、提出期限を逃しました。予想外の出来事と不都合な結果をつないでください。",
+          "en": "Your computer suddenly stopped and you missed the submission deadline. Link the unexpected event and adverse result.",
+          "zh": "电脑突然停止运行，导致你错过提交期限。请连接突发事件与不良结果。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. 끝 서술어는 과거 해요체로 쓰세요.\n재료: 컴퓨터가 / 멈추다★ / 마감을 / 놓치다\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。文末は過去のヘヨ体にしてください。\n材料：컴퓨터가 / 멈추다★ / 마감을 / 놓치다\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. End with a past-tense polite 해요 statement.\nCues: 컴퓨터가 / 멈추다★ / 마감을 / 놓치다\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。句末用过去时해요体。\n材料：컴퓨터가 / 멈추다★ / 마감을 / 놓치다\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "컴퓨터가 멈추는 바람에 마감을 놓쳤어요",
+          "컴퓨터가 멈추는 바람에 마감을 놓치었어요",
+          "컴퓨터가 멈추는 바람에, 마감을 놓쳤어요",
+          "컴퓨터가 멈추는 바람에, 마감을 놓치었어요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 컴퓨터가 멈추는 바람에 마감을 놓쳤어요\n끝 서술어는 과거 해요체로 쓰세요. 동사의 현재 관형형 -는 뒤에 바람에를 씁니다. 예상 밖 사건 때문에 원하지 않은 결과가 생겼음을 나타냅니다. 지난 사건도 “버스가 늦게 오는 바람에”처럼 표현할 수 있습니다.",
+          "ja": "解答例：컴퓨터가 멈추는 바람에 마감을 놓쳤어요\n文末は過去のヘヨ体にしてください。 動詞の現在連体形-는に바람에を続けます。予想外の出来事で望まない結果になったことを表します。過去の出来事も버스가 늦게 오는 바람에のように言えます。",
+          "en": "Model response: 컴퓨터가 멈추는 바람에 마감을 놓쳤어요\nEnd with a past-tense polite 해요 statement. Use verb -는 바람에 for an unexpected event leading to an unwanted result. A past event can still use the present modifier, as in 버스가 늦게 오는 바람에.",
+          "zh": "参考答案：컴퓨터가 멈추는 바람에 마감을 놓쳤어요\n句末用过去时해요体。 动词现在定语形-는后接바람에，表示意外事件造成不如意的结果。过去的事件也可用버스가 늦게 오는 바람에。"
+        }
       }
     ]
   },
@@ -2054,6 +2288,35 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "en": "연습하다 → Completed-action noun modifier + 덕분에",
           "zh": "연습하다 → 已完成动作的定语形 + 덕분에"
         }
+      },
+      {
+        "id": "extended-reason-benefit-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "미리 지도를 내려받았어요. 그 준비가 도움이 되어 목적지를 쉽게 찾았어요.",
+        "contextMeaning": {
+          "ko": "미리 지도를 내려받았어요. 그 준비가 도움이 되어 목적지를 쉽게 찾았어요.",
+          "ja": "前もって地図をダウンロードしました。その準備のおかげで目的地を簡単に見つけました。",
+          "en": "You downloaded a map in advance. That preparation helped you find your destination easily.",
+          "zh": "你提前下载了地图，这项准备让你轻松找到了目的地。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. ★는 완료한 행동의 관형형, 끝 서술어는 과거 해요체로 쓰세요.\n재료: 지도를 / 저장하다★ / 목적지를 / 쉽게 / 찾다\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。★は完了した行為の連体形、文末は過去のヘヨ体にしてください。\n材料：지도를 / 저장하다★ / 목적지를 / 쉽게 / 찾다\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Use a completed-action modifier at ★ and past polite 해요 style at the end.\nCues: 지도를 / 저장하다★ / 목적지를 / 쉽게 / 찾다\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。★用已完成动作定语形，句末用过去时해요体。\n材料：지도를 / 저장하다★ / 목적지를 / 쉽게 / 찾다\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "지도를 저장한 덕분에 목적지를 쉽게 찾았어요",
+          "지도를 저장한 덕분에, 목적지를 쉽게 찾았어요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 지도를 저장한 덕분에 목적지를 쉽게 찾았어요\n★는 완료한 행동의 관형형, 끝 서술어는 과거 해요체로 쓰세요. 명사에는 덕분에, 동사에는 진행·반복 -는 덕분에 또는 완료 -(으)ㄴ 덕분에를 씁니다. 형용사는 -(으)ㄴ 덕분에입니다. 뒤에는 보통 긍정적인 결과가 옵니다.",
+          "ja": "解答例：지도를 저장한 덕분에 목적지를 쉽게 찾았어요\n★は完了した行為の連体形、文末は過去のヘヨ体にしてください。 名詞には덕분에、動詞には進行・反復の-는 덕분에、完了の-(으)ㄴ 덕분에を使います。形容詞は-(으)ㄴ 덕분에。後ろは通常よい結果です。",
+          "en": "Model response: 지도를 저장한 덕분에 목적지를 쉽게 찾았어요\nUse a completed-action modifier at ★ and past polite 해요 style at the end. Use noun 덕분에; verbs take -는 for ongoing/repeated action or -(으)ㄴ for completed action. Adjectives take -(으)ㄴ. The result is normally beneficial.",
+          "zh": "参考答案：지도를 저장한 덕분에 목적지를 쉽게 찾았어요\n★用已完成动作定语形，句末用过去时해요体。 名词接덕분에；动词进行或反复用-는，完成用-(으)ㄴ；形容词用-(으)ㄴ。后项通常为好结果。"
+        }
       }
     ]
   },
@@ -2279,6 +2542,35 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "ja": "서두르다 → 完了の連体形 + 탓에",
           "en": "서두르다 → Completed-action noun modifier + 탓에",
           "zh": "서두르다 → 已完成动作的定语形 + 탓에"
+        }
+      },
+      {
+        "id": "extended-reason-adverse-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "나는 알람을 듣지 못했어요. 그래서 약속에 늦었고 그 일을 늦은 원인으로 지적해요.",
+        "contextMeaning": {
+          "ko": "나는 알람을 듣지 못했어요. 그래서 약속에 늦었고 그 일을 늦은 원인으로 지적해요.",
+          "ja": "アラームが聞こえず約束に遅れました。そのことを遅刻の原因として述べてください。",
+          "en": "You did not hear the alarm and were late for an appointment. Attribute the lateness to that cause.",
+          "zh": "你没听见闹钟，因此赴约迟到了。请将迟到归因于这件事。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. ★는 완료한 행동의 관형형, 끝 서술어는 과거 해요체로 쓰세요.\n재료: 알람을 / 못 듣다★ / 약속에 / 늦다\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。★は完了した行為の連体形、文末は過去のヘヨ体にしてください。\n材料：알람을 / 못 듣다★ / 약속에 / 늦다\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Use a completed-action modifier at ★ and past polite 해요 style at the end.\nCues: 알람을 / 못 듣다★ / 약속에 / 늦다\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。★用已完成动作定语形，句末用过去时해요体。\n材料：알람을 / 못 듣다★ / 약속에 / 늦다\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "알람을 못 들은 탓에 약속에 늦었어요",
+          "알람을 못 들은 탓에, 약속에 늦었어요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 알람을 못 들은 탓에 약속에 늦었어요\n★는 완료한 행동의 관형형, 끝 서술어는 과거 해요체로 쓰세요. 명사에는 탓에, 동사에는 현재 -는 또는 완료 -(으)ㄴ 탓에, 형용사에는 -(으)ㄴ 탓에를 씁니다. 좋지 않은 결과를 앞 원인의 책임으로 돌리는 뉘앙스입니다.",
+          "ja": "解答例：알람을 못 들은 탓에 약속에 늦었어요\n★は完了した行為の連体形、文末は過去のヘヨ体にしてください。 名詞には탓에、動詞には現在-는または完了-(으)ㄴ 탓에、形容詞には-(으)ㄴ 탓에を使います。悪い結果を前の原因のせいにするニュアンスです。",
+          "en": "Model response: 알람을 못 들은 탓에 약속에 늦었어요\nUse a completed-action modifier at ★ and past polite 해요 style at the end. Use noun 탓에, present verb -는 or completed verb -(으)ㄴ 탓에, and adjective -(으)ㄴ 탓에. It attributes an unfavorable outcome to the cause.",
+          "zh": "参考答案：알람을 못 들은 탓에 약속에 늦었어요\n★用已完成动作定语形，句末用过去时해요体。 名词接탓에；动词现在用-는、完成用-(으)ㄴ；形容词用-(으)ㄴ。含有将不良结果归因、归咎于前项的语气。"
         }
       }
     ]
@@ -2510,6 +2802,37 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "en": "신다 → -아/어 보니",
           "zh": "신다 → -아/어 보니"
         }
+      },
+      {
+        "id": "extended-reason-discovery-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "나는 그 펜을 처음 사용했어요. 실제로 쓰고 나서 예상보다 가볍다는 것을 알았어요.",
+        "contextMeaning": {
+          "ko": "나는 그 펜을 처음 사용했어요. 실제로 쓰고 나서 예상보다 가볍다는 것을 알았어요.",
+          "ja": "そのペンを初めて使いました。実際に使って、予想より軽いとわかりました。",
+          "en": "You tried the pen for the first time and discovered it was lighter than expected.",
+          "zh": "你第一次试用了那支笔，发现它比想象中轻。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. 끝 서술어는 과거 해요체로 쓰세요.\n재료: 이 펜을 / 쓰다★ / 생각보다 / 가볍다\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。文末は過去のヘヨ体にしてください。\n材料：이 펜을 / 쓰다★ / 생각보다 / 가볍다\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. End with a past-tense polite 해요 statement.\nCues: 이 펜을 / 쓰다★ / 생각보다 / 가볍다\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。句末用过去时해요体。\n材料：이 펜을 / 쓰다★ / 생각보다 / 가볍다\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "이 펜을 써 보니 생각보다 가벼웠어요",
+          "이 펜을 써 보니, 생각보다 가벼웠어요",
+          "이 펜을 써보니 생각보다 가벼웠어요",
+          "이 펜을 써보니, 생각보다 가벼웠어요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 이 펜을 써 보니 생각보다 가벼웠어요\n끝 서술어는 과거 해요체로 쓰세요. 동사에 -아/어 보다를 붙인 뒤 보니로 연결합니다. 직접 시도하거나 경험한 뒤 새로 알게 된 점을 말합니다. 앞 행동의 경험자는 보통 말하는 사람입니다.",
+          "ja": "解答例：이 펜을 써 보니 생각보다 가벼웠어요\n文末は過去のヘヨ体にしてください。 動詞に-아/어 보다を付け、보니でつなぎます。実際に試す・経験することで新たにわかったことを述べます。経験者は通常話し手です。",
+          "en": "Model response: 이 펜을 써 보니 생각보다 가벼웠어요\nEnd with a past-tense polite 해요 statement. Combine a verb with -아/어 보다 and connect using 보니. Report what you newly discovered through trying or experiencing something, usually as the speaker.",
+          "zh": "参考答案：이 펜을 써 보니 생각보다 가벼웠어요\n句末用过去时해요体。 动词与-아/어 보다结合后用보니连接，表达亲自尝试或体验后新得知的情况，体验者通常是说话者。"
+        }
       }
     ]
   },
@@ -2735,6 +3058,35 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "ja": "듣다 → -다 보니",
           "en": "듣다 → -다 보니",
           "zh": "듣다 → -다 보니"
+        }
+      },
+      {
+        "id": "extended-process-discovery-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "몇 달 동안 강아지를 돌봤어요. 시간이 지나며 강아지에게 정이 들었어요. 실제 경험한 변화를 말하세요.",
+        "contextMeaning": {
+          "ko": "몇 달 동안 강아지를 돌봤어요. 시간이 지나며 강아지에게 정이 들었어요. 실제 경험한 변화를 말하세요.",
+          "ja": "数か月間子犬の世話をしました。そのうち愛着がわきました。実際に起きた変化を述べてください。",
+          "en": "You cared for a puppy for several months and grew attached to it. Report the change you actually experienced.",
+          "zh": "你照顾小狗几个月后，渐渐产生了感情。请表达实际经历的变化。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. 끝 서술어는 과거 해요체로 쓰세요.\n재료: 강아지를 / 돌보다★ / 정이 / 들다\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。文末は過去のヘヨ体にしてください。\n材料：강아지를 / 돌보다★ / 정이 / 들다\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. End with a past-tense polite 해요 statement.\nCues: 강아지를 / 돌보다★ / 정이 / 들다\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。句末用过去时해요体。\n材料：강아지를 / 돌보다★ / 정이 / 들다\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "강아지를 돌보다 보니 정이 들었어요",
+          "강아지를 돌보다 보니, 정이 들었어요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 강아지를 돌보다 보니 정이 들었어요\n끝 서술어는 과거 해요체로 쓰세요. 동사 어간에 -다 보니를 붙입니다. 어떤 행동을 계속하거나 반복하는 과정에서 결과나 깨달음이 생겼음을 나타냅니다. 결과는 이미 경험한 사실로 말합니다.",
+          "ja": "解答例：강아지를 돌보다 보니 정이 들었어요\n文末は過去のヘヨ体にしてください。 動詞語幹に-다 보니を付けます。行動を続けたり繰り返したりするうちに結果や気づきが生じたことを表します。結果は経験済みの事実として述べます。",
+          "en": "Model response: 강아지를 돌보다 보니 정이 들었어요\nEnd with a past-tense polite 해요 statement. Attach -다 보니 to a verb stem for a result or realization that emerged while continuing or repeating an activity. Present the result as experienced fact.",
+          "zh": "参考答案：강아지를 돌보다 보니 정이 들었어요\n句末用过去时해요体。 动词词干后接-다 보니，表示持续或反复某行为的过程中产生结果或领悟；结果作为已体验的事实陈述。"
         }
       }
     ]
@@ -2962,6 +3314,35 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "en": "말하다 → -다 보면",
           "zh": "말하다 → -다 보면"
         }
+      },
+      {
+        "id": "extended-process-conditional-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "새 동네가 아직 낯설어요. 앞으로 자주 산책하면 길을 익히게 될 것이라고 격려하세요.",
+        "contextMeaning": {
+          "ko": "새 동네가 아직 낯설어요. 앞으로 자주 산책하면 길을 익히게 될 것이라고 격려하세요.",
+          "ja": "新しい町にまだ慣れていません。これからよく散歩すれば道を覚えられると励ましてください。",
+          "en": "The new neighborhood is unfamiliar. Encourage someone that repeated walks will help them learn the streets.",
+          "zh": "新社区还很陌生。请鼓励对方，经常散步就会熟悉路。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. 끝은 -ㄹ/을 거예요로 예측하세요.\n재료: 자주 / 산책하다★ / 길이 / 익숙해지다\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。文末は-ㄹ/을 거예요で予測してください。\n材料：자주 / 산책하다★ / 길이 / 익숙해지다\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. End the prediction with -ㄹ/을 거예요.\nCues: 자주 / 산책하다★ / 길이 / 익숙해지다\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。用-ㄹ/을 거예요结尾表达预测。\n材料：자주 / 산책하다★ / 길이 / 익숙해지다\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "자주 산책하다 보면 길이 익숙해질 거예요",
+          "자주 산책하다 보면, 길이 익숙해질 거예요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 자주 산책하다 보면 길이 익숙해질 거예요\n끝은 -ㄹ/을 거예요로 예측하세요. 동사 어간에 -다 보면을 붙여 계속·반복하면 생길 일반적 결과나 예상 결과를 말합니다. 이미 특정 상황에서 경험한 발견은 -다 보니와 구별합니다.",
+          "ja": "解答例：자주 산책하다 보면 길이 익숙해질 거예요\n文末は-ㄹ/을 거예요で予測してください。 動詞語幹に-다 보면を付け、続けたり繰り返したりすれば起こる一般的・予想される結果を述べます。特定の経験からの発見を表す-다 보니と区別します。",
+          "en": "Model response: 자주 산책하다 보면 길이 익숙해질 거예요\nEnd the prediction with -ㄹ/을 거예요. Use verb stem -다 보면 for a general or predicted result of continuing or repeating an action. Distinguish -다 보니, which reports an actual discovery.",
+          "zh": "参考答案：자주 산책하다 보면 길이 익숙해질 거예요\n用-ㄹ/을 거예요结尾表达预测。 动词词干后接-다 보면，表示持续或反复行动后的一般或预期结果。与报告实际发现的-다 보니区分。"
+        }
       }
     ]
   },
@@ -3187,6 +3568,34 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "ja": "조용하다 → 直接観察した事実, -더라고요",
           "en": "조용하다 → Directly observed fact, -더라고요",
           "zh": "조용하다 → 亲自观察到的事实, -더라고요"
+        }
+      },
+      {
+        "id": "extended-remember-observe-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "어제 새 도서관을 직접 방문했어요. 거기에서 좌석이 넉넉하다는 것을 확인했어요. 경험을 전하세요.",
+        "contextMeaning": {
+          "ko": "어제 새 도서관을 직접 방문했어요. 거기에서 좌석이 넉넉하다는 것을 확인했어요. 경험을 전하세요.",
+          "ja": "昨日、新しい図書館に自分で行き、席が十分あるとわかりました。その観察を伝えてください。",
+          "en": "You visited the new library yesterday and personally saw that it had plenty of seats. Report the observation.",
+          "zh": "你昨天亲自去了新图书馆，看到座位很充足。请转述这项观察。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. 직접 관찰의 회상인 -더라고요로 끝내세요.\n재료: 새 도서관은 / 좌석이 / 많다★\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。直接観察を振り返る-더라고요で終えてください。\n材料：새 도서관은 / 좌석이 / 많다★\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. End with firsthand-recollection -더라고요.\nCues: 새 도서관은 / 좌석이 / 많다★\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。以亲身观察回忆形式-더라고요结尾。\n材料：새 도서관은 / 좌석이 / 많다★\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "새 도서관은 좌석이 많더라고요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 새 도서관은 좌석이 많더라고요\n직접 관찰의 회상인 -더라고요로 끝내세요. 동사·형용사 어간 뒤 -더라고요를 붙여 직접 경험하고 알게 된 사실을 전합니다. 명사는 (이)더라고요입니다. 보통 자기의 의도적 행동 자체보다는 관찰·깨달음을 말합니다.",
+          "ja": "解答例：새 도서관은 좌석이 많더라고요\n直接観察を振り返る-더라고요で終えてください。 動詞・形容詞語幹に-더라고요、名詞に(이)더라고요を付け、直接経験して知った事実を伝えます。普通、自分の意図的行為そのものより観察や気づきを述べます。",
+          "en": "Model response: 새 도서관은 좌석이 많더라고요\nEnd with firsthand-recollection -더라고요. Use verb/adjective stem -더라고요 or noun (이)더라고요 for a fact learned firsthand. It normally reports observation or realization, rather than merely your own intentional action.",
+          "zh": "参考答案：새 도서관은 좌석이 많더라고요\n以亲身观察回忆形式-더라고요结尾。 动词、形容词词干后接-더라고요，名词接(이)더라고요，转述亲身体验中得知的事实。通常陈述观察或领悟，而非单纯叙述自己的有意行为。"
         }
       }
     ]
@@ -3414,6 +3823,35 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "en": "먹다 → Noun modifier for an ongoing past action",
           "zh": "먹다 → 表示过去进行动作的定语形"
         }
+      },
+      {
+        "id": "extended-retrospective-noun-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "학생 시절에 주말마다 그 수영장에 갔어요. 지금은 그 수영장이 사라졌어요. 반복된 과거를 회상하세요.",
+        "contextMeaning": {
+          "ko": "학생 시절에 주말마다 그 수영장에 갔어요. 지금은 그 수영장이 사라졌어요. 반복된 과거를 회상하세요.",
+          "ja": "学生時代、週末ごとにそのプールに通いました。今はなくなっています。過去の習慣を振り返ってください。",
+          "en": "As a student, you went to that pool every weekend. It is gone now. Recall the repeated past habit.",
+          "zh": "学生时代，你每个周末都去那家游泳馆，如今它已不在。请回忆过去的习惯。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. ★에는 과거 반복을 나타내는 -던을 쓰고 끝은 과거 해요체로 쓰세요.\n재료: 주말마다 / 가다★ / 수영장이 / 없어지다\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。★には過去の反復を表す-던を使い、文末は過去のヘヨ体にしてください。\n材料：주말마다 / 가다★ / 수영장이 / 없어지다\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Use past-habit -던 at ★ and past polite 해요 style at the end.\nCues: 주말마다 / 가다★ / 수영장이 / 없어지다\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。★用表示过去反复的-던，句末用过去时해요体。\n材料：주말마다 / 가다★ / 수영장이 / 없어지다\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "주말마다 가던 수영장이 없어졌어요",
+          "주말마다 가던 수영장이 없어지었어요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 주말마다 가던 수영장이 없어졌어요\n★에는 과거 반복을 나타내는 -던을 쓰고 끝은 과거 해요체로 쓰세요. 동사 어간에 -던을 붙여 과거에 반복하던 일이나 진행 중이던 일을 회상합니다. 형용사에도 붙어 지난 상태를 떠올립니다. 한 번 완료한 동작만 나타내는 -(으)ㄴ과 구별합니다.",
+          "ja": "解答例：주말마다 가던 수영장이 없어졌어요\n★には過去の反復を表す-던を使い、文末は過去のヘヨ体にしてください。 動詞語幹に-던を付け、過去の反復や進行中の行為を回想します。形容詞にも付き、以前の状態を振り返ります。一度完了した行為の-(으)ㄴと区別します。",
+          "en": "Model response: 주말마다 가던 수영장이 없어졌어요\nUse past-habit -던 at ★ and past polite 해요 style at the end. Attach -던 to a verb stem to recall repeated or ongoing past action; adjectives can recall a past state. Distinguish the simple completed-action modifier -(으)ㄴ.",
+          "zh": "参考答案：주말마다 가던 수영장이 없어졌어요\n★用表示过去反复的-던，句末用过去时해요体。 动词词干后接-던，回忆过去反复或进行中的动作；也可接形容词回忆过去状态。与单纯表示完成的-(으)ㄴ区别。"
+        }
       }
     ]
   },
@@ -3639,6 +4077,34 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "ja": "좋다 → -았/었던",
           "en": "좋다 → -았/었던",
           "zh": "좋다 → -았/었던"
+        }
+      },
+      {
+        "id": "extended-completed-retrospective-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "작년 여행에서 제주도를 한 번 방문했어요. 그 여행을 마친 뒤 시간이 흘렀고 지금 다시 가고 싶어요.",
+        "contextMeaning": {
+          "ko": "작년 여행에서 제주도를 한 번 방문했어요. 그 여행을 마친 뒤 시간이 흘렀고 지금 다시 가고 싶어요.",
+          "ja": "去年の旅行で済州島を一度訪れました。旅行は終わっており、今また行きたいです。",
+          "en": "You visited Jeju once on a trip last year. That trip is over, and you now want to return.",
+          "zh": "你去年旅行时去过一次济州岛。那次旅行已结束，现在想再去。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. ★에는 완료 경험을 회상하는 -았/었던을 쓰고 희망은 현재 해요체로 쓰세요.\n재료: 작년에 / 가다★ / 제주도에 / 다시 / 가고 싶다\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。★には完了経験を回想する-았/었던を使い、希望は現在のヘヨ体で述べてください。\n材料：작년에 / 가다★ / 제주도에 / 다시 / 가고 싶다\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Use retrospective completed -았/었던 at ★ and present polite style for the wish.\nCues: 작년에 / 가다★ / 제주도에 / 다시 / 가고 싶다\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。★用回忆完成经历的-았/었던，愿望用现在时해요体。\n材料：작년에 / 가다★ / 제주도에 / 다시 / 가고 싶다\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "작년에 갔던 제주도에 다시 가고 싶어요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 작년에 갔던 제주도에 다시 가고 싶어요\n★에는 완료 경험을 회상하는 -았/었던을 쓰고 희망은 현재 해요체로 쓰세요. 동사·형용사의 과거형 -았/었-에 -던을 붙입니다. 완료한 경험이나 지금과 달라진 지난 상태를 회상하는 느낌입니다. 현재도 그 상태인지 여부는 문맥으로 판단합니다.",
+          "ja": "解答例：작년에 갔던 제주도에 다시 가고 싶어요\n★には完了経験を回想する-았/었던を使い、希望は現在のヘヨ体で述べてください。 動詞・形容詞の過去形-았/었-に-던を付けます。完了した経験や今とは違う過去の状態を回想する感じです。現在も続くかは文脈で判断します。",
+          "en": "Model response: 작년에 갔던 제주도에 다시 가고 싶어요\nUse retrospective completed -았/었던 at ★ and present polite style for the wish. Add -던 after past -았/었-. It recalls a completed experience or a past state separated from now; context determines whether that state still holds.",
+          "zh": "参考答案：작년에 갔던 제주도에 다시 가고 싶어요\n★用回忆完成经历的-았/었던，愿望用现在时해요体。 在动词、形容词过去时-았/었-后加-던，带有回忆已完成经历或与现在有距离的过去状态的语感。是否持续至今仍须看语境。"
         }
       }
     ]
@@ -3866,6 +4332,35 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "en": "비가 오다 → -더니",
           "zh": "비가 오다 → -더니"
         }
+      },
+      {
+        "id": "extended-contrast-memory-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "아까 고양이가 소파 위에서 자는 모습을 봤어요. 이제 깨어나서 놀이를 하고 있어요. 관찰한 변화를 연결하세요.",
+        "contextMeaning": {
+          "ko": "아까 고양이가 소파 위에서 자는 모습을 봤어요. 이제 깨어나서 놀이를 하고 있어요. 관찰한 변화를 연결하세요.",
+          "ja": "さっき猫がソファで寝ているのを見ました。今は起きて遊んでいます。観察した変化をつないでください。",
+          "en": "You saw the cat sleeping earlier. It is now awake and playing. Link the observed change.",
+          "zh": "刚才你看到猫在沙发上睡觉，现在醒来玩耍了。请连接观察到的变化。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. ★에는 -더니를 쓰고 뒤의 행동은 현재 해요체로 쓰세요.\n재료: 고양이가 / 자다★ / 이제 / 놀다\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。★には-더니を使い、後の行為は現在のヘヨ体にしてください。\n材料：고양이가 / 자다★ / 이제 / 놀다\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Use -더니 at ★ and present polite style for the later action.\nCues: 고양이가 / 자다★ / 이제 / 놀다\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。★用-더니，后面的动作用现在时해요体。\n材料：고양이가 / 자다★ / 이제 / 놀다\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "고양이가 자더니 이제 놀아요",
+          "고양이가 자더니, 이제 놀아요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 고양이가 자더니 이제 놀아요\n★에는 -더니를 쓰고 뒤의 행동은 현재 해요체로 쓰세요. 동사·형용사 어간에 -더니를 붙여 직접 관찰한 앞 상황과 뒤 상황의 변화·대조·결과를 연결합니다. 이 기본 용법에서는 남의 행동이나 관찰한 상태를 주로 말합니다.",
+          "ja": "解答例：고양이가 자더니 이제 놀아요\n★には-더니を使い、後の行為は現在のヘヨ体にしてください。 動詞・形容詞語幹に-더니を付け、直接観察した前の状況と後の変化・対照・結果を結びます。この基本用法では主に他人の行為や観察した状態を述べます。",
+          "en": "Model response: 고양이가 자더니 이제 놀아요\nUse -더니 at ★ and present polite style for the later action. Use verb/adjective stem -더니 to connect an observed earlier situation with later change, contrast, or result. The basic use mainly describes others’ actions or observed states.",
+          "zh": "参考答案：고양이가 자더니 이제 놀아요\n★用-더니，后面的动作用现在时해요体。 动词、形容词词干后接-더니，将亲自观察的前项情况与后项变化、对比或结果相连。基本用法主要用于他人的行为或观察到的状态。"
+        }
       }
     ]
   },
@@ -4091,6 +4586,41 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "ja": "먹다 → -았/었더니",
           "en": "먹다 → -았/었더니",
           "zh": "먹다 → -았/었더니"
+        }
+      },
+      {
+        "id": "extended-result-own-action-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "나는 낡은 배터리를 새것으로 바꿨어요. 그 뒤 시계가 다시 움직이기 시작했어요.",
+        "contextMeaning": {
+          "ko": "나는 낡은 배터리를 새것으로 바꿨어요. 그 뒤 시계가 다시 움직이기 시작했어요.",
+          "ja": "古い電池を新しいものに交換しました。その後、時計がまた動き始めました。",
+          "en": "You replaced an old battery. Afterward, the clock started working again.",
+          "zh": "你换了旧电池，之后时钟又开始走了。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. 끝 서술어는 과거 해요체로 쓰세요.\n재료: 배터리를 / 바꾸다★ / 시계가 / 다시 / 움직이다\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。文末は過去のヘヨ体にしてください。\n材料：배터리를 / 바꾸다★ / 시계가 / 다시 / 움직이다\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. End with a past-tense polite 해요 statement.\nCues: 배터리를 / 바꾸다★ / 시계가 / 다시 / 움직이다\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。句末用过去时해요体。\n材料：배터리를 / 바꾸다★ / 시계가 / 다시 / 움직이다\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "배터리를 바꿨더니 시계가 다시 움직였어요",
+          "배터리를 바꾸었더니 시계가 다시 움직였어요",
+          "배터리를 바꾸었더니 시계가 다시 움직이었어요",
+          "배터리를 바꾸었더니, 시계가 다시 움직였어요",
+          "배터리를 바꾸었더니, 시계가 다시 움직이었어요",
+          "배터리를 바꿨더니 시계가 다시 움직이었어요",
+          "배터리를 바꿨더니, 시계가 다시 움직였어요",
+          "배터리를 바꿨더니, 시계가 다시 움직이었어요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 배터리를 바꿨더니 시계가 다시 움직였어요\n끝 서술어는 과거 해요체로 쓰세요. 동사 과거형에 -더니를 붙여 자신이 한 행동 뒤 경험한 결과나 발견을 말합니다. 뒤 절에는 달라진 상태나 상대 반응 등이 올 수 있습니다. 단순한 미래 가정은 아닙니다.",
+          "ja": "解答例：배터리를 바꿨더니 시계가 다시 움직였어요\n文末は過去のヘヨ体にしてください。 動詞の過去形に-더니を付け、自分の行為の後に経験した結果・発見を述べます。後ろには変化した状態や相手の反応などが来ます。単純な未来の仮定ではありません。",
+          "en": "Model response: 배터리를 바꿨더니 시계가 다시 움직였어요\nEnd with a past-tense polite 해요 statement. Attach -더니 to a verb’s past form to report a result or discovery after your own action, including a changed state or another person’s response. It is not a future hypothesis.",
+          "zh": "参考答案：배터리를 바꿨더니 시계가 다시 움직였어요\n句末用过去时해요体。 动词过去式后接-더니，表达自己行动之后体验到的结果或发现，后项可为状态变化或他人反应，不是单纯的未来假设。"
         }
       }
     ]
@@ -4318,6 +4848,34 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "en": "먹다 → Infer a present action, Polite 해요 style",
           "zh": "먹다 → 推测当前动作, 해요体"
         }
+      },
+      {
+        "id": "extended-apparent-evidence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "우편함에 새 편지가 있어요. 배달원을 보지는 못했지만 이미 다녀갔다고 추측해요.",
+        "contextMeaning": {
+          "ko": "우편함에 새 편지가 있어요. 배달원을 보지는 못했지만 이미 다녀갔다고 추측해요.",
+          "ja": "郵便受けに新しい手紙があります。配達員は見ませんでしたが、もう来たようだと推測します。",
+          "en": "There is a new letter in the mailbox. You did not see the mail carrier, but infer they have already come.",
+          "zh": "信箱里有新信。你没见到邮递员，但推测其已经来过。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. 이미 일어난 일의 추측으로 -았/었나 봐요를 쓰세요.\n재료: 우편물이 / 벌써 / 오다★\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。既に起きたことの推測として-았/었나 봐요を使ってください。\n材料：우편물이 / 벌써 / 오다★\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Use -았/었나 봐요 to infer an event that has already happened.\nCues: 우편물이 / 벌써 / 오다★\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。用-았/었나 봐요推测已经发生的事。\n材料：우편물이 / 벌써 / 오다★\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "우편물이 벌써 왔나 봐요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 우편물이 벌써 왔나 봐요\n이미 일어난 일의 추측으로 -았/었나 봐요를 쓰세요. 현재 동사와 있다/없다는 -나 보다, 현재 형용사는 -(으)ㄴ가 보다, 명사는 인가 보다를 씁니다. 과거 추측은 -았/었나 보다입니다. 근거를 보고 추측하므로 확정된 사실과 구별합니다.",
+          "ja": "解答例：우편물이 벌써 왔나 봐요\n既に起きたことの推測として-았/었나 봐요を使ってください。 現在の動詞と있다/없다には-나 보다、形容詞には-(으)ㄴ가 보다、名詞には인가 보다。過去は-았/었나 보다。根拠からの推測なので確定事実と区別します。",
+          "en": "Model response: 우편물이 벌써 왔나 봐요\nUse -았/었나 봐요 to infer an event that has already happened. Use -나 보다 for present verbs and 있다/없다, -(으)ㄴ가 보다 for present adjectives, and 인가 보다 for nouns. Past inference uses -았/었나 보다. These are evidence-based inferences, not certainty.",
+          "zh": "参考答案：우편물이 벌써 왔나 봐요\n用-았/었나 봐요推测已经发生的事。 现在时动词及있다/없다用-나 보다，形容词用-(으)ㄴ가 보다，名词用인가 보다；过去推测用-았/었나 보다。属于基于依据的推测，不是确定事实。"
+        }
       }
     ]
   },
@@ -4543,6 +5101,34 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "ja": "좋다 → -(으)ㄹ 것이다, ヘヨ体 거예요",
           "en": "좋다 → -(으)ㄹ 것이다, Polite 해요 style 거예요",
           "zh": "좋다 → -(으)ㄹ 것이다, 해요体 거예요"
+        }
+      },
+      {
+        "id": "extended-strong-inference-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "친구가 아주 무거운 상자를 들고 있어요. 직접 무게를 재지는 않았지만 힘들 것이라고 헤아려 말하세요.",
+        "contextMeaning": {
+          "ko": "친구가 아주 무거운 상자를 들고 있어요. 직접 무게를 재지는 않았지만 힘들 것이라고 헤아려 말하세요.",
+          "ja": "友人がとても重そうな箱を持っています。重さは測っていませんが、大変だろうと気遣ってください。",
+          "en": "Your friend is carrying a heavy-looking box. Without weighing it, infer sympathetically that carrying it is hard.",
+          "zh": "朋友搬着看起来很重的箱子。虽未称重，请体谅地推测搬着很吃力。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. 현재 상태에 대한 추측으로 -겠어요를 쓰세요.\n재료: 그 상자는 / 들기 / 힘들다★\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。現在の状態を推測する-겠어요を使ってください。\n材料：그 상자는 / 들기 / 힘들다★\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Use -겠어요 to infer the current state.\nCues: 그 상자는 / 들기 / 힘들다★\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。用-겠어요推测现在的状态。\n材料：그 상자는 / 들기 / 힘들다★\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "그 상자는 들기 힘들겠어요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 그 상자는 들기 힘들겠어요\n현재 상태에 대한 추측으로 -겠어요를 쓰세요. 동사·형용사에 -(으)ㄹ 것이다를 써 예측·추측합니다. 명사는 일 것이다입니다. -겠-도 문맥상 추측을 나타낼 수 있으며 “맛있겠어요”처럼 눈앞의 상황에 반응합니다. 둘 다 의지 용법이 따로 있습니다.",
+          "ja": "解答例：그 상자는 들기 힘들겠어요\n現在の状態を推測する-겠어요を使ってください。 動詞・形容詞の-(으)ㄹ 것이다は予測・推測、名詞は일 것이다です。-겠-も推測になり、맛있겠어요のように目の前の状況に反応します。両方とも別に意志の用法があります。",
+          "en": "Model response: 그 상자는 들기 힘들겠어요\nUse -겠어요 to infer the current state. Verb/adjective -(으)ㄹ 것이다 and noun 일 것이다 express predictions. -겠- can infer from context, as in 맛있겠어요. Both also have intention uses, so read the context.",
+          "zh": "参考答案：그 상자는 들기 힘들겠어요\n用-겠어요推测现在的状态。 动词、形容词-(으)ㄹ 것이다及名词일 것이다可表示预测；-겠-也可依据情境推测，如맛있겠어요。两者另有意志用法，需看语境。"
         }
       }
     ]
@@ -4770,6 +5356,34 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "en": "어렵다 → -(으)ㄹ 수도 있다, Polite 해요 style",
           "zh": "어렵다 → -(으)ㄹ 수도 있다, 해요体"
         }
+      },
+      {
+        "id": "extended-possible-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "내일 방문 손님이 몇 명일지는 아직 몰라요. 오늘보다 많아질 가능성도 열어 두세요.",
+        "contextMeaning": {
+          "ko": "내일 방문 손님이 몇 명일지는 아직 몰라요. 오늘보다 많아질 가능성도 열어 두세요.",
+          "ja": "明日の来客数はまだ不明です。今日より増える可能性も示してください。",
+          "en": "Tomorrow’s visitor count is unknown. Leave open the possibility that it will increase.",
+          "zh": "明天的访客数量还不确定。请保留人数增加的可能性。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. 가능성 하나를 -ㄹ/을 수도 있어요로 나타내세요.\n재료: 내일은 / 손님이 / 늘다★\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。一つの可能性を-ㄹ/을 수도 있어요で表してください。\n材料：내일은 / 손님이 / 늘다★\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Express one possibility with -ㄹ/을 수도 있어요.\nCues: 내일은 / 손님이 / 늘다★\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。用-ㄹ/을 수도 있어요表达一种可能性。\n材料：내일은 / 손님이 / 늘다★\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "내일은 손님이 늘 수도 있어요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 내일은 손님이 늘 수도 있어요\n가능성 하나를 -ㄹ/을 수도 있어요로 나타내세요. 동사·형용사의 -(으)ㄹ 수 있다에 도를 넣어 여러 가능성 중 하나임을 나타냅니다. 명사는 일 수도 있다입니다. 가능성을 열어 두며 반드시 일어난다고 단정하지 않습니다.",
+          "ja": "解答例：내일은 손님이 늘 수도 있어요\n一つの可能性を-ㄹ/을 수도 있어요で表してください。 動詞・形容詞の-(으)ㄹ 수 있다に도を入れ、複数の可能性の一つを表します。名詞は일 수도 있다。可能性を残し、必ず起こると断定しません。",
+          "en": "Model response: 내일은 손님이 늘 수도 있어요\nExpress one possibility with -ㄹ/을 수도 있어요. Add 도 within -(으)ㄹ 수 있다 for verbs/adjectives to present one possibility; nouns use 일 수도 있다. It leaves an outcome open rather than asserting certainty.",
+          "zh": "参考答案：내일은 손님이 늘 수도 있어요\n用-ㄹ/을 수도 있어요表达一种可能性。 在动词、形容词-(으)ㄹ 수 있다中加入도，提出一种可能；名词用일 수도 있다。保留可能性，不断言必然发生。"
+        }
       }
     ]
   },
@@ -4995,6 +5609,34 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "ja": "학생이다 → 名詞について推測, ヘヨ体",
           "en": "학생이다 → Inference with a noun predicate, Polite 해요 style",
           "zh": "학생이다 → 名词谓语的推测, 해요体"
+        }
+      },
+      {
+        "id": "extended-uncertain-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "안경이 보이지 않아요. 확실하지 않지만 사무실에 놓고 온 가능성을 말하세요.",
+        "contextMeaning": {
+          "ko": "안경이 보이지 않아요. 확실하지 않지만 사무실에 놓고 온 가능성을 말하세요.",
+          "ja": "眼鏡が見つかりません。確かではありませんが、事務所に置いてきた可能性を述べてください。",
+          "en": "You cannot find your glasses. You are not sure, but say you may have left them at the office.",
+          "zh": "你找不到眼镜。虽然不确定，请说可能把眼镜留在办公室了。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. 과거 행동의 가능성을 -았/었을지도 몰라요로 나타내세요.\n재료: 안경을 / 사무실에 / 두고 오다★\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。過去の行為の可能性を-았/었을지도 몰라요で表してください。\n材料：안경을 / 사무실에 / 두고 오다★\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Express uncertainty about the past with -았/었을지도 몰라요.\nCues: 안경을 / 사무실에 / 두고 오다★\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。用-았/었을지도 몰라요表达对过去动作的不确定性。\n材料：안경을 / 사무실에 / 두고 오다★\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "안경을 사무실에 두고 왔을지도 몰라요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 안경을 사무실에 두고 왔을지도 몰라요\n과거 행동의 가능성을 -았/었을지도 몰라요로 나타내세요. 동사·형용사에는 -(으)ㄹ지도 모르다, 명사에는 일지도 모르다를 씁니다. 과거 가능성은 -았/었을지도 모르다입니다. 모르다는 여기서 화자가 확신하지 않음을 나타냅니다.",
+          "ja": "解答例：안경을 사무실에 두고 왔을지도 몰라요\n過去の行為の可能性を-았/었을지도 몰라요で表してください。 動詞・形容詞には-(으)ㄹ지도 모르다、名詞には일지도 모르다を使います。過去は-았/었을지도 모르다。모르다は話し手が確信していないことを表します。",
+          "en": "Model response: 안경을 사무실에 두고 왔을지도 몰라요\nExpress uncertainty about the past with -았/었을지도 몰라요. Use -(으)ㄹ지도 모르다 for verbs/adjectives and 일지도 모르다 for nouns. Past possibility uses -았/었을지도 모르다. 모르다 marks lack of certainty.",
+          "zh": "参考答案：안경을 사무실에 두고 왔을지도 몰라요\n用-았/었을지도 몰라요表达对过去动作的不确定性。 动词、形容词用-(으)ㄹ지도 모르다，名词用일지도 모르다；过去可能用-았/었을지도 모르다。모르다表示说话者不确信。"
         }
       }
     ]
@@ -5226,6 +5868,35 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "en": "가다 → Inference about the past, Polite 해요 style",
           "zh": "가다 → 对过去的推测, 해요体"
         }
+      },
+      {
+        "id": "extended-certain-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "가방에 민수의 이름표가 있고 안에는 민수가 찾던 공책도 있어요. 주인이 민수라고 강하게 추측하세요.",
+        "contextMeaning": {
+          "ko": "가방에 민수의 이름표가 있고 안에는 민수가 찾던 공책도 있어요. 주인이 민수라고 강하게 추측하세요.",
+          "ja": "かばんにミンスの名札があり、中には彼が探していたノートもあります。持ち主について強い推測をしてください。",
+          "en": "The bag has Minsu’s name tag and the notebook he was looking for. Make a strong inference about its owner.",
+          "zh": "包上有敏洙的名牌，里面还有他在找的笔记本。请强烈推测包的主人。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. ★의 명사에 일 게 틀림없어요를 연결하세요.\n재료: 이 가방은 / 민수의 것★\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。★の名詞に일 게 틀림없어요をつないでください。\n材料：이 가방은 / 민수의 것★\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Attach 일 게 틀림없어요 to the noun at ★.\nCues: 이 가방은 / 민수의 것★\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。在★名词后接일 게 틀림없어요。\n材料：이 가방은 / 민수의 것★\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "이 가방은 민수의 것일 게 틀림없어요",
+          "이 가방은 민수의 것일 것이 틀림없어요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 이 가방은 민수의 것일 게 틀림없어요\n★의 명사에 일 게 틀림없어요를 연결하세요. 동사·형용사의 -(으)ㄹ 것에 이가 붙은 것이는 게로 줄일 수 있습니다. -(으)ㄹ 게 틀림없다는 추론을 강하게 확신합니다. 명사는 일 게 틀림없다, 과거는 -았/었을 게 틀림없다입니다.",
+          "ja": "解答例：이 가방은 민수의 것일 게 틀림없어요\n★の名詞に일 게 틀림없어요をつないでください。 動詞・形容詞の-(으)ㄹ 것に이が付いた것이は게に縮められます。-(으)ㄹ 게 틀림없다は強い確信。名詞は일 게 틀림없다、過去は-았/었을 게 틀림없다です。",
+          "en": "Model response: 이 가방은 민수의 것일 게 틀림없어요\nAttach 일 게 틀림없어요 to the noun at ★. 것이 can contract to 게 after verb/adjective -(으)ㄹ 것. -(으)ㄹ 게 틀림없다 expresses strong conviction; nouns use 일 게 틀림없다 and past uses -았/었을 게 틀림없다.",
+          "zh": "参考答案：이 가방은 민수의 것일 게 틀림없어요\n在★名词后接일 게 틀림없어요。 动词、形容词-(으)ㄹ 것后的것이可缩为게。-(으)ㄹ 게 틀림없다表达强烈确信；名词用일 게 틀림없다，过去用-았/었을 게 틀림없다。"
+        }
       }
     ]
   },
@@ -5451,6 +6122,34 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "ja": "포기하다 → -(으)ㄹ 수밖에 없다, ヘヨ体",
           "en": "포기하다 → -(으)ㄹ 수밖에 없다, Polite 해요 style",
           "zh": "포기하다 → -(으)ㄹ 수밖에 없다, 해요体"
+        }
+      },
+      {
+        "id": "extended-unavoidable-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "엘리베이터가 멈췄고 다른 이동 수단도 없어요. 위층에 가기 위해 계단을 이용하는 것만 가능해요.",
+        "contextMeaning": {
+          "ko": "엘리베이터가 멈췄고 다른 이동 수단도 없어요. 위층에 가기 위해 계단을 이용하는 것만 가능해요.",
+          "ja": "エレベーターが止まり、ほかの移動手段もありません。上の階には階段で行くしかありません。",
+          "en": "The elevator is out and there is no other way upstairs. Taking the stairs is the sole option.",
+          "zh": "电梯停了，也没有其他方式上楼。只能走楼梯。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. 다른 선택의 부재를 -ㄹ/을 수밖에 없어요로 나타내세요.\n재료: 계단으로 / 올라가다★\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。他の選択肢がないことを-ㄹ/을 수밖에 없어요で表してください。\n材料：계단으로 / 올라가다★\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Express the lack of alternatives with -ㄹ/을 수밖에 없어요.\nCues: 계단으로 / 올라가다★\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。用-ㄹ/을 수밖에 없어요表达别无选择。\n材料：계단으로 / 올라가다★\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "계단으로 올라갈 수밖에 없어요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 계단으로 올라갈 수밖에 없어요\n다른 선택의 부재를 -ㄹ/을 수밖에 없어요로 나타내세요. 동사·형용사에 -(으)ㄹ 수밖에 없다를 붙입니다. 다른 방법·가능성이 없어 그렇게 할 수밖에 없거나 그런 상태가 불가피함을 말합니다. 밖에는 부정 표현 없다와 짝을 이룹니다.",
+          "ja": "解答例：계단으로 올라갈 수밖에 없어요\n他の選択肢がないことを-ㄹ/을 수밖에 없어요で表してください。 動詞・形容詞に-(으)ㄹ 수밖에 없다を付けます。他の方法・可能性がなく、そうせざるを得ないことや状態の不可避性を表します。밖에は否定の없다と組み合わせます。",
+          "en": "Model response: 계단으로 올라갈 수밖에 없어요\nExpress the lack of alternatives with -ㄹ/을 수밖에 없어요. Use verb/adjective -(으)ㄹ 수밖에 없다 when no other option exists or a state is unavoidable. 밖에 pairs with negative 없다 in this construction.",
+          "zh": "参考答案：계단으로 올라갈 수밖에 없어요\n用-ㄹ/을 수밖에 없어요表达别无选择。 动词、形容词后接-(으)ㄹ 수밖에 없다，表示别无选择或状态不可避免。结构中的밖에与否定없다搭配。"
         }
       }
     ]
@@ -5678,6 +6377,35 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "en": "어렵다 → -더라도",
           "zh": "어렵다 → -더라도"
         }
+      },
+      {
+        "id": "extended-concession-even-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "공연장이 멀리 있을 수 있어요. 그래도 공연을 보러 가겠다는 계획은 변하지 않아요.",
+        "contextMeaning": {
+          "ko": "공연장이 멀리 있을 수 있어요. 그래도 공연을 보러 가겠다는 계획은 변하지 않아요.",
+          "ja": "会場は遠いかもしれません。それでも公演を見に行く計画は変わりません。",
+          "en": "The venue may be far away. Your plan to attend the performance will not change.",
+          "zh": "演出场地可能很远，但你去看演出的计划不会改变。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. ★에는 -더라도, 끝에는 -ㄹ/을 거예요를 쓰세요.\n재료: 공연장이 / 멀다★ / 보러 / 가다\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。★には-더라도、文末には-ㄹ/을 거예요を使ってください。\n材料：공연장이 / 멀다★ / 보러 / 가다\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Use -더라도 at ★ and end with -ㄹ/을 거예요.\nCues: 공연장이 / 멀다★ / 보러 / 가다\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。★用-더라도，句末用-ㄹ/을 거예요。\n材料：공연장이 / 멀다★ / 보러 / 가다\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "공연장이 멀더라도 보러 갈 거예요",
+          "공연장이 멀더라도, 보러 갈 거예요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 공연장이 멀더라도 보러 갈 거예요\n★에는 -더라도, 끝에는 -ㄹ/을 거예요를 쓰세요. 동사·형용사 어간에 -더라도, 명사에 (이)더라도를 붙입니다. 조건을 가정하거나 인정해도 뒤의 의지·판단은 유지됩니다. 과거 가정은 -았/었더라도입니다.",
+          "ja": "解答例：공연장이 멀더라도 보러 갈 거예요\n★には-더라도、文末には-ㄹ/을 거예요を使ってください。 動詞・形容詞語幹に-더라도、名詞に(이)더라도を付けます。条件を仮定・承認しても後ろの意志や判断は変わりません。過去は-았/었더라도です。",
+          "en": "Model response: 공연장이 멀더라도 보러 갈 거예요\nUse -더라도 at ★ and end with -ㄹ/을 거예요. Use verb/adjective -더라도 and noun (이)더라도. Even if a condition is assumed or conceded, the following intention or judgment stands. Past uses -았/었더라도.",
+          "zh": "参考答案：공연장이 멀더라도 보러 갈 거예요\n★用-더라도，句末用-ㄹ/을 거예요。 动词、形容词词干接-더라도，名词接(이)더라도。即使假设或承认条件，后项意志或判断仍不变。过去用-았/었더라도。"
+        }
       }
     ]
   },
@@ -5903,6 +6631,35 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "ja": "멀다 → -(으)ㄹ지라도",
           "en": "멀다 → -(으)ㄹ지라도",
           "zh": "멀다 → -(으)ㄹ지라도"
+        }
+      },
+      {
+        "id": "extended-concession-even-if-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "그 연구는 결과가 예상과 다를 수도 있어요. 그래도 결과를 숨기지 않겠다는 결심을 문어적인 양보 표현으로 말하세요.",
+        "contextMeaning": {
+          "ko": "그 연구는 결과가 예상과 다를 수도 있어요. 그래도 결과를 숨기지 않겠다는 결심을 문어적인 양보 표현으로 말하세요.",
+          "ja": "研究結果は予想と異なるかもしれません。それでも隠さないという決意を文章的な譲歩表現で述べてください。",
+          "en": "The research results may differ from expectations. Use a literary concessive form to say you will still disclose them.",
+          "zh": "研究结果可能与预期不同。请用书面让步表达说明仍会公开结果的决心。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. ★에는 -(으)ㄹ지라도, 끝에는 의지의 -겠어요를 쓰세요.\n재료: 결과가 / 다르다★ / 공개하다\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。★には-(으)ㄹ지라도、文末には意志の-겠어요を使ってください。\n材料：결과가 / 다르다★ / 공개하다\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Use -(으)ㄹ지라도 at ★ and intentional -겠어요 at the end.\nCues: 결과가 / 다르다★ / 공개하다\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。★用-(으)ㄹ지라도，句末用意志形式-겠어요。\n材料：결과가 / 다르다★ / 공개하다\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "결과가 다를지라도 공개하겠어요",
+          "결과가 다를지라도, 공개하겠어요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 결과가 다를지라도 공개하겠어요\n★에는 -(으)ㄹ지라도, 끝에는 의지의 -겠어요를 쓰세요. 동사·형용사는 모음·ㄹ 뒤 -ㄹ지라도, 다른 받침 뒤 -을지라도를 씁니다. 명사는 일지라도입니다. 극단적인 조건까지 인정해도 결론이 바뀌지 않는다는 격식 있는 표현입니다.",
+          "ja": "解答例：결과가 다를지라도 공개하겠어요\n★には-(으)ㄹ지라도、文末には意志の-겠어요を使ってください。 動詞・形容詞は母音・ㄹの後に-ㄹ지라도、他のパッチムに-을지라도、名詞は일지라도。極端な条件も認めたうえで結論が変わらない、改まった表現です。",
+          "en": "Model response: 결과가 다를지라도 공개하겠어요\nUse -(으)ㄹ지라도 at ★ and intentional -겠어요 at the end. Use -ㄹ지라도 after a vowel/ㄹ and -을지라도 after other consonants; nouns use 일지라도. This formal expression maintains a conclusion even under an extreme concession.",
+          "zh": "参考答案：결과가 다를지라도 공개하겠어요\n★用-(으)ㄹ지라도，句末用意志形式-겠어요。 动词、形容词元音或ㄹ后接-ㄹ지라도，其他辅音后接-을지라도；名词用일지라도。正式表达即使承认极端条件结论也不变。"
         }
       }
     ]
@@ -6134,6 +6891,37 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "en": "말하다 → -아/어 봤자",
           "zh": "말하다 → -아/어 봤자"
         }
+      },
+      {
+        "id": "extended-useless-condition-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "표는 이미 모두 팔렸고 현장 판매도 없어요. 지금 매표소에 가는 것은 효과가 없다고 말하세요.",
+        "contextMeaning": {
+          "ko": "표는 이미 모두 팔렸고 현장 판매도 없어요. 지금 매표소에 가는 것은 효과가 없다고 말하세요.",
+          "ja": "券は全て売り切れ、当日販売もありません。今窓口へ行っても無駄だと述べてください。",
+          "en": "All tickets are sold, and there are no walk-up sales. Say that going to the ticket office now will be futile.",
+          "zh": "门票已售罄，也没有现场票。请说现在去售票处也没用。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. ★에는 -아/어 봤자, 끝에는 현재 해요체를 쓰세요.\n재료: 지금 / 매표소에 / 가다★ / 표를 / 못 사다\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。★には-아/어 봤자、文末には現在のヘヨ体を使ってください。\n材料：지금 / 매표소에 / 가다★ / 표를 / 못 사다\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Use -아/어 봤자 at ★ and present polite style at the end.\nCues: 지금 / 매표소에 / 가다★ / 표를 / 못 사다\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。★用-아/어 봤자，句末用现在时해요体。\n材料：지금 / 매표소에 / 가다★ / 표를 / 못 사다\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "지금 매표소에 가 봤자 표를 못 사요",
+          "지금 매표소에 가 봤자, 표를 못 사요",
+          "지금 매표소에 가봤자 표를 못 사요",
+          "지금 매표소에 가봤자, 표를 못 사요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 지금 매표소에 가 봤자 표를 못 사요\n★에는 -아/어 봤자, 끝에는 현재 해요체를 쓰세요. 동사·형용사에 -아/어 봤자를 붙여 가정해도 소용없거나 결과가 제한적임을 나타냅니다. 봤자의 과거 모양만 보고 이미 시도했다고 해석하지 않습니다.",
+          "ja": "解答例：지금 매표소에 가 봤자 표를 못 사요\n★には-아/어 봤자、文末には現在のヘヨ体を使ってください。 動詞・形容詞に-아/어 봤자を付け、仮定しても無駄・結果が限られることを表します。봤자の過去形だけで実際に試したと解釈しません。",
+          "en": "Model response: 지금 매표소에 가 봤자 표를 못 사요\nUse -아/어 봤자 at ★ and present polite style at the end. Use -아/어 봤자 with verbs/adjectives to say a hypothetical action or condition has no use or only limited effect. The past-looking 봤자 does not itself assert an actual attempt.",
+          "zh": "参考答案：지금 매표소에 가 봤자 표를 못 사요\n★用-아/어 봤자，句末用现在时해요体。 动词、形容词后接-아/어 봤자，表示即使假设也无用或结果有限。不能仅因봤자的过去形式就认定已实际尝试。"
+        }
       }
     ]
   },
@@ -6359,6 +7147,35 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "ja": "좋다 → 現在の形容詞を使う仮定",
           "en": "좋다 → Hypothesis with a present adjective",
           "zh": "좋다 → 现在形容词的假设"
+        }
+      },
+      {
+        "id": "extended-if-only-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "아직 긴 휴가는 없어요. 한 달 동안 쉴 수 있는 상황을 상상하며 하고 싶은 일을 말하세요.",
+        "contextMeaning": {
+          "ko": "아직 긴 휴가는 없어요. 한 달 동안 쉴 수 있는 상황을 상상하며 하고 싶은 일을 말하세요.",
+          "ja": "今は長い休暇がありません。一か月休める状況を想像し、したいことを述べてください。",
+          "en": "You do not currently have a long holiday. Imagine being able to rest for a month and say what you would like to do.",
+          "zh": "你现在没有长假。请设想能休息一个月，并说出想做的事。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. ★에는 현재 동사의 가정형을, 희망에는 현재 해요체를 쓰세요.\n재료: 한 달을 / 쉬다★ / 시골에서 / 지내고 싶다\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。★には現在動詞の仮定形を使い、希望は現在のヘヨ体で述べてください。\n材料：한 달을 / 쉬다★ / 시골에서 / 지내고 싶다\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Use the present-verb hypothetical form at ★ and present polite style for the wish.\nCues: 한 달을 / 쉬다★ / 시골에서 / 지내고 싶다\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。★用现在时动词假设形，愿望用现在时해요体。\n材料：한 달을 / 쉬다★ / 시골에서 / 지내고 싶다\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "한 달을 쉰다면 시골에서 지내고 싶어요",
+          "한 달을 쉰다면, 시골에서 지내고 싶어요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 한 달을 쉰다면 시골에서 지내고 싶어요\n★에는 현재 동사의 가정형을, 희망에는 현재 해요체를 쓰세요. 현재 동사는 모음·ㄹ 뒤 -ㄴ다면(ㄹ 탈락), 다른 받침 뒤 -는다면입니다. 형용사는 -다면, 명사는 (이)라면, 과거는 -았/었다면입니다. 사실이라고 단정하지 않고 상황을 가정합니다.",
+          "ja": "解答例：한 달을 쉰다면 시골에서 지내고 싶어요\n★には現在動詞の仮定形を使い、希望は現在のヘヨ体で述べてください。 現在の動詞は母音・ㄹに-ㄴ다면（ㄹ脱落）、他のパッチムに-는다면。形容詞は-다면、名詞は(이)라면、過去は-았/었다면。事実と断定せず仮定します。",
+          "en": "Model response: 한 달을 쉰다면 시골에서 지내고 싶어요\nUse the present-verb hypothetical form at ★ and present polite style for the wish. Present verbs take -ㄴ다면 after a vowel/ㄹ (drop ㄹ), otherwise -는다면. Adjectives take -다면, nouns (이)라면, past -았/었다면. The situation is assumed rather than asserted.",
+          "zh": "参考答案：한 달을 쉰다면 시골에서 지내고 싶어요\n★用现在时动词假设形，愿望用现在时해요体。 现在时动词元音或ㄹ后接-ㄴ다면（ㄹ脱落），其他辅音接-는다면；形容词接-다면，名词接(이)라면，过去接-았/었다면。表示假设而非断言事实。"
         }
       }
     ]
@@ -6586,6 +7403,35 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "en": "가능하다 → Adjective + 한",
           "zh": "가능하다 → 形容词＋한"
         }
+      },
+      {
+        "id": "extended-provided-that-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "서점은 독자들이 계속 찾는 동안 운영을 이어 갈 계획이에요. 유지되는 조건과 운영 계획을 연결하세요.",
+        "contextMeaning": {
+          "ko": "서점은 독자들이 계속 찾는 동안 운영을 이어 갈 계획이에요. 유지되는 조건과 운영 계획을 연결하세요.",
+          "ja": "書店は読者が通い続ける限り営業を続ける予定です。続く条件と営業計画をつないでください。",
+          "en": "The bookshop plans to remain open while readers keep coming. Connect the continuing condition and the plan.",
+          "zh": "只要读者持续光顾，书店就计划继续营业。请连接持续条件与经营计划。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. ★에는 계속 유효한 조건의 -는 한을, 끝에는 -ㄹ/을 거예요를 쓰세요.\n재료: 독자들이 / 찾다★ / 서점을 / 운영하다\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。★には継続する条件の-는 한、文末には-ㄹ/을 거예요を使ってください。\n材料：독자들이 / 찾다★ / 서점을 / 운영하다\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Use continuing-condition -는 한 at ★ and -ㄹ/을 거예요 at the end.\nCues: 독자들이 / 찾다★ / 서점을 / 운영하다\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。★用持续条件-는 한，句末用-ㄹ/을 거예요。\n材料：독자들이 / 찾다★ / 서점을 / 운영하다\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "독자들이 찾는 한 서점을 운영할 거예요",
+          "독자들이 찾는 한, 서점을 운영할 거예요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 독자들이 찾는 한 서점을 운영할 거예요\n★에는 계속 유효한 조건의 -는 한을, 끝에는 -ㄹ/을 거예요를 쓰세요. 동사는 -는 한, 형용사는 -(으)ㄴ 한, 명사는 인 한으로 어떤 조건이 계속 유효한 범위를 나타냅니다. 뒤에는 그 조건 아래 유지될 판단이나 행동이 옵니다.",
+          "ja": "解答例：독자들이 찾는 한 서점을 운영할 거예요\n★には継続する条件の-는 한、文末には-ㄹ/을 거예요を使ってください。 動詞は-는 한、形容詞は-(으)ㄴ 한、名詞は인 한で、条件が有効な範囲を示します。後ろにはその条件下で保たれる判断や行動が続きます。",
+          "en": "Model response: 독자들이 찾는 한 서점을 운영할 거예요\nUse continuing-condition -는 한 at ★ and -ㄹ/을 거예요 at the end. Use verb -는 한, adjective -(으)ㄴ 한, and noun 인 한 for as long as a condition remains valid. The following judgment or action holds within that condition.",
+          "zh": "参考答案：독자들이 찾는 한 서점을 운영할 거예요\n★用持续条件-는 한，句末用-ㄹ/을 거예요。 动词用-는 한，形容词用-(으)ㄴ 한，名词用인 한，表示条件持续有效的范围，后项为该条件下维持的判断或行为。"
+        }
       }
     ]
   },
@@ -6811,6 +7657,35 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "ja": "취소되다 → -지 않는 한",
           "en": "취소되다 → -지 않는 한",
           "zh": "취소되다 → -지 않는 한"
+        }
+      },
+      {
+        "id": "extended-unless-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "내일 바람이 강해지는 경우만 예외로 하고 배를 띄울 예정이에요. 예외가 없을 때의 계획을 말하세요.",
+        "contextMeaning": {
+          "ko": "내일 바람이 강해지는 경우만 예외로 하고 배를 띄울 예정이에요. 예외가 없을 때의 계획을 말하세요.",
+          "ja": "明日は風が強まる場合だけを例外として船を出す予定です。例外が起きない時の計画を述べてください。",
+          "en": "The boat will sail tomorrow unless the wind becomes strong. State the plan under the absence of that exception.",
+          "zh": "明天除非风变大，否则计划开船。请表达例外不发生时的计划。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. ★에는 부정 조건 -지 않는 한, 끝에는 -ㄹ/을 거예요를 쓰세요.\n재료: 바람이 / 강해지다★ / 배를 / 띄우다\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。★には否定条件の-지 않는 한、文末には-ㄹ/을 거예요を使ってください。\n材料：바람이 / 강해지다★ / 배를 / 띄우다\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Use negative-condition -지 않는 한 at ★ and -ㄹ/을 거예요 at the end.\nCues: 바람이 / 강해지다★ / 배를 / 띄우다\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。★用否定条件-지 않는 한，句末用-ㄹ/을 거예요。\n材料：바람이 / 강해지다★ / 배를 / 띄우다\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "바람이 강해지지 않는 한 배를 띄울 거예요",
+          "바람이 강해지지 않는 한, 배를 띄울 거예요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 바람이 강해지지 않는 한 배를 띄울 거예요\n★에는 부정 조건 -지 않는 한, 끝에는 -ㄹ/을 거예요를 쓰세요. 동사에 -지 않는 한을 붙여 그 일이 일어나지 않는 조건을 나타냅니다. “비가 오지 않는 한 간다”는 비가 오면 약속이 보장되지 않는다는 뜻입니다. 부정의 범위를 확인하세요.",
+          "ja": "解答例：바람이 강해지지 않는 한 배를 띄울 거예요\n★には否定条件の-지 않는 한、文末には-ㄹ/을 거예요を使ってください。 動詞に-지 않는 한を付け、その出来事が起こらない条件を示します。비가 오지 않는 한 간다は、雨なら約束が保証されないという意味。否定の範囲を確認します。",
+          "en": "Model response: 바람이 강해지지 않는 한 배를 띄울 거예요\nUse negative-condition -지 않는 한 at ★ and -ㄹ/을 거예요 at the end. Use verb -지 않는 한 for as long as the event does not happen. 비가 오지 않는 한 간다 commits to going unless it rains; identify the scope of negation.",
+          "zh": "参考答案：바람이 강해지지 않는 한 배를 띄울 거예요\n★用否定条件-지 않는 한，句末用-ㄹ/을 거예요。 动词后接-지 않는 한，表示该事件不发生的条件。비가 오지 않는 한 간다意为除非下雨否则去，需确认否定范围。"
         }
       }
     ]
@@ -7039,6 +7914,37 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "ja": "준비하다 → 過去の事実に反する仮定",
           "en": "준비하다 → Past counterfactual",
           "zh": "준비하다 → 与过去事实相反的假设"
+        }
+      },
+      {
+        "id": "extended-counterfactual-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "나는 어제 자료를 저장하지 않아서 잃었어요. 저장했다는 다른 과거를 상상해 결과를 말하세요.",
+        "contextMeaning": {
+          "ko": "나는 어제 자료를 저장하지 않아서 잃었어요. 저장했다는 다른 과거를 상상해 결과를 말하세요.",
+          "ja": "昨日、資料を保存しなかったため失いました。保存していたという別の過去を想像し、その結果を述べてください。",
+          "en": "You lost the materials yesterday because you did not save them. Imagine an alternative past in which you saved them.",
+          "zh": "昨天你因为没保存而丢失了资料。请设想已保存的另一种过去，并描述结果。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. ★에는 -았/었더라면, 결과에는 -았/었을 거예요를 쓰세요.\n재료: 자료를 / 저장하다★ / 잃지 않다\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。★には-았/었더라면、結果には-았/었을 거예요を使ってください。\n材料：자료를 / 저장하다★ / 잃지 않다\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Use -았/었더라면 at ★ and -았/었을 거예요 for the imagined result.\nCues: 자료를 / 저장하다★ / 잃지 않다\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。★用-았/었더라면，假想结果用-았/었을 거예요。\n材料：자료를 / 저장하다★ / 잃지 않다\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "자료를 저장했더라면 잃지 않았을 거예요",
+          "자료를 저장하였더라면 잃지 않았을 거예요",
+          "자료를 저장하였더라면, 잃지 않았을 거예요",
+          "자료를 저장했더라면, 잃지 않았을 거예요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 자료를 저장했더라면 잃지 않았을 거예요\n★에는 -았/었더라면, 결과에는 -았/었을 거예요를 쓰세요. 동사·형용사 과거형에 -더라면을 붙여 실제와 다른 지난 조건을 상상합니다. 명사는 이었/였더라면입니다. 뒤에는 -았/었을 것이다 등 가상 결과가 자주 옵니다.",
+          "ja": "解答例：자료를 저장했더라면 잃지 않았을 거예요\n★には-았/었더라면、結果には-았/었을 거예요を使ってください。 動詞・形容詞の過去形に-더라면を付け、事実と異なる過去の条件を想像します。名詞は이었/였더라면。後ろに-았/었을 것이다などの仮想結果がよく続きます。",
+          "en": "Model response: 자료를 저장했더라면 잃지 않았을 거예요\nUse -았/었더라면 at ★ and -았/었을 거예요 for the imagined result. Add -더라면 after past forms to imagine a different past condition. Nouns use 이었/였더라면. The imagined result often takes -았/었을 것이다.",
+          "zh": "参考答案：자료를 저장했더라면 잃지 않았을 거예요\n★用-았/었더라면，假想结果用-았/었을 거예요。 在动词、形容词过去式后加-더라면，设想不同的过去条件；名词用이었/였더라면。后项常用-았/었을 것이다表达假想结果。"
         }
       }
     ]
@@ -7274,6 +8180,41 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "en": "읽다 → Unfulfilled past necessity + 했는데",
           "zh": "읽다 → 过去未做到的必要行动 + 했는데"
         }
+      },
+      {
+        "id": "extended-regret-should-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "여행 전에 신분증 유효기간을 확인할 필요가 있었어요. 확인하지 않은 채 출발해서 지금 후회하고 있어요.",
+        "contextMeaning": {
+          "ko": "여행 전에 신분증 유효기간을 확인할 필요가 있었어요. 확인하지 않은 채 출발해서 지금 후회하고 있어요.",
+          "ja": "旅行前に身分証の有効期限を確認する必要がありました。確認せず出発したことを今後悔しています。",
+          "en": "You needed to check your ID’s validity before traveling. You left without checking and now regret it.",
+          "zh": "旅行前本应检查证件有效期，你没检查就出发了，现在很后悔。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. ★에는 -았/었어야 했는데, 끝에는 과거 해요체를 쓰세요.\n재료: 출발 전에 / 신분증을 / 확인하다★ / 잊다\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。★には-았/었어야 했는데、文末には過去のヘヨ体を使ってください。\n材料：출발 전에 / 신분증을 / 확인하다★ / 잊다\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Use -았/었어야 했는데 at ★ and past polite style at the end.\nCues: 출발 전에 / 신분증을 / 확인하다★ / 잊다\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。★用-았/었어야 했는데，句末用过去时해요体。\n材料：출발 전에 / 신분증을 / 확인하다★ / 잊다\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "출발 전에 신분증을 확인했어야 했는데 잊었어요",
+          "출발 전에 신분증을 확인하였어야 하였는데 잊었어요",
+          "출발 전에 신분증을 확인하였어야 하였는데, 잊었어요",
+          "출발 전에 신분증을 확인하였어야 했는데 잊었어요",
+          "출발 전에 신분증을 확인하였어야 했는데, 잊었어요",
+          "출발 전에 신분증을 확인했어야 하였는데 잊었어요",
+          "출발 전에 신분증을 확인했어야 하였는데, 잊었어요",
+          "출발 전에 신분증을 확인했어야 했는데, 잊었어요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 출발 전에 신분증을 확인했어야 했는데 잊었어요\n★에는 -았/었어야 했는데, 끝에는 과거 해요체를 쓰세요. 동사 과거형 뒤 -어야 했는데를 써서 과거에 필요했던 일을 못 했음을 아쉬워합니다. -았/었어야 했다가 과거 필요를, -는데가 현재의 아쉬움이나 뒤 설명을 연결합니다.",
+          "ja": "解答例：출발 전에 신분증을 확인했어야 했는데 잊었어요\n★には-았/었어야 했는데、文末には過去のヘヨ体を使ってください。 動詞の過去形に-어야 했는데を続け、過去に必要だったことをしなかったと悔やみます。-았/었어야 했다が過去の必要、-는데が残念な気持ちや後の説明をつなぎます。",
+          "en": "Model response: 출발 전에 신분증을 확인했어야 했는데 잊었어요\nUse -았/었어야 했는데 at ★ and past polite style at the end. Use verb -았/었어야 했는데 to regret failing to do what was necessary earlier. The past obligation combines with -는데 to introduce regret or an explanation.",
+          "zh": "参考答案：출발 전에 신분증을 확인했어야 했는데 잊었어요\n★用-았/었어야 했는데，句末用过去时해요体。 动词用-았/었어야 했는데，后悔过去没做本来该做的事。过去必要性与-는데结合，带出遗憾或解释。"
+        }
       }
     ]
   },
@@ -7499,6 +8440,34 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "ja": "묻다(質問する) → 選ばなかった行動への後悔, ヘヨ体",
           "en": "묻다(ask a question) → Regret about an action not chosen, Polite 해요 style",
           "zh": "묻다(提问) → 对未选择行动的后悔, 해요体"
+        }
+      },
+      {
+        "id": "extended-regret-wish-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "나는 창가 자리를 선택하지 않았어요. 지금 바깥 풍경이 좋아서 그 선택을 아쉬워해요.",
+        "contextMeaning": {
+          "ko": "나는 창가 자리를 선택하지 않았어요. 지금 바깥 풍경이 좋아서 그 선택을 아쉬워해요.",
+          "ja": "窓側の席を選びませんでした。今は外の景色がよいので、その選択を悔やんでいます。",
+          "en": "You did not choose a window seat. The view is lovely, and you now regret that choice.",
+          "zh": "你没选靠窗的位置，现在看到外面风景很好，后悔当时的选择。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. 하지 않은 행동의 후회로 -(으)ㄹ걸 그랬어요를 쓰세요.\n재료: 창가에 / 앉다★\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。しなかったことへの後悔として-(으)ㄹ걸 그랬어요を使ってください。\n材料：창가에 / 앉다★\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Use -(으)ㄹ걸 그랬어요 to regret the action you did not take.\nCues: 창가에 / 앉다★\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。用-(으)ㄹ걸 그랬어요后悔未采取的行动。\n材料：창가에 / 앉다★\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "창가에 앉을걸 그랬어요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 창가에 앉을걸 그랬어요\n하지 않은 행동의 후회로 -(으)ㄹ걸 그랬어요를 쓰세요. 동사에 -(으)ㄹ걸 그랬다를 붙여 과거에 하지 않은 행동을 했으면 좋았겠다고 말합니다. 하지 않았으면 좋았겠다는 후회는 -지 말걸 그랬다입니다. -(으)ㄹ걸은 붙여 씁니다.",
+          "ja": "解答例：창가에 앉을걸 그랬어요\nしなかったことへの後悔として-(으)ㄹ걸 그랬어요を使ってください。 動詞に-(으)ㄹ걸 그랬다を付け、過去にしなかったことをすればよかったと述べます。しなければよかったは-지 말걸 그랬다。-(으)ㄹ걸は続けて書きます。",
+          "en": "Model response: 창가에 앉을걸 그랬어요\nUse -(으)ㄹ걸 그랬어요 to regret the action you did not take. Use verb -(으)ㄹ걸 그랬다 to wish you had taken an unchosen action. To regret doing it, use -지 말걸 그랬다. Write -(으)ㄹ걸 attached to the verb.",
+          "zh": "参考答案：창가에 앉을걸 그랬어요\n用-(으)ㄹ걸 그랬어요后悔未采取的行动。 动词后接-(으)ㄹ걸 그랬다，表示本来没做而后悔；后悔做了则用-지 말걸 그랬다。-(으)ㄹ걸与动词连写。"
         }
       }
     ]
@@ -7734,6 +8703,37 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "en": "죽다 → A past near miss that did not happen, Polite 해요 style",
           "zh": "죽다 → 过去差点发生但未发生的事, 해요体"
         }
+      },
+      {
+        "id": "extended-near-miss-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "휴대전화를 쓰레기와 함께 버리려다 바로 발견해서 꺼냈어요. 실제로 버리지는 않았어요.",
+        "contextMeaning": {
+          "ko": "휴대전화를 쓰레기와 함께 버리려다 바로 발견해서 꺼냈어요. 실제로 버리지는 않았어요.",
+          "ja": "携帯電話をごみと一緒に捨てそうになりましたが、すぐ気づいて取り出しました。実際には捨てていません。",
+          "en": "You nearly threw away your phone with the trash but noticed and retrieved it. You did not actually discard it.",
+          "zh": "你差点把手机和垃圾一起扔掉，但及时发现取了出来，并未真的扔掉。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. 실제 발생하지 않은 위기를 -(으)ㄹ 뻔했어요로 쓰세요.\n재료: 휴대전화를 / 버리다★\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。実際には起きなかった危機を-(으)ㄹ 뻔했어요で表してください。\n材料：휴대전화를 / 버리다★\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Use -(으)ㄹ 뻔했어요 for a near miss that did not actually occur.\nCues: 휴대전화를 / 버리다★\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。用-(으)ㄹ 뻔했어요表达并未实际发生的险情。\n材料：휴대전화를 / 버리다★\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "휴대전화를 버릴 뻔했어요",
+          "휴대전화를 버릴 뻔하였어요",
+          "휴대전화를 버릴뻔하였어요",
+          "휴대전화를 버릴뻔했어요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 휴대전화를 버릴 뻔했어요\n실제 발생하지 않은 위기를 -(으)ㄹ 뻔했어요로 쓰세요. 동사·형용사에 -(으)ㄹ 뻔하다를 붙여 거의 일어날 상황이었으나 실제로 일어나지 않은 일을 말합니다. 이 단원은 동작의 위기를 연습합니다. 지난 위기는 보통 뻔했어요로 말합니다. 부정적 사건에 자주 쓰지만 그것만 가능한 것은 아닙니다.",
+          "ja": "解答例：휴대전화를 버릴 뻔했어요\n実際には起きなかった危機を-(으)ㄹ 뻔했어요で表してください。 動詞・形容詞に-(으)ㄹ 뻔하다を付け、起こりそうだったが実際には起きなかったことを表します。この課では行為の危機を練習します。過去の危機は通常뻔했어요。悪い出来事が多いですが、それだけに限りません。",
+          "en": "Model response: 휴대전화를 버릴 뻔했어요\nUse -(으)ㄹ 뻔했어요 for a near miss that did not actually occur. Use verb/adjective -(으)ㄹ 뻔하다 for something that almost happened but did not. This lesson practices near-miss events. Past near misses normally use 뻔했어요. Negative events are common but not the only possibility.",
+          "zh": "参考答案：휴대전화를 버릴 뻔했어요\n用-(으)ㄹ 뻔했어요表达并未实际发生的险情。 动词、形容词后接-(으)ㄹ 뻔하다，表示差点发生但实际上未发生；本课练习动作险情。过去险情通常用뻔했어요，常用于负面事件但不限于此。"
+        }
       }
     ]
   },
@@ -7959,6 +8959,37 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "ja": "아프다 → -(으)ㄹ까 봐",
           "en": "아프다 → -(으)ㄹ까 봐",
           "zh": "아프다 → -(으)ㄹ까 봐"
+        }
+      },
+      {
+        "id": "extended-concern-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "나는 다음 주 제출일을 잊는 것이 걱정됐어요. 그래서 달력에 표시해 두었어요.",
+        "contextMeaning": {
+          "ko": "나는 다음 주 제출일을 잊는 것이 걱정됐어요. 그래서 달력에 표시해 두었어요.",
+          "ja": "来週の提出日を忘れるのが心配で、カレンダーに印を付けておきました。",
+          "en": "You were worried about forgetting next week’s deadline, so you marked it on a calendar.",
+          "zh": "你担心忘记下周的提交日期，于是在日历上做了标记。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. ★에는 -(으)ㄹ까 봐, 걱정 때문에 한 행동은 과거 해요체로 쓰세요.\n재료: 마감일을 / 잊다★ / 달력에 / 표시하다\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。★には-(으)ㄹ까 봐、心配から行った行為は過去のヘヨ体にしてください。\n材料：마감일을 / 잊다★ / 달력에 / 표시하다\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Use -(으)ㄹ까 봐 at ★ and past polite style for the precaution taken.\nCues: 마감일을 / 잊다★ / 달력에 / 표시하다\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。★用-(으)ㄹ까 봐，因担心而采取的行动用过去时해요体。\n材料：마감일을 / 잊다★ / 달력에 / 표시하다\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "마감일을 잊을까 봐 달력에 표시했어요",
+          "마감일을 잊을까 봐 달력에 표시하였어요",
+          "마감일을 잊을까 봐, 달력에 표시하였어요",
+          "마감일을 잊을까 봐, 달력에 표시했어요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 마감일을 잊을까 봐 달력에 표시했어요\n★에는 -(으)ㄹ까 봐, 걱정 때문에 한 행동은 과거 해요체로 쓰세요. 동사·형용사에 -(으)ㄹ까 봐를 붙여 원하지 않는 일이 생길까 걱정해 행동함을 나타냅니다. 명사는 일까 봐입니다. 과거 가능성의 걱정은 -았/었을까 봐로 나타낼 수 있습니다.",
+          "ja": "解答例：마감일을 잊을까 봐 달력에 표시했어요\n★には-(으)ㄹ까 봐、心配から行った行為は過去のヘヨ体にしてください。 動詞・形容詞に-(으)ㄹ까 봐、名詞に일까 봐を付け、望まないことが起きるのを心配して行動することを表します。過去への心配は-았/었을까 봐です。",
+          "en": "Model response: 마감일을 잊을까 봐 달력에 표시했어요\nUse -(으)ㄹ까 봐 at ★ and past polite style for the precaution taken. Use verb/adjective -(으)ㄹ까 봐 or noun 일까 봐 when concern about an unwanted possibility motivates an action. Past concern can use -았/었을까 봐.",
+          "zh": "参考答案：마감일을 잊을까 봐 달력에 표시했어요\n★用-(으)ㄹ까 봐，因担心而采取的行动用过去时해요体。 动词、形容词用-(으)ㄹ까 봐，名词用일까 봐，表示担心不愿发生的事而采取行动。担心过去的可能用-았/었을까 봐。"
         }
       }
     ]
@@ -8190,6 +9221,35 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "en": "읽다 → Tentative intention under consideration, Polite 해요 style",
           "zh": "읽다 → 正在考虑的意向, 해요体"
         }
+      },
+      {
+        "id": "extended-considering-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "나는 저녁을 무엇으로 할지 아직 결정하지 않았어요. 집에서 국수를 만드는 쪽을 생각하고 있어요.",
+        "contextMeaning": {
+          "ko": "나는 저녁을 무엇으로 할지 아직 결정하지 않았어요. 집에서 국수를 만드는 쪽을 생각하고 있어요.",
+          "ja": "夕食はまだ決めていません。家で麺料理を作ろうかと考えています。",
+          "en": "You have not decided on dinner. You are considering making noodles at home.",
+          "zh": "你还没决定晚饭吃什么，正考虑在家做面条。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. 아직 결정하지 않은 의도를 -(으)ㄹ까 해요로 쓰세요.\n재료: 오늘은 / 집에서 / 국수를 / 만들다★\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。未確定の意図を-(으)ㄹ까 해요で表してください。\n材料：오늘은 / 집에서 / 국수를 / 만들다★\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Use -(으)ㄹ까 해요 for the still-tentative intention.\nCues: 오늘은 / 집에서 / 국수를 / 만들다★\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。用-(으)ㄹ까 해요表达尚未确定的意图。\n材料：오늘은 / 집에서 / 국수를 / 만들다★\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "오늘은 집에서 국수를 만들까 해요",
+          "오늘은 집에서 국수를 만들까 하여요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 오늘은 집에서 국수를 만들까 해요\n아직 결정하지 않은 의도를 -(으)ㄹ까 해요로 쓰세요. 동사에 -(으)ㄹ까 하다를 붙여 아직 고민 중인 가벼운 의도를 말합니다. 평서문에서는 보통 말하는 사람의 계획이고, 결정된 약속보다 확정성이 낮습니다.",
+          "ja": "解答例：오늘은 집에서 국수를 만들까 해요\n未確定の意図を-(으)ㄹ까 해요で表してください。 動詞に-(으)ㄹ까 하다を付け、まだ考え中の控えめな意図を述べます。平叙文では通常話し手の計画で、決定した約束ほど確定していません。",
+          "en": "Model response: 오늘은 집에서 국수를 만들까 해요\nUse -(으)ㄹ까 해요 for the still-tentative intention. Use verb -(으)ㄹ까 하다 for an intention still under consideration. Statements normally concern the speaker’s plan and are less settled than a commitment.",
+          "zh": "参考答案：오늘은 집에서 국수를 만들까 해요\n用-(으)ㄹ까 해요表达尚未确定的意图。 动词后接-(으)ㄹ까 하다，表示还在考虑的暂定意图。陈述句通常为说话者自己的计划，比确定承诺更不确定。"
+        }
       }
     ]
   },
@@ -8415,6 +9475,39 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "ja": "춥다 → -(으)ㄹ 테니까",
           "en": "춥다 → -(으)ㄹ 테니까",
           "zh": "춥다 → -(으)ㄹ 테니까"
+        }
+      },
+      {
+        "id": "extended-expected-ground-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "나는 무거운 짐을 옮기는 일을 맡겠다고 약속해요. 상대에게 먼저 들어가라고 권하세요.",
+        "contextMeaning": {
+          "ko": "나는 무거운 짐을 옮기는 일을 맡겠다고 약속해요. 상대에게 먼저 들어가라고 권하세요.",
+          "ja": "自分が重い荷物を運ぶと約束します。それを理由に相手へ先に入るよう勧めてください。",
+          "en": "You promise to carry the heavy luggage. Use that commitment to tell the other person to go inside first.",
+          "zh": "你承诺搬重行李。请以此为依据，让对方先进去。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. ★에는 -(으)ㄹ 테니까, 뒤에는 상대를 높이는 -(으)세요를 쓰세요.\n재료: 제가 / 짐을 / 옮기다★ / 먼저 / 들어가다\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。★には-(으)ㄹ 테니까、後半には相手への丁寧な指示-(으)세요を使ってください。\n材料：제가 / 짐을 / 옮기다★ / 먼저 / 들어가다\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Use -(으)ㄹ 테니까 at ★ and polite -(으)세요 for the request.\nCues: 제가 / 짐을 / 옮기다★ / 먼저 / 들어가다\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。★用-(으)ㄹ 테니까，后项请求用尊敬对方的-(으)세요。\n材料：제가 / 짐을 / 옮기다★ / 먼저 / 들어가다\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "제가 짐을 옮길 테니까 먼저 들어가세요",
+          "제가 짐을 옮길 테니까 먼저 들어가셔요",
+          "제가 짐을 옮길 테니까 먼저 들어가시어요",
+          "제가 짐을 옮길 테니까, 먼저 들어가세요",
+          "제가 짐을 옮길 테니까, 먼저 들어가셔요",
+          "제가 짐을 옮길 테니까, 먼저 들어가시어요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 제가 짐을 옮길 테니까 먼저 들어가세요\n★에는 -(으)ㄹ 테니까, 뒤에는 상대를 높이는 -(으)세요를 쓰세요. 동사·형용사의 -(으)ㄹ 테니까는 예상, 동사의 1인칭 문장에서는 의지도 나타냅니다. 명사는 일 테니까입니다. 앞의 예측이나 약속을 근거로 뒤에 요청·제안 등을 이어 갑니다.",
+          "ja": "解答例：제가 짐을 옮길 테니까 먼저 들어가세요\n★には-(으)ㄹ 테니까、後半には相手への丁寧な指示-(으)세요を使ってください。 動詞・形容詞の-(으)ㄹ 테니까は予測、動詞の一人称では意志にもなります。名詞は일 테니까。前の予測や約束を根拠に依頼・提案などを続けます。",
+          "en": "Model response: 제가 짐을 옮길 테니까 먼저 들어가세요\nUse -(으)ㄹ 테니까 at ★ and polite -(으)세요 for the request. Verb/adjective -(으)ㄹ 테니까 expresses expectation; with first-person verbs it can express intention. Nouns take 일 테니까. The expectation or commitment grounds a request, suggestion, or judgment.",
+          "zh": "参考答案：제가 짐을 옮길 테니까 먼저 들어가세요\n★用-(으)ㄹ 테니까，后项请求用尊敬对方的-(으)세요。 动词、形容词-(으)ㄹ 테니까表示预测，第一人称动词句也可表示意志；名词用일 테니까。以预测或承诺为依据提出请求、建议或判断。"
         }
       }
     ]
@@ -8642,6 +9735,37 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "en": "끝나다 → Inference about the past + 텐데",
           "zh": "끝나다 → 对过去的推测 + 텐데"
         }
+      },
+      {
+        "id": "extended-expected-contrast-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "도시락은 아침에 냉장고에서 꺼냈어요. 벌써 차갑지 않을 것으로 예상되지만 먹을 때는 아직 차가워요.",
+        "contextMeaning": {
+          "ko": "도시락은 아침에 냉장고에서 꺼냈어요. 벌써 차갑지 않을 것으로 예상되지만 먹을 때는 아직 차가워요.",
+          "ja": "弁当は朝に冷蔵庫から出しました。もう冷たくないと思うのに、食べる時にはまだ冷たいです。",
+          "en": "The lunchbox was taken out of the fridge this morning. You expected it to have warmed up, but it is still cold.",
+          "zh": "便当早上已从冰箱拿出。你以为现在应该不凉了，吃时却还很凉。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. ★에는 이미 변했을 것이라는 -았/었을 텐데, 끝에는 현재 해요체를 쓰세요.\n재료: 도시락이 / 따뜻해지다★ / 아직 / 차갑다\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。★には既に変わったはずという-았/었을 텐데、文末には現在のヘヨ体を使ってください。\n材料：도시락이 / 따뜻해지다★ / 아직 / 차갑다\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Use -았/었을 텐데 at ★ for an expected completed change, then present polite style.\nCues: 도시락이 / 따뜻해지다★ / 아직 / 차갑다\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。★用-았/었을 텐데表达预期已发生的变化，句末用现在时해요体。\n材料：도시락이 / 따뜻해지다★ / 아직 / 차갑다\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "도시락이 따뜻해졌을 텐데 아직 차가워요",
+          "도시락이 따뜻해졌을 텐데, 아직 차가워요",
+          "도시락이 따뜻해지었을 텐데 아직 차가워요",
+          "도시락이 따뜻해지었을 텐데, 아직 차가워요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 도시락이 따뜻해졌을 텐데 아직 차가워요\n★에는 이미 변했을 것이라는 -았/었을 텐데, 끝에는 현재 해요체를 쓰세요. 동사·형용사에 -(으)ㄹ 텐데, 명사에 일 텐데를 붙입니다. 예측한 상황을 배경으로 뒤의 걱정·질문·대조 등을 잇습니다. 이미 일어난 일의 추측은 -았/었을 텐데입니다.",
+          "ja": "解答例：도시락이 따뜻해졌을 텐데 아직 차가워요\n★には既に変わったはずという-았/었을 텐데、文末には現在のヘヨ体を使ってください。 動詞・形容詞に-(으)ㄹ 텐데、名詞に일 텐데。予想する状況を背景に心配・質問・対照を続けます。過去の推測は-았/었을 텐데です。",
+          "en": "Model response: 도시락이 따뜻해졌을 텐데 아직 차가워요\nUse -았/었을 텐데 at ★ for an expected completed change, then present polite style. Use verb/adjective -(으)ㄹ 텐데 and noun 일 텐데 to set up an expected situation for concern, a question, or contrast. Past expectation uses -았/었을 텐데.",
+          "zh": "参考答案：도시락이 따뜻해졌을 텐데 아직 차가워요\n★用-았/었을 텐데表达预期已发生的变化，句末用现在时해요体。 动词、形容词接-(으)ㄹ 텐데，名词接일 텐데，以预期情况为背景连接担心、疑问或对比；过去推测用-았/었을 텐데。"
+        }
       }
     ]
   },
@@ -8868,6 +9992,34 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "en": "잊다 → -기 마련이다, Polite 해요 style",
           "zh": "잊다 → -기 마련이다, 해요体"
         }
+      },
+      {
+        "id": "extended-expectation-norm-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "매일 사용한 운동화는 결국 닳아요. 한 사람의 특정 계획이 아니라 일반적인 경향을 말하세요.",
+        "contextMeaning": {
+          "ko": "매일 사용한 운동화는 결국 닳아요. 한 사람의 특정 계획이 아니라 일반적인 경향을 말하세요.",
+          "ja": "毎日使う運動靴はいずれすり減ります。個人の予定でなく一般的な傾向を述べてください。",
+          "en": "Shoes worn every day eventually wear out. State a general tendency, not an individual plan.",
+          "zh": "每天穿的运动鞋最终会磨损。请表达一般倾向，而非个人计划。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. 일반적인 경향을 -기 마련이에요로 쓰세요.\n재료: 신발은 / 오래 신으면 / 닳다★\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。一般的な傾向を-기 마련이에요で表してください。\n材料：신발은 / 오래 신으면 / 닳다★\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Express the general tendency with -기 마련이에요.\nCues: 신발은 / 오래 신으면 / 닳다★\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。用-기 마련이에요表达一般倾向。\n材料：신발은 / 오래 신으면 / 닳다★\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "신발은 오래 신으면 닳기 마련이에요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 신발은 오래 신으면 닳기 마련이에요\n일반적인 경향을 -기 마련이에요로 쓰세요. 동사·형용사 어간에 -기 마련이다를 붙여 보통 당연히 그렇게 된다는 일반적 경향을 말합니다. 매번 예외 없이 반드시 일어난다는 과학적 보증은 아닙니다.",
+          "ja": "解答例：신발은 오래 신으면 닳기 마련이에요\n一般的な傾向を-기 마련이에요で表してください。 動詞・形容詞語幹に-기 마련이다を付け、普通は自然にそうなるという一般的傾向を述べます。例外なく毎回起こるという科学的保証ではありません。",
+          "en": "Model response: 신발은 오래 신으면 닳기 마련이에요\nExpress the general tendency with -기 마련이에요. Attach -기 마련이다 to verb/adjective stems for an ordinarily natural or expected tendency. It is a generalization, not proof of exceptionless inevitability.",
+          "zh": "参考答案：신발은 오래 신으면 닳기 마련이에요\n用-기 마련이에요表达一般倾向。 动词、形容词词干后接-기 마련이다，概括通常自然发生的倾向，并非保证毫无例外。"
+        }
       }
     ]
   },
@@ -9093,6 +10245,34 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "ja": "어렵다 → 形容詞で述べる一般的な道理, ヘヨ体",
           "en": "어렵다 → General truth with an adjective, Polite 해요 style",
           "zh": "어렵다 → 用形容词表达的一般道理, 해요体"
+        }
+      },
+      {
+        "id": "extended-natural-general-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "다른 사람의 실수는 쉽게 발견하지만 자신의 실수는 알아보기 어려워요. 이를 일반적인 교훈처럼 표현하세요.",
+        "contextMeaning": {
+          "ko": "다른 사람의 실수는 쉽게 발견하지만 자신의 실수는 알아보기 어려워요. 이를 일반적인 교훈처럼 표현하세요.",
+          "ja": "人の間違いは見つけやすく、自分の間違いは見えにくいものです。一般的な教訓として表してください。",
+          "en": "People often notice others’ mistakes more readily than their own. Express a general lesson about recognizing one’s own mistakes.",
+          "zh": "人们往往容易发现别人的错误，却难发现自己的错误。请把后一点表达为一般道理。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. 형용사의 일반적인 이치를 -(으)ㄴ 법이에요로 쓰세요.\n재료: 자기 잘못은 / 깨닫기 / 어렵다★\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。形容詞を用いた一般的な道理を-(으)ㄴ 법이에요で表してください。\n材料：자기 잘못은 / 깨닫기 / 어렵다★\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Use adjective -(으)ㄴ 법이에요 to state the general principle.\nCues: 자기 잘못은 / 깨닫기 / 어렵다★\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。用形容词-(으)ㄴ 법이에요陈述一般道理。\n材料：자기 잘못은 / 깨닫기 / 어렵다★\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "자기 잘못은 깨닫기 어려운 법이에요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 자기 잘못은 깨닫기 어려운 법이에요\n형용사의 일반적인 이치를 -(으)ㄴ 법이에요로 쓰세요. 동사는 -는 법이다, 형용사는 -(으)ㄴ 법이다를 써서 세상일의 일반적인 이치를 말합니다. 여기서 법은 법률이 아니며, -는 법을 배우다의 방법이라는 뜻과도 구별합니다.",
+          "ja": "解答例：자기 잘못은 깨닫기 어려운 법이에요\n形容詞を用いた一般的な道理を-(으)ㄴ 법이에요で表してください。 動詞は-는 법이다、形容詞は-(으)ㄴ 법이다で一般的な道理を述べます。법は法律ではなく、-는 법을 배우다の方法とも区別します。",
+          "en": "Model response: 자기 잘못은 깨닫기 어려운 법이에요\nUse adjective -(으)ㄴ 법이에요 to state the general principle. Use verb -는 법이다 and adjective -(으)ㄴ 법이다 for a general principle. 법 here is neither legislation nor the method in -는 법을 배우다.",
+          "zh": "参考答案：자기 잘못은 깨닫기 어려운 법이에요\n用形容词-(으)ㄴ 법이에요陈述一般道理。 动词用-는 법이다，形容词用-(으)ㄴ 법이다，表达一般道理。这里법不是法律，也不同于-는 법을 배우다中的方法。"
         }
       }
     ]
@@ -9328,6 +10508,37 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "en": "먹다 → -(으)ㄹ 만하다, Polite 해요 style",
           "zh": "먹다 → -(으)ㄹ 만하다, 해요体"
         }
+      },
+      {
+        "id": "extended-worth-doing-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "길은 조금 가파르지만 천천히 가면 무리 없이 올라갈 정도예요. 감당할 수 있는 수준이라고 평가하세요.",
+        "contextMeaning": {
+          "ko": "길은 조금 가파르지만 천천히 가면 무리 없이 올라갈 정도예요. 감당할 수 있는 수준이라고 평가하세요.",
+          "ja": "道は少し急ですが、ゆっくりなら無理なく登れます。十分できる程度だと評価してください。",
+          "en": "The path is somewhat steep, but you can manage it slowly. Evaluate it as reasonably manageable.",
+          "zh": "山路有点陡，但慢慢走就能上去。请评价为能够应付的程度。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. 감당할 수 있는 정도를 -(으)ㄹ 만해요로 쓰세요.\n재료: 이 길은 / 천천히 / 오르다★\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。十分できる程度を-(으)ㄹ 만해요で表してください。\n材料：이 길은 / 천천히 / 오르다★\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Use -(으)ㄹ 만해요 to describe a manageable degree.\nCues: 이 길은 / 천천히 / 오르다★\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。用-(으)ㄹ 만해요表达可以应付的程度。\n材料：이 길은 / 천천히 / 오르다★\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "이 길은 천천히 오를 만해요",
+          "이 길은 천천히 오를 만하여요",
+          "이 길은 천천히 오를만하여요",
+          "이 길은 천천히 오를만해요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 이 길은 천천히 오를 만해요\n감당할 수 있는 정도를 -(으)ㄹ 만해요로 쓰세요. 동사에 -(으)ㄹ 만하다를 붙여 해 볼 가치가 있거나 충분히 할 수 있는 정도임을 말합니다. “먹을 만해요”는 문맥에 따라 먹을 가치가 있거나 그럭저럭 먹을 수 있다는 평가입니다.",
+          "ja": "解答例：이 길은 천천히 오를 만해요\n十分できる程度を-(으)ㄹ 만해요で表してください。 動詞に-(으)ㄹ 만하다を付け、する価値がある、または十分できる程度を示します。먹을 만해요は文脈により食べる価値がある、まあ食べられるという評価です。",
+          "en": "Model response: 이 길은 천천히 오를 만해요\nUse -(으)ㄹ 만해요 to describe a manageable degree. Use verb -(으)ㄹ 만하다 for being worth doing or sufficiently manageable. 먹을 만해요 may mean worth eating or merely acceptable to eat, depending on context.",
+          "zh": "参考答案：이 길은 천천히 오를 만해요\n用-(으)ㄹ 만해요表达可以应付的程度。 动词后接-(으)ㄹ 만하다，表示值得做或达到可以做的程度。먹을 만해요可表示值得吃，也可表示还算能吃，须看语境。"
+        }
       }
     ]
   },
@@ -9554,6 +10765,34 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "en": "쉬다 → -(으)려던 참이다, Past polite 해요 style",
           "zh": "쉬다 → -(으)려던 참이다, 过去해요体"
         }
+      },
+      {
+        "id": "extended-just-about-to-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "친구가 찾아왔을 때 나는 막 신발을 신고 산책을 시작하려고 했어요. 아직 집을 나서지는 않았어요.",
+        "contextMeaning": {
+          "ko": "친구가 찾아왔을 때 나는 막 신발을 신고 산책을 시작하려고 했어요. 아직 집을 나서지는 않았어요.",
+          "ja": "友人が来た時、靴を履いてちょうど散歩に出ようとしていました。まだ家は出ていません。",
+          "en": "When your friend arrived, you were putting on your shoes, just about to go for a walk. You had not left yet.",
+          "zh": "朋友来时，你刚穿上鞋，正准备出门散步，还没离家。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. 막 시작하려던 과거 순간을 -(으)려던 참이었어요로 쓰세요.\n재료: 마침 / 산책을 / 나가다★\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。ちょうど始めようとしていた過去の瞬間を-(으)려던 참이었어요で表してください。\n材料：마침 / 산책을 / 나가다★\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Use -(으)려던 참이었어요 for being just about to start in the past.\nCues: 마침 / 산책을 / 나가다★\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。用-(으)려던 참이었어요表达过去正要开始的时刻。\n材料：마침 / 산책을 / 나가다★\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "마침 산책을 나가려던 참이었어요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 마침 산책을 나가려던 참이었어요\n막 시작하려던 과거 순간을 -(으)려던 참이었어요로 쓰세요. 동사에 -(으)려던 참이다를 붙여 마침 그 행동을 하려고 하던 순간임을 말합니다. 모음·ㄹ 뒤 -려던, 다른 받침 뒤 -으려던입니다. 먼 장래의 막연한 계획보다 바로 앞둔 행동에 씁니다.",
+          "ja": "解答例：마침 산책을 나가려던 참이었어요\nちょうど始めようとしていた過去の瞬間を-(으)려던 참이었어요で表してください。 動詞に-(으)려던 참이다を付け、ちょうど行おうとしていたところを表します。母音・ㄹに-려던、他のパッチムに-으려던。遠い将来の漠然とした計画より目前の行為に使います。",
+          "en": "Model response: 마침 산책을 나가려던 참이었어요\nUse -(으)려던 참이었어요 for being just about to start in the past. Use verb -(으)려던 참이다 for being just about to act: -려던 after vowels/ㄹ, -으려던 after other consonants. It concerns an imminent action, not a vague distant plan.",
+          "zh": "参考答案：마침 산책을 나가려던 참이었어요\n用-(으)려던 참이었어요表达过去正要开始的时刻。 动词后接-(으)려던 참이다，表示恰好正要做。元音或ㄹ后用-려던，其他辅音后用-으려던。用于眼前行动而非遥远的模糊计划。"
+        }
       }
     ]
   },
@@ -9779,6 +11018,37 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "ja": "학생이다 → 名詞による事実を認めた後に限定を加える",
           "en": "학생이다 → Acknowledge a noun predicate, then qualify it",
           "zh": "학생이다 → 承认名词谓语后加以限制"
+        }
+      },
+      {
+        "id": "extended-reluctant-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "그 숙소는 위치가 좋아요. 다만 방이 좁다는 문제도 있어요. 장점은 인정하면서 아쉬운 점을 덧붙이세요.",
+        "contextMeaning": {
+          "ko": "그 숙소는 위치가 좋아요. 다만 방이 좁다는 문제도 있어요. 장점은 인정하면서 아쉬운 점을 덧붙이세요.",
+          "ja": "その宿は立地がよいですが、部屋は狭いです。長所を認めたうえで難点を加えてください。",
+          "en": "The accommodation has a good location but a small room. Acknowledge the benefit before adding the drawback.",
+          "zh": "那家住处位置好，但房间小。请先承认优点，再补充不足。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. ★에는 -기는 하지만, 끝에는 현재 해요체를 쓰세요.\n재료: 위치는 / 좋다★ / 방이 / 좁다\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。★には-기는 하지만、文末には現在のヘヨ体を使ってください。\n材料：위치는 / 좋다★ / 방이 / 좁다\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Use -기는 하지만 at ★ and present polite style at the end.\nCues: 위치는 / 좋다★ / 방이 / 좁다\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。★用-기는 하지만，句末用现在时해요体。\n材料：위치는 / 좋다★ / 방이 / 좁다\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "위치는 좋기는 하지만 방이 좁아요",
+          "위치는 좋기는 하지만, 방이 좁아요",
+          "위치는 좋긴 하지만 방이 좁아요",
+          "위치는 좋긴 하지만, 방이 좁아요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 위치는 좋기는 하지만 방이 좁아요\n★에는 -기는 하지만, 끝에는 현재 해요체를 쓰세요. 동사·형용사에 -기는 하지만을 붙여 앞 내용이 사실임을 인정하면서 뒤에 제한이나 반대 평가를 덧붙입니다. 명사는 (이)기는 하지만입니다. 과거 동작을 인정할 때는 -기는 했지만을 흔히 씁니다.",
+          "ja": "解答例：위치는 좋기는 하지만 방이 좁아요\n★には-기는 하지만、文末には現在のヘヨ体を使ってください。 動詞・形容詞に-기는 하지만を付け、前の事実を認めてから留保や反対の評価を添えます。名詞は(이)기는 하지만。過去の行為の承認には-기는 했지만をよく使います。",
+          "en": "Model response: 위치는 좋기는 하지만 방이 좁아요\nUse -기는 하지만 at ★ and present polite style at the end. Use verb/adjective -기는 하지만 to acknowledge a truth before a limitation or opposing evaluation. Nouns take (이)기는 하지만; past actions commonly use -기는 했지만.",
+          "zh": "参考答案：위치는 좋기는 하지만 방이 좁아요\n★用-기는 하지만，句末用现在时해요体。 动词、形容词接-기는 하지만，承认前项事实，再补充限制或相反评价；名词用(이)기는 하지만；承认过去的动作常用-기는 했지만。"
         }
       }
     ]
@@ -10007,6 +11277,37 @@ window.HARUMAL_GRAMMAR_PACK_PERSPECTIVE = [
           "ja": "전문가이다 → 名詞による評価への謙遜した応答",
           "en": "전문가이다 → Modest response to an evaluation with a noun",
           "zh": "전문가이다 → 谦虚回应名词性评价"
+        }
+      },
+      {
+        "id": "extended-acknowledge-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "친구가 내 그림을 보고 전문 화가라고 칭찬했어요. 나는 아직 초보라며 겸손하게 답해요.",
+        "contextMeaning": {
+          "ko": "친구가 내 그림을 보고 전문 화가라고 칭찬했어요. 나는 아직 초보라며 겸손하게 답해요.",
+          "ja": "友人が絵を見てプロの画家だと褒めました。まだ初心者だと謙遜して答えてください。",
+          "en": "Your friend praised your painting and called you a professional artist. Respond modestly that you are still a beginner.",
+          "zh": "朋友看了你的画，称赞你是专业画家。请谦虚地回答自己还是新手。"
+        },
+        "prompt": {
+          "ko": "주어진 재료를 순서대로 사용해 답변 전체를 직접 쓰세요. 이미 붙은 조사는 유지하고 사전형은 활용하세요. ★에 이 단원의 문법을 적용합니다. 목표 문법에 필요한 변화 외에는 단어·주어를 추가하거나 다른 표현으로 바꾸지 마세요. ★의 명사에 (이)기는요를 붙이고, 뒤의 짧은 문장도 함께 쓰세요.\n재료: 화가★ / 아직 / 초보예요\n이 연습은 지정된 문장 구성만 확인하며, 자유 작문의 모든 가능한 답을 평가하지 않습니다.",
+          "ja": "材料を順に使い、答え全体を自分で書いてください。既に付いた助詞は保ち、辞書形は活用します。★にこの課の文法を使います。目標文法に必要な変化以外は、単語や主語を追加せず別の表現に言い換えないでください。★の名詞に(이)기는요を付け、後の短い文も一緒に書いてください。\n材料：화가★ / 아직 / 초보예요\nこの練習は指定された文の構成を確認するもので、自由作文の全ての可能な答えを評価するものではありません。",
+          "en": "Write the entire response using the cues in order. Keep supplied particles and inflect dictionary forms. Apply this lesson’s grammar at ★. Apart from changes required by the target grammar, do not add words or subjects or substitute other expressions. Attach (이)기는요 to the noun at ★ and include the following short sentence too.\nCues: 화가★ / 아직 / 초보예요\nThis exercise checks the specified construction, not every possible answer to an open-ended writing task.",
+          "zh": "请按材料顺序亲自写出完整回答。保留已有助词，将词典形变为相应形式，在★处运用本课语法。除目标语法所需变化外，不要添加词语或主语，也不要换成其他表达。在★名词后接(이)기는요，并写出后面的短句。\n材料：화가★ / 아직 / 초보예요\n此练习只核对指定句子结构，并非评判自由写作的所有可能答案。"
+        },
+        "accepted": [
+          "화가이기는요. 아직 초보예요",
+          "화가기는요 아직 초보예요",
+          "화가기는요. 아직 초보예요",
+          "화가이기는요 아직 초보예요"
+        ],
+        "explanation": {
+          "ko": "예시 답: 화가이기는요. 아직 초보예요\n★의 명사에 (이)기는요를 붙이고, 뒤의 짧은 문장도 함께 쓰세요. 동사·형용사에 -기는요, 명사에 (이)기는요를 붙여 상대의 평가를 겸손하게 부정하거나 반박합니다. 앞말을 받아 쓰며 말투에 따라 친근한 겸손 또는 강한 반박이 될 수 있습니다.",
+          "ja": "解答例：화가이기는요. 아직 초보예요\n★の名詞に(이)기는요を付け、後の短い文も一緒に書いてください。 動詞・形容詞に-기는요、名詞に(이)기는요を付け、相手の評価を謙遜して否定、または反論します。相手の言葉を受け、言い方により親しみのある謙遜にも強い反論にもなります。",
+          "en": "Model response: 화가이기는요. 아직 초보예요\nAttach (이)기는요 to the noun at ★ and include the following short sentence too. Use verb/adjective -기는요 and noun (이)기는요 to modestly reject an assessment or push back. It echoes a preceding remark; intonation can make it modest or emphatic.",
+          "zh": "参考答案：화가이기는요. 아직 초보예요\n在★名词后接(이)기는요，并写出后面的短句。 动词、形容词接-기는요，名词接(이)기는요，谦逊否认评价或反驳，承接对方的话；语调可使其谦逊或强烈。"
         }
       }
     ]

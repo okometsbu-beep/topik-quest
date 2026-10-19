@@ -224,6 +224,34 @@ window.HARUMAL_GRAMMAR_PACK_DISCOURSE = [
           "en": "살다 → Newly learned fact; use -네요",
           "zh": "살다 → 新得知事实；使用-네요"
         }
+      },
+      {
+        "id": "extended-discovery-neyo-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "처음 방문한 공원을 보고 예상보다 넓다는 느낌을 표현합니다.",
+        "contextMeaning": {
+          "ko": "처음 방문한 공원을 보고 예상보다 넓다는 느낌을 표현합니다.",
+          "ja": "初めて訪れた公園を見て、予想より広いと感じています。",
+          "en": "At a first visit to the park, react to it being wider than expected.",
+          "zh": "第一次到公园，发现比预想宽敞，表达感受。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: -네요\n제시어: 공원이 / 정말 / 넓다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：-네요\n語句：공원이 / 정말 / 넓다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: -네요\nCues: 공원이 / 정말 / 넓다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：-네요\n提示词：공원이 / 정말 / 넓다"
+        },
+        "accepted": [
+          "공원이 정말 넓네요"
+        ],
+        "explanation": {
+          "ko": "공원이 정말 넓네요\n형태를 만드는 과정: 넓다 → 넓- + -네요",
+          "ja": "공원이 정말 넓네요\n形の作り方：넓다 → 넓- + -네요",
+          "en": "공원이 정말 넓네요\nFormation: 넓다 → 넓- + -네요",
+          "zh": "공원이 정말 넓네요\n变形过程：넓다 → 넓- + -네요"
+        }
       }
     ]
   },
@@ -451,6 +479,34 @@ window.HARUMAL_GRAMMAR_PACK_DISCOURSE = [
           "en": "학생 → Realization of a new fact",
           "zh": "학생 → 对新事实的领悟"
         }
+      },
+      {
+        "id": "extended-discovery-gunyo-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "안내를 듣고 지금 보는 건물이 박물관임을 새롭게 깨달았습니다.",
+        "contextMeaning": {
+          "ko": "안내를 듣고 지금 보는 건물이 박물관임을 새롭게 깨달았습니다.",
+          "ja": "案内を聞き、目の前の建物が博物館だと初めて知りました。",
+          "en": "From the guide, you realize the building in front of you is a museum.",
+          "zh": "听了介绍后，才知道眼前建筑是博物馆。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: -(이)군요\n제시어: 이 건물이 / 박물관",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：-(이)군요\n語句：이 건물이 / 박물관",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: -(이)군요\nCues: 이 건물이 / 박물관",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：-(이)군요\n提示词：이 건물이 / 박물관"
+        },
+        "accepted": [
+          "이 건물이 박물관이군요"
+        ],
+        "explanation": {
+          "ko": "이 건물이 박물관이군요\n형태를 만드는 과정: 박물관 + 이군요 (받침 뒤)",
+          "ja": "이 건물이 박물관이군요\n形の作り方：박물관 + 이군요 (パッチムの後)",
+          "en": "이 건물이 박물관이군요\nFormation: 박물관 + 이군요 (after a final consonant)",
+          "zh": "이 건물이 박물관이군요\n变形过程：박물관 + 이군요 (收音后)"
+        }
       }
     ]
   },
@@ -676,6 +732,34 @@ window.HARUMAL_GRAMMAR_PACK_DISCOURSE = [
           "ja": "배우다 → 背景説明・-거든요",
           "en": "배우다 → Background explanation; -거든요",
           "zh": "배우다 → 背景说明；-거든요"
+        }
+      },
+      {
+        "id": "extended-background-geodeunyo-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "오늘 일찍 자는 이유를 상대가 모릅니다. 내일 아침에 출발한다는 배경을 알려 줍니다.",
+        "contextMeaning": {
+          "ko": "오늘 일찍 자는 이유를 상대가 모릅니다. 내일 아침에 출발한다는 배경을 알려 줍니다.",
+          "ja": "早く寝る理由を相手は知りません。明朝出発する事情を伝えます。",
+          "en": "The listener does not know why you are going to bed early. Explain that you leave tomorrow morning.",
+          "zh": "对方不知道你为何早睡，请说明明早出发的背景。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: -거든요\n제시어: 내일 / 아침에 / 출발하다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：-거든요\n語句：내일 / 아침에 / 출발하다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: -거든요\nCues: 내일 / 아침에 / 출발하다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：-거든요\n提示词：내일 / 아침에 / 출발하다"
+        },
+        "accepted": [
+          "내일 아침에 출발하거든요"
+        ],
+        "explanation": {
+          "ko": "내일 아침에 출발하거든요\n형태를 만드는 과정: 출발하다 → 출발하- + -거든요",
+          "ja": "내일 아침에 출발하거든요\n形の作り方：출발하다 → 출발하- + -거든요",
+          "en": "내일 아침에 출발하거든요\nFormation: 출발하다 → 출발하- + -거든요",
+          "zh": "내일 아침에 출발하거든요\n变形过程：출발하다 → 출발하- + -거든요"
         }
       }
     ]
@@ -903,6 +987,35 @@ window.HARUMAL_GRAMMAR_PACK_DISCOURSE = [
           "en": "말하다 → Reminder of a past fact; -잖아요",
           "zh": "말하다 → 提醒过去的事实；-잖아요"
         }
+      },
+      {
+        "id": "extended-reminder-janhayo-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "친구도 기억하는 지난주 약속을 다시 상기시킵니다.",
+        "contextMeaning": {
+          "ko": "친구도 기억하는 지난주 약속을 다시 상기시킵니다.",
+          "ja": "友だちも覚えている先週の約束を思い出させます。",
+          "en": "Remind your friend of the agreement you both remember making last week.",
+          "zh": "提醒朋友双方都记得的上周约定。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: -았/었잖아요\n제시어: 지난주에 / 같이 / 약속하다",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：-았/었잖아요\n語句：지난주에 / 같이 / 약속하다",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: -았/었잖아요\nCues: 지난주에 / 같이 / 약속하다",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：-았/었잖아요\n提示词：지난주에 / 같이 / 약속하다"
+        },
+        "accepted": [
+          "지난주에 같이 약속했잖아요",
+          "지난주에 같이 약속하였잖아요"
+        ],
+        "explanation": {
+          "ko": "지난주에 같이 약속했잖아요\n형태를 만드는 과정: 약속하다 → 약속했- + -잖아요",
+          "ja": "지난주에 같이 약속했잖아요\n形の作り方：약속하다 → 약속했- + -잖아요",
+          "en": "지난주에 같이 약속했잖아요\nFormation: 약속하다 → 약속했- + -잖아요",
+          "zh": "지난주에 같이 약속했잖아요\n变形过程：약속하다 → 약속했- + -잖아요"
+        }
       }
     ]
   },
@@ -1129,6 +1242,34 @@ window.HARUMAL_GRAMMAR_PACK_DISCOURSE = [
           "en": "인사 + 조차",
           "zh": "인사 + 조차"
         }
+      },
+      {
+        "id": "extended-even-jocha-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "아는 정보가 거의 없어, 그 사람의 얼굴조차 떠올릴 수 없다고 강조합니다.",
+        "contextMeaning": {
+          "ko": "아는 정보가 거의 없어, 그 사람의 얼굴조차 떠올릴 수 없다고 강조합니다.",
+          "ja": "知っていることがほとんどなく、その人の顔すら思い出せないと強調します。",
+          "en": "Emphasize knowing so little that you cannot recall even the person’s face.",
+          "zh": "强调了解很少，连那个人的脸都想不起来。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: 조차\n제시어: 그 사람의 / 얼굴 / 기억하지 못해요",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：조차\n語句：그 사람의 / 얼굴 / 기억하지 못해요",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: 조차\nCues: 그 사람의 / 얼굴 / 기억하지 못해요",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：조차\n提示词：그 사람의 / 얼굴 / 기억하지 못해요"
+        },
+        "accepted": [
+          "그 사람의 얼굴조차 기억하지 못해요"
+        ],
+        "explanation": {
+          "ko": "그 사람의 얼굴조차 기억하지 못해요\n형태를 만드는 과정: 얼굴 + 조차; 기억하지 못해요는 부정",
+          "ja": "그 사람의 얼굴조차 기억하지 못해요\n形の作り方：얼굴 + 조차; 기억하지 못해요は否定",
+          "en": "그 사람의 얼굴조차 기억하지 못해요\nFormation: 얼굴 + 조차; 기억하지 못해요 is negative",
+          "zh": "그 사람의 얼굴조차 기억하지 못해요\n变形过程：얼굴 + 조차; 기억하지 못해요是否定"
+        }
       }
     ]
   },
@@ -1354,6 +1495,34 @@ window.HARUMAL_GRAMMAR_PACK_DISCOURSE = [
           "en": "희망 + 마저",
           "zh": "희망 + 마저"
         }
+      },
+      {
+        "id": "extended-last-majeo-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "여러 우산을 잃은 데 이어 마지막 남은 우산도 사라졌습니다.",
+        "contextMeaning": {
+          "ko": "여러 우산을 잃은 데 이어 마지막 남은 우산도 사라졌습니다.",
+          "ja": "いくつもの傘をなくし、最後に残った傘もなくなりました。",
+          "en": "After losing several umbrellas, the last remaining one disappeared too.",
+          "zh": "丢了几把伞之后，最后剩下的一把也不见了。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: 마저\n제시어: 남은 우산 / 없어졌어요",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：마저\n語句：남은 우산 / 없어졌어요",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: 마저\nCues: 남은 우산 / 없어졌어요",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：마저\n提示词：남은 우산 / 없어졌어요"
+        },
+        "accepted": [
+          "남은 우산마저 없어졌어요"
+        ],
+        "explanation": {
+          "ko": "남은 우산마저 없어졌어요\n형태를 만드는 과정: 우산 + 마저",
+          "ja": "남은 우산마저 없어졌어요\n形の作り方：우산 + 마저",
+          "en": "남은 우산마저 없어졌어요\nFormation: 우산 + 마저",
+          "zh": "남은 우산마저 없어졌어요\n变形过程：우산 + 마저"
+        }
       }
     ]
   },
@@ -1578,6 +1747,34 @@ window.HARUMAL_GRAMMAR_PACK_DISCOURSE = [
           "ja": "부모 + (으)로서",
           "en": "부모 + (으)로서",
           "zh": "부모 + (으)로서"
+        }
+      },
+      {
+        "id": "extended-role-roseo-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "반장이라는 역할에서 친구들을 돕는다고 말합니다.",
+        "contextMeaning": {
+          "ko": "반장이라는 역할에서 친구들을 돕는다고 말합니다.",
+          "ja": "学級委員という役割で友だちを助けると述べます。",
+          "en": "Say you help classmates in your role as class leader.",
+          "zh": "说明你以班长身份帮助同学。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: (으)로서\n제시어: 반장 / 친구들을 / 도와요",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：(으)로서\n語句：반장 / 친구들을 / 도와요",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: (으)로서\nCues: 반장 / 친구들을 / 도와요",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：(으)로서\n提示词：반장 / 친구들을 / 도와요"
+        },
+        "accepted": [
+          "반장으로서 친구들을 도와요"
+        ],
+        "explanation": {
+          "ko": "반장으로서 친구들을 도와요\n형태를 만드는 과정: 반장 + 으로서 (ㄹ 이외의 받침 뒤)",
+          "ja": "반장으로서 친구들을 도와요\n形の作り方：반장 + 으로서 (ㄹ以外のパッチムの後)",
+          "en": "반장으로서 친구들을 도와요\nFormation: 반장 + 으로서 (after a final consonant other than ㄹ)",
+          "zh": "반장으로서 친구들을 도와요\n变形过程：반장 + 으로서 (除ㄹ外的收音后)"
         }
       }
     ]
@@ -1805,6 +2002,34 @@ window.HARUMAL_GRAMMAR_PACK_DISCOURSE = [
           "en": "노력 + (으)로써",
           "zh": "노력 + (으)로써"
         }
+      },
+      {
+        "id": "extended-means-rosseo-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "말 대신 그림이라는 수단으로 마음을 전달합니다.",
+        "contextMeaning": {
+          "ko": "말 대신 그림이라는 수단으로 마음을 전달합니다.",
+          "ja": "言葉の代わりに絵という手段で気持ちを伝えます。",
+          "en": "Communicate feelings through pictures as a means rather than words.",
+          "zh": "通过绘画这一手段，而非言语，传达心意。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: (으)로써\n제시어: 그림 / 마음을 / 전해요",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：(으)로써\n語句：그림 / 마음을 / 전해요",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: (으)로써\nCues: 그림 / 마음을 / 전해요",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：(으)로써\n提示词：그림 / 마음을 / 전해요"
+        },
+        "accepted": [
+          "그림으로써 마음을 전해요"
+        ],
+        "explanation": {
+          "ko": "그림으로써 마음을 전해요\n형태를 만드는 과정: 그림 + 으로써 (수단)",
+          "ja": "그림으로써 마음을 전해요\n形の作り方：그림 + 으로써 (手段)",
+          "en": "그림으로써 마음을 전해요\nFormation: 그림 + 으로써 (means)",
+          "zh": "그림으로써 마음을 전해요\n变形过程：그림 + 으로써 (手段)"
+        }
       }
     ]
   },
@@ -2029,6 +2254,34 @@ window.HARUMAL_GRAMMAR_PACK_DISCOURSE = [
           "ja": "말하다 → 現在の方法・-는 대로を使う",
           "en": "말하다 → Present manner; use -는 대로",
           "zh": "말하다 → 当前方式；使用-는 대로"
+        }
+      },
+      {
+        "id": "extended-according-daero-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "자기 방식이 아니라 조리법에 적힌 순서를 따라서 국을 만듭니다.",
+        "contextMeaning": {
+          "ko": "자기 방식이 아니라 조리법에 적힌 순서를 따라서 국을 만듭니다.",
+          "ja": "自分流でなく、レシピに書かれた手順に従ってスープを作ります。",
+          "en": "Make soup according to the written recipe rather than your own method.",
+          "zh": "不是按自己的方法，而是遵照食谱做汤。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: 대로\n제시어: 조리법 / 국을 / 만들어요",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：대로\n語句：조리법 / 국을 / 만들어요",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: 대로\nCues: 조리법 / 국을 / 만들어요",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：대로\n提示词：조리법 / 국을 / 만들어요"
+        },
+        "accepted": [
+          "조리법대로 국을 만들어요"
+        ],
+        "explanation": {
+          "ko": "조리법대로 국을 만들어요\n형태를 만드는 과정: 조리법 + 대로 (명사 뒤 붙임)",
+          "ja": "조리법대로 국을 만들어요\n形の作り方：조리법 + 대로 (名詞に続けて書く)",
+          "en": "조리법대로 국을 만들어요\nFormation: 조리법 + 대로 (write attached to the noun)",
+          "zh": "조리법대로 국을 만들어요\n变形过程：조리법 + 대로 (与名词连写)"
         }
       }
     ]
@@ -2256,6 +2509,37 @@ window.HARUMAL_GRAMMAR_PACK_DISCOURSE = [
           "en": "도착하다 → Connect to an immediate next action",
           "zh": "도착하다 → 连接紧接着发生的动作"
         }
+      },
+      {
+        "id": "extended-immediate-daero-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "결과를 확인한 직후 상대에게 알려 주겠다고 공손히 약속합니다.",
+        "contextMeaning": {
+          "ko": "결과를 확인한 직후 상대에게 알려 주겠다고 공손히 약속합니다.",
+          "ja": "結果を確認したらすぐ相手に知らせると丁寧に約束します。",
+          "en": "Respectfully promise to notify the listener immediately after checking the result.",
+          "zh": "恭敬地承诺，一确认结果就告诉对方。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: -는 대로\n제시어: 결과를 / 확인하다 / 알려 드릴게요",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：-는 대로\n語句：결과를 / 확인하다 / 알려 드릴게요",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: -는 대로\nCues: 결과를 / 확인하다 / 알려 드릴게요",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：-는 대로\n提示词：결과를 / 확인하다 / 알려 드릴게요"
+        },
+        "accepted": [
+          "결과를 확인하는 대로 알려 드릴게요",
+          "결과를 확인하는 대로 알려드릴게요",
+          "결과를 확인하는 대로, 알려 드릴게요",
+          "결과를 확인하는 대로, 알려드릴게요"
+        ],
+        "explanation": {
+          "ko": "결과를 확인하는 대로 알려 드릴게요\n형태를 만드는 과정: 확인하다 → 확인하- + -는 대로",
+          "ja": "결과를 확인하는 대로 알려 드릴게요\n形の作り方：확인하다 → 확인하- + -는 대로",
+          "en": "결과를 확인하는 대로 알려 드릴게요\nFormation: 확인하다 → 확인하- + -는 대로",
+          "zh": "결과를 확인하는 대로 알려 드릴게요\n变形过程：확인하다 → 확인하- + -는 대로"
+        }
       }
     ]
   },
@@ -2482,6 +2766,35 @@ window.HARUMAL_GRAMMAR_PACK_DISCOURSE = [
           "en": "아이 + 치고",
           "zh": "아이 + 치고"
         }
+      },
+      {
+        "id": "extended-exception-chigo-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "초보자의 일반적인 수준을 생각하면 춤을 잘 춘다고 평가합니다.",
+        "contextMeaning": {
+          "ko": "초보자의 일반적인 수준을 생각하면 춤을 잘 춘다고 평가합니다.",
+          "ja": "初心者としての一般的な水準を考えると踊りが上手だと評価します。",
+          "en": "Evaluate someone’s dancing as good considering beginner expectations.",
+          "zh": "考虑到初学者的一般水平，评价其舞跳得不错。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: 치고\n제시어: 초보자 / 춤을 / 잘 춰요",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：치고\n語句：초보자 / 춤을 / 잘 춰요",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: 치고\nCues: 초보자 / 춤을 / 잘 춰요",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：치고\n提示词：초보자 / 춤을 / 잘 춰요"
+        },
+        "accepted": [
+          "초보자치고 춤을 잘 춰요",
+          "초보자치고는 춤을 잘 춰요"
+        ],
+        "explanation": {
+          "ko": "초보자치고 춤을 잘 춰요\n형태를 만드는 과정: 초보자 + 치고",
+          "ja": "초보자치고 춤을 잘 춰요\n形の作り方：초보자 + 치고",
+          "en": "초보자치고 춤을 잘 춰요\nFormation: 초보자 + 치고",
+          "zh": "초보자치고 춤을 잘 춰요\n变形过程：초보자 + 치고"
+        }
       }
     ]
   },
@@ -2706,6 +3019,34 @@ window.HARUMAL_GRAMMAR_PACK_DISCOURSE = [
           "ja": "조금 + (이)나마",
           "en": "조금 + (이)나마",
           "zh": "조금 + (이)나마"
+        }
+      },
+      {
+        "id": "extended-concession-nama-sentence-construction",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "작지만 마음을 담은 선물을 준비했다고 겸손히 말합니다.",
+        "contextMeaning": {
+          "ko": "작지만 마음을 담은 선물을 준비했다고 겸손히 말합니다.",
+          "ja": "小さくても心を込めた贈り物を準備したと控えめに伝えます。",
+          "en": "Modestly say you prepared a gift, even though it is a small one.",
+          "zh": "谦逊地说，虽是小礼物，你还是准备了一份心意。"
+        },
+        "prompt": {
+          "ko": "제시어를 모두 주어진 순서로 사용해 완전한 문장을 만드세요. 주어진 조사는 유지하고 필요한 조사·어미만 더하세요. 목표 형태: (이)나마\n제시어: 작은 선물 / 준비했어요",
+          "ja": "語句をすべて示された順番で使い、完全な文を作ってください。すでにある助詞は残し、必要な助詞・語尾だけ加えます。指定の形：(이)나마\n語句：작은 선물 / 준비했어요",
+          "en": "Use every cue in the given order to build a complete sentence. Keep supplied particles; add only the needed particles and endings. Required form: (이)나마\nCues: 작은 선물 / 준비했어요",
+          "zh": "按给定顺序使用所有提示词，组成完整句子。保留已有助词，只添加所需助词和词尾。指定形式：(이)나마\n提示词：작은 선물 / 준비했어요"
+        },
+        "accepted": [
+          "작은 선물이나마 준비했어요"
+        ],
+        "explanation": {
+          "ko": "작은 선물이나마 준비했어요\n형태를 만드는 과정: 선물 + 이나마 (받침 뒤)",
+          "ja": "작은 선물이나마 준비했어요\n形の作り方：선물 + 이나마 (パッチムの後)",
+          "en": "작은 선물이나마 준비했어요\nFormation: 선물 + 이나마 (after a final consonant)",
+          "zh": "작은 선물이나마 준비했어요\n变形过程：선물 + 이나마 (收音后)"
         }
       }
     ]

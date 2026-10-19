@@ -221,6 +221,34 @@ window.HARUMAL_GRAMMAR_PACK_EVENTS = [
           "en": "Answer: 읽는다고 해요\nFormation: 읽다 → 읽- + -는다고 해요",
           "zh": "答案：읽는다고 해요\n构成：읽다 → 읽- + -는다고 해요"
         }
+      },
+      {
+        "id": "extended-indirect-statement:context-construction-v1",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "민지는 내년 이사 계획을 말했어요. 그 계획을 다른 친구에게 전달하세요.",
+        "contextMeaning": {
+          "ko": "민지는 내년 이사 계획을 말했어요. 그 계획을 다른 친구에게 전달하세요.",
+          "ja": "ミンジさんから来年の引っ越し予定を聞きました。別の友だちに伝えます。",
+          "en": "Minji told you her moving plans for next year. Report them to another friend.",
+          "zh": "敏智告诉你明年的搬家计划。请转述给另一位朋友。"
+        },
+        "prompt": {
+          "ko": "주어진 덩어리를 순서대로 모두 사용해 한 문장을 만드세요. 마지막 지시가 두 문장이면 두 문장으로 쓰세요. 사전형만 지정된 형태로 바꾸고 다른 말은 더하거나 빼지 마세요.\n재료: 민지 씨가 / 내년에 / 이사하다\n지정 형태: -ㄴ/는다고 했어요",
+          "ja": "示された語句を順番どおり全て使い、一文を作ってください。二文と指定された場合は二文にします。辞書形だけを指定形に変え、他の語句は足したり省いたりしません。\n材料：민지 씨가 / 내년에 / 이사하다\n指定形：-ㄴ/는다고 했어요",
+          "en": "Use every supplied chunk in order to build one sentence, or two if explicitly specified. Change only dictionary forms to the requested construction; do not add or omit other words.\nChunks: 민지 씨가 / 내년에 / 이사하다\nRequired form: -ㄴ/는다고 했어요",
+          "zh": "按顺序使用全部给定词块组成一句；若明确要求两句，则写两句。只把词典形变为指定结构，不增加或省略其他词语。\n词块：민지 씨가 / 내년에 / 이사하다\n指定形式：-ㄴ/는다고 했어요"
+        },
+        "accepted": [
+          "민지 씨가 내년에 이사한다고 했어요."
+        ],
+        "explanation": {
+          "ko": "완성 문장: 민지 씨가 내년에 이사한다고 했어요.\n핵심 변환: 이사하다 → 이사하- + -ㄴ다고 했어요",
+          "ja": "完成文：민지 씨가 내년에 이사한다고 했어요.\n重要な変換：이사하다 → 이사하- + -ㄴ다고 했어요",
+          "en": "Completed sentence: 민지 씨가 내년에 이사한다고 했어요.\nKey transformation: 이사하다 → 이사하- + -ㄴ다고 했어요",
+          "zh": "完整句子：민지 씨가 내년에 이사한다고 했어요.\n关键变形：이사하다 → 이사하- + -ㄴ다고 했어요"
+        }
       }
     ]
   },
@@ -444,6 +472,34 @@ window.HARUMAL_GRAMMAR_PACK_EVENTS = [
           "ja": "正解：가수라고 해요\n作り方：가수 + 라고 해요",
           "en": "Answer: 가수라고 해요\nFormation: 가수 + 라고 해요",
           "zh": "答案：가수라고 해요\n构成：가수 + 라고 해요"
+        }
+      },
+      {
+        "id": "extended-indirect-noun:context-construction-v1",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "안내원의 말은 “여기는 박물관입니다”였어요. 건물의 정체를 다른 사람에게 전하세요.",
+        "contextMeaning": {
+          "ko": "안내원의 말은 “여기는 박물관입니다”였어요. 건물의 정체를 다른 사람에게 전하세요.",
+          "ja": "案内係が「ここは博物館です」と言いました。建物が何かを別の人に伝えます。",
+          "en": "The guide said, “This is a museum.” Report the building’s identity to someone else.",
+          "zh": "导游说：“这里是博物馆。”请向其他人转述建筑的身份。"
+        },
+        "prompt": {
+          "ko": "주어진 덩어리를 순서대로 모두 사용해 한 문장을 만드세요. 마지막 지시가 두 문장이면 두 문장으로 쓰세요. 사전형만 지정된 형태로 바꾸고 다른 말은 더하거나 빼지 마세요.\n재료: 안내원이 / 이 건물은 / 박물관\n지정 형태: (이)라고 했어요",
+          "ja": "示された語句を順番どおり全て使い、一文を作ってください。二文と指定された場合は二文にします。辞書形だけを指定形に変え、他の語句は足したり省いたりしません。\n材料：안내원이 / 이 건물은 / 박물관\n指定形：(이)라고 했어요",
+          "en": "Use every supplied chunk in order to build one sentence, or two if explicitly specified. Change only dictionary forms to the requested construction; do not add or omit other words.\nChunks: 안내원이 / 이 건물은 / 박물관\nRequired form: (이)라고 했어요",
+          "zh": "按顺序使用全部给定词块组成一句；若明确要求两句，则写两句。只把词典形变为指定结构，不增加或省略其他词语。\n词块：안내원이 / 이 건물은 / 박물관\n指定形式：(이)라고 했어요"
+        },
+        "accepted": [
+          "안내원이 이 건물은 박물관이라고 했어요."
+        ],
+        "explanation": {
+          "ko": "완성 문장: 안내원이 이 건물은 박물관이라고 했어요.\n핵심 변환: 박물관 + 이라고 했어요",
+          "ja": "完成文：안내원이 이 건물은 박물관이라고 했어요.\n重要な変換：박물관 + 이라고 했어요",
+          "en": "Completed sentence: 안내원이 이 건물은 박물관이라고 했어요.\nKey transformation: 박물관 + 이라고 했어요",
+          "zh": "完整句子：안내원이 이 건물은 박물관이라고 했어요.\n关键变形：박물관 + 이라고 했어요"
         }
       }
     ]
@@ -669,6 +725,34 @@ window.HARUMAL_GRAMMAR_PACK_EVENTS = [
           "en": "Answer: 작으냐고 물었어요\nFormation: 작다 → 작- + -으냐고 물었어요",
           "zh": "答案：작으냐고 물었어요\n构成：작다 → 작- + -으냐고 물었어요"
         }
+      },
+      {
+        "id": "extended-indirect-question:context-construction-v1",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "손님이 가게가 문을 닫는 시각을 물었어요. 질문 내용을 전달하세요.",
+        "contextMeaning": {
+          "ko": "손님이 가게가 문을 닫는 시각을 물었어요. 질문 내용을 전달하세요.",
+          "ja": "お客さんが店の閉店時刻を尋ねました。その質問を伝えます。",
+          "en": "A customer asked when the shop closes. Report the question.",
+          "zh": "顾客询问店铺何时关门。请转述问题。"
+        },
+        "prompt": {
+          "ko": "주어진 덩어리를 순서대로 모두 사용해 한 문장을 만드세요. 마지막 지시가 두 문장이면 두 문장으로 쓰세요. 사전형만 지정된 형태로 바꾸고 다른 말은 더하거나 빼지 마세요.\n재료: 손님이 / 가게가 / 언제 / 문을 / 닫다\n지정 형태: -느냐고 물었어요",
+          "ja": "示された語句を順番どおり全て使い、一文を作ってください。二文と指定された場合は二文にします。辞書形だけを指定形に変え、他の語句は足したり省いたりしません。\n材料：손님이 / 가게가 / 언제 / 문을 / 닫다\n指定形：-느냐고 물었어요",
+          "en": "Use every supplied chunk in order to build one sentence, or two if explicitly specified. Change only dictionary forms to the requested construction; do not add or omit other words.\nChunks: 손님이 / 가게가 / 언제 / 문을 / 닫다\nRequired form: -느냐고 물었어요",
+          "zh": "按顺序使用全部给定词块组成一句；若明确要求两句，则写两句。只把词典形变为指定结构，不增加或省略其他词语。\n词块：손님이 / 가게가 / 언제 / 문을 / 닫다\n指定形式：-느냐고 물었어요"
+        },
+        "accepted": [
+          "손님이 가게가 언제 문을 닫느냐고 물었어요."
+        ],
+        "explanation": {
+          "ko": "완성 문장: 손님이 가게가 언제 문을 닫느냐고 물었어요.\n핵심 변환: 닫다 → 닫- + -느냐고 물었어요",
+          "ja": "完成文：손님이 가게가 언제 문을 닫느냐고 물었어요.\n重要な変換：닫다 → 닫- + -느냐고 물었어요",
+          "en": "Completed sentence: 손님이 가게가 언제 문을 닫느냐고 물었어요.\nKey transformation: 닫다 → 닫- + -느냐고 물었어요",
+          "zh": "完整句子：손님이 가게가 언제 문을 닫느냐고 물었어요.\n关键变形：닫다 → 닫- + -느냐고 물었어요"
+        }
       }
     ]
   },
@@ -893,6 +977,34 @@ window.HARUMAL_GRAMMAR_PACK_EVENTS = [
           "en": "Answer: 읽으라고 했어요\nFormation: 읽다 → 읽- + -으라고 했어요",
           "zh": "答案：읽으라고 했어요\n构成：읽다 → 읽- + -으라고 했어요"
         }
+      },
+      {
+        "id": "extended-indirect-command:context-construction-v1",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "엄마가 “비가 와. 우산을 가져가”라고 직접 말했어요. 지시를 다른 사람에게 전하세요.",
+        "contextMeaning": {
+          "ko": "엄마가 “비가 와. 우산을 가져가”라고 직접 말했어요. 지시를 다른 사람에게 전하세요.",
+          "ja": "母に「雨だから傘を持って行って」と言われました。指示を他の人に伝えます。",
+          "en": "Your mother directly said, “It is raining. Take an umbrella.” Report her instruction.",
+          "zh": "妈妈直接说：“下雨了，带上伞。”请转述她的指示。"
+        },
+        "prompt": {
+          "ko": "주어진 덩어리를 순서대로 모두 사용해 한 문장을 만드세요. 마지막 지시가 두 문장이면 두 문장으로 쓰세요. 사전형만 지정된 형태로 바꾸고 다른 말은 더하거나 빼지 마세요.\n재료: 엄마가 / 우산을 / 챙기다\n지정 형태: -(으)라고 했어요",
+          "ja": "示された語句を順番どおり全て使い、一文を作ってください。二文と指定された場合は二文にします。辞書形だけを指定形に変え、他の語句は足したり省いたりしません。\n材料：엄마가 / 우산을 / 챙기다\n指定形：-(으)라고 했어요",
+          "en": "Use every supplied chunk in order to build one sentence, or two if explicitly specified. Change only dictionary forms to the requested construction; do not add or omit other words.\nChunks: 엄마가 / 우산을 / 챙기다\nRequired form: -(으)라고 했어요",
+          "zh": "按顺序使用全部给定词块组成一句；若明确要求两句，则写两句。只把词典形变为指定结构，不增加或省略其他词语。\n词块：엄마가 / 우산을 / 챙기다\n指定形式：-(으)라고 했어요"
+        },
+        "accepted": [
+          "엄마가 우산을 챙기라고 했어요."
+        ],
+        "explanation": {
+          "ko": "완성 문장: 엄마가 우산을 챙기라고 했어요.\n핵심 변환: 챙기다 → 챙기- + -라고 했어요",
+          "ja": "完成文：엄마가 우산을 챙기라고 했어요.\n重要な変換：챙기다 → 챙기- + -라고 했어요",
+          "en": "Completed sentence: 엄마가 우산을 챙기라고 했어요.\nKey transformation: 챙기다 → 챙기- + -라고 했어요",
+          "zh": "完整句子：엄마가 우산을 챙기라고 했어요.\n关键变形：챙기다 → 챙기- + -라고 했어요"
+        }
       }
     ]
   },
@@ -1116,6 +1228,34 @@ window.HARUMAL_GRAMMAR_PACK_EVENTS = [
           "ja": "正解：걷자고 했어요\n作り方：걷다 → 걷- + -자고 했어요",
           "en": "Answer: 걷자고 했어요\nFormation: 걷다 → 걷- + -자고 했어요",
           "zh": "答案：걷자고 했어요\n构成：걷다 → 걷- + -자고 했어요"
+        }
+      },
+      {
+        "id": "extended-indirect-suggestion:context-construction-v1",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "동료의 제안은 “우리 식당에서 같이 점심 먹자”였어요. 다른 동료에게 전하세요.",
+        "contextMeaning": {
+          "ko": "동료의 제안은 “우리 식당에서 같이 점심 먹자”였어요. 다른 동료에게 전하세요.",
+          "ja": "同僚に「食堂で一緒に昼ごはんを食べよう」と誘われました。別の同僚に伝えます。",
+          "en": "A colleague proposed, “Let’s eat lunch together in the cafeteria.” Report it to another colleague.",
+          "zh": "同事提议：“我们一起在食堂吃午饭吧。”请转述给另一位同事。"
+        },
+        "prompt": {
+          "ko": "주어진 덩어리를 순서대로 모두 사용해 한 문장을 만드세요. 마지막 지시가 두 문장이면 두 문장으로 쓰세요. 사전형만 지정된 형태로 바꾸고 다른 말은 더하거나 빼지 마세요.\n재료: 동료가 / 식당에서 / 같이 / 점심을 / 먹다\n지정 형태: -자고 했어요",
+          "ja": "示された語句を順番どおり全て使い、一文を作ってください。二文と指定された場合は二文にします。辞書形だけを指定形に変え、他の語句は足したり省いたりしません。\n材料：동료가 / 식당에서 / 같이 / 점심을 / 먹다\n指定形：-자고 했어요",
+          "en": "Use every supplied chunk in order to build one sentence, or two if explicitly specified. Change only dictionary forms to the requested construction; do not add or omit other words.\nChunks: 동료가 / 식당에서 / 같이 / 점심을 / 먹다\nRequired form: -자고 했어요",
+          "zh": "按顺序使用全部给定词块组成一句；若明确要求两句，则写两句。只把词典形变为指定结构，不增加或省略其他词语。\n词块：동료가 / 식당에서 / 같이 / 점심을 / 먹다\n指定形式：-자고 했어요"
+        },
+        "accepted": [
+          "동료가 식당에서 같이 점심을 먹자고 했어요."
+        ],
+        "explanation": {
+          "ko": "완성 문장: 동료가 식당에서 같이 점심을 먹자고 했어요.\n핵심 변환: 먹다 → 먹- + -자고 했어요",
+          "ja": "完成文：동료가 식당에서 같이 점심을 먹자고 했어요.\n重要な変換：먹다 → 먹- + -자고 했어요",
+          "en": "Completed sentence: 동료가 식당에서 같이 점심을 먹자고 했어요.\nKey transformation: 먹다 → 먹- + -자고 했어요",
+          "zh": "完整句子：동료가 식당에서 같이 점심을 먹자고 했어요.\n关键变形：먹다 → 먹- + -자고 했어요"
         }
       }
     ]
@@ -1456,6 +1596,34 @@ window.HARUMAL_GRAMMAR_PACK_EVENTS = [
           "en": "읽으라고 해요 contracts to 읽으래요. 읽재요 reports a proposal to read together.",
           "zh": "읽으라고 해요缩为읽으래요；읽재요转述一起读的提议。"
         }
+      },
+      {
+        "id": "extended-short-report:context-construction-v1",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "동생에게서 시험이 금요일이라는 말을 들었어요. 명사문 인용을 짧게 전하세요.",
+        "contextMeaning": {
+          "ko": "동생에게서 시험이 금요일이라는 말을 들었어요. 명사문 인용을 짧게 전하세요.",
+          "ja": "弟から試験は金曜日だと聞きました。名詞文の引用を短く伝えます。",
+          "en": "Your younger brother said the exam is on Friday. Use a contracted noun report.",
+          "zh": "弟弟说考试在星期五。请用名词句缩略引用转述。"
+        },
+        "prompt": {
+          "ko": "주어진 덩어리를 순서대로 모두 사용해 한 문장을 만드세요. 마지막 지시가 두 문장이면 두 문장으로 쓰세요. 사전형만 지정된 형태로 바꾸고 다른 말은 더하거나 빼지 마세요.\n재료: 동생이 / 시험은 / 금요일\n지정 형태: (이)래요",
+          "ja": "示された語句を順番どおり全て使い、一文を作ってください。二文と指定された場合は二文にします。辞書形だけを指定形に変え、他の語句は足したり省いたりしません。\n材料：동생이 / 시험은 / 금요일\n指定形：(이)래요",
+          "en": "Use every supplied chunk in order to build one sentence, or two if explicitly specified. Change only dictionary forms to the requested construction; do not add or omit other words.\nChunks: 동생이 / 시험은 / 금요일\nRequired form: (이)래요",
+          "zh": "按顺序使用全部给定词块组成一句；若明确要求两句，则写两句。只把词典形变为指定结构，不增加或省略其他词语。\n词块：동생이 / 시험은 / 금요일\n指定形式：(이)래요"
+        },
+        "accepted": [
+          "동생이 시험은 금요일이래요."
+        ],
+        "explanation": {
+          "ko": "완성 문장: 동생이 시험은 금요일이래요.\n핵심 변환: 금요일 + 이라고 해요 → 금요일이래요",
+          "ja": "完成文：동생이 시험은 금요일이래요.\n重要な変換：금요일 + 이라고 해요 → 금요일이래요",
+          "en": "Completed sentence: 동생이 시험은 금요일이래요.\nKey transformation: 금요일 + 이라고 해요 → 금요일이래요",
+          "zh": "完整句子：동생이 시험은 금요일이래요.\n关键变形：금요일 + 이라고 해요 → 금요일이래요"
+        }
       }
     ]
   },
@@ -1775,6 +1943,34 @@ window.HARUMAL_GRAMMAR_PACK_EVENTS = [
           "en": "참석할지 concerns a future uncertainty; 참석했는지 asks about past attendance instead.",
           "zh": "참석할지涉及未来的不确定情况；참석했는지询问过去是否参加，时点不同。"
         }
+      },
+      {
+        "id": "extended-embedded-question:context-construction-v1",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "새로 나온 빵의 가격을 아직 몰라요. 가격에 대한 의문을 문장 안에 넣으세요.",
+        "contextMeaning": {
+          "ko": "새로 나온 빵의 가격을 아직 몰라요. 가격에 대한 의문을 문장 안에 넣으세요.",
+          "ja": "新しく出たパンの値段をまだ知りません。値段の疑問を文に入れます。",
+          "en": "You do not yet know the price of the new bread. Embed the price question.",
+          "zh": "你还不知道新面包的价格。请将价格疑问嵌入句子。"
+        },
+        "prompt": {
+          "ko": "주어진 덩어리를 순서대로 모두 사용해 한 문장을 만드세요. 마지막 지시가 두 문장이면 두 문장으로 쓰세요. 사전형만 지정된 형태로 바꾸고 다른 말은 더하거나 빼지 마세요.\n재료: 저는 / 이 빵이 / 얼마이다 / 모르다\n지정 형태: 인지 + 몰라요",
+          "ja": "示された語句を順番どおり全て使い、一文を作ってください。二文と指定された場合は二文にします。辞書形だけを指定形に変え、他の語句は足したり省いたりしません。\n材料：저는 / 이 빵이 / 얼마이다 / 모르다\n指定形：인지 + 몰라요",
+          "en": "Use every supplied chunk in order to build one sentence, or two if explicitly specified. Change only dictionary forms to the requested construction; do not add or omit other words.\nChunks: 저는 / 이 빵이 / 얼마이다 / 모르다\nRequired form: 인지 + 몰라요",
+          "zh": "按顺序使用全部给定词块组成一句；若明确要求两句，则写两句。只把词典形变为指定结构，不增加或省略其他词语。\n词块：저는 / 이 빵이 / 얼마이다 / 모르다\n指定形式：인지 + 몰라요"
+        },
+        "accepted": [
+          "저는 이 빵이 얼마인지 몰라요."
+        ],
+        "explanation": {
+          "ko": "완성 문장: 저는 이 빵이 얼마인지 몰라요.\n핵심 변환: 얼마이다 → 얼마 + 인지 / 모르다 → 몰라요",
+          "ja": "完成文：저는 이 빵이 얼마인지 몰라요.\n重要な変換：얼마이다 → 얼마 + 인지 / 모르다 → 몰라요",
+          "en": "Completed sentence: 저는 이 빵이 얼마인지 몰라요.\nKey transformation: 얼마이다 → 얼마 + 인지 / 모르다 → 몰라요",
+          "zh": "完整句子：저는 이 빵이 얼마인지 몰라요.\n关键变形：얼마이다 → 얼마 + 인지 / 모르다 → 몰라요"
+        }
       }
     ]
   },
@@ -1998,6 +2194,34 @@ window.HARUMAL_GRAMMAR_PACK_EVENTS = [
           "ja": "正解：만들려고\n作り方：만들다 → 만들- + -려고",
           "en": "Answer: 만들려고\nFormation: 만들다 → 만들- + -려고",
           "zh": "答案：만들려고\n构成：만들다 → 만들- + -려고"
+        }
+      },
+      {
+        "id": "extended-intent-purpose:context-construction-v1",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "일찍 일어나는 것이 목표라서 알람을 설정했어요. 목적을 연결하세요.",
+        "contextMeaning": {
+          "ko": "일찍 일어나는 것이 목표라서 알람을 설정했어요. 목적을 연결하세요.",
+          "ja": "早起きするためにアラームを設定しました。目的をつなぎます。",
+          "en": "You set an alarm with the aim of waking early. Connect the purpose to the action.",
+          "zh": "你为了早起设置了闹钟。请连接目的和行动。"
+        },
+        "prompt": {
+          "ko": "주어진 덩어리를 순서대로 모두 사용해 한 문장을 만드세요. 마지막 지시가 두 문장이면 두 문장으로 쓰세요. 사전형만 지정된 형태로 바꾸고 다른 말은 더하거나 빼지 마세요.\n재료: 일찍 / 일어나다 / 알람을 / 맞췄어요\n지정 형태: -(으)려고",
+          "ja": "示された語句を順番どおり全て使い、一文を作ってください。二文と指定された場合は二文にします。辞書形だけを指定形に変え、他の語句は足したり省いたりしません。\n材料：일찍 / 일어나다 / 알람을 / 맞췄어요\n指定形：-(으)려고",
+          "en": "Use every supplied chunk in order to build one sentence, or two if explicitly specified. Change only dictionary forms to the requested construction; do not add or omit other words.\nChunks: 일찍 / 일어나다 / 알람을 / 맞췄어요\nRequired form: -(으)려고",
+          "zh": "按顺序使用全部给定词块组成一句；若明确要求两句，则写两句。只把词典形变为指定结构，不增加或省略其他词语。\n词块：일찍 / 일어나다 / 알람을 / 맞췄어요\n指定形式：-(으)려고"
+        },
+        "accepted": [
+          "일찍 일어나려고 알람을 맞췄어요."
+        ],
+        "explanation": {
+          "ko": "완성 문장: 일찍 일어나려고 알람을 맞췄어요.\n핵심 변환: 일어나다 → 일어나- + -려고",
+          "ja": "完成文：일찍 일어나려고 알람을 맞췄어요.\n重要な変換：일어나다 → 일어나- + -려고",
+          "en": "Completed sentence: 일찍 일어나려고 알람을 맞췄어요.\nKey transformation: 일어나다 → 일어나- + -려고",
+          "zh": "完整句子：일찍 일어나려고 알람을 맞췄어요.\n关键变形：일어나다 → 일어나- + -려고"
         }
       }
     ]
@@ -2225,6 +2449,34 @@ window.HARUMAL_GRAMMAR_PACK_EVENTS = [
           "en": "Answer: 건강을 위해서\nFormation: 건강 + 을 위해서",
           "zh": "答案：건강을 위해서\n构成：건강 + 을 위해서"
         }
+      },
+      {
+        "id": "extended-purpose-formal:context-construction-v1",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "한국 소설을 읽는 것을 목표로 매일 공부해요. 목적을 명시하세요.",
+        "contextMeaning": {
+          "ko": "한국 소설을 읽는 것을 목표로 매일 공부해요. 목적을 명시하세요.",
+          "ja": "韓国の小説を読むために毎日勉強しています。目的を明示します。",
+          "en": "You study daily with the goal of reading Korean novels. State the purpose explicitly.",
+          "zh": "你为了阅读韩国小说而每天学习。请明确目的。"
+        },
+        "prompt": {
+          "ko": "주어진 덩어리를 순서대로 모두 사용해 한 문장을 만드세요. 마지막 지시가 두 문장이면 두 문장으로 쓰세요. 사전형만 지정된 형태로 바꾸고 다른 말은 더하거나 빼지 마세요.\n재료: 한국 소설을 / 읽다 / 매일 / 공부해요\n지정 형태: -기 위해서",
+          "ja": "示された語句を順番どおり全て使い、一文を作ってください。二文と指定された場合は二文にします。辞書形だけを指定形に変え、他の語句は足したり省いたりしません。\n材料：한국 소설을 / 읽다 / 매일 / 공부해요\n指定形：-기 위해서",
+          "en": "Use every supplied chunk in order to build one sentence, or two if explicitly specified. Change only dictionary forms to the requested construction; do not add or omit other words.\nChunks: 한국 소설을 / 읽다 / 매일 / 공부해요\nRequired form: -기 위해서",
+          "zh": "按顺序使用全部给定词块组成一句；若明确要求两句，则写两句。只把词典形变为指定结构，不增加或省略其他词语。\n词块：한국 소설을 / 읽다 / 매일 / 공부해요\n指定形式：-기 위해서"
+        },
+        "accepted": [
+          "한국 소설을 읽기 위해서 매일 공부해요."
+        ],
+        "explanation": {
+          "ko": "완성 문장: 한국 소설을 읽기 위해서 매일 공부해요.\n핵심 변환: 읽다 → 읽- + -기 위해서",
+          "ja": "完成文：한국 소설을 읽기 위해서 매일 공부해요.\n重要な変換：읽다 → 읽- + -기 위해서",
+          "en": "Completed sentence: 한국 소설을 읽기 위해서 매일 공부해요.\nKey transformation: 읽다 → 읽- + -기 위해서",
+          "zh": "完整句子：한국 소설을 읽기 위해서 매일 공부해요.\n关键变形：읽다 → 읽- + -기 위해서"
+        }
       }
     ]
   },
@@ -2448,6 +2700,34 @@ window.HARUMAL_GRAMMAR_PACK_EVENTS = [
           "ja": "正解：이해하도록\n作り方：이해하다 → 이해하- + -도록",
           "en": "Answer: 이해하도록\nFormation: 이해하다 → 이해하- + -도록",
           "zh": "答案：이해하도록\n构成：이해하다 → 이해하- + -도록"
+        }
+      },
+      {
+        "id": "extended-arranged-purpose:context-construction-v1",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "처음 온 사람도 찾을 수 있게 입구에 안내판을 놓았어요. 목표 결과를 표현하세요.",
+        "contextMeaning": {
+          "ko": "처음 온 사람도 찾을 수 있게 입구에 안내판을 놓았어요. 목표 결과를 표현하세요.",
+          "ja": "初めて来た人も見つけられるよう入口に案内板を置きました。目標の結果を表します。",
+          "en": "You placed a sign at the entrance so first-time visitors can find it too. Express the intended result.",
+          "zh": "你在入口放了指示牌，让初次来访的人也能找到。请表达目标结果。"
+        },
+        "prompt": {
+          "ko": "주어진 덩어리를 순서대로 모두 사용해 한 문장을 만드세요. 마지막 지시가 두 문장이면 두 문장으로 쓰세요. 사전형만 지정된 형태로 바꾸고 다른 말은 더하거나 빼지 마세요.\n재료: 누구나 / 찾을 수 있다 / 입구에 / 안내판을 / 놓았어요\n지정 형태: -도록",
+          "ja": "示された語句を順番どおり全て使い、一文を作ってください。二文と指定された場合は二文にします。辞書形だけを指定形に変え、他の語句は足したり省いたりしません。\n材料：누구나 / 찾을 수 있다 / 입구에 / 안내판을 / 놓았어요\n指定形：-도록",
+          "en": "Use every supplied chunk in order to build one sentence, or two if explicitly specified. Change only dictionary forms to the requested construction; do not add or omit other words.\nChunks: 누구나 / 찾을 수 있다 / 입구에 / 안내판을 / 놓았어요\nRequired form: -도록",
+          "zh": "按顺序使用全部给定词块组成一句；若明确要求两句，则写两句。只把词典形变为指定结构，不增加或省略其他词语。\n词块：누구나 / 찾을 수 있다 / 입구에 / 안내판을 / 놓았어요\n指定形式：-도록"
+        },
+        "accepted": [
+          "누구나 찾을 수 있도록 입구에 안내판을 놓았어요."
+        ],
+        "explanation": {
+          "ko": "완성 문장: 누구나 찾을 수 있도록 입구에 안내판을 놓았어요.\n핵심 변환: 있다 → 있- + -도록",
+          "ja": "完成文：누구나 찾을 수 있도록 입구에 안내판을 놓았어요.\n重要な変換：있다 → 있- + -도록",
+          "en": "Completed sentence: 누구나 찾을 수 있도록 입구에 안내판을 놓았어요.\nKey transformation: 있다 → 있- + -도록",
+          "zh": "完整句子：누구나 찾을 수 있도록 입구에 안내판을 놓았어요.\n关键变形：있다 → 있- + -도록"
         }
       }
     ]
@@ -2674,6 +2954,35 @@ window.HARUMAL_GRAMMAR_PACK_EVENTS = [
           "en": "Answer: 예약하지 않아도 돼요\nFormation: 예약하다 → 예약하- + -지 않아도 돼요",
           "zh": "答案：예약하지 않아도 돼요\n构成：예약하다 → 예약하- + -지 않아도 돼요"
         }
+      },
+      {
+        "id": "extended-no-need:context-construction-v1",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "주말에는 유니폼이 필수가 아니에요. 입지 않아도 괜찮다고 알려 주세요.",
+        "contextMeaning": {
+          "ko": "주말에는 유니폼이 필수가 아니에요. 입지 않아도 괜찮다고 알려 주세요.",
+          "ja": "週末は制服が必須ではありません。着なくてもよいと伝えます。",
+          "en": "Uniforms are not required at weekends. Say that not wearing one is permitted.",
+          "zh": "周末不要求穿制服。请说明可以不穿。"
+        },
+        "prompt": {
+          "ko": "주어진 덩어리를 순서대로 모두 사용해 한 문장을 만드세요. 마지막 지시가 두 문장이면 두 문장으로 쓰세요. 사전형만 지정된 형태로 바꾸고 다른 말은 더하거나 빼지 마세요.\n재료: 주말에는 / 유니폼을 / 입다\n지정 형태: -지 않아도 돼요",
+          "ja": "示された語句を順番どおり全て使い、一文を作ってください。二文と指定された場合は二文にします。辞書形だけを指定形に変え、他の語句は足したり省いたりしません。\n材料：주말에는 / 유니폼을 / 입다\n指定形：-지 않아도 돼요",
+          "en": "Use every supplied chunk in order to build one sentence, or two if explicitly specified. Change only dictionary forms to the requested construction; do not add or omit other words.\nChunks: 주말에는 / 유니폼을 / 입다\nRequired form: -지 않아도 돼요",
+          "zh": "按顺序使用全部给定词块组成一句；若明确要求两句，则写两句。只把词典形变为指定结构，不增加或省略其他词语。\n词块：주말에는 / 유니폼을 / 입다\n指定形式：-지 않아도 돼요"
+        },
+        "accepted": [
+          "주말에는 유니폼을 입지 않아도 돼요.",
+          "주말에는 유니폼을 입지 않아도 되어요."
+        ],
+        "explanation": {
+          "ko": "완성 문장: 주말에는 유니폼을 입지 않아도 돼요.\n핵심 변환: 입다 → 입- + -지 않아도 돼요",
+          "ja": "完成文：주말에는 유니폼을 입지 않아도 돼요.\n重要な変換：입다 → 입- + -지 않아도 돼요",
+          "en": "Completed sentence: 주말에는 유니폼을 입지 않아도 돼요.\nKey transformation: 입다 → 입- + -지 않아도 돼요",
+          "zh": "完整句子：주말에는 유니폼을 입지 않아도 돼요.\n关键变形：입다 → 입- + -지 않아도 돼요"
+        }
       }
     ]
   },
@@ -2897,6 +3206,34 @@ window.HARUMAL_GRAMMAR_PACK_EVENTS = [
           "ja": "正解：추워도\n作り方：춥다 → 추워 + 도 (ㅂ 불규칙)",
           "en": "Answer: 추워도\nFormation: 춥다 → 추워 + 도 (ㅂ 불규칙)",
           "zh": "答案：추워도\n构成：춥다 → 추워 + 도 (ㅂ 불규칙)"
+        }
+      },
+      {
+        "id": "extended-concession-basic:context-construction-v1",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "시간이 오래 걸리는 경우에도 작업을 끝낼 생각이에요. 양보 조건을 표현하세요.",
+        "contextMeaning": {
+          "ko": "시간이 오래 걸리는 경우에도 작업을 끝낼 생각이에요. 양보 조건을 표현하세요.",
+          "ja": "時間が長くかかっても作業を終えるつもりです。譲歩条件を表します。",
+          "en": "You intend to finish even if it takes a long time. Express the concession.",
+          "zh": "即使花很长时间，你也打算完成。请表达让步。"
+        },
+        "prompt": {
+          "ko": "주어진 덩어리를 순서대로 모두 사용해 한 문장을 만드세요. 마지막 지시가 두 문장이면 두 문장으로 쓰세요. 사전형만 지정된 형태로 바꾸고 다른 말은 더하거나 빼지 마세요.\n재료: 시간이 / 오래 / 걸리다 / 끝낼 거예요\n지정 형태: -아/어도",
+          "ja": "示された語句を順番どおり全て使い、一文を作ってください。二文と指定された場合は二文にします。辞書形だけを指定形に変え、他の語句は足したり省いたりしません。\n材料：시간이 / 오래 / 걸리다 / 끝낼 거예요\n指定形：-아/어도",
+          "en": "Use every supplied chunk in order to build one sentence, or two if explicitly specified. Change only dictionary forms to the requested construction; do not add or omit other words.\nChunks: 시간이 / 오래 / 걸리다 / 끝낼 거예요\nRequired form: -아/어도",
+          "zh": "按顺序使用全部给定词块组成一句；若明确要求两句，则写两句。只把词典形变为指定结构，不增加或省略其他词语。\n词块：시간이 / 오래 / 걸리다 / 끝낼 거예요\n指定形式：-아/어도"
+        },
+        "accepted": [
+          "시간이 오래 걸려도 끝낼 거예요."
+        ],
+        "explanation": {
+          "ko": "완성 문장: 시간이 오래 걸려도 끝낼 거예요.\n핵심 변환: 걸리다 → 걸려 + 도",
+          "ja": "完成文：시간이 오래 걸려도 끝낼 거예요.\n重要な変換：걸리다 → 걸려 + 도",
+          "en": "Completed sentence: 시간이 오래 걸려도 끝낼 거예요.\nKey transformation: 걸리다 → 걸려 + 도",
+          "zh": "完整句子：시간이 오래 걸려도 끝낼 거예요.\n关键变形：걸리다 → 걸려 + 도"
         }
       }
     ]
@@ -3122,6 +3459,34 @@ window.HARUMAL_GRAMMAR_PACK_EVENTS = [
           "en": "Answer: 해야\nFormation: 하다 → 해 + 야",
           "zh": "答案：해야\n构成：하다 → 해 + 야"
         }
+      },
+      {
+        "id": "extended-necessarily:context-construction-v1",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "비밀번호 없이는 파일을 열 수 없어요. 비밀번호를 아는 것이 필요 조건임을 명시하세요.",
+        "contextMeaning": {
+          "ko": "비밀번호 없이는 파일을 열 수 없어요. 비밀번호를 아는 것이 필요 조건임을 명시하세요.",
+          "ja": "パスワードがなければファイルを開けません。知っていることが必要条件だと示します。",
+          "en": "The file cannot be opened without the password. Explicitly make knowing it a necessary condition.",
+          "zh": "没有密码就无法打开文件。请明确知道密码是必要条件。"
+        },
+        "prompt": {
+          "ko": "주어진 덩어리를 순서대로 모두 사용해 한 문장을 만드세요. 마지막 지시가 두 문장이면 두 문장으로 쓰세요. 사전형만 지정된 형태로 바꾸고 다른 말은 더하거나 빼지 마세요.\n재료: 비밀번호를 / 알다 / 파일을 / 열 수 있어요\n지정 형태: -아/어야",
+          "ja": "示された語句を順番どおり全て使い、一文を作ってください。二文と指定された場合は二文にします。辞書形だけを指定形に変え、他の語句は足したり省いたりしません。\n材料：비밀번호를 / 알다 / 파일을 / 열 수 있어요\n指定形：-아/어야",
+          "en": "Use every supplied chunk in order to build one sentence, or two if explicitly specified. Change only dictionary forms to the requested construction; do not add or omit other words.\nChunks: 비밀번호를 / 알다 / 파일을 / 열 수 있어요\nRequired form: -아/어야",
+          "zh": "按顺序使用全部给定词块组成一句；若明确要求两句，则写两句。只把词典形变为指定结构，不增加或省略其他词语。\n词块：비밀번호를 / 알다 / 파일을 / 열 수 있어요\n指定形式：-아/어야"
+        },
+        "accepted": [
+          "비밀번호를 알아야 파일을 열 수 있어요."
+        ],
+        "explanation": {
+          "ko": "완성 문장: 비밀번호를 알아야 파일을 열 수 있어요.\n핵심 변환: 알다 → 알아 + 야",
+          "ja": "完成文：비밀번호를 알아야 파일을 열 수 있어요.\n重要な変換：알다 → 알아 + 야",
+          "en": "Completed sentence: 비밀번호를 알아야 파일을 열 수 있어요.\nKey transformation: 알다 → 알아 + 야",
+          "zh": "完整句子：비밀번호를 알아야 파일을 열 수 있어요.\n关键变形：알다 → 알아 + 야"
+        }
       }
     ]
   },
@@ -3345,6 +3710,34 @@ window.HARUMAL_GRAMMAR_PACK_EVENTS = [
           "ja": "正解：먹자마자\n作り方：먹다 → 먹- + -자마자",
           "en": "Answer: 먹자마자\nFormation: 먹다 → 먹- + -자마자",
           "zh": "答案：먹자마자\n构成：먹다 → 먹- + -자마자"
+        }
+      },
+      {
+        "id": "extended-immediate:context-construction-v1",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "수업 시작을 알리는 종이 울린 직후 학생들이 교실로 들어왔어요. 시간 차이가 거의 없음을 표현하세요.",
+        "contextMeaning": {
+          "ko": "수업 시작을 알리는 종이 울린 직후 학생들이 교실로 들어왔어요. 시간 차이가 거의 없음을 표현하세요.",
+          "ja": "始業のベルが鳴るとすぐ、生徒たちが教室に入りました。間を置かず続いたことを表します。",
+          "en": "The students entered the classroom immediately after the school bell rang. Express the immediate sequence.",
+          "zh": "上课铃一响，学生们就进入了教室。请表达紧接着发生。"
+        },
+        "prompt": {
+          "ko": "주어진 덩어리를 순서대로 모두 사용해 한 문장을 만드세요. 마지막 지시가 두 문장이면 두 문장으로 쓰세요. 사전형만 지정된 형태로 바꾸고 다른 말은 더하거나 빼지 마세요.\n재료: 종이 / 울리다 / 학생들이 / 교실에 / 들어왔어요\n지정 형태: -자마자",
+          "ja": "示された語句を順番どおり全て使い、一文を作ってください。二文と指定された場合は二文にします。辞書形だけを指定形に変え、他の語句は足したり省いたりしません。\n材料：종이 / 울리다 / 학생들이 / 교실에 / 들어왔어요\n指定形：-자마자",
+          "en": "Use every supplied chunk in order to build one sentence, or two if explicitly specified. Change only dictionary forms to the requested construction; do not add or omit other words.\nChunks: 종이 / 울리다 / 학생들이 / 교실에 / 들어왔어요\nRequired form: -자마자",
+          "zh": "按顺序使用全部给定词块组成一句；若明确要求两句，则写两句。只把词典形变为指定结构，不增加或省略其他词语。\n词块：종이 / 울리다 / 학생들이 / 교실에 / 들어왔어요\n指定形式：-자마자"
+        },
+        "accepted": [
+          "종이 울리자마자 학생들이 교실에 들어왔어요."
+        ],
+        "explanation": {
+          "ko": "완성 문장: 종이 울리자마자 학생들이 교실에 들어왔어요.\n핵심 변환: 울리다 → 울리- + -자마자",
+          "ja": "完成文：종이 울리자마자 학생들이 교실에 들어왔어요.\n重要な変換：울리다 → 울리- + -자마자",
+          "en": "Completed sentence: 종이 울리자마자 학생들이 교실에 들어왔어요.\nKey transformation: 울리다 → 울리- + -자마자",
+          "zh": "完整句子：종이 울리자마자 학생들이 교실에 들어왔어요.\n关键变形：울리다 → 울리- + -자마자"
         }
       }
     ]
@@ -3570,6 +3963,34 @@ window.HARUMAL_GRAMMAR_PACK_EVENTS = [
           "en": "Answer: 공부하다가\nFormation: 공부하다 → 공부하- + -다가",
           "zh": "答案：공부하다가\n构成：공부하다 → 공부하- + -다가"
         }
+      },
+      {
+        "id": "extended-interruption:context-construction-v1",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "요리를 다 끝내기 전에 전화가 와서 잠깐 요리를 멈추고 받았어요. 진행 중 전환을 표현하세요.",
+        "contextMeaning": {
+          "ko": "요리를 다 끝내기 전에 전화가 와서 잠깐 요리를 멈추고 받았어요. 진행 중 전환을 표현하세요.",
+          "ja": "料理が終わる前に電話が来たので、中断して出ました。途中の切り替えを表します。",
+          "en": "Before finishing cooking, you stopped to answer a call. Express a switch during the activity.",
+          "zh": "做饭还没完成，电话来了，你暂停做饭去接电话。请表达中途转换。"
+        },
+        "prompt": {
+          "ko": "주어진 덩어리를 순서대로 모두 사용해 한 문장을 만드세요. 마지막 지시가 두 문장이면 두 문장으로 쓰세요. 사전형만 지정된 형태로 바꾸고 다른 말은 더하거나 빼지 마세요.\n재료: 저는 / 요리하다 / 전화를 / 받았어요\n지정 형태: -다가",
+          "ja": "示された語句を順番どおり全て使い、一文を作ってください。二文と指定された場合は二文にします。辞書形だけを指定形に変え、他の語句は足したり省いたりしません。\n材料：저는 / 요리하다 / 전화를 / 받았어요\n指定形：-다가",
+          "en": "Use every supplied chunk in order to build one sentence, or two if explicitly specified. Change only dictionary forms to the requested construction; do not add or omit other words.\nChunks: 저는 / 요리하다 / 전화를 / 받았어요\nRequired form: -다가",
+          "zh": "按顺序使用全部给定词块组成一句；若明确要求两句，则写两句。只把词典形变为指定结构，不增加或省略其他词语。\n词块：저는 / 요리하다 / 전화를 / 받았어요\n指定形式：-다가"
+        },
+        "accepted": [
+          "저는 요리하다가 전화를 받았어요."
+        ],
+        "explanation": {
+          "ko": "완성 문장: 저는 요리하다가 전화를 받았어요.\n핵심 변환: 요리하다 → 요리하- + -다가",
+          "ja": "完成文：저는 요리하다가 전화를 받았어요.\n重要な変換：요리하다 → 요리하- + -다가",
+          "en": "Completed sentence: 저는 요리하다가 전화를 받았어요.\nKey transformation: 요리하다 → 요리하- + -다가",
+          "zh": "完整句子：저는 요리하다가 전화를 받았어요.\n关键变形：요리하다 → 요리하- + -다가"
+        }
       }
     ]
   },
@@ -3794,6 +4215,34 @@ window.HARUMAL_GRAMMAR_PACK_EVENTS = [
           "en": "Answer: 껐다가\nFormation: 끄다 → 껐- + -다가 (ㅡ 탈락)",
           "zh": "答案：껐다가\n构成：끄다 → 껐- + -다가 (ㅡ 탈락)"
         }
+      },
+      {
+        "id": "extended-completed-switch:context-construction-v1",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "코트를 실제로 입었지만 더워서 벗었어요. 앞 행동을 마친 뒤 바뀐 순서를 표현하세요.",
+        "contextMeaning": {
+          "ko": "코트를 실제로 입었지만 더워서 벗었어요. 앞 행동을 마친 뒤 바뀐 순서를 표현하세요.",
+          "ja": "実際にコートを着ましたが、暑くて脱ぎました。完了後の切り替えを表します。",
+          "en": "You put the coat on, then took it off because it was hot. Express the completed-action switch.",
+          "zh": "你确实穿上了大衣，后来因太热又脱掉。请表达完成后转换。"
+        },
+        "prompt": {
+          "ko": "주어진 덩어리를 순서대로 모두 사용해 한 문장을 만드세요. 마지막 지시가 두 문장이면 두 문장으로 쓰세요. 사전형만 지정된 형태로 바꾸고 다른 말은 더하거나 빼지 마세요.\n재료: 코트를 / 입다 / 더워서 / 벗었어요\n지정 형태: -았/었다가",
+          "ja": "示された語句を順番どおり全て使い、一文を作ってください。二文と指定された場合は二文にします。辞書形だけを指定形に変え、他の語句は足したり省いたりしません。\n材料：코트를 / 입다 / 더워서 / 벗었어요\n指定形：-았/었다가",
+          "en": "Use every supplied chunk in order to build one sentence, or two if explicitly specified. Change only dictionary forms to the requested construction; do not add or omit other words.\nChunks: 코트를 / 입다 / 더워서 / 벗었어요\nRequired form: -았/었다가",
+          "zh": "按顺序使用全部给定词块组成一句；若明确要求两句，则写两句。只把词典形变为指定结构，不增加或省略其他词语。\n词块：코트를 / 입다 / 더워서 / 벗었어요\n指定形式：-았/었다가"
+        },
+        "accepted": [
+          "코트를 입었다가 더워서 벗었어요."
+        ],
+        "explanation": {
+          "ko": "완성 문장: 코트를 입었다가 더워서 벗었어요.\n핵심 변환: 입다 → 입었- + -다가",
+          "ja": "完成文：코트를 입었다가 더워서 벗었어요.\n重要な変換：입다 → 입었- + -다가",
+          "en": "Completed sentence: 코트를 입었다가 더워서 벗었어요.\nKey transformation: 입다 → 입었- + -다가",
+          "zh": "完整句子：코트를 입었다가 더워서 벗었어요.\n关键变形：입다 → 입었- + -다가"
+        }
       }
     ]
   },
@@ -4016,6 +4465,34 @@ window.HARUMAL_GRAMMAR_PACK_EVENTS = [
           "ja": "正解：앉았다 일어섰다 해요\n作り方：앉다 → 앉았다 / 일어서다 → 일어섰다 / + 해요",
           "en": "Answer: 앉았다 일어섰다 해요\nFormation: 앉다 → 앉았다 / 일어서다 → 일어섰다 / + 해요",
           "zh": "答案：앉았다 일어섰다 해요\n构成：앉다 → 앉았다 / 일어서다 → 일어섰다 / + 해요"
+        }
+      },
+      {
+        "id": "extended-repetition:context-construction-v1",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "엘리베이터 문이 고장 나서 여러 번 열리고 닫혔어요. 반복을 현재 상황으로 묘사하세요.",
+        "contextMeaning": {
+          "ko": "엘리베이터 문이 고장 나서 여러 번 열리고 닫혔어요. 반복을 현재 상황으로 묘사하세요.",
+          "ja": "エレベーターの扉が故障し何度も開閉しています。反復を現在の状況として述べます。",
+          "en": "A faulty elevator door keeps opening and closing. Describe the repeated current action.",
+          "zh": "电梯门坏了，反复打开又关上。请描述当前反复发生的情况。"
+        },
+        "prompt": {
+          "ko": "주어진 덩어리를 순서대로 모두 사용해 한 문장을 만드세요. 마지막 지시가 두 문장이면 두 문장으로 쓰세요. 사전형만 지정된 형태로 바꾸고 다른 말은 더하거나 빼지 마세요.\n재료: 엘리베이터 문이 / 열리다 / 닫히다\n지정 형태: -았/었다 … -았/었다 해요",
+          "ja": "示された語句を順番どおり全て使い、一文を作ってください。二文と指定された場合は二文にします。辞書形だけを指定形に変え、他の語句は足したり省いたりしません。\n材料：엘리베이터 문이 / 열리다 / 닫히다\n指定形：-았/었다 … -았/었다 해요",
+          "en": "Use every supplied chunk in order to build one sentence, or two if explicitly specified. Change only dictionary forms to the requested construction; do not add or omit other words.\nChunks: 엘리베이터 문이 / 열리다 / 닫히다\nRequired form: -았/었다 … -았/었다 해요",
+          "zh": "按顺序使用全部给定词块组成一句；若明确要求两句，则写两句。只把词典形变为指定结构，不增加或省略其他词语。\n词块：엘리베이터 문이 / 열리다 / 닫히다\n指定形式：-았/었다 … -았/었다 해요"
+        },
+        "accepted": [
+          "엘리베이터 문이 열렸다 닫혔다 해요."
+        ],
+        "explanation": {
+          "ko": "완성 문장: 엘리베이터 문이 열렸다 닫혔다 해요.\n핵심 변환: 열리다 → 열렸다 / 닫히다 → 닫혔다 / + 해요",
+          "ja": "完成文：엘리베이터 문이 열렸다 닫혔다 해요.\n重要な変換：열리다 → 열렸다 / 닫히다 → 닫혔다 / + 해요",
+          "en": "Completed sentence: 엘리베이터 문이 열렸다 닫혔다 해요.\nKey transformation: 열리다 → 열렸다 / 닫히다 → 닫혔다 / + 해요",
+          "zh": "完整句子：엘리베이터 문이 열렸다 닫혔다 해요.\n关键变形：열리다 → 열렸다 / 닫히다 → 닫혔다 / + 해요"
         }
       }
     ]
@@ -4240,6 +4717,34 @@ window.HARUMAL_GRAMMAR_PACK_EVENTS = [
           "ja": "正解：넘어지고 말았어요\n作り方：넘어지다 → 넘어지- + -고 말았어요",
           "en": "Answer: 넘어지고 말았어요\nFormation: 넘어지다 → 넘어지- + -고 말았어요",
           "zh": "答案：넘어지고 말았어요\n构成：넘어지다 → 넘어지- + -고 말았어요"
+        }
+      },
+      {
+        "id": "extended-unexpected-completion:context-construction-v1",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "조심했지만 중요한 파일을 실제로 삭제했어요. 후회하는 결말을 표현하세요.",
+        "contextMeaning": {
+          "ko": "조심했지만 중요한 파일을 실제로 삭제했어요. 후회하는 결말을 표현하세요.",
+          "ja": "気をつけていましたが、大切なファイルを実際に削除しました。残念な結末を表します。",
+          "en": "Despite being careful, you actually deleted an important file. Express the regretted outcome.",
+          "zh": "虽然很小心，你还是删除了重要文件。请表达遗憾的结局。"
+        },
+        "prompt": {
+          "ko": "주어진 덩어리를 순서대로 모두 사용해 한 문장을 만드세요. 마지막 지시가 두 문장이면 두 문장으로 쓰세요. 사전형만 지정된 형태로 바꾸고 다른 말은 더하거나 빼지 마세요.\n재료: 중요한 파일을 / 지우다\n지정 형태: -고 말았어요",
+          "ja": "示された語句を順番どおり全て使い、一文を作ってください。二文と指定された場合は二文にします。辞書形だけを指定形に変え、他の語句は足したり省いたりしません。\n材料：중요한 파일을 / 지우다\n指定形：-고 말았어요",
+          "en": "Use every supplied chunk in order to build one sentence, or two if explicitly specified. Change only dictionary forms to the requested construction; do not add or omit other words.\nChunks: 중요한 파일을 / 지우다\nRequired form: -고 말았어요",
+          "zh": "按顺序使用全部给定词块组成一句；若明确要求两句，则写两句。只把词典形变为指定结构，不增加或省略其他词语。\n词块：중요한 파일을 / 지우다\n指定形式：-고 말았어요"
+        },
+        "accepted": [
+          "중요한 파일을 지우고 말았어요."
+        ],
+        "explanation": {
+          "ko": "완성 문장: 중요한 파일을 지우고 말았어요.\n핵심 변환: 지우다 → 지우- + -고 말았어요",
+          "ja": "完成文：중요한 파일을 지우고 말았어요.\n重要な変換：지우다 → 지우- + -고 말았어요",
+          "en": "Completed sentence: 중요한 파일을 지우고 말았어요.\nKey transformation: 지우다 → 지우- + -고 말았어요",
+          "zh": "完整句子：중요한 파일을 지우고 말았어요.\n关键变形：지우다 → 지우- + -고 말았어요"
         }
       }
     ]
@@ -4467,6 +4972,35 @@ window.HARUMAL_GRAMMAR_PACK_EVENTS = [
           "ja": "正解：잊어 버렸어요\n作り方：잊다 → 잊어 + 버렸어요",
           "en": "Answer: 잊어 버렸어요\nFormation: 잊다 → 잊어 + 버렸어요",
           "zh": "答案：잊어 버렸어요\n构成：잊다 → 잊어 + 버렸어요"
+        }
+      },
+      {
+        "id": "extended-complete-away:context-construction-v1",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "오래 남아 있던 보고서를 오늘 모두 완성해서 후련해요. 완료를 강조하세요.",
+        "contextMeaning": {
+          "ko": "오래 남아 있던 보고서를 오늘 모두 완성해서 후련해요. 완료를 강조하세요.",
+          "ja": "長く残っていた報告書を今日すべて完成させ、すっきりしました。完了を強調します。",
+          "en": "You finally finished the entire report today and feel relieved. Emphasize completion.",
+          "zh": "今天你终于完成了整份报告，感到轻松。请强调完成。"
+        },
+        "prompt": {
+          "ko": "주어진 덩어리를 순서대로 모두 사용해 한 문장을 만드세요. 마지막 지시가 두 문장이면 두 문장으로 쓰세요. 사전형만 지정된 형태로 바꾸고 다른 말은 더하거나 빼지 마세요.\n재료: 오늘 / 보고서를 / 다 / 쓰다\n지정 형태: -아/어 버렸어요",
+          "ja": "示された語句を順番どおり全て使い、一文を作ってください。二文と指定された場合は二文にします。辞書形だけを指定形に変え、他の語句は足したり省いたりしません。\n材料：오늘 / 보고서를 / 다 / 쓰다\n指定形：-아/어 버렸어요",
+          "en": "Use every supplied chunk in order to build one sentence, or two if explicitly specified. Change only dictionary forms to the requested construction; do not add or omit other words.\nChunks: 오늘 / 보고서를 / 다 / 쓰다\nRequired form: -아/어 버렸어요",
+          "zh": "按顺序使用全部给定词块组成一句；若明确要求两句，则写两句。只把词典形变为指定结构，不增加或省略其他词语。\n词块：오늘 / 보고서를 / 다 / 쓰다\n指定形式：-아/어 버렸어요"
+        },
+        "accepted": [
+          "오늘 보고서를 다 써 버렸어요.",
+          "오늘 보고서를 다 써버렸어요."
+        ],
+        "explanation": {
+          "ko": "완성 문장: 오늘 보고서를 다 써 버렸어요.\n핵심 변환: 쓰다 → 써 (ㅡ 탈락) / + 버렸어요",
+          "ja": "完成文：오늘 보고서를 다 써 버렸어요.\n重要な変換：쓰다 → 써 (ㅡ脱落) / + 버렸어요",
+          "en": "Completed sentence: 오늘 보고서를 다 써 버렸어요.\nKey transformation: 쓰다 → 써 (drop ㅡ) / + 버렸어요",
+          "zh": "完整句子：오늘 보고서를 다 써 버렸어요.\n关键变形：쓰다 → 써 (ㅡ脱落) / + 버렸어요"
         }
       }
     ]
@@ -4696,6 +5230,37 @@ window.HARUMAL_GRAMMAR_PACK_EVENTS = [
           "en": "Answer: 적어 두었어요\nFormation: 적다 → 적어 + 두었어요 (두었어요 → 뒀어요)",
           "zh": "答案：적어 두었어요\n构成：적다 → 적어 + 두었어요 (두었어요 → 뒀어요)"
         }
+      },
+      {
+        "id": "extended-retain-result:context-construction-v1",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "아침 식사를 빨리 준비하려고 전날 채소를 씻어 보관했어요. 준비된 결과를 표현하세요.",
+        "contextMeaning": {
+          "ko": "아침 식사를 빨리 준비하려고 전날 채소를 씻어 보관했어요. 준비된 결과를 표현하세요.",
+          "ja": "朝食を早く作れるよう、前日に野菜を洗っておきました。準備した結果を表します。",
+          "en": "You washed vegetables the previous day to prepare breakfast quickly. Express the prepared result.",
+          "zh": "为了快速做早餐，你前一天洗好了蔬菜。请表达预先准备的结果。"
+        },
+        "prompt": {
+          "ko": "주어진 덩어리를 순서대로 모두 사용해 한 문장을 만드세요. 마지막 지시가 두 문장이면 두 문장으로 쓰세요. 사전형만 지정된 형태로 바꾸고 다른 말은 더하거나 빼지 마세요.\n재료: 어제 / 채소를 / 미리 / 씻다\n지정 형태: -아/어 두었어요",
+          "ja": "示された語句を順番どおり全て使い、一文を作ってください。二文と指定された場合は二文にします。辞書形だけを指定形に変え、他の語句は足したり省いたりしません。\n材料：어제 / 채소를 / 미리 / 씻다\n指定形：-아/어 두었어요",
+          "en": "Use every supplied chunk in order to build one sentence, or two if explicitly specified. Change only dictionary forms to the requested construction; do not add or omit other words.\nChunks: 어제 / 채소를 / 미리 / 씻다\nRequired form: -아/어 두었어요",
+          "zh": "按顺序使用全部给定词块组成一句；若明确要求两句，则写两句。只把词典形变为指定结构，不增加或省略其他词语。\n词块：어제 / 채소를 / 미리 / 씻다\n指定形式：-아/어 두었어요"
+        },
+        "accepted": [
+          "어제 채소를 미리 씻어 두었어요.",
+          "어제 채소를 미리 씻어 뒀어요.",
+          "어제 채소를 미리 씻어두었어요.",
+          "어제 채소를 미리 씻어뒀어요."
+        ],
+        "explanation": {
+          "ko": "완성 문장: 어제 채소를 미리 씻어 두었어요.\n핵심 변환: 씻다 → 씻어 / + 두었어요 → 뒀어요",
+          "ja": "完成文：어제 채소를 미리 씻어 두었어요.\n重要な変換：씻다 → 씻어 / + 두었어요 → 뒀어요",
+          "en": "Completed sentence: 어제 채소를 미리 씻어 두었어요.\nKey transformation: 씻다 → 씻어 / + 두었어요 → 뒀어요",
+          "zh": "完整句子：어제 채소를 미리 씻어 두었어요.\n关键变形：씻다 → 씻어 / + 두었어요 → 뒀어요"
+        }
       }
     ]
   },
@@ -4921,6 +5486,35 @@ window.HARUMAL_GRAMMAR_PACK_EVENTS = [
           "ja": "正解：만들어 가요\n作り方：만들다 → 만들어 + 가요",
           "en": "Answer: 만들어 가요\nFormation: 만들다 → 만들어 + 가요",
           "zh": "答案：만들어 가요\n构成：만들다 → 만들어 + 가요"
+        }
+      },
+      {
+        "id": "extended-progressive-development:context-construction-v1",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "새 팀이 이제 시작됐어요. 앞으로 함께 신뢰를 만들겠다고 말하세요.",
+        "contextMeaning": {
+          "ko": "새 팀이 이제 시작됐어요. 앞으로 함께 신뢰를 만들겠다고 말하세요.",
+          "ja": "新しいチームが始まったところです。これから一緒に信頼を築くと伝えます。",
+          "en": "The new team has just formed. Say you will build trust together from now on.",
+          "zh": "新团队刚成立。请说明今后将一起建立信任。"
+        },
+        "prompt": {
+          "ko": "주어진 덩어리를 순서대로 모두 사용해 한 문장을 만드세요. 마지막 지시가 두 문장이면 두 문장으로 쓰세요. 사전형만 지정된 형태로 바꾸고 다른 말은 더하거나 빼지 마세요.\n재료: 앞으로 / 함께 / 신뢰를 / 쌓다\n지정 형태: -아/어 갈 거예요",
+          "ja": "示された語句を順番どおり全て使い、一文を作ってください。二文と指定された場合は二文にします。辞書形だけを指定形に変え、他の語句は足したり省いたりしません。\n材料：앞으로 / 함께 / 신뢰를 / 쌓다\n指定形：-아/어 갈 거예요",
+          "en": "Use every supplied chunk in order to build one sentence, or two if explicitly specified. Change only dictionary forms to the requested construction; do not add or omit other words.\nChunks: 앞으로 / 함께 / 신뢰를 / 쌓다\nRequired form: -아/어 갈 거예요",
+          "zh": "按顺序使用全部给定词块组成一句；若明确要求两句，则写两句。只把词典形变为指定结构，不增加或省略其他词语。\n词块：앞으로 / 함께 / 신뢰를 / 쌓다\n指定形式：-아/어 갈 거예요"
+        },
+        "accepted": [
+          "앞으로 함께 신뢰를 쌓아 갈 거예요.",
+          "앞으로 함께 신뢰를 쌓아갈 거예요."
+        ],
+        "explanation": {
+          "ko": "완성 문장: 앞으로 함께 신뢰를 쌓아 갈 거예요.\n핵심 변환: 쌓다 → 쌓아 / + 갈 거예요",
+          "ja": "完成文：앞으로 함께 신뢰를 쌓아 갈 거예요.\n重要な変換：쌓다 → 쌓아 / + 갈 거예요",
+          "en": "Completed sentence: 앞으로 함께 신뢰를 쌓아 갈 거예요.\nKey transformation: 쌓다 → 쌓아 / + 갈 거예요",
+          "zh": "完整句子：앞으로 함께 신뢰를 쌓아 갈 거예요.\n关键变形：쌓다 → 쌓아 / + 갈 거예요"
         }
       }
     ]
@@ -5148,6 +5742,35 @@ window.HARUMAL_GRAMMAR_PACK_EVENTS = [
           "en": "Answer: 지켜 왔어요\nFormation: 지키다 → 지켜 + 왔어요",
           "zh": "答案：지켜 왔어요\n构成：지키다 → 지켜 + 왔어요"
         }
+      },
+      {
+        "id": "extended-development-to-present:context-construction-v1",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "오 년 전부터 지금까지 매일 일기를 썼어요. 현재까지 이어진 과정을 표현하세요.",
+        "contextMeaning": {
+          "ko": "오 년 전부터 지금까지 매일 일기를 썼어요. 현재까지 이어진 과정을 표현하세요.",
+          "ja": "五年前から今まで毎日日記を書いています。現在まで続く過程を表します。",
+          "en": "You have written a diary daily for five years until now. Describe that ongoing history.",
+          "zh": "从五年前到现在，你每天写日记。请表达延续至今的过程。"
+        },
+        "prompt": {
+          "ko": "주어진 덩어리를 순서대로 모두 사용해 한 문장을 만드세요. 마지막 지시가 두 문장이면 두 문장으로 쓰세요. 사전형만 지정된 형태로 바꾸고 다른 말은 더하거나 빼지 마세요.\n재료: 오 년 동안 / 매일 / 일기를 / 쓰다\n지정 형태: -아/어 왔어요",
+          "ja": "示された語句を順番どおり全て使い、一文を作ってください。二文と指定された場合は二文にします。辞書形だけを指定形に変え、他の語句は足したり省いたりしません。\n材料：오 년 동안 / 매일 / 일기를 / 쓰다\n指定形：-아/어 왔어요",
+          "en": "Use every supplied chunk in order to build one sentence, or two if explicitly specified. Change only dictionary forms to the requested construction; do not add or omit other words.\nChunks: 오 년 동안 / 매일 / 일기를 / 쓰다\nRequired form: -아/어 왔어요",
+          "zh": "按顺序使用全部给定词块组成一句；若明确要求两句，则写两句。只把词典形变为指定结构，不增加或省略其他词语。\n词块：오 년 동안 / 매일 / 일기를 / 쓰다\n指定形式：-아/어 왔어요"
+        },
+        "accepted": [
+          "오 년 동안 매일 일기를 써 왔어요.",
+          "오 년 동안 매일 일기를 써왔어요."
+        ],
+        "explanation": {
+          "ko": "완성 문장: 오 년 동안 매일 일기를 써 왔어요.\n핵심 변환: 쓰다 → 써 / + 왔어요",
+          "ja": "完成文：오 년 동안 매일 일기를 써 왔어요.\n重要な変換：쓰다 → 써 / + 왔어요",
+          "en": "Completed sentence: 오 년 동안 매일 일기를 써 왔어요.\nKey transformation: 쓰다 → 써 / + 왔어요",
+          "zh": "完整句子：오 년 동안 매일 일기를 써 왔어요.\n关键变形：쓰다 → 써 / + 왔어요"
+        }
       }
     ]
   },
@@ -5371,6 +5994,34 @@ window.HARUMAL_GRAMMAR_PACK_EVENTS = [
           "ja": "正解：도우려고 노력해요\n作り方：돕다 → 도우- + -려고 노력해요 (ㅂ 불규칙)",
           "en": "Answer: 도우려고 노력해요\nFormation: 돕다 → 도우- + -려고 노력해요 (ㅂ 불규칙)",
           "zh": "答案：도우려고 노력해요\n构成：돕다 → 도우- + -려고 노력해요 (ㅂ 불규칙)"
+        }
+      },
+      {
+        "id": "extended-trying-hard:context-construction-v1",
+        "type": "text",
+        "phase": "transfer",
+        "role": "construction",
+        "contextKorean": "환경을 위해 일회용품을 덜 쓰는 행동을 계속 실천해요. 실제 노력을 표현하세요.",
+        "contextMeaning": {
+          "ko": "환경을 위해 일회용품을 덜 쓰는 행동을 계속 실천해요. 실제 노력을 표현하세요.",
+          "ja": "環境のため使い捨て用品を減らす行動を続けています。実際の努力を表します。",
+          "en": "You actively keep reducing disposable items for the environment. Express your effort.",
+          "zh": "你为了环保一直在减少一次性用品的使用。请表达实际努力。"
+        },
+        "prompt": {
+          "ko": "주어진 덩어리를 순서대로 모두 사용해 한 문장을 만드세요. 마지막 지시가 두 문장이면 두 문장으로 쓰세요. 사전형만 지정된 형태로 바꾸고 다른 말은 더하거나 빼지 마세요.\n재료: 일회용품을 / 줄이다\n지정 형태: -(으)려고 노력해요",
+          "ja": "示された語句を順番どおり全て使い、一文を作ってください。二文と指定された場合は二文にします。辞書形だけを指定形に変え、他の語句は足したり省いたりしません。\n材料：일회용품을 / 줄이다\n指定形：-(으)려고 노력해요",
+          "en": "Use every supplied chunk in order to build one sentence, or two if explicitly specified. Change only dictionary forms to the requested construction; do not add or omit other words.\nChunks: 일회용품을 / 줄이다\nRequired form: -(으)려고 노력해요",
+          "zh": "按顺序使用全部给定词块组成一句；若明确要求两句，则写两句。只把词典形变为指定结构，不增加或省略其他词语。\n词块：일회용품을 / 줄이다\n指定形式：-(으)려고 노력해요"
+        },
+        "accepted": [
+          "일회용품을 줄이려고 노력해요."
+        ],
+        "explanation": {
+          "ko": "완성 문장: 일회용품을 줄이려고 노력해요.\n핵심 변환: 줄이다 → 줄이- + -려고 노력해요",
+          "ja": "完成文：일회용품을 줄이려고 노력해요.\n重要な変換：줄이다 → 줄이- + -려고 노력해요",
+          "en": "Completed sentence: 일회용품을 줄이려고 노력해요.\nKey transformation: 줄이다 → 줄이- + -려고 노력해요",
+          "zh": "完整句子：일회용품을 줄이려고 노력해요.\n关键变形：줄이다 → 줄이- + -려고 노력해요"
         }
       }
     ]

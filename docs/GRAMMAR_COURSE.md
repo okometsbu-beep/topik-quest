@@ -44,3 +44,13 @@ This work is a review candidate on a separate branch. Deployment remains on hold
 - Foundations: reviewed separately from the writer; corrected register for proposals, ㄹ-deletion explanation, target-answer leaks, result-state recall and misleading confirmation distractor rationale before runtime inclusion.
 - Events: reviewed all 23 lesson form/use/contrast sections and all 92 answer contexts; corrected embedded-question answer leakage and an inconsistent 위해서 condition. Quotation wording checked against [NIKL's explanation of -냐고 and -느냐고](https://www.korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=8650&mn_id=182): shortened -냐고 is also accepted, not simply a nonstandard replacement. Required classroom drill forms should be described as the explicitly requested full form.
 - Review is bounded to the authored content, not a certification of complete coverage. New packs and later edits still require their own check.
+
+## Construction and motivation checkpoint
+
+The expanded sequence adds one clearly displayed-model assembly and one newly authored, constrained full-sentence construction per target. There are 208 targets and 1,188 activities: the earlier 772 exercises, 208 authored constructions and 208 model assemblies derived from existing examples. The model is explicitly visible for supported assembly; it is never counted as independent construction. Later reviews include the earlier construction with its answer hidden, alongside the separately authored recall task. That is spaced reuse, not a claim that the scenario is unseen.
+
+The skill display separates supported assembly, form-building, independent sentence construction, contextual selection and delayed recall. Independent construction requires a correct first attempt without help. Retrying an exposed answer remains useful practice but does not manufacture independent evidence.
+
+Motivating feedback uses existing Haruman art and the existing activity ledger. A lesson can earn one initial-practice milestone, one independent-construction milestone, and at most five delayed-recall milestones. Reward identities are per lesson and milestone, not per random session, so restarting cannot farm them. Imported/restored completions never retroactively mint rewards. No lives, penalties or streak pressure are added. Sound follows global mute and a course toggle; reduced-motion disables the short reward animation.
+
+Short text grading checks explicitly supplied words and endings against authored accepted variants. It does not evaluate arbitrary free writing or conversational competence. The 208 constructions received independent semantic/localization review before this checkpoint.

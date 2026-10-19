@@ -26,6 +26,14 @@ for(const key of Object.keys(window).filter(k=>k.startsWith('HARUMAL_GRAMMAR_PAC
   byId.set(item.id,item);
  }
 }
+// Scaffolding reuses an authored example, visibly as a model; it is not an unseen test.
+for(const lesson of lessons){
+ if(!lesson.activities.some(a=>a.role==='construction'))continue;
+ const example=(lesson.examples||[]).find(x=>typeof x.korean==='string'&&x.korean.trim().split(/\s+/).length>=2);
+ if(example){const words=example.korean.trim().split(/\s+/),tokens=words;lesson.activities.unshift({id:lesson.id+':guided-example',type:'order',role:'guided',phase:'practice',model:example.korean,tokens,answer:[...tokens],prompt:T('예문을 보며 낱말을 순서대로 놓으세요.','モデル文を見ながら、語を順番に並べましょう。','Use the visible model to arrange the words.','参照例句，把词语按顺序排列。'),contextMeaning:example.meaning,explanation:T('이 단계는 예문을 보며 문장 구조를 익히는 연습이에요. 다음에는 도움을 줄여 직접 만들어요.','ここではモデルを見て文の形を練習します。次は手がかりを減らして作ります。','This step practices the sentence structure with a model. Next, build with less support.','这一步参照例句练习句子结构。接下来减少提示，自己构建。')})}
+ const rank=a=>a.role==='guided'?0:a.phase==='practice'?(a.type==='choice'?1:2):a.role==='construction'?3:a.phase==='transfer'?4:5;
+ lesson.activities.sort((a,b)=>rank(a)-rank(b));
+}
 lessons.sort((a,b)=>Number(a.stage)-Number(b.stage));
 const complete=lessons.filter(x=>x.activities?.some(a=>a.phase==='transfer')&&x.activities?.some(a=>a.phase==='review')).length;
 window.HARUMAL_GRAMMAR_COURSE=Object.freeze({version:1,stages:stages.filter(s=>lessons.some(x=>x.stage===s.id)),lessons,coverage:{total:lessons.length,extended:complete,legacy:legacy.length,description:T(
