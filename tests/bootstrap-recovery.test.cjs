@@ -28,3 +28,6 @@ test('failed boot offers persistent honest recovery and reload without clearing 
  const b=shell();b.c.__malbitBoot.finish('dependency-error');const note=b.nodes.get('malbitBootRecovery');assert.match(note.textContent,/다 불러오지 못/);assert.doesNotMatch(note.textContent,/복구했습니다/);assert.equal(note.children.length,1);note.children[0].onclick();assert.equal(b.reloads(),1);assert.ok(![...b.timers.values()].some(t=>t.ms===4500));b.c.__malbitBoot.finish('dependency-error');assert.equal(b.nodes.size,1);
 });
 test('late successful boot removes recovery notice',()=>{const b=shell();b.c.__malbitBoot.finish('watchdog');assert.ok(b.nodes.has('malbitBootRecovery'));b.c.__malbitBoot.finish('ready');assert.ok(!b.nodes.has('malbitBootRecovery'))});
+
+test('recovery notice is constrained to the mobile viewport without intrinsic width expansion',()=>{const b=shell();b.c.__malbitBoot.finish('dependency-error');const css=b.nodes.get('malbitBootRecovery').style.cssText;assert.match(css,/width:calc\(100vw - 32px\)/);assert.doesNotMatch(css,/width:max-content/)});
+test('browser recovery geometry expression parses before browser evaluation',()=>{const source=fs.readFileSync('scripts/check-bootstrap-recovery.mjs','utf8');const expression=source.match(/const recoveryGeometry=await run\(`(.*?)`\)/)[1];assert.doesNotThrow(()=>new vm.Script(expression))});
