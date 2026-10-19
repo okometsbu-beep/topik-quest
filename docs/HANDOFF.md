@@ -1,3 +1,8 @@
+## v174 interrupted bootstrap recovery candidate
+
+- Definite script network failures receive two bounded retries in the existing execution order; ambiguous timeouts are not retried in the same document. Failed boot has a persistent, truthful Reload notice instead of claiming success. Existing records remain untouched.
+- Adds controlled dependency-failure and M03 locale regression coverage. Publication awaits explicit approval and exact-commit CI. See `docs/qa/bootstrap-recovery-v174.md` for scope and verification limits.
+
 ## v173 question experience release candidate
 
 - User-approved release on `agent/unify-exam-intro`, based on main `037624a`; version bumped once from v172 to v173. PR CI, merge and live Pages checks gate publication.
