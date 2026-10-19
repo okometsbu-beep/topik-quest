@@ -218,7 +218,7 @@ window.malbitVocabGrade=(index,grade)=>{migrateVocab();const v=S.vocab?.[Number(
 window.malbitAddSampleVocab=()=>{S.vocab=Array.isArray(S.vocab)?S.vocab:[];if(!S.vocab.some(v=>v.text==='꾸준하다'))S.vocab.unshift({text:'꾸준하다',source:L('단어장 안내','単語帳ガイド','Vocabulary guide','单词本引导'),ja:'こつこつ続ける',meanings:{ja:'こつこつ続ける',en:'to be consistent',zh:'坚持不懈'},show:false,dueAt:Date.now(),interval:1,repetitions:0});save();render()};
 if(typeof window.deleteVocab==='function')window.deleteVocab=index=>{if(!confirm(L('이 표현을 단어장에서 삭제할까요?','この表現を単語帳から削除しますか？','Remove this expression from Vocabulary?','从单词本中删除此表达吗？')))return;S.vocab.splice(Number(index),1);save();render()};
 
-const PORTABLE_KEYS=['topikQuestV8','harumalWritingCurriculumV1','harumalRewardsV1','harumalLearningPathV1','harumalGrowthLearningV1','topikQuestExamLevel',T1_SESSION,SHORTS_KEY,GAME_KEY,REVIEW_KEY,EVENTS_KEY,PREFS_KEY,ONBOARD_KEY,'malbitBeginnerV1','malbitStoryV1','malbitTtsPrefsV1','malbitDiagnosticV1','malbitJourneyEventsV1','malbitGrowthPrefsV1','malbitInstallIdV1','malbitShortProposalHandled'];
+const PORTABLE_KEYS=['topikQuestV8','harumalWritingCurriculumV1','harumalRewardsV1','harumalLearningPathV1','harumalGrowthLearningV1','harumalGrammarCourseV1','topikQuestExamLevel',T1_SESSION,SHORTS_KEY,GAME_KEY,REVIEW_KEY,EVENTS_KEY,PREFS_KEY,ONBOARD_KEY,'malbitBeginnerV1','malbitStoryV1','malbitTtsPrefsV1','malbitDiagnosticV1','malbitJourneyEventsV1','malbitGrowthPrefsV1','malbitInstallIdV1','malbitShortProposalHandled'];
 function progressPayload(){
   const data={schema:1,app:'MALBIT',exportedAt:new Date().toISOString(),storage:{},unreadableKeys:[]};
   for(const key of PORTABLE_KEYS){
@@ -241,6 +241,10 @@ window.malbitImportProgress=input=>{
         if(!window.HARUMAL_GROWTH?.validateImport)throw new Error('growth-unavailable');
         window.HARUMAL_GROWTH.validateImport(String(data.storage.harumalGrowthLearningV1));
       }
+      if(Object.prototype.hasOwnProperty.call(data.storage,'harumalGrammarCourseV1')){
+        if(!window.HARUMAL_GRAMMAR?.validateImport)throw new Error('grammar-unavailable');
+        window.HARUMAL_GRAMMAR.validateImport(String(data.storage.harumalGrammarCourseV1));
+      }
       if(!confirm(L('파일에 들어 있는 기록을 복원할까요? 파일에 없는 기록은 유지되고 활동 보상은 현재 기록과 합쳐집니다.','ファイル内の記録を復元しますか？ファイルにない記録は残り、活動報酬は現在の記録と統合されます。','Restore records from this file? Records absent from it stay; activity rewards merge with current records.','恢复文件中的记录吗？文件中没有的记录会保留，活动奖励将与当前记录合并。')))return;
       window.MALBIT_STORAGE_GUARD?.capture?.('before-import');
       for(const key of PORTABLE_KEYS){
@@ -248,7 +252,7 @@ window.malbitImportProgress=input=>{
         const raw=String(data.storage[key]);
         // The ledger persists its own immutable records and must never be bypassed by a root overwrite.
         if(key==='harumalRewardsV1'){window.HARUMAL_REWARDS.mergeImport(raw);continue}
-        const value=key==='harumalGrowthLearningV1'&&window.HARUMAL_GROWTH?window.HARUMAL_GROWTH.mergeImport(raw):key==='harumalWritingCurriculumV1'&&window.HARUMAL_WRITING?window.HARUMAL_WRITING.mergeImport(raw):key==='malbitStoryV1'&&window.HARUMAL_ADVENTURE?window.HARUMAL_ADVENTURE.mergeImport(raw):raw;
+        const value=key==='harumalGrammarCourseV1'&&window.HARUMAL_GRAMMAR?window.HARUMAL_GRAMMAR.mergeImport(raw):key==='harumalGrowthLearningV1'&&window.HARUMAL_GROWTH?window.HARUMAL_GROWTH.mergeImport(raw):key==='harumalWritingCurriculumV1'&&window.HARUMAL_WRITING?window.HARUMAL_WRITING.mergeImport(raw):key==='malbitStoryV1'&&window.HARUMAL_ADVENTURE?window.HARUMAL_ADVENTURE.mergeImport(raw):raw;
         localStorage.setItem(key,value);
       }
       window.MALBIT_STORAGE_GUARD?.capture?.('after-import');

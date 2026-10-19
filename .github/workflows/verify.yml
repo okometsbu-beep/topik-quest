@@ -25,6 +25,15 @@ jobs:
       - run: npm run check
       - name: Install Japanese visual-check font
         run: sudo apt-get update -qq && sudo apt-get install -y fonts-noto-cjk ffmpeg
+      - name: Verify staged grammar course and delayed review
+        run: node scripts/check-grammar-course.mjs
+      - name: Upload grammar course evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: grammar-course-${{ github.sha }}
+          path: artifacts/grammar-course/*.png
+          if-no-files-found: warn
       - name: Verify original content and translated transcript flows
         run: HARUMAL_ORIGINAL_CONTENT_ONLY=1 node scripts/check-travel-mobile.mjs
       - name: Upload original content evidence
