@@ -6,16 +6,33 @@
   const swReloadKey=`malbitSwReloadV${appVersion}`;
   let swReloaded=false;try{swReloaded=sessionStorage.getItem(swReloadKey)==='1'}catch(_){}
   let swUpdatePending=false,queuedReady=false,swReleaseTimer=null;
+  let recoveryViewportCleanup=()=>{};
   const showRecovery=()=>{
     if(document.getElementById('malbitBootRecovery'))return;
     const note=document.createElement('div');
     note.id='malbitBootRecovery';note.setAttribute('role','status');note.setAttribute('aria-live','polite');
-    note.textContent=typeof ml==='function'?ml('앱을 복구했습니다. 학습 기록은 그대로 유지됩니다.','アプリを復旧しました。学習記録は保持されています。','MALBIT recovered. Your progress is safe.','应用已恢复，学习记录已保留。'):'MALBIT recovered. Your progress is safe.';
-    note.style.cssText='position:fixed;z-index:1200;left:50%;bottom:calc(88px + env(safe-area-inset-bottom));transform:translateX(-50%);width:max-content;max-width:calc(100% - 32px);padding:11px 15px;border:1px solid #355276;border-radius:14px;background:#10233dcc;color:#eaf3ff;font:800 11px/1.35 system-ui,sans-serif;text-align:center;box-shadow:0 12px 32px #0008;backdrop-filter:blur(12px)';
-    document.body.appendChild(note);setTimeout(()=>note.remove(),4500);
+    note.textContent=typeof ml==='function'?ml('앱을 다 불러오지 못했습니다. 다시 불러와 주세요. 저장된 학습 기록은 삭제되지 않습니다.','アプリをすべて読み込めませんでした。再読み込みしてください。保存済みの学習記録は削除されません。','The app could not finish loading. Please reload. Saved progress will not be deleted.','应用未能完整加载，请重新加载。已保存的学习记录不会被删除。'):'The app could not finish loading. Please reload. Saved progress will not be deleted.';
+    const retry=document.createElement('button');retry.type='button';retry.textContent=typeof ml==='function'?ml('다시 불러오기','再読み込み','Reload','重新加载'):'Reload';retry.style.cssText='display:block;margin:8px auto 0;min-height:44px;padding:8px 16px;border:1px solid currentColor;border-radius:8px;background:#fff;color:#10233d;font:inherit';retry.onclick=()=>location.reload();note.appendChild(retry);
+    note.style.cssText='position:fixed;z-index:1200;left:50%;bottom:calc(88px + env(safe-area-inset-bottom));transform:translateX(-50%);width:calc(100vw - 32px);max-width:480px;padding:11px 15px;border:1px solid #355276;border-radius:14px;background:#10233dcc;color:#eaf3ff;font:800 11px/1.35 system-ui,sans-serif;text-align:center;box-shadow:0 12px 32px #0008;backdrop-filter:blur(12px)';
+    document.body.appendChild(note);
+    // A partially loaded page can widen the layout viewport. Keep recovery in
+    // the actual visible viewport, including after zoom, scroll or rotation.
+    const viewport=window.visualViewport;
+    if(viewport){
+      const position=()=>{
+        note.style.width=`${Math.max(1,viewport.width-32)}px`;
+        note.style.left=`${viewport.offsetLeft+viewport.width/2}px`;
+        note.style.top=`${viewport.offsetTop+viewport.height-88}px`;
+        note.style.bottom='auto';note.style.transform='translate(-50%,-100%)';
+        note.style.maxHeight=`${Math.max(44,viewport.height-120)}px`;note.style.overflowY='auto';
+      };
+      position();viewport.addEventListener('resize',position);viewport.addEventListener('scroll',position);
+      recoveryViewportCleanup=()=>{viewport.removeEventListener('resize',position);viewport.removeEventListener('scroll',position)};
+    }
   };
   const reveal=reason=>{
     clearTimeout(watchdog);
+    if(reason==='ready'){recoveryViewportCleanup();document.getElementById('malbitBootRecovery')?.remove()}
     if(reason!=='ready'){
       try{if(typeof render==='function')render()}catch(error){
         console.error('[MALBIT recovery]',error);

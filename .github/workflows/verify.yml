@@ -34,6 +34,15 @@ jobs:
           name: grammar-course-${{ github.sha }}
           path: artifacts/grammar-course/*.png
           if-no-files-found: warn
+      - name: Verify interrupted dependency loading and saved-progress recovery
+        run: node scripts/check-bootstrap-recovery.mjs
+      - name: Upload bootstrap recovery evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bootstrap-recovery-${{ github.sha }}
+          path: artifacts/bootstrap-recovery/*.png
+          if-no-files-found: warn
       - name: Verify original content and translated transcript flows
         run: HARUMAL_ORIGINAL_CONTENT_ONLY=1 node scripts/check-travel-mobile.mjs
       - name: Upload original content evidence

@@ -136,19 +136,25 @@
       if(settled)return;
       settled=true;
       clearTimeout(timeout);
+      s.onload=null;s.onerror=null;
+      if(!ok)s.remove();
       ok?resolve():reject(error);
     };
     s.src=versioned(src);
     s.async=false;
     s.onload=()=>settle(true);
-    s.onerror=()=>settle(false,new Error('Failed to load '+src));
+    s.onerror=()=>settle(false,Object.assign(new Error('Failed to load '+src),{retryable:true}));
     const timeout=setTimeout(()=>{
       s.remove();
       settle(false,new Error('Timed out loading '+src));
     },15000);
     document.body.appendChild(s);
   });
-  const loadSeries=async files=>{for(const file of files)await load(file)};
+  // Retry only definite network failures. A timed-out script could still execute;
+  // restarting that script in this document risks installing its wrappers twice.
+  const loadSeries=async files=>{for(const file of files){for(let attempt=0;;attempt++){
+    try{await load(file);break}catch(error){if(!error.retryable||attempt>=2)throw error;await new Promise(resolve=>setTimeout(resolve,250*(attempt+1)))}
+  }}};
   window.__MALBIT_RUNTIME__=Object.freeze({version:VERSION,files:RUNTIME_FILES});
   preloadImage('assets/art/travel/rpg/traveler-blue-4dir-v1.png');
   preloadImage('assets/art/travel/rpg/travel-stamina-game-over-v1.webp');
