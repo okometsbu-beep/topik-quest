@@ -34,7 +34,14 @@ export async function verifyOriginalContent({evaluate,tap,shot,setViewport,send,
      const visible=await evaluate(`(()=>{const host=document.querySelector('#originalContentQA');return{content:host.textContent+' '+[...host.querySelectorAll('[alt],[aria-label],[title]')].map(e=>[e.alt,e.getAttribute('aria-label'),e.title].filter(Boolean).join(' ')).join(' '),images:[...host.querySelectorAll('img')].map(e=>e.getAttribute('src'))}})()`);
      assert.doesNotMatch(visible.content,/(?:장면|그래프)\s*[가나다라]/u,'pre-submit visual names must not disclose stable keys');
      assert.equal(visible.images.length,4);
-     if(kind==='neutral-visual')assert.ok(visible.images.every(src=>src.startsWith('assets/question-polish/original-neutral-')),'embedded stable labels use reviewed display derivatives');
+     if(kind==='neutral-visual'){
+      // Bind each displayed position to its original source, independently of
+      // the release resolver: source option order b/a/c/d shuffles to c/b/d/a for [2,0,3,1].
+      const letters=['c','b','d','a'];
+      const sources=await evaluate(`(()=>{const q=MALBIT_BANK.present('O05-II-L-01',[2,0,3,1]);return q.choices.map(choice=>q.visualOptions.byOption[choice].src)})()`);
+      assert.deepEqual(sources,letters.map(key=>`assets/original/O05-II-L-01-${key}.svg`),'neutral visual sources preserve shuffled option identity');
+      assert.deepEqual(visible.images,letters.map(key=>`assets/question-image-preview/O05-II-L-01-${key}-v1.webp`),'embedded stable labels use the exact reviewed source-bound release images');
+     }
     }
     if(kind==='writing')assert.equal(await evaluate(`!!document.querySelector('#originalContentQA table th[scope="col"]')&&!!document.querySelector('#originalContentQA .tqWritingRubric')`),true);
     if(kind==='legacy-writing')assert.equal(await evaluate(`document.querySelectorAll('#originalContentQA tbody tr').length`),5);
