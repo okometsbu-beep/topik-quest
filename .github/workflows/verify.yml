@@ -53,6 +53,24 @@ jobs:
         run: node scripts/check-explanation-timing.mjs
       - name: Verify question identity, reports, transcripts and centered results
         run: node scripts/check-question-experience.mjs
+      - name: Verify reviewed after-answer localization
+        run: node scripts/check-public-localization.mjs
+      - name: Upload localization browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-localization-${{ github.sha }}
+          path: artifacts/public-localization/
+          if-no-files-found: error
+      - name: Verify reviewed question image release before merge
+        run: node scripts/check-question-image-release.mjs
+      - name: Upload question image release evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: question-image-release-${{ github.sha }}
+          path: artifacts/question-image-release/
+          if-no-files-found: error
       - name: Upload question experience evidence
         if: always()
         uses: actions/upload-artifact@v4
