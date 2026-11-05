@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 export async function verifyListeningPlayer({evaluate,tap,shot,setViewport,sleep}){
  assert.equal(await evaluate(`['localhost','127.0.0.1','[::1]'].includes(location.hostname)`),true);
  const original=await evaluate(`({lang:S.lang,theme:document.documentElement.dataset.theme,prefs:localStorage.getItem('malbitTtsPrefsV1')})`);
- const wait=async(expression,label)=>{for(let i=0;i<150;i++){if(await evaluate(expression))return;await sleep(100)}assert.fail(label)};
+ const wait=async(expression,label)=>{for(let i=0;i<300;i++){if(await evaluate(expression))return;await sleep(100)}assert.fail(label)};
  try{
   await evaluate(`(()=>{const host=document.createElement('div');host.id='listeningPlayerQA';host.style.cssText='position:fixed;inset:0;z-index:2147483000;padding:12px;background:var(--ui-canvas);overflow:auto';document.body.append(host);window.__qaPlayerDraw=()=>host.innerHTML=HARUMAL_LISTENING_PLAYER.markup('__qaPlayerStart()','qa-dialogue');window.__qaPlayerStart=()=>{if(HARUMAL_LISTENING_PLAYER.busy('qa-dialogue'))return HARUMAL_LISTENING_PLAYER.cancel();window.__qaPlayerResult=null;HARUMAL_LISTENING_PLAYER.play({key:'qa-dialogue',script:LS[0].script,onResult:r=>window.__qaPlayerResult=r})};__qaPlayerDraw()})()`);
   await setViewport(320,844);await tap('#listeningPlayerQA .listeningToggle');
@@ -17,6 +17,17 @@ export async function verifyListeningPlayer({evaluate,tap,shot,setViewport,sleep
   await wait(`!!window.__qaPlayerResult`,'seek end settles');assert.equal(await evaluate(`__qaPlayerResult.heard`),false,'seeking cannot manufacture hearing');
   await tap('#listeningPlayerQA .listeningToggle');await sleep(200);await tap('#listeningPlayerQA .listeningToggle');
   assert.equal(await evaluate(`__qaPlayerResult.cancelled`),true);assert.equal(await evaluate(`Number(document.querySelector('#listeningPlayerQA input').value)`),0);
+  // Exact two repaired peer conversations, through the real shared player and shipped MP3s.
+  for(const id of [6,17]){
+   const expected=await evaluate(`(()=>{const script=Object.keys(HARUMAL_LISTENING_DIALOGUE_REGISTER.scripts)[${id===6?0:1}],segments=HARUMAL_LISTENING_AUDIO.resolve(script);return {script,segments}})()`);
+   assert.equal(expected.segments.length,2);
+   expected.segments.forEach((segment,i)=>{assert.match(segment.url,/^audio\/listening\/dialogue-register-v1\//);assert.equal(segment.gender,i?'male':'female');});
+   await evaluate(`window.__qaPlayerStart=()=>{window.__qaPlayerResult=null;HARUMAL_LISTENING_PLAYER.play({key:'qa-dialogue',script:${JSON.stringify(expected.script)},onResult:r=>window.__qaPlayerResult=r})};__qaPlayerDraw()`);
+   await tap('#listeningPlayerQA .listeningToggle');
+   await wait(`!!window.__qaPlayerResult`,'corrected dialogue '+id+' must finish real playback');
+   assert.equal(await evaluate(`__qaPlayerResult.heard`),true);
+   assert.equal(await evaluate(`!!__qaPlayerResult.error`),false);
+  }
   for(const theme of ['light','dark'])for(const width of [320,390])for(const lang of ['ko','ja','en','zh']){
    await setViewport(width,844);await evaluate(`S.lang='${lang}';document.documentElement.dataset.theme='${theme}';__qaPlayerDraw()`);
    const fit=await evaluate(`(()=>{const root=document.querySelector('#listeningPlayerQA');return{overflow:root.scrollWidth-root.clientWidth,controls:[...root.querySelectorAll('button:not([hidden]),select,input')].filter(e=>e.getBoundingClientRect().height>0).map(e=>({height:e.getBoundingClientRect().height,left:e.getBoundingClientRect().left,right:e.getBoundingClientRect().right,label:e.getAttribute('aria-label')||e.textContent.trim()}))}})()`);

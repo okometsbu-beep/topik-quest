@@ -10,13 +10,15 @@
     "test:content": "node --test tests/question-bank.test.cjs tests/vocabulary-library.test.cjs tests/beginner-grammar-data.test.cjs tests/travel-adventure.test.cjs tests/growth-learning.test.cjs tests/growth-localization.test.cjs tests/original-exams.test.cjs tests/listening-register-corrections.test.cjs tests/listening-register-runtime.test.cjs tests/listening-transcripts.test.cjs tests/original-listening-runtime.test.cjs tests/original-listening-audio.test.cjs tests/legacy-writing-tables.test.cjs tests/legacy-answer-repairs.test.cjs tests/legacy-question-visuals.test.cjs tests/original-audio-release-gate.test.cjs tests/original-listening-batches.test.cjs tests/original-listening-v3.test.cjs tests/review-listening-retry.test.cjs tests/original-listening-rebinding.test.cjs tests/original-listening-v5.test.cjs tests/original-listening-v6.test.cjs tests/original-listening-v7.test.cjs tests/original-listening-v8.test.cjs tests/original-listening-v9.test.cjs tests/listening-casting-review.test.cjs tests/visual-choice-labels.test.cjs tests/neutral-choice-visuals.test.cjs tests/listening-register-release.test.cjs tests/release-integrity-boundaries.test.cjs tests/publication-metadata.test.cjs",
     "check:runtime": "node scripts/check-runtime.mjs",
     "check:syntax": "node scripts/check-syntax.mjs",
-    "check": "npm run check:runtime && npm run check:syntax && npm run check:original && npm test",
+    "check": "npm run check:runtime && npm run check:syntax && npm run check:original && npm run check:listening:dialogue && npm test",
     "serve": "node scripts/serve.mjs",
     "smoke": "node scripts/smoke-http.mjs",
     "version:bump": "node scripts/bump-version.mjs",
     "check:original": "node scripts/check-original-exams.mjs",
     "build:original:support": "node scripts/build-original-support.mjs",
-    "import:original": "node scripts/import-original-content.mjs"
+    "import:original": "node scripts/import-original-content.mjs",
+    "build:listening:dialogue": "node scripts/build-listening-dialogue-register.cjs",
+    "check:listening:dialogue": "node scripts/build-listening-dialogue-register.cjs --verify-audio && node --test tests/listening-dialogue-register.test.cjs"
   },
   "engines": {
     "node": ">=22"

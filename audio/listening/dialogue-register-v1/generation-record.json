@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "date": "2026-11-05",
+  "model": "supertone-oss-archive/supertonic-3",
+  "modelRevision": "aafc6e32416a594460b32413efc49d7fe4ce6d46",
+  "referenceCodeRevision": "1e9799e964ea4c0dad7cde993b65c3c813a7b373",
+  "helperSha256": "b14b1da8a018aa4db6ca8cbb927c32590bfc889b49116ea344c56e8351d94279",
+  "generatorSha256": "fb46293dbeff5e85b354a79e63972db00e2b1778384ebde01124640b025abbd4",
+  "corpusSha256": "a56a9d46f7c9394122ae79eba6fbf9f437c2706cc20c586beb46bb001d522131",
+  "manifestSha256": "e3ccefec7243f06c62a0b893f996884af670b661a2d568d5e74199fec02015a7",
+  "engine": "CPUExecutionProvider",
+  "steps": 8,
+  "speed": 1.0,
+  "seedBase": 20261009,
+  "pythonDependencies": {
+    "onnxruntime": "1.23.1",
+    "numpy": "2.3.5",
+    "soundfile": "0.13.1",
+    "coloredlogs": "15.0.1",
+    "flatbuffers": "25.9.23",
+    "packaging": "25.0",
+    "protobuf": "6.33.5",
+    "sympy": "1.14.0",
+    "cffi": "2.0.0",
+    "humanfriendly": "10.0",
+    "mpmath": "1.3.0",
+    "pycparser": "2.23"
+  },
+  "files": [
+    {
+      "id": "2a7510344ed998fb",
+      "voice": "F1",
+      "textSha256": "2a7510344ed998fbedc68349c479f1563a7d74c2d8ac230a62f8fcc21a44d776",
+      "file": "audio/listening/dialogue-register-v1/F1/2a7510344ed998fb.mp3",
+      "sha256": "986eb51cf4b0c44492467047a3b2bd98c1f18f884cf4d30dca3d312d6a419d58"
+    },
+    {
+      "id": "80e1574c8d1215ab",
+      "voice": "M1",
+      "textSha256": "80e1574c8d1215ab1fd456be358916f48259ce63a7eb06c9f8ee66d539bd7c2b",
+      "file": "audio/listening/dialogue-register-v1/M1/80e1574c8d1215ab.mp3",
+      "sha256": "3d025035223acc25d06df91e0a75332ac486323a7f04666636406be546770df8"
+    },
+    {
+      "id": "ebf7282880cbb9aa",
+      "voice": "F1",
+      "textSha256": "ebf7282880cbb9aa7600c5b80a2928359efac0d57ca1ff482df828e850e99cd2",
+      "file": "audio/listening/dialogue-register-v1/F1/ebf7282880cbb9aa.mp3",
+      "sha256": "c450e55142b91f9acce29c4ae2a3b1da64e44e446a780bb02a03aa66fa729539"
+    },
+    {
+      "id": "a564215df85a8da8",
+      "voice": "M1",
+      "textSha256": "a564215df85a8da8b23b7ac1a92354c4f76a857baa07d97a285c5dbf850429a7",
+      "file": "audio/listening/dialogue-register-v1/M1/a564215df85a8da8.mp3",
+      "sha256": "d82af84f12b1e3cc81f3fe284542c87cf9c192c90fcdcf55c663e79f651aba3b"
+    }
+  ],
+  "externalSynthesisApiUsed": false,
+  "learnerDataTransmitted": false,
+  "actualListeningPerformed": false,
+  "humanPronunciationReview": false
+}

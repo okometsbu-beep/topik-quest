@@ -10,9 +10,12 @@ export function createWorkerMigrationHandler({root, upstream, forward = forwardR
   const origin = new URL(upstream);
   if (!origin.pathname.endsWith('/')) origin.pathname += '/';
   const workerPath = new URL('sw.js', origin).pathname;
+  const releaseBytes = fs.readFileSync(path.join(root, 'sw.js'));
+  const releaseVersion = releaseBytes.toString().match(/const VERSION='(\d+)'/)?.[1];
+  if (!releaseVersion || Number(releaseVersion) <= 173) throw Error('Expected a release newer than baseline173');
   const workers = {
     '173': fs.readFileSync(path.join(root, 'tests/fixtures/sw-v173.js')),
-    '174': fs.readFileSync(path.join(root, 'sw.js'))
+    [releaseVersion]: releaseBytes
   };
   for (const [version, bytes] of Object.entries(workers)) {
     if (!bytes.toString().includes(`const VERSION='${version}'`)) throw Error(`Unexpected worker fixture version ${version}`);
@@ -29,7 +32,7 @@ export function createWorkerMigrationHandler({root, upstream, forward = forwardR
     response.writeHead(200, {'content-type': 'text/javascript; charset=utf-8', 'cache-control': 'no-store', 'content-length': bytes.length});
     response.end(request.method === 'HEAD' ? undefined : bytes);
   }
-  return {handler, observations, release() {version = '174';}};
+  return {handler, observations, release() {version = releaseVersion;}};
 }
 
 function forwardRequest(request, response, target) {
