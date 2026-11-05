@@ -6,7 +6,7 @@
 const T=(ko,ja,en,zh)=>Object.freeze({ko,ja,en,zh});
 const V=(when,form,example)=>Object.freeze({when,form,example});
 const E=(korean,meaning,note)=>Object.freeze(note?{korean,meaning,note}:{korean,meaning});
-const D=(source,task,accepted,coach,writing)=>Object.freeze({source,task,accepted:Object.freeze(accepted),answer:accepted[0],coach,writing});
+const D=(source,task,accepted,coach,writing,extra={})=>Object.freeze({source,task,accepted:Object.freeze(accepted),answer:accepted[0],coach,writing,...extra});
 const LESSONS=[];
 const add=(chapter,id,title,goal,formula,variants,examples,drill,trap)=>LESSONS.push(Object.freeze({
   chapter,id,title,goal,formula,variants:Object.freeze(variants),examples:Object.freeze(examples),drill,trap
@@ -31,7 +31,7 @@ add('sentence','sentence-order',T('기본 어순 S-O-V','基本語順 S-O-V','Ba
 ],[
   E('민수는 커피를 마셔요.',T('민수가 커피를 마십니다.','ミンスはコーヒーを飲みます。','Minsu drinks coffee.','敏洙喝咖啡。')),
   E('저는 도서관에서 책을 읽어요.',T('저는 도서관에서 책을 읽어요.','私は図書館で本を読みます。','I read a book at the library.','我在图书馆看书。'),T('장소 ‘도서관에서’가 목적어 ‘책을’보다 앞에 오고, 행동 ‘읽어요’가 문장 끝에 옵니다.','場所を表す「도서관에서」は目的語「책을」の前に置き、動作を表す「읽어요」は文末に置きます。','The location 도서관에서 comes before the object 책을, and the action 읽어요 comes at the end.','地点“도서관에서”放在宾语“책을”前，动作“읽어요”放在句末。'))
-],D('저 / 한국어 / 공부하다',T('해요체 문장으로 순서를 맞춰 쓰세요.','ヘヨ体の文に並べて書きましょう。','Write these in a polite sentence.','按韩语语序写成敬语句。'),['저는 한국어를 공부해요','저는 한국어를 공부해요.'],T('행동 ‘공부해요’를 마지막에 놓습니다.','動作「공부해요」を最後に置きます。','Put the action 공부해요 last.','把动作“공부해요”放在最后。'),'한국어를 공부해요'),T('영어와 달리 동사가 목적어 뒤에 옵니다. 일본어와 기본 어순은 비슷하지만 조사의 형태는 따로 익혀야 합니다.','日本語と同じく動詞は後ろですが、韓国語の助詞の形は別に覚えます。','Unlike English, the verb follows the object; Korean particles need separate attention.','与英语不同，动词位于宾语之后；韩语助词形式还需单独掌握。'));
+],D('공부해요 / 저는 / 한국어를',T('단어를 골라 ‘저는 한국어를 공부해요’를 만들어요.','語を選んで「私は韓国語を勉強します」を作りましょう。','Choose chunks to say “I study Korean.”','选择词块，组成“我学习韩语”。'),['저는 한국어를 공부해요','저는 한국어를 공부해요.'],T('행동 ‘공부해요’를 마지막에 놓습니다.','動作「공부해요」を最後に置きます。','Put the action 공부해요 last.','把动作“공부해요”放在最后。'),'한국어를 공부해요',{meaning:T('저는 한국어를 공부해요 = 나는 한국어를 배워요.','私は韓国語を勉強します。','I study Korean.','我学习韩语。'),chunks:Object.freeze([{text:'저는',meaning:T('나에 대해 말해요','私は','I (topic)','我（话题）')},{text:'한국어를',meaning:T('배우는 것은 한국어','韓国語を','Korean (what I study)','韩语（学习的对象）')},{text:'공부해요',meaning:T('배우는 행동','勉強します','study (polite)','学习（礼貌表达）')}])}),T('영어와 달리 동사가 목적어 뒤에 옵니다. 일본어와 기본 어순은 비슷하지만 조사의 형태는 따로 익혀야 합니다.','日本語と同じく動詞は後ろですが、韓国語の助詞の形は別に覚えます。','Unlike English, the verb follows the object; Korean particles need separate attention.','与英语不同，动词位于宾语之后；韩语助词形式还需单独掌握。'));
 
 add('sentence','sentence-omission',T('문맥으로 주어·목적어 생략','文脈による主語・目的語の省略','Omitting known parts','根据语境省略'),T('문맥에서 누가·무엇인지 분명하면 주어나 목적어를 생략할 수 있습니다.','文脈から誰・何のことかが明らかな場合、主語や目的語を省略できます。','When context makes who or what clear, the subject or object can be omitted.','当语境已明确是谁或什么时，可以省略主语或宾语。'),'([주어/목적어] 생략) + 핵심 내용',[
   V(T('누가 하는지 분명할 때','誰がするか明らかな時','When the subject is clear','主语明确时'),'주어 생략','지금 가요.'),

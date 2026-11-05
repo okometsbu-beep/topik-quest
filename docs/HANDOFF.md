@@ -1,3 +1,11 @@
+## v176 beginner usability candidate
+
+- First grammar ordering uses translated ready-made chunks, optional typing, incomplete/wrong feedback, and chapter-to-chapter navigation. Existing lesson IDs, progress and reward protections remain.
+- Beginner grammar retries appear separately in Review; known pending items resolve only on a correct retry. Unknown saved IDs and sibling beginner records are retained.
+- Hangul starts with six vowels/consonants and expandable remainder; Reading 3 precedes Writing 4. Six starter vowels have text stroke hints, not stroke-order scoring.
+- Home exposes native language names, speaking offers four unscored greetings, and writing entry states S01–S06 are unfinished while S07 is available. This release does not fill the missing writing curriculum.
+- No new microphone use, synthesized recordings, analytics or cloud state. Physical-device and human pronunciation review are not claimed. Exact-commit browser CI and Pages verification gate release.
+
 ## v173 question experience release candidate
 
 - User-approved release on `agent/unify-exam-intro`, based on main `037624a`; version bumped once from v172 to v173. PR CI, merge and live Pages checks gate publication.

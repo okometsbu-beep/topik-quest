@@ -194,3 +194,38 @@ test('queued build, next and restart actions cannot change saved progress after 
   app.context.malbitBeginnerReadRestart();
   assert.equal(app.saved().readingV2.index, 0);
 });
+
+test('six starter letters stay outside the expandable inventory in every locale', () => {
+  for (const lang of ['ko', 'ja', 'en', 'zh']) {
+    const seed = { known: ['v:ㅙ', 'c:ㅉ'], writing: { ㅙ: 5 }, grammarV1: { completed: ['a'] } };
+    const app = runtime(seed, lang);
+    for (const [tab, glyphs, total] of [['vowels', 'ㅏㅓㅗㅜㅡㅣ', 21], ['consonants', 'ㄱㄴㄷㅁㅂㅇ', 19]]) {
+      app.context.malbitBeginnerTab(tab);
+      const html = app.screen.innerHTML;
+      const before = html.slice(0, html.indexOf('<details class="hbMoreLetters"'));
+      assert.equal((before.match(/class="hbLetterName/g) || []).length, 6);
+      for (const glyph of glyphs) assert.ok(before.includes(`>${glyph}</b>`));
+      assert.equal((html.match(/class="hbLetterName/g) || []).length, total);
+      assert.doesNotMatch(html, /class="hbMoreLetters" open/);
+      app.context.malbitBeginnerExpandLetters(tab, true);
+      app.context.malbitBeginnerLearn(tab === 'vowels' ? 'v:ㅙ' : 'c:ㅉ', 'test');
+      assert.match(app.screen.innerHTML, /class="hbMoreLetters" open/);
+    }
+    for (const key of Object.keys(seed)) assert.deepEqual(app.saved()[key], seed[key]);
+  }
+});
+
+test('reading stays step three and handwriting follows as step four', () => {
+  const app = runtime({}, 'en');
+  assert.match(app.screen.innerHTML, /3\. Reading/);
+  app.context.malbitBeginnerTab('consonants');
+  assert.match(app.screen.innerHTML, /malbitBeginnerTab\('reading'\)/);
+  const v34 = fs.readFileSync('app-polish-v34.js', 'utf8');
+  assert.match(v34, /tabs\.appendChild\(writing\)/);
+  assert.match(v34, /4\. Writing/);
+  assert.doesNotMatch(v34, /4\. Reading|3\. Writing/);
+  const v35 = fs.readFileSync('app-polish-v35.js', 'utf8');
+  assert.match(v35, /STEP 4 · TRACING/);
+  assert.match(v35, /not stroke order or pronunciation/);
+  assert.doesNotMatch(v35, /SMART HANDWRITING|Add the remaining strokes/);
+});

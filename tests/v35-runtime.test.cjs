@@ -69,6 +69,17 @@ test('v35 exposes four writing sets and recognizes a closely traced mask', () =>
   assert.deepEqual({ ...api.setSizes }, { letters: 40, words: 10, vocab: 10, sentences: 5 });
   assert.deepEqual([...api.hangulUnits('오늘 날씨가 좋아요.')], ['오', '늘', '날', '씨', '가', '좋', '아', '요']);
 
+  for (const lang of ['ko', 'ja', 'en', 'zh']) {
+    context.S.lang = lang;
+    for (const glyph of 'ㅏㅓㅗㅜㅡㅣ') assert.match(api.traceHint(glyph), /①/);
+    assert.doesNotMatch(api.traceHint('ㄱ'), /①/);
+    assert.ok(api.traceHint('ㄱ').length > 15);
+  }
+  context.S.lang = 'en';
+  assert.match(api.traceHint('ㅏ'), /Vertical ↓.*right →/);
+  assert.match(api.traceHint('ㅓ'), /left →.*Vertical ↓/);
+  assert.match(api.traceHint('ㄱ'), /not available yet/);
+
   const width = 32, height = 32, target = new Uint8Array(width * height);
   for (let y = 5; y < 27; y++) for (let x = 8; x < 13; x++) target[y * width + x] = 1;
   for (let y = 14; y < 19; y++) for (let x = 8; x < 27; x++) target[y * width + x] = 1;

@@ -90,3 +90,12 @@ html body.hubRedesign .hubMockSummary .hubPrimary:disabled{opacity:.45;cursor:no
 .listeningTranscriptLegend{font-size:12px;color:var(--ui-muted);line-height:1.6}
 
 .listeningTranscript>summary:after{content:'⌄';margin-left:auto;padding-left:10px;flex-shrink:0}.listeningTranscript[open]>summary:after{transform:rotate(180deg)}
+
+/* Language choice stays discoverable before the first lesson. */
+.hubLanguageEntry{margin:0 0 12px;font-size:13px;color:var(--ui-ink)}
+.hubLanguageEntry summary{cursor:pointer;min-height:44px;display:flex;align-items:center;text-decoration:underline}
+.hubLanguageEntry>div{display:flex;flex-wrap:wrap;gap:8px;padding:4px 0 12px}
+.hubLanguageEntry button{min-height:44px;padding:8px 14px;border:1px solid var(--ui-border);border-radius:12px;background:var(--ui-surface);color:var(--ui-ink);font:inherit}
+.hubLanguageEntry button[aria-pressed="true"]{border:2px solid var(--ui-accent);font-weight:800}
+.hubLanguageEntry button:focus-visible,.hubLanguageEntry summary:focus-visible{outline:3px solid var(--ui-accent);outline-offset:3px}
+.hubBeginnerReview .hubRow span{min-width:0;overflow-wrap:anywhere}
