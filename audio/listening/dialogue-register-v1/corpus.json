@@ -1,0 +1,94 @@
+{
+  "version": 1,
+  "scope": "Two legacy TOPIK II peer dialogues only; no expert, lecture or quote changes",
+  "model": "supertone-oss-archive/supertonic-3",
+  "modelRevision": "aafc6e32416a594460b32413efc49d7fe4ce6d46",
+  "questionCount": 2,
+  "scriptCount": 2,
+  "textCount": 4,
+  "clipCount": 4,
+  "corpus": [
+    {
+      "id": "2a7510344ed998fb",
+      "text": "택배가 오늘 도착한다더니 아직 안 왔네요.",
+      "voices": [
+        "F1"
+      ],
+      "sources": [
+        "legacy-II-6"
+      ]
+    },
+    {
+      "id": "80e1574c8d1215ab",
+      "text": "배송 조회를 해 보니까 기사님이 주소를 못 찾고 있대요.",
+      "voices": [
+        "M1"
+      ],
+      "sources": [
+        "legacy-II-6"
+      ]
+    },
+    {
+      "id": "ebf7282880cbb9aa",
+      "text": "반찬을 매번 많이 만들어서 결국 버리게 돼요.",
+      "voices": [
+        "F1"
+      ],
+      "sources": [
+        "legacy-II-17"
+      ]
+    },
+    {
+      "id": "a564215df85a8da8",
+      "text": "그러니까 처음부터 먹을 만큼만 준비하는 게 좋아요. 남은 재료가 있으면 다른 요리에 활용할 수도 있고요.",
+      "voices": [
+        "M1"
+      ],
+      "sources": [
+        "legacy-II-17"
+      ]
+    }
+  ],
+  "coverage": [
+    {
+      "id": "legacy-II-6",
+      "originalScript": "여자: 택배가 오늘 도착한다더니 아직 안 왔네.\n남자: 배송 조회를 해 보니까 기사님이 주소를 못 찾고 있대.",
+      "script": "여자: 택배가 오늘 도착한다더니 아직 안 왔네요.\n남자: 배송 조회를 해 보니까 기사님이 주소를 못 찾고 있대요."
+    },
+    {
+      "id": "legacy-II-17",
+      "originalScript": "여자: 반찬을 매번 많이 만들어서 결국 버리게 돼.\n남자: 그러니까 처음부터 먹을 만큼만 준비하는 게 좋아. 남은 재료가 있으면 다른 요리에 활용할 수도 있고.",
+      "script": "여자: 반찬을 매번 많이 만들어서 결국 버리게 돼요.\n남자: 그러니까 처음부터 먹을 만큼만 준비하는 게 좋아요. 남은 재료가 있으면 다른 요리에 활용할 수도 있고요."
+    }
+  ],
+  "scripts": {
+    "여자: 택배가 오늘 도착한다더니 아직 안 왔네요.\n남자: 배송 조회를 해 보니까 기사님이 주소를 못 찾고 있대요.": [
+      {
+        "id": "2a7510344ed998fb",
+        "voice": "F1",
+        "text": "택배가 오늘 도착한다더니 아직 안 왔네요.",
+        "file": "audio/listening/dialogue-register-v1/F1/2a7510344ed998fb.mp3"
+      },
+      {
+        "id": "80e1574c8d1215ab",
+        "voice": "M1",
+        "text": "배송 조회를 해 보니까 기사님이 주소를 못 찾고 있대요.",
+        "file": "audio/listening/dialogue-register-v1/M1/80e1574c8d1215ab.mp3"
+      }
+    ],
+    "여자: 반찬을 매번 많이 만들어서 결국 버리게 돼요.\n남자: 그러니까 처음부터 먹을 만큼만 준비하는 게 좋아요. 남은 재료가 있으면 다른 요리에 활용할 수도 있고요.": [
+      {
+        "id": "ebf7282880cbb9aa",
+        "voice": "F1",
+        "text": "반찬을 매번 많이 만들어서 결국 버리게 돼요.",
+        "file": "audio/listening/dialogue-register-v1/F1/ebf7282880cbb9aa.mp3"
+      },
+      {
+        "id": "a564215df85a8da8",
+        "voice": "M1",
+        "text": "그러니까 처음부터 먹을 만큼만 준비하는 게 좋아요. 남은 재료가 있으면 다른 요리에 활용할 수도 있고요.",
+        "file": "audio/listening/dialogue-register-v1/M1/a564215df85a8da8.mp3"
+      }
+    ]
+  }
+}
