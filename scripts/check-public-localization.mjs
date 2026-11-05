@@ -1,4 +1,5 @@
 // Hosted Chrome/CDP, isolated QA profile. No learner's browser/profile is accessed.
+import {createBrowserReadiness} from './lib/browser-readiness.mjs';
 import fs from 'node:fs';import path from 'node:path';import os from 'node:os';import assert from 'node:assert/strict';import {spawn} from 'node:child_process';import {fileURLToPath} from 'node:url';
 const root=path.resolve(process.env.PUBLIC_LOCALIZATION_TEST_ROOT||path.join(path.dirname(fileURLToPath(import.meta.url)),'..')),out=path.join(root,'artifacts/public-localization');fs.mkdirSync(out,{recursive:true});
 const port=4194,debug=9244,base=process.env.MALBIT_BASE_URL||`http://127.0.0.1:${port}`,sleep=ms=>new Promise(r=>setTimeout(r,ms));
@@ -11,8 +12,8 @@ try{
  let serial=0;const pending=new Map(),errors=[];socket.addEventListener('message',async e=>{const m=JSON.parse(typeof e.data==='string'?e.data:await e.data.text());if(m.id){const p=pending.get(m.id);pending.delete(m.id);clearTimeout(p.timer);m.error?p.reject(Error(m.error.message)):p.resolve(m.result);}if(m.method==='Runtime.exceptionThrown')errors.push(m.params.exceptionDetails.exception?.description||m.params.exceptionDetails.text);});
  const send=(method,params={})=>new Promise((resolve,reject)=>{const id=++serial,timer=setTimeout(()=>{pending.delete(id);reject(Error(`CDP timeout: ${method}`));},30000);pending.set(id,{resolve,reject,timer});socket.send(JSON.stringify({id,method,params}));});
  const run=async expression=>{const r=await send('Runtime.evaluate',{expression,awaitPromise:true,returnByValue:true});if(r.exceptionDetails)throw Error(r.exceptionDetails.exception?.description||r.exceptionDetails.text);return r.result.value;};
- async function ready(){for(let n=0;n<300;n++){try{if(await run('!!window.HARUMAL_BANK_REVIEWED&&!!window.MALBIT_BANK&&!document.documentElement.classList.contains("tq-booting")&&!document.querySelector(".harumanIntro")'))return;}catch{}await sleep(100);}throw Error('App boot timeout');}
- await send('Runtime.enable');await send('Page.enable');await send('Network.enable');await send('Network.setCacheDisabled',{cacheDisabled:false});await send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});await send('Page.navigate',{url:base});await ready();
+ const {navigate}=createBrowserReadiness({send,run,label:'Public localization',predicate:`!!window.HARUMAL_BANK_REVIEWED&&!!window.MALBIT_BANK&&typeof S==='object'&&['setView','render','stopTimer','t1Pick','openReviewRetry','reviewSelect','closeReviewRetry'].every(name=>typeof window[name]==='function')&&typeof window.MALBIT_REVIEW?.record==='function'&&!document.documentElement.classList.contains('tq-booting')&&!document.querySelector('.harumanIntro')`});
+ await send('Runtime.enable');await send('Page.enable');await send('Network.enable');await send('Network.setCacheDisabled',{cacheDisabled:false});await send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});await navigate('Page.navigate',{url:base});
  const report=await run(`(async()=>{
   const insist=(v,m)=>{if(!v)throw Error(m)},snap=()=>JSON.stringify(Object.entries(localStorage).sort()),before=snap(),lang=S.lang;
   const index=await(await fetch('data/bank-locales/v1/index.json')).json(),shards=new Map();for(const d of index.shards)shards.set(d.moduleId+'|'+d.locale,await(await fetch(d.url)).json());
@@ -31,12 +32,12 @@ try{
  assert.equal(report.canonicalLocalePermutations,432);await send('Page.captureScreenshot',{format:'png'}).then(r=>fs.writeFileSync(path.join(out,'canonical-panel.png'),Buffer.from(r.data,'base64')));
  // Real random-session hook: seed only this disposable profile, then reload closure.
  await run(`localStorage.setItem('topikQuestTopik1Session',JSON.stringify({mode:'random',examLevel:1,kind:'reading',ids:['M09-I-R-34'],i:0,answers:{},played:{},choiceOrders:{'M09-I-R-34':[2,0,3,1]},score:0,total:0,streak:0,locked:false,startedAt:Date.now()}));`);
- await send('Page.reload',{ignoreCache:false});await ready();await run(`setView('t1quiz');render();stopTimer();`);assert.equal(await run(`document.querySelectorAll('[data-reviewed-panel]').length`),0);
+ await navigate('Page.reload',{ignoreCache:false});await run(`setView('t1quiz');render();stopTimer();`);assert.equal(await run(`document.querySelectorAll('[data-reviewed-panel]').length`),0);
  await run(`t1Pick(0);t1Pick(0);stopTimer();`);for(let n=0;n<100&&!await run(`!!document.querySelector('[data-reviewed-panel]')`);n++)await sleep(20);assert.equal(await run(`document.querySelectorAll('[data-reviewed-panel]').length`),1);
  assert.equal(await run(`document.querySelector('[data-reviewed-locale]').value`),'original');report.actualRandomAfterAnswerHook=true;
  // Actual completed review retry, using the existing public record/open/select APIs.
  // Reload resets only the disposable browser context/cache; no application code is rewritten.
- await send('Page.reload',{ignoreCache:false});await ready();
+ await navigate('Page.reload',{ignoreCache:false});
  const review=await run(`(async()=>{
   const insist=(v,m)=>{if(!v)throw Error(m)},pause=ms=>new Promise(r=>setTimeout(r,ms)),storage=()=>JSON.stringify(Object.entries(localStorage).sort());
   const id='M09-I-R-34',other='M10-I-R-32',order=[2,0,3,1],q=MALBIT_BANK.present(id,order),key='1:read:'+id;
