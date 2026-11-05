@@ -32,6 +32,10 @@ try{
  const shot=async name=>{await sleep(100);const r=await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});fs.writeFileSync(path.join(out,name+'.png'),Buffer.from(r.data,'base64'))};
  const fits=async label=>assert.equal(await run('document.documentElement.scrollWidth>innerWidth+1'),false,label+' horizontal overflow');
  const grammar=()=>run(`JSON.parse(localStorage.getItem('malbitBeginnerV1')).grammarV1`);
+ // A closed <details> can retain descendant layout rectangles while suppressing
+ // their rendering. Geometry alone therefore does not establish visibility.
+ const visibleLetters=()=>run(`[...document.querySelectorAll('.hbLetterCard')].filter(e=>!e.closest('details:not([open])')&&e.checkVisibility({checkVisibilityCSS:true,checkOpacity:true})&&e.getBoundingClientRect().height>0).length`);
+
  await send('Page.enable');await send('Runtime.enable');await send('Network.enable');
  await send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
  await navigate('Page.navigate',{url:base});
@@ -44,10 +48,15 @@ try{
   await click('.hubLanguageEntry summary');await click(`.hubLanguageEntry button[lang="${lang}"]`);
   assert.equal(await run('S.lang'),lang);await fits(label+' home');
   await run(`malbitBeginnerExpandLetters('vowels',false);malbitBeginnerExpandLetters('consonants',false);setView('beginner');malbitBeginnerTab('vowels');scrollTo(0,0)`);
-  // Count rendered visibility, not hidden cards in a closed details subtree.
-  assert.equal(await run(`[...document.querySelectorAll('.hbLetterCard')].filter(e=>e.getBoundingClientRect().height>0).length`),6);
+  // Save evidence before asserting so an unexpected open state is diagnosable.
+  await shot(label+'-hangul-collapsed');
+  const collapsed=await run(`(()=>{const d=document.querySelector('.hbMoreLetters');return {open:d?.open,total:document.querySelectorAll('.hbLetterCard').length,inside:d?.querySelectorAll('.hbLetterCard').length}})()`);
+  report.hangulDiagnostics??=[];report.hangulDiagnostics.push({label,...collapsed});
+  assert.deepEqual(collapsed,{open:false,total:21,inside:15},label+' collapsed starter structure');
+  assert.equal(await visibleLetters(),6,label+' visible starter letters');
   await click('.hbMoreLetters summary');await sleep(50);
-  assert.equal(await run(`[...document.querySelectorAll('.hbLetterCard')].filter(e=>e.getBoundingClientRect().height>0).length`),21);
+  assert.equal(await run(`document.querySelector('.hbMoreLetters').open`),true,label+' expanded state');
+  assert.equal(await visibleLetters(),21,label+' visible expanded letters');
   await fits(label+' expanded vowels');await shot(label+'-hangul');
   await click('.hbLessonContinue');
   assert.equal(await run(`document.querySelector('.v33BeginnerTabs .on').textContent.trim().startsWith('2.')`),true);
