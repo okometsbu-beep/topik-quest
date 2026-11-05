@@ -72,10 +72,10 @@ try{
   await run(`malbitOpenGrammar();malbitGrammarLesson('sentence-order');scrollTo(0,0)`);
   assert.equal(await run(`document.querySelectorAll('[data-chip]').length`),3);
   if(lang!=='ko')assert.equal(await run(`/주어|목적어|동사/.test(document.querySelector('.bgFormula').textContent)`),false);
-  await click('[data-chip="2"]');await click('.bgChunks button:last-child');
+  await click('[data-chip="2"]');await click('.bgChunks > button:last-child');
   assert.equal(await run(`!!document.querySelector('.bgFeedback[role="status"]:not(.wrong):not(.correct)')`),true);
   assert.equal((await grammar()).attempts?.['sentence-order']||0,0);
-  await click('[data-chip="0"]');await click('[data-chip="1"]');await click('.bgChunks button:last-child');
+  await click('[data-chip="0"]');await click('[data-chip="1"]');await click('.bgChunks > button:last-child');
   assert.equal(await run(`!!document.querySelector('.bgFeedback.wrong')`),true);
   assert.ok((await grammar()).reviewPending.includes('sentence-order'));
   await navigate('Page.reload',{ignoreCache:false});
@@ -89,7 +89,8 @@ try{
   await click('[data-chip="0"]');await click('[onclick="malbitGrammarChipUndo()"]');
   assert.equal(await run(`document.querySelector('[data-chip="0"]').disabled`),false);
   for(const i of [0,1,2])await click(`[data-chip="${i}"]`);
-  await click('.bgChunks button:last-child');
+  assert.equal(await run(`document.activeElement===document.querySelector('.bgChunks > button:last-child')`),true,label+' completed chips focus submit');
+  await click('.bgChunks > button:last-child');
   assert.equal(await run(`!!document.querySelector('.bgFeedback.correct')`),true);
   const progress=await grammar();assert.equal(progress.quizCorrect['sentence-order'],true);assert.equal(progress.reviewPending.includes('sentence-order'),false);assert.equal(progress.rewardAttempts['sentence-order'].assisted,true);
   assert.equal(progress.completed.includes('copula'),true);assert.deepEqual(progress.writingUnits.copula,[0,1]);assert.equal(progress.drafts.topic,'한국어');assert.equal(progress.rewardAttempts.copula.sessionId,'qa-old');

@@ -34,3 +34,8 @@ test('malformed review storage is safely ignored without deleting unrelated reco
  const {c}=runtime({malbitBeginnerV1:JSON.stringify({grammarV1:{reviewPending:['unknown','sentence-order']}})});assert.equal(c.MALBIT_BEGINNER_GRAMMAR_REVIEW.list().length,1);
  const second=runtime({malbitBeginnerV1:JSON.stringify({grammarV1:{reviewPending:{bad:true}}})});assert.equal(second.c.MALBIT_BEGINNER_GRAMMAR_REVIEW.list().length,0);
 });
+
+test('completed chip selection focuses the outer submit control',()=>{
+ const {c}=runtime();const focused=[];c.document.querySelector=selector=>({focus:()=>focused.push(selector)});
+ [0,1,2].forEach(c.malbitGrammarChip);assert.equal(focused.at(-1),'.bgChunks > button:last-child');
+});
