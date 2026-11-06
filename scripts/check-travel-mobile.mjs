@@ -868,7 +868,8 @@ try{
   await setViewport(390,844);await evaluate(`document.querySelectorAll('.bgExample')[1]?.scrollIntoView({block:'center',behavior:'auto'})`);await sleep(80);await shot('00bd-a05-grammar-translation-light.png');
   await evaluate(`malbitSetTheme('dark')`);await sleep(100);
 
-  await evaluate(`document.querySelector('#malbitGrammarAnswer').scrollIntoView({block:'center',behavior:'auto'})`);await sleep(80);
+  if(await evaluate(`!!document.querySelector('.bgDrill details:not([open])')`))await tap('.bgDrill details > summary',0,80);
+    await evaluate(`document.querySelector('#malbitGrammarAnswer').scrollIntoView({block:'center',behavior:'auto'})`);await sleep(80);
   await tap('#malbitGrammarAnswer',0,80);await send('Input.insertText',{text:'저는 한국어'});await sleep(100);
   assert.deepEqual(await evaluate(`(()=>{const value=JSON.parse(localStorage.getItem('malbitBeginnerV1'));return{draft:value.grammarV1.drafts['sentence-order'],lastLesson:value.grammarV1.lastLesson,known:value.known,legacyScore:value.legacyScore}})()`),{draft:'저는 한국어',lastLesson:'sentence-order',known:['v:ㅏ'],legacyScore:7},'unfinished grammar draft must save without replacing older beginner progress');
   await evaluate(`setView('home')`);await sleep(100);
@@ -878,6 +879,7 @@ try{
   assert.equal(await evaluate(`document.querySelector('#malbitGrammarAnswer')?.value`),'저는 한국어','Japanese beginner grammar draft must survive exit, reload, and course re-entry');
   for(const theme of ['light','dark']){await evaluate(`malbitSetTheme('${theme}')`);await sleep(80);for(const width of [320,375,390,430]){
     await setViewport(width,width===320?700:844);await assertBeginnerGrammarFits(`Beginner grammar draft re-entry ${theme} ${width}px`,theme);
+    if(await evaluate(`!!document.querySelector('.bgDrill details:not([open])')`))await tap('.bgDrill details > summary',0,80);
     await evaluate(`document.querySelector('#malbitGrammarAnswer').scrollIntoView({block:'center',behavior:'auto'})`);await sleep(60);
     await shot(`00renewal-beginner-grammar-draft-${theme}-${width}.png`)
   }}
@@ -913,7 +915,7 @@ try{
   assert.equal(await evaluate(`document.querySelector('.bgHeader h1')?.textContent`),'文脈による主語・目的語の省略','the completion CTA must open the second grammar item, not repeat the first');
   assert.deepEqual(await evaluate(`(()=>({goal:document.querySelector('.bgLessonHero p')?.textContent,formula:document.querySelector('.bgFormula b')?.textContent,meanings:[...document.querySelectorAll('.bgExampleMeaning')].map(node=>node.textContent),notes:[...document.querySelectorAll('.bgExampleNote p')].map(node=>node.textContent),writingUnits:document.querySelectorAll('.bgUnitStrip button').length,writingCount:document.querySelector('.bgWriting header>span')?.textContent,coach:window.MALBIT_BEGINNER_GRAMMAR_V1.lessons.find(item=>item.id==='sentence-omission')?.drill.coach.ja}))()`),{
     goal:'文脈から誰・何のことかが明らかな場合、主語や目的語を省略できます。',
-    formula:'([주어/목적어] 생략) + 핵심 내용',
+    formula:'([主語/目的語] 省略) + 中心内容',
     meanings:['A：どこへ行きますか。B：会社へ行きます。','A：ご飯は食べましたか。B：はい、食べました。'],
     notes:['質問に答えるB本人が主語だと文脈で分かるため、「저는」を省略できます。','何を食べたかは質問に出ているため、Bでは目的語「밥을」を省略できます。'],
     writingUnits:7,

@@ -44,3 +44,10 @@ html body.harumal .hbBeginner .hbSelfNote{font-size:11px;line-height:1.65;text-a
 html body.harumal .hbBeginner .v33BeginnerTip{margin-top:20px}.hbBeginner .v33BeginnerTip b{font-size:15px}.hbBeginner .v33BeginnerTip p{margin:6px 0 0}
 @media(max-width:360px){html body.harumal .hbBeginner :is(.v33LetterIntro,.v33ReadingLesson,.v33BeginnerTip,.hbLetterNote){padding:14px}html body.harumal .hbBeginner .hbLetterGrid{gap:8px}html body.harumal .hbBeginner .hbLetterGrid .hbLetterName{grid-template-columns:36px minmax(0,1fr) 9px;padding:10px 6px;gap:4px}html body.harumal .hbBeginner .hbLetterName b{width:36px;height:44px;font-size:27px}.hbLetterName strong{font-size:13px}.hbConstruction{gap:10px}.hbBlock{width:108px;height:116px}.hbBuiltWord{width:78px;height:116px}.hbWordPicture{max-width:210px}}
 @media(prefers-reduced-motion:reduce){.hbBeginner *{scroll-behavior:auto}}
+
+/* A small first lesson; the full inventory remains available on demand. */
+.hbMoreLetters{margin:14px 0;border:1px solid var(--line,#6b8298);border-radius:16px;padding:12px}
+.hbMoreLetters summary{cursor:pointer;min-height:44px;display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700}
+.hbMoreLetters summary::before{content:'＋'}
+.hbMoreLetters[open] summary::before{content:'−'}
+.v35TraceHint{font-size:14px;line-height:1.6;margin:12px 0;color:inherit}
