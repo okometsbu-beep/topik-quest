@@ -915,7 +915,7 @@ try{
   assert.equal(await evaluate(`document.querySelector('.bgHeader h1')?.textContent`),'文脈による主語・目的語の省略','the completion CTA must open the second grammar item, not repeat the first');
   assert.deepEqual(await evaluate(`(()=>({goal:document.querySelector('.bgLessonHero p')?.textContent,formula:document.querySelector('.bgFormula b')?.textContent,meanings:[...document.querySelectorAll('.bgExampleMeaning')].map(node=>node.textContent),notes:[...document.querySelectorAll('.bgExampleNote p')].map(node=>node.textContent),writingUnits:document.querySelectorAll('.bgUnitStrip button').length,writingCount:document.querySelector('.bgWriting header>span')?.textContent,coach:window.MALBIT_BEGINNER_GRAMMAR_V1.lessons.find(item=>item.id==='sentence-omission')?.drill.coach.ja}))()`),{
     goal:'文脈から誰・何のことかが明らかな場合、主語や目的語を省略できます。',
-    formula:'([주어/목적어] 생략) + 핵심 내용',
+    formula:'([主語/目的語] 省略) + 中心内容',
     meanings:['A：どこへ行きますか。B：会社へ行きます。','A：ご飯は食べましたか。B：はい、食べました。'],
     notes:['質問に答えるB本人が主語だと文脈で分かるため、「저는」を省略できます。','何を食べたかは質問に出ているため、Bでは目的語「밥을」を省略できます。'],
     writingUnits:7,
