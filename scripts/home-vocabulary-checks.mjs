@@ -26,7 +26,9 @@ export async function verifyHomeVocabulary({evaluate,tap,shot,setViewport,send,r
  assert.equal(await evaluate(`document.querySelector('.harumalTestResult>b').textContent`),'1 / 2');await shot('refresh-test-results.png');
  await tap('.harumalVocabTest>.harumalTestPrimary');assert.equal(await evaluate('S.vocabExam.items.length'),1);
  assert.equal(await evaluate('JSON.stringify(S.vocab)'),before,'test preserves existing SRS fields');
- assert.equal(await evaluate(`(()=>{const e=new Event('contextmenu',{bubbles:true,cancelable:true});document.querySelector('#vocabTestAnswer').dispatchEvent(e);return e.defaultPrevented})()`),true);
+ // Text fields keep the browser's own menu and clipboard; other UI keeps its callout suppression.
+ assert.equal(await evaluate(`(()=>{const e=new Event('contextmenu',{bubbles:true,cancelable:true});document.querySelector('#vocabTestAnswer').dispatchEvent(e);return e.defaultPrevented})()`),false,'a text field keeps its native context menu');
+ assert.equal(await evaluate(`(()=>{const e=new Event('contextmenu',{bubbles:true,cancelable:true});document.querySelector('#vocabTestAnswer').closest('form,section')?.dispatchEvent(e);return e.defaultPrevented})()`),true,'the surrounding UI still suppresses the callout');
  for(const view of ['courseMap','review','profile','vocab']){await evaluate(`setView('${view}')`);await fit(view);await shot(`refresh-${view}-dark.png`)}
  await tap('#nav_home');await tap('.hubHomeHeader .harumalSettingsTrigger');await shot('refresh-language-menu.png');
  await tap('[data-hub-action="close-settings"]');
