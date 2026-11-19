@@ -139,10 +139,8 @@ document.addEventListener('touchend',event=>{if(!swipeStart||event.changedTouche
 function removeSaveBanners(){document.querySelectorAll('.tqLongPressDiscovery,.tqVocabCoach').forEach(node=>node.remove())}
 function postRender(){applyTheme();patchNavigationIcons();removeSaveBanners();patchHome();patchMore();patchListeningNotice();patchGameHub();patchMap();patchBattle();patchRandomFeedback()}
 
-const afterRenderPatch=()=>{postRender();requestAnimationFrame(postRender)};
-if(typeof window.tqAfterRender==='function')window.tqAfterRender(afterRenderPatch);
-else if(typeof window.render==='function'){
-  const baseRender=window.render;window.render=function(){const out=baseRender.apply(this,arguments);afterRenderPatch();return out};
+if(typeof window.render==='function'){
+  const baseRender=window.render;window.render=function(){const out=baseRender.apply(this,arguments);postRender();requestAnimationFrame(postRender);return out};
 }
 window.matchMedia?.('(prefers-color-scheme: dark)').addEventListener?.('change',()=>{if(themeMode()==='system')applyTheme()});
 window.tqOnBodyChange?.(()=>{removeSaveBanners();patchListeningNotice()});

@@ -104,11 +104,9 @@ function sync(){
   document.body.classList.toggle('tq-review-active',active);
   const sheet=document.getElementById('sheetBody');if(sheet)sheet.classList.toggle('tqReviewRetrySheet',active&&!!sheet.querySelector('.tqReviewQuestion'));
 }
-const afterRenderSync=()=>{sync();requestAnimationFrame(sync)};
-if(typeof window.tqAfterRender==='function')window.tqAfterRender(afterRenderSync);
-else if(typeof window.render==='function'){
+if(typeof window.render==='function'){
   const baseRender=window.render;
-  window.render=function(){const out=baseRender.apply(this,arguments);afterRenderSync();return out};
+  window.render=function(){const out=baseRender.apply(this,arguments);sync();requestAnimationFrame(sync);return out};
 }
 window.tqOnBodyChange?.(sync);
 sync();

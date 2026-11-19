@@ -122,11 +122,9 @@ function sync(){
    }
   }
 }
-const afterRenderSync=()=>{sync();requestAnimationFrame(sync)};
-if(typeof window.tqAfterRender==='function')window.tqAfterRender(afterRenderSync);
-else if(typeof window.render==='function'){
+if(typeof window.render==='function'){
   const baseRender=window.render;
-  window.render=function(){const out=baseRender.apply(this,arguments);afterRenderSync();return out};
+  window.render=function(){const out=baseRender.apply(this,arguments);sync();requestAnimationFrame(sync);return out};
 }
 window.tqOnBodyChange?.(sync);
 sync();

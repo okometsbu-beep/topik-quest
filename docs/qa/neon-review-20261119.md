@@ -16,9 +16,9 @@
 
 - `app-polish-v33/34/35.js`의 `patchVersion()`을 삭제했다. 이 함수는 설정 화면 배지를 실제 버전 대신 `v33`/`v34`/`v35`로 덮어쓰고 있었다(실제 배지는 `v176`이어야 한다). 세 파일 모두 렌더마다 마지막에 실행되므로 사용자가 보는 값이 항상 틀린 값이었다.
 - `document.body` 전체를 감시하던 `MutationObserver` 4개(v22·v24·review·random)를 `site-patch-core.js`의 단일 감시자로 모았다. 각 모듈은 `window.tqOnBodyChange(callback)`으로 콜백만 등록하고, 감시자는 DOM 변화 폭주마다 rAF 한 번으로 등록 콜백을 순서대로 실행한다.
-- `window.render`를 겹겹이 감싸던 7개 레이어를 하나의 후처리 단계로 모았다. 각 레이어는 `window.tqAfterRender(callback)`으로 등록만 하고, `site-patch.js`가 모든 런타임 파일을 읽은 직후 `tqInstallAfterRender()`로 래퍼 하나를 설치한다. 등록 순서(로드 순서)대로 한 번씩 실행되며, `render()`가 없는 환경(단독 모듈 테스트)에서는 예전처럼 스스로 감싼다.
-- 회귀: `tests/compat-layer-consolidation.test.cjs`(4건 — body 감시자 단일 소유, 하드코딩 배지 금지, 등록 순서·1회 실행, 부트스트랩 설치 지점), `tests/v33-runtime`, `v34-runtime`, `v35-runtime`, `visual-system`, `home-visual-system`, `shorts-visual-system`, `random-practice-visual-system`, `review-visual-system`, `startup-navigation`, `runtime-contract` 통과.
-- 남은 범위: `app-polish-v22~v35`의 기능을 목적별 파일로 완전히 흡수해 파일 자체를 없애는 일은 하지 않았다. 이번 변경은 "겹친 래퍼와 감시자"를 하나로 모은 단계이고, 다음 단계는 각 레이어의 패치 함수를 소유 파일로 옮기는 별도 작업이다.
+- `window.render` 래핑은 **이번 릴리스에서 합치지 않았다.** 한 단계로 모으는 구현(모든 런타임 로드 후 단일 후처리 단계 설치)을 만들었지만, CI의 플래시카드 브라우저 검사에서 단어장 화면의 `hfEntry` 카드가 사라지는 회귀가 나와 되돌렸다. 각 레이어는 예전처럼 렌더 뒤 자기 패치를 한 번 감싸 실행하며, 래퍼가 두 번 설치되지 않는 것은 그대로다. 이 합치기는 화면별 브라우저 확인이 가능한 환경에서 다시 시도해야 한다(아래 "남은 범위" 참고).
+- 회귀: `tests/compat-layer-consolidation.test.cjs`(3건 — body 감시자 단일 소유, 하드코딩 배지 금지, 레이어별 래퍼 1회), `tests/v33-runtime`, `v34-runtime`, `v35-runtime`, `visual-system`, `home-visual-system`, `shorts-visual-system`, `random-practice-visual-system`, `review-visual-system`, `startup-navigation`, `runtime-contract`, `vocab-flashcards` 통과.
+- 남은 범위: ① `window.render` 래핑 7개를 하나의 후처리 단계로 모으는 일(위 회귀 때문에 보류), ② `app-polish-v22~v35`의 패치 함수를 목적별 소유 파일로 옮겨 파일 자체를 없애는 일. 둘 다 화면 회귀를 즉시 볼 수 있는 브라우저 환경에서 단계별로 진행해야 한다.
 
 ### ③ 서비스 워커 `SHELL` 동기화 — `sw.js`
 

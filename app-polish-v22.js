@@ -136,11 +136,9 @@ document.addEventListener('keydown',event=>{
 
 window.tqOnBodyChange?.(()=>{syncModal();if(S?.view==='review')patchReview()});
 
-const afterRenderPatch=()=>{postRender();requestAnimationFrame(postRender)};
-if(typeof window.tqAfterRender==='function')window.tqAfterRender(afterRenderPatch);
-else if(typeof render==='function'){
+if(typeof render==='function'){
   const baseRender=render;
-  render=function(){const out=baseRender.apply(this,arguments);afterRenderPatch();return out};
+  render=function(){const out=baseRender.apply(this,arguments);postRender();requestAnimationFrame(postRender);return out};
 }
 
 if(typeof setView==='function'){

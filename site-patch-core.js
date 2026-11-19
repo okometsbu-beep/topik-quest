@@ -433,24 +433,3 @@ if(typeof MutationObserver==='function'&&document.body){
 }
 })();
 
-// One render pipeline. Each compatibility layer registers its after-render work once, in load order,
-// instead of wrapping window.render again; the single wrapper installed here runs them in that order.
-(function(){
-'use strict';
-if(typeof window.tqAfterRender==='function')return;
-const callbacks=[];
-window.tqRunAfterRender=()=>{for(const callback of callbacks){try{callback()}catch(error){console.error('[HARUMAL after-render]',error)}}};
-window.tqAfterRender=callback=>{
-  if(typeof callback==='function'&&!callbacks.includes(callback))callbacks.push(callback);
-  return callback
-};
-// The bootstrap calls this once every runtime file has loaded, so the registered patches run as one
-// final stage instead of several wrappers stacked across the load order.
-window.tqInstallAfterRender=()=>{
-  const base=window.render;
-  if(typeof base!=='function'||base.__tqAfterRender)return false;
-  const pipeline=function(){const out=base.apply(this,arguments);window.tqRunAfterRender();return out};
-  pipeline.__tqAfterRender=true;window.render=pipeline;
-  return true
-};
-})();

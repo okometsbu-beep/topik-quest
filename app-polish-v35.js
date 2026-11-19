@@ -121,8 +121,7 @@ function patchWriting(){
   if(appState()?.view!=='beginner')return;const tab=document.querySelector('.v34WritingTab'),holder=document.querySelector('.v34WritingHolder');if(!tab?.classList.contains('on')||!holder)return;holder.classList.add('v35WritingHolder');holder.innerHTML=writingPanel();(window.requestAnimationFrame||window.setTimeout)(initWritingPad,0)
 }
 function afterRender(){patchHomeLevels();patchBeginnerHeader();patchWriting()}
-if(typeof window.tqAfterRender==='function')window.tqAfterRender(afterRender);
-else if(typeof window.render==='function'){const base=window.render;window.render=function(){const result=base.apply(this,arguments);afterRender();return result}}
+if(typeof window.render==='function'){const base=window.render;window.render=function(){const result=base.apply(this,arguments);afterRender();return result}}
 
 window.MALBIT_V35_INTERNALS={scoreMasks,hangulUnits,traceHint,setSizes:Object.fromEntries(Object.entries(WRITING_SETS).map(([key,value])=>[key,value.length]))};
 const style=document.createElement('style');style.textContent=`
