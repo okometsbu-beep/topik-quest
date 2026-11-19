@@ -1,8 +1,8 @@
-// MALBIT bootstrap v176
+// HARUMAL bootstrap v177
 // Load the shared core, reviewed data, TOPIK I engine, then learning interactions.
 (function(){
   'use strict';
-  const VERSION='176';
+  const VERSION='177';
   const RUNTIME_FILES=Object.freeze([
     'writing-answers.js',
     'site-patch-core.js',
@@ -153,6 +153,9 @@
   RUNTIME_FILES.forEach(preload);
   (async()=>{
     await loadSeries(RUNTIME_FILES);
+    // One after-render stage replaces the stacked compatibility wrappers; it must exist before the
+    // first render so every registered patch sees the finished screen.
+    if(typeof window.tqInstallAfterRender==='function')window.tqInstallAfterRender();
     if(typeof render==='function')render();
     const reveal=()=>finishBoot('ready');
     (window.requestAnimationFrame||window.setTimeout)(reveal,0);

@@ -1,22 +1,21 @@
-// Keep native range selection available on learning text; suppress unrelated UI callouts.
+// Keep native range selection and text editing available where a learner needs them;
+// suppress unrelated UI callouts elsewhere.
 (function(){
 'use strict';
+// A text field or a rich-text surface keeps the browser's own editing behaviour:
+// long-press caret placement, selection, copy, cut and paste.
+const EDITABLE='input,textarea,[contenteditable="true"],[contenteditable=""]';
+const editingTarget=target=>{
+  const node=target?.nodeType===3?target.parentElement:target;
+  return node?.closest?.(EDITABLE)||null;
+};
 for(const type of ['contextmenu','selectstart','copy','cut','paste'])document.addEventListener(type,e=>{
+ // Never take editing away from an input, textarea or contenteditable surface.
+ if(editingTarget(e.target))return;
  const target=e.target?.nodeType===3?e.target.parentElement:e.target;
  const learningText=target?.closest?.('.selectable,.vocab-zone');
  const control=target?.closest?.('input,textarea,select,button,a,[contenteditable="true"],[role="button"]');
  if(learningText&&!control&&['contextmenu','selectstart','copy'].includes(type))return;
  e.preventDefault();
 },{capture:true});
-let timer=null,start=null;
-const cancel=()=>{clearTimeout(timer);timer=null;start=null};
-document.addEventListener('touchstart',e=>{
- cancel();const field=e.target.closest?.('input:not([type]),input[type="text"],input[type="search"],textarea,[contenteditable="true"]');
- if(!field||e.touches.length!==1)return;
- start={x:e.touches[0].clientX,y:e.touches[0].clientY};
- // iOS input callouts can ignore user-select. End only a stationary long hold, not a tap.
- timer=setTimeout(()=>{field.blur();window.getSelection()?.removeAllRanges();cancel()},400);
-},{passive:true});
-document.addEventListener('touchmove',e=>{if(start&&e.touches[0]&&Math.hypot(e.touches[0].clientX-start.x,e.touches[0].clientY-start.y)>8)cancel()},{passive:true});
-for(const type of ['touchend','touchcancel'])document.addEventListener(type,cancel,{passive:true});
 })();

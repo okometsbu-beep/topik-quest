@@ -134,12 +134,13 @@ document.addEventListener('keydown',event=>{
   if(event.key!=='Tab')return;const list=focusables(modal);if(!list.length)return;const first=list[0],last=list[list.length-1];if(event.shiftKey&&document.activeElement===first){last.focus();event.preventDefault()}else if(!event.shiftKey&&document.activeElement===last){first.focus();event.preventDefault()}
 });
 
-const observer=new MutationObserver(()=>{syncModal();if(S?.view==='review')patchReview()});
-observer.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});
+window.tqOnBodyChange?.(()=>{syncModal();if(S?.view==='review')patchReview()});
 
-if(typeof render==='function'){
+const afterRenderPatch=()=>{postRender();requestAnimationFrame(postRender)};
+if(typeof window.tqAfterRender==='function')window.tqAfterRender(afterRenderPatch);
+else if(typeof render==='function'){
   const baseRender=render;
-  render=function(){const out=baseRender.apply(this,arguments);postRender();requestAnimationFrame(postRender);return out};
+  render=function(){const out=baseRender.apply(this,arguments);afterRenderPatch();return out};
 }
 
 if(typeof setView==='function'){

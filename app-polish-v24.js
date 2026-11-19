@@ -98,13 +98,15 @@ async function translatedQuestion(state,source){
   const authored=window.MALBIT_EXPLANATIONS?.bankCoach?.[state.id]?.[lang]?.translation;
   const reviewed=policy?.formatReviewedQuestion(state.q,authored)||window.MALBIT_REVIEWED_TRANSLATIONS?.[state.level]?.[state.type]?.[state.id]?.[lang];
   if(!policy)return{status:'unavailable',text:L('이 문제의 전체 번역은 현재 제공되지 않습니다. 한국어 원문은 위에 표시되어 있습니다.','この問題の全文翻訳は現在利用できません。韓国語の原文は上に表示されています。','A full translation is not available for this question. The Korean original is shown above.','这道题暂时无法提供全文翻译。上方显示的是韩语原文。')};
-  return policy.resolve({source,target:lang,reviewed,translate:typeof window.translateCached==='function'?(value,target)=>window.translateCached(`random_whole_v24_${state.level}_${state.type}_${state.id}_${target}`,value,'ko',target):null});
+  // No machine translation is requested here; the policy returns the reviewed text or its own
+  // "translation being prepared" state for this exact question.
+  return policy.resolve({source,target:lang,reviewed,translate:null});
 }
 
 async function localizedExplanation(state){
   const q=state.q,lang=appState()?.lang||'ko';let value=q.explanationI18n?.[lang]||q.explanationI18n?.ko||q.explanation||'';
   if(state.level===2&&window.MALBIT_LEARNING){value=state.type==='listen'?window.MALBIT_LEARNING.listeningExplanation(q):state.type==='read'?window.MALBIT_LEARNING.readingExplanation(q):value}
-  if(lang!=='ko'&&!q.explanationI18n?.[lang]&&value&&typeof window.translateCached==='function')value=await window.translateCached(`random_reason_v24_${state.level}_${state.type}_${state.id}_${lang}`,value,'ko',lang);
+  if(lang!=='ko'&&!q.explanationI18n?.[lang]&&value)value=`${L('해설 번역은 준비 중이에요. 아래는 한국어 원문입니다.','解説の翻訳は準備中です。以下は韓国語の原文です。','A reviewed explanation translation is being prepared. The Korean original follows.','解析翻译正在准备中，以下为韩语原文。')}\n\n${value}`;
   return value||L('정답의 근거를 본문과 선택지에서 다시 확인해 보세요.','本文と選択肢から正解の根拠を確認しましょう。','Review the passage and options for the evidence behind the answer.','请再次对照原文和选项，确认正确答案的依据。');
 }
 
@@ -137,12 +139,13 @@ document.addEventListener('touchend',event=>{if(!swipeStart||event.changedTouche
 function removeSaveBanners(){document.querySelectorAll('.tqLongPressDiscovery,.tqVocabCoach').forEach(node=>node.remove())}
 function postRender(){applyTheme();patchNavigationIcons();removeSaveBanners();patchHome();patchMore();patchListeningNotice();patchGameHub();patchMap();patchBattle();patchRandomFeedback()}
 
-if(typeof window.render==='function'){
-  const baseRender=window.render;window.render=function(){const out=baseRender.apply(this,arguments);postRender();requestAnimationFrame(postRender);return out};
+const afterRenderPatch=()=>{postRender();requestAnimationFrame(postRender)};
+if(typeof window.tqAfterRender==='function')window.tqAfterRender(afterRenderPatch);
+else if(typeof window.render==='function'){
+  const baseRender=window.render;window.render=function(){const out=baseRender.apply(this,arguments);afterRenderPatch();return out};
 }
 window.matchMedia?.('(prefers-color-scheme: dark)').addEventListener?.('change',()=>{if(themeMode()==='system')applyTheme()});
-const cleanupObserver=new MutationObserver(()=>{removeSaveBanners();patchListeningNotice()});
-cleanupObserver.observe(document.body,{subtree:true,childList:true});
+window.tqOnBodyChange?.(()=>{removeSaveBanners();patchListeningNotice()});
 
 const style=document.createElement('style');
 style.textContent=`

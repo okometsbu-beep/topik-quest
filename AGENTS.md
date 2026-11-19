@@ -1,6 +1,6 @@
-# MALBIT repository contract
+# HARUMAL repository contract
 
-This repository is the production source for the public MALBIT Korean-learning PWA.
+This repository is the production source for the public 하루말 (HARUMAL) Korean-learning PWA. Older code, storage keys and some documents still use the earlier `MALBIT` name; keep storage keys and legacy identifiers unchanged.
 Read this file before changing code. Prefer narrow edits and preserve user progress.
 
 ## Product invariants
@@ -31,7 +31,7 @@ Read this file before changing code. Prefer narrow edits and preserve user progr
 | Product UI and settings | `product-polish.js`, `product-growth.js` |
 | Seoul Travel Mode and saved route/avatar state | `travel-mode.js`, `data/travel-pack-seoul-*.js` |
 | Durable local progress recovery | `storage-guard.js`, `tests/storage-preservation.test.cjs` |
-| Later compatibility layers | `app-polish-v22.js`, `app-polish-v24.js`, `app-polish-v33.js`, `app-polish-v34.js`, `app-polish-v35.js` |
+| Later compatibility layers | `app-polish-v22.js`, `app-polish-v24.js`, `app-polish-v33.js`, `app-polish-v34.js`, `app-polish-v35.js` (after-render work registers with `tqAfterRender`, body patches with `tqOnBodyChange`, both in `site-patch-core.js`) |
 | Question-bank behavior | `question-bank-engine.js` |
 | Generated question-bank payload | `data/question-bank-v1-part*.js` |
 | Tests | `tests/` |

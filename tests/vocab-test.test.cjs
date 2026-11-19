@@ -26,11 +26,11 @@ test('exam safely escapes user-owned vocabulary in prompts and results',()=>{
  c.harumalVocabTestStart();assert.ok(!screen.innerHTML.includes('<img src=x'));assert.match(screen.innerHTML,/&lt;img/);
  c.harumalVocabTestDraft('"<script>');c.harumalVocabTestSubmit();assert.ok(!screen.innerHTML.includes('<script>'));assert.match(screen.innerHTML,/&lt;svg/);
 });
-test('native clipboard suppression does not cancel ordinary taps or app vocabulary holds',()=>{
- const listeners={},cleared=[];let callback,blurred=false;
- const c={document:{addEventListener:(type,fn)=>listeners[type]=fn},setTimeout:fn=>(callback=fn,1),clearTimeout:id=>cleared.push(id),getSelection:()=>({removeAllRanges(){}})};c.window=c;vm.createContext(c);vm.runInContext(fs.readFileSync(path.join(__dirname,'../app-touch.js'),'utf8'),c);
- for(const type of ['contextmenu','selectstart','copy','cut','paste']){let prevented=false;listeners[type]({preventDefault(){prevented=true}});assert.equal(prevented,true)}
- const field={blur(){blurred=true}};listeners.touchstart({target:{closest:()=>field},touches:[{clientX:1,clientY:1}]});listeners.touchend();assert.equal(blurred,false);assert.ok(cleared.includes(1));
- listeners.touchstart({target:{closest:()=>field},touches:[{clientX:1,clientY:1}]});callback();assert.equal(blurred,true);
- blurred=false;listeners.touchstart({target:{closest:()=>null},touches:[{clientX:1,clientY:1}]});assert.equal(blurred,false);
+test('native clipboard suppression stays off editing surfaces and never blurs a field',()=>{
+ const listeners={};
+ const c={document:{addEventListener:(type,fn)=>listeners[type]=fn},setTimeout,clearTimeout,getSelection:()=>({removeAllRanges(){}})};c.window=c;vm.createContext(c);vm.runInContext(fs.readFileSync(path.join(__dirname,'../app-touch.js'),'utf8'),c);
+ for(const type of ['contextmenu','selectstart','copy','cut','paste']){let prevented=false;listeners[type]({target:{closest:()=>null},preventDefault(){prevented=true}});assert.equal(prevented,true,type+' outside editing surfaces')}
+ const field={closest:selector=>/contenteditable/.test(selector)&&!/select,button/.test(selector)?{}:null};
+ for(const type of ['contextmenu','selectstart','copy','cut','paste']){let prevented=false;listeners[type]({target:field,preventDefault(){prevented=true}});assert.equal(prevented,false,type+' inside a text field')}
+ assert.equal(listeners.touchstart,undefined,'no stationary-hold touch handler is installed');
 });

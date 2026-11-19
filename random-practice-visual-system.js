@@ -122,10 +122,12 @@ function sync(){
    }
   }
 }
-if(typeof window.render==='function'){
+const afterRenderSync=()=>{sync();requestAnimationFrame(sync)};
+if(typeof window.tqAfterRender==='function')window.tqAfterRender(afterRenderSync);
+else if(typeof window.render==='function'){
   const baseRender=window.render;
-  window.render=function(){const out=baseRender.apply(this,arguments);sync();requestAnimationFrame(sync);return out};
+  window.render=function(){const out=baseRender.apply(this,arguments);afterRenderSync();return out};
 }
-new MutationObserver(sync).observe(document.body,{childList:true,subtree:true});
+window.tqOnBodyChange?.(sync);
 sync();
 })();

@@ -411,3 +411,46 @@
     if(typeof S!=='undefined'&&(S.view==='home'||S.view==='more'||S.view==='devStudio'))setTimeout(()=>render(),0);
   });
 })();
+
+// One observer for document.body serves every late patch. Modules register a callback with
+// tqOnBodyChange instead of starting another body-wide MutationObserver, so one DOM burst runs each
+// patch once instead of four observers scanning the same tree.
+(function(){
+'use strict';
+if(typeof window.tqOnBodyChange==='function')return;
+const callbacks=[];let queued=false;
+const run=()=>{queued=false;for(const callback of callbacks){try{callback()}catch(error){console.error('[HARUMAL body patch]',error)}}};
+window.tqRunBodyPatches=run;
+window.tqOnBodyChange=callback=>{
+  if(typeof callback==='function'&&!callbacks.includes(callback))callbacks.push(callback);
+  return callback
+};
+if(typeof MutationObserver==='function'&&document.body){
+  new MutationObserver(()=>{
+    if(queued)return;queued=true;
+    if(typeof requestAnimationFrame==='function')requestAnimationFrame(run);else setTimeout(run,0)
+  }).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});
+}
+})();
+
+// One render pipeline. Each compatibility layer registers its after-render work once, in load order,
+// instead of wrapping window.render again; the single wrapper installed here runs them in that order.
+(function(){
+'use strict';
+if(typeof window.tqAfterRender==='function')return;
+const callbacks=[];
+window.tqRunAfterRender=()=>{for(const callback of callbacks){try{callback()}catch(error){console.error('[HARUMAL after-render]',error)}}};
+window.tqAfterRender=callback=>{
+  if(typeof callback==='function'&&!callbacks.includes(callback))callbacks.push(callback);
+  return callback
+};
+// The bootstrap calls this once every runtime file has loaded, so the registered patches run as one
+// final stage instead of several wrappers stacked across the load order.
+window.tqInstallAfterRender=()=>{
+  const base=window.render;
+  if(typeof base!=='function'||base.__tqAfterRender)return false;
+  const pipeline=function(){const out=base.apply(this,arguments);window.tqRunAfterRender();return out};
+  pipeline.__tqAfterRender=true;window.render=pipeline;
+  return true
+};
+})();
