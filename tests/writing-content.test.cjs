@@ -26,8 +26,8 @@ function learnerText(item) {
 test('writing content exposes an immutable honest 14-node curriculum map', () => {
   assert.equal(data.version, 1);
   assert.equal(data.nodes.length, 14);
-  assert.equal(data.groups.length, 24);
-  assert.equal(data.items.length, 55);
+  assert.equal(data.groups.length, 54);
+  assert.equal(data.items.length, 109);
   assert.deepEqual(Array.from(data.nodes, node => node.id), Array.from({ length: 12 }, (_, n) => `S${String(n + 1).padStart(2, '0')}`).concat(['D01', 'D02']));
   const partialNodes = ['S01', 'S02', 'S03', 'S04', 'S05', 'S06', 'S07'];
   assert.equal(data.nodes.find(node => node.id === 'S07').status, 'partial');
@@ -151,7 +151,7 @@ test('independent models and delayed scenarios are not leaked into learner suppo
     assert.equal(item.evidence.assistedByDesign, false);
   }
   const delayed = data.items.filter(item => item.delayedOnly);
-  assert.deepEqual(Array.from(delayed, item => item.id), ['D01', 'D02']);
+  assert.deepEqual(Array.from(delayed, item => item.id), ['D01', 'D02', 'S01d1', 'S02d1', 'S03d1', 'S04d1', 'S05d1', 'S06d1']);
   const publicSameDay = data.items.filter(item => !item.delayedOnly).map(learnerText).join('\n');
   for (const item of delayed) {
     assert.equal(item.evidence.heldOut, true);

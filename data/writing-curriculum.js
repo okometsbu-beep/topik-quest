@@ -36,8 +36,8 @@
   const node = (id, titleKo, titleJa, summaryKo, prerequisites, prerequisiteNoteKo, subskills, nextUseKo) => ({
     id, titleKo, titleJa, summaryKo, prerequisites, prerequisiteNoteKo, subskills, nextUseKo,
     status: ['S01', 'S02', 'S03', 'S04', 'S05', 'S06', 'S07'].includes(id) ? 'partial' : 'planned',
-    statusKo: id === 'S07' ? '첫 이유 소단원만 준비됨' : ['S01', 'S02', 'S03', 'S04', 'S05', 'S06'].includes(id) ? '첫 소단원만 준비됨' : '능력 지도 · 문항 준비 중',
-    statusJa: id === 'S07' ? '最初の理由ユニットのみ利用可' : ['S01', 'S02', 'S03', 'S04', 'S05', 'S06'].includes(id) ? '最初の単元のみ利用可' : '能力マップ・問題は準備中',
+    statusKo: id === 'S07' ? '첫 이유 소단원만 준비됨' : ['S01', 'S02', 'S03', 'S04', 'S05', 'S06'].includes(id) ? '본격 단원 준비됨' : '능력 지도 · 문항 준비 중',
+    statusJa: id === 'S07' ? '最初の理由ユニットのみ利用可' : ['S01', 'S02', 'S03', 'S04', 'S05', 'S06'].includes(id) ? '本格ユニット利用可' : '能力マップ・問題は準備中',
     availableGroupIds: []
   });
   const nodes = [
@@ -227,10 +227,25 @@
     S06: 'どんな対象かを修飾する言葉を入れたか確認しましょう。'
   };
   const foundationNodes = ['S01', 'S02', 'S03', 'S04', 'S05', 'S06'];
+  // Every sentence-foundation node now runs the same stage skeleton as the cause-writing unit:
+  // form practice → mixed → variation → correction → expansion → independent → delayed.
+  const foundationStages = [
+    { key: 'mixed', stage: 'mixed', titleKo: '새 내용으로 쓰기', titleJa: '新しい内容で書く', helpKo: '배운 형태를 처음 보는 사실에 그대로 써 봐요.', helpJa: '習った形を、初めて見る事実にそのまま使ってみます。', promptKo: '새로운 사실로 같은 형태를 한 문장에 써 보세요. 주어진 정보를 모두 넣으세요.', promptJa: '新しい事実で同じ形を1文に書きましょう。与えられた情報をすべて入れてください。' },
+    { key: 'vary', stage: 'variation', titleKo: '조건 하나 바꾸기', titleJa: '条件を1つ変える', helpKo: '시제·주체·부정 중 하나만 바꾸고 나머지 뜻은 유지해요.', helpJa: '時制・主体・否定のどれか1つだけを変え、ほかの意味は保ちます。', promptKo: '조건 하나만 바꾸어 뜻을 유지한 채 다시 써 보세요.', promptJa: '条件を1つだけ変え、意味を保ったまま書き直しましょう。' },
+    { key: 'repair', stage: 'correction', titleKo: '초고 고치기', titleJa: '下書きを直す', helpKo: '틀린 부분만 고쳐요. 문장 전체를 새로 쓰지 않아도 돼요.', helpJa: '間違っている部分だけを直します。文全体を書き直さなくてもかまいません。', promptKo: '초고에서 잘못된 부분만 고쳐 해요체 한 문장으로 써 보세요.', promptJa: '下書きの間違っている部分だけを直し、ヘヨ体の1文で書きましょう。' },
+    { key: 'expand', stage: 'expansion', titleKo: '정보 하나 더하기', titleJa: '情報を1つ加える', helpKo: '시간·장소·상대·정도 중 하나를 더 넣어 정보를 분명하게 해요.', helpJa: '時・場所・相手・程度のどれかを1つ加えて、情報をはっきりさせます。', promptKo: '한 문장에 필요한 정보를 하나 더 넣어 써 보세요.', promptJa: '1文に必要な情報をもう1つ加えて書きましょう。' },
+    { key: 'independent', stage: 'independent', titleKo: '새 상황에서 혼자 쓰기', titleJa: '新しい場面で一人で書く', helpKo: '예문 없이, 처음 보는 사실로 한 문장을 써요.', helpJa: '例文なしで、初めて見る事実から1文を書きます。', promptKo: '예문 없이 처음 보는 사실로 해요체 한 문장을 써 보세요.', promptJa: '例文なしで、初めて見る事実からヘヨ体の1文を書きましょう。', hideFormLesson: true },
+    { key: 'delayed', stage: 'delayed', titleKo: '다른 날의 새 상황', titleJa: '別の日の新しい場面', helpKo: '첫 독립 작성에서 하루가 지나고 날짜가 바뀌면 열려요.', helpJa: '最初の独立した作文から1日が過ぎ、日付が変わると開きます。', promptKo: '다른 날, 처음 보는 사실로 해요체 한 문장을 써 보세요.', promptJa: '別の日に、初めて見る事実からヘヨ体の1文を書きましょう。', delayedOnly: true, hideFormLesson: true, releasePolicy: 'later_local_calendar_day', previewPolicy: 'hide_items_until_due' },
+  ];
   foundationNodes.forEach(nodeId => {
     const target = nodes.find(value => value.id === nodeId), prerequisites = ['basic_sentence'];
-    groups.push(group(`${nodeId.toLowerCase()}-practice`, target.titleKo, target.titleJa, 'mixed', prerequisites, { nodeId, helpKo: unitPrompts[nodeId][0], helpJa: unitPrompts[nodeId][1] }));
+    groups.push(group(`${nodeId.toLowerCase()}-practice`, target.titleKo, target.titleJa, 'form', prerequisites, { nodeId, helpKo: unitPrompts[nodeId][0], helpJa: unitPrompts[nodeId][1] }));
+    for (const stage of foundationStages.filter(value => value.key !== 'independent' && value.key !== 'delayed')) {
+      const extra = { helpKo: stage.helpKo, helpJa: stage.helpJa };
+      groups.push(group(`${nodeId.toLowerCase()}-${stage.key}`, stage.titleKo, stage.titleJa, stage.stage, prerequisites, { nodeId, ...extra }));
+    }
     groups.push(group(`${nodeId.toLowerCase()}-independent`, '새 상황에서 혼자 쓰기', '新しい場面で一人で書く', 'independent', prerequisites, { nodeId, helpKo: '예문 없이, 처음 보는 사실로 한 문장을 써요.', helpJa: '例文なしで、初めて見る事実から1文を書きます。', hideFormLesson: true }));
+    groups.push(group(`${nodeId.toLowerCase()}-delayed`, '다른 날의 새 상황', '別の日の新しい場面', 'delayed', prerequisites, { nodeId, helpKo: '첫 독립 작성에서 하루가 지나고 날짜가 바뀌면 열려요.', helpJa: '最初の独立した作文から1日が過ぎ、日付が変わると開きます。', delayedOnly: true, hideFormLesson: true, releasePolicy: 'later_local_calendar_day', previewPolicy: 'hide_items_until_due' }));
   });
   const findGroup = id => groups.find(value => value.id === id);
   function foundation(id, groupId, facts, meaningJa, models, patterns, vocabulary = []) {
@@ -277,6 +292,96 @@
   foundation('S06a', 's06-practice', [{ ko: '재미있다 / 책 / 읽다', ja: '面白い / 本 / 読む' }], '面白い本を読む、という意味です。', ['재미있는 책을 읽어요.'], ['재미있', '책']);
   foundation('S06b', 's06-practice', [{ ko: '키가 크다 / 사람 / 만나다', ja: '背が高い / 人 / 会う' }], '背が高い人に会う、という意味です。', ['키가 큰 사람을 만나요.'], ['큰\\s*사람', '만나']);
   foundation('S06e', 's06-independent', [{ ko: '비가 오다 / 날 / 집에 있다', ja: '雨が降る / 日 / 家にいる' }], '雨が降る日は家にいる、という意味です。', ['비가 오는 날은 집에 있어요.'], ['오는\\s*날', '집에']);
+
+  function foundationStage(stage) {
+    return foundationStages.find(value => value.key === stage);
+  }
+  function foundationSentence(spec) {
+    const g = findGroup(spec.groupId), stage = foundationStage(spec.stage);
+    return sentence({
+      id: spec.id, groupId: spec.groupId, facts: spec.facts, models: spec.models, draftKo: spec.draft || undefined, image: spec.image || null,
+      support: { meaningJa: spec.meaningJa, vocabulary: spec.vocabulary || [] },
+      promptKo: stage.promptKo, promptJa: stage.promptJa,
+      evidence: { relationProvided: false, ...(spec.stage === 'delayed' ? { heldOut: true, newContext: true } : {}) },
+      evaluation: {
+        targetPattern: politeEnding,
+        alternativePattern: politeEnding,
+        required: [
+          ...spec.patterns.map((pattern, index) => check(`component_${index + 1}`, pattern, nodeHint[g.nodeId], nodeHintJa[g.nodeId])),
+          check('polite_finish', politeEnding, '주어진 행동이나 결과를 해요체로 끝까지 써 보세요.', '示された行動や結果を、ヘヨ体で最後まで書いてみましょう。')
+        ],
+        forbidden: [
+          check('reason_link', '아서|어서|때문에|으니까', '이번 소단원에는 이유 연결을 쓰지 않아요. 주어진 사실을 그대로 써요.', 'この単元では理由の接続を使いません。与えられた事実をそのまま書きましょう。'),
+          check('two_sentences', '[.!?][가-힣]', '문장 하나로 써 보세요. 두 문장으로 나누지 않아요.', '1文で書きましょう。2文に分けません。')
+        ]
+      }
+    });
+  }
+  // S01 stages: form practice (above) → mixed → variation → correction → expansion → independent → delayed.
+  foundationSentence({ id: 'S01m1', groupId: 's01-mixed', stage: 'mixed', facts: [fact('동생이 / 방에서 / 자다', '弟が / 部屋で / 寝る')], meaningJa: '弟が部屋で寝る場面です。', models: ['동생이 방에서 자요.'], patterns: ['동생[이가은]', '방에서', '자요'], vocabulary: [word('동생', '弟・妹'), word('자다', '寝る')], image: 'study' });
+  foundationSentence({ id: 'S01m2', groupId: 's01-mixed', stage: 'mixed', facts: [fact('친구가 / 공원에서 / 사진을 찍다', '友だちが / 公園で / 写真を撮る')], meaningJa: '友だちが公園で写真を撮る場面です。', models: ['친구가 공원에서 사진을 찍어요.'], patterns: ['공원에서', '사진', '찍'], vocabulary: [word('사진', '写真'), word('찍다', '撮る'), word('공원', '公園')], image: 'park' });
+  foundationSentence({ id: 'S01v1', groupId: 's01-vary', stage: 'vary', facts: [fact('어제 / 늦게 / 퇴근하다', '昨日 / 遅く / 退勤する')], meaningJa: '時点だけを昨日に変えます。', models: ['어제 늦게 퇴근했어요.'], patterns: ['어제', '퇴근했어요'], vocabulary: [word('퇴근하다', '退勤する'), word('어제', '昨日')], image: 'work' });
+  foundationSentence({ id: 'S01v2', groupId: 's01-vary', stage: 'vary', facts: [fact('오늘은 / 시간이 없다', '今日は / 時間がない')], meaningJa: '「없다」の意味をそのまま生かして書きます。', models: ['오늘은 시간이 없어요.'], patterns: ['오늘은', '시간[이은]', '없어요'], vocabulary: [word('시간', '時間'), word('오늘', '今日')], image: 'work' });
+  foundationSentence({ id: 'S01r1', groupId: 's01-repair', stage: 'repair', facts: [fact('날씨가 / 좋다', '天気が / よい')], meaningJa: '天気がよいことを、ヘヨ体の1文に直します。', models: ['날씨가 좋아요.'], patterns: ['날씨가', '좋아요'], vocabulary: [word('날씨', '天気')], draft: '날씨가 좋다.' });
+  foundationSentence({ id: 'S01r2', groupId: 's01-repair', stage: 'repair', facts: [fact('저는 / 도서관에서 / 공부하다', '私は / 図書館で / 勉強する')], meaningJa: '勉強することを、最後まで書いた1文に直します。', models: ['저는 도서관에서 공부해요.'], patterns: ['도서관에서', '공부해요'], vocabulary: [word('도서관', '図書館')], image: 'study', draft: '저는 도서관에서 공부.' });
+  foundationSentence({ id: 'S01x1', groupId: 's01-expand', stage: 'expand', facts: [fact('지금 / 도서관에서 / 조용히 / 공부하다', '今 / 図書館で / 静かに / 勉強する')], meaningJa: '「조용히」を入れて、どうするかを足します。', models: ['지금 도서관에서 조용히 공부해요.'], patterns: ['지금', '조용히', '공부해요'], vocabulary: [word('조용히', '静かに'), word('도서관', '図書館')], image: 'study' });
+  foundationSentence({ id: 'S01i1', groupId: 's01-independent', stage: 'independent', facts: [fact('내일 / 친구를 만나다', '明日 / 友だちに会う')], meaningJa: '明日、友だちに会う場面です。', models: ['내일 친구를 만나요.'], patterns: ['내일', '친구', '만나'], vocabulary: [word('내일', '明日'), word('친구', '友だち')], image: 'park' });
+  foundationSentence({ id: 'S01d1', groupId: 's01-delayed', stage: 'delayed', facts: [fact('다음 주에 / 새 집으로 이사하다', '来週 / 新しい家に引っ越す')], meaningJa: '来週、新しい家に引っ越す場面です。', models: ['다음 주에 새 집으로 이사해요.'], patterns: ['다음\\s*주에', '이사'], vocabulary: [word('이사하다', '引っ越す'), word('새', '新しい')], image: 'work' });
+
+  // S02 stages: form practice (above) → mixed → variation → correction → expansion → independent → delayed.
+  foundationSentence({ id: 'S02m1', groupId: 's02-mixed', stage: 'mixed', facts: [fact('친구 / 도서관 / 책을 빌리다', '友だち / 図書館 / 本を借りる')], meaningJa: '友だちが図書館で本を借りる場面です。', models: ['친구가 도서관에서 책을 빌려요.'], patterns: ['친구[가는이]', '도서관에서', '책을', '빌려'], vocabulary: [word('빌리다', '借りる'), word('도서관', '図書館')], image: 'study' });
+  foundationSentence({ id: 'S02m2', groupId: 's02-mixed', stage: 'mixed', facts: [fact('저 / 지하철 / 회사에 가다', '私 / 地下鉄 / 会社へ行く')], meaningJa: '地下鉄で会社へ行く場面です。', models: ['저는 지하철로 회사에 가요.', '지하철을 타고 회사에 가요.'], patterns: ['지하철로|지하철을\\s*타고', '회사에', '가요'], vocabulary: [word('지하철', '地下鉄'), word('회사', '会社')], image: 'work' });
+  foundationSentence({ id: 'S02v1', groupId: 's02-vary', stage: 'vary', facts: [fact('오늘은 / 집에서 / 쉬다', '今日は / 家で / 休む')], meaningJa: '場所は家、時点は今日のままです。', models: ['오늘은 집에서 쉬어요.'], patterns: ['오늘은', '집에서', '쉬어'], vocabulary: [word('쉬다', '休む'), word('오늘', '今日')], image: 'study' });
+  foundationSentence({ id: 'S02v2', groupId: 's02-vary', stage: 'vary', facts: [fact('동생 / 버스로 학교에 가다', '弟・妹 / バスで学校へ行く')], meaningJa: '手段はバス、到着地は学校です。', models: ['동생은 버스로 학교에 가요.'], patterns: ['버스로', '학교에', '가요'], vocabulary: [word('버스', 'バス'), word('학교', '学校')], image: 'work' });
+  foundationSentence({ id: 'S02r1', groupId: 's02-repair', stage: 'repair', facts: [fact('저 / 학교 / 가다', '私 / 学校 / 行く')], meaningJa: '行き先を示す助詞が抜けています。', models: ['저는 학교에 가요.'], patterns: ['학교에', '가요'], vocabulary: [word('학교', '学校')], draft: '저는 학교 가요.' });
+  foundationSentence({ id: 'S02r2', groupId: 's02-repair', stage: 'repair', facts: [fact('친구 / 도서관 / 책을 빌리다', '友だち / 図書館 / 本を借りる')], meaningJa: '場所を表す助詞が抜けています。', models: ['친구가 도서관에서 책을 빌려요.'], patterns: ['도서관에서', '책을', '빌려'], vocabulary: [word('빌리다', '借りる'), word('도서관', '図書館')], image: 'study', draft: '친구가 책을 도서관 빌려요.' });
+  foundationSentence({ id: 'S02x1', groupId: 's02-expand', stage: 'expand', facts: [fact('저 / 저녁 / 공원에서 / 산책하다', '私 / 夕方 / 公園で / 散歩する')], meaningJa: '時と場所を両方入れて書きます。', models: ['저는 저녁에 공원에서 산책해요.'], patterns: ['저녁에', '공원에서', '산책'], vocabulary: [word('산책하다', '散歩する'), word('저녁', '夕方・夜')], image: 'park' });
+  foundationSentence({ id: 'S02i1', groupId: 's02-independent', stage: 'independent', facts: [fact('동생 / 주말에 / 친구를 만나다', '弟・妹 / 週末に / 友だちに会う')], meaningJa: '週末に弟か妹が友だちに会う場面です。', models: ['동생은 주말에 친구를 만나요.'], patterns: ['주말에', '친구를', '만나'], vocabulary: [word('주말', '週末'), word('친구', '友だち')] });
+  foundationSentence({ id: 'S02d1', groupId: 's02-delayed', stage: 'delayed', facts: [fact('저 / 내일 / 기차로 부산에 가다', '私 / 明日 / 列車で釜山へ行く')], meaningJa: '明日、列車で釜山へ行く場面です。', models: ['저는 내일 기차로 부산에 가요.'], patterns: ['기차로', '부산에', '가요'], vocabulary: [word('기차', '列車'), word('부산', '釜山')], image: 'work' });
+
+  // S03 stages: form practice (above) → mixed → variation → correction → expansion → independent → delayed.
+  foundationSentence({ id: 'S03m1', groupId: 's03-mixed', stage: 'mixed', facts: [fact('날씨가 / 춥다', '天気が / 寒い')], meaningJa: '「춥다」をヘヨ体にします。', models: ['날씨가 추워요.'], patterns: ['날씨가', '추워요'], vocabulary: [word('날씨', '天気'), word('춥다', '寒い')] });
+  foundationSentence({ id: 'S03m2', groupId: 's03-mixed', stage: 'mixed', facts: [fact('동생이 / 책을 / 읽다', '弟・妹が / 本を / 読む')], meaningJa: '「읽다」をヘヨ体にします。', models: ['동생이 책을 읽어요.'], patterns: ['동생이', '책을', '읽어요'], vocabulary: [word('읽다', '読む'), word('책', '本')], image: 'study' });
+  foundationSentence({ id: 'S03v1', groupId: 's03-vary', stage: 'vary', facts: [fact('어제 / 날씨가 / 춥다', '昨日 / 天気が / 寒い')], meaningJa: '時点だけを昨日に変えます。', models: ['어제는 날씨가 추웠어요.'], patterns: ['어제', '추웠어요'], vocabulary: [word('춥다', '寒い'), word('어제', '昨日')] });
+  foundationSentence({ id: 'S03v2', groupId: 's03-vary', stage: 'vary', facts: [fact('친구들이 / 운동을 / 하다', '友だちが / 運動を / する')], meaningJa: '主語が複数でも述語はそのままヘヨ体です。', models: ['친구들이 운동을 해요.'], patterns: ['친구들이', '운동을', '해요'], vocabulary: [word('운동', '運動')], image: 'work' });
+  foundationSentence({ id: 'S03r1', groupId: 's03-repair', stage: 'repair', facts: [fact('오늘 / 기분이 / 좋다', '今日 / 気分が / よい')], meaningJa: '「좋다」の形を正しく直します。', models: ['오늘은 기분이 좋아요.'], patterns: ['기분이', '좋아요'], vocabulary: [word('오늘', '今日')], draft: '오늘은 기분이 좋어요.' });
+  foundationSentence({ id: 'S03r2', groupId: 's03-repair', stage: 'repair', facts: [fact('내일 / 날씨가 / 춥다', '明日 / 天気が / 寒い')], meaningJa: '「춥다」의 ㅂの形を正しく直します。', models: ['내일은 날씨가 추워요.'], patterns: ['날씨가', '추워요'], vocabulary: [word('춥다', '寒い'), word('날씨', '天気'), word('내일', '明日')], draft: '내일은 날씨가 추우요.' });
+  foundationSentence({ id: 'S03x1', groupId: 's03-expand', stage: 'expand', facts: [fact('주말 / 친구와 같이 / 영화를 보다', '週末 / 友だちと一緒に / 映画を見る')], meaningJa: '「같이」を入れて、誰とするかを足します。', models: ['주말에 친구와 같이 영화를 봐요.'], patterns: ['같이', '영화', '봐요'], vocabulary: [word('같이', '一緒に'), word('주말', '週末')], image: 'movie' });
+  foundationSentence({ id: 'S03i1', groupId: 's03-independent', stage: 'independent', facts: [fact('오늘 / 날씨가 / 따뜻하다', '今日 / 天気が / 暖かい')], meaningJa: '今日は天気が暖かい場面です。', models: ['오늘은 날씨가 따뜻해요.'], patterns: ['날씨가', '따뜻해요'], vocabulary: [word('오늘', '今日'), word('날씨', '天気')] });
+  foundationSentence({ id: 'S03d1', groupId: 's03-delayed', stage: 'delayed', facts: [fact('내일 / 날씨가 / 따뜻하다', '明日 / 天気が / 暖かい')], meaningJa: '明日は天気が暖かいという場面です。', models: ['내일은 날씨가 따뜻해요.'], patterns: ['내일', '따뜻해요'], vocabulary: [word('따뜻하다', '暖かい'), word('날씨', '天気')] });
+
+  // S04 stages: form practice (above) → mixed → variation → correction → expansion → independent → delayed.
+  foundationSentence({ id: 'S04m1', groupId: 's04-mixed', stage: 'mixed', facts: [fact('지난주 / 영화를 보다', '先週 / 映画を見る')], meaningJa: '先週、映画を見た場面です。', models: ['지난주에 영화를 봤어요.'], patterns: ['지난주', '봤어요'], vocabulary: [word('지난주', '先週')], image: 'movie' });
+  foundationSentence({ id: 'S04m2', groupId: 's04-mixed', stage: 'mixed', facts: [fact('저는 / 커피를 못 마시다', '私は / コーヒーが飲めない')], meaningJa: 'コーヒーが飲めないことを表します。', models: ['저는 커피를 못 마셔요.'], patterns: ['못', '마셔요'], vocabulary: [] });
+  foundationSentence({ id: 'S04v1', groupId: 's04-vary', stage: 'vary', facts: [fact('다음 달 / 여행을 가다', '来月 / 旅行に行く')], meaningJa: '時点を来月にします。', models: ['다음 달에 여행을 가요.'], patterns: ['다음\\s*달', '여행', '가요'], vocabulary: [word('다음달', '来月'), word('여행', '旅行')] });
+  foundationSentence({ id: 'S04v2', groupId: 's04-vary', stage: 'vary', facts: [fact('어제 / 택시를 못 타다', '昨日 / タクシーに乗れなかった')], meaningJa: 'できなかったことを過去で表します。', models: ['어제는 택시를 못 탔어요.'], patterns: ['어제', '택시', '못', '탔어요'], vocabulary: [word('택시', 'タクシー'), word('어제', '昨日')], image: 'work' });
+  foundationSentence({ id: 'S04r1', groupId: 's04-repair', stage: 'repair', facts: [fact('어제 / 비가 오다', '昨日 / 雨が降る')], meaningJa: '過去の形に直します。', models: ['어제 비가 왔어요.'], patterns: ['비가', '왔어요'], vocabulary: [], image: 'rain', draft: '어제 비가 오요.' });
+  foundationSentence({ id: 'S04r2', groupId: 's04-repair', stage: 'repair', facts: [fact('어제 / 운동을 안 하다', '昨日 / 運動をしない')], meaningJa: '時点に合わせて過去に直します。', models: ['어제는 운동을 안 했어요.'], patterns: ['어제', '안\\s*했어요|하지\\s*않았어요'], vocabulary: [word('운동', '運動')], draft: '어제는 운동을 안 해요.' });
+  foundationSentence({ id: 'S04x1', groupId: 's04-expand', stage: 'expand', facts: [fact('지난 주말 / 친구 / 영화를 못 보다', '先週末 / 友だち / 映画を見られなかった')], meaningJa: '時点を足して、できなかったことを書きます。', models: ['지난 주말에 친구와 영화를 못 봤어요.'], patterns: ['친구', '영화', '못\\s*봤어요'], vocabulary: [word('주말', '週末'), word('친구', '友だち')], image: 'movie' });
+  foundationSentence({ id: 'S04i1', groupId: 's04-independent', stage: 'independent', facts: [fact('오늘 / 수업이 없다', '今日 / 授業がない')], meaningJa: '今日は授業がない場面です。', models: ['오늘은 수업이 없어요.'], patterns: ['수업', '없어요'], vocabulary: [word('수업', '授業')] });
+  foundationSentence({ id: 'S04d1', groupId: 's04-delayed', stage: 'delayed', facts: [fact('작년 / 제주도에 가다', '去年 / 済州島へ行く')], meaningJa: '去年、済州島へ行った場面です。', models: ['작년에 제주도에 갔어요.'], patterns: ['작년', '제주도', '갔어요'], vocabulary: [word('제주도', '済州島')] });
+
+  // S05 stages: form practice (above) → mixed → variation → correction → expansion → independent → delayed.
+  foundationSentence({ id: 'S05m1', groupId: 's05-mixed', stage: 'mixed', facts: [fact('저녁 / 가족과 / 집에서 / 저녁을 먹다', '夕方 / 家族と / 家で / 夕食を食べる')], meaningJa: '家族と家で夕食を食べる場面です。', models: ['저녁에 가족과 집에서 저녁을 먹어요.'], patterns: ['저녁에', '가족과', '집에서', '먹어요'], vocabulary: [word('가족', '家族'), word('저녁식사', '夕食')] });
+  foundationSentence({ id: 'S05m2', groupId: 's05-mixed', stage: 'mixed', facts: [fact('아침마다 / 버스를 타고 / 회사에 가다', '毎朝 / バスに乗って / 会社へ行く')], meaningJa: '毎朝、バスで会社へ行く場面です。', models: ['아침마다 버스를 타고 회사에 가요.'], patterns: ['아침마다', '버스', '회사에'], vocabulary: [word('아침마다', '毎朝'), word('버스', 'バス')], image: 'work' });
+  foundationSentence({ id: 'S05v1', groupId: 's05-vary', stage: 'vary', facts: [fact('아주 / 재미있다', 'とても / 面白い')], meaningJa: '程度を強く表します。', models: ['아주 재미있어요.'], patterns: ['아주', '재미있어요'], vocabulary: [], image: 'movie' });
+  foundationSentence({ id: 'S05v2', groupId: 's05-vary', stage: 'vary', facts: [fact('자주 / 도서관에 가다', 'よく / 図書館へ行く')], meaningJa: '頻度を表す言葉を入れます。', models: ['자주 도서관에 가요.'], patterns: ['자주', '도서관에'], vocabulary: [word('자주', 'よく'), word('도서관', '図書館')] });
+  foundationSentence({ id: 'S05r1', groupId: 's05-repair', stage: 'repair', facts: [fact('토요일 / 친구와 / 영화를 보다', '土曜日 / 友だちと / 映画を見る')], meaningJa: '抜けている情報を足します。', models: ['토요일에 친구와 영화를 봐요.'], patterns: ['토요일', '친구와', '영화', '봐요'], vocabulary: [word('친구', '友だち')], image: 'movie', draft: '주말에 영화를 봐요.' });
+  foundationSentence({ id: 'S05r2', groupId: 's05-repair', stage: 'repair', facts: [fact('아침 / 공원에서 / 달리다', '朝 / 公園で / 走る')], meaningJa: '時を表す助詞を直します。', models: ['아침에 공원에서 달려요.'], patterns: ['아침에', '공원에서'], vocabulary: [word('아침', '朝'), word('공원', '公園')], image: 'park', draft: '아침 공원에서 달려요.' });
+  foundationSentence({ id: 'S05x1', groupId: 's05-expand', stage: 'expand', facts: [fact('지난주 / 부산 / 이틀 동안 머무르다', '先週 / 釜山 / 2日間滞在する')], meaningJa: '滞在した期間を足します。', models: ['지난주에 부산에서 이틀 동안 머물렀어요.'], patterns: ['지난주', '부산', '이틀', '머물'], vocabulary: [word('머무르다', '滞在する'), word('이틀', '2日'), word('부산', '釜山')] });
+  foundationSentence({ id: 'S05i1', groupId: 's05-independent', stage: 'independent', facts: [fact('다음 주 / 친구 / 제주도에 가다', '来週 / 友だち / 済州島へ行く')], meaningJa: '来週、友だちと済州島へ行く場面です。', models: ['다음 주에 친구와 제주도에 가요.'], patterns: ['다음\\s*주', '친구', '제주도'], vocabulary: [word('제주도', '済州島'), word('친구', '友だち')] });
+  foundationSentence({ id: 'S05d1', groupId: 's05-delayed', stage: 'delayed', facts: [fact('매일 아침 / 공원 / 삼십 분 동안 걷다', '毎朝 / 公園 / 30分歩く')], meaningJa: '毎朝の習慣と、その長さを書きます。', models: ['매일 아침 공원에서 삼십 분 동안 걸어요.'], patterns: ['매일', '공원에서', '삼십\\s*분', '걸어요'], vocabulary: [word('매일', '毎日'), word('걷다', '歩く'), word('삼십분', '30分')], image: 'park' });
+
+  // S06 stages: form practice (above) → mixed → variation → correction → expansion → independent → delayed.
+  foundationSentence({ id: 'S06m1', groupId: 's06-mixed', stage: 'mixed', facts: [fact('비싸다 / 가방 / 사다', '高い / かばん / 買う')], meaningJa: '「비싸다」でかばんを限定します。', models: ['비싼 가방을 사요.'], patterns: ['비싼\\s*가방', '사요'], vocabulary: [word('비싸다', '高い'), word('가방', 'かばん')] });
+  foundationSentence({ id: 'S06m2', groupId: 's06-mixed', stage: 'mixed', facts: [fact('내가 좋아하다 / 노래 / 듣다', '私が好きだ / 歌 / 聞く')], meaningJa: '私が好きな歌を聞く場面です。', models: ['내가 좋아하는 노래를 들어요.'], patterns: ['좋아하는\\s*노래', '들어요'], vocabulary: [word('좋아하다', '好きだ'), word('노래', '歌')] });
+  foundationSentence({ id: 'S06v1', groupId: 's06-vary', stage: 'vary', facts: [fact('어제 만나다 / 사람 / 친절하다', '昨日会った / 人 / 親切だ')], meaningJa: '過去を表す形で人を限定します。', models: ['어제 만난 사람은 친절해요.'], patterns: ['만난\\s*사람', '친절'], vocabulary: [word('친절하다', '親切だ'), word('사람', '人')] });
+  foundationSentence({ id: 'S06v2', groupId: 's06-vary', stage: 'vary', facts: [fact('내일 하다 / 일 / 많다', '明日する / こと / 多い')], meaningJa: 'これからすることを表す形で限定します。', models: ['내일 할 일이 많아요.'], patterns: ['할\\s*일', '많아요'], vocabulary: [word('일', '仕事')], image: 'work' });
+  foundationSentence({ id: 'S06r1', groupId: 's06-repair', stage: 'repair', facts: [fact('재미있다 / 책 / 읽다', '面白い / 本 / 読む')], meaningJa: '冠形の形に直します。', models: ['재미있는 책을 읽어요.'], patterns: ['재미있는\\s*책', '읽어요'], vocabulary: [word('책', '本')], image: 'study', draft: '재미있다 책을 읽어요.' });
+  foundationSentence({ id: 'S06r2', groupId: 's06-repair', stage: 'repair', facts: [fact('비가 오다 / 날 / 집에 있다', '雨が降る / 日 / 家にいる')], meaningJa: '冠形の形に直します。', models: ['비가 오는 날은 집에 있어요.'], patterns: ['오는\\s*날', '집에'], vocabulary: [], draft: '비가 오다 날은 집에 있어요.' });
+  foundationSentence({ id: 'S06x1', groupId: 's06-expand', stage: 'expand', facts: [fact('값이 싸다 / 가방 / 사다', '値段が安い / かばん / 買う')], meaningJa: '「싸다」でかばんを限定して書きます。', models: ['값이 싼 가방을 사요.', '값이 싼 가방을 샀어요.'], patterns: ['싼\\s*가방', '샀어요|사요'], vocabulary: [word('값', '値段'), word('싸다', '安い'), word('가방', 'かばん')] });
+  foundationSentence({ id: 'S06i1', groupId: 's06-independent', stage: 'independent', facts: [fact('어렵다 / 문제 / 혼자 풀다', '難しい / 問題 / 一人で解く')], meaningJa: '難しい問題を一人で解く場面です。', models: ['어려운 문제를 혼자 풀어요.'], patterns: ['어려운\\s*문제', '혼자', '풀어요'], vocabulary: [word('어렵다', '難しい'), word('문제', '問題'), word('혼자', '一人で')] });
+  foundationSentence({ id: 'S06d1', groupId: 's06-delayed', stage: 'delayed', facts: [fact('읽고 싶다 / 책 / 도서관에서 빌리다', '読みたい / 本 / 図書館で借りる')], meaningJa: '読みたい本を図書館で借りる場面です。', models: ['내가 읽고 싶은 책을 도서관에서 빌려요.'], patterns: ['읽고\\s*싶은\\s*책', '도서관에서'], vocabulary: [word('책', '本'), word('도서관', '図書館')], image: 'study' });
 
   foundationNodes.forEach(nodeId => {
     const node = nodes.find(value => value.id === nodeId);

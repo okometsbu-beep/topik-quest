@@ -1961,5 +1961,107 @@ window.HARUMAL_WRITING_UI_I18N = {
     "ja": "この答えで確認したこと",
     "en": "Checks for this answer",
     "zh": "这份答案的检查结果"
+  },
+  "{0} · 본격 단원": {
+    "ko": "{0} · 본격 단원",
+    "ja": "{0} · 本格ユニット",
+    "en": "{0} · Full unit",
+    "zh": "{0} · 完整单元"
+  },
+  "이 단원의 단계": {
+    "ko": "이 단원의 단계",
+    "ja": "このユニットの段階",
+    "en": "Stages in this unit",
+    "zh": "本单元的步骤"
+  },
+  "단계는 형태 연습에서 새 내용, 조건 바꾸기, 초고 고치기, 정보 더하기, 혼자 쓰기, 다른 날 확인 순서로 이어져요. 지금 필요한 단계부터 해도 괜찮아요.": {
+    "ko": "단계는 형태 연습에서 새 내용, 조건 바꾸기, 초고 고치기, 정보 더하기, 혼자 쓰기, 다른 날 확인 순서로 이어져요. 지금 필요한 단계부터 해도 괜찮아요.",
+    "ja": "段階は、形の練習から新しい内容・条件を変える・下書きを直す・情報を加える・一人で書く・別の日の確認へと続きます。必要な段階から始めてかまいません。",
+    "en": "The stages run from form practice through new content, changing a condition, repairing a draft, adding a detail, writing alone and a check on another day. Starting from the stage you need is fine.",
+    "zh": "步骤从形式练习开始，依次是换新内容、改变条件、修改草稿、补充信息、独自写作和另一天确认。从需要的步骤开始也可以。"
+  },
+  "본격 단원은 연습할 수 있어요": {
+    "ko": "본격 단원은 연습할 수 있어요",
+    "ja": "本格ユニットを練習できます",
+    "en": "The full unit is open for practice",
+    "zh": "可以练习完整单元"
+  },
+  "단계별 연습, 새 상황, 다른 날 확인까지 이어지는 단원이 준비됐어요. 이 능력의 나머지 범위와 다른 쓰기 유형은 준비 중이에요.": {
+    "ko": "단계별 연습, 새 상황, 다른 날 확인까지 이어지는 단원이 준비됐어요. 이 능력의 나머지 범위와 다른 쓰기 유형은 준비 중이에요.",
+    "ja": "段階ごとの練習、新しい場面、別の日の確認まで続くユニットができました。この能力の残りの範囲と、ほかの書き方の種類は準備中です。",
+    "en": "The unit now runs through staged practice, a new situation and a check on another day. The rest of this ability and other writing types are still being prepared.",
+    "zh": "这个单元从分阶段练习一直延伸到新情境和另一天确认。该能力的其余范围和其他写作类型仍在准备中。"
+  },
+  "본격 단원 열기": {
+    "ko": "본격 단원 열기",
+    "ja": "本格ユニットを開く",
+    "en": "Open the full unit",
+    "zh": "打开完整单元"
+  },
+  "본격 단원 연습 가능": {
+    "ko": "본격 단원 연습 가능",
+    "ja": "本格ユニットを練習できます",
+    "en": "Full unit available",
+    "zh": "可练习完整单元"
+  },
+  "현재 첫 원인 문장 연습과 문장 기초 본격 단원이 열려 있어요. 나머지 과정은 계속 준비 중이에요.": {
+    "ko": "현재 첫 원인 문장 연습과 문장 기초 본격 단원이 열려 있어요. 나머지 과정은 계속 준비 중이에요.",
+    "ja": "今は最初の理由文の練習と、文の基礎の本格ユニットが開いています。ほかの課程は準備中です。",
+    "en": "The first cause-sentence unit and the full sentence-foundation units are open now. The rest of the course is still being prepared.",
+    "zh": "目前开放了第一个原因句练习和句子基础的完整单元。其余课程仍在准备中。"
+  },
+  "문장 기초 단원": {
+    "ko": "문장 기초 단원",
+    "ja": "文の基礎ユニット",
+    "en": "Sentence foundation units",
+    "zh": "句子基础单元"
+  },
+  "준비 확인": {
+    "ko": "준비 확인",
+    "ja": "準備の確認",
+    "en": "Readiness check",
+    "zh": "准备确认"
+  },
+  "형태 연습": {
+    "ko": "형태 연습",
+    "ja": "形の練習",
+    "en": "Form practice",
+    "zh": "形式练习"
+  },
+  "새 내용으로": {
+    "ko": "새 내용으로",
+    "ja": "新しい内容で",
+    "en": "New content",
+    "zh": "换成新内容"
+  },
+  "조건 바꾸기": {
+    "ko": "조건 바꾸기",
+    "ja": "条件を変える",
+    "en": "Change a condition",
+    "zh": "改变条件"
+  },
+  "정보 더하기": {
+    "ko": "정보 더하기",
+    "ja": "情報を加える",
+    "en": "Add a detail",
+    "zh": "补充信息"
+  },
+  "이 단원을 마쳤다고 이 능력 전체를 익혔다고 기록하지 않아요.": {
+    "ko": "이 단원을 마쳤다고 이 능력 전체를 익혔다고 기록하지 않아요.",
+    "ja": "このユニットを終えても、この能力全体を身につけたとは記録しません。",
+    "en": "Finishing this unit does not record that the whole ability is mastered.",
+    "zh": "完成这个单元不会记录为掌握了整个能力。"
+  },
+  "필요한 조사·형태·수식어를 찾았어요.": {
+    "ko": "필요한 조사·형태·수식어를 찾았어요.",
+    "ja": "必要な助詞・形・修飾語が見つかりました。",
+    "en": "The required particle, form and modifier were found.",
+    "zh": "找到了需要的助词、形式和修饰语。"
+  },
+  "이 형태 더 연습하기": {
+    "ko": "이 형태 더 연습하기",
+    "ja": "この形をもう少し練習する",
+    "en": "Practise this form again",
+    "zh": "再多练习这个形式"
   }
 };
