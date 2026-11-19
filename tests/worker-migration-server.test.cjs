@@ -64,7 +64,7 @@ test('browser migration keeps real worker update, cache, sentinel and full image
   assert.match(source, /startWorkerMigrationServer\(\{root,upstream\}\)/);
   assert.doesNotMatch(source, /Fetch\.(enable|fulfillRequest|continueRequest)|caches\.(open|delete)\(/);
   assert.match(source, /await reg\.update\(\)/);
-  assert.match(source, /const cachePrefix=fs\.readFileSync\(path\.join\(root,'sw\.js'\),'utf8'\)\.match\(\/const CACHE_PREFIX/);
+  assert.match(source, /const cachePrefix=fs\.readFileSync\(path\.join\(root,'sw\.js'\),'utf8'\)\.match\(\/CACHE_PREFIX='\(\[\^'\]\+\)'/);
   assert.match(source, /keys\.includes\('\$\{cachePrefix\}\$\{releaseVersion\}'\)&&!keys\.includes\('malbit-v173'\)/);
   assert.match(source, /harumalImageReleaseBrowserSentinel/);
   assert.match(source, /assert\.equal\(audit\.length,160\)/);

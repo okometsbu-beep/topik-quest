@@ -4,7 +4,7 @@ import {createBrowserReadiness} from './lib/browser-readiness.mjs';
 import fs from 'node:fs';import path from 'node:path';import os from 'node:os';import assert from 'node:assert/strict';import crypto from 'node:crypto';import {spawn} from 'node:child_process';import {fileURLToPath} from 'node:url';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),out=path.join(root,'artifacts/question-image-release');fs.mkdirSync(out,{recursive:true});
 const releaseVersion=fs.readFileSync(path.join(root,'sw.js'),'utf8').match(/const VERSION='(\d+)'/)[1];
-const cachePrefix=fs.readFileSync(path.join(root,'sw.js'),'utf8').match(/const CACHE_PREFIX='([^']+)'/)[1];
+const cachePrefix=fs.readFileSync(path.join(root,'sw.js'),'utf8').match(/CACHE_PREFIX='([^']+)'/)[1];
 const port=4186,debug=9236,upstream=process.env.MALBIT_BASE_URL||`http://127.0.0.1:${port}`,profile=fs.mkdtempSync(path.join(os.tmpdir(),'harumal-image-browser-'));
 const server=process.env.MALBIT_BASE_URL?null:spawn(process.execPath,['scripts/serve.mjs'],{cwd:root,env:{...process.env,PORT:String(port)},stdio:'ignore'});
 const chrome=spawn(process.env.CHROME_PATH||'google-chrome',['--headless','--disable-gpu','--no-sandbox',`--remote-debugging-port=${debug}`,`--user-data-dir=${profile}`,'about:blank'],{stdio:'ignore'});
