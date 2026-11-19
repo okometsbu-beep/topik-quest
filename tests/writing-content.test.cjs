@@ -9,7 +9,10 @@ vm.createContext(context);
 vm.runInContext(fs.readFileSync(path.join(__dirname, '..', 'data/writing-curriculum.js'), 'utf8'), context);
 const data = context.window.HARUMAL_WRITING_DATA;
 const items = Object.fromEntries(data.items.map(item => [item.id, item]));
-const countStage = stage => data.items.filter(item => data.groups.find(group => group.id === item.groupId).stage === stage).length;
+const countStage = stage => data.items.filter(item => {
+  const group = data.groups.find(group => group.id === item.groupId);
+  return group.nodeId === 'S07' && group.stage === stage;
+}).length;
 const matches = (pattern, text) => new RegExp(pattern, 'u').test(text);
 function checksPass(item, text) {
   return item.evaluation.required.every(check => matches(check.pattern, text))
@@ -23,11 +26,16 @@ function learnerText(item) {
 test('writing content exposes an immutable honest 14-node curriculum map', () => {
   assert.equal(data.version, 1);
   assert.equal(data.nodes.length, 14);
-  assert.equal(data.groups.length, 12);
-  assert.equal(data.items.length, 37);
+  assert.equal(data.groups.length, 24);
+  assert.equal(data.items.length, 55);
   assert.deepEqual(Array.from(data.nodes, node => node.id), Array.from({ length: 12 }, (_, n) => `S${String(n + 1).padStart(2, '0')}`).concat(['D01', 'D02']));
+  const partialNodes = ['S01', 'S02', 'S03', 'S04', 'S05', 'S06', 'S07'];
   assert.equal(data.nodes.find(node => node.id === 'S07').status, 'partial');
-  assert.ok(data.nodes.filter(node => node.id !== 'S07').every(node => node.status === 'planned' && node.availableGroupIds.length === 0));
+  assert.ok(partialNodes.every(id => {
+    const node = data.nodes.find(node => node.id === id);
+    return node.status === 'partial' && node.availableGroupIds.length > 0;
+  }), 'each sentence-foundation node exposes its first sub-unit');
+  assert.ok(data.nodes.filter(node => !partialNodes.includes(node.id)).every(node => node.status === 'planned' && node.availableGroupIds.length === 0));
   assert.ok(data.nodes.every(node => node.subskills.length >= 3 && node.prerequisiteNoteKo && node.summaryKo && node.titleJa));
   assert.equal(data.scope.automaticMeaningPolicy, 'never_certify');
   assert.equal(data.scope.selfDeclarationPolicy, 'readiness_not_mastery');

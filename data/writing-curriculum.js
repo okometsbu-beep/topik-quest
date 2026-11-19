@@ -35,9 +35,9 @@
 
   const node = (id, titleKo, titleJa, summaryKo, prerequisites, prerequisiteNoteKo, subskills, nextUseKo) => ({
     id, titleKo, titleJa, summaryKo, prerequisites, prerequisiteNoteKo, subskills, nextUseKo,
-    status: id === 'S07' ? 'partial' : 'planned',
-    statusKo: id === 'S07' ? '첫 이유 소단원만 준비됨' : '능력 지도 · 문항 준비 중',
-    statusJa: id === 'S07' ? '最初の理由ユニットのみ利用可' : '能力マップ・問題は準備中',
+    status: ['S01', 'S02', 'S03', 'S04', 'S05', 'S06', 'S07'].includes(id) ? 'partial' : 'planned',
+    statusKo: id === 'S07' ? '첫 이유 소단원만 준비됨' : ['S01', 'S02', 'S03', 'S04', 'S05', 'S06'].includes(id) ? '첫 소단원만 준비됨' : '능력 지도 · 문항 준비 중',
+    statusJa: id === 'S07' ? '最初の理由ユニットのみ利用可' : ['S01', 'S02', 'S03', 'S04', 'S05', 'S06'].includes(id) ? '最初の単元のみ利用可' : '能力マップ・問題は準備中',
     availableGroupIds: []
   });
   const nodes = [
@@ -58,7 +58,7 @@
   ];
 
   const group = (id, titleKo, titleJa, stage, prerequisites, extra = {}) => ({
-    id, nodeId: 'S07', titleKo, titleJa, stage, prerequisites, itemIds: [], status: 'ready',
+    id, nodeId: extra.nodeId || 'S07', titleKo, titleJa, stage, prerequisites, itemIds: [], status: 'ready',
     helpKo: '', helpJa: '', delayedOnly: false, ...extra
   });
   const groups = [
@@ -80,7 +80,7 @@
   function sentence(spec) {
     const g = groups.find(value => value.id === spec.groupId);
     const defaults = {
-      nodeId: 'S07', kind: 'sentence', targetForm: null, prerequisites: [...g.prerequisites],
+      nodeId: g.nodeId, kind: 'sentence', targetForm: null, prerequisites: [...g.prerequisites],
       promptKo: ordinaryPromptKo, promptJa: ordinaryPromptJa, facts: [], image: null,
       support: { meaningJa: '', vocabulary: [] }, models: [], delayedOnly: g.delayedOnly,
       evidence: { independent: g.stage === 'independent' || g.stage === 'delayed', delayed: g.delayedOnly, assistedByDesign: false, relationProvided: true },
@@ -196,6 +196,92 @@
       item.evidence.assistedByDesign = true;
     }
   }
+  // ----- Sentence-foundation sub-units S01–S06 (one bounded unit per ability) ----------------
+  // Each node gets one practice unit and one independent transfer item. Automatic checks observe
+  // only listed components (a word, a particle, a conjugated ending, a modifier); meaning,
+  // naturalness and mastery are never certified, and the feedback says which component is missing.
+  const politeEnding = '요\\s*[.!?]?$';
+  const unitPrompts = {
+    S01: ['주어진 사실을 해요체 한 문장으로 써 보세요. 무엇이 어떤지 분명하게 쓰면 돼요.', '与えられた事実をヘヨ体の1文で書きましょう。何がどうなのかをはっきり書きます。'],
+    S02: ['주어진 말에 알맞은 조사를 붙여 해요체 한 문장으로 써 보세요.', '与えられた語に合う助詞を付けて、ヘヨ体の1文で書きましょう。'],
+    S03: ['주어진 서술어를 알맞은 형태로 바꾸어 해요체 한 문장으로 써 보세요.', '与えられた述語を正しい形に変えて、ヘヨ体の1文で書きましょう。'],
+    S04: ['언제의 일인지, 하지 않았는지가 분명하도록 해요체 한 문장으로 써 보세요.', 'いつのことか、しなかったことかをはっきりさせて、ヘヨ体の1文で書きましょう。'],
+    S05: ['주어진 정보를 모두 넣어 해요체 한 문장으로 써 보세요.', '与えられた情報をすべて入れて、ヘヨ体の1文で書きましょう。'],
+    S06: ['어떤 대상인지 수식하는 말을 넣어 해요체 한 문장으로 써 보세요.', 'どんな対象かを修飾する言葉を入れて、ヘヨ体の1文で書きましょう。']
+  };
+  // One message per node keeps the learner-facing feedback specific without inventing a verdict.
+  const nodeHint = {
+    S01: '주어진 사실을 빠뜨리지 않고 한 문장에 넣었는지 확인해 보세요.',
+    S02: '주어진 말에 알맞은 조사를 붙였는지 확인해 보세요.',
+    S03: '주어진 서술어를 알맞은 형태로 바꿨는지 확인해 보세요.',
+    S04: '언제의 일인지, 하지 않았는지가 드러나는지 확인해 보세요.',
+    S05: '주어진 정보를 모두 넣었는지 확인해 보세요.',
+    S06: '어떤 대상인지 수식하는 말을 넣었는지 확인해 보세요.'
+  };
+  const nodeHintJa = {
+    S01: '与えられた事実を落とさず、1文に入れたか確認しましょう。',
+    S02: '与えられた語に合う助詞を付けたか確認しましょう。',
+    S03: '与えられた述語を正しい形に変えたか確認しましょう。',
+    S04: 'いつのことか、しなかったことが表れているか確認しましょう。',
+    S05: '与えられた情報をすべて入れたか確認しましょう。',
+    S06: 'どんな対象かを修飾する言葉を入れたか確認しましょう。'
+  };
+  const foundationNodes = ['S01', 'S02', 'S03', 'S04', 'S05', 'S06'];
+  foundationNodes.forEach(nodeId => {
+    const target = nodes.find(value => value.id === nodeId), prerequisites = ['basic_sentence'];
+    groups.push(group(`${nodeId.toLowerCase()}-practice`, target.titleKo, target.titleJa, 'mixed', prerequisites, { nodeId, helpKo: unitPrompts[nodeId][0], helpJa: unitPrompts[nodeId][1] }));
+    groups.push(group(`${nodeId.toLowerCase()}-independent`, '새 상황에서 혼자 쓰기', '新しい場面で一人で書く', 'independent', prerequisites, { nodeId, helpKo: '예문 없이, 처음 보는 사실로 한 문장을 써요.', helpJa: '例文なしで、初めて見る事実から1文を書きます。', hideFormLesson: true }));
+  });
+  const findGroup = id => groups.find(value => value.id === id);
+  function foundation(id, groupId, facts, meaningJa, models, patterns, vocabulary = []) {
+    const g = findGroup(groupId), prompt = unitPrompts[g.nodeId];
+    return sentence({
+      id, groupId, facts, models,
+      support: { meaningJa, vocabulary },
+      promptKo: prompt[0], promptJa: prompt[1],
+      evaluation: {
+        targetPattern: politeEnding,
+        alternativePattern: politeEnding,
+        required: [
+          ...patterns.map((pattern, index) => check(`component_${index + 1}`, pattern, nodeHint[g.nodeId], nodeHintJa[g.nodeId])),
+          check('polite_finish', politeEnding, '주어진 행동이나 결과를 해요체로 끝까지 써 보세요.', '示された行動や結果を、ヘヨ体で最後まで書いてみましょう。')
+        ],
+        forbidden: [
+          check('reason_link', '아서|어서|때문에|으니까', '이번 소단원에는 이유 연결을 쓰지 않아요. 주어진 사실을 그대로 써요.', 'この単元では理由の接続を使いません。与えられた事実をそのまま書きましょう。'),
+          check('two_sentences', '[.!?][가-힣]', '문장 하나로 써 보세요. 두 문장으로 나누지 않아요.', '1文で書きましょう。2文に分けません。')
+        ]
+      }
+    });
+  }
+
+  foundation('S01a', 's01-practice', [{ ko: '오늘 / 날씨가 좋다', ja: '今日 / 天気がよい' }], '今日は天気がいい、という意味です。', ['오늘은 날씨가 좋아요.', '날씨가 좋아요.'], ['날씨']);
+  foundation('S01b', 's01-practice', [{ ko: '저는 / 도서관에서 / 공부하다', ja: '私は / 図書館で / 勉強する' }], '私は図書館で勉強する、という意味です。', ['저는 도서관에서 공부해요.', '도서관에서 공부해요.'], ['도서관', '공부']);
+  foundation('S01e', 's01-independent', [{ ko: '주말에 / 영화를 / 보다', ja: '週末に / 映画を / 見る' }], '週末に映画を見る、という意味です。', ['주말에 영화를 봐요.'], ['주말', '영화', '봐']);
+
+  foundation('S02a', 's02-practice', [{ ko: '저 / 학교 / 가다', ja: '私 / 学校 / 行く' }], '私は学校に行く、という意味です。', ['저는 학교에 가요.'], ['저는|제가', '학교에']);
+  foundation('S02b', 's02-practice', [{ ko: '동생 / 공원 / 놀다', ja: '弟 / 公園 / 遊ぶ' }], '弟は公園で遊ぶ、という意味です。', ['동생은 공원에서 놀아요.'], ['공원에서', '놀']);
+  foundation('S02e', 's02-independent', [{ ko: '저 / 아침 / 커피 / 마시다', ja: '私 / 朝 / コーヒー / 飲む' }], '私は朝コーヒーを飲む、という意味です。', ['저는 아침에 커피를 마셔요.', '아침에 커피를 마셔요.'], ['아침에', '커피를', '마셔']);
+
+  foundation('S03a', 's03-practice', [{ ko: '기분이 / 좋다', ja: '気分が / よい' }], '気分がいい、という意味です。', ['기분이 좋아요.'], ['좋아요']);
+  foundation('S03b', 's03-practice', [{ ko: '한국어를 / 공부하다', ja: '韓国語を / 勉強する' }], '韓国語を勉強する、という意味です。', ['한국어를 공부해요.'], ['공부해요']);
+  foundation('S03e', 's03-independent', [{ ko: '주말에 / 집에서 / 쉬다', ja: '週末 / 家で / 休む' }], '週末に家で休む、という意味です。', ['주말에 집에서 쉬어요.'], ['쉬어요']);
+
+  foundation('S04a', 's04-practice', [{ ko: '어제 / 비가 / 오다', ja: '昨日 / 雨が / 降る' }], '昨日雨が降った、という意味です。', ['어제 비가 왔어요.'], ['어제', '왔']);
+  foundation('S04b', 's04-practice', [{ ko: '저는 / 고기를 / 안 먹다', ja: '私は / 肉を / 食べない' }], '私は肉を食べない、という意味です。', ['저는 고기를 안 먹어요.', '저는 고기를 먹지 않아요.'], ['안|지\\s*않']);
+  foundation('S04e', 's04-independent', [{ ko: '오늘은 / 운동을 / 안 하다', ja: '今日は / 運動を / しない' }], '今日は運動をしない、という意味です。', ['오늘은 운동을 안 해요.', '오늘은 운동을 하지 않아요.'], ['안|지\\s*않']);
+
+  foundation('S05a', 's05-practice', [{ ko: '토요일 / 친구와 / 영화를 보다', ja: '土曜日 / 友だちと / 映画を見る' }], '土曜日に友だちと映画を見る、という意味です。', ['토요일에 친구와 영화를 봐요.'], ['토요일', '친구와', '영화']);
+  foundation('S05b', 's05-practice', [{ ko: '아침 / 공원에서 / 달리다', ja: '朝 / 公園で / 走る' }], '朝、公園で走る、という意味です。', ['아침에 공원에서 달려요.'], ['아침', '공원에서', '달려']);
+  foundation('S05e', 's05-independent', [{ ko: '내일 / 도서관에서 / 친구를 만나다', ja: '明日 / 図書館で / 友だちに会う' }], '明日、図書館で友だちに会う、という意味です。', ['내일 도서관에서 친구를 만나요.'], ['내일', '도서관에서', '만나']);
+
+  foundation('S06a', 's06-practice', [{ ko: '재미있다 / 책 / 읽다', ja: '面白い / 本 / 読む' }], '面白い本を読む、という意味です。', ['재미있는 책을 읽어요.'], ['재미있', '책']);
+  foundation('S06b', 's06-practice', [{ ko: '키가 크다 / 사람 / 만나다', ja: '背が高い / 人 / 会う' }], '背が高い人に会う、という意味です。', ['키가 큰 사람을 만나요.'], ['큰\\s*사람', '만나']);
+  foundation('S06e', 's06-independent', [{ ko: '비가 오다 / 날 / 집에 있다', ja: '雨が降る / 日 / 家にいる' }], '雨が降る日は家にいる、という意味です。', ['비가 오는 날은 집에 있어요.'], ['오는\\s*날', '집에']);
+
+  foundationNodes.forEach(nodeId => {
+    const node = nodes.find(value => value.id === nodeId);
+    node.availableGroupIds = groups.filter(value => value.nodeId === nodeId).map(value => value.id);
+  });
   nodes.find(value => value.id === 'S07').availableGroupIds = groups.map(value => value.id);
   window.HARUMAL_WRITING_DATA = freeze({
     version: 1, nodes, groups, items, prerequisites,

@@ -71,14 +71,15 @@ test('v35 exposes four writing sets and recognizes a closely traced mask', () =>
 
   for (const lang of ['ko', 'ja', 'en', 'zh']) {
     context.S.lang = lang;
-    for (const glyph of 'ㅏㅓㅗㅜㅡㅣ') assert.match(api.traceHint(glyph), /①/);
-    assert.doesNotMatch(api.traceHint('ㄱ'), /①/);
-    assert.ok(api.traceHint('ㄱ').length > 15);
+    for (const glyph of 'ㅏㅑㅓㅕㅗㅛㅜㅠㅡㅣㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎㅐㅒㅔㅖㅘㅙㅚㅝㅞㅟㅢㄲㄸㅃㅆㅉ') assert.match(api.traceHint(glyph), /①/, glyph + ' ' + lang);
+    assert.doesNotMatch(api.traceHint('가'), /①/);
+    assert.ok(api.traceHint('가').length > 15);
   }
   context.S.lang = 'en';
   assert.match(api.traceHint('ㅏ'), /Vertical ↓.*right →/);
   assert.match(api.traceHint('ㅓ'), /left →.*Vertical ↓/);
-  assert.match(api.traceHint('ㄱ'), /not available yet/);
+  assert.match(api.traceHint('ㄱ'), /Horizontal → ② Vertical ↓/);
+  assert.match(api.traceHint('가'), /not available yet/);
 
   const width = 32, height = 32, target = new Uint8Array(width * height);
   for (let y = 5; y < 27; y++) for (let x = 8; x < 13; x++) target[y * width + x] = 1;

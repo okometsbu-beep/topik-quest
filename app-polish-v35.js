@@ -47,20 +47,58 @@ function categoryLabel(category){return({letters:L('글자','文字','Letters','
 function phraseMarkup(text){
   let unit=0;return[...String(text)].map(char=>{if(!isHangul(char))return char===' '?'<span class="space">&nbsp;</span>':`<span class="punct">${escapeHtml(char)}</span>`;const state=unit<writingUnitIndex?'done':unit===writingUnitIndex?'current':'waiting';unit++;return`<span class="${state}">${escapeHtml(char)}</span>`}).join('')
 }
+// Stroke guidance for every letter the pad offers. Textbooks differ on a few letters
+// (ㅈ·ㅊ·ㄹ·ㅌ·ㅉ), so the panel says the order can follow the learner's textbook. Whole syllables
+// are not described yet; the message says so instead of guessing.
+const TRACE_HINTS={
+ 'ㅏ':['① 세로 ↓ ② 오른쪽 짧은 가로 →','① 縦 ↓ ② 右の短い横線 →','① Vertical ↓ ② Short line to the right →','① 竖线 ↓ ② 右侧短横 →'],
+ 'ㅓ':['① 왼쪽 짧은 가로 → ② 세로 ↓','① 左の短い横線 → ② 縦 ↓','① Short line on the left → ② Vertical ↓','① 左侧短横 → ② 竖线 ↓'],
+ 'ㅗ':['① 위의 짧은 세로 ↓ ② 가로 →','① 上の短い縦線 ↓ ② 横 →','① Short upper line ↓ ② Horizontal →','① 上方短竖 ↓ ② 横线 →'],
+ 'ㅜ':['① 가로 → ② 아래의 짧은 세로 ↓','① 横 → ② 下の短い縦線 ↓','① Horizontal → ② Short lower line ↓','① 横线 → ② 下方短竖 ↓'],
+ 'ㅡ':['① 왼쪽에서 오른쪽으로 →','① 左から右へ →','① Left to right →','① 从左向右 →'],
+ 'ㅣ':['① 위에서 아래로 ↓','① 上から下へ ↓','① Top to bottom ↓','① 从上向下 ↓'],
+ 'ㅑ':['① 세로 ↓ ② 오른쪽 짧은 가로 → ③ 오른쪽 짧은 가로 →','① 縦 ↓ ② 右の短い横線 → ③ 右の短い横線 →','① Vertical ↓ ② Short line right → ③ Short line right →','① 竖线 ↓ ② 右侧短横 → ③ 右侧短横 →'],
+ 'ㅕ':['① 왼쪽 짧은 가로 → ② 왼쪽 짧은 가로 → ③ 세로 ↓','① 左の短い横線 → ② 左の短い横線 → ③ 縦 ↓','① Short line left → ② Short line left → ③ Vertical ↓','① 左侧短横 → ② 左侧短横 → ③ 竖线 ↓'],
+ 'ㅛ':['① 왼쪽 짧은 세로 ↓ ② 오른쪽 짧은 세로 ↓ ③ 가로 →','① 左の短い縦線 ↓ ② 右の短い縦線 ↓ ③ 横 →','① Short line down ↓ ② Short line down ↓ ③ Horizontal →','① 左侧短竖 ↓ ② 右侧短竖 ↓ ③ 横线 →'],
+ 'ㅠ':['① 가로 → ② 왼쪽 짧은 세로 ↓ ③ 오른쪽 짧은 세로 ↓','① 横 → ② 左の短い縦線 ↓ ③ 右の短い縦線 ↓','① Horizontal → ② Short line down ↓ ③ Short line down ↓','① 横线 → ② 左侧短竖 ↓ ③ 右侧短竖 ↓'],
+ 'ㅐ':['① ㅏ의 세로 ↓ ② ㅏ의 짧은 가로 → ③ ㅣ의 세로 ↓','① 「ㅏ」の縦 ↓ ② 「ㅏ」の短い横線 → ③ 「ㅣ」の縦 ↓','① ㅏ vertical ↓ ② ㅏ short line → ③ ㅣ vertical ↓','① ㅏ的竖线 ↓ ② ㅏ的短横 → ③ ㅣ的竖线 ↓'],
+ 'ㅒ':['① ㅑ의 세로 ↓ ② ㅑ의 짧은 가로 두 개 → ③ ㅣ의 세로 ↓','① 「ㅑ」の縦 ↓ ② 「ㅑ」の短い横線2本 → ③ 「ㅣ」の縦 ↓','① ㅑ vertical ↓ ② both ㅑ short lines → ③ ㅣ vertical ↓','① ㅑ的竖线 ↓ ② ㅑ的两条短横 → ③ ㅣ的竖线 ↓'],
+ 'ㅔ':['① ㅓ의 짧은 가로 → ② ㅓ의 세로 ↓ ③ ㅣ의 세로 ↓','① 「ㅓ」の短い横線 → ② 「ㅓ」の縦 ↓ ③ 「ㅣ」の縦 ↓','① ㅓ short line → ② ㅓ vertical ↓ ③ ㅣ vertical ↓','① ㅓ的短横 → ② ㅓ的竖线 ↓ ③ ㅣ的竖线 ↓'],
+ 'ㅖ':['① ㅕ의 짧은 가로 두 개 → ② ㅕ의 세로 ↓ ③ ㅣ의 세로 ↓','① 「ㅕ」の短い横線2本 → ② 「ㅕ」の縦 ↓ ③ 「ㅣ」の縦 ↓','① both ㅕ short lines → ② ㅕ vertical ↓ ③ ㅣ vertical ↓','① ㅕ的两条短横 → ② ㅕ的竖线 ↓ ③ ㅣ的竖线 ↓'],
+ 'ㅘ':['① ㅗ를 먼저 ② 오른쪽에 ㅏ를 이어서','① まず「ㅗ」 ② 右に「ㅏ」を続けて','① Write ㅗ first ② then ㅏ on the right','① 先写 ㅗ ② 再在右侧写 ㅏ'],
+ 'ㅙ':['① ㅗ를 먼저 ② 오른쪽에 ㅐ를 이어서','① まず「ㅗ」 ② 右に「ㅐ」を続けて','① Write ㅗ first ② then ㅐ on the right','① 先写 ㅗ ② 再在右侧写 ㅐ'],
+ 'ㅚ':['① ㅗ를 먼저 ② 오른쪽에 ㅣ를 이어서','① まず「ㅗ」 ② 右に「ㅣ」を続けて','① Write ㅗ first ② then ㅣ on the right','① 先写 ㅗ ② 再在右侧写 ㅣ'],
+ 'ㅝ':['① ㅜ를 먼저 ② 아래에 ㅓ를 이어서','① まず「ㅜ」 ② 下に「ㅓ」を続けて','① Write ㅜ first ② then ㅓ below','① 先写 ㅜ ② 再在下方写 ㅓ'],
+ 'ㅞ':['① ㅜ를 먼저 ② 아래에 ㅔ를 이어서','① まず「ㅜ」 ② 下に「ㅔ」を続けて','① Write ㅜ first ② then ㅔ below','① 先写 ㅜ ② 再在下方写 ㅔ'],
+ 'ㅟ':['① ㅜ를 먼저 ② 아래에 ㅣ를 이어서','① まず「ㅜ」 ② 下に「ㅣ」を続けて','① Write ㅜ first ② then ㅣ below','① 先写 ㅜ ② 再在下方写 ㅣ'],
+ 'ㅢ':['① ㅡ를 먼저 ② 오른쪽에 ㅣ를 이어서','① まず「ㅡ」 ② 右に「ㅣ」を続けて','① Write ㅡ first ② then ㅣ on the right','① 先写 ㅡ ② 再在右侧写 ㅣ'],
+ 'ㄱ':['① 가로 → ② 세로 ↓','① 横 → ② 縦 ↓','① Horizontal → ② Vertical ↓','① 横线 → ② 竖线 ↓'],
+ 'ㄴ':['① 세로 ↓ ② 가로 →','① 縦 ↓ ② 横 →','① Vertical ↓ ② Horizontal →','① 竖线 ↓ ② 横线 →'],
+ 'ㄷ':['① 가로 → ② 세로 ↓ ③ 가로 →','① 横 → ② 縦 ↓ ③ 横 →','① Horizontal → ② Vertical ↓ ③ Horizontal →','① 横线 → ② 竖线 ↓ ③ 横线 →'],
+ 'ㄹ':['① 위 가로 → 오른쪽 세로 ↓ ② 가운데 가로 → ③ 왼쪽 세로 ↓ 아래 가로 →','① 上の横 → 右の縦 ↓ ② 真ん中の横 → ③ 左の縦 ↓ 下の横 →','① Top line → right vertical ↓ ② Middle line → ③ Left vertical ↓ bottom line →','① 上横 → 右竖 ↓ ② 中横 → ③ 左竖 ↓ 下横 →'],
+ 'ㅁ':['① 왼쪽 세로 ↓ ② 위 가로 → ③ 오른쪽 세로 ↓ ④ 아래 가로 →','① 左の縦 ↓ ② 上の横 → ③ 右の縦 ↓ ④ 下の横 →','① Left vertical ↓ ② Top line → ③ Right vertical ↓ ④ Bottom line →','① 左竖 ↓ ② 上横 → ③ 右竖 ↓ ④ 下横 →'],
+ 'ㅂ':['① 왼쪽 세로 ↓ ② 오른쪽 세로 ↓ ③ 가운데 가로 → ④ 아래 가로 →','① 左の縦 ↓ ② 右の縦 ↓ ③ 真ん中の横 → ④ 下の横 →','① Left vertical ↓ ② Right vertical ↓ ③ Middle line → ④ Bottom line →','① 左竖 ↓ ② 右竖 ↓ ③ 中横 → ④ 下横 →'],
+ 'ㅅ':['① 왼쪽 위에서 아래로 ↘ ② 오른쪽 위에서 아래로 ↙','① 左上から右下へ ↘ ② 右上から左下へ ↙','① From top left down right ↘ ② From top right down left ↙','① 左上向右下 ↘ ② 右上向左下 ↙'],
+ 'ㅇ':['① 위에서 시작해 시계 반대 방향으로 한 번에 ○','① 上から始めて反時計回りに一筆で ○','① Start at the top and draw one counter-clockwise circle ○','① 从上方开始逆时针一笔画圆 ○'],
+ 'ㅈ':['① 가로 → ② 왼쪽 빗금 ↘ ③ 오른쪽 빗금 ↙','① 横 → ② 左の斜め線 ↘ ③ 右の斜め線 ↙','① Horizontal → ② Left stroke ↘ ③ Right stroke ↙','① 横线 → ② 左斜线 ↘ ③ 右斜线 ↙'],
+ 'ㅊ':['① 위 짧은 세로 ↓ ② 가로 → ③ 왼쪽 빗금 ↘ ④ 오른쪽 빗금 ↙','① 上の短い縦線 ↓ ② 横 → ③ 左の斜め線 ↘ ④ 右の斜め線 ↙','① Short top line ↓ ② Horizontal → ③ Left stroke ↘ ④ Right stroke ↙','① 上方短竖 ↓ ② 横线 → ③ 左斜线 ↘ ④ 右斜线 ↙'],
+ 'ㅋ':['① 가로 → ② 세로 ↓ ③ 가운데 짧은 가로 →','① 横 → ② 縦 ↓ ③ 真ん中の短い横 →','① Horizontal → ② Vertical ↓ ③ Short middle line →','① 横线 → ② 竖线 ↓ ③ 中间短横 →'],
+ 'ㅌ':['① 가로 → ② 세로 ↓ ③ 아래 가로 → ④ 가운데 짧은 가로 →','① 横 → ② 縦 ↓ ③ 下の横 → ④ 真ん中の短い横 →','① Horizontal → ② Vertical ↓ ③ Bottom line → ④ Short middle line →','① 横线 → ② 竖线 ↓ ③ 下横 → ④ 中间短横 →'],
+ 'ㅍ':['① 위 가로 → ② 왼쪽 세로 ↓ ③ 오른쪽 세로 ↓ ④ 아래 가로 →','① 上の横 → ② 左の縦 ↓ ③ 右の縦 ↓ ④ 下の横 →','① Top line → ② Left vertical ↓ ③ Right vertical ↓ ④ Bottom line →','① 上横 → ② 左竖 ↓ ③ 右竖 ↓ ④ 下横 →'],
+ 'ㅎ':['① 위 짧은 가로 → ② 아래 짧은 가로 → ③ 동그라미 ○','① 上の短い横 → ② 下の短い横 → ③ 丸 ○','① Short top line → ② Short lower line → ③ Circle ○','① 上方短横 → ② 下方短横 → ③ 圆圈 ○'],
+ 'ㄲ':['① 왼쪽 ㄱ ② 오른쪽 ㄱ','① 左の「ㄱ」 ② 右の「ㄱ」','① Left ㄱ ② Right ㄱ','① 左侧 ㄱ ② 右侧 ㄱ'],
+ 'ㄸ':['① 왼쪽 ㄷ ② 오른쪽 ㄷ','① 左の「ㄷ」 ② 右の「ㄷ」','① Left ㄷ ② Right ㄷ','① 左侧 ㄷ ② 右侧 ㄷ'],
+ 'ㅃ':['① 왼쪽 ㅂ ② 오른쪽 ㅂ','① 左の「ㅂ」 ② 右の「ㅂ」','① Left ㅂ ② Right ㅂ','① 左侧 ㅂ ② 右侧 ㅂ'],
+ 'ㅆ':['① 왼쪽 ㅅ ② 오른쪽 ㅅ','① 左の「ㅅ」 ② 右の「ㅅ」','① Left ㅅ ② Right ㅅ','① 左侧 ㅅ ② 右侧 ㅅ'],
+ 'ㅉ':['① 왼쪽 ㅈ ② 오른쪽 ㅈ','① 左の「ㅈ」 ② 右の「ㅈ」','① Left ㅈ ② Right ㅈ','① 左侧 ㅈ ② 右侧 ㅈ']
+};
 function traceHint(unit){
-  const hints={
-    'ㅏ':['① 세로 ↓ ② 오른쪽 짧은 가로 →','① 縦 ↓ ② 右の短い横線 →','① Vertical ↓ ② Short line to the right →','① 竖线 ↓ ② 右侧短横 →'],
-    'ㅓ':['① 왼쪽 짧은 가로 → ② 세로 ↓','① 左の短い横線 → ② 縦 ↓','① Short line on the left → ② Vertical ↓','① 左侧短横 → ② 竖线 ↓'],
-    'ㅗ':['① 위의 짧은 세로 ↓ ② 가로 →','① 上の短い縦線 ↓ ② 横 →','① Short upper line ↓ ② Horizontal →','① 上方短竖 ↓ ② 横线 →'],
-    'ㅜ':['① 가로 → ② 아래의 짧은 세로 ↓','① 横 → ② 下の短い縦線 ↓','① Horizontal → ② Short lower line ↓','① 横线 → ② 下方短竖 ↓'],
-    'ㅡ':['① 왼쪽에서 오른쪽으로 →','① 左から右へ →','① Left to right →','① 从左向右 →'],
-    'ㅣ':['① 위에서 아래로 ↓','① 上から下へ ↓','① Top to bottom ↓','① 从上向下 ↓']
-  };
-  return hints[unit]?L(...hints[unit]):L('모양을 천천히 따라 써 보세요. 이 글자의 획순 안내는 아직 없어요.','形をゆっくりなぞりましょう。この文字の筆順ガイドはまだありません。','Trace the shape slowly. A stroke-order guide for this letter is not available yet.','请慢慢描写字形。这个字暂时没有笔顺指导。')
+  const hints=TRACE_HINTS[unit];
+  return hints?L(...hints):L('모양을 천천히 따라 써 보세요. 글자 전체의 획순 안내는 아직 없어요.','形をゆっくりなぞりましょう。文字全体の筆順ガイドはまだありません。','Trace the shape slowly. A stroke-order guide for whole syllables is not available yet.','请慢慢描写字形。整个音节的笔顺指导暂时没有。')
 }
 function writingPanel(){
   const item=currentItem(),units=currentUnits(),unit=currentUnit(),items=setItems(),progress=beginnerProgress(),completed=Number(progress.writingV35.completed?.[writingCategory]?.[item.text])||0,meaning=localizedMeaning(item);
-  return `<section class="v35WritingPractice"><header><small>STEP 4 · TRACING</small><h2>${L('한글 모양 따라 쓰기','ハングルの形をなぞろう','Trace Hangul shapes','描写韩文字形')}</h2><p>${L('연한 글씨를 따라 쓰세요. 모양이 비슷하면 소리와 함께 다음 글씨로 넘어가요. 모양만 비교하며 획순이나 발음은 평가하지 않아요.','薄い文字をなぞりましょう。形が近いと音が鳴り、次へ進みます。形だけを比べ、筆順や発音は評価しません。','Trace the guide. A similar shape triggers a chime and the next letter. This compares shapes only, not stroke order or pronunciation.','描写浅色字。形状相似时会响铃并进入下一字。这里只比较形状，不评估笔顺或发音。')}</p></header><div class="v35WritingCategories">${Object.keys(WRITING_SETS).map(key=>`<button class="${key===writingCategory?'on':''}" onclick="malbitWritingCategory('${key}')">${categoryLabel(key)}</button>`).join('')}</div><div class="v35Expression"><button onclick="malbitWritingItem(-1)" aria-label="${L('이전 연습','前の練習','Previous practice','上一个练习')}">‹</button><button class="v35ExpressionMain" onclick="malbitWritingSpeak()"><small>${categoryLabel(writingCategory)} ${writingItemIndex+1}/${items.length}${completed?` · ✓ ${completed}`:''}</small><b>${escapeHtml(item.text)} <i>🔊</i></b><span>${escapeHtml(meaning)}</span></button><button onclick="malbitWritingItem(1)" aria-label="${L('다음 연습','次の練習','Next practice','下一个练习')}">›</button></div><div class="v35Phrase" aria-label="${escapeHtml(item.text)}">${phraseMarkup(item.text)}</div><div class="v35Current"><span>${L('지금 쓸 글씨','今書く文字','Write now','现在写')}</span><b>${escapeHtml(unit)}</b><small>${writingUnitIndex+1}/${units.length}</small></div><p class="v35TraceHint">${traceHint(unit)}</p><div class="v35WritingBoard"><span aria-hidden="true">${escapeHtml(unit)}</span><canvas id="malbitHangulCanvasV35" aria-label="${escapeHtml(L(`${unit} 손글씨 연습장`,`${unit} 手書き練習`,`${unit} handwriting pad`,`${unit} 手写练习区`))}"></canvas><div class="v35Success" aria-hidden="true">✓</div></div><div class="v35Match" aria-live="polite"><i></i><span>${L('연한 선을 천천히 따라 써 보세요.','薄い線をゆっくりなぞりましょう。','Trace the faint guide slowly.','请慢慢沿着浅色线描写。')}</span></div><div class="v35WritingActions"><button onclick="malbitWritingClear()">↺ ${L('지우고 다시 쓰기','消してもう一度','Clear and retry','清除重写')}</button><button onclick="malbitWritingSkip()">${L('다음 글씨','次の文字','Next letter','下一个字')} ›</button></div><div class="v35WritingItems">${items.map((entry,index)=>`<button class="${index===writingItemIndex?'on':''}" onclick="malbitWritingChoose(${index})"><b>${escapeHtml(entry.text)}</b><small>${Number(progress.writingV35.completed?.[writingCategory]?.[entry.text])||0}</small></button>`).join('')}</div></section>`
+  return `<section class="v35WritingPractice"><header><small>STEP 4 · TRACING</small><h2>${L('한글 모양 따라 쓰기','ハングルの形をなぞろう','Trace Hangul shapes','描写韩文字形')}</h2><p>${L('연한 글씨를 따라 쓰세요. 모양이 비슷하면 소리와 함께 다음 글씨로 넘어가요. 모양만 비교하며 획순이나 발음은 평가하지 않아요. 획순 안내 방향은 교재에 따라 다를 수 있어요.','薄い文字をなぞりましょう。形が近いと音が鳴り、次へ進みます。形だけを比べ、筆順や発音は評価しません。筆順の向きは教材によって異なる場合があります。','Trace the guide. A similar shape triggers a chime and the next letter. This compares shapes only, not stroke order or pronunciation. A textbook may order the strokes differently.','描写浅色字。形状相似时会响铃并进入下一字。这里只比较形状，不评估笔顺或发音。笔顺方向可能因教材而异。')}</p></header><div class="v35WritingCategories">${Object.keys(WRITING_SETS).map(key=>`<button class="${key===writingCategory?'on':''}" onclick="malbitWritingCategory('${key}')">${categoryLabel(key)}</button>`).join('')}</div><div class="v35Expression"><button onclick="malbitWritingItem(-1)" aria-label="${L('이전 연습','前の練習','Previous practice','上一个练习')}">‹</button><button class="v35ExpressionMain" onclick="malbitWritingSpeak()"><small>${categoryLabel(writingCategory)} ${writingItemIndex+1}/${items.length}${completed?` · ✓ ${completed}`:''}</small><b>${escapeHtml(item.text)} <i>🔊</i></b><span>${escapeHtml(meaning)}</span></button><button onclick="malbitWritingItem(1)" aria-label="${L('다음 연습','次の練習','Next practice','下一个练习')}">›</button></div><div class="v35Phrase" aria-label="${escapeHtml(item.text)}">${phraseMarkup(item.text)}</div><div class="v35Current"><span>${L('지금 쓸 글씨','今書く文字','Write now','现在写')}</span><b>${escapeHtml(unit)}</b><small>${writingUnitIndex+1}/${units.length}</small></div><p class="v35TraceHint">${traceHint(unit)}</p><div class="v35WritingBoard"><span aria-hidden="true">${escapeHtml(unit)}</span><canvas id="malbitHangulCanvasV35" aria-label="${escapeHtml(L(`${unit} 손글씨 연습장`,`${unit} 手書き練習`,`${unit} handwriting pad`,`${unit} 手写练习区`))}"></canvas><div class="v35Success" aria-hidden="true">✓</div></div><div class="v35Match" aria-live="polite"><i></i><span>${L('연한 선을 천천히 따라 써 보세요.','薄い線をゆっくりなぞりましょう。','Trace the faint guide slowly.','请慢慢沿着浅色线描写。')}</span></div><div class="v35WritingActions"><button onclick="malbitWritingClear()">↺ ${L('지우고 다시 쓰기','消してもう一度','Clear and retry','清除重写')}</button><button onclick="malbitWritingSkip()">${L('다음 글씨','次の文字','Next letter','下一个字')} ›</button></div><div class="v35WritingItems">${items.map((entry,index)=>`<button class="${index===writingItemIndex?'on':''}" onclick="malbitWritingChoose(${index})"><b>${escapeHtml(entry.text)}</b><small>${Number(progress.writingV35.completed?.[writingCategory]?.[entry.text])||0}</small></button>`).join('')}</div></section>`
 }
 
 function maskBounds(mask,width,height){let minX=width,minY=height,maxX=-1,maxY=-1,count=0;for(let y=0;y<height;y++)for(let x=0;x<width;x++)if(mask[y*width+x]){count++;if(x<minX)minX=x;if(x>maxX)maxX=x;if(y<minY)minY=y;if(y>maxY)maxY=y}return count?{minX,minY,maxX,maxY,count,width:maxX-minX+1,height:maxY-minY+1}:null}

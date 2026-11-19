@@ -71,7 +71,10 @@ function create(storage,data,clock=()=>Date.now()){
  const sessionId=Math.random().toString(36).slice(2,10);
  try{const raw=storage?.getItem(KEY);if(raw!=null)state=migrate(JSON.parse(raw))}catch(error){storageError=error.message==='newer-storage'?'newer-storage':'read-error';readOnly=true}
  const itemById=id=>(data.items||[]).find(item=>item.id===id);
- const stages=(data.groups||[]).filter(g=>(g.itemIds||[]).some(id=>itemById(id)));
+ // The guided course is the cause-writing unit; the sentence-foundation units (S01–S06) are
+ // practised from their own node pages and never take part in its stage order.
+ const GUIDED_NODE='S07';
+ const stages=(data.groups||[]).filter(g=>g.nodeId===GUIDED_NODE&&(g.itemIds||[]).some(id=>itemById(id)));
  const coreStages=stages.filter(g=>!g.delayedOnly&&g.stage!=='delayed');
  const stageById=id=>stages.find(g=>g.id===id);
  const stageItems=g=>(g?.itemIds||[]).filter(id=>itemById(id));

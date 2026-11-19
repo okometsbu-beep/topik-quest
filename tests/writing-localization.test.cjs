@@ -129,7 +129,7 @@ test('writing localization: four complete catalogs and every declared data instr
 for (const locale of LOCALES) {
   test(`writing localization: ${locale} course, map, 14 nodes, unit, 12 groups, 37 prompts and exam routes`, () => {
     const env = boot(locale), originalData = plain(env.data);
-    assert.equal(env.data.nodes.length, 14); assert.equal(env.data.groups.length, 12); assert.equal(env.data.items.length, 37);
+    assert.equal(env.data.nodes.length, 14); assert.equal(env.data.groups.length, 24); assert.equal(env.data.items.length, 55);
     for (const page of ['course','map','unit','records']) { env.go(page); localized(env, page); }
     for (const node of env.data.nodes) { env.go('node', node.id); localized(env, node.id); }
     for (const level of ['beginner','intermediate','advanced']) { env.go('level', level); localized(env, 'level ' + level); }
@@ -318,7 +318,7 @@ test('writing navigation: browser Back restores guided stage controls after leav
 
 test('writing navigation: interrupted final stage review remains resumable until explicitly confirmed',()=>{
  const env=boot('ja');env.c.harumalWritingBegin();
- const groups=env.data.groups.filter(g=>!g.delayedOnly);
+ const groups=env.data.groups.filter(g=>g.nodeId==='S07'&&!g.delayedOnly);
  for(const g of groups){
   for(const id of g.itemIds){const i=env.data.items.find(i=>i.id===id);env.c.harumalWritingDraft(id,i.kind==='relation'?i.evaluation.correctChoiceId:i.models[0]);env.c.harumalWritingSubmit(id);env.c.harumalWritingContinue(id)}
   if(g!==groups.at(-1))env.c.harumalWritingContinue(g.id);

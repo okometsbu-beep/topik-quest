@@ -40,14 +40,14 @@ function inventory(data) {
 test('writing content catalog covers every learner-facing field in all four languages', () => {
   const { data, catalog } = load();
   assert.equal(data.nodes.length, 14);
-  assert.equal(data.groups.length, 12);
+  assert.equal(data.groups.length, 24);
   assert.equal(data.prerequisites.length, 8);
-  assert.equal(data.items.length, 37);
+  assert.equal(data.items.length, 55);
   assert.equal(data.items.flatMap(i => i.choices || []).length, 6);
   const entries = inventory(data);
-  assert.equal(new Set(entries.map(e => e.source)).size, 272);
+  assert.equal(new Set(entries.map(e => e.source)).size, 324);
   // Keep the old persisted P01 feedback key as well as its new bounded-check replacement.
-  assert.equal(Object.keys(catalog).length, 273);
+  assert.equal(Object.keys(catalog).length, 325);
   assert.ok(catalog['공부하다를 해요체로 써 보세요.']);
   for (const { source, field } of entries) {
     assert.ok(catalog[source], `Missing source: ${field}: ${source}`);
