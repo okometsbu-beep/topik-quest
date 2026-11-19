@@ -1,8 +1,10 @@
-# MALBIT · 말빛
+# 하루말 · HARUMAL
 
 An independent Korean-learning game and unofficial TOPIK I & II practice app.
 
 ## Current build
+
+- Runtime and cache version **v176** (service-worker cache prefix `harumal-v`). The beginner Hangul course, six-step reading order and the first cause-writing unit (S07) are the newest learner-facing additions.
 - Optional growth practice from Today’s Challenge and TOPIK, grammar, writing and travel: 11 original paired mini-lessons with varied interactions, first-attempt/help/retry evidence, and a separate new-context check
 - Browser-local activity levels, difficulty-based XP and coins, and one-time growth-stage bonuses, with stable attempt identities, cross-tab award recovery and additive backup import; no proficiency certification or shop
 - Original 2,088-item bank across 12 complete mock sets, plus 56 original type-focused practice items for a 2,144-item runtime pool: TOPIK I listening 360 / reading 480, TOPIK II listening 600 / writing 48 / reading 600 remain fixed-set counts
@@ -44,7 +46,7 @@ An independent Korean-learning game and unofficial TOPIK I & II practice app.
 
 The public site is intended to run from GitHub Pages without a Vercel runtime dependency.
 
-`MALBIT` is the product brand; `TOPIK` appears only to describe exam preparation. This is an independent, unofficial study project using original practice questions and assets, and it is not affiliated with the official exam administrator. See [IP_DESIGN_NOTES.md](IP_DESIGN_NOTES.md) for the clean-room game-design boundary and [BRAND_CLEARANCE.md](BRAND_CLEARANCE.md) for the preliminary naming review.
+`하루말 · HARUMAL` is the product brand (the codebase and older documents still use the earlier `MALBIT` name); `TOPIK` appears only to describe exam preparation. This is an independent, unofficial study project using original practice questions and assets, and it is not affiliated with the official exam administrator. See [IP_DESIGN_NOTES.md](IP_DESIGN_NOTES.md) for the clean-room game-design boundary and [BRAND_CLEARANCE.md](BRAND_CLEARANCE.md) for the preliminary naming review.
 
 The repository and GitHub Pages URL retain the legacy `topik-quest` slug so existing links and local progress continue to work.
 

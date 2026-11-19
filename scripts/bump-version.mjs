@@ -25,7 +25,7 @@ const replacements = {
     .replace(/const appVersion='\d+'/, `const appVersion='${next}'`)
     .replace(/\?v=\d+/g, `?v=${next}`),
   'site-patch.js': sources['site-patch.js']
-    .replace(/\/\/ MALBIT bootstrap v\d+/, `// MALBIT bootstrap v${next}`)
+    .replace(/\/\/ MALBIT bootstrap v\d+/, `// HARUMAL bootstrap v${next}`)
     .replace(/const VERSION='\d+'/, `const VERSION='${next}'`),
   'sw.js': sources['sw.js'].replace(/const VERSION='\d+'/, `const VERSION='${next}'`)
 };

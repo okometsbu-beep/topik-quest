@@ -1,8 +1,8 @@
-// MALBIT bootstrap v176
+// HARUMAL bootstrap v177
 // Load the shared core, reviewed data, TOPIK I engine, then learning interactions.
 (function(){
   'use strict';
-  const VERSION='176';
+  const VERSION='177';
   const RUNTIME_FILES=Object.freeze([
     'writing-answers.js',
     'site-patch-core.js',

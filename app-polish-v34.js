@@ -79,8 +79,7 @@ function patchBeginnerWriting(){
   let node=tabs.nextElementSibling;while(node&&node!==tip){const next=node.nextElementSibling;node.remove();node=next}
   const holder=document.createElement('div');holder.className='v34WritingHolder';holder.innerHTML=writingPanel();tip.parentNode.insertBefore(holder,tip);(window.requestAnimationFrame||window.setTimeout)(initWritingCanvas,0)
 }
-function patchVersion(){const badge=document.querySelector('.malbitPageTitle>span');if(badge&&/^v\d+$/i.test(badge.textContent.trim()))badge.textContent='v34'}
-function afterRender(){installBeginnerTab();syncListeningButtons();patchBeginnerWriting();patchVersion()}
+function afterRender(){installBeginnerTab();syncListeningButtons();patchBeginnerWriting()}
 if(typeof window.render==='function'){const base=window.render;window.render=function(){const result=base.apply(this,arguments);afterRender();return result}}
 
 const style=document.createElement('style');style.textContent=`

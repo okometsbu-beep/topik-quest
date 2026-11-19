@@ -1,3 +1,13 @@
+## v177 입력·렌더·캐시·번역·표기 정리 (Neon 점검 6건 중 ①②③④⑥)
+
+- `app-touch.js`: 입력·텍스트영역·contenteditable에서 클립보드/선택 이벤트를 막지 않고, 정지 400ms 강제 `blur()`를 제거했다. 비입력 영역 터치 콜아웃 억제와 학습 텍스트 선택 예외는 유지한다.
+- `site-patch-core.js`가 `tqOnBodyChange`(단일 body 감시자)를 소유한다. `app-polish-v22/24/33/34/35.js`, `review-visual-system.js`, `random-practice-visual-system.js`는 더 이상 `document.body`를 따로 감시하지 않는다. 하드코딩된 `patchVersion()`(설정 배지를 `v33`/`v34`/`v35`로 덮어쓰던 버그)을 삭제했다. `window.render` 래핑을 하나로 모으는 변경은 플래시카드 브라우저 검사 회귀(hfEntry 카드 소실)로 되돌렸고, 브라우저 확인이 가능한 환경에서 다시 시도해야 한다.
+- `sw.js`: 캐시 접두사 `harumal-v`, 이전 `malbit-v` 캐시는 계속 삭제. `SHELL`은 실제 런타임 파일(핵심 UI·렌더·여행·단어장·쓰기·성장·마스코트)과 필요한 아트만 담고, 퇴역 `malbit-home-hero.webp`를 뺐다. 문항 은행·듣기 오디오·문항 이미지·인트로 영상은 여전히 프리캐시 밖이다.
+- 외부 무료 번역 API(MyMemory) 호출을 런타임에서 완전히 제거했다. `translateCached()`는 검수/캐시된 번역 또는 "번역 준비 중" 안내만 돌려주고 네트워크를 쓰지 않는다. 수동 단어장은 외국어를 한국어로 자동 변환하지 않고 한국어 표제어 입력을 요구한다.
+- 문서: `docs/STATUS.md`에 v157~v176 누락분을 채웠고, README/AGENTS 제품명을 `하루말 · HARUMAL`로 맞췄다. 처리 기록은 `docs/qa/neon-review-20261119.md`.
+- 검증: 로컬 Node 22에서 `check:runtime`(v177, 102파일)과 `check:syntax`(277파일), 변경 영역 테스트 통과. Chrome이 없는 환경이라 로컬 브라우저 검증은 하지 않았고, 실제 화면·오프라인·모바일은 `Verify MALBIT` CI와 배포 후 라이브 확인으로 판정한다.
+- 남은 공백: 쓰기 S01~S06, 자모 획순 안내, 기존 저음량 오디오 정지 구간은 별도 후속 작업이다. `app-polish-v22~v35`의 패치 함수를 소유 파일로 옮겨 파일을 없애는 단계는 아직 남아 있다.
+
 ## v176 beginner usability candidate
 
 - First grammar ordering uses translated ready-made chunks, optional typing, incomplete/wrong feedback, and chapter-to-chapter navigation. Existing lesson IDs, progress and reward protections remain.

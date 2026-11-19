@@ -13,7 +13,8 @@ test('Review has one final visual owner for queue and retry surfaces',()=>{
   assert.match(visual,/style\.id='malbitReviewVisualSystem'/);
   assert.match(visual,/S\?\.view==='review'/);
   assert.match(visual,/tqReviewRetrySheet/);
-  assert.match(visual,/new MutationObserver\(sync\)/);
+  assert.match(visual,/window\.tqOnBodyChange\?\.\(sync\)/);
+  assert.match(read('site-patch-core.js'),/window\.tqOnBodyChange=/);
   assert.match(features,/let reviewFilter='all'/);
   assert.match(features,/class="tqReviewFilters"/);
   for(const token of ['--ui-space-2','--ui-touch','--ui-radius-card','--ui-surface','--ui-border','--ui-ink'])assert.match(visual,new RegExp(`var\\(${token}\\)`));

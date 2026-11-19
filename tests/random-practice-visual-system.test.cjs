@@ -19,7 +19,8 @@ test('Random Practice has one final visual owner for TOPIK I and II',()=>{
   assert.match(visual,/view==='infinity'/);
   assert.match(visual,/view==='t1quiz'/);
   assert.match(visual,/storedSession\(\)\?\.mode==='random'/);
-  assert.match(visual,/new MutationObserver\(sync\)/);
+  assert.match(visual,/window\.tqOnBodyChange\?\.\(sync\)/);
+  assert.match(read('site-patch-core.js'),/window\.tqOnBodyChange=/);
   for(const token of ['--ui-space-2','--ui-touch','--ui-radius-card','--ui-surface','--ui-border','--ui-ink'])assert.match(visual,new RegExp(`var\\(${token}\\)`));
   assert.match(visual,/--random-canvas:var\(--ui-canvas\)/);
   assert.match(visual,/html\[data-theme="light"\] body\.tq-random-practice-active/);

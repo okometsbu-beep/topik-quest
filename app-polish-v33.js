@@ -183,10 +183,9 @@ function patchTrail(){
   if(session.phase==='map'){const route=document.querySelector('.t1TrailRoute');if(route){route.style.scrollBehavior='auto';route.onscroll=null}}
 }
 function patchListeningSession(){const state=appState();if(listeningMode()==='off'&&state?.infinity?.practiceSession?.area!=='listening'&&state?.view==='infinity'&&state.infinity?.current?.type==='listen'&&!state.infinity.feedback&&!state.infinity.__v33Skipping){state.infinity.__v33Skipping=true;setTimeout(()=>{if(state.infinity){delete state.infinity.__v33Skipping;window.nextInfinity?.()}},0)}}
-function patchVersion(){const badge=document.querySelector('.malbitPageTitle>span');if(badge&&/^v\d+$/i.test(badge.textContent.trim()))badge.textContent='v33'}
 
 function afterRender(){
-  installListeningGates();patchVocabulary();if(appState()?.view==='beginner')renderBeginner(document.getElementById('screen'));else patchHomeBeginner();patchStatsLanguage();patchMoreListening();patchTrail();patchListeningSession();cleanDisplayedHeaders();patchVersion()
+  installListeningGates();patchVocabulary();if(appState()?.view==='beginner')renderBeginner(document.getElementById('screen'));else patchHomeBeginner();patchStatsLanguage();patchMoreListening();patchTrail();patchListeningSession();cleanDisplayedHeaders()
 }
 if(typeof window.render==='function'){const base=window.render;window.render=function(){const out=base.apply(this,arguments);afterRender();return out}}
 installListeningGates();
