@@ -1,3 +1,11 @@
+## 2026-11-20 v180 듣기 2.06초 정지 음원 재합성 재발행
+
+- O09-II-L-41/42가 함께 쓰는 `audio/listening/original-v10/F1/800786a0a81d1d16.mp3`를 편집이 아니라 새로 합성해 바꿨다. 팩 규칙 seed(20261015+행번호 81=20261096)는 같은 2.083초 정지를 결정적으로 다시 만들기 때문에, 텍스트·음색·모델 리비전·후처리를 그대로 두고 이웃 seed 20261097로 다시 뽑았다. 녹음 길이 55.3349초와 443,288바이트는 그대로다.
+- 실측(`ffmpeg silencedetect noise=-45dB:d=0.45`) 결과 내부 정지는 1.542·0.606·1.430·1.441초로, 2초 넘는 구간이 사라졌다. 같은 팩 60개 표본의 최대 내부 정지가 1.684초(중앙값 1.47초)라 기존 리듬 범위 안이다. 음량은 -18.53 LUFS·-2.01 dBTP.
+- 모델·helper·음색 프리셋·의존성은 저장소 문서의 고정값을 다시 받아 해시 일치를 확인한 뒤 사용했다. 대체 seed는 `audio/listening/original-v10/seed-overrides.json`에 사유·이전 해시와 함께 남기고, 생성기가 이를 읽어 `generation-records.json`의 `seedOverrides`로 옮기도록 했다.
+- 매니페스트는 `verify-original-listening-audio.py`로 428개 전부 재검증해 다시 만들었고(누락·무효·중복 0), 카탈로그는 `build-original-listening-catalog.mjs`로 재생성했다. 팩 총 바이트·총 길이는 이전과 같다.
+- 한계: 청취·발음 검수는 하지 않았다. `humanPronunciationReview`·`scriptToAudioMeaningVerified`·`physicalDevicePlaybackVerified`는 계속 false이며, 이웃 seed는 정지 구간만이 아니라 샘플링 잡음을 클립 전체에서 바꾼다. 측정·근거는 `docs/qa/listening-pause-resynthesis-v1.md`.
+
 ## 2026-11-19 v179 쓰기 입구 문구 동기화
 
 - 단계별 학습과 '다른 연습'의 쓰기 항목이 "S01–S06 준비 중 · S07만 제공"으로 남아 있던 것을 실제 상태(S01–S06 문장 기초 + S07 원인 문장 모두 열림)로 고쳤다. 네 언어 문구를 함께 바꿨고, 해당 회귀 테스트의 단언도 새 문구로 갱신했다.

@@ -16,6 +16,17 @@ The full inventory is `audio/listening/v1/corpus.json`; every input question ID,
 voice-specific segment, MP3 hash and byte count is traceable through corpus and manifest.
 Do not key generated-bank audio only by visible question number: `bankId` and script vary.
 
+## Re-synthesizing one reviewed clip
+
+A single clip whose recording has a defect is re-synthesized, never edited or trimmed. Put the
+replacement seed in `audio/listening/<pack>/seed-overrides.json` (row id, voice, seed, reason,
+replaced SHA-256). `scripts/generate-original-listening-audio.py` applies it, rejects an override
+that names no corpus row, and copies the list into `generation-records.json` as `seedOverrides`.
+After replacing the MP3, rebuild with `scripts/verify-original-listening-audio.py --output
+<pack>` and `scripts/build-original-listening-catalog.mjs --pack <pack>`, then bump the release
+version so the browser and service worker fetch the new media. An example and its measurements
+are in `docs/qa/listening-pause-resynthesis-v1.md`.
+
 There is no on-device model download or live synthesis in the active application. Generic
 word/grammar read-aloud remains device TTS. Do not embed cloud API keys in static client code.
 

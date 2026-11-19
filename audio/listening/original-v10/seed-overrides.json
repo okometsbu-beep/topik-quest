@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "overrides": [
+    {
+      "id": "800786a0a81d1d16",
+      "voice": "F1",
+      "seed": 20261097,
+      "reason": "Republished take for O09-II-L-41/42. The pack seed 20261096 deterministically produced a 2.083-second low-level pause at 40.49-42.57 seconds of the 55.33-second clip; this take keeps the same text, voice preset, model revision and encoding and measures a longest internal pause of 1.542 seconds.",
+      "previousSha256": "2c327d05b9f54bdf37f027fee0d5ae1da6c07b55233c4b1115abb2e6ed4ec494"
+    }
+  ]
+}

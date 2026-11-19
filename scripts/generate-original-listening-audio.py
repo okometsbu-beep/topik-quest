@@ -28,6 +28,16 @@ from helper import TextToSpeech, load_cfgs, load_onnx_all, load_text_processor, 
 corpus_bytes = (args.output / 'corpus.json').read_bytes()
 spec = json.loads(corpus_bytes)
 corpus = spec['corpus']
+# A reviewed re-synthesis of one clip uses the next seed and is recorded here, so a fresh
+# regeneration reproduces the published take instead of the replaced one.
+overrides_path = args.output / 'seed-overrides.json'
+seed_overrides = json.loads(overrides_path.read_text())['overrides'] if overrides_path.exists() else []
+corpus_ids = {row['id'] for row in corpus}
+for override in seed_overrides:
+    assert override['id'] in corpus_ids, f'Unknown seed override row: {override["id"]}'
+    assert isinstance(override['seed'], int) and override['seed'] > 0
+    assert override.get('reason'), f'Seed override needs a reason: {override["id"]}'
+override_seeds = {override['id']: override['seed'] for override in seed_overrides}
 opts = ort.SessionOptions()
 opts.intra_op_num_threads = 2
 opts.inter_op_num_threads = 1
@@ -54,7 +64,7 @@ for voice in sorted({voice for row in corpus if not row.get('heldForCastReview')
         previous = completed.get((row['id'], voice))
         if target.exists() and previous and hashlib.sha256(target.read_bytes()).hexdigest() == previous['sha256'] and previous.get('textSha256') == hashlib.sha256(row['text'].encode()).hexdigest():
             continue
-        np.random.seed(20261015 + index)
+        np.random.seed(override_seeds.get(row['id'], 20261015 + index))
         wav, duration = tts(row['text'], 'ko', style, 8, 1.0)
         samples = wav[0, :int(tts.sample_rate * duration[0].item())]
         assert np.isfinite(samples).all() and np.max(np.abs(samples)) >= .005
@@ -77,6 +87,7 @@ record = {'version': 1, 'sourceSnapshotSha256': spec['sourceSnapshotSha256'],
           'voiceStyleSha256': {voice: hashlib.sha256((args.model_dir / 'voice_styles' / f'{voice}.json').read_bytes()).hexdigest() for voice in sorted({voice for _, voice in eligible})},
           'provider': 'CPUExecutionProvider', 'language': 'ko', 'denoisingSteps': 8, 'speed': 1.0,
           'seedBase': 20261015, 'seedRule': 'seedBase + corpus row index',
+          'seedOverrides': seed_overrides, 'seedOverrideRule': 'A reviewed re-synthesis replaces the listed row seed; reason is recorded with it.',
           'encoding': 'ffmpeg loudnorm I=-18:TP=-2:LRA=7; 44100 Hz mono libmp3lame 64 kbps',
           'files': [completed[key] for key in eligible]}
 (args.output / 'generation-records.json').write_text(json.dumps(record, ensure_ascii=False, indent=2) + '\n')
