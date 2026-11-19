@@ -48,7 +48,7 @@ function finishStage(env, group) {
 }
 function finishCore(env) {
   env.c.harumalWritingBegin();
-  for (const group of env.data.groups.filter(group => !group.delayedOnly)) { finishStage(env, group); env.c.harumalWritingContinue(group.id); }
+  for (const group of env.data.groups.filter(group => group.nodeId === 'S07' && !group.delayedOnly)) { finishStage(env, group); env.c.harumalWritingContinue(group.id); }
   assert.equal(env.E.guidedProgress().complete, true);
 }
 function evidence(env) {

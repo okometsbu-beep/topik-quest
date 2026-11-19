@@ -1,5 +1,167 @@
 // Plain-language writing interface. Original Korean keys preserve saved feedback compatibility.
 window.HARUMAL_WRITING_UI_I18N = {
+  "첫 소단원 열기": {
+    "ko": "첫 소단원 열기",
+    "ja": "最初の単元を開く",
+    "en": "Open the first unit",
+    "zh": "打开第一个单元"
+  },
+  "한 사실을<br>한 문장으로": {
+    "ko": "한 사실을<br>한 문장으로",
+    "ja": "一つの事実を<br>1文に",
+    "en": "One fact,<br>one sentence",
+    "zh": "一个事实，<br>一句话"
+  },
+  "무엇이 어떤지 분명하게 써요.": {
+    "ko": "무엇이 어떤지 분명하게 써요.",
+    "ja": "何がどうなのかをはっきり書きます。",
+    "en": "Say clearly what is what.",
+    "zh": "清楚写出什么是什么。"
+  },
+  "조사로 역할을<br>표시해요": {
+    "ko": "조사로 역할을<br>표시해요",
+    "ja": "助詞で役割を<br>示します",
+    "en": "Mark roles<br>with particles",
+    "zh": "用助词<br>标出作用"
+  },
+  "누가·무엇을·어디에를 조사로 구분해요.": {
+    "ko": "누가·무엇을·어디에를 조사로 구분해요.",
+    "ja": "誰が・何を・どこにを助詞で区別します。",
+    "en": "Separate who, what and where with particles.",
+    "zh": "用助词区分谁、什么、哪里。"
+  },
+  "서술어의 형태를<br>맞춰 써요": {
+    "ko": "서술어의 형태를<br>맞춰 써요",
+    "ja": "述語の形を<br>整えます",
+    "en": "Match the<br>predicate form",
+    "zh": "把谓语<br>形态写对"
+  },
+  "어간에 어미를 붙여 해요체를 만들어요.": {
+    "ko": "어간에 어미를 붙여 해요체를 만들어요.",
+    "ja": "語幹に語尾を付けてヘヨ体にします。",
+    "en": "Add an ending to the stem to make the polite form.",
+    "zh": "在词干后接语尾，写成礼貌体。"
+  },
+  "시점과 부정을<br>구분해요": {
+    "ko": "시점과 부정을<br>구분해요",
+    "ja": "時点と否定を<br>区別します",
+    "en": "Separate time<br>and negation",
+    "zh": "区分时点<br>与否定"
+  },
+  "언제의 일인지, 하지 않았는지 분명히 써요.": {
+    "ko": "언제의 일인지, 하지 않았는지 분명히 써요.",
+    "ja": "いつのことか、しなかったことをはっきり書きます。",
+    "en": "Make the time and the negation clear.",
+    "zh": "把时间和否定写清楚。"
+  },
+  "정보를 하나 더<br>넣어요": {
+    "ko": "정보를 하나 더<br>넣어요",
+    "ja": "情報をもう一つ<br>加えます",
+    "en": "Add one more<br>piece of information",
+    "zh": "再加一条<br>信息"
+  },
+  "언제·어디서·누구와를 한 문장에 넣어요.": {
+    "ko": "언제·어디서·누구와를 한 문장에 넣어요.",
+    "ja": "いつ・どこで・誰とを1文に入れます。",
+    "en": "Put when, where and with whom in one sentence.",
+    "zh": "把时间、地点、和谁放进一句话。"
+  },
+  "대상을 절로<br>한정해요": {
+    "ko": "대상을 절로<br>한정해요",
+    "ja": "対象を節で<br>限定します",
+    "en": "Limit the object<br>with a clause",
+    "zh": "用从句<br>限定对象"
+  },
+  "수식하는 말로 어떤 대상인지 좁혀요.": {
+    "ko": "수식하는 말로 어떤 대상인지 좁혀요.",
+    "ja": "修飾する言葉でどんな対象かを絞ります。",
+    "en": "Narrow down what the object is with a modifier.",
+    "zh": "用修饰语缩小所指对象。"
+  },
+  "첫 소단원은 연습할 수 있어요": {
+    "ko": "첫 소단원은 연습할 수 있어요",
+    "ja": "最初の単元は練習できます",
+    "en": "The first unit is open",
+    "zh": "第一个单元可以练习"
+  },
+  "이 능력의 첫 소단원만 준비됐어요. 나머지 범위와 다른 쓰기 유형은 준비 중이에요.": {
+    "ko": "이 능력의 첫 소단원만 준비됐어요. 나머지 범위와 다른 쓰기 유형은 준비 중이에요.",
+    "ja": "この能力は最初の単元だけ用意されています。残りの範囲と他の作文形式は準備中です。",
+    "en": "Only the first unit of this ability is ready. The rest and other writing formats are still in preparation.",
+    "zh": "这项能力目前只有第一个单元准备好了，其余范围和写作题型仍在准备中。"
+  },
+  "{0} · 첫 소단원": {
+    "ko": "{0} · 첫 소단원",
+    "ja": "{0}・最初の単元",
+    "en": "{0} · first unit",
+    "zh": "{0} · 第一个单元"
+  },
+  "자동 규칙은 조사·형태·수식만 확인해요. 문장의 뜻과 자연스러움은 사람의 검토가 필요해요.": {
+    "ko": "자동 규칙은 조사·형태·수식만 확인해요. 문장의 뜻과 자연스러움은 사람의 검토가 필요해요.",
+    "ja": "自動の確認は助詞・形・修飾だけを見ます。文の意味と自然さは人の確認が必要です。",
+    "en": "The automatic check looks only at the particle, form and modifier. Meaning and naturalness need a person to review.",
+    "zh": "自动检查只看助词、形态和修饰语；句子的意思与自然程度需要人来确认。"
+  },
+  "이 소단원에서 연습하는 것": {
+    "ko": "이 소단원에서 연습하는 것",
+    "ja": "この単元で練習すること",
+    "en": "What this unit practices",
+    "zh": "本单元练习的内容"
+  },
+  "이 소단원을 마쳤다고 이 능력 전체를 익혔다고 기록하지 않아요.": {
+    "ko": "이 소단원을 마쳤다고 이 능력 전체를 익혔다고 기록하지 않아요.",
+    "ja": "この単元を終えても、この能力全体を身につけたとは記録しません。",
+    "en": "Finishing this unit does not record the whole ability as learned.",
+    "zh": "完成本单元不会记为已掌握整项能力。"
+  },
+  "집중 연습 시작하기": {
+    "ko": "집중 연습 시작하기",
+    "ja": "集中練習を始める",
+    "en": "Start the focused practice",
+    "zh": "开始集中练习"
+  },
+  "능력 지도로": {
+    "ko": "능력 지도로",
+    "ja": "能力マップへ",
+    "en": "Back to the ability map",
+    "zh": "返回能力地图"
+  },
+  "문장 기초 소단원": {
+    "ko": "문장 기초 소단원",
+    "ja": "文の基礎の単元",
+    "en": "Sentence-foundation units",
+    "zh": "句子基础单元"
+  },
+  "작성 기록": {
+    "ko": "작성 기록",
+    "ja": "作成の記録",
+    "en": "Writing record",
+    "zh": "书写记录"
+  },
+  "한 문장으로": {
+    "ko": "한 문장으로",
+    "ja": "1文で",
+    "en": "In one sentence",
+    "zh": "用一句话"
+  },
+  "주어진 사실을 한 문장으로 써요.": {
+    "ko": "주어진 사실을 한 문장으로 써요.",
+    "ja": "与えられた事実を1文で書きます。",
+    "en": "Write the given fact as one sentence.",
+    "zh": "把给定事实写成一句话。"
+  },
+  "현재 첫 원인 문장 연습과 문장 기초 소단원이 열려 있어요. 나머지 과정은 계속 준비 중이에요.": {
+    "ko": "현재 첫 원인 문장 연습과 문장 기초 소단원이 열려 있어요. 나머지 과정은 계속 준비 중이에요.",
+    "ja": "現在は最初の理由文の練習と文の基礎の単元が利用できます。その他のコースは準備中です。",
+    "en": "The first cause-sentence unit and the sentence-foundation units are open. The rest is still in preparation.",
+    "zh": "目前开放第一个原因句单元和句子基础单元，其余课程仍在准备中。"
+  },
+  "주어진 사실을 모두 넣었나요?": {
+    "ko": "주어진 사실을 모두 넣었나요?",
+    "ja": "与えられた事実をすべて入れましたか？",
+    "en": "Did you include every given fact?",
+    "zh": "给定的内容都写进去了吗？"
+  },
   "이전 화면": {
     "ko": "이전 화면",
     "ja": "前の画面",
@@ -1157,12 +1319,6 @@ window.HARUMAL_WRITING_UI_I18N = {
     "ja": "別の日に新しい場面で書く",
     "en": "Write a new situation on a later day",
     "zh": "隔天在新情境中写作"
-  },
-  "새 상황에서 혼자 쓰기": {
-    "ko": "새 상황에서 도움 없이 쓰기",
-    "ja": "新しい場面でヒントなしで書く",
-    "en": "Write a new situation without help",
-    "zh": "在新情境中独立写作"
   },
   "작성 이력 {0}개": {
     "ko": "지금까지 쓴 답 {0}개",

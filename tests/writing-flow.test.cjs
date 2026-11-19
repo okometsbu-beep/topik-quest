@@ -31,7 +31,7 @@ function finishStage(E,g){
 }
 function finishCore(env){
  env.E.startGuided();
- for(const g of env.data.groups.filter(g=>!g.delayedOnly)){finishStage(env.E,g);env.E.continueGuided(g.id)}
+ for(const g of env.data.groups.filter(g=>g.nodeId==='S07'&&!g.delayedOnly)){finishStage(env.E,g);env.E.continueGuided(g.id)}
 }
 
 test('guided flow starts at one stage and menu visits create no progress or unlocks',()=>{
@@ -118,7 +118,7 @@ test('35 submitted and continued core items complete the available unit without 
  const env=setup();finishCore(env);const{E,data}=env,p=E.guidedProgress();
  assert.equal(p.complete,true);assert.equal(p.delayedComplete,false);assert.equal(p.delayedReady,false);
  assert.equal(E.getState().attempts.length,35);assert.equal(p.completedItemIds.length,35);
- assert.equal(p.completedIds.length,data.groups.length-1);
+ assert.equal(p.completedIds.length,data.groups.filter(g=>g.nodeId==='S07'&&!g.delayedOnly).length);
  assert.deepEqual(plain(p.route),{page:'course'});assert.equal(p.active,false);
  assert.ok(p.unlockedIds.includes('delayed-new'));
  assert.deepEqual(plain(E.startGuided('delayed-new')),{page:'group',groupId:'delayed-new'});
@@ -131,7 +131,7 @@ test('delayed work still needs 24 hours and a later local day and remains separa
  setTime('2026-10-08T09:59:59Z');assert.equal(E.delayedReady(),false);
  setTime('2026-10-08T10:00:01Z');assert.equal(E.delayedReady(),true);
  assert.deepEqual(plain(E.startGuided('delayed-new')),{page:'item',itemId:'D01'});
- finishStage(E,data.groups.at(-1));
+ finishStage(E,data.groups.find(g=>g.id==='delayed-new'));
  assert.equal(E.guidedProgress().complete,true);assert.equal(E.guidedProgress().delayedComplete,true);
  E.continueGuided('delayed-new');assert.equal(E.guidedProgress().route.page,'course');
  assert.equal(E.evidence().delayed,2);

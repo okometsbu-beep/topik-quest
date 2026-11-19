@@ -16,7 +16,8 @@ function T(source,...values){
 }
 const t=(source,...values)=>h(T(source,...values));
 const guided=()=>E.guidedProgress?.()||{started:false,active:false,unlockedIds:[],completedIds:[],complete:false};
-const courseFinished=p=>p.complete&&DATA.groups.filter(g=>!g.delayedOnly).every(g=>(p.confirmedStageIds||[]).includes(g.id));
+const guidedStages=()=>DATA.groups.filter(g=>g.nodeId==='S07'&&!g.delayedOnly);
+const courseFinished=p=>p.complete&&guidedStages().every(g=>(p.confirmedStageIds||[]).includes(g.id));
 const flowArt=key=>`<img class="wcFlowArt" src="assets/art/writing/flow-${h(key)}-v1.webp" alt="" width="112" height="112" decoding="async">`;
 const korean=value=>`<span lang="ko">${h(value)}</span>`;
 const button=(label,action,kind='primary',extra='')=>`<button type="button" class="wcButton wcButton--${kind}" onclick="${action}" ${action==='harumalWritingLastAnswer()'?'data-wc-action="last-answer"':''} ${extra}>${T(label)}</button>`;
@@ -29,8 +30,21 @@ const crumbs=back=>`<div class="wcTopline">${button('‹',back,'icon',`aria-labe
 const primaryAction=(label,action,extra='')=>`<div class="wcFooter wcPrimaryAction">${extra}${button(label,action)}</div>`;
 const footer=(label,action,note='')=>`<div class="wcFooter">${note?`<p>${T(note)}</p>`:''}${button(label,action)}</div>`;
 function localeDate(value){try{return new Date(value).toLocaleString({ko:'ko-KR',ja:'ja-JP',en:'en-US',zh:'zh-CN'}[language()],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}catch{return''}}
+const NODE_TASK={
+  S01:['한 사실을<br>한 문장으로','무엇이 어떤지 분명하게 써요.'],
+  S02:['조사로 역할을<br>표시해요','누가·무엇을·어디에를 조사로 구분해요.'],
+  S03:['서술어의 형태를<br>맞춰 써요','어간에 어미를 붙여 해요체를 만들어요.'],
+  S04:['시점과 부정을<br>구분해요','언제의 일인지, 하지 않았는지 분명히 써요.'],
+  S05:['정보를 하나 더<br>넣어요','언제·어디서·누구와를 한 문장에 넣어요.'],
+  S06:['대상을 절로<br>한정해요','수식하는 말로 어떤 대상인지 좁혀요.']
+};
+const nodeTitle=id=>DATA.nodes.find(n=>n.id===id)?.titleKo||'';
+const nodeStageLabel=g=>g?.stage==='independent'?'혼자 쓰기 확인':g?.stage==='delayed'?'다른 날 확인':'집중 연습';
+// The cause-writing unit keeps its own wording; the sentence-foundation units name their node.
+const groupEyebrow=(g,withStage)=>g.nodeId==='S07'?T('원인 문장 · {0}',withStage?T(nodeStageLabel(g)):t(g.titleKo)):`${t(nodeTitle(g.nodeId))} · ${withStage?t(nodeStageLabel(g)):t(g.titleKo)}`;
+const foundationNode=id=>['S01','S02','S03','S04','S05','S06'].includes(id);
 function readinessMissing(g){return(g?.prerequisites||[]).filter(key=>key!=='reason_form'&&state().readiness[key]?.value!=='ready')}
-function returnAction(route){if(guided().active&&['item','feedback','stage-done'].includes(route.page))return "harumalWritingGo('course')";if(route.page==='level')return "harumalWritingGo('course')";return route.page==='course'?"harumalWritingExit()":route.page==='map'?"harumalWritingGo('course')":route.page==='node'?"harumalWritingGo('map')":route.page==='unit'?"harumalWritingGo('map')":route.page==='group'?"harumalWritingGo('unit')":['item','feedback'].includes(route.page)?`harumalWritingGo('group','${item(route.itemId)?.groupId||'probe-basics'}')`:"harumalWritingGo('course')"}
+function returnAction(route){if(guided().active&&['item','feedback','stage-done'].includes(route.page))return "harumalWritingGo('course')";if(route.page==='level')return "harumalWritingGo('course')";return route.page==='course'?"harumalWritingExit()":route.page==='nodeunit'?`harumalWritingGo('node','${route.nodeId||'S01'}')`:route.page==='map'?"harumalWritingGo('course')":route.page==='node'?"harumalWritingGo('map')":route.page==='unit'?"harumalWritingGo('map')":route.page==='group'?"harumalWritingGo('unit')":['item','feedback'].includes(route.page)?`harumalWritingGo('group','${item(route.itemId)?.groupId||'probe-basics'}')`:"harumalWritingGo('course')"}
 function course(){
  const e=E.evidence(),p=guided(),g=group(p.stageId),resume=p.started,finished=courseFinished(p);
  return heading('나의 쓰기 과정','한 문장부터<br>조리 있는 글까지','수준을 고르면 한 문제씩 이어서 풀어요.')+
@@ -38,7 +52,8 @@ function course(){
  (resume?`<section class="wcResume"><small>${t(finished?'첫 원인 문장 연습을 마쳤어요':'이전에 하던 연습')}</small><h2>${g?t(g.titleKo):t('초급 · 원인 문장 연습')}</h2>${footer(finished?'마지막 기록 이어 보기':'이어서 풀기',finished?"harumalWritingLastAnswer()":"harumalWritingResume()")}</section>`:'')+
  `<h2 class="wcSectionTitle">${t('내 수준에서 시작해요')}</h2>`+
  linkCard('1','초급','짧은 문장부터 시작해 이유를 한 문장으로 써요.',"harumalWritingBegin()",'wcRouteCard--active')+
- `<p class="wcNote wcAvailable">${t('현재 첫 원인 문장 연습이 열려 있어요. 초급 전체 과정은 계속 준비 중이에요.')}</p>`+
+ `<p class="wcNote wcAvailable">${t('현재 첫 원인 문장 연습과 문장 기초 소단원이 열려 있어요. 나머지 과정은 계속 준비 중이에요.')}</p>`+
+ `<h2 class="wcSectionTitle">${t('문장 기초 소단원')}</h2><div class="wcRowGroup">${['S01','S02','S03','S04','S05','S06'].map(id=>{const n=DATA.nodes.find(n=>n.id===id),task=NODE_TASK[id];return n?linkCard(id.slice(1),t(n.titleKo),t(task?task[1]:n.summaryKo||''),`harumalWritingGo('nodeunit','${id}')`):''}).join('')}</div>`+
  linkCard('2','중급','문단으로 설명하기 · 과정 준비 중',"harumalWritingGo('level','intermediate')")+
  linkCard('3','고급','여러 문단으로 생각 펼치기 · 과정 준비 중',"harumalWritingGo('level','advanced')")+
  `<div class="wcSplitLinks">${button('내 쓰기 기록',"harumalWritingGo('records')",'text')}${button('전체 학습 지도',"harumalWritingGo('map')",'text')}</div>`+
@@ -53,7 +68,7 @@ function levelPage(id){
 function stageDone(id){
  const p=guided(),g=group(id);
  if(!g||!p.completedIds.includes(id))return course();
- const next=DATA.groups.find(entry=>!entry.delayedOnly&&!p.completedIds.includes(entry.id)),count=g.itemIds.length;
+ const next=guidedStages().find(entry=>!p.completedIds.includes(entry.id)),count=g.itemIds.length;
  return heading('한 단계 완료','이번 연습을 마쳤어요',E.getStorageError()?'기기에 저장되지 않았어요. 화면의 글을 따로 복사해 주세요.':'작성한 문장과 도움 사용 기록을 저장했어요.',flowArt('unlock'))+
  `<section class="wcPanel wcPanel--mint"><small>${t('초급 · 첫 원인 문장 연습')}</small><h2>${t(g.titleKo)}</h2><p>${t('{0}개 문제를 풀었어요. 모든 문장의 뜻이 맞다고 판정한 것은 아니에요.',count)}</p></section>`+
  (next?`<section class="wcNextStage"><small>${t('다음에 열릴 연습')}</small><h2>${t(next.titleKo)}</h2><p>${t('다음 단계로 가도 이전 문장을 다시 고칠 수 있어요.')}</p></section>`:`<section class="wcPanel"><h2>${t('다른 날 새 문장으로 다시 써요')}</h2><p>${t('첫 도움 없는 쓰기에서 24시간 이상 지나고 날짜가 바뀌면 새 상황이 열려요. 기다리는 동안 다른 연습을 해도 좋아요.')}</p>${flowArt('return')}</section>`)+
@@ -61,11 +76,11 @@ function stageDone(id){
 }
 function guidedStrip(i){
  const p=guided();if(!p.active)return '';
- const stages=DATA.groups.filter(g=>!g.delayedOnly),g=group(i.groupId),index=stages.findIndex(g=>g.id===i.groupId);
+ const stages=guidedStages(),g=group(i.groupId),index=stages.findIndex(g=>g.id===i.groupId);
  return `<div class="wcGuidedProgress"><span>${t('초급 · 첫 원인 문장 연습')}</span><strong>${t('{0}/{1}단계 · {2}/{3}문제',index+1,stages.length,g.itemIds.indexOf(i.id)+1,g.itemIds.length)}</strong><small>${t('단계 표시는 풀이 순서예요. 실력 점수가 아니에요.')}</small></div>`;
 }
 function map(){
- const block=(ids,title,copy)=>`<section class="wcMapBlock"><h2>${T(title)}</h2><p>${T(copy)}</p><div class="wcNodeLinks">${ids.map(id=>{const n=DATA.nodes.find(n=>n.id===id);return n?`<button type="button" onclick="harumalWritingGo('node','${id}')">${h(id)} · ${t(n.titleKo)} <small>${t(id==='S07'?'첫 소단원 연습 가능':'드릴 준비 중')}</small></button>`:''}).join('')}</div></section>`;
+ const block=(ids,title,copy)=>`<section class="wcMapBlock"><h2>${T(title)}</h2><p>${T(copy)}</p><div class="wcNodeLinks">${ids.map(id=>{const n=DATA.nodes.find(n=>n.id===id);return n?`<button type="button" onclick="harumalWritingGo('node','${id}')">${h(id)} · ${t(n.titleKo)} <small>${t(n.status==='partial'?'첫 소단원 연습 가능':'드릴 준비 중')}</small></button>`:''}).join('')}</div></section>`;
  return heading('공통 기초 · 문장 능력 지도','문장에 필요한 힘을<br>하나씩 연결해요','능력 묶음마다 확인 상태를 따로 기록해요.')+
  block(['S01','S02','S03','S04'],'문장 골격과 기본 표현','한 사실 · 조사 역할 · 형태와 호응 · 시점과 부정')+
  `<div class="wcMapConnector" aria-hidden="true">↓</div><div class="wcMapColumns">${block(['S05','S06'],'정보 더하기','시간 · 장소 · 대상 · 수식과 절 확장')}${block(['S07','S08','S09','S10'],'관계 잇기','원인 · 대조 · 조건 · 목적 · 비교')}</div>`+
@@ -73,14 +88,23 @@ function map(){
  block(['S11','S12'],'문장 사이의 흐름과 글의 목적','지시 대상 · 정보 순서 · 독자에 맞는 표현')+block(['D01','D02'],'문단 조직 → 글 전체 구성','중심 생각과 뒷받침 → 요구별 문단과 수정')+
  `<p class="wcNote">${t('선택한 과제에 필요한 하위 능력만 확인해요. 이 지도 전체를 끝내야 다음 능력을 볼 수 있는 것은 아니에요.')}</p>`+footer('원인 문장 소단원 보기',"harumalWritingGo('unit')");
 }
-function nodePage(id){const n=DATA.nodes.find(n=>n.id===id);if(!n)return map();return heading(T('{0} · 문장 능력',h(id)),t(n.titleKo),t(n.summaryKo||''))+`<section class="wcPanel"><h2>${t('필요한 선수 능력')}</h2><p>${t(n.prerequisiteNoteKo||'이 과제에서 실제로 필요한 하위 기능을 먼저 확인해요.')}</p><div class="wcNodeLinks">${(n.prerequisites||[]).map(p=>`<button onclick="harumalWritingGo('node','${h(p)}')">${t('{0} 자세히 보기',p)}</button>`).join('')}</div></section>`+(id==='S07'?`<section class="wcPanel wcPanel--mint"><h2>${t('첫 원인 소단원은 연습할 수 있어요')}</h2><p>${t('기본 상태 서술어와 하다 동작의 아서·어서·해서를 충분히 연습해요. 때문에·기 때문에와 새로운 활용은 별도 소단원으로 준비 중이에요.')}</p></section>`+footer('첫 원인 소단원 열기',"harumalWritingGo('unit')"):`<section class="wcPanel">${badge('드릴 준비 중')}<p>${t('이 능력의 충분한 문항 은행은 아직 준비 중이에요. 지도에 보인다고 이 과정을 이미 제공하거나 학습 완료로 처리하지 않아요.')}</p></section>`+button('준비된 원인 문장 연습',"harumalWritingGo('unit')",'secondary'));}
+function nodePage(id){const n=DATA.nodes.find(n=>n.id===id);if(!n)return map();const ready=n.status==='partial';return heading(T('{0} · 문장 능력',h(id)),t(n.titleKo),t(n.summaryKo||''))+`<section class="wcPanel"><h2>${t('필요한 선수 능력')}</h2><p>${t(n.prerequisiteNoteKo||'이 과제에서 실제로 필요한 하위 기능을 먼저 확인해요.')}</p><div class="wcNodeLinks">${(n.prerequisites||[]).map(p=>`<button onclick="harumalWritingGo('node','${h(p)}')">${t('{0} 자세히 보기',p)}</button>`).join('')}</div></section>`+(id==='S07'?`<section class="wcPanel wcPanel--mint"><h2>${t('첫 원인 소단원은 연습할 수 있어요')}</h2><p>${t('기본 상태 서술어와 하다 동작의 아서·어서·해서를 충분히 연습해요. 때문에·기 때문에와 새로운 활용은 별도 소단원으로 준비 중이에요.')}</p></section>`+footer('첫 원인 소단원 열기',"harumalWritingGo('unit')"):ready?`<section class="wcPanel wcPanel--mint"><h2>${t('첫 소단원은 연습할 수 있어요')}</h2><p>${t('이 능력의 첫 소단원만 준비됐어요. 나머지 범위와 다른 쓰기 유형은 준비 중이에요.')}</p></section>`+footer('첫 소단원 열기',`harumalWritingGo('nodeunit','${h(id)}')`)+button('준비된 원인 문장 연습',"harumalWritingGo('unit')",'secondary'):`<section class="wcPanel">${badge('드릴 준비 중')}<p>${t('이 능력의 충분한 문항 은행은 아직 준비 중이에요. 지도에 보인다고 이 과정을 이미 제공하거나 학습 완료로 처리하지 않아요.')}</p></section>`+button('준비된 원인 문장 연습',"harumalWritingGo('unit')",'secondary'));}
+function nodeUnit(id){
+ const n=DATA.nodes.find(n=>n.id===id);if(!n||!foundationNode(id))return map();
+ const stages=DATA.groups.filter(g=>g.nodeId===id),task=NODE_TASK[id];
+ return heading(T('{0} · 첫 소단원',h(id)),t(n.titleKo),t(n.summaryKo||''),art('study'))+
+ `<section class="wcPanel"><h2>${t(task?task[0]:'한 문장으로')}</h2><p>${t(task?task[1]:'주어진 사실을 한 문장으로 써요.')}</p><small>${t('자동 규칙은 조사·형태·수식만 확인해요. 문장의 뜻과 자연스러움은 사람의 검토가 필요해요.')}</small></section>`+
+ `<h2 class="wcSectionTitle">${t('이 소단원에서 연습하는 것')}</h2><div class="wcRowGroup">${stages.map(g=>linkCard('·',t(g.titleKo),t(g.helpKo||''),`harumalWritingGo('group','${g.id}')`)).join('')}</div>`+
+ `<p class="wcNote">${t('이 소단원을 마쳤다고 이 능력 전체를 익혔다고 기록하지 않아요.')}</p>`+
+ footer('집중 연습 시작하기',stages.length?`harumalWritingGo('group','${stages[0].id}')`:"harumalWritingGo('map')")+button('능력 지도로',"harumalWritingGo('map')",'text');
+}
 function unit(){
  const e=E.evidence();
  return heading('이유와 설명 · 첫 소단원','원인과 결과를<br>한 문장으로','첫 범위 · 기본 상태 서술어와 하다 동작',art('work'))+
  `<section class="wcPanel"><h2>${t('들어오기 전, 필요한 것')}</h2><p>${t('짧은 해요체 문장 만들기 · 이번 문항의 단어와 두 사실의 뜻')}</p>${button('짧은 문장과 뜻부터 확인',"harumalWritingGo('group','probe-basics')",'secondary')}</section>`+
  `<h2 class="wcSectionTitle">${t('이번 소단원 안에서')}</h2><div class="wcFormTabs">${[['form-aseo','아서'],['form-eoseo','어서'],['form-haeseo','해서']].map(([id,t])=>button(T('{0} 묶음',t), `harumalWritingGo('group','${id}')`,'secondary')).join('')}</div>`+
  `<ol class="wcSteps"><li>${t('형태별로 익히고, 문장 전체 쓰기')}</li><li>${t('형태를 섞어 새 내용으로 쓰기')}</li><li>${t('시점 · 주체 · 부정을 하나씩 바꾸기')}</li><li>${t('필요한 정보 하나 더하기')}</li><li>${t('예문 없이 새 상황에서 쓰기')}</li><li>${t('다른 날, 새 문장으로 다시 확인')}</li></ol>`+
- DATA.groups.filter(g=>g.stage!=='form'&&g.stage!=='probe').map(g=>linkCard(g.stage==='delayed'?'↻':'·',t(g.titleKo),g.stage==='delayed'?(e.delayedReady?'새 상황 확인 가능':e.delayedAt?T('{0} 이후 · 최소 24시간과 날짜 변경',localeDate(e.delayedAt)):'독립 작성 후 다른 날에 열려요'):t(g.helpKo||''),`harumalWritingGo('group','${g.id}')`)).join('')+
+ DATA.groups.filter(g=>g.nodeId==='S07'&&g.stage!=='form'&&g.stage!=='probe').map(g=>linkCard(g.stage==='delayed'?'↻':'·',t(g.titleKo),g.stage==='delayed'?(e.delayedReady?'새 상황 확인 가능':e.delayedAt?T('{0} 이후 · 최소 24시간과 날짜 변경',localeDate(e.delayedAt)):'독립 작성 후 다른 날에 열려요'):t(g.helpKo||''),`harumalWritingGo('group','${g.id}')`)).join('')+
  `<p class="wcNote">${t('먹어서 · 사서 · 와서와 불규칙 활용, 때문에 · 기 때문에 등은 이후 별도 소단원에서 배워요. 여기서 모든 이유 표현을 숙달했다고 표시하지 않아요.')}</p>`+footer('아서 묶음 연습하기',"harumalWritingGo('group','form-aseo')")+button('성장 증거 보기',"harumalWritingGo('records')",'text');
 }
 function prerequisiteMarkup(g){
@@ -92,7 +116,7 @@ function groupPage(id){
  const g=group(id);if(!g)return unit();
  if(g.delayedOnly&&!E.delayedReady())return heading('다른 날 확인','조금 간격을 두고<br>새 문장을 써요','바로 본 답을 기억하는 것과, 다른 날에도 사용할 수 있는 것은 따로 확인해요.',mascot('review-thinking'))+`<section class="wcPanel"><h2>${E.delayedAt()?t('{0} 이후',localeDate(E.delayedAt())):t('먼저 새 상황에서 독립 작성해요')}</h2><p>${t('첫 독립 작성에서 최소 24시간이 지나고 날짜가 바뀌면 열려요. 기다리는 동안 다른 준비된 능력을 연습할 수 있어요.')}</p></section>`+footer('예문 없이 새 상황 쓰기',"harumalWritingGo('group','independent-new')")+button('다른 연습 보기',"harumalWritingGo('unit')",'text');
  const completed=(g.itemIds||[]).filter(id=>state().attempts.some(a=>a.itemId===id)).length;
- return heading(T('원인 문장 · {0}',T(g.stage==='independent'?'혼자 쓰기 확인':g.stage==='delayed'?'다른 날 확인':'집중 연습')),t(g.titleKo),t(g.helpKo||''))+
+ return heading(groupEyebrow(g,true),t(g.titleKo),t(g.helpKo||''))+
  prerequisiteMarkup(g)+(g.stage==='form'?`<section class="wcPanel wcPanel--mint"><small>${t('이번에 새로 배우는 연결 형태')}</small><h2 lang="ko">${g.id==='form-aseo'?'많다 → 많아서 · 좋다 → 좋아서':g.id==='form-eoseo'?'없다 → 없어서 · 멀다 → 멀어서':'하다 → 해서'}</h2><p>${t('완성된 해요체 뒤에 ‘서’를 붙이지 않아요. 한 형태를 익힌 뒤 문장 전체를 직접 써요.')}</p></section>`:'')+
  `<p class="wcNote">${t('{0}/{1}개 문항에 작성 기록이 있어요. 작성 횟수는 숙달 점수가 아니에요.',completed,(g.itemIds||[]).length)}</p>`+
  (g.itemIds||[]).map((id,index)=>{const i=item(id),seen=state().attempts.some(a=>a.itemId===id),fresh=i.evidence?.independent||i.evidence?.delayed;return linkCard(index+1,fresh?T('새 상황 {0}',index+1):i.titleKo?t(i.titleKo):i.facts?.length?korean(i.facts.map(f=>f.ko).join(' / ')):t(i.promptKo),seen?'기록 있음 · 다시 쓰기는 연습으로 기록':fresh?'제출 전에는 예시답안을 보여 주지 않아요':i.kind==='relation'?'두 사실의 뜻을 구별해요':'문장 전체를 직접 써요',`harumalWritingStart('${id}')`)}).join('')+
@@ -133,8 +157,9 @@ function itemPage(id){
  const i=item(id);if(!i)return unit();const gate=prerequisiteGate(i);if(gate)return gate;if(!E.eligible(id))return groupPage(i.groupId);
  const g=group(i.groupId),d=E.draft(id),prev=state().attempts.filter(a=>a.itemId===id),independent=i.evidence?.independent||i.evidence?.delayed;
  const task=taskHeading(i,g);
- const title=task?task[0]:g.stage==='correction'?'뜻은 유지하고,<br>필요한 부분을 고쳐요':g.stage==='expansion'?'길이보다,<br>전할 정보를 분명히':g.stage==='delayed'?'며칠 뒤에도<br>내 문장으로 써봐요':independent?'처음 보는 상황에서<br>혼자 써볼까요?':g.stage==='variation'?'바꾸는 조건은 하나,<br>뜻을 유지해요':'두 사실의 뜻을<br>그대로 이어 써요';
- return guidedStrip(i)+heading(g.stage==='probe'?'문장 쓰기 준비':T('원인 문장 · {0}',t(g.titleKo)),title,task?task[1]:prev.length?'이전에 본 문항이에요. 다시 쓴 답은 연습으로 남겨요.':independent?'첫 답과 도움 사용을 별도로 기록해요.':'형태를 익힌 뒤 문장 전체를 직접 써요.')+
+ const nodeTask=NODE_TASK[g.nodeId];
+ const title=nodeTask?nodeTask[0]:task?task[0]:g.stage==='correction'?'뜻은 유지하고,<br>필요한 부분을 고쳐요':g.stage==='expansion'?'길이보다,<br>전할 정보를 분명히':g.stage==='delayed'?'며칠 뒤에도<br>내 문장으로 써봐요':independent?'처음 보는 상황에서<br>혼자 써볼까요?':g.stage==='variation'?'바꾸는 조건은 하나,<br>뜻을 유지해요':'두 사실의 뜻을<br>그대로 이어 써요';
+ return guidedStrip(i)+heading(g.stage==='probe'?'문장 쓰기 준비':groupEyebrow(g,false),title,nodeTask?nodeTask[1]:task?task[1]:prev.length?'이전에 본 문항이에요. 다시 쓴 답은 연습으로 남겨요.':independent?'첫 답과 도움 사용을 별도로 기록해요.':'형태를 익힌 뒤 문장 전체를 직접 써요.')+
  `<section class="wcFacts ${independent?'wcFacts--scene':''}">${art(i.image||i.imageKey)}<div lang="ko">${(i.facts||[]).map(f=>`<p>${h(f.ko)}</p>`).join('')}</div></section>`+
  (i.draftKo?`<section class="wcPanel wcPanel--warm"><small>${t('고쳐 볼 초고')}</small><p class="wcDraftText" lang="ko">${h(i.draftKo)}</p></section>`:'')+
  (g.stage==='form'&&i.evidence?.assistedByDesign?`<section class="wcPanel wcPanel--mint"><small>${t('연결 형태 도움')}</small><h2>${i.support?.lessonKo?korean(i.support.lessonKo):t('이번 연결 형태를 확인해요')}</h2><p>${t('완성된 해요체에 ‘서’를 바로 붙이지 않아요.')}</p></section>`:'')+
@@ -149,10 +174,10 @@ function feedback(id){
  const ev=attempt.evaluation,g=group(i.groupId),d=E.draft(id),idx=g.itemIds.indexOf(id),next=g.itemIds[idx+1],flow=guided().active;
  const label=ev.status==='needs_practice'?'한 부분만 다시 확인해요':ev.status==='interpretation_observed'?'이 문항의 뜻을 구별했어요':'문장을 남겼어요';
  const status={practice:'도움 있는 연습',revision:'수정·반복 연습',independent:'새 상황 첫 독립 작성',delayed:'다른 날 새 상황 작성',interpretation:'뜻 구별 문항'}[attempt.mode]||'연습';
- return guidedStrip(i)+heading(g.stage==='probe'?'문장 쓰기 준비 · 작성 기록':'원인 문장 · 작성 기록',label,'첫 답과 수정한 답은 따로 남겨요.',mascot(ev.status==='needs_practice'?'review-thinking':'answer-correct'))+
+ return guidedStrip(i)+heading(g.stage==='probe'?'문장 쓰기 준비 · 작성 기록':g.nodeId==='S07'?'원인 문장 · 작성 기록':`${t(nodeTitle(g.nodeId))} · ${t('작성 기록')}`,label,'첫 답과 수정한 답은 따로 남겨요.',mascot(ev.status==='needs_practice'?'review-thinking':'answer-correct'))+
  `<section class="wcPanel wcPanel--warm"><small>${t(i.kind==='relation'?'방금 쓴 답':'방금 쓴 문장')}</small><p class="wcDraftText">${i.kind==='relation'?(i.id==='P05'?korean((i.choices||[]).find(c=>c.id===attempt.text)?.labelKo||attempt.text):t((i.choices||[]).find(c=>c.id===attempt.text)?.labelKo||attempt.text)):korean(attempt.text)}</p>${badge(status,'mint')}</section>`+
  `<section class="wcFeedback" role="status"><h2>${t(ev.form==='observed'?'목표 형태 확인 · 의미 미검토':ev.status==='interpretation_observed'?'이 선택의 뜻 구별만 확인':'확인한 부분과 남은 부분')}</h2>${ev.status==='form_observed'?`<p>${t('배운 연결 표현과 필요한 말을 찾았어요.')}</p>`:ev.status==='components_observed'?`<p>${t('필요한 기본 표현을 찾았어요.')}</p>`:ev.status==='saved'?`<p>${t('작성한 문장을 화면에 남겼어요.')}</p>`:ev.messages.map(m=>`<p>${t(m)}</p>`).join('')}<p class="wcAssessmentNote">${t(i.kind==='relation'?'고른 뜻만 확인했어요. 문장 쓰기와는 별도예요.':'문장 전체의 뜻과 자연스러움은 아직 확인 전이에요.')}</p><details class="wcAssessmentDetails"><summary>${t('어디까지 확인했나요?')}</summary><p>${t('자동 규칙 확인, 자기점검, 사람의 의미 검토를 구분해요. 전체 문장의 정답이나 숙달 판정이 아니에요.')}</p></details></section>`+
- (i.kind!=='relation'?`<section class="wcPanel"><h2>${t('내 문장 다시 읽기')}</h2><ul class="wcChecklist"><li>${t(g.stage==='probe'?'누가, 어디서, 무엇을 하는지 분명한가요?':'앞부분이 뒤 행동의 이유인가요?')}</li><li>${t('누가, 언제, 무엇을 하는지 뜻이 유지됐나요?')}</li><li>${t(g.stage==='expansion'?'더한 정보가 실제로 무엇을 알려 주나요?':'주어진 사실을 바꾸거나 빼지 않았나요?')}</li></ul><div class="wcFormTabs">${button('뜻을 다시 읽었어요',`harumalWritingSelfCheck('${attempt.id}','checked')`,attempt.selfCheck?.value==='checked'?'selected':'secondary')}${button('더 검토할래요',`harumalWritingSelfCheck('${attempt.id}','needs_review')`,attempt.selfCheck?.value==='needs_review'?'selected':'secondary')}</div><small>${t('자기점검은 사람의 의미 검토 완료로 기록되지 않아요.')}</small></section>`:'')+
+ (i.kind!=='relation'?`<section class="wcPanel"><h2>${t('내 문장 다시 읽기')}</h2><ul class="wcChecklist"><li>${t(g.stage==='probe'?'누가, 어디서, 무엇을 하는지 분명한가요?':g.nodeId==='S07'?'앞부분이 뒤 행동의 이유인가요?':'주어진 사실을 모두 넣었나요?')}</li><li>${t('누가, 언제, 무엇을 하는지 뜻이 유지됐나요?')}</li><li>${t(g.stage==='expansion'?'더한 정보가 실제로 무엇을 알려 주나요?':'주어진 사실을 바꾸거나 빼지 않았나요?')}</li></ul><div class="wcFormTabs">${button('뜻을 다시 읽었어요',`harumalWritingSelfCheck('${attempt.id}','checked')`,attempt.selfCheck?.value==='checked'?'selected':'secondary')}${button('더 검토할래요',`harumalWritingSelfCheck('${attempt.id}','needs_review')`,attempt.selfCheck?.value==='needs_review'?'selected':'secondary')}</div><small>${t('자기점검은 사람의 의미 검토 완료로 기록되지 않아요.')}</small></section>`:'')+
  (i.models?.length?`<section class="wcModel">${d.modelViewed?`<h2>${t('가능한 문장 예시')}</h2>${i.models.map(m=>`<p lang="ko">${h(m)}</p>`).join('')}<small>${t('같은 뜻의 자연스러운 다른 답도 가능해요.')}</small>`:button('제출 후 가능한 문장 비교',`harumalWritingModel('${id}')`,'secondary')}</section>`:'')+
  (flow?primaryAction(ev.status==='needs_practice'?'전체 문장 다시 써보기':'다음으로',ev.status==='needs_practice'?`harumalWritingGo('item','${id}')`:`harumalWritingContinue('${id}')`):primaryAction(ev.status==='needs_practice'?'전체 문장 다시 써보기':next?'다음 문장 써보기':'이 묶음의 기록 보기',ev.status==='needs_practice'?`harumalWritingGo('item','${id}')`:next?`harumalWritingGo('item','${next}')`:"harumalWritingGo('records')"))+
  `<div class="wcSplitLinks">${button('다시 쓰기',`harumalWritingGo('item','${id}')`,'text')}${flow?(ev.status==='needs_practice'?button('기록을 남기고 다음으로',`harumalWritingContinue('${id}')`,'text'):''):button('필요한 형태만 보충',`harumalWritingGo('group','${i.targetForm==='아서'?'form-aseo':i.targetForm==='어서'?'form-eoseo':'form-haeseo'}')`,'text')}</div>`;
@@ -177,7 +202,7 @@ function exam(id){const n=Number(id),copy={51:'생활 목적에 맞는 한 문�
 function renderPage(){
  const sc=document.getElementById('screen');if(!sc)return;const r=state().route||{page:'course'};
  sc.className='screen wcScreen';sc.dataset.harumalView=VIEW;sc.lang=language()==='zh'?'zh-CN':language();
- const content=r.page==='answer'?savedAnswer(r.attemptId):r.page==='level'?levelPage(r.levelId):r.page==='stage-done'?stageDone(r.groupId):r.page==='map'?map():r.page==='node'?nodePage(r.nodeId):r.page==='unit'?unit():r.page==='group'?groupPage(r.groupId):r.page==='item'?itemPage(r.itemId):r.page==='feedback'?feedback(r.itemId):r.page==='records'?records():r.page==='exam'?exam(r.examId):course();
+ const content=r.page==='answer'?savedAnswer(r.attemptId):r.page==='level'?levelPage(r.levelId):r.page==='stage-done'?stageDone(r.groupId):r.page==='map'?map():r.page==='node'?nodePage(r.nodeId):r.page==='nodeunit'?nodeUnit(r.nodeId):r.page==='unit'?unit():r.page==='group'?groupPage(r.groupId):r.page==='item'?itemPage(r.itemId):r.page==='feedback'?feedback(r.itemId):r.page==='records'?records():r.page==='exam'?exam(r.examId):course();
  sc.innerHTML=crumbs(returnAction(r))+(E.getStorageError()?`<aside class="wcStorageWarning" role="alert">${t(E.getStorageError()==='newer-storage'?'이 기록은 더 새로운 버전에서 저장됐어요. 원본은 그대로 두고 이번 화면의 기록은 임시로만 보관해요.':'저장 공간을 사용할 수 없거나 기존 기록을 읽지 못했어요. 기존 원본은 지우지 않아요. 이번 문장을 따로 복사해 주세요.')}</aside>`:'')+content;
  sc.classList?.toggle('wcHasPrimary',Boolean(sc.querySelector('.wcPrimaryAction')));
  document.body.classList.add('wcActive');document.body.classList.remove('tq-home-active');
@@ -208,8 +233,8 @@ let changingHistory=false;
 const baseSetView=window.setView,baseRender=window.render;
 function rememberHistory(route,replace=false){try{const value={...(history.state||{}),harumalWritingRoute:route,harumalWritingGuided:Boolean(guided().active)};(replace?history.replaceState:history.pushState).call(history,value,'')}catch{}}
 function navigate(page='course',id='',replace=false){
- if(['course','map','node','unit','group','level','exam','records','answer'].includes(page)&&guided().active)E.leaveGuided?.();
- const route={page};if(page==='answer')route.attemptId=id;if(page==='node')route.nodeId=id;if(page==='group'||page==='stage-done')route.groupId=id;if(page==='level')route.levelId=id;if(page==='item'||page==='feedback')route.itemId=id;if(page==='exam')route.examId=id;
+ if(['course','map','node','nodeunit','unit','group','level','exam','records','answer'].includes(page)&&guided().active)E.leaveGuided?.();
+ const route={page};if(page==='answer')route.attemptId=id;if(page==='node'||page==='nodeunit')route.nodeId=id;if(page==='group'||page==='stage-done')route.groupId=id;if(page==='level')route.levelId=id;if(page==='item'||page==='feedback')route.itemId=id;if(page==='exam')route.examId=id;
  if(S.view!==VIEW){try{history.replaceState({...(history.state||{}),harumalWritingRoute:null,harumalReturnView:S.view},'')}catch{}}
  if(guided().active&&['item','feedback','stage-done'].includes(page))E.setGuidedRoute?.(route);
  E.route(route);rememberHistory(route,replace);changingHistory=true;baseSetView.call(window,VIEW);changingHistory=false;window.scrollTo?.({top:0,behavior:'instant'});
