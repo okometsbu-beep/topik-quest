@@ -187,8 +187,7 @@ function patchListeningSession(){const state=appState();if(listeningMode()==='of
 function afterRender(){
   installListeningGates();patchVocabulary();if(appState()?.view==='beginner')renderBeginner(document.getElementById('screen'));else patchHomeBeginner();patchStatsLanguage();patchMoreListening();patchTrail();patchListeningSession();cleanDisplayedHeaders()
 }
-if(typeof window.tqAfterRender==='function')window.tqAfterRender(afterRender);
-else if(typeof window.render==='function'){const base=window.render;window.render=function(){const out=base.apply(this,arguments);afterRender();return out}}
+if(typeof window.render==='function'){const base=window.render;window.render=function(){const out=base.apply(this,arguments);afterRender();return out}}
 installListeningGates();
 
 const style=document.createElement('style');style.textContent=`

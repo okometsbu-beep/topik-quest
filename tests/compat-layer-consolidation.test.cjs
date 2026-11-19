@@ -23,35 +23,9 @@ test('no compatibility layer writes a hardcoded version badge',()=>{
   }
 });
 
-test('registered after-render patches run once per render in registration order',()=>{
-  const source=read('site-patch-core.js');
-  const from=source.lastIndexOf("(function(){\n'use strict';\nif(typeof window.tqAfterRender==='function')return;");
-  assert.ok(from>0,'after-render block exists');
-  const to=source.indexOf('})();',from)+5;
-  let rendered=0;
-  const c={console,window:null};
-  c.window=c;
-  c.render=()=>{rendered++};
-  vm.createContext(c);
-  vm.runInContext(source.slice(from,to),c);
-  const order=[];
-  const first=()=>order.push('first'),second=()=>order.push('second');
-  c.tqAfterRender(first);
-  c.tqAfterRender(second);
-  c.tqAfterRender(first);
-  assert.equal(c.tqInstallAfterRender(),true);
-  c.render();
-  assert.equal(rendered,1);
-  assert.deepEqual(order,['first','second'],'each callback runs once per render, in registration order');
-  assert.equal(c.tqInstallAfterRender(),false,'the pipeline is installed only once');
-});
-
-test('every layer registers with the pipeline instead of wrapping render when it is available',()=>{
+test('each compatibility layer still wraps render at most once',()=>{
   for(const file of layers){
     const source=read(file);
-    assert.match(source,/typeof window\.tqAfterRender==='function'/,`${file} uses the shared after-render stage`);
+    assert.equal((source.match(/window\.render=function|\brender=function/g)||[]).length,1,`${file} installs a single wrapper`);
   }
-  const bootstrap=read('site-patch.js');
-  assert.ok(bootstrap.indexOf('tqInstallAfterRender')>bootstrap.indexOf('await loadSeries(RUNTIME_FILES)'),'the pipeline is installed after the runtime loads');
-  assert.ok(bootstrap.indexOf("if(typeof render==='function')render()")>bootstrap.indexOf('tqInstallAfterRender'),'the pipeline is installed before the first render');
 });

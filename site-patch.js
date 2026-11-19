@@ -153,9 +153,6 @@
   RUNTIME_FILES.forEach(preload);
   (async()=>{
     await loadSeries(RUNTIME_FILES);
-    // One after-render stage replaces the stacked compatibility wrappers; it must exist before the
-    // first render so every registered patch sees the finished screen.
-    if(typeof window.tqInstallAfterRender==='function')window.tqInstallAfterRender();
     if(typeof render==='function')render();
     const reveal=()=>finishBoot('ready');
     (window.requestAnimationFrame||window.setTimeout)(reveal,0);
