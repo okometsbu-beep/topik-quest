@@ -1,4 +1,4 @@
-const VERSION='179',CACHE_PREFIX='harumal-v',CACHE=CACHE_PREFIX+VERSION;
+const VERSION='180',CACHE_PREFIX='harumal-v',CACHE=CACHE_PREFIX+VERSION;
 // Earlier releases wrote their caches under the retired MALBIT prefix. Keep deleting them so an
 // upgraded install does not keep a full stale shell next to the current one.
 const RETIRED_CACHE_PREFIX='malbit-v';
