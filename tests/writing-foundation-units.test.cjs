@@ -105,3 +105,17 @@ test('a foundation repair keeps the draft visible and its feedback routes to the
   assert.match(screen.innerHTML,/harumalWritingGo\('group','s02-practice'\)/,'supplement link stays inside the node');
   assert.equal(data.items.find(item=>item.id==='S02r1').draftKo,'저는 학교 가요.');
 });
+
+test('a foundation delayed item opens only after a day and a later local date',()=>{
+  const NOW=Date.parse('2026-11-20T10:00:00Z');
+  const {c,data}=boot('ko');
+  const seed=c.HARUMAL_WRITING_ENGINE.create(c.localStorage,data,()=>NOW-49*60*60*1000);
+  const first=seed.submit('S02i1','동생은 주말에 친구를 만나요.');
+  assert.equal(first.attempt.mode,'independent','the first unhinted answer is independent evidence');
+  const later=c.HARUMAL_WRITING_ENGINE.create(c.localStorage,data,()=>NOW);
+  assert.equal(later.delayedReady(),true);
+  assert.equal(later.eligible('S02d1'),true,'the later-day item opens for the same node');
+  const sameDay=c.HARUMAL_WRITING_ENGINE.create(c.localStorage,data,()=>NOW-48*60*60*1000);
+  assert.equal(sameDay.delayedReady(),false,'under 24 hours stays closed');
+  assert.equal(sameDay.eligible('S02d1'),false);
+});
