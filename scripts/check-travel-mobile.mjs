@@ -960,7 +960,7 @@ try{
   await evaluate(`S.view='home';save();render()`);await sleep(180);
 
   await evaluate(`(()=>{S.lang='ko';S.view='review';save();render()})()`);await sleep(300);
-  assert.deepEqual(await evaluate(`(()=>{const stats=[...document.querySelectorAll('.tqReviewStats>div')];return{queue:document.querySelectorAll('.tqReviewItem').length,value:stats[2]?.querySelector('b')?.textContent,label:stats[2]?.querySelector('small')?.textContent}})()`),{queue:0,value:'기록 없음',label:'해결률'},'empty Review history must not claim a perfect resolution rate');
+  assert.deepEqual(await evaluate(`(()=>{return{queue:document.querySelectorAll('.tqReviewItem').length,stats:document.querySelectorAll('.tqReviewStats').length,filters:document.querySelectorAll('.tqReviewFilters').length,empty:!!document.querySelector('.tqReviewEmpty'),actions:document.querySelectorAll('.tqReviewEmptyActions button').length}})()`),{queue:0,stats:0,filters:0,empty:true,actions:2},'empty Review hides the 0/0/0 dashboard and offers a start action instead of claiming a resolution rate');
   await evaluate(`malbitSetTheme('light')`);await sleep(100);
   for(const width of [320,375,390,430]){await setViewport(width,width===320?700:844);await assertReviewFits(`Empty Review light ${width}px`,'light');await shot(`00iz-empty-review-light-${width}.png`)}
   await evaluate(`malbitSetTheme('dark')`);await sleep(100);

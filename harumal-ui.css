@@ -254,3 +254,36 @@ html body.harumal .malbitShortProposal :is(small,p){color:var(--ui-muted)!import
 html body.harumal .malbitShortProposal>button{background:var(--ui-accent);color:var(--harumal-on-accent)}
 html body.harumal .malbitShortProposal>button.dismiss{background:var(--ui-surface-soft);color:var(--ui-ink);border:1px solid var(--ui-border)}
 @media(max-width:360px){html[lang="en"] body.harumal .v33BeginnerTabs{grid-template-columns:repeat(2,minmax(0,1fr))!important}html[lang="en"] body.harumal .v33BeginnerTabs button{overflow-wrap:normal;word-break:normal}}
+
+/* --- v182 UI fixes: bottom-nav clearance, brand answer actions, readable submitted choices --- */
+html body.harumal .bottom{min-height:72px}
+html body.harumal .nav button{min-height:60px}
+html body.harumal .card>.primary:not(.alt),
+html body.harumal .sheet>.primary:not(.alt),
+html body.harumal .tqReviewScreen .primary:not(.alt){
+  background:var(--ui-accent)!important;
+  color:var(--harumal-on-accent)!important;
+  box-shadow:none!important;
+  border:0;
+  font-weight:800;
+}
+html body.harumal .examNav .next,
+html body.harumal .attack,
+html body.harumal .t1nav .n,
+html body.harumal .resultActions .main,
+html body.harumal .tqLibraryCard>button,
+html body.harumal .tqVocabAdd{
+  background:var(--ui-accent)!important;
+  color:var(--harumal-on-accent)!important;
+  box-shadow:none!important;
+}
+html body.harumal .examNav .prev{background:var(--ui-surface-soft);color:var(--ui-ink);border:1px solid var(--ui-border)}
+html body.harumal :is(.choice,.shortsChoice):disabled{opacity:1!important;cursor:default}
+html body.harumal :is(.choice,.shortsChoice):disabled:not(.correct):not(.wrong){
+  background:var(--ui-surface-raised);color:var(--ui-muted);border-color:var(--ui-border);
+}
+html body.harumal .choice.correct:disabled{background:var(--ui-success-soft);color:var(--ui-ink);border-color:var(--ui-success)}
+html body.harumal .choice.wrong:disabled{background:var(--ui-error-soft);color:var(--ui-ink);border-color:var(--ui-error)}
+html body.harumal .shortsChoice.correct:disabled{opacity:1!important}
+html body.harumal .choice .n{color:var(--ui-muted)}
+html body.harumal .choice.correct .n,html body.harumal .choice.wrong .n{color:inherit}
