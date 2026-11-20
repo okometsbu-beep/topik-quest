@@ -1,7 +1,7 @@
 /* Three daily destinations, one primary next step. Shared tokens follow the selected theme. */
 html body.harumal.hubRedesign{background:var(--ui-canvas)!important;color:var(--ui-ink)!important}
 html body.hubRedesign .app{max-width:760px!important;background:var(--ui-canvas)!important}
-html body.hubRedesign .screen{box-sizing:border-box;max-width:680px!important;margin:auto;padding:20px 20px 36px!important}
+html body.hubRedesign .screen{box-sizing:border-box;max-width:680px!important;margin:auto;padding:20px 20px calc(96px + env(safe-area-inset-bottom))!important}
 /* The travel map owns the viewport; reading-width constraints would clip its HUD. */
 html body.hubRedesign.travel-rpg-active .app,html body.hubRedesign.travel-rpg-active .screen.travelScreen{max-width:none!important;margin:0;padding:0!important}
 /* Preserve the writing owner’s measured space below its fixed action bar. */
@@ -27,7 +27,7 @@ html body.hubRedesign :is(.harumalWritingHero,.bgHero,.v33BeginnerHero,.advLead)
 html body.hubRedesign :is(.harumalWritingHero,.bgHero,.v33BeginnerHero) img{max-height:90px!important;object-fit:contain}
 html body.hubRedesign :is(.harumalPageHead h1,.malbitPageTitle h1){font-size:25px!important;line-height:1.35!important}
 @media(min-width:700px){.hubHome{padding-top:32px!important}.hubLessonBody{min-height:180px;grid-template-columns:1fr 140px}.hubLessonBody h1{font-size:32px}.hubCurrent{padding:25px}.hubSettingsOverlay{align-items:center}.hubSettingsSheet{border-radius:24px;max-height:85dvh}.hubPathList button{padding:23px}.hubHomeHeader{margin-bottom:24px}}
-@media(max-width:360px){html body.hubRedesign .screen{padding:16px 14px 30px!important}.hubHomeHeader{margin-bottom:13px}.hubWordmark{font-size:23px}.harumalCompactStatus{margin-bottom:16px!important;padding:10px!important}.hubCurrent{padding:14px}.hubLessonBody{grid-template-columns:minmax(0,1fr) 72px;min-height:130px}.hubLessonBody h1{font-size:22px}.hubLessonBody p{font-size:11px}.hubGoal{margin:10px 0 12px}.hubSecondary .hubRow{min-height:60px;padding:12px 2px!important}.hubSettingsContent{padding:8px 14px 20px}.hubPageHead h1{font-size:21px}}
+@media(max-width:360px){html body.hubRedesign .screen{padding:16px 14px calc(96px + env(safe-area-inset-bottom))!important}.hubHomeHeader{margin-bottom:13px}.hubWordmark{font-size:23px}.harumalCompactStatus{margin-bottom:16px!important;padding:10px!important}.hubCurrent{padding:14px}.hubLessonBody{grid-template-columns:minmax(0,1fr) 72px;min-height:130px}.hubLessonBody h1{font-size:22px}.hubLessonBody p{font-size:11px}.hubGoal{margin:10px 0 12px}.hubSecondary .hubRow{min-height:60px;padding:12px 2px!important}.hubSettingsContent{padding:8px 14px 20px}.hubPageHead h1{font-size:21px}}
 @media(prefers-reduced-motion:reduce){.hubRedesign *{scroll-behavior:auto!important}}
 
 html body.hubRedesign :is(.t1ModeLang,.wcLanguage){display:none!important}
@@ -99,3 +99,21 @@ html body.hubRedesign .hubMockSummary .hubPrimary:disabled{opacity:.45;cursor:no
 .hubLanguageEntry button[aria-pressed="true"]{border:2px solid var(--ui-accent);font-weight:800}
 .hubLanguageEntry button:focus-visible,.hubLanguageEntry summary:focus-visible{outline:3px solid var(--ui-accent);outline-offset:3px}
 .hubBeginnerReview .hubRow span{min-width:0;overflow-wrap:anywhere}
+
+/* v182 home dashboard: today's lesson hero, conditional review banner, three tracks */
+.hubHomeTools{display:flex;align-items:center;gap:6px}
+.hubProfileChip{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:8px 12px;border:1px solid var(--ui-border);border-radius:999px;background:var(--ui-surface);color:var(--ui-ink);font-size:12px;font-weight:750}
+.hubProfileChip span{color:var(--ui-muted);font-weight:700}
+.hubHeroCard{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 88px;align-items:center;gap:12px;padding:20px;margin:0 0 16px;border:1.5px solid var(--ui-accent);border-radius:24px;background:var(--ui-surface);box-shadow:0 10px 26px rgba(8,126,120,.10)}
+.hubHeroBadge{display:inline-flex;align-items:center;min-height:24px;padding:4px 10px;border-radius:999px;background:var(--ui-accent-soft);color:var(--ui-accent);font-size:12px;font-weight:800;letter-spacing:-.01em}
+.hubHeroCopy{min-width:0}
+.hubHeroCopy h1{margin:10px 0 6px;font-size:22px;line-height:1.32;letter-spacing:-.03em;color:var(--ui-ink)}
+.hubHeroStage{margin:0 0 14px;font-size:14px;line-height:1.5;color:var(--ui-muted)}
+.hubHeroCta{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;min-height:52px;border:0;border-radius:14px;background:var(--ui-accent);color:var(--harumal-on-accent,#fff);font-size:15px;font-weight:800}
+.hubHeroArt{width:88px;height:88px;object-fit:contain;justify-self:end}
+.hubReviewBanner{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:56px;padding:12px 16px;margin:0 0 20px;border:1px solid var(--ui-border);border-radius:16px;background:var(--ui-surface-soft);color:var(--ui-ink);text-align:left}
+.hubReviewBanner b{display:block;font-size:14px;font-weight:800}
+.hubReviewBanner small{display:block;margin-top:3px;font-size:12px;line-height:1.45;color:var(--ui-muted)}
+.hubReviewBanner i{font-style:normal;font-size:20px;color:var(--ui-muted)}
+.hubSectionTitle{margin:0 2px 12px;font-size:15px;font-weight:800;color:var(--ui-ink)}
+@media(max-width:360px){.hubHeroCard{grid-template-columns:minmax(0,1fr) 64px;padding:16px}.hubHeroArt{width:64px;height:64px}}

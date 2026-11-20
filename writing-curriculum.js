@@ -5,7 +5,7 @@ const DATA=window.HARUMAL_WRITING_DATA,engine=window.HARUMAL_WRITING_ENGINE;
 if(!DATA||!engine)return;
 let storage;try{storage=window.localStorage}catch{}
 const E=engine.create(storage,DATA),VIEW='writingCourse';
-const h=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const h=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])).replace(/&lt;br\s*\/?&gt;/gi,'<br>');
 const group=id=>DATA.groups.find(g=>g.id===id),item=id=>DATA.items.find(i=>i.id===id),state=()=>E.getState();
 // Only interface text is localized. Learner answers and Korean examples stay untouched.
 const language=()=>['ko','ja','en','zh'].includes(S.lang)?S.lang:'en';
