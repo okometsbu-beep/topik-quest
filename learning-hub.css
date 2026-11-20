@@ -104,7 +104,7 @@ html body.hubRedesign .hubMockSummary .hubPrimary:disabled{opacity:.45;cursor:no
 .hubHomeTools{display:flex;align-items:center;gap:6px}
 .hubProfileChip{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:8px 12px;border:1px solid var(--ui-border);border-radius:999px;background:var(--ui-surface);color:var(--ui-ink);font-size:12px;font-weight:750}
 .hubProfileChip span{color:var(--ui-muted);font-weight:700}
-.hubHeroCard{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 88px;align-items:center;gap:12px;padding:20px;margin:0 0 16px;border:1.5px solid var(--ui-accent);border-radius:24px;background:var(--ui-surface);box-shadow:0 10px 26px rgba(8,126,120,.10)}
+.hubHeroCard{position:relative;display:grid;grid-template-columns:minmax(0,1fr);align-items:center;gap:12px;padding:20px;margin:0 0 16px;border:1.5px solid var(--ui-accent);border-radius:24px;background:var(--ui-surface);box-shadow:0 10px 26px rgba(8,126,120,.10)}
 .hubHeroBadge{display:inline-flex;align-items:center;min-height:24px;padding:4px 10px;border-radius:999px;background:var(--ui-accent-soft);color:var(--ui-accent);font-size:12px;font-weight:800;letter-spacing:-.01em}
 .hubHeroCopy{min-width:0}
 .hubHeroCopy h1{margin:10px 0 6px;font-size:22px;line-height:1.32;letter-spacing:-.03em;color:var(--ui-ink)}
