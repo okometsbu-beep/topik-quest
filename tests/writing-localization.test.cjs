@@ -129,7 +129,7 @@ test('writing localization: four complete catalogs and every declared data instr
 for (const locale of LOCALES) {
   test(`writing localization: ${locale} course, map, 14 nodes, unit, 12 groups, 37 prompts and exam routes`, () => {
     const env = boot(locale), originalData = plain(env.data);
-    assert.equal(env.data.nodes.length, 14); assert.equal(env.data.groups.length, 24); assert.equal(env.data.items.length, 55);
+    assert.equal(env.data.nodes.length, 14); assert.equal(env.data.groups.length, 54); assert.equal(env.data.items.length, 109);
     for (const page of ['course','map','unit','records']) { env.go(page); localized(env, page); }
     for (const node of env.data.nodes) { env.go('node', node.id); localized(env, node.id); }
     for (const level of ['beginner','intermediate','advanced']) { env.go('level', level); localized(env, 'level ' + level); }
