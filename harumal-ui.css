@@ -268,6 +268,8 @@ html body.harumal .tqReviewScreen .primary:not(.alt){
   font-weight:800;
 }
 html body.harumal .examNav .next,
+html body.harumal .attack,
+html body.harumal .t1nav .n,
 html body.harumal .resultActions .main,
 html body.harumal .tqLibraryCard>button,
 html body.harumal .tqVocabAdd{
@@ -276,11 +278,12 @@ html body.harumal .tqVocabAdd{
   box-shadow:none!important;
 }
 html body.harumal .examNav .prev{background:var(--ui-surface-soft);color:var(--ui-ink);border:1px solid var(--ui-border)}
-html body.harumal .choice:disabled{opacity:1!important;cursor:default}
-html body.harumal .choice:disabled:not(.correct):not(.wrong){
+html body.harumal :is(.choice,.shortsChoice):disabled{opacity:1!important;cursor:default}
+html body.harumal :is(.choice,.shortsChoice):disabled:not(.correct):not(.wrong){
   background:var(--ui-surface-raised);color:var(--ui-muted);border-color:var(--ui-border);
 }
 html body.harumal .choice.correct:disabled{background:var(--ui-success-soft);color:var(--ui-ink);border-color:var(--ui-success)}
 html body.harumal .choice.wrong:disabled{background:var(--ui-error-soft);color:var(--ui-ink);border-color:var(--ui-error)}
+html body.harumal .shortsChoice.correct:disabled{opacity:1!important}
 html body.harumal .choice .n{color:var(--ui-muted)}
 html body.harumal .choice.correct .n,html body.harumal .choice.wrong .n{color:inherit}

@@ -117,3 +117,5 @@ html body.hubRedesign .hubMockSummary .hubPrimary:disabled{opacity:.45;cursor:no
 .hubReviewBanner i{font-style:normal;font-size:20px;color:var(--ui-muted)}
 .hubSectionTitle{margin:0 2px 12px;font-size:15px;font-weight:800;color:var(--ui-ink)}
 @media(max-width:360px){.hubHeroCard{grid-template-columns:minmax(0,1fr) 64px;padding:16px}.hubHeroArt{width:64px;height:64px}}
+.hubSettingsSectionTitle{margin:16px 4px 6px;font-size:13px;font-weight:800;letter-spacing:.01em;color:var(--ui-muted)}
+.hubSettingsContent>.hubSettingsSectionTitle:first-of-type{margin-top:6px}
